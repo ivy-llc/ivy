@@ -223,9 +223,10 @@
 <span class="sd">    x</span>
 <span class="sd">        An ivy array.</span>
 <span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively a variable, rather than an array.</span>
-<span class="sd">        For frameworks like JAX that do not have exclusive variable types, the function will always return</span>
-<span class="sd">        False if this flag is set, otherwise the check is the same for general arrays. Default is False.</span>
+<span class="sd">        Whether to check if the data type is exclusively a variable, rather than an</span>
+<span class="sd">        array. For frameworks like JAX that do not have exclusive variable types, the</span>
+<span class="sd">        function will always return False if this flag is set, otherwise the check is</span>
+<span class="sd">        the same for general arrays. Default is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -288,7 +289,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    func</span>
-<span class="sd">        Function for which we compute the gradients of the output with respect to xs input.</span>
+<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
+<span class="sd">        input.</span>
 <span class="sd">    xs</span>
 <span class="sd">        Variables for which to compute the function gradients with respective to.</span>
 <span class="sd">    retain_grads</span>
@@ -297,7 +299,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs</span>
+<span class="sd">        the function first output y, the gradients [dy/dx for x in xs], and any other</span>
+<span class="sd">        extra function outputs</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
@@ -357,16 +360,20 @@
 <span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
 <span class="sd">    effective_grads</span>
-<span class="sd">        Effective gradients of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">        Effective gradients of the cost c with respect to the weights ws,</span>
+<span class="sd">        [dc/dw for w in ws].</span>
 <span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
+<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
+<span class="sd">        the gradient.</span>
 <span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
-<span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
-<span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">        Default is True.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -399,14 +406,17 @@
 <span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
 <span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
+<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
+<span class="sd">        the gradient.</span>
 <span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
-<span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
-<span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">        Default is True.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -429,16 +439,19 @@
 <span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
 <span class="sd">    lr</span>
-<span class="sd">        Learning rate, the rate at which the weights should be updated relative to the gradient.</span>
+<span class="sd">        Learning rate, the rate at which the weights should be updated relative to the</span>
+<span class="sd">        gradient.</span>
 <span class="sd">    decay_lambda</span>
 <span class="sd">        The factor used for weight decay. Default is zero.</span>
 <span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
-<span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
-<span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">        Default is True.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -478,7 +491,8 @@
 <span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
 <span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
+<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
+<span class="sd">        the gradient.</span>
 <span class="sd">    mw_tm1</span>
 <span class="sd">        running average of the gradients, from the previous time-step.</span>
 <span class="sd">    vw_tm1</span>
@@ -492,17 +506,20 @@
 <span class="sd">    epsilon</span>
 <span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7)</span>
 <span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
-<span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
-<span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">        Default is True.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, and also new mw and vw, following the adam updates.</span>
+<span class="sd">        The new function weights ws_new, and also new mw and vw, following the adam</span>
+<span class="sd">        updates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span>
@@ -536,7 +553,8 @@
 <span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
 <span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
+<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
+<span class="sd">        the gradient.</span>
 <span class="sd">    mw_tm1</span>
 <span class="sd">        running average of the gradients, from the previous time-step.</span>
 <span class="sd">    vw_tm1</span>
@@ -554,12 +572,14 @@
 <span class="sd">    decay_lambda</span>
 <span class="sd">        The factor used for weight decay. Default is zero.</span>
 <span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
-<span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
-<span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">        Default is True.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

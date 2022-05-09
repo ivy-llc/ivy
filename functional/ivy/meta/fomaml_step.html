@@ -151,17 +151,23 @@ Default is ivy.gradient_descent_update.</p></li>
 Default is None.</p></li>
 <li><p><strong>outer_batch_fn</strong> – Function to apply to the task sub-batch, before passing to the outer_cost_fn.
 Default is None.</p></li>
-<li><p><strong>average_across_steps</strong> – Whether to average the inner loop steps for the outer loop update. Default is False.</p></li>
-<li><p><strong>batched</strong> – Whether to batch along the time dimension, and run the meta steps in batch. Default is True.</p></li>
-<li><p><strong>inner_v</strong> – Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)</p></li>
+<li><p><strong>average_across_steps</strong> – Whether to average the inner loop steps for the outer loop update.
+Default is False.</p></li>
+<li><p><strong>batched</strong> – Whether to batch along the time dimension, and run the meta steps in batch.
+Default is True.</p></li>
+<li><p><strong>inner_v</strong> – Nested variable keys to be optimized during the inner loop, with same keys and
+boolean values. (Default value = None)</p></li>
 <li><p><strong>keep_inner_v</strong> – If True, the key chains in inner_v will be kept, otherwise they will be removed.
 Default is True.</p></li>
-<li><p><strong>outer_v</strong> – Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)</p></li>
+<li><p><strong>outer_v</strong> – Nested variable keys to be optimized during the inner loop, with same keys and
+boolean values. (Default value = None)</p></li>
 <li><p><strong>keep_outer_v</strong> – If True, the key chains in inner_v will be kept, otherwise they will be removed.
 Default is True.</p></li>
-<li><p><strong>return_inner_v</strong> – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
-will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
-<li><p><strong>num_tasks</strong> – Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.</p></li>
+<li><p><strong>return_inner_v</strong> – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task
+inner loop will also be returned. variables for all tasks will be returned with
+‘all’. Default is False.</p></li>
+<li><p><strong>num_tasks</strong> – Number of unique tasks to inner-loop optimize for the meta step. Determined from
+batch by default.</p></li>
 <li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the cost. Default is True.</p></li>
 </ul>
 </dd>

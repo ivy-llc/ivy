@@ -158,10 +158,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form square symmetric
-positive-definite matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>upper</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the result must be the upper-triangular Cholesky factor U. If False, the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-must be the lower-triangular Cholesky factor L. Default: False.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
+square symmetric positive-definite matrices. Should have a floating-point data
+type.</p></li>
+<li><p><strong>upper</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the result must be the upper-triangular Cholesky factor U. If False, (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+the result must be the lower-triangular Cholesky factor L. Default: False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -169,11 +170,11 @@ must be the lower-triangular Cholesky factor L. Default: False.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><em>an array containing the Cholesky factors for each square matrix.</em></p></li>
-<li><p><em>If upper is False, the returned array must contain lower-triangular matrices; otherwise,</em></p></li>
-<li><p><em>the returned array must contain upper-triangular matrices.</em></p></li>
-<li><p><em>The returned array must have a floating-point data type determined by Type Promotion Rules</em></p></li>
-<li><p><em>and must have the same shape as x.</em></p></li>
+<li><p><em>an array containing the Cholesky factors for each square matrix. If upper is</em></p></li>
+<li><p><em>False, the returned array must contain lower-triangular matrices; otherwise, the</em></p></li>
+<li><p><em>returned array must contain upper-triangular matrices. The returned array must</em></p></li>
+<li><p><em>have a floating-point data type determined by Type Promotion Rules and must have</em></p></li>
+<li><p><em>the same shape as x.</em></p></li>
 </ul>
 </p>
 </dd>
@@ -190,18 +191,19 @@ of corresponding 3-element vectors is independently computed.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must have the same shape as x1. Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
-If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
-Default: -1.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must have the same shape as x1. Should have a numeric data
+type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis (dimension) of x1 and x2 containing the vectors for which to compute (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+the cross product.vIf set to -1, the function computes the cross product for
+vectors defined by the last axis (dimension). Default: -1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data type determined
-by Type Promotion Rules.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data
+type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -212,15 +214,17 @@ by Type Promotion Rules.</p>
 <dd><p>Returns the determinant of a square matrix (or a stack of square matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices.
-Should have a floating-point data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form
+square matrices. Should have a floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
-dimensional array containing the determinant for each square matrix. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a two-dimensional array, a zero-dimensional array containing the
+determinant; otherwise, a non-zero dimensional array containing the determinant
+for each square matrix. The returned array must have the same data type as
+<code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -239,23 +243,27 @@ dimensional array containing the determinant for each square matrix. The returne
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p></li>
 <li><p><strong>offset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – offset specifying the off-diagonal relative to the main diagonal. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>: the main diagonal.
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>: off-diagonal above the main diagonal.
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>: off-diagonal below the main diagonal.
 Default: <cite>0</cite>.</p></li>
-<li><p><strong>axis1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken. (default: <code class="docutils literal notranslate"><span class="pre">-2</span></code>)
+<li><p><strong>axis1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis to be used as the first axis of the 2-D sub-arrays from which the diagonals (default: <code class="docutils literal notranslate"><span class="pre">-2</span></code>)
+should be taken.
 Defaults to first axis (0).</p></li>
-<li><p><strong>axis2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
-Defaults to second axis (1).</p></li>
+<li><p><strong>axis2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis to be used as the second axis of the 2-D sub-arrays from which the (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+diagonals should be taken. Defaults to second axis (1).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the diagonals and whose shape is determined by removing the
+last two dimensions and appending a dimension equal to the size of the resulting
+diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -263,28 +271,42 @@ Defaults to second axis (1).</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.eigh">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">eigh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#eigh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.eigh" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">Q</span></code> is an orthogonal matrix (or a stack of matrices) and <code class="docutils literal notranslate"><span class="pre">L</span></code> is a vector (or a stack of vectors).</p>
+<dd><p>Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+symmetric matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">Q</span></code> is an orthogonal matrix (or a stack of
+matrices) and <code class="docutils literal notranslate"><span class="pre">L</span></code> is a vector (or a stack of vectors).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The function <code class="docutils literal notranslate"><span class="pre">eig</span></code> will be added in a future version of the specification, as it requires complex number support.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">eig</span></code> will be added in a future version of the specification, as
+it requires complex number support.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Whether an array library explicitly checks whether an input array is a symmetric matrix (or a stack of symmetric matrices) is implementation-defined.</p>
+<p>Whether an array library explicitly checks whether an input array is a symmetric
+matrix (or a stack of symmetric matrices) is implementation-defined.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices. Must have a floating-point data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form
+square matrices. Must have a floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose
--   first element must have the field name <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> (corresponding to <code class="docutils literal notranslate"><span class="pre">L</span></code> above) and must be an array consisting of computed eigenvalues. The array containing the eigenvalues must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M)</span></code>.
--   second element have have the field name <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code> (corresponding to <code class="docutils literal notranslate"><span class="pre">Q</span></code> above) and must be an array where the columns of the inner most matrices contain the computed eigenvectors. These matrices must be orthogonal. The array containing the eigenvectors must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.
-Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose</p>
+<ul class="simple">
+<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> (corresponding to
+<code class="docutils literal notranslate"><span class="pre">L</span></code> above) and must be an array consisting of computed eigenvalues. The
+array containing the eigenvalues must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M)</span></code>.</p></li>
+<li><p>second element have have the field name <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code> (corresponding to
+<code class="docutils literal notranslate"><span class="pre">Q</span></code> above) and must be an array where the columns of the inner most
+matrices contain the computed eigenvectors. These matrices must be
+orthogonal. The array containing the eigenvectors must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.</p></li>
+</ul>
+<p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</li>
 <li><p><em>.. note::</em> – Eigenvalue sort order is left unspecified and is thus implementation-dependent.</p></li>
 </ul>
 </p>
@@ -299,15 +321,15 @@ Each returned array must have the same floating-point data type as <code class="
 x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form square matrices.
-Must have floating-point data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
+square matrices. Must have floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the computed eigenvalues. The returned array must have shape (…, M) and
-have the same data type as x.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the computed eigenvalues. The returned array must have shape
+(…, M) and have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -319,15 +341,16 @@ have the same data type as x.</p>
 matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices.
-Should have a floating-point data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form
+square matrices. Should have a floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the multiplicative inverses. The returned array must have a floating-point data type determined
-by <span class="xref std std-ref">type-promotion</span> and must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the multiplicative inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have the
+same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -353,8 +376,10 @@ by <span class="xref std std-ref">type-promotion</span> and must have the same s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type. Must have at least one dimension.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Should have a numeric data type. Must have at least one dimension.</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type. Must have at least one
+dimension.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Should have a numeric data type. Must have at least one
+dimension.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -362,19 +387,38 @@ by <span class="xref std std-ref">type-promotion</span> and must have the same s
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
-if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
-if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (…, K, N), an array having shape (…, N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
-if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array having shape (K,), an array having shape (…, M) (i.e., appended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
-if x1 is a two-dimensional array having shape (M, K) and x2 is an array having shape (…, K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
-if x1 is an array having shape (…, M, K) and x2 is a two-dimensional array having shape (K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
-if either x1 or x2 has more than two dimensions, an array having a shape determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and containing the conventional matrix product for each stacked matrix.</p></li>
+<li><p><em>ret</em> –</p>
+<ul>
+<li><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a
+zero-dimensional array containing the inner product as its only element.</p></li>
+<li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is a
+two-dimensional array having shape (K, N), a two-dimensional array
+containing the conventional matrix product and having shape (M, N).</p></li>
+<li><p>if x1 is a one-dimensional array having shape (K,) and x2 is an array having
+shape (…, K, N), an array having shape (…, N) (i.e., prepended
+dimensions during vector-to-matrix promotion must be removed) and containing
+the conventional matrix product.</p></li>
+<li><p>if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array
+having shape (K,), an array having shape (…, M) (i.e., appended dimensions
+during vector-to-matrix promotion must be removed) and containing the
+conventional matrix product.</p></li>
+<li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is an array
+having shape (…, K, N), an array having shape (…, M, N) and containing
+the conventional matrix product for each stacked matrix.</p></li>
+<li><p>if x1 is an array having shape (…, M, K) and x2 is a two-dimensional array
+having shape (K, N), an array having shape (…, M, N) and containing the
+conventional matrix product for each stacked matrix.</p></li>
+<li><p>if either x1 or x2 has more than two dimensions, an array having a shape
+determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and
+containing the conventional matrix product for each stacked matrix.</p></li>
+</ul>
+</li>
 <li><p><em>**Raises**</em></p></li>
 <li><p><em>-   if either x1 or x2 is a zero-dimensional array.</em></p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional array having shape (L,), and K != L.</em></p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape (…, L, N), and K != L.</em></p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having shape (L,), and K != L.</em></p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is an array having shape (…, L, N), and K != L.</em></p></li>
+<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</em> – array having shape (L,), and K != L.</p></li>
+<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
+<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having</em> – shape (L,), and K != L.</p></li>
+<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
 </ul>
 </p>
 </dd>
@@ -392,9 +436,9 @@ if either x1 or x2 has more than two dimensions, an array having a shape determi
 <li><p><strong>p</strong> – Order of the norm. Default is 2.</p></li>
 <li><p><strong>axes</strong> – The axes of x along which to compute the matrix norms.
 Default is None, in which case the last two dimensions are used.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the axes which are normed over are left in the result as dimensions with (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-size one. With this option the result will broadcast correctly against the original x.
-Default is False.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the axes which are normed over are left in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+dimensions with size one. With this option the result will broadcast correctly
+against the original x. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -426,19 +470,27 @@ stack of matrices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – (Optional[Union[float, array]]) – relative tolerance for small singular values. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-Singular values approximately less than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.
-If a <code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix.
-If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> (see <span class="xref std std-ref">broadcasting</span>).
-If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is <code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with the floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values. Singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero. If a
+<code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to
+<code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix. If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a
+floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> (see
+<span class="xref std std-ref">broadcasting</span>). If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is <code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with the floating-point
+data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>).
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the ranks. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape <code class="docutils literal notranslate"><span class="pre">(...)</span></code> (i.e., must have a shape equal to <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>).</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the ranks. The returned array must have a floating-point
+data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape <code class="docutils literal notranslate"><span class="pre">(...)</span></code>
+(i.e., must have a shape equal to <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>).</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -455,13 +507,15 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the transpose for each matrix and having shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -499,15 +553,28 @@ The returned array must have a data type determined by Type Promotion Rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values. Singular values approximately less than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero. If a <code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix. If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> (see <span class="xref std std-ref">broadcasting</span>). If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is <code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with the floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values. Singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero. If a
+<code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to
+<code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix. If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a
+floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>
+(see <span class="xref std std-ref">broadcasting</span>). If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is
+<code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with
+the floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to
+<code class="docutils literal notranslate"><span class="pre">x</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost
+two dimensions must be transposed).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -515,24 +582,48 @@ The returned array must have a data type determined by Type Promotion Rules.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.qr">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">qr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reduced'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.qr" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).</p>
+<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
+matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
+upper-triangular matrix (or a stack of matrices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.</p></li>
-<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – decomposition mode. Should be one of the following modes: (default: <code class="docutils literal notranslate"><span class="pre">'reduced'</span></code>)
-- ‘reduced’: compute only the leading K columns of q, such that q and r have dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).
-- ‘complete’: compute q and r with dimensions (…, M, M) and (…, M, N), respectively.
-Default: ‘reduced’.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array having shape (…, M, N) and whose innermost two dimensions form MxN
+matrices of rank N. Should have a floating-point data type.</p></li>
+<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>decomposition mode. Should be one of the following modes: (default: <code class="docutils literal notranslate"><span class="pre">'reduced'</span></code>)
+- ‘reduced’: compute only the leading K columns of q, such that q and r have</p>
+<blockquote>
+<div><p>dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).</p>
+</div></blockquote>
+<ul>
+<li><p>’complete’: compute q and r with dimensions (…, M, M) and (…, M, N),
+respectively.</p></li>
+</ul>
+<p>Default: ‘reduced’.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="linear_algebra/qr.html#ivy.functional.ivy.linear_algebra.qr" title="ivy.functional.ivy.linear_algebra.qr"><code class="xref py py-class docutils literal notranslate"><span class="pre">qr</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a namedtuple (Q, R) whose
-- first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is ‘complete’, the array must have shape (…, M, M). If mode is ‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
-- second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is ‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.</p>
+<dd class="field-odd"><p><p><em>ret</em> – a namedtuple (Q, R) whose
+- first element must have the field name Q and must be an array whose shape</p>
+<blockquote>
+<div><p>depends on the value of mode and contain matrices with orthonormal columns.
+If mode is ‘complete’, the array must have shape (…, M, M). If mode is
+‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The
+first x.ndim-2 dimensions must have the same size as those of the input array
+x.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>second element must have the field name R and must be an array whose shape
+depends on the value of mode and contain upper-triangular matrices. If mode is
+‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the
+array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2
+dimensions must have the same size as those of the input x.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -565,15 +656,18 @@ The natural log of the absolute value of the determinant.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.solve">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.solve" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.</p>
+<dd><p>Returns the solution to the system of linear equations represented by the well-
+determined (i.e., full rank) linear matrix equation AX = B.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – coefficient array A having shape (…, M, M) and whose innermost two dimensions form square matrices.
-Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).
-Should have a floating-point data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (…, M, 1).
-If x2 has shape (…, M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – coefficient array A having shape (…, M, M) and whose innermost two dimensions
+form square matrices. Must be of full rank (i.e., all rows or, equivalently,
+columns must be linearly independent). Should have a floating-point data type.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is
+equivalent to an array having shape (…, M, 1). If x2 has shape (…, M, K),
+each column k defines a set of ordinate values for which to compute a solution,
+and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
 Should have a floating-point data type.</p></li>
 </ul>
 </dd>
@@ -582,7 +676,9 @@ Should have a floating-point data type.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – an array containing the solution to the system AX = B for each square matrix.
-The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.</p>
+The returned array must have the same shape as x2 (i.e., the array corresponding
+to B) and must have a floating-point data type determined by Type Promotion
+Rules.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -590,12 +686,21 @@ The returned array must have the same shape as x2 (i.e., the array corresponding
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.svd">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a singular value decomposition A = USVh of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">U</span></code> is a matrix (or a stack of matrices) with orthonormal columns, <code class="docutils literal notranslate"><span class="pre">S</span></code> is a vector of non-negative numbers (or stack of vectors), and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> is a matrix (or a stack of matrices) with orthonormal rows.</p>
+<dd><p>Returns a singular value decomposition A = USVh of a matrix (or a stack of
+matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">U</span></code> is a matrix (or a stack of matrices) with orthonormal
+columns, <code class="docutils literal notranslate"><span class="pre">S</span></code> is a vector of non-negative numbers (or stack of vectors), and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>
+is a matrix (or a stack of matrices) with orthonormal rows.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form matrices on which to perform singular value decomposition. Should have a floating-point data type.</p></li>
-<li><p><strong>full_matrices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute full-sized <code class="docutils literal notranslate"><span class="pre">U</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, compute on the leading <code class="docutils literal notranslate"><span class="pre">K</span></code> singular vectors, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> and where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+matrices on which to perform singular value decomposition. Should have a
+floating-point data type.</p></li>
+<li><p><strong>full_matrices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute full-sized <code class="docutils literal notranslate"><span class="pre">U</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, compute on
+the leading <code class="docutils literal notranslate"><span class="pre">K</span></code> singular vectors, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> and where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -606,9 +711,27 @@ The returned array must have the same shape as x2 (i.e., the array corresponding
 <li><p><em>..</em> – NOTE: once complex numbers are supported, each square matrix must be Hermitian.</p></li>
 <li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(U,</span> <span class="pre">S,</span> <span class="pre">Vh)</span></code> whose</p>
 <ul class="simple">
-<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain matrices with orthonormal columns (i.e., the columns are left singular vectors). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
-<li><p>second element must have the field name <code class="docutils literal notranslate"><span class="pre">S</span></code> and must be an array with shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length <code class="docutils literal notranslate"><span class="pre">K</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. For each vector, the singular values must be sorted in descending order by magnitude, such that <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">0]</span></code> is the largest value, <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">1]</span></code> is the second largest value, et cetera. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
-<li><p>third element must have the field name <code class="docutils literal notranslate"><span class="pre">Vh</span></code> and must be an array whose shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain orthonormal rows (i.e., the rows are the right singular vectors and the array is the adjoint). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose
+shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain matrices with
+orthonormal columns (i.e., the columns are left singular vectors). If
+<code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions
+must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>second element must have the field name <code class="docutils literal notranslate"><span class="pre">S</span></code> and must be an array with
+shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length
+<code class="docutils literal notranslate"><span class="pre">K</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. For each vector, the singular values must be
+sorted in descending order by magnitude, such that <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">0]</span></code> is the
+largest value, <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">1]</span></code> is the second largest value, et cetera. The
+first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input
+<code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>third element must have the field name <code class="docutils literal notranslate"><span class="pre">Vh</span></code> and must be an array whose
+shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain orthonormal rows
+(i.e., the rows are the right singular vectors and the array is the
+adjoint). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have
+shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code>
+dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
 </ul>
 <p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </li>
@@ -624,14 +747,16 @@ The returned array must have the same shape as x2 (i.e., the array corresponding
 <dd><p>Returns the singular values of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – array with shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length <code class="docutils literal notranslate"><span class="pre">K</span></code>, where K = min(M, N).
-The values are sorted in descending order by magnitude.</p>
+<dd class="field-odd"><p><em>ret</em> – array with shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of
+length <code class="docutils literal notranslate"><span class="pre">K</span></code>, where K = min(M, N). The values are sorted in descending order by
+magnitude.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -668,7 +793,8 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a numeric data type.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a numeric data type.</p></li>
 <li><p><strong>offset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>offset specifying the off-diagonal relative to the main diagonal. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
 -   <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>: the main diagonal.
 -   <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>: off-diagonal above the main diagonal.
@@ -681,7 +807,10 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
+<dd class="field-odd"><p><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the
+last two dimensions and storing the traces in the last array dimension. For
+example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an
+output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
 </pre></div>
 </div>
@@ -707,8 +836,15 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis over which to compute the dot product. Must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where <code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>).
+Should have a numeric data type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis over which to compute the dot product. Must be an integer on the interval (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+<code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape
+determined according to <span class="xref std std-ref">broadcasting</span>. If specified as a negative integer,
+the function must determine the axis along which to compute the dot product by
+counting backward from the last dimension (where <code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last
+dimension). By default, the function must compute the dot product over the last
+axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -716,16 +852,17 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p></li>
+<li><p><em>ret</em> – if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional
+containing the dot product; otherwise, a non-zero-dimensional array containing
+the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of
+dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The
+returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p></li>
 <li><p><em>**Raises**</em></p></li>
 <li><ul>
 <li><p>if provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p></li>
 </ul>
 </li>
-<li><ul>
-<li><p>if the size of the axis over which to compute the dot product is not the same for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
-</ul>
-</li>
+<li><p><em>-   if the size of the axis over which to compute the dot product is not the same</em> – for both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></li>
 </ul>
 </p>
 </dd>
@@ -740,8 +877,16 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a floating-point data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along
+which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be
+computed over all array values (i.e., equivalent to computing the vector norm of
+a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+result as singleton dimensions, and, accordingly, the result must be compatible
+with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – <p>order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p>
 <table class="docutils align-default">
 <colgroup>
@@ -805,7 +950,12 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the vector norms. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the returned array must be a zero-dimensional array containing a vector norm. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a scalar value (<code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>), the returned array must have a rank which is one less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a <code class="docutils literal notranslate"><span class="pre">n</span></code>-tuple, the returned array must have a rank which is <code class="docutils literal notranslate"><span class="pre">n</span></code> less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the vector norms. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the returned
+array must be a zero-dimensional array containing a vector norm. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is
+a scalar value (<code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>), the returned array must have a rank which
+is one less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a <code class="docutils literal notranslate"><span class="pre">n</span></code>-tuple, the returned
+array must have a rank which is <code class="docutils literal notranslate"><span class="pre">n</span></code> less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned
+array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -813,8 +963,9 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">vector_to_skew_symmetric_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
-<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.n
+<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric
+matrix <span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying
+<span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.n
 <a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

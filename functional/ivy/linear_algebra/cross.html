@@ -161,18 +161,19 @@ of corresponding 3-element vectors is independently computed.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must have the same shape as x1. Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
-If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
-Default: -1.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must have the same shape as x1. Should have a numeric data
+type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis (dimension) of x1 and x2 containing the vectors for which to compute (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+the cross product.vIf set to -1, the function computes the cross product for
+vectors defined by the last axis (dimension). Default: -1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data type determined
-by Type Promotion Rules.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data
+type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
 </dd></dl>

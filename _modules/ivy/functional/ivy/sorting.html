@@ -144,18 +144,27 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis along which to sort. If set to ``-1``, the function must sort along the last axis. Default: ``-1``.</span>
+<span class="sd">        axis along which to sort. If set to ``-1``, the function must sort along the</span>
+<span class="sd">        last axis. Default: ``-1``.</span>
 <span class="sd">    descending</span>
-<span class="sd">        sort order. If ``True``, the returned indices sort ``x`` in descending order (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.</span>
+<span class="sd">        sort order. If ``True``, the returned indices sort ``x`` in descending order</span>
+<span class="sd">        (by value). If ``False``, the returned indices sort ``x`` in ascending order</span>
+<span class="sd">        (by value). Default: ``False``.</span>
 <span class="sd">    stable</span>
-<span class="sd">        sort stability. If ``True``, the returned indices must maintain the relative order of ``x`` values which compare as equal. If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.</span>
+<span class="sd">        sort stability. If ``True``, the returned indices must maintain the relative</span>
+<span class="sd">        order of ``x`` values which compare as equal. If ``False``, the returned indices</span>
+<span class="sd">        may or may not maintain the relative order of ``x`` values which compare as</span>
+<span class="sd">        equal (i.e., the relative order of ``x`` values which compare as equal is</span>
+<span class="sd">        implementation-dependent). Default: ``True``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.</span>
+<span class="sd">        an array of indices. The returned array must have the same shape as ``x``. The</span>
+<span class="sd">        returned array must have the default array index data type.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -175,20 +184,26 @@
 <span class="sd">    x</span>
 <span class="sd">        input array</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis along which to sort. If set to ``-1``, the function must sort along the last axis. Default: ``-1``.</span>
+<span class="sd">        axis along which to sort. If set to ``-1``, the function must sort along the</span>
+<span class="sd">        last axis. Default: ``-1``.</span>
 <span class="sd">    descending</span>
 <span class="sd">        direction  The direction in which to sort the values</span>
 <span class="sd">    stable</span>
 <span class="sd">        sort stability. If ``True``,</span>
-<span class="sd">        the returned indices must maintain the relative order of ``x`` values which compare as equal.</span>
-<span class="sd">        If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.</span>
+<span class="sd">        the returned indices must maintain the relative order of ``x`` values which</span>
+<span class="sd">        compare as equal. If ``False``, the returned indices may or may not maintain the</span>
+<span class="sd">        relative order of ``x`` values which compare as equal (i.e., the relative order</span>
+<span class="sd">        of ``x`` values which compare as equal is implementation-dependent).</span>
+<span class="sd">        Default: ``True``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        An array with the same dtype and shape as `values`, with the elements sorted along the given `axis`.</span>
+<span class="sd">        An array with the same dtype and shape as `values`, with the elements sorted</span>
+<span class="sd">        along the given `axis`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>

@@ -150,18 +150,21 @@
 <li><p><strong>num_heads</strong> – The number of attention heads to use.</p></li>
 <li><p><strong>context</strong> – The array to determine the keys and values from. Default is None.
 <em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
-<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None.
+<em>[batch_shape,num_queries,num_keys]</em></p></li>
 <li><p><strong>to_q_fn</strong> – The function to compute queries from input x, returning queries
 <em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p></li>
 <li><p><strong>to_kv_fn</strong> – The function to compute keys and values from the context. (Default value = None)</p></li>
-<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention. (Default value = None)</p></li>
+<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention.
+(Default value = None)</p></li>
 <li><p><strong>to_q_v</strong> – The variables for function to_q_fn. Default is None.</p></li>
 <li><p><strong>to_kv_v</strong> – The variables for function to_kv_fn. Default is None.</p></li>
 <li><p><strong>to_out_v</strong> – The variables for function to_out_fn. Default is None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
+<dd class="field-even"><p><em>ret</em> – The output following application of multi-head attention.
+<em>[batch_shape,num_queries,out_feat_dim]</em></p>
 </dd>
 </dl>
 </dd></dl>

@@ -138,11 +138,11 @@
 <dt class="sig sig-object py" id="ivy.functional.ivy.statistical.min">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.statistical.</span></span><span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.min" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the minimum value of the input array x.</p>
-<p>When the number of elements over which to compute the minimum value is zero,
-the minimum value is implementation-defined. Specification-compliant libraries may choose to raise
-an error, return a sentinel value (e.g., if x is a floating-point input array, return NaN), or return
-the maximum possible value for the input array x data type (e.g., if x is a floating-point array,
-return +infinity).</p>
+<p>When the number of elements over which to compute the minimum value is zero, the
+minimum value is implementation-defined. Specification-compliant libraries may
+choose to raise an error, return a sentinel value (e.g., if x is a floating-point
+input array, return NaN), or return the maximum possible value for the input array x
+data type (e.g., if x is a floating-point array, return +infinity).</p>
 <p><strong>Special Cases</strong></p>
 <p>For floating-point operands,</p>
 <p>If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</p>
@@ -150,14 +150,13 @@ return +infinity).</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array containing elements to min.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which minimum values must be computed. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-By default, the minimum value must be computed over the entire array.
-If a tuple of integers, minimum values must be computed over multiple axes. Default: None.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – optional boolean, if True, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-singleton dimensions, and, accordingly, the result must be compatible with
-the input array (see Broadcasting).
-Otherwise, if False, the reduced axes (dimensions) must not be included in the result.
-Default: False.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which minimum values must be computed. By default, the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+minimum value must be computed over the entire array. If a tuple of integers,
+minimum values must be computed over multiple axes. Default: None.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – optional boolean, if True, the reduced axes (dimensions) must be included in the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+result as singleton dimensions, and, accordingly, the result must be compatible
+with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+(dimensions) must not be included in the result. Default: False.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -165,9 +164,10 @@ Default: False.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – if the minimum value was computed over the entire array, a zero-dimensional array containing the
-minimum value; otherwise, a non-zero-dimensional array containing the minimum values.
-The returned array must have the same data type as x.</p>
+<dd class="field-odd"><p><em>ret</em> – if the minimum value was computed over the entire array, a zero-dimensional
+array containing the minimum value; otherwise, a non-zero-dimensional array
+containing the minimum values. The returned array must have the same data type
+as x.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -158,10 +158,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form square symmetric
-positive-definite matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>upper</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the result must be the upper-triangular Cholesky factor U. If False, the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-must be the lower-triangular Cholesky factor L. Default: False.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
+square symmetric positive-definite matrices. Should have a floating-point data
+type.</p></li>
+<li><p><strong>upper</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the result must be the upper-triangular Cholesky factor U. If False, (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+the result must be the lower-triangular Cholesky factor L. Default: False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -169,11 +170,11 @@ must be the lower-triangular Cholesky factor L. Default: False.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><em>an array containing the Cholesky factors for each square matrix.</em></p></li>
-<li><p><em>If upper is False, the returned array must contain lower-triangular matrices; otherwise,</em></p></li>
-<li><p><em>the returned array must contain upper-triangular matrices.</em></p></li>
-<li><p><em>The returned array must have a floating-point data type determined by Type Promotion Rules</em></p></li>
-<li><p><em>and must have the same shape as x.</em></p></li>
+<li><p><em>an array containing the Cholesky factors for each square matrix. If upper is</em></p></li>
+<li><p><em>False, the returned array must contain lower-triangular matrices; otherwise, the</em></p></li>
+<li><p><em>returned array must contain upper-triangular matrices. The returned array must</em></p></li>
+<li><p><em>have a floating-point data type determined by Type Promotion Rules and must have</em></p></li>
+<li><p><em>the same shape as x.</em></p></li>
 </ul>
 </p>
 </dd>

@@ -148,7 +148,8 @@
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>data_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – NWC” or “NCW”. Defaults to “NWC”. (default: <code class="docutils literal notranslate"><span class="pre">'NWC'</span></code>)</p></li>
 <li><p><strong>dilations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dilation factor for each dimension of input. (Default value = 1) (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 </ul>
@@ -180,7 +181,8 @@
 <li><p><strong>x</strong> – Input image <em>[batch_size,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
 <li><p><strong>data_format</strong> – NWC” or “NCW”. Defaults to “NWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
@@ -202,7 +204,8 @@
 <li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
 </ul>
@@ -223,7 +226,8 @@
 <li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
 <li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
@@ -245,7 +249,8 @@
 <li><p><strong>x</strong> – Input volume <em>[batch_size,d,h,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>data_format</strong> – NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
 </ul>
@@ -266,7 +271,8 @@
 <li><p><strong>x</strong> – Input image <em>[batch_size,d,h,w,d_in]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
 <li><p><strong>data_format</strong> – NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
@@ -288,7 +294,8 @@
 <li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d]</em>.</p></li>
 <li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d]</em>.</p></li>
 <li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
+paddings.</p></li>
 <li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
 </ul>
@@ -321,18 +328,21 @@ samples from a Bernoull distribution.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.layers.linear">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.linear" title="Permalink to this definition"></a></dt>
-<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
-of the weight matrices. This is useful if a batch of different network parameters are to be represented.</p>
+<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+The operation also supports batching of the weight matrices. This is useful if a
+batch of different network parameters are to be represented.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
+<li><p><strong>x</strong> – The input x compute linear transformation on.
+<em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
 <li><p><strong>weight</strong> – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
 <li><p><strong>bias</strong> – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
+<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation.
+<em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -354,7 +364,8 @@ of the weight matrices. This is useful if a batch of different network parameter
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+<dd class="field-even"><p><em>ret</em> – hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last
+timestep <em>[batch_shape,out]</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -371,18 +382,21 @@ of the weight matrices. This is useful if a batch of different network parameter
 <li><p><strong>num_heads</strong> – The number of attention heads to use.</p></li>
 <li><p><strong>context</strong> – The array to determine the keys and values from. Default is None.
 <em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
-<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None.
+<em>[batch_shape,num_queries,num_keys]</em></p></li>
 <li><p><strong>to_q_fn</strong> – The function to compute queries from input x, returning queries
 <em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p></li>
 <li><p><strong>to_kv_fn</strong> – The function to compute keys and values from the context. (Default value = None)</p></li>
-<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention. (Default value = None)</p></li>
+<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention.
+(Default value = None)</p></li>
 <li><p><strong>to_q_v</strong> – The variables for function to_q_fn. Default is None.</p></li>
 <li><p><strong>to_kv_v</strong> – The variables for function to_kv_fn. Default is None.</p></li>
 <li><p><strong>to_out_v</strong> – The variables for function to_out_fn. Default is None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
+<dd class="field-even"><p><em>ret</em> – The output following application of multi-head attention.
+<em>[batch_shape,num_queries,out_feat_dim]</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -398,11 +412,13 @@ of the weight matrices. This is useful if a batch of different network parameter
 <li><p><strong>k</strong> – The keys <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
 <li><p><strong>v</strong> – The values <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
 <li><p><strong>scale</strong> – The value by which to scale the query-key pairs before softmax.</p></li>
-<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None.
+<em>[batch_shape,num_queries,num_keys]</em></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The output following application of scaled dot-product attention. <em>[batch_shape,num_queries,feat_dim]</em></p>
+<dd class="field-even"><p><em>ret</em> – The output following application of scaled dot-product attention.
+<em>[batch_shape,num_queries,feat_dim]</em></p>
 </dd>
 </dl>
 </dd></dl>

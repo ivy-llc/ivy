@@ -208,7 +208,8 @@
 <span class="sd">    x</span>
 <span class="sd">        The input to check</span>
 <span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively an array, rather than a variable or traced array.</span>
+<span class="sd">        Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">        variable or traced array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -230,7 +231,8 @@
 <span class="sd">    x</span>
 <span class="sd">        The input to check</span>
 <span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively an array, rather than a variable or traced array.</span>
+<span class="sd">        Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">        variable or traced array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -249,7 +251,8 @@
 <span class="sd">    x</span>
 <span class="sd">        The input to check</span>
 <span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively an array, rather than a variable or traced array.</span>
+<span class="sd">        Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">        variable or traced array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -379,7 +382,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</span>
+<span class="sd">        Boolean, whether or not the inputs are equal, or matrix array of booleans if</span>
+<span class="sd">        equality_matrix=True is set.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">equality_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_equal</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
@@ -500,7 +504,8 @@
 <span class="sd">    p</span>
 <span class="sd">        optional float, the p-value for computing the p-norm. Default is 2.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -560,7 +565,8 @@
 <span class="sd">    y</span>
 <span class="sd">        array, denominator input for floormod.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -613,16 +619,20 @@
 <span class="sd">    num_bands</span>
 <span class="sd">        The number of frequency bands for the encoding. Default is 4.</span>
 <span class="sd">    linear</span>
-<span class="sd">        Whether to space the frequency bands linearly as opposed to geometrically. Default is False.</span>
+<span class="sd">        Whether to space the frequency bands linearly as opposed to geometrically.</span>
+<span class="sd">        Default is False.</span>
 <span class="sd">    concat</span>
-<span class="sd">        Whether to concatenate the position, sin and cos values, or return seperately. Default is True.</span>
+<span class="sd">        Whether to concatenate the position, sin and cos values, or return seperately.</span>
+<span class="sd">        Default is True.</span>
 <span class="sd">    flatten</span>
-<span class="sd">        Whether to flatten the position dimension into the batch dimension. Default is False.</span>
+<span class="sd">        Whether to flatten the position dimension into the batch dimension. Default is</span>
+<span class="sd">        False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        New array with the final dimension expanded, and the encodings stored in this channel.</span>
+<span class="sd">        New array with the final dimension expanded, and the encodings stored in this</span>
+<span class="sd">        channel.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_in</span> <span class="o">=</span> <span class="n">x</span>
@@ -828,7 +838,8 @@
 <span class="sd">    receivers</span>
 <span class="sd">        Functions and/or classes to match the keyword arguments to.</span>
 <span class="sd">    allow_duplicates</span>
-<span class="sd">        Whether to allow one keyword argument to be used for multiple receivers. Default is False.</span>
+<span class="sd">        Whether to allow one keyword argument to be used for multiple receivers.</span>
+<span class="sd">        Default is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1149,7 +1160,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        a key-value structure, and exposes public methods .keys(), .values() and items().</span>
+<span class="sd">        a key-value structure, and exposes public methods .keys(), .values() and</span>
+<span class="sd">        items().</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyBroadException</span>
@@ -1368,12 +1380,14 @@
 <span class="sd">    size</span>
 <span class="sd">        The size of the result.</span>
 <span class="sd">    tensor</span>
-<span class="sd">        The tensor in which to scatter the results, default is None, in which case the size is used to</span>
+<span class="sd">        The tensor in which to scatter the results, default is None, in which case the</span>
+<span class="sd">        size is used to</span>
 <span class="sd">        scatter into a zeros array.</span>
 <span class="sd">    reduction</span>
 <span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39; or &#39;replace&#39;</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as</span>
+<span class="sd">        updates if None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1404,14 +1418,17 @@
 <span class="sd">    updates</span>
 <span class="sd">        Values for the new array to hold.</span>
 <span class="sd">    shape</span>
-<span class="sd">        The shape of the result. Default is None, in which case tensor argument must be provided.</span>
+<span class="sd">        The shape of the result. Default is None, in which case tensor argument must be</span>
+<span class="sd">        provided.</span>
 <span class="sd">    tensor</span>
-<span class="sd">        The tensor in which to scatter the results, default is None, in which case the shape arg is used to</span>
+<span class="sd">        The tensor in which to scatter the results, default is None, in which case the</span>
+<span class="sd">        shape arg is used to</span>
 <span class="sd">        scatter into a zeros array.</span>
 <span class="sd">    reduction</span>
 <span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39; or &#39;replace&#39;</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as</span>
+<span class="sd">        updates if None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1443,14 +1460,16 @@
 <span class="sd">    axis</span>
 <span class="sd">        optional int, the axis from which to gather from. Default is -1.</span>
 <span class="sd">    device</span>
-<span class="sd">        optional ivy.Device, device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">        optional ivy.Device, device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;,</span>
+<span class="sd">        &#39;cpu&#39; etc. Same as x if None.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        New array with the values gathered at the specified indices along the specified axis.</span>
+<span class="sd">        New array with the values gathered at the specified indices along the specified</span>
+<span class="sd">        axis.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -1471,7 +1490,8 @@
 <span class="sd">    indices</span>
 <span class="sd">        Index array.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if</span>
+<span class="sd">        None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1488,9 +1508,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    context</span>
-<span class="sd">        The context of the multiprocessing, either fork, forkserver or spawn. Default is None.</span>
-<span class="sd">    context</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">        The context of the multiprocessing, either fork, forkserver or spawn.</span>
+<span class="sd">        Default is None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1533,12 +1552,14 @@
 <span class="sd">    depth</span>
 <span class="sd">        Scalar defining the depth of the one-hot dimension.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if</span>
+<span class="sd">        None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</span>
+<span class="sd">        Tensor of zeros with the same shape and type as a, unless dtype provided which</span>
+<span class="sd">        overrides.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>

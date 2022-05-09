@@ -146,30 +146,36 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    shift</span>
-<span class="sd">        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of</span>
-<span class="sd">        the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If</span>
-<span class="sd">        ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a</span>
-<span class="sd">        shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of</span>
-<span class="sd">        ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along</span>
+<span class="sd">        number of places by which the elements are shifted. If ``shift`` is a tuple,</span>
+<span class="sd">        then ``axis`` must be a tuple of the same size, and each of the given axes must</span>
+<span class="sd">        be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int``</span>
+<span class="sd">        and ``axis`` a tuple, then the same ``shift`` must be used for all specified</span>
+<span class="sd">        axes. If a shift is positive, then array elements must be shifted positively</span>
+<span class="sd">        (toward larger indices) along the dimension of ``axis``. If a shift is negative,</span>
+<span class="sd">        then array elements must be shifted negatively (toward smaller indices) along</span>
 <span class="sd">        the dimension of ``axis``.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and</span>
-<span class="sd">        then restored to its original shape. Default  ``None``.</span>
+<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array</span>
+<span class="sd">        must be flattened, shifted, and then restored to its original shape.</span>
+<span class="sd">        Default ``None``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.</span>
+<span class="sd">        an output array having the same data type as ``x`` and whose elements, relative</span>
+<span class="sd">        to ``x``, are shifted.</span>
 
 
-<span class="sd">    This method conforms to the `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
-<span class="sd">    This docstring is an extension of the `docstring</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html&gt;`_</span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts</span>
-<span class="sd">    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in</span>
-<span class="sd">    the type hints and also the examples below.</span>
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html&gt;`_</span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
+<span class="sd">    the method also accepts :code:`ivy.Container` instances in place of</span>
+<span class="sd">    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints</span>
+<span class="sd">    and also the examples below.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -247,9 +253,11 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis (or axes) to squeeze. If a specified axis has a size greater than one, a ``ValueError`` must be raised.</span>
+<span class="sd">        axis (or axes) to squeeze. If a specified axis has a size greater than one, a</span>
+<span class="sd">        ``ValueError`` must be raised.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -273,14 +281,19 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default  ``None``.</span>
+<span class="sd">        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must</span>
+<span class="sd">        flip all input array axes. If ``axis`` is negative, the function must count from</span>
+<span class="sd">        the last dimension. If provided more than one axis, the function must flip only</span>
+<span class="sd">        the specified axes. Default  ``None``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
+<span class="sd">        an output array having the same data type and shape as ``x`` and whose elements,</span>
+<span class="sd">        relative to ``x``, are reordered.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -299,9 +312,12 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        position in the expanded array where a new axis (dimension) of size one will be added. If array ``x`` has the rank of ``N``, the ``axis`` need to be between ``[-N-1, N]``. Default: ``0``.</span>
+<span class="sd">        position in the expanded array where a new axis (dimension) of size one will be</span>
+<span class="sd">        added. If array ``x`` has the rank of ``N``, the ``axis`` need to be between</span>
+<span class="sd">        ``[-N-1, N]``. Default: ``0``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -334,14 +350,17 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axes</span>
-<span class="sd">        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes (dimensions) of x.</span>
+<span class="sd">        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes</span>
+<span class="sd">        (dimensions) of x.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the axes permutation. The returned array must have the same data type as x.</span>
+<span class="sd">        an array containing the axes permutation. The returned array must have the same</span>
+<span class="sd">        data type as x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -361,16 +380,30 @@
 <span class="sd">    arrays</span>
 <span class="sd">        input arrays to join. Each array must have the same shape.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis along which the arrays will be joined. Providing an ``axis`` specifies the index of the new axis in the dimensions of the result. For example, if ``axis`` is ``0``, the new axis will be the first dimension and the output array will have shape ``(N, A, B, C)``; if ``axis`` is ``1``, the new axis will be the second dimension and the output array will have shape ``(A, N, B, C)``; and, if ``axis`` is ``-1``, the new axis will be the last dimension and the output array will have shape ``(A, B, C, N)``. A valid ``axis`` must be on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If provided an ``axis`` outside of the required interval, the function must raise an exception. Default: ``0``.</span>
+<span class="sd">        axis along which the arrays will be joined. Providing an ``axis`` specifies the</span>
+<span class="sd">        index of the new axis in the dimensions of the result. For example, if ``axis``</span>
+<span class="sd">        is ``0``, the new axis will be the first dimension and the output array will</span>
+<span class="sd">        have shape ``(N, A, B, C)``; if ``axis`` is ``1``, the new axis will be the</span>
+<span class="sd">        second dimension and the output array will have shape ``(A, N, B, C)``; and, if</span>
+<span class="sd">        ``axis`` is ``-1``, the new axis will be the last dimension and the output array</span>
+<span class="sd">        will have shape ``(A, B, C, N)``. A valid ``axis`` must be on the interval</span>
+<span class="sd">        ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If</span>
+<span class="sd">        provided an ``axis`` outside of the required interval, the function must raise</span>
+<span class="sd">        an exception. Default: ``0``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.</span>
+<span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of</span>
+<span class="sd">        dimensions) of ``x``. If the input arrays have different data types, normal</span>
+<span class="sd">        ref:`type-promotion` must apply. If the input arrays have the same data type,</span>
+<span class="sd">        the output array must have the same data type as the input arrays.</span>
 <span class="sd">        .. note::</span>
-<span class="sd">           This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.</span>
+<span class="sd">           This specification leaves type promotion between data type families (i.e.,</span>
+<span class="sd">           ``intxx`` and ``floatxx``) unspecified.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -389,8 +422,9 @@
 <span class="sd">    x</span>
 <span class="sd">        Tensor to be reshaped.</span>
 <span class="sd">    newshape</span>
-<span class="sd">        The new shape should be compatible with the original shape. One shape dimension can be -1.</span>
-<span class="sd">        In this case, the value is inferred from the length of the array and remaining dimensions.</span>
+<span class="sd">        The new shape should be compatible with the original shape. One shape dimension</span>
+<span class="sd">        can be -1. In this case, the value is inferred from the length of the array and</span>
+<span class="sd">        remaining dimensions.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -423,8 +457,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
-<span class="sd">        The input arrays must have the same shape, except in the dimension corresponding to axis</span>
-<span class="sd">        (the first, by default).</span>
+<span class="sd">        The input arrays must have the same shape, except in the dimension corresponding</span>
+<span class="sd">        to axis (the first, by default).</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which the arrays will be joined. Default is -1.</span>
 
@@ -454,13 +488,14 @@
 <span class="sd">    x</span>
 <span class="sd">        Tensor to be divided into sub-arrays.</span>
 <span class="sd">    num_or_size_splits</span>
-<span class="sd">        Number of equal arrays to divide the array into along the given axis if an integer.</span>
-<span class="sd">        The size of each split element if a sequence of integers.</span>
-<span class="sd">        Default is to divide into as many 1-dimensional arrays as the axis dimension.</span>
+<span class="sd">        Number of equal arrays to divide the array into along the given axis if an</span>
+<span class="sd">        integer. The size of each split element if a sequence of integers. Default is to</span>
+<span class="sd">        divide into as many 1-dimensional arrays as the axis dimension.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split, default is 0.</span>
 <span class="sd">    with_remainder</span>
-<span class="sd">        If the tensor does not split evenly, then store the last remainder entry. Default is False.</span>
+<span class="sd">        If the tensor does not split evenly, then store the last remainder entry.</span>
+<span class="sd">        Default is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -484,10 +519,11 @@
 <span class="sd">    x</span>
 <span class="sd">        Input array.</span>
 <span class="sd">    repeats</span>
-<span class="sd">        The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
+<span class="sd">        The number of repetitions for each element. repeats is broadcast to fit the</span>
+<span class="sd">        shape of the given axis.</span>
 <span class="sd">    axis</span>
-<span class="sd">        The axis along which to repeat values.</span>
-<span class="sd">        By default, use the flattened input array, and return a flat output array.</span>
+<span class="sd">        The axis along which to repeat values. By default, use the flattened input</span>
+<span class="sd">        array, and return a flat output array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -535,7 +571,8 @@
 <span class="sd">        Input array to pad.</span>
 <span class="sd">    pad_width</span>
 <span class="sd">        Number of values padded to the edges of each axis.</span>
-<span class="sd">        Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+<span class="sd">        Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of</span>
+<span class="sd">        axes of x.</span>
 <span class="sd">    value</span>
 <span class="sd">        The constant value to pad the array with.</span>
 
@@ -560,8 +597,8 @@
 <span class="sd">    x</span>
 <span class="sd">        Input array to pad.</span>
 <span class="sd">    pad_width</span>
-<span class="sd">        Number of values padded to the edges of each axis.</span>
-<span class="sd">        Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+<span class="sd">        Number of values padded to the edges of each axis. Specified as</span>
+<span class="sd">        ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -606,9 +643,9 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Clips (limits) the values in an array.</span>
 
-<span class="sd">    Given an interval, values outside the interval are clipped to the interval edges (element-wise).</span>
-<span class="sd">    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,</span>
-<span class="sd">    and values larger than 1 become 1.</span>
+<span class="sd">    Given an interval, values outside the interval are clipped to the interval edges</span>
+<span class="sd">    (element-wise). For example, if an interval of [0, 1] is specified, values smaller</span>
+<span class="sd">    than 0 become 0, and values larger than 1 become 1.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -622,8 +659,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
-<span class="sd">        and those &gt; x_max with x_max.</span>
+<span class="sd">        An array with the elements of x, but where values &lt; x_min are replaced with</span>
+<span class="sd">        x_min, and those &gt; x_max with x_max.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>

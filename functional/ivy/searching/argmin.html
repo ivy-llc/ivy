@@ -140,14 +140,16 @@ occurrence are returned.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – axis along which to search. If None, the function must return the index of the minimum value of the flattened (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-array. Default = None.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
-the reduced axes (dimensions) must not be included in the result. Default = False.</p></li>
-<li><p><strong>out</strong> – if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
-otherwise, a non-zero-dimensional array containing the indices of the minimum values.
-The returned array must have the default array index data type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – axis along which to search. If None, the function must return the index of the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+minimum value of the flattened array. Default = None.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – if True, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+singleton dimensions, and, accordingly, the result must be compatible with the
+input array (see Broadcasting). Otherwise, if False, the reduced axes
+(dimensions) must not be included in the result. Default = False.</p></li>
+<li><p><strong>out</strong> – if axis is None, a zero-dimensional array containing the index of the first
+occurrence of the minimum value; otherwise, a non-zero-dimensional array
+containing the indices of the minimum values. The returned array must have the
+default array index data type.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

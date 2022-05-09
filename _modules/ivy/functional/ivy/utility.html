@@ -143,23 +143,39 @@
 <span class="sd">       Positive infinity, negative infinity, and NaN must evaluate to ``True``.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">       If ``x`` is an empty array or the size of the axis (dimension) along which to evaluate elements is zero, the test result must be ``True``.</span>
+<span class="sd">       If ``x`` is an empty array or the size of the axis (dimension) along which to</span>
+<span class="sd">       evaluate elements is zero, the test result must be ``True``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple axes. A valid ``axis`` must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If an ``axis`` is specified as a negative integer, the function must determine the axis along which to perform a reduction by counting backward from the last dimension (where ``-1`` refers to the last dimension). If provided an invalid ``axis``, the function must raise an exception. Default  ``None``.</span>
+<span class="sd">        axis or axes along which to perform a logical AND reduction. By default, a</span>
+<span class="sd">        logical AND reduction must be performed over the entire array. If a tuple of</span>
+<span class="sd">        integers, logical AND reductions must be performed over multiple axes. A valid</span>
+<span class="sd">        ``axis`` must be an integer on the interval ``[-N, N)``, where ``N`` is the rank</span>
+<span class="sd">        (number of dimensions) of ``x``. If an ``axis`` is specified as a negative</span>
+<span class="sd">        integer, the function must determine the axis along which to perform a reduction</span>
+<span class="sd">        by counting backward from the last dimension (where ``-1`` refers to the last</span>
+<span class="sd">        dimension). If provided an invalid ``axis``, the function must raise an</span>
+<span class="sd">        exception. Default  ``None``.</span>
 <span class="sd">    keepdims</span>
-<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
+<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as</span>
+<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with the</span>
+<span class="sd">        input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes</span>
+<span class="sd">        (dimensions) must not be included in the result. Default: ``False``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.</span>
+<span class="sd">        if a logical AND reduction was performed over the entire array, the returned</span>
+<span class="sd">        array must be a zero-dimensional array containing the test result; otherwise,</span>
+<span class="sd">        the returned array must be a non-zero-dimensional array containing the test</span>
+<span class="sd">        results. The returned array must have a data type of ``bool``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -179,23 +195,39 @@
 <span class="sd">       Positive infinity, negative infinity, and NaN must evaluate to ``True``.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">       If ``x`` is an empty array or the size of the axis (dimension) along which to evaluate elements is zero, the test result must be ``False``.</span>
+<span class="sd">       If ``x`` is an empty array or the size of the axis (dimension) along which to</span>
+<span class="sd">       evaluate elements is zero, the test result must be ``False``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis or axes along which to perform a logical OR reduction. By default, a logical OR reduction must be performed over the entire array. If a tuple of integers, logical OR reductions must be performed over multiple axes. A valid ``axis`` must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If an ``axis`` is specified as a negative integer, the function must determine the axis along which to perform a reduction by counting backward from the last dimension (where ``-1`` refers to the last dimension). If provided an invalid ``axis``, the function must raise an exception. Default: ``None``.</span>
+<span class="sd">        axis or axes along which to perform a logical OR reduction. By default, a</span>
+<span class="sd">        logical OR reduction must be performed over the entire array. If a tuple of</span>
+<span class="sd">        integers, logical OR reductions must be performed over multiple axes. A valid</span>
+<span class="sd">        ``axis`` must be an integer on the interval ``[-N, N)``, where ``N`` is the rank</span>
+<span class="sd">        (number of dimensions) of ``x``. If an ``axis`` is specified as a negative</span>
+<span class="sd">        integer, the function must determine the axis along which to perform a reduction</span>
+<span class="sd">        by counting backward from the last dimension (where ``-1`` refers to the last</span>
+<span class="sd">        dimension). If provided an invalid ``axis``, the function must raise an</span>
+<span class="sd">        exception. Default: ``None``.</span>
 <span class="sd">    keepdims</span>
-<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
+<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as</span>
+<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with the</span>
+<span class="sd">        input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes</span>
+<span class="sd">        (dimensions) must not be included in the result. Default: ``False``.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        if a logical OR reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.</span>
+<span class="sd">        if a logical OR reduction was performed over the entire array, the returned</span>
+<span class="sd">        array must be a zero-dimensional array containing the test result; otherwise,</span>
+<span class="sd">        the returned array must be a non-zero-dimensional array containing the test</span>
+<span class="sd">        results. The returned array must have a data type of ``bool``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>

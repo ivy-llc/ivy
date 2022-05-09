@@ -146,21 +146,23 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a floating-point data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which variances must be computed. By default, the variance must be computed over (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-the entire array. If a tuple of integers, variances must be computed over multiple axes.
-Default: None.</p></li>
-<li><p><strong>correction</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – degrees of freedom adjustment. Setting this parameter to a value other than 0 has (default: <code class="docutils literal notranslate"><span class="pre">0.0</span></code>)
-the effect of adjusting the divisor during the calculation of the variance according to N-c where N
-corresponds to the total number of elements over which the variance is computed and c corresponds to
-the provided degrees of freedom adjustment. When computing the variance of a population, setting this
-parameter to 0 is the standard choice (i.e., the provided array contains data constituting an entire
-population). When computing the unbiased sample variance, setting this parameter to 1 is the standard
-choice (i.e., the provided array contains data sampled from a larger population; this is commonly
-referred to as Bessel’s correction). Default: 0.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-and, accordingly, the result must be compatible with the input array (see Broadcasting).
-Otherwise, if False, the reduced axes (dimensions) must not be included in the result.
-Default: False.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which variances must be computed. By default, the variance (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+must be computed over the entire array. If a tuple of integers, variances must
+be computed over multiple axes. Default: None.</p></li>
+<li><p><strong>correction</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – degrees of freedom adjustment. Setting this parameter to a value other than 0 (default: <code class="docutils literal notranslate"><span class="pre">0.0</span></code>)
+has the effect of adjusting the divisor during the calculation of the variance
+according to N-c where N corresponds to the total number of elements over which
+the variance is computed and c corresponds to the provided degrees of freedom
+adjustment. When computing the variance of a population, setting this parameter
+to 0 is the standard choice (i.e., the provided array contains data constituting
+an entire population). When computing the unbiased sample variance, setting this
+parameter to 1 is the standard choice (i.e., the provided array contains data
+sampled from a larger population; this is commonly referred to as Bessel’s
+correction). Default: 0.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+singleton dimensions, and, accordingly, the result must be compatible with the
+input array (see Broadcasting). Otherwise, if False, the reduced axes
+(dimensions) must not be included in the result. Default: False.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -168,9 +170,9 @@ Default: False.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – if the variance was computed over the entire array, a zero-dimensional array containing the
-variance; otherwise, a non-zero-dimensional array containing the variances. The returned array
-must have the same data type as x.</p>
+<dd class="field-odd"><p><em>ret</em> – if the variance was computed over the entire array, a zero-dimensional array
+containing the variance; otherwise, a non-zero-dimensional array containing the
+variances. The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>

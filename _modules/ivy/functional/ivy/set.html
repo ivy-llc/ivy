@@ -139,29 +139,61 @@
 
 <span class="sd">    .. admonition:: Data-dependent output shape</span>
 <span class="sd">        :class: important</span>
-<span class="sd">        The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.</span>
+
+<span class="sd">        The shapes of two of the output arrays for this function depend on the data</span>
+<span class="sd">        values in the input array; hence, array libraries which build computation graphs</span>
+<span class="sd">        (e.g., JAX, Dask, etc.) may find this function difficult to implement without</span>
+<span class="sd">        knowing array values. Accordingly, such libraries may choose to omit this</span>
+<span class="sd">        function. See :ref:`data-dependent-output-shapes` section for more details.</span>
+
 <span class="sd">    .. note::</span>
-<span class="sd">       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``). For input arrays having floating-point data types, value-based equality implies the following behavior.</span>
-<span class="sd">       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered distinct.</span>
-<span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).</span>
-<span class="sd">       As signed zeros are not distinct, using ``inverse_indices`` to reconstruct the input array is not guaranteed to return an array having the exact same values.</span>
-<span class="sd">       Each ``nan`` value should have a count of one, while the counts for signed zeros should be aggregated as a single count.</span>
+<span class="sd">       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).</span>
+<span class="sd">       For input arrays having floating-point data types, value-based equality implies</span>
+<span class="sd">       the following behavior.</span>
+
+<span class="sd">       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered</span>
+<span class="sd">           distinct.</span>
+
+<span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be</span>
+<span class="sd">           considered distinct, and the corresponding unique element will be</span>
+<span class="sd">           implementation-dependent (e.g., an implementation could choose to return</span>
+<span class="sd">           ``-0`` if ``-0`` occurs before ``+0``).</span>
+
+<span class="sd">       As signed zeros are not distinct, using ``inverse_indices`` to reconstruct the</span>
+<span class="sd">       input array is not guaranteed to return an array having the exact same values.</span>
+
+<span class="sd">       Each ``nan`` value should have a count of one, while the counts for signed zeros</span>
+<span class="sd">       should be aggregated as a single count.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.</span>
+<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten</span>
+<span class="sd">        ``x`` and return the unique elements of the flattened array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    out</span>
 <span class="sd">        a namedtuple ``(values, indices, inverse_indices, counts)`` whose</span>
-<span class="sd">        - first element must have the field name ``values`` and must be an array containing the unique elements of ``x``. The array must have the same data type as ``x``.</span>
-<span class="sd">        - second element must have the field name ``indices`` and must be an array containing the indices (first occurrences) of ``x`` that result in ``values``. The array must have the same shape as ``values`` and must have the default array index data type.</span>
-<span class="sd">        - third element must have the field name ``inverse_indices`` and must be an array containing the indices of ``values`` that reconstruct ``x``. The array must have the same shape as ``x`` and must have the default array index data type.</span>
-<span class="sd">        - fourth element must have the field name ``counts`` and must be an array containing the number of times each unique element occurs in ``x``. The returned array must have same shape as ``values`` and must have the default array index data type.</span>
+<span class="sd">        - first element must have the field name ``values`` and must be an array</span>
+<span class="sd">          containing the unique elements of ``x``. The array must have the same data</span>
+<span class="sd">          type as ``x``.</span>
+<span class="sd">        - second element must have the field name ``indices`` and must be an array</span>
+<span class="sd">          containing the indices (first occurrences) of ``x`` that result in ``values``.</span>
+<span class="sd">          The array must have the same shape as ``values`` and must have the default</span>
+<span class="sd">          array index data type.</span>
+<span class="sd">        - third element must have the field name ``inverse_indices`` and must be an</span>
+<span class="sd">          array containing the indices of ``values`` that reconstruct ``x``. The array</span>
+<span class="sd">          must have the same shape as ``x`` and must have the default array index data</span>
+<span class="sd">          type.</span>
+<span class="sd">        - fourth element must have the field name ``counts`` and must be an array</span>
+<span class="sd">          containing the number of times each unique element occurs in ``x``. The</span>
+<span class="sd">          returned array must have same shape as ``values`` and must have the default</span>
+<span class="sd">          array index data type.</span>
+
 <span class="sd">        .. note::</span>
-<span class="sd">           The order of unique elements is not specified and may vary between implementations.</span>
+<span class="sd">           The order of unique elements is not specified and may vary between</span>
+<span class="sd">           implementations.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -193,23 +225,40 @@
 
 <span class="sd">    .. admonition:: Data-dependent output shape</span>
 <span class="sd">        :class: important</span>
-<span class="sd">        The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.</span>
+
+<span class="sd">        The shapes of two of the output arrays for this function depend on the data</span>
+<span class="sd">        values in the input array; hence, array libraries which build computation graphs</span>
+<span class="sd">        (e.g., JAX, Dask, etc.) may find this function difficult to implement without</span>
+<span class="sd">        knowing array values. Accordingly, such libraries may choose to omit this</span>
+<span class="sd">        function. See :ref:`data-dependent-output-shapes` section for more details.</span>
+
 <span class="sd">    .. note::</span>
-<span class="sd">       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``). For input arrays having floating-point data types, value-based equality implies the following behavior.</span>
-<span class="sd">       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered distinct.</span>
-<span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).</span>
+<span class="sd">       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).</span>
+<span class="sd">       For input arrays having floating-point data types, value-based equality implies</span>
+<span class="sd">       the following behavior.</span>
+
+<span class="sd">       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered</span>
+<span class="sd">           distinct.</span>
+<span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be</span>
+<span class="sd">           considered distinct, and the corresponding unique element will be</span>
+<span class="sd">           implementation-dependent (e.g., an implementation could choose to return</span>
+<span class="sd">           ``-0`` if ``-0`` occurs before ``+0``).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.</span>
+<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten</span>
+<span class="sd">        ``x`` and return the unique elements of the flattened array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.</span>
+<span class="sd">        an array containing the set of unique elements in ``x``. The returned array must</span>
+<span class="sd">        have the same data type as ``x``.</span>
+
 <span class="sd">        .. note::</span>
-<span class="sd">           The order of unique elements is not specified and may vary between implementations.</span>
+<span class="sd">           The order of unique elements is not specified and may vary between</span>
+<span class="sd">           implementations.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -222,14 +271,19 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</span>
+<span class="sd">        input array. If x has more than one dimension, the function must flatten x and</span>
+<span class="sd">        return the unique elements of the flattened array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a namedtuple (values, counts) whose</span>
-<span class="sd">        -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.</span>
-<span class="sd">        -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.</span>
+
+<span class="sd">        - first element must have the field name values and must be an array containing</span>
+<span class="sd">          the unique elements of x. The array must have the same data type as x.</span>
+<span class="sd">        - second element must have the field name counts and must be an array containing</span>
+<span class="sd">          the number of times each unique element occurs in x. The returned array must</span>
+<span class="sd">          have same shape as values and must have the default array index data type.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_counts</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>

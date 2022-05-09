@@ -150,12 +150,15 @@ respect to ws, [dc/dw for w in ws].</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ws</strong> – Weights of the function to be updated.</p></li>
 <li><p><strong>dcdws</strong> – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
-<li><p><strong>lr</strong> – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
-<li><p><strong>inplace</strong> – Whether to perform the operation inplace, for backends which support inplace variable updates,
-and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-computation graph (i.e. higher order optimization), then this should be set to False.
-Default is True, provided the backend framework supports it.</p></li>
-<li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>lr</strong> – Learning rate(s), the rate(s) at which the weights should be updated relative to
+the gradient.</p></li>
+<li><p><strong>inplace</strong> – Whether to perform the operation inplace, for backends which support inplace
+variable updates, and handle gradients behind the scenes such as PyTorch. If the
+update step should form part of a computation graph (i.e. higher order
+optimization), then this should be set to False. Default is True, provided the
+backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the variables after each gradient step.
+Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

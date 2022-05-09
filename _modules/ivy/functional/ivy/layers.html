@@ -137,13 +137,15 @@
 
 
 <div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../../functional/ivy/layers/linear.html#ivy.functional.ivy.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching</span>
-<span class="sd">    of the weight matrices. This is useful if a batch of different network parameters are to be represented.</span>
+    <span class="sd">&quot;&quot;&quot;Applies a linear transformation to the incoming data: y = x * t(weight) + bias.</span>
+<span class="sd">    The operation also supports batching of the weight matrices. This is useful if a</span>
+<span class="sd">    batch of different network parameters are to be represented.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        The input x compute linear transformation on. *[outer_batch_shape,inner_batch_shape,in_features]*</span>
+<span class="sd">        The input x compute linear transformation on.</span>
+<span class="sd">        *[outer_batch_shape,inner_batch_shape,in_features]*</span>
 <span class="sd">    weight</span>
 <span class="sd">        The weight matrix. *[outer_batch_shape,out_features,in_features]*</span>
 <span class="sd">    bias</span>
@@ -152,7 +154,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Result array of the linear transformation. *[outer_batch_shape,inner_batch_shape,out_features]*</span>
+<span class="sd">        Result array of the linear transformation.</span>
+<span class="sd">        *[outer_batch_shape,inner_batch_shape,out_features]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">outer_batch_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
@@ -240,12 +243,14 @@
 <span class="sd">    scale</span>
 <span class="sd">        The value by which to scale the query-key pairs before softmax.</span>
 <span class="sd">    mask</span>
-<span class="sd">        The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*</span>
+<span class="sd">        The mask to apply to the query-key values. Default is None.</span>
+<span class="sd">        *[batch_shape,num_queries,num_keys]*</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*</span>
+<span class="sd">        The output following application of scaled dot-product attention.</span>
+<span class="sd">        *[batch_shape,num_queries,feat_dim]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># BS x Q x K</span>
@@ -294,14 +299,16 @@
 <span class="sd">        The array to determine the keys and values from. Default is None.</span>
 <span class="sd">        *[batch_shape,num_keys,cont_feat_dim]*.</span>
 <span class="sd">    mask</span>
-<span class="sd">        The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*</span>
+<span class="sd">        The mask to apply to the query-key values. Default is None.</span>
+<span class="sd">        *[batch_shape,num_queries,num_keys]*</span>
 <span class="sd">    to_q_fn</span>
 <span class="sd">        The function to compute queries from input x, returning queries</span>
 <span class="sd">        *[batch_shape,num_queries,numheads×feat_dim]*. (Default value = None)</span>
 <span class="sd">    to_kv_fn</span>
 <span class="sd">        The function to compute keys and values from the context. (Default value = None)</span>
 <span class="sd">    to_out_fn</span>
-<span class="sd">        The function to compute the output from the scaled dot-product attention. (Default value = None)</span>
+<span class="sd">        The function to compute the output from the scaled dot-product attention.</span>
+<span class="sd">        (Default value = None)</span>
 <span class="sd">    to_q_v</span>
 <span class="sd">        The variables for function to_q_fn. Default is None.</span>
 <span class="sd">    to_kv_v</span>
@@ -312,7 +319,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*</span>
+<span class="sd">        The output following application of multi-head attention.</span>
+<span class="sd">        *[batch_shape,num_queries,out_feat_dim]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># BS x Q x (HxF)</span>
@@ -376,7 +384,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    data_format</span>
 <span class="sd">        NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
 <span class="sd">    dilations</span>
@@ -415,7 +424,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    output_shape</span>
 <span class="sd">        Shape of the output (Default value = None)</span>
 <span class="sd">    data_format</span>
@@ -446,7 +456,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    data_format</span>
 <span class="sd">        NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
 <span class="sd">    dilations</span>
@@ -477,7 +488,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    output_shape</span>
 <span class="sd">        Shape of the output (Default value = None)</span>
 <span class="sd">    data_format</span>
@@ -508,7 +520,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    data_format</span>
 <span class="sd">        NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
 <span class="sd">    dilations</span>
@@ -538,7 +551,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    data_format</span>
 <span class="sd">        NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
 <span class="sd">    dilations</span>
@@ -569,7 +583,8 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
 <span class="sd">    output_shape</span>
 <span class="sd">        Shape of the output (Default value = None)</span>
 <span class="sd">    data_format</span>
@@ -616,7 +631,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*</span>
+<span class="sd">        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last</span>
+<span class="sd">        timestep *[batch_shape,out]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get shapes</span>

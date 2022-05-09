@@ -136,13 +136,18 @@
 <dd><p>Returns the indices of the array elements which are non-zero.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Must have a positive rank. If <cite>x</cite> is zero-dimensional, the function must raise an exception.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Must have a positive rank. If <cite>x</cite> is zero-dimensional, the function
+must raise an exception.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a tuple of <cite>k</cite> arrays, one for each dimension of <cite>x</cite> and each of size <cite>n</cite> (where <cite>n</cite> is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.</p>
+<dd class="field-odd"><p><em>ret</em> – a tuple of <cite>k</cite> arrays, one for each dimension of <cite>x</cite> and each of size <cite>n</cite>
+(where <cite>n</cite> is the total number of non-zero elements), containing the indices of
+the non-zero elements in that dimension. The indices must be returned in
+row-major, C-style order. The returned array must have the default array index
+data type.</p>
 </dd>
 </dl>
 </dd></dl>

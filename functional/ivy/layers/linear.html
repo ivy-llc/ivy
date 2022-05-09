@@ -141,18 +141,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.layers.linear">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.linear" title="Permalink to this definition"></a></dt>
-<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
-of the weight matrices. This is useful if a batch of different network parameters are to be represented.</p>
+<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+The operation also supports batching of the weight matrices. This is useful if a
+batch of different network parameters are to be represented.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
+<li><p><strong>x</strong> – The input x compute linear transformation on.
+<em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
 <li><p><strong>weight</strong> – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
 <li><p><strong>bias</strong> – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
+<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation.
+<em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
 </dd>
 </dl>
 </dd></dl>

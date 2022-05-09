@@ -137,15 +137,22 @@
 each unique element in x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. If x has more than one dimension, the function must flatten x and
+return the unique elements of the flattened array.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a namedtuple (values, counts) whose
--first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
--second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.</p>
+<dd class="field-odd"><p><p><em>ret</em> – a namedtuple (values, counts) whose</p>
+<ul class="simple">
+<li><p>first element must have the field name values and must be an array containing
+the unique elements of x. The array must have the same data type as x.</p></li>
+<li><p>second element must have the field name counts and must be an array containing
+the number of times each unique element occurs in x. The returned array must
+have same shape as values and must have the default array index data type.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
