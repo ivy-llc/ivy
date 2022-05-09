@@ -198,7 +198,7 @@ class Array(
     def __repr__(self):
         return (
             self._pre_repr
-            + ivy.to_numpy(self._data).__repr__()[:-1].replace("\n", "\n    ")
+            + ivy.to_numpy(self._data).__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             + self._post_repr.format(ivy.current_framework_str())
         )
 
