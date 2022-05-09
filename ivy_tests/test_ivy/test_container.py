@@ -4149,9 +4149,13 @@ def test_container_pickle(device, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
-    dict_in = {'a': ivy.array([np.float32(1.)], device=device),
-               'b': {'c': ivy.array([np.float32(2.)], device=device),
-                     'd': ivy.array([np.float32(3.)], device=device)}}
+    dict_in = {
+        "a": ivy.array([np.float32(1.0)], device=device),
+        "b": {
+            "c": ivy.array([np.float32(2.0)], device=device),
+            "d": ivy.array([np.float32(3.0)], device=device),
+        },
+    }
 
     # without module attribute
     cont = Container(dict_in)

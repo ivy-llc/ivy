@@ -98,7 +98,9 @@ class ContainerWithStatistical(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.prod(x_, axis, dtype, keepdims) if ivy.is_array(x_) else x_,
+                lambda x_, _: ivy.prod(x_, axis, dtype, keepdims)
+                if ivy.is_array(x_)
+                else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -118,7 +120,9 @@ class ContainerWithStatistical(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.sum(x_, axis, dtype, keepdims) if ivy.is_array(x_) else x_,
+                lambda x_, _: ivy.sum(x_, axis, dtype, keepdims)
+                if ivy.is_array(x_)
+                else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,

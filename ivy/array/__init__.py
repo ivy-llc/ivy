@@ -98,7 +98,7 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-        
+
         self.framework_str = ivy.current_framework_str()
 
     # Properties #
@@ -238,25 +238,25 @@ class Array(
         data_dict = dict()
 
         # only pickle the native array
-        data_dict['data'] = self.data
+        data_dict["data"] = self.data
 
         # also store the local ivy framework that created this array
-        data_dict['framework_str'] = self.framework_str
-        data_dict['device_str'] = ivy.dev_to_str(self.device)
+        data_dict["framework_str"] = self.framework_str
+        data_dict["device_str"] = ivy.dev_to_str(self.device)
 
         return data_dict
 
     @_native_wrapper
     def __setstate__(self, state):
-        # we can construct other details of ivy.Array 
+        # we can construct other details of ivy.Array
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_framework(state['framework_str'])
-        ivy_array = backend.array(state['data'])
+        backend = ivy.get_framework(state["framework_str"])
+        ivy_array = backend.array(state["data"])
 
         # TODO: what about placement of the array on the right device ?
-        device = backend.dev_from_str(state['device_str'])
+        device = backend.dev_from_str(state["device_str"])
 
         self.__dict__ = ivy_array.__dict__
 

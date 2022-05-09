@@ -295,7 +295,7 @@ def exp(
         an array containing the evaluated exponential function result for each element
         in ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
-    
+
     Examples
     --------
     >>> x = ivy.array([1., 2., 3.])
@@ -1101,7 +1101,7 @@ def cos(
     ret
         an array containing the cosine of each element in ``x``. The returned array must
         have a floating-point data type determined by :ref:`type-promotion`.
-    
+
     Examples
     --------
     >>> x = ivy.array([0., 1., 2.])
@@ -1663,9 +1663,10 @@ def abs(
     return _cur_framework(x).abs(x, out)
 
 
-def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        out: Optional[Union[ivy.Array, ivy.Container]] = None)\
-        -> Union[ivy.Array, ivy.Container]:
+def tan(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
