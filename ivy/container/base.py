@@ -5307,7 +5307,8 @@ class ContainerBase(dict, abc.ABC):
     @property
     def dev(self):
         """The device to which the arrays in the container belong, with None returned if
-        the devices are not consistent."""
+        the devices are not consistent.
+        """
         return self._get_dev()
 
     @property
