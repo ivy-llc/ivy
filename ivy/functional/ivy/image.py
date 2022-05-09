@@ -1,6 +1,4 @@
-"""
-Collection of image Ivy functions.
-"""
+"""Collection of image Ivy functions."""
 
 # local
 import ivy as ivy
@@ -8,26 +6,48 @@ import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
-from typing import Union
+from typing import Union, List, Tuple
 
 
 # Extra #
 # ------#
 
-def stack_images(images, desired_aspect_ratio=(1, 1)):
-    """Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
+
+def stack_images(
+    images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+) -> ivy.Array:
+    """Stacks a group of images into a combined windowed image, fitting the
+    desired aspect ratio as closely as possible.
 
     Parameters
     ----------
     images
-        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
-    desired_aspect_ratio
-        Desired aspect ratio of stacked image. (Default value = (1)
+        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
+    desired_aspect_ratio:
+        desired aspect ratio of the stacked image
 
     Returns
     -------
-     ret
-        Stacked image, suitable for viewing in a single window.
+    ret
+        an array containing the stacked images in a specified aspect ratio/dimensions
+
+    Examples
+    --------
+    >>> import ivy
+    >>> shape, num = (1, 2, 3), 2
+    >>> data = [ivy.ones(shape)] * num
+    >>> stacked = ivy.stack_images(data, (2, 1))
+    >>> print(stacked)
+    [[[1., 1., 1.],
+            [1., 1., 1.],
+            [0., 0., 0.],
+            [0., 0., 0.]],
+
+           [[1., 1., 1.],
+            [1., 1., 1.],
+            [0., 0., 0.],
+            [0., 0., 0.]]]
 
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
@@ -45,7 +65,7 @@ def bilinear_resample(x, warp):
 
     Returns
     -------
-     ret
+    ret
         Image after bilinear re-sampling.
 
     """
@@ -62,7 +82,7 @@ def gradient_image(x):
 
     Returns
     -------
-     ret
+    ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
 
     """
@@ -72,7 +92,7 @@ def gradient_image(x):
 def float_img_to_uint8_img(x):
     """Converts an image of floats into a bit-cast 4-channel image of uint8s,
     which can be saved to disk.
-    
+
     Parameters
     ----------
     x
@@ -80,7 +100,7 @@ def float_img_to_uint8_img(x):
 
     Returns
     -------
-     ret
+    ret
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     Examples
@@ -108,7 +128,7 @@ def uint8_img_to_float_img(x):
 
     Returns
     -------
-     ret
+    ret
         The new float image *[batch_shape,h,w]*
 
     """
@@ -135,11 +155,10 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     Returns
     -------
-     ret
+    ret
         The new cropped image *[batch_shape,nh,nw,f]*
 
     """
-
     x_shape = x.shape
     if batch_shape is None:
         batch_shape = x_shape[:-3]
@@ -161,8 +180,10 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
 
     # list of 1 x NH x NW x F
-    cropped_list = [img[..., xo:xo+crop_size[0], yo:yo+crop_size[1], :] for img, xo, yo
-                    in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
+    cropped_list = [
+        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        for img, xo, yo in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
+    ]
 
     # FBS x NH x NW x F
     flat_cropped = ivy.concat(cropped_list, 0)
@@ -171,8 +192,9 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def linear_resample(
+    x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 
     Parameters
@@ -186,7 +208,7 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
 
     Returns
     -------
-     ret
+    ret
         The array after the linear resampling.
 
     """

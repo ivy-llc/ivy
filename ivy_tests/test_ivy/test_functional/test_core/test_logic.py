@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified logic functions
-"""
+"""Collection of tests for unified logic functions."""
 
 # global
 import pytest

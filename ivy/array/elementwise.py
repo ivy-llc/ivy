@@ -10,8 +10,7 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
-
-    def abs(self: ivy.Array,
-            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
-            -> ivy.Array:
+    def abs(
+        self: ivy.Array, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    ) -> ivy.Array:
         return ivy.abs(self, out=out)
