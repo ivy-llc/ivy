@@ -160,7 +160,7 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         start = tf.constant(start, dtype=dtype)
         stop = tf.constant(stop, dtype=dtype)
         if not endpoint:
-            ans = tf.linspace(start, stop, num+1, axis=axis)[:-1]
+            ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
         if dtype is None:

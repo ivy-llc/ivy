@@ -3,6 +3,7 @@
 import pytest
 import numpy as np
 from hypothesis import given, assume, strategies as st
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -178,8 +179,8 @@ def test_prod(
     dtype, x = dtype_and_x
     assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
-    if fw == 'torch' and (dtype == 'float16' or ivy.is_int_dtype(dtype)):
-        return # torch implementation exhibits strange behaviour
+    if fw == "torch" and (dtype == "float16" or ivy.is_int_dtype(dtype)):
+        return  # torch implementation exhibits strange behaviour
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -217,7 +218,7 @@ def test_sum(
     dtype, x = dtype_and_x
     assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
-    if fw == 'torch' and ivy.is_int_dtype(dtype):
+    if fw == "torch" and ivy.is_int_dtype(dtype):
         return
     helpers.test_array_function(
         dtype,
