@@ -138,24 +138,33 @@
 <section id="type-hints">
 <h2>Type Hints<a class="headerlink" href="#type-hints" title="Permalink to this headline"></a></h2>
 <p>All arguments should use full and thorough type hints.</p>
-<p>We refer to all functions which can consume at least one <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance and also return at least one
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance as <em>flexible</em> functions. This is because all such functions can also consume and return
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of the arrays. These methods can also accept combinations of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
-and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances, broadcasting the arrays to the leaves of the containers in such cases.</p>
-<p>Furthermore, all functions can accept either <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input, but
-<code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted in the output.</p>
+<p>All functions which consume at least one array and also return at least one array can also consume and return
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of the arrays. Because of this, we refer to these functions as as <em>flexible</em>
+functions. These functions can also accept combinations of arrays and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances,
+broadcasting the arrays to the leaves of the containers.
+All <em>flexible</em> functions are also implemented as instance methods on both the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> classes, with the first array argument replaced with <code class="code docutils literal notranslate"><span class="pre">self</span></code> in both cases.</p>
+<p>Furthermore, all array arguments can either be passed an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instance
+(i.e. <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code> etc. depending on the backend). However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+instances are not permitted in the output. Arrays are always returned as <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.
+Among other reasons, this is to ensure that operators (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.)
+performed on the array are framework-agnostic. We could not guarantee this if returning <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+instances, as we would have no control over the relevant special methods (<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__div__</span></code> etc.).</p>
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are also not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, which is used in many functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
-serves the same purpose as the function return.</p>
+serves the same purpose as the function return when no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is specified.</p>
 <p>All arguments should be added on a new line, and the return type hint should also be added on a new line.</p>
-<p>Let’s take a look at the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>:</p>
+<p>Taking all of these points into consideration, let’s take a look at the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
 </pre></div>
 </div>
-<p>In alignment with the above explanations, <code class="code docutils literal notranslate"><span class="pre">x</span></code> permits <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, but <code class="code docutils literal notranslate"><span class="pre">out</span></code> and the
+<p>Because <code class="code docutils literal notranslate"><span class="pre">tan</span></code> consumes one array and also returns one array, it is a <em>flexible</em> function.
+Therefore, both inputs <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> and the return are all permitted to be :code`ivy.Container` instances.
+Additionally, in alignment with the above explanations, <code class="code docutils literal notranslate"><span class="pre">x</span></code> permits <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, but <code class="code docutils literal notranslate"><span class="pre">out</span></code> and the
 function return do not.</p>
 <p>Similarly, the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
