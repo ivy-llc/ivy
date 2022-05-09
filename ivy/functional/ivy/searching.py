@@ -16,9 +16,9 @@ def argmax(
     keepdims: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns the indices of the maximum values along a specified axis. When
-    the maximum value occurs multiple times, only the indices corresponding to
-    the first occurrence are returned.
+    """Returns the indices of the maximum values along a specified axis. When the
+    maximum value occurs multiple times, only the indices corresponding to the first
+    occurrence are returned.
 
     Parameters
     ----------
@@ -45,9 +45,9 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
 ) -> ivy.Array:
-    """Returns the indices of the minimum values along a specified axis. When
-    the minimum value occurs multiple times, only the indices corresponding to
-    the first occurrence are returned.
+    """Returns the indices of the minimum values along a specified axis. When the
+    minimum value occurs multiple times, only the indices corresponding to the first
+    occurrence are returned.
 
     Parameters
     ----------
