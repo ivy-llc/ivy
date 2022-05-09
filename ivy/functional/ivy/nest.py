@@ -147,7 +147,8 @@ def insert_into_nest_at_indices(nest, indices, values):
 
     :param nest: The nested object to insert into.
     :type nest: nested
-    :param indices: A tuple of tuples of indices for the indices at which to insert values.
+    :param indices: A tuple of tuples of indices for the indices at which to insert
+    values.
     :type indices: tuple of tuples of indices
     :param values: The new values for inserting.
     :type values: sequence of any
@@ -195,12 +196,14 @@ def nested_indices_where(
     fn
         The conditon function, returning True or False.
     check_nests
-        Whether to also check the nests for the condition, not only nest leaves. Default is False.
+        Whether to also check the nests for the condition, not only nest leaves.
+        Default is False.
     _index
-        The indices detected so far. None at the beginning. Used internally, do not set manually.
+        The indices detected so far. None at the beginning. Used internally, do not set
+        manually.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -245,12 +248,14 @@ def all_nested_indices(
     nest
         The nest to check the leaves of.
     include_nests
-        Whether to also include indices of the nests themselves, not only leaves. Default is False.
+        Whether to also include indices of the nests themselves, not only leaves.
+        Default is False.
     _index
-        The indices detected so far. None at the beginning. Used internally, do not set manually.
+        The indices detected so far. None at the beginning. Used internally, do not set
+        manually.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -294,11 +299,13 @@ def map(
     fn
         The function to map onto x.
     constant
-        keyword arguments which remain constant between each function call. Default is None.
+        keyword arguments which remain constant between each function call.
+        Default is None.
     unique
         keyword arguments which are unique for each function call. Default is None.
     mean
-        Whether to compute the mean across the return values, and return this mean. Default is False.
+        Whether to compute the mean across the return values, and return this mean.
+        Default is False.
 
     Returns
     -------
@@ -341,11 +348,14 @@ def nested_map(
     fn
         The function to map onto x.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     to_mutable
-        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+        Whether to convert the nest to a mutable form, changing all tuples to lists.
+        Default is False.
     max_depth
-        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+        The maximum nested depth to reach. Default is 1. Increase this if the nest is
+        deeper.
     _depth
         Placeholder for tracking the recursive depth, do not set this parameter.
     _tuple_check_fn
@@ -358,7 +368,8 @@ def nested_map(
     Returns
     -------
     ret
-        x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
+        x following the applicable of fn to it's nested leaves, or x itself if x is not
+        nested.
 
     """
     if include_derived is True:
@@ -462,10 +473,11 @@ def nested_any(
     fn
         The conditon function, returning True or False.
     check_nests
-        Whether to also check the nests for the condition, not only nest leaves. Default is False.
+        Whether to also check the nests for the condition, not only nest leaves.
+        Default is False.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -503,9 +515,11 @@ def copy_nest(
     nest
         The nest to copy.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     to_mutable
-        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+        Whether to convert the nest to a mutable form, changing all tuples to lists.
+        Default is False.
 
     Returns
     -------
