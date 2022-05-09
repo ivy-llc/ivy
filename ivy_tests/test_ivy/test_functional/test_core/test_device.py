@@ -87,6 +87,8 @@ def test_dev_from_str(x, dtype, tensor_fn, device, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
+    # docstring test
+    helpers.docstring_examples_run(ivy.dev_from_str)
 
 
 # memory_on_dev

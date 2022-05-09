@@ -57,7 +57,8 @@ def dev_to_str(device):
     return ":".join([dev_type, dev_idx])
 
 
-def dev_from_str(device):
+def dev_from_str(device: tf.String)\
+        -> tf.Device:
     if isinstance(device, str) and "/" in device:
         return device
     ret = "/" + device.upper()

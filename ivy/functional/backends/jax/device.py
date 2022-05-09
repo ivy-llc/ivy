@@ -1,4 +1,6 @@
-"""Collection of Jax device functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax device functions, wrapped to fit Ivy syntax and
+signature.
+"""
 
 # global
 import os
@@ -62,7 +64,8 @@ def dev_to_str(device):
     return p + ":" + str(dev_id)
 
 
-def dev_from_str(device):
+def dev_from_str(device: jax.String)\
+        -> jax.Device:
     if not isinstance(device, str):
         return device
     dev_split = device.split(":")

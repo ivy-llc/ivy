@@ -1,4 +1,6 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature.
+"""
 
 # global
 import os
@@ -15,7 +17,11 @@ dev = lambda x, as_str=False: "cpu"
 dev.__name__ = "dev"
 _dev_callable = dev
 dev_to_str = lambda dev: "cpu"
-dev_from_str = lambda dev: "cpu"
+
+def dev_from_str(device: np.String)\
+        -> np.Device: 
+        return "cpu"
+
 clear_mem_on_dev = lambda dev: None
 
 

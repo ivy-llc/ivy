@@ -1,4 +1,6 @@
-"""Collection of MXNet general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of MXNet general functions, wrapped to fit Ivy syntax and
+signature.
+"""
 
 # global
 import os
@@ -41,7 +43,8 @@ def dev_to_str(device):
     )
 
 
-def dev_from_str(device):
+def dev_from_str(device: mx.String)\
+        -> mx.Device:
     if not isinstance(device, str):
         return device
     dev_split = device.split(":")
