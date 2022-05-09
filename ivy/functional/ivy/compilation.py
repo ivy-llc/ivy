@@ -1,6 +1,4 @@
-"""
-Collection of general Ivy compilation functions.
-"""
+"""Collection of general Ivy compilation functions."""
 
 # global
 from typing import Callable, Any, Union, Tuple, Iterable
@@ -20,8 +18,8 @@ def compile(
     static_argnums: Union[int, Iterable[int]] = None,
     static_argnames: Union[int, Iterable[int]] = None,
 ) -> Callable:
-    """Provide a function which should be compiled, for faster inference.
-    The handle to the newly compiled function is returned.
+    """Provide a function which should be compiled, for faster inference. The
+    handle to the newly compiled function is returned.
 
     Parameters
     ----------

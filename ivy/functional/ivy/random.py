@@ -1,6 +1,4 @@
-"""
-Collection of random Ivy functions
-"""
+"""Collection of random Ivy functions."""
 
 # global
 from typing import Optional, Union, Tuple
@@ -20,10 +18,10 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     device: Optional[ivy.Device] = None,
 ) -> ivy.array:
-    """
-    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open
-    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given
-    interval is equally likely to be drawn by uniform.
+    """Draws samples from a uniform distribution. Samples are uniformly
+    distributed over the half-open interval ``[low, high)`` (includes ``low``,
+    but excludes ``high``). In other words, any value within the given interval
+    is equally likely to be drawn by uniform.
 
     Parameters
     -----------
@@ -69,7 +67,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
 
     Returns
     -------
-     ret
+    ret
         Drawn samples from the parameterized uniform distribution.
 
     """
@@ -79,8 +77,10 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
 def multinomial(
     population_size, num_samples, batch_size, probs=None, replace=True, device=None
 ):
-    """Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
-    indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
+    """Draws samples from a multinomial distribution. Specifcally, returns a
+    tensor where each row contains num_samples indices sampled from the
+    multinomial probability distribution located in the corresponding row of
+    tensor input.
 
     Parameters
     ----------
@@ -100,7 +100,7 @@ def multinomial(
 
     Returns
     -------
-     ret
+    ret
         Drawn samples indices from the multinomial distribution.
 
     """
@@ -110,7 +110,8 @@ def multinomial(
 
 
 def randint(low, high, shape, device=None):
-    """Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
+    """Returns a tensor filled with random integers generated uniformly between
+    low (inclusive) and high (exclusive).
 
     Parameters
     ----------
@@ -123,9 +124,6 @@ def randint(low, high, shape, device=None):
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
-    Returns
-    -------
-
     """
     return _cur_framework().randint(low, high, shape, device)
 
@@ -137,9 +135,6 @@ def seed(seed_value=0):
     ----------
     seed_value
         Seed for random number generation, must be a positive integer. (Default value = 0)
-
-    Returns
-    -------
 
     """
     return _cur_framework().seed(seed_value)
@@ -155,7 +150,7 @@ def shuffle(x):
 
     Returns
     -------
-     ret
+    ret
         An array object, shuffled along the first dimension.
 
     """
