@@ -1,6 +1,5 @@
 """Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
-signature.
-"""
+signature."""
 
 from typing import Optional
 

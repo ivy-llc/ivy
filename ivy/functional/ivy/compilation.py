@@ -41,6 +41,7 @@ def compile(
     Returns
     -------
         The handle to the newly compiled function.
+
     """
     return _cur_framework(example_inputs).compile(
         func, dynamic, example_inputs, static_argnums, static_argnames

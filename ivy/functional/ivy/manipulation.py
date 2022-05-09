@@ -17,9 +17,9 @@ def roll(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at
-    the first position. Array elements that roll beyond the first position are re-introduced at the last position.
+    """Rolls array elements along a specified axis. Array elements that roll beyond the
+    last position are re-introduced at the first position. Array elements that roll
+    beyond the first position are re-introduced at the last position.
 
     Parameters
     ----------
@@ -110,6 +110,7 @@ def roll(
         a: ivy.array([2., 0., 1.], dtype=float32),
         b: ivy.array([5., 3., 4.], dtype=float32)
     }
+
     """
     return _cur_framework(x).roll(x, shift, axis, out)
 
@@ -119,8 +120,7 @@ def squeeze(
     axis: Union[int, Tuple[int, ...]],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Removes singleton dimensions (axes) from ``x``.
+    """Removes singleton dimensions (axes) from ``x``.
 
     Parameters
     ----------
@@ -135,6 +135,7 @@ def squeeze(
     -------
     ret
         an output array having the same data type and elements as ``x``.
+
     """
     return _cur_framework(x).squeeze(x, axis, out)
 
@@ -144,8 +145,8 @@ def flip(
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Reverses the order of elements in an array along the given axis. The
-    shape of the array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The shape of the
+    array must be preserved.
 
     Parameters
     ----------
@@ -170,9 +171,8 @@ def expand_dims(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Expands the shape of an array by inserting a new axis with the size of
-    one. This new axis will appear at the ``axis`` position in the expanded
-    array shape.
+    """Expands the shape of an array by inserting a new axis with the size of one. This
+    new axis will appear at the ``axis`` position in the expanded array shape.
 
     Parameters
     ----------

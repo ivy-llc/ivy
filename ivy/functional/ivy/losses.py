@@ -14,8 +14,7 @@ def cross_entropy(
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
 ) -> ivy.Array:
-    """Computes cross-entropy between predicted and true discrete
-    distributions.
+    """Computes cross-entropy between predicted and true discrete distributions.
 
     Parameters
     ----------

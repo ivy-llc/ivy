@@ -6,8 +6,8 @@ from ivy.stateful.module import Module
 
 class Sequential(Module):
     def __init__(self, *sub_modules, device=None, v=None):
-        """A sequential container. Modules will be added to it in the order
-        they are passed in the constructor.
+        """A sequential container. Modules will be added to it in the order they are
+        passed in the constructor.
 
         :param submodules: Submodules to chain together into a sequence.
         :type submodules: sequence of ivy.Module instances
