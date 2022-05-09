@@ -32,7 +32,7 @@ def add(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 def bitwise_xor(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
@@ -564,7 +564,7 @@ def atan2(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def minimum(x, y, out: Optional[Tensor] = None) -> Tensor:
-    if hasattr(y,'dtype'):
+    if hasattr(y, "dtype"):
         if x.dtype != y.dtype:
             promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
             x = tf.cast(x, promoted_type)
@@ -576,7 +576,7 @@ def minimum(x, y, out: Optional[Tensor] = None) -> Tensor:
 
 
 def maximum(x, y, out: Optional[Tensor] = None) -> Tensor:
-    if hasattr(y,'dtype'):
+    if hasattr(y, "dtype"):
         if x.dtype != y.dtype:
             promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
             x = tf.cast(x, promoted_type)
