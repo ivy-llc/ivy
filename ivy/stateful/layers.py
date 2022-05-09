@@ -934,7 +934,8 @@ class LSTM(Module):
 
     def get_initial_state(self, batch_shape):
         """Get the initial state of the hidden and cell states, if not provided
-        explicitly."""
+        explicitly.
+        """
         batch_shape = list(batch_shape)
         return (
             [

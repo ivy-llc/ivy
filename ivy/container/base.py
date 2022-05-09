@@ -5293,13 +5293,15 @@ class ContainerBase(dict, abc.ABC):
     @property
     def shape(self):
         """The shape of the arrays in the container, with None placed in indices which
-        are not consistent across arrays."""
+        are not consistent across arrays.
+        """
         return self._get_shape()
 
     @property
     def shapes(self):
         """The shapes of each array in the container, with None placed in leaf entries
-        without a shape attribute."""
+        without a shape attribute.
+        """
         return self._get_shapes()
 
     @property
@@ -5311,7 +5313,8 @@ class ContainerBase(dict, abc.ABC):
     @property
     def dev_str(self):
         """The device to which the arrays in the container belong, with None returned if
-        the devices are not consistent."""
+        the devices are not consistent.
+        """
         return self._get_dev(as_str=True)
 
     @property

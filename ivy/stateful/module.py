@@ -327,7 +327,8 @@ class Module(abc.ABC):
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """Forward pass of the layer, called after handling the optional input
-        variables."""
+        variables.
+        """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
@@ -345,7 +346,8 @@ class Module(abc.ABC):
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
         """The forward pass of the layer, treating layer instance as callable
-        function."""
+        function.
+        """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
             self.build(*args, **kwargs, from_call=True)

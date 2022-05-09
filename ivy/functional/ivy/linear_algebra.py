@@ -343,7 +343,8 @@ def matmul(
 
 def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
-    n."""
+    n.
+    """
     return _cur_framework(x).matrix_power(x, n)
 
 
