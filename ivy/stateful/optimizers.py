@@ -2,7 +2,6 @@
 
 # global
 import abc
-import logging
 
 # local
 import ivy
@@ -28,20 +27,26 @@ class Optimizer(abc.ABC):
 
         :param lr: Learning rate.
         :type lr: function or float.
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
+        :param inplace: Whether to update the variables in-place, or to create new
+                        variable handles. This is only relevant for frameworks with
+                        stateful variables such as PyTorch. Default is True, provided
+                        the backend framework supports it.
         :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :param stop_gradients: Whether to stop the gradients of the variables after each
+                               gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.
+        :param init_on_first_step: Whether the optimizer is initialized on the first
+                                   step. Default is False.
         :type init_on_first_step: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :param compile_on_next_step: Whether to compile the optimizer on the next step.
+                                     Default is False.
         :type compile_on_next_step: bool, optional
-        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
-                                         raised during the compiled forward pass. Default is True.
+        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward
+                                         call in the case that an error is raised during
+                                         the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
 
         """
@@ -134,13 +139,16 @@ class SGD(Optimizer):
 
         :param lr: Learning rate, default is 1e-4.
         :type lr: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
+        :param inplace: Whether to update the variables in-place, or to create new
+                        variable handles. This is only relevant for frameworks with
+                        stateful variables such as PyTorch. Default is True, provided
+                        the backend framework supports it.
         :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :param stop_gradients: Whether to stop the gradients of the variables after each
+                               gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :param compile_on_next_step: Whether to compile the optimizer on the next step.
+                                     Default is False.
         :type compile_on_next_step: bool, optional
 
         """
@@ -198,13 +206,16 @@ class LARS(Optimizer):
         :type lr: float, optional
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
+        :param inplace: Whether to update the variables in-place, or to create new
+                        variable handles. This is only relevant for frameworks with
+                        stateful variables such as PyTorch. Default is True, provided
+                        the backend framework supports it.
         :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :param stop_gradients: Whether to stop the gradients of the variables after each
+                               gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :param compile_on_next_step: Whether to compile the optimizer on the next step.
+                                     Default is False.
         :type compile_on_next_step: bool, optional
 
         """
@@ -269,17 +280,22 @@ class Adam(Optimizer):
         :type beta1: float, optional
         :param beta2: second moment of gradient forgetting factor, default is 0.999
         :type beta2: float, optional
-        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
+        :param epsilon: divisor during adam update, preventing division by zero, default
+                        is 1e-07
         :type epsilon: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
+        :param inplace: Whether to update the variables in-place, or to create new
+                        variable handles. This is only relevant for frameworks with
+                        stateful variables such as PyTorch. Default is True, provided
+                        the backend framework supports it.
         :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :param stop_gradients: Whether to stop the gradients of the variables after each
+                               gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :param compile_on_next_step: Whether to compile the optimizer on the next step.
+                                     Default is False.
         :type compile_on_next_step: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
 
         """
@@ -363,22 +379,28 @@ class LAMB(Optimizer):
         :type beta1: float, optional
         :param beta2: second moment of gradient forgetting factor, default is 0.999
         :type beta2: float, optional
-        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
+        :param epsilon: divisor during adam update, preventing division by zero, default
+                        is 1e-07
         :type epsilon: float, optional
-        :param max_trust_ratio: The max value of the trust ratio; the ratio between the norm of the layer weights and
-                                norm of gradients update. Default is 10.
+        :param max_trust_ratio: The max value of the trust ratio; the ratio between the
+                                norm of the layer weights and norm of gradients update.
+                                Default is 10.
         :type max_trust_ratio: float, optional
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
+        :param inplace: Whether to update the variables in-place, or to create new
+                        variable handles. This is only relevant for frameworks with
+                        stateful variables such as PyTorch. Default is True, provided
+                        the backend framework supports it.
         :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :param stop_gradients: Whether to stop the gradients of the variables after each
+                               gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :param compile_on_next_step: Whether to compile the optimizer on the next step.
+                                     Default is False.
         :type compile_on_next_step: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
 
         """
