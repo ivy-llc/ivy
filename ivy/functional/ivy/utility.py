@@ -16,8 +16,8 @@ def all(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Tests whether all input array elements evaluate to ``True`` along a
-    specified axis.
+    """Tests whether all input array elements evaluate to ``True`` along a specified
+    axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.
@@ -52,8 +52,8 @@ def any(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Tests whether any input array element evaluates to ``True`` along a
-    specified axis.
+    """Tests whether any input array element evaluates to ``True`` along a specified
+    axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.
