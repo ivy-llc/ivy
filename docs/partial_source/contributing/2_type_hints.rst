@@ -1,13 +1,13 @@
-Function Formatting
-===================
+Type Hints
+==========
+
+.. _`Array API`: https://data-apis.org/array-api/latest/
+.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+
+All arguments should use full and thorough type hints.
 
 For the purposes of explanation, we will use three randomly chosen functions as examples:
 :code:`ivy.tan`, :code:`ivy.roll` and :code:`ivy.add`
-
-Type Hints
-----------
-
-All arguments should use full and thorough type hints.
 
 All functions which consume at least one array and also return at least one array can also consume and return
 :code:`ivy.Container` instances in place of the arrays. Because of this, we refer to these functions as as *flexible*
@@ -66,9 +66,3 @@ and :code:`ivy.add`
     ) -> Union[ivy.Array, ivy.Container]:
 
 both also follow the same pattern.
-
-Writing Docstrings
-------------------
-
-Adding Examples
----------------
