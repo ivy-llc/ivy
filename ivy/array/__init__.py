@@ -120,13 +120,13 @@ class Array(
 
     @property
     def ndim(self):
-        """
-        Number of array dimensions (axes).
+        """Number of array dimensions (axes).
 
         Returns
         -------
         ret
             number of array dimensions (axes).
+
         """
         return len(tuple(self._shape))
 

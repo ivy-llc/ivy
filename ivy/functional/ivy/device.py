@@ -828,8 +828,8 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
 
 
 def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-    """Distribute the input item across the specified devices, returning a list of
-    sub-items, each on a different device.
+    """Distribute the input item across the specified devices, returning a list of sub-
+    items, each on a different device.
 
     Parameters
     ----------
@@ -1552,6 +1552,7 @@ class DevManager:
         ----------
         oom
              (Default value = False)
+
         """
         if self._tuned:
             return
@@ -1746,6 +1747,7 @@ class DevManager:
         ----------
         oom
              (Default value = False)
+
         """
         if self._tuned:
             return
