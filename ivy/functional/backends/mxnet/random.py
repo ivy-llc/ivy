@@ -1,6 +1,4 @@
-"""Collection of MXNet random functions, wrapped to fit Ivy syntax and
-signature.
-"""
+"""Collection of MXNet random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import mxnet as mx

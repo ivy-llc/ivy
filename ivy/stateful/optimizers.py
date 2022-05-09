@@ -23,8 +23,8 @@ class Optimizer(abc.ABC):
         fallback_to_non_compiled=False,
         device=None,
     ):
-        """Construct an general Optimizer. This is an abstract class, and must
-        be derived.
+        """Construct an general Optimizer. This is an abstract class, and must be
+        derived.
 
         :param lr: Learning rate.
         :type lr: function or float.
@@ -64,9 +64,8 @@ class Optimizer(abc.ABC):
 
     @abc.abstractmethod
     def _step(self, v, grads):
-        """Update nested variables container v from update step, using nested
-        grads container. Override this abstract method with child class custom
-        implementation.
+        """Update nested variables container v from update step, using nested grads
+        container. Override this abstract method with child class custom implementation.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -102,8 +101,7 @@ class Optimizer(abc.ABC):
     # Given #
 
     def step(self, v, grads, ignore_missing=False):
-        """Update nested variables container v from overriden private
-        self._step.
+        """Update nested variables container v from overriden private self._step.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -153,8 +151,8 @@ class SGD(Optimizer):
     # Custom Step
 
     def _step(self, v, grads):
-        """Update nested variables container v by gradient descent step, using
-        nested gradients container.
+        """Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -218,8 +216,8 @@ class LARS(Optimizer):
     # Custom Step
 
     def _step(self, v, grads):
-        """Update nested variables container v by gradient descent step, using
-        nested gradients container.
+        """Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -299,8 +297,8 @@ class Adam(Optimizer):
     # Custom Step
 
     def _step(self, v, grads):
-        """Update nested variables container v by Adam update step, using
-        nested grads container.
+        """Update nested variables container v by Adam update step, using nested grads
+        container.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -399,8 +397,8 @@ class LAMB(Optimizer):
     # Custom Step
 
     def _step(self, v, grads):
-        """Update nested variables container v by LAMB update step, using
-        nested grads container.
+        """Update nested variables container v by LAMB update step, using nested grads
+        container.
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables

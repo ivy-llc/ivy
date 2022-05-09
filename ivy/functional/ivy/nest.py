@@ -13,8 +13,7 @@ import ivy
 
 
 def index_nest(nest, index):
-    """Index a nested object, using a tuple of indices or keys in the case of
-    dicts.
+    """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     Parameters
     ----------
@@ -97,8 +96,8 @@ def map_nest_at_index(nest, index, fn):
 
 
 def multi_index_nest(nest, indices):
-    """Repeatedly index a nested object, using a tuple of tuples of indices or
-    keys in the case of dicts.
+    """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
+    the case of dicts.
 
     Parameters
     ----------
@@ -126,8 +125,7 @@ def prune_nest_at_indices(nest, indices):
 
 
 def set_nest_at_indices(nest, indices, values):
-    """Set the value of a nested item at specified indices with specified
-    values.
+    """Set the value of a nested item at specified indices with specified values.
 
     Parameters
     ----------
@@ -145,8 +143,7 @@ def set_nest_at_indices(nest, indices, values):
 
 
 def insert_into_nest_at_indices(nest, indices, values):
-    """Insert a value into the nested item at specified indices with specified
-    values.
+    """Insert a value into the nested item at specified indices with specified values.
 
     :param nest: The nested object to insert into.
     :type nest: nested
@@ -188,8 +185,8 @@ def nested_indices_where(
     _index: List = None,
     _base: bool = True,
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest
-    indices where the method evaluates as True.
+    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
+    where the method evaluates as True.
 
     Parameters
     ----------
@@ -240,8 +237,8 @@ def nested_indices_where(
 def all_nested_indices(
     nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest
-    indices where the method evaluates as True.
+    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
+    where the method evaluates as True.
 
     Parameters
     ----------
@@ -333,9 +330,9 @@ def nested_map(
     _list_check_fn: Optional[callable] = None,
     _dict_check_fn: Optional[callable] = None,
 ) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
-    """Applies a function on x in a nested manner, whereby all dicts, lists and
-    tuples are traversed to their lowest leaves before applying the method and
-    returning x. If x is not nested, the method is applied to x directly.
+    """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
+    are traversed to their lowest leaves before applying the method and returning x. If
+    x is not nested, the method is applied to x directly.
 
     Parameters
     ----------
@@ -455,8 +452,8 @@ def nested_map(
 def nested_any(
     nest: Iterable, fn: Callable, check_nests: bool = False, _base: bool = True
 ) -> bool:
-    """Checks the leaf nodes of nest x via function fn, and returns True if any
-    evaluate to True, else False.
+    """Checks the leaf nodes of nest x via function fn, and returns True if any evaluate
+    to True, else False.
 
     Parameters
     ----------
@@ -498,8 +495,8 @@ def copy_nest(
     include_derived: bool = False,
     to_mutable: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
-    """Copies a nest deeply, but without copying leaves of the nest, only the
-    nest lists, tuples and dicts are copied.
+    """Copies a nest deeply, but without copying leaves of the nest, only the nest
+    lists, tuples and dicts are copied.
 
     Parameters
     ----------

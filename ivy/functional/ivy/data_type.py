@@ -693,8 +693,8 @@ def is_float_dtype(
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
-    """Returns the dtype that results from applying the type promotion rules
-    (see :ref:`type-promotion`) to the arguments.
+    """Returns the dtype that results from applying the type promotion rules (see
+    :ref:`type-promotion`) to the arguments.
 
     .. note::
        If provided mixed dtypes (e.g., integer and floating-point), the returned dtype

@@ -159,8 +159,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def handle_inplace(ret, out):
-        """Returns an inplace update of out, provided it is not None, by
-        updating with the values in ret.
+        """Returns an inplace update of out, provided it is not None, by updating with
+        the values in ret.
 
         Parameters
         ----------
@@ -256,8 +256,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def unify(containers, device, mode, axis=0):
-        """Unify a list of containers, on arbitrary devices, to a single
-        container on the specified device.
+        """Unify a list of containers, on arbitrary devices, to a single container on
+        the specified device.
 
         Parameters
         ----------
@@ -331,8 +331,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def combine(*containers, config=None):
-        """Combine keys and values in a sequence of containers, with priority
-        given to the right-most container in the case of duplicates.
+        """Combine keys and values in a sequence of containers, with priority given to
+        the right-most container in the case of duplicates.
 
         Parameters
         ----------
@@ -390,9 +390,9 @@ class ContainerBase(dict, abc.ABC):
         detect_shape_diffs=True,
         config=None
     ):
-        """Compare keys and values in a sequence of containers, returning the
-        single shared values where they are the same, and new nested sub-dicts
-        with all values where they are different.
+        """Compare keys and values in a sequence of containers, returning the single
+        shared values where they are the same, and new nested sub-dicts with all values
+        where they are different.
 
         Parameters
         ----------
@@ -533,9 +533,9 @@ class ContainerBase(dict, abc.ABC):
         detect_shape_diffs=True,
         config=None
     ):
-        """Compare keys and shapes in a sequence of containers, returning the
-        single shared values where they are the same, and new nested sub-dicts
-        with all values where they are different.
+        """Compare keys and shapes in a sequence of containers, returning the single
+        shared values where they are the same, and new nested sub-dicts with all values
+        where they are different.
 
         Parameters
         ----------
@@ -672,8 +672,8 @@ class ContainerBase(dict, abc.ABC):
         partial=False,
         key_chain="",
     ):
-        """Returns a single boolean as to whether the input containers have
-        identical key-chains and data types.
+        """Returns a single boolean as to whether the input containers have identical
+        key-chains and data types.
 
         Parameters
         ----------
@@ -763,8 +763,8 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
     ):
-        """Assert whether the input containers are identical. Otherwise, the
-        diff is shown in an exception.
+        """Assert whether the input containers are identical. Otherwise, the diff is
+        shown in an exception.
 
         Parameters
         ----------
@@ -810,8 +810,8 @@ class ContainerBase(dict, abc.ABC):
         partial=False,
         key_chain="",
     ):
-        """Returns a single boolean as to whether the input containers have
-        identical structure.
+        """Returns a single boolean as to whether the input containers have identical
+        structure.
 
         Parameters
         ----------
@@ -857,8 +857,8 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
     ):
-        """Assert whether the input containers have identical structure.
-        Otherwise, the diff is shown in an exception.
+        """Assert whether the input containers have identical structure. Otherwise, the
+        diff is shown in an exception.
 
         Parameters
         ----------
@@ -904,9 +904,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def identical_array_shapes(containers, exclusive=False):
-        """Determine whether all of the containers have identical number of
-        arrays and identical array shapes, regardless of their key-chain
-        structures.
+        """Determine whether all of the containers have identical number of arrays and
+        identical array shapes, regardless of their key-chain structures.
 
         Parameters
         ----------
@@ -940,8 +939,8 @@ class ContainerBase(dict, abc.ABC):
     def from_disk_as_hdf5(
         h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None
     ):
-        """Load container object from disk, as an h5py file, at the specified
-        hdf5 filepath.
+        """Load container object from disk, as an h5py file, at the specified hdf5
+        filepath.
 
         Parameters
         ----------
@@ -1009,9 +1008,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def from_disk_as_json(json_filepath, ivyh=None):
-        """Load container object from disk at the specified json filepath. If
-        some objects were not json-able during saving, then they will be loaded
-        as strings.
+        """Load container object from disk at the specified json filepath. If some
+        objects were not json-able during saving, then they will be loaded as strings.
 
         Parameters
         ----------
@@ -1069,8 +1067,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def shuffle_h5_file(h5_obj_or_filepath, seed_value=0):
-        """Shuffle entries in all datasets of h5 file, such that they are still
-        aligned along axis 0.
+        """Shuffle entries in all datasets of h5 file, such that they are still aligned
+        along axis 0.
 
         Parameters
         ----------
@@ -1331,8 +1329,8 @@ class ContainerBase(dict, abc.ABC):
         self._config = new_config
 
     def inplace_update(self, dict_in, **config):
-        """Update the contents of this container inplace, using either a new
-        dict or container.
+        """Update the contents of this container inplace, using either a new dict or
+        container.
 
         Parameters
         ----------
@@ -1395,8 +1393,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Determine whether all the entries in the container boolean evaluate
-        to True.
+        """Determine whether all the entries in the container boolean evaluate to True.
 
         Parameters
         ----------
@@ -1440,8 +1437,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Determine whether all the entries in the container boolean evaluate
-        to False.
+        """Determine whether all the entries in the container boolean evaluate to False.
 
         Parameters
         ----------
@@ -1486,8 +1482,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Computes standard deviation of array elements along a given axis for
-        all sub-arrays of container object.
+        """Computes standard deviation of array elements along a given axis for all sub-
+        arrays of container object.
 
         Parameters
         ----------
@@ -1533,8 +1529,8 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
         out = None,
     ):
-        """Computes the elementwise minimum between this container and another
-        container or number.
+        """Computes the elementwise minimum between this container and another container
+        or number.
 
         Parameters
         ----------
@@ -1576,8 +1572,8 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
         out = None,
     ):
-        """Computes the elementwise maximum between this container and another
-        container or number.
+        """Computes the elementwise maximum between this container and another container
+        or number.
 
         Parameters
         ----------
@@ -1621,8 +1617,8 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
         out = None,
     ):
-        """Computes the elementwise clipped values between this container and
-        clip_min and clip_max containers or numbers.
+        """Computes the elementwise clipped values between this container and clip_min
+        and clip_max containers or numbers.
 
         Parameters
         ----------
@@ -1672,8 +1668,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Computes the elementwise clipped values between this container and
-        clip_min and clip_max containers or numbers.
+        """Computes the elementwise clipped values between this container and clip_min
+        and clip_max containers or numbers.
 
         Parameters
         ----------
@@ -1735,9 +1731,9 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Sums the product of the elements of the input operands along
-        dimensions specified using a notation based on the Einstein summation
-        convention, for each array in the container.
+        """Sums the product of the elements of the input operands along dimensions
+        specified using a notation based on the Einstein summation convention, for each
+        array in the container.
 
         Parameters
         ----------
@@ -1893,9 +1889,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Reverses the order of elements in for each array in the container,
-        along the given axis. The shape of the array is preserved, but the
-        elements are reordered.
+        """Reverses the order of elements in for each array in the container, along the
+        given axis. The shape of the array is preserved, but the elements are reordered.
 
         Parameters
         ----------
@@ -1935,8 +1930,8 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
         key_chain="",
     ):
-        """Shuffle entries in all sub-arrays, such that they are still aligned
-        along axis 0.
+        """Shuffle entries in all sub-arrays, such that they are still aligned along
+        axis 0.
 
         Parameters
         ----------
@@ -2178,8 +2173,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Return native framework arrays for all nested arrays in the
-        container.
+        """Return native framework arrays for all nested arrays in the container.
 
         Parameters
         ----------
@@ -2218,8 +2212,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Return ivy arrays for all nested native framework arrays in the
-        container.
+        """Return ivy arrays for all nested native framework arrays in the container.
 
         Parameters
         ----------
@@ -2334,9 +2327,9 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def to_multi_dev(self, devices, axis=0):
-        """Return a single MultiDevContainer, which shares the same structure
-        as the current container, but replaces arrays at the leaves with
-        DistributedArray instances.
+        """Return a single MultiDevContainer, which shares the same structure as the
+        current container, but replaces arrays at the leaves with DistributedArray
+        instances.
 
         Parameters
         ----------
@@ -2455,8 +2448,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Gather slices from all container params at axis according to
-        indices.
+        """Gather slices from all container params at axis according to indices.
 
         Parameters
         ----------
@@ -2497,8 +2489,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Gather slices from all container params into a arrays with shape
-        specified by indices.
+        """Gather slices from all container params into a arrays with shape specified by
+        indices.
 
         Parameters
         ----------
@@ -2538,8 +2530,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Repeat values along a given dimension for each array in the
-        container.
+        """Repeat values along a given dimension for each array in the container.
 
         Parameters
         ----------
@@ -2625,9 +2616,9 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Reshapes each array x in the container, to a new shape given by
-        pre_shape + x.shape[shape_slice] + post_shape. If shape_slice or
-        post_shape are not specified, then the term is ignored.
+        """Reshapes each array x in the container, to a new shape given by pre_shape +
+        x.shape[shape_slice] + post_shape. If shape_slice or post_shape are not
+        specified, then the term is ignored.
 
         Parameters
         ----------
@@ -2698,8 +2689,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=False,
         **axes_lengths
     ):
-        """Perform einops rearrange operation on each sub array in the
-        container.
+        """Perform einops rearrange operation on each sub array in the container.
 
         Parameters
         ----------
@@ -2831,8 +2821,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Move the container arrays to the desired device, specified by device
-        string.
+        """Move the container arrays to the desired device, specified by device string.
 
         Parameters
         ----------
@@ -2908,8 +2897,7 @@ class ContainerBase(dict, abc.ABC):
     def as_variables(
         self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
     ):
-        """Converts all nested arrays to variables, which support gradient
-        computation.
+        """Converts all nested arrays to variables, which support gradient computation.
 
         Parameters
         ----------
@@ -2941,8 +2929,8 @@ class ContainerBase(dict, abc.ABC):
     def as_arrays(
         self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
     ):
-        """Converts all nested variables to arrays, which do not support
-        gradient computation.
+        """Converts all nested variables to arrays, which do not support gradient
+        computation.
 
         Parameters
         ----------
@@ -2976,8 +2964,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def num_arrays(self, exclusive=False):
-        """Compute the number of arrays present at the leaf nodes, including
-        variables by default.
+        """Compute the number of arrays present at the leaf nodes, including variables
+        by default.
 
         Parameters
         ----------
@@ -2991,8 +2979,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def size_ordered_arrays(self, exclusive=False):
-        """Return a container with keychains mapped to flat keys, and arrays
-        given in order of smallest to largest.
+        """Return a container with keychains mapped to flat keys, and arrays given in
+        order of smallest to largest.
 
         Parameters
         ----------
@@ -3126,8 +3114,7 @@ class ContainerBase(dict, abc.ABC):
     def to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
     ):
-        """Save container object to disk, as an h5py file, at the specified
-        filepath.
+        """Save container object to disk, as an h5py file, at the specified filepath.
 
         Parameters
         ----------
@@ -3175,8 +3162,7 @@ class ContainerBase(dict, abc.ABC):
                 ] = value_as_np[0:amount_to_write]
 
     def to_disk_as_pickled(self, pickle_filepath):
-        """Save container object to disk, as an pickled file, at the specified
-        filepath.
+        """Save container object to disk, as an pickled file, at the specified filepath.
 
         Parameters
         ----------
@@ -3206,8 +3192,7 @@ class ContainerBase(dict, abc.ABC):
         return return_dict
 
     def to_disk_as_json(self, json_filepath):
-        """Save container object to disk, as an json file, at the specified
-        filepath.
+        """Save container object to disk, as an json file, at the specified filepath.
 
         Parameters
         ----------
@@ -3355,8 +3340,8 @@ class ContainerBase(dict, abc.ABC):
         return list([item for key, item in self.to_iterator()])
 
     def from_flat_list(self, flat_list):
-        """Return new container object with the same hierarchy, but with values
-        replaced from flat list.
+        """Return new container object with the same hierarchy, but with values replaced
+        from flat list.
 
         Parameters
         ----------
@@ -3378,8 +3363,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(new_dict, **self._config)
 
     def has_key(self, query_key):
-        """Determine whether container object has specified key somewhere in
-        the nested structure.
+        """Determine whether container object has specified key somewhere in the nested
+        structure.
 
         Parameters
         ----------
@@ -3467,8 +3452,8 @@ class ContainerBase(dict, abc.ABC):
         return key_chain_found
 
     def contains_sub_container(self, sub_cont, partial=False):
-        """Determine whether the current container contains the sub-container,
-        with matching structure and array values.
+        """Determine whether the current container contains the sub-container, with
+        matching structure and array values.
 
         Parameters
         ----------
@@ -3489,8 +3474,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def assert_contains_sub_container(self, sub_cont, partial=False):
-        """Asserts that the current container contains the sub-container,
-        otherwise exception raised with the diff printed to screen.
+        """Asserts that the current container contains the sub-container, otherwise
+        exception raised with the diff printed to screen.
 
         Parameters
         ----------
@@ -3516,8 +3501,7 @@ class ContainerBase(dict, abc.ABC):
             )
 
     def find_sub_structure(self, sub_struc_to_find, check_shapes=True, partial=False):
-        """Find the sub-container structure in the current container if it
-        exsits.
+        """Find the sub-container structure in the current container if it exsits.
 
         Parameters
         ----------
@@ -3561,8 +3545,7 @@ class ContainerBase(dict, abc.ABC):
         return key_chain_found
 
     def contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
-        """Determine whether the current container contains the sub-container
-        structure.
+        """Determine whether the current container contains the sub-container structure.
 
         Parameters
         ----------
@@ -3581,8 +3564,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def assert_contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
-        """Asserts that the current container contains the sub-container
-        structure, otherwise exception raised with the diff printed to screen.
+        """Asserts that the current container contains the sub-container structure,
+        otherwise exception raised with the diff printed to screen.
 
         Parameters
         ----------
@@ -3616,8 +3599,8 @@ class ContainerBase(dict, abc.ABC):
             )
 
     def has_nans(self, include_infs=True, leafwise=False):
-        """Determine whether arrays in the container contain any nans, as well
-        as infs or -infs if specified.
+        """Determine whether arrays in the container contain any nans, as well as infs
+        or -infs if specified.
 
         Parameters
         ----------
@@ -3640,8 +3623,7 @@ class ContainerBase(dict, abc.ABC):
     def at_keys(
         self, queries, ignore_none=True, containing=False, ignore_key_errors=False
     ):
-        """Query container object at specified keys, either as list or nested
-        dict.
+        """Query container object at specified keys, either as list or nested dict.
 
         Parameters
         ----------
@@ -3708,8 +3690,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
-        """Query container object at specified key-chains, either as list or
-        nested dict.
+        """Query container object at specified key-chains, either as list or nested
+        dict.
 
         Parameters
         ----------
@@ -4064,8 +4046,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(new_dict, **self._config)
 
     def prune_empty(self, keep_nones=False, base=True):
-        """Recursively prunes empty keys from the container dict structure.
-        Returns None if the entire container is empty.
+        """Recursively prunes empty keys from the container dict structure. Returns None
+        if the entire container is empty.
 
         Parameters
         ----------
@@ -4095,8 +4077,8 @@ class ContainerBase(dict, abc.ABC):
         return
 
     def prune_key_from_key_chains(self, absolute=None, containing=None):
-        """Recursively prune absolute key or key containing a certain substring
-        from all key chains.
+        """Recursively prune absolute key or key containing a certain substring from all
+        key chains.
 
         Parameters
         ----------
@@ -4128,8 +4110,8 @@ class ContainerBase(dict, abc.ABC):
         return out_cont
 
     def prune_keys_from_key_chains(self, absolute=None, containing=None):
-        """Recursively prune absolute keys or keys containing certain
-        substrings from all key chains.
+        """Recursively prune absolute keys or keys containing certain substrings from
+        all key chains.
 
         Parameters
         ----------
@@ -4163,9 +4145,8 @@ class ContainerBase(dict, abc.ABC):
         return out_cont
 
     def restructure_key_chains(self, keychain_mapping, keep_orig=True, replace=True):
-        """Create a new container with the same contents, but a new key-chain
-        structure. Given by the mapping with keys as old key-chains and values
-        as new key-chains.
+        """Create a new container with the same contents, but a new key-chain structure.
+        Given by the mapping with keys as old key-chains and values as new key-chains.
 
         Parameters
         ----------
@@ -4187,9 +4168,9 @@ class ContainerBase(dict, abc.ABC):
         return new_cont
 
     def restructure(self, mapping, keep_orig=True, replace=True):
-        """Create a new container with the same contents, but a new key-chain
-        structure, and transposes and/or reshaped arrays. Given by the mapping
-        with keys as old key-chains and values as new key-chains.
+        """Create a new container with the same contents, but a new key-chain structure,
+        and transposes and/or reshaped arrays. Given by the mapping with keys as old
+        key-chains and values as new key-chains.
 
         Parameters
         ----------
@@ -4421,8 +4402,8 @@ class ContainerBase(dict, abc.ABC):
         return self.map(to_list)
 
     def reshape_like(self, target_dict, leading_shape=None, return_cont=None):
-        """Set shapes of container entries to shapes specified by new container
-        with the same key structure.
+        """Set shapes of container entries to shapes specified by new container with the
+        same key structure.
 
         Parameters
         ----------
@@ -4452,8 +4433,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_cont, **self._config)
 
     def create_if_absent(self, key, value, inplace=True):
-        """Add a key to the container with corresponding value, if it is not
-        already present. otherwise, do nothing.
+        """Add a key to the container with corresponding value, if it is not already
+        present. otherwise, do nothing.
 
         Parameters
         ----------
@@ -4469,8 +4450,7 @@ class ContainerBase(dict, abc.ABC):
         self.set_at_key_chain(key, value, inplace)
 
     def if_exists(self, key):
-        """Returns the sub-container at the following key if it exists,
-        otherwise None.
+        """Returns the sub-container at the following key if it exists, otherwise None.
 
         Parameters
         ----------
@@ -5312,29 +5292,29 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def shape(self):
-        """The shape of the arrays in the container, with None placed in
-        indices which are not consistent across arrays.
+        """The shape of the arrays in the container, with None placed in indices which
+        are not consistent across arrays.
         """
         return self._get_shape()
 
     @property
     def shapes(self):
-        """The shapes of each array in the container, with None placed in leaf
-        entries without a shape attribute.
+        """The shapes of each array in the container, with None placed in leaf entries
+        without a shape attribute.
         """
         return self._get_shapes()
 
     @property
     def dev(self):
-        """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent.
+        """The device to which the arrays in the container belong, with None returned if
+        the devices are not consistent.
         """
         return self._get_dev()
 
     @property
     def dev_str(self):
-        """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent.
+        """The device to which the arrays in the container belong, with None returned if
+        the devices are not consistent.
         """
         return self._get_dev(as_str=True)
 
