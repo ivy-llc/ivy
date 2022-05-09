@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Iterable
+from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
