@@ -23,10 +23,11 @@ def cross_entropy(
     pred
         input array containing the predicted labels.
     axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``, the cross-entropy will be computed along the last dimension. Default: ``-1``.
+        the axis along which to compute the cross-entropy. If axis is ``-1``, the
+        cross-entropy will be computed along the last dimension. Default: ``-1``.
     epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the loss. If epsilon is ``0``, no smoothing will be applied.
-        Default: ``1e-7``.
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
 
     Returns
     -------
