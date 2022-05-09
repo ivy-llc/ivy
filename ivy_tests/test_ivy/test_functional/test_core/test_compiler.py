@@ -1,14 +1,14 @@
 """Collection of tests for unified general functions."""
 
 # global
-import pytest
-import numpy as np
-from numbers import Number
+# import pytest
+# import numpy as np
+# from numbers import Number
 
 # local
-import ivy
-import ivy.functional.backends.numpy
-import ivy_tests.test_ivy.helpers as helpers
+# import ivy
+# import ivy.functional.backends.numpy
+# import ivy_tests.test_ivy.helpers as helpers
 
 
 # Tests #
@@ -33,17 +33,17 @@ def _fn_2(x, with_non_compiled: bool = False):
     return (x + 10) ** 0.5 - 5
 
 
-# @pytest.mark.parametrize(
-#     "x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# @pytest.mark.parametrize(
-#     "with_array_caching", [True, False])
+# @pytest.mark.parametrize("x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+# @pytest.mark.parametrize("with_array_caching", [True, False])
 # def test_compile(x, dtype, tensor_fn, with_array_caching, dev, call):
 #     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+#     if (
+#         (isinstance(x, Number) or len(x) == 0)
+#         and tensor_fn == helpers.var_fn
+#         and call is helpers.mx_call
+#     ):
 #         # mxnet does not support 0-dimensional variables
 #         pytest.skip()
 #
