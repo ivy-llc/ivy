@@ -88,7 +88,8 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -110,7 +111,8 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -129,7 +131,8 @@ def is_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -259,7 +262,8 @@ def all_equal(
     Returns
     -------
     ret
-        Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.
+        Boolean, whether or not the inputs are equal, or matrix array of booleans if
+        equality_matrix=True is set.
 
     """
     equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
@@ -380,7 +384,8 @@ def clip_vector_norm(
     p
         optional float, the p-value for computing the p-norm. Default is 2.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -440,7 +445,8 @@ def floormod(
     y
         array, denominator input for floormod.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -493,16 +499,20 @@ def fourier_encode(
     num_bands
         The number of frequency bands for the encoding. Default is 4.
     linear
-        Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
+        Whether to space the frequency bands linearly as opposed to geometrically.
+        Default is False.
     concat
-        Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
+        Whether to concatenate the position, sin and cos values, or return seperately.
+        Default is True.
     flatten
-        Whether to flatten the position dimension into the batch dimension. Default is False.
+        Whether to flatten the position dimension into the batch dimension. Default is
+        False.
 
     Returns
     -------
     ret
-        New array with the final dimension expanded, and the encodings stored in this channel.
+        New array with the final dimension expanded, and the encodings stored in this
+        channel.
 
     """
     x_in = x
@@ -708,7 +718,8 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     receivers
         Functions and/or classes to match the keyword arguments to.
     allow_duplicates
-        Whether to allow one keyword argument to be used for multiple receivers. Default is False.
+        Whether to allow one keyword argument to be used for multiple receivers.
+        Default is False.
 
     Returns
     -------
@@ -1029,7 +1040,8 @@ def container_types():
     Returns
     -------
     ret
-        a key-value structure, and exposes public methods .keys(), .values() and items().
+        a key-value structure, and exposes public methods .keys(), .values() and
+        items().
 
     """
     # noinspection PyBroadException
@@ -1248,12 +1260,14 @@ def scatter_flat(
     size
         The size of the result.
     tensor
-        The tensor in which to scatter the results, default is None, in which case the size is used to
+        The tensor in which to scatter the results, default is None, in which case the
+        size is used to
         scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+        updates if None.
 
     Returns
     -------
@@ -1284,14 +1298,17 @@ def scatter_nd(
     updates
         Values for the new array to hold.
     shape
-        The shape of the result. Default is None, in which case tensor argument must be provided.
+        The shape of the result. Default is None, in which case tensor argument must be
+        provided.
     tensor
-        The tensor in which to scatter the results, default is None, in which case the shape arg is used to
+        The tensor in which to scatter the results, default is None, in which case the
+        shape arg is used to
         scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+        updates if None.
 
     Returns
     -------
@@ -1323,14 +1340,16 @@ def gather(
     axis
         optional int, the axis from which to gather from. Default is -1.
     device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
+        'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        New array with the values gathered at the specified indices along the specified axis.
+        New array with the values gathered at the specified indices along the specified
+        axis.
 
     """
     return _cur_framework(params).gather(params, indices, axis, device, out=out)
@@ -1351,7 +1370,8 @@ def gather_nd(
     indices
         Index array.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
 
     Returns
     -------
@@ -1368,9 +1388,8 @@ def multiprocessing(context: str = None):
     Parameters
     ----------
     context
-        The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
-    context
-         (Default value = None)
+        The context of the multiprocessing, either fork, forkserver or spawn.
+        Default is None.
 
     Returns
     -------
@@ -1413,12 +1432,14 @@ def one_hot(
     depth
         Scalar defining the depth of the one-hot dimension.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
 
     Returns
     -------
     ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
 
     """
     return _cur_framework(indices).one_hot(indices, depth, device)
