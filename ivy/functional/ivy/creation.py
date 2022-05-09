@@ -394,14 +394,12 @@ def eye(n_rows: int,
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, axis: int = None, device: ivy.Device = None, dtype = None, endpoint: bool = True) \
         -> Union[ivy.Array, ivy.NativeArray]:
-
     """Generates a certain number of evenly-spaced values in an interval along
     a given axis.
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
     Parameters
     ----------
-
     start
         First entry in the range.
     stop
