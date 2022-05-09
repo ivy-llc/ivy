@@ -375,6 +375,7 @@ def eye(n_rows: int,
         point data type. Default: None.
     device
          device on which to place the created array.
+
     Returns
      -------
     ret
@@ -382,7 +383,6 @@ def eye(n_rows: int,
 
     Examples
     --------
-
     >>> y = ivy.eye(2)
     >>> print(y)
     [[1, 0],[0, 1]]
@@ -394,12 +394,14 @@ def eye(n_rows: int,
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, axis: int = None, device: ivy.Device = None, dtype = None, endpoint: bool = True) \
         -> Union[ivy.Array, ivy.NativeArray]:
+
     """Generates a certain number of evenly-spaced values in an interval along
     a given axis.
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
     Parameters
     ----------
+
     start
         First entry in the range.
     stop
@@ -410,6 +412,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+
     Returns
      -------
     ret
@@ -544,6 +547,5 @@ def logspace(
     >>> y = ivy.logspace(2,3,num=4)
     >>> print(y)
     [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
-
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis, device)
