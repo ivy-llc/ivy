@@ -21,11 +21,10 @@ class Linear(Module):
         device=None,
         v=None,
     ):
-        """Linear layer, also referred to as dense or fully connected. The
-        layer receives tensors with input_channels last dimension and returns a
-        new tensor with output_channels last dimension, following matrix
-        multiplication with the weight matrix and addition with the bias
-        vector.
+        """Linear layer, also referred to as dense or fully connected. The layer
+        receives tensors with input_channels last dimension and returns a new tensor
+        with output_channels last dimension, following matrix multiplication with the
+        weight matrix and addition with the bias vector.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -85,9 +84,8 @@ class Linear(Module):
 
 class Dropout(Module):
     def __init__(self, prob, scale=True):
-        """Dropout layer. The layer randomly zeroes some of the elements of the
-        input tensor with probability p using samples from a Bernoull
-        distribution.
+        """Dropout layer. The layer randomly zeroes some of the elements of the input
+        tensor with probability p using samples from a Bernoull distribution.
 
         :param prob: The probability of zeroing out each array element.
         :type prob: float

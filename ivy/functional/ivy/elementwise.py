@@ -16,8 +16,7 @@ def bitwise_left_shift(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
+    """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
     appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to
     the right of ``x1_i``.
 
@@ -38,6 +37,7 @@ def bitwise_left_shift(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).bitwise_left_shift(x1, x2, out)
 
@@ -47,8 +47,7 @@ def add(
     x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
+    """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
@@ -228,6 +227,7 @@ def add(
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
     }
+
     """
     return _cur_framework(x1, x2).add(x1, x2, out)
 
@@ -237,8 +237,7 @@ def bitwise_xor(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the bitwise XOR of the underlying binary representation of each element
+    """Computes the bitwise XOR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
@@ -258,6 +257,7 @@ def bitwise_xor(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).bitwise_xor(x1, x2, out)
 
@@ -415,9 +415,8 @@ def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the smallest
-    (i.e., closest to ``-infinity``) integer-valued number that is not less than
-    ``x_i``.
+    """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
+    closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
 
     **Special cases**
 
@@ -460,9 +459,8 @@ def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the greatest
-    (i.e., closest to ``+infinity``) integer-valued number that is not greater than
-    ``x_i``.
+    """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
+    closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
 
     **Special cases**
 
@@ -498,8 +496,8 @@ def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Tests each element ``x_i`` of the input array ``x`` to determine if finite
-    (i.e., not ``NaN`` and not equal to positive or negative infinity).
+    """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
+    not ``NaN`` and not equal to positive or negative infinity).
 
     Parameters
     ----------
@@ -561,8 +559,7 @@ def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Tests each element x_i of the input array x to determine if equal to positive or
+    """Tests each element x_i of the input array x to determine if equal to positive or
     negative infinity.
 
     Parameters
@@ -579,6 +576,7 @@ def isinf(
         an array containing test results. An element out_i is True if x_i is either
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
+
     """
     return _cur_framework(x).isinf(x, out)
 
@@ -1186,8 +1184,7 @@ def logical_xor(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the bitwise XOR of the underlying binary representation of each element
+    """Computes the bitwise XOR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
@@ -1207,6 +1204,7 @@ def logical_xor(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).logical_xor(x1, x2, out)
 
@@ -1668,11 +1666,10 @@ def abs(
 def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         out: Optional[Union[ivy.Array, ivy.Container]] = None)\
         -> Union[ivy.Array, ivy.Container]:
-    """
-    Calculates an implementation-dependent approximation to the tangent, having domain
-    ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element
-    ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in
-    radians.
+    """Calculates an implementation-dependent approximation to the tangent, having
+    domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
+    element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
+    expressed in radians.
 
     **Special cases**
 
@@ -1759,6 +1756,7 @@ def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         a: ivy.array([0., 1.5574077, -2.1850398]),
         b: ivy.array([-0.14254655, 1.1578213, -3.380515])
     }
+
     """
     return _cur_framework(x).tan(x, out)
 
@@ -1808,7 +1806,7 @@ def atan2(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
-    the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x
+    the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x.
     [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs
     of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements
     ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each
@@ -2078,8 +2076,8 @@ def remainder(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns the remainder of division for each element ``x1_i`` of the input
-    array ``x1`` and the respective element ``x2_i`` of the input array ``x2``.
+    """Returns the remainder of division for each element ``x1_i`` of the input array
+    ``x1`` and the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
         This function is equivalent to the Python modulus operator ``x1_i % x2_i``. For

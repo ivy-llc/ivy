@@ -46,8 +46,8 @@ def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     rtol: Optional[Union[float, Tuple[float]]] = None,
 ) -> ivy.Array:
-    """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of
-    matrices) ``x``.
+    """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
+    ``x``.
 
     Parameters
     ----------
@@ -66,8 +66,7 @@ def pinv(
 
 
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Transposes a matrix (or a stack of matrices) ``x``.
+    """Transposes a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -207,8 +206,7 @@ def outer(
 def diagonal(
     x: ivy.Array, offset: int = 0, axis1: int = -2, axis2: int = -1
 ) -> ivy.Array:
-    """
-    Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
+    """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -231,6 +229,7 @@ def diagonal(
     -------
     ret
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
+
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
@@ -343,8 +342,8 @@ def matmul(
 
 
 def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
-    """Raises a square matrix (or a stack of square matrices) x to an integer
-    power n.
+    """Raises a square matrix (or a stack of square matrices) x to an integer power
+    n.
     """
     return _cur_framework(x).matrix_power(x, n)
 
@@ -465,8 +464,7 @@ def vecdot(
     x2: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
 ) -> ivy.Array:
-    """
-    Computes the (vector) dot product of two arrays.
+    """Computes the (vector) dot product of two arrays.
 
     Parameters
     ----------
@@ -492,8 +490,7 @@ def vecdot(
 
 
 def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Returns the determinant of a square matrix (or a stack of square
-    matrices) ``x``.
+    """Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
 
     Parameters
     ----------
@@ -543,8 +540,8 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
 
 
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric
-    matrices) x.
+    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
+    x.
 
     Parameters
     ----------
@@ -563,8 +560,8 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
 
 
 def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Returns the multiplicative inverse of a square matrix (or a stack of
-    square matrices) ``x``.
+    """Returns the multiplicative inverse of a square matrix (or a stack of square
+    matrices) ``x``.
 
     Parameters
     ----------
@@ -600,8 +597,8 @@ def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     rtol: Optional[Union[float, Tuple[float]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the rank (i.e., number of non-zero singular values) of a matrix
-    (or a stack of matrices).
+    """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
+    stack of matrices).
 
     Parameters
     ----------
@@ -635,10 +632,9 @@ def cross(
     x2: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi-
-    dimensional arrays (i.e., both have a rank greater than 1), then the cross-
-    product of each pair of corresponding 3-element vectors is independently
-    computed.
+    """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
+    of corresponding 3-element vectors is independently computed.
 
     Parameters
     ----------

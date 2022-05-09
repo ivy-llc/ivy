@@ -369,8 +369,7 @@ def clip_vector_norm(
     p: float = 2.0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Clips (limits) the vector p-norm of an array.
+    """Clips (limits) the vector p-norm of an array.
 
     Parameters
     ----------
@@ -387,6 +386,7 @@ def clip_vector_norm(
     -------
     ret
         An array with the vector norm downscaled to the max norm if needed.
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -431,8 +431,7 @@ def floormod(
     y: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise remainder of division.
+    """Returns element-wise remainder of division.
 
     Parameters
     ----------
@@ -447,6 +446,7 @@ def floormod(
     -------
     ret
         An array of the same shape and type as x, with the elements floor modded.
+
     """
     return _cur_framework(x).floormod(x, y, out)
 
@@ -569,8 +569,8 @@ def value_is_nan(
 
 
 def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
-    """Determine whether the array contains any nans, as well as infs or -infs
-    if specified.
+    """Determine whether the array contains any nans, as well as infs or -infs if
+    specified.
 
     Parameters
     ----------
@@ -675,8 +675,8 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
 
 def try_else_none(fn):
-    """Try and return the function, otherwise return None if an exception was
-    raised during function execution.
+    """Try and return the function, otherwise return None if an exception was raised
+    during function execution.
 
     Parameters
     ----------
@@ -730,8 +730,8 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
 
 
 def cache_fn(func: Callable) -> Callable:
-    """Wrap a function, such that when cache=True is passed as an argument, a
-    previously cached output is returned.
+    """Wrap a function, such that when cache=True is passed as an argument, a previously
+    cached output is returned.
 
     Parameters
     ----------
@@ -863,8 +863,7 @@ def einops_repeat(
 
 
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable
-    division.
+    """Get the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
@@ -882,8 +881,7 @@ def get_min_denominator() -> float:
 
 
 def set_min_denominator(val: float) -> None:
-    """Set the global minimum denominator used by ivy for numerically stable
-    division.
+    """Set the global minimum denominator used by ivy for numerically stable division.
 
     Parameters
     ----------
@@ -895,16 +893,13 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power
-    raising.
-    """
+    """Get the global minimum base used by ivy for numerically stable power raising."""
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
 
 def set_min_base(val: float) -> None:
-    """Set the global minimum base used by ivy for numerically stable power
-    raising.
+    """Set the global minimum base used by ivy for numerically stable power raising.
 
     Parameters
     ----------
@@ -918,8 +913,8 @@ def set_min_base(val: float) -> None:
 def stable_divide(
     numerator: Any, denominator: Any, min_denominator: float = None
 ) -> Any:
-    """Divide the numerator by the denominator, with min denominator added to
-    the denominator for numerical stability.
+    """Divide the numerator by the denominator, with min denominator added to the
+    denominator for numerical stability.
 
     Parameters
     ----------
@@ -941,8 +936,8 @@ def stable_divide(
 
 
 def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
-    """Raise the base by the power, with MIN_BASE added to the base when
-    exponent > 1 for numerical stability.
+    """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
+    for numerical stability.
 
     Parameters
     ----------
@@ -988,8 +983,8 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without
-    this function being called is 10 seconds.
+    """Set the global queue timeout values (in seconds). Default value without this
+    function being called is 10 seconds.
 
     Parameters
     ----------
@@ -1045,8 +1040,7 @@ def container_types():
 
 
 def inplace_arrays_supported(f=None):
-    """Determine whether inplace arrays are supported for the current backend
-    framework.
+    """Determine whether inplace arrays are supported for the current backend framework.
 
     Parameters
     ----------
@@ -1063,8 +1057,8 @@ def inplace_arrays_supported(f=None):
 
 
 def inplace_variables_supported(f=None):
-    """Determine whether inplace variables are supported for the current
-    backend framework.
+    """Determine whether inplace variables are supported for the current backend
+    framework.
 
     Parameters
     ----------
@@ -1081,8 +1075,7 @@ def inplace_variables_supported(f=None):
 
 
 def supports_inplace(x):
-    """Determine whether inplace operations are supported for the data type of
-    x.
+    """Determine whether inplace operations are supported for the data type of x.
 
     Parameters
     ----------
@@ -1103,8 +1096,7 @@ def supports_inplace(x):
 
 
 def assert_supports_inplace(x):
-    """Asserts that inplace operations are supported for x, else raises
-    exception.
+    """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters
     ----------
@@ -1127,10 +1119,9 @@ def assert_supports_inplace(x):
 
 
 def inplace_update(x, val):
-    """Perform in-place update for the input array. This will always be
-    performed on ivy.Array instances pass in the input, and will also be
-    performed on the native array classes in the backend, when the backend
-    supports this.
+    """Perform in-place update for the input array. This will always be performed on
+    ivy.Array instances pass in the input, and will also be performed on the native
+    array classes in the backend, when the backend supports this.
 
     Parameters
     ----------
@@ -1191,8 +1182,7 @@ def cumsum(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative sum of the elements along a given axis.
+    """Returns the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1207,6 +1197,7 @@ def cumsum(
     -------
     ret
         Input array with cumulatively summed elements along axis
+
     """
     return _cur_framework(x).cumsum(x, axis, out=out)
 
@@ -1217,8 +1208,7 @@ def cumprod(
     exclusive: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative product of the elements along a given axis.
+    """Returns the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
