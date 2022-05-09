@@ -122,7 +122,6 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -148,20 +147,26 @@
 
 <span class="sd">        :param lr: Learning rate.</span>
 <span class="sd">        :type lr: function or float.</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch.</span>
-<span class="sd">                        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
+<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
+<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
+<span class="sd">                        the backend framework supports it.</span>
 <span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
+<span class="sd">                               gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.</span>
+<span class="sd">        :param init_on_first_step: Whether the optimizer is initialized on the first</span>
+<span class="sd">                                   step. Default is False.</span>
 <span class="sd">        :type init_on_first_step: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
+<span class="sd">                                     Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is</span>
-<span class="sd">                                         raised during the compiled forward pass. Default is True.</span>
+<span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward</span>
+<span class="sd">                                         call in the case that an error is raised during</span>
+<span class="sd">                                         the compiled forward pass. Default is True.</span>
 <span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -254,13 +259,16 @@
 
 <span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
 <span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch.</span>
-<span class="sd">                        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
+<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
+<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
+<span class="sd">                        the backend framework supports it.</span>
 <span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
+<span class="sd">                               gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
+<span class="sd">                                     Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -318,13 +326,16 @@
 <span class="sd">        :type lr: float, optional</span>
 <span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
 <span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch.</span>
-<span class="sd">                        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
+<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
+<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
+<span class="sd">                        the backend framework supports it.</span>
 <span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
+<span class="sd">                               gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
+<span class="sd">                                     Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -389,17 +400,22 @@
 <span class="sd">        :type beta1: float, optional</span>
 <span class="sd">        :param beta2: second moment of gradient forgetting factor, default is 0.999</span>
 <span class="sd">        :type beta2: float, optional</span>
-<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default</span>
+<span class="sd">                        is 1e-07</span>
 <span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch.</span>
-<span class="sd">                        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
+<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
+<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
+<span class="sd">                        the backend framework supports it.</span>
 <span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
+<span class="sd">                               gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
+<span class="sd">                                     Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -483,22 +499,28 @@
 <span class="sd">        :type beta1: float, optional</span>
 <span class="sd">        :param beta2: second moment of gradient forgetting factor, default is 0.999</span>
 <span class="sd">        :type beta2: float, optional</span>
-<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default</span>
+<span class="sd">                        is 1e-07</span>
 <span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param max_trust_ratio: The max value of the trust ratio; the ratio between the norm of the layer weights and</span>
-<span class="sd">                                norm of gradients update. Default is 10.</span>
+<span class="sd">        :param max_trust_ratio: The max value of the trust ratio; the ratio between the</span>
+<span class="sd">                                norm of the layer weights and norm of gradients update.</span>
+<span class="sd">                                Default is 10.</span>
 <span class="sd">        :type max_trust_ratio: float, optional</span>
 <span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
 <span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch.</span>
-<span class="sd">                        Default is True, provided the backend framework supports it.</span>
+<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
+<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
+<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
+<span class="sd">                        the backend framework supports it.</span>
 <span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
+<span class="sd">                               gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
+<span class="sd">                                     Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
