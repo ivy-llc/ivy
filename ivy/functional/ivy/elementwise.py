@@ -803,7 +803,6 @@ def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
     ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
     rounding, each result must be indistinguishable from the infinitely precise result
