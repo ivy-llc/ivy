@@ -40,7 +40,8 @@ def test_fomaml_step_unique_vars(
 ):
 
     if call is helpers.np_call:
-        # Numpy does not support gradients, and jax does not support gradients on custom nested classes
+        # Numpy does not support gradients, and jax does not support gradients on
+        # custom nested classes
         pytest.skip()
 
     # config
@@ -186,8 +187,9 @@ def test_fomaml_step_shared_vars(
     return_inner_v,
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     # config
@@ -352,8 +354,9 @@ def test_fomaml_step_overlapping_vars(
     return_inner_v,
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     # config
@@ -492,8 +495,9 @@ def test_reptile_step(
     device, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     # config
@@ -612,8 +616,9 @@ def test_maml_step_unique_vars(
     return_inner_v,
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     if call in [helpers.tf_call, helpers.tf_graph_call]:
@@ -759,8 +764,9 @@ def test_maml_step_shared_vars(
     return_inner_v,
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     if call in [helpers.tf_call, helpers.tf_graph_call]:
@@ -971,8 +977,9 @@ def test_maml_step_overlapping_vars(
     return_inner_v,
 ):
     if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes, and mxnet does not support only_inputs argument to
+        # mx.autograd.grad
         pytest.skip()
 
     if call in [helpers.tf_call, helpers.tf_graph_call]:
