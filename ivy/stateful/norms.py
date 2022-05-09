@@ -1,6 +1,4 @@
-"""
-Collection of Ivy normalization classes.
-"""
+"""Collection of Ivy normalization classes."""
 
 # local
 import ivy
@@ -18,8 +16,7 @@ class LayerNorm(Module):
         device=None,
         v=None,
     ):
-        """
-        Class for applying Layer Normalization over a mini-batch of inputs
+        """Class for applying Layer Normalization over a mini-batch of inputs.
 
         :param normalized_shape: Trailing shape to applying the normalization to.
         :type normalized_shape: int or sequence of ints
@@ -33,6 +30,7 @@ class LayerNorm(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each submodule in the sequence, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
         self._epsilon = epsilon
@@ -45,9 +43,7 @@ class LayerNorm(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         if self._elementwise_affine:
             return {
                 "scale": self._scale_init.create_variables(self._scale_shape, device),
@@ -58,12 +54,12 @@ class LayerNorm(Module):
         return {}
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the LayerNorm layer.
+        """Perform forward pass of the LayerNorm layer.
 
         :param inputs: Inputs to process.
         :type inputs: array
         :return: The outputs following the layer normalization operation.
+
         """
         return ivy.layer_norm(
             inputs,

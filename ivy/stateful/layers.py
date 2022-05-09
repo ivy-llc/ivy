@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network layers as stateful classes.
-"""
+"""Collection of Ivy neural network layers as stateful classes."""
 
 # local
 import ivy
@@ -23,9 +21,9 @@ class Linear(Module):
         device=None,
         v=None,
     ):
-        """
-        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
-        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
+        """Linear layer, also referred to as dense or fully connected. The layer
+        receives tensors with input_channels last dimension and returns a new tensor
+        with output_channels last dimension, following matrix multiplication with the
         weight matrix and addition with the bias vector.
 
         :param input_channels: Number of input channels for the layer.
@@ -42,6 +40,7 @@ class Linear(Module):
         :type device: ivy.Device, optional
         :param v: the variables for the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -53,9 +52,7 @@ class Linear(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -71,12 +68,12 @@ class Linear(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
         :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+
         """
         return ivy.linear(inputs, self.v.w, self.v.b if self._with_bias else None)
 
@@ -87,32 +84,30 @@ class Linear(Module):
 
 class Dropout(Module):
     def __init__(self, prob, scale=True):
-        """
-        Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
-        samples from a Bernoull distribution.
+        """Dropout layer. The layer randomly zeroes some of the elements of the input
+        tensor with probability p using samples from a Bernoull distribution.
 
         :param prob: The probability of zeroing out each array element.
         :type prob: float
         :param scale: Whether to scale the output by 1/(1-prob), default is True.
         :type scale: bool, optional
+
         """
         self._prob = prob
         self._scale = scale
         Module.__init__(self, None, None)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {}
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
         :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+
         """
         return ivy.dropout(inputs, self._prob, self._scale)
 
@@ -137,8 +132,7 @@ class MultiHeadAttention(Module):
         v=None,
         build_mode="on_init",
     ):
-        """
-        Multi Head Attention layer.
+        """Multi Head Attention layer.
 
         :param query_dim: The dimension of the attention queries.
         :type query_dim: int
@@ -167,6 +161,7 @@ class MultiHeadAttention(Module):
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
+
         """
         v_exists = ivy.exists(v)
         v = ivy.default(v, ivy.Container({"to_q": None, "to_kv": None, "to_out": None}))
@@ -218,8 +213,7 @@ class MultiHeadAttention(Module):
         return ivy.Container(to_kv={"k": self._to_k.v, "v": self._to_v.v})
 
     def _forward(self, inputs, context=None, mask=None):
-        """
-        Perform forward pass of the MultiHeadAttention layer.
+        """Perform forward pass of the MultiHeadAttention layer.
 
         :param inputs: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
         :type inputs: array
@@ -229,6 +223,7 @@ class MultiHeadAttention(Module):
         :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
         :type mask: array, optional
         :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
+
         """
         return ivy.multi_head_attention(
             inputs,
@@ -264,8 +259,7 @@ class Conv1D(Module):
         device=None,
         v=None,
     ):
-        """
-        1D convolutional layer.
+        """1D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -289,6 +283,7 @@ class Conv1D(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -308,9 +303,7 @@ class Conv1D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -321,12 +314,12 @@ class Conv1D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1D layer.
+        """Perform forward pass of the Conv1D layer.
 
         :param inputs: Inputs to process *[batch_size,w,d_in]*
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*
+
         """
         return (
             ivy.conv1d(
@@ -357,8 +350,7 @@ class Conv1DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        1D transpose convolutional layer.
+        """1D transpose convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -384,6 +376,7 @@ class Conv1DTranspose(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -404,9 +397,7 @@ class Conv1DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -417,12 +408,12 @@ class Conv1DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1DTranspose layer.
+        """Perform forward pass of the Conv1DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,w,d_in]*
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*
+
         """
         return (
             ivy.conv1d_transpose(
@@ -453,8 +444,7 @@ class Conv2D(Module):
         device=None,
         v=None,
     ):
-        """
-        2D convolutional layer.
+        """2D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -478,6 +468,7 @@ class Conv2D(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -497,9 +488,7 @@ class Conv2D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -510,12 +499,12 @@ class Conv2D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2D layer.
+        """Perform forward pass of the Conv2D layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv2d(
@@ -546,8 +535,7 @@ class Conv2DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        2D convolutional transpose layer.
+        """2D convolutional transpose layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -573,6 +561,7 @@ class Conv2DTranspose(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -593,9 +582,7 @@ class Conv2DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -606,12 +593,12 @@ class Conv2DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2DTranspose layer.
+        """Perform forward pass of the Conv2DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv2d_transpose(
@@ -641,8 +628,7 @@ class DepthwiseConv2D(Module):
         device=None,
         v=None,
     ):
-        """
-        depthwise 2D convolutional layer.
+        """Depthwise 2D convolutional layer.
 
         :param num_channels: Number of input channels for the layer.
         :type num_channels: int
@@ -664,6 +650,7 @@ class DepthwiseConv2D(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._num_channels = num_channels
         self._filter_shape = filter_shape
@@ -682,9 +669,7 @@ class DepthwiseConv2D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._num_channels, self._num_channels
@@ -695,12 +680,12 @@ class DepthwiseConv2D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the DepthwiseConv2D layer.
+        """Perform forward pass of the DepthwiseConv2D layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.depthwise_conv2d(
@@ -730,8 +715,7 @@ class Conv3D(Module):
         device=None,
         v=None,
     ):
-        """
-        3D convolutional layer.
+        """3D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -755,6 +739,7 @@ class Conv3D(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -774,9 +759,7 @@ class Conv3D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -787,12 +770,12 @@ class Conv3D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3D layer.
+        """Perform forward pass of the Conv3D layer.
 
         :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv3d(
@@ -823,8 +806,7 @@ class Conv3DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        3D convolutional transpose layer.
+        """3D convolutional transpose layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -850,6 +832,7 @@ class Conv3DTranspose(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -870,9 +853,7 @@ class Conv3DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -883,12 +864,12 @@ class Conv3DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3DTranspose layer.
+        """Perform forward pass of the Conv3DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv3d_transpose(
@@ -920,8 +901,7 @@ class LSTM(Module):
         device=None,
         v=None,
     ):
-        """
-        LSTM layer, which is a set of stacked lstm cells.
+        """LSTM layer, which is a set of stacked lstm cells.
 
         :param input_channels: Number of input channels for the layer
         :type input_channels: int
@@ -940,6 +920,7 @@ class LSTM(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each of the lstm cells, as a container, constructed internally by default.
         :type v: ivy container of parameter arrays, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -952,8 +933,8 @@ class LSTM(Module):
     # Public #
 
     def get_initial_state(self, batch_shape):
-        """
-        Get the initial state of the hidden and cell states, if not provided explicitly
+        """Get the initial state of the hidden and cell states, if not provided
+        explicitly.
         """
         batch_shape = list(batch_shape)
         return (
@@ -970,9 +951,7 @@ class LSTM(Module):
     # Overridden
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         input_weights = dict(
             zip(
                 ["layer_" + str(i) for i in range(self._num_layers)],
@@ -1013,8 +992,7 @@ class LSTM(Module):
         return {"input": input_weights, "recurrent": recurrent_weights}
 
     def _forward(self, inputs, initial_state=None):
-        """
-        Perform forward pass of the LSTM layer.
+        """Perform forward pass of the LSTM layer.
 
         :param inputs: Inputs to process *[batch_shape, t, in]*.
         :type inputs: array
@@ -1023,6 +1001,7 @@ class LSTM(Module):
         :type initial_state: tuple of list of arrays, optional
         :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,
                 each of dimension *[batch_shape, out]*
+
         """
         if initial_state is None:
             initial_state = self.get_initial_state(inputs.shape[:-2])
