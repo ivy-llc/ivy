@@ -735,8 +735,8 @@ def asinh(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
-    sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity,
-    +infinity]``, for each element ``x_i`` in the input array ``x``.
+    sine, having domain ``[-infinity, +infinity]`` and codomain
+    ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
 
     **Special cases**
 
@@ -803,10 +803,11 @@ def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Calculates the square root, having domain ``[0, +infinity]`` and codomain ``[0,
-    +infinity]``, for each element ``x_i`` of the input array ``x``. After rounding,
-    each result must be indistinguishable from the infinitely precise result (as
-    required by IEEE 754).
+
+    """Calculates the square root, having domain ``[0, +infinity]`` and codomain
+    ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
+    rounding, each result must be indistinguishable from the infinitely precise result
+    (as required by IEEE 754).
 
     **Special cases**
 
@@ -1402,8 +1403,7 @@ def floor_divide(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the result of dividing each element x1_i of the input array x1 by the
-    respective element x2_i of the input array x2 to the greatest (i.e., closest to.
-
+    respective element x2_i of the input array x2 to the greatest (i.e., closest to
     +infinity) integer-value number that is not greater than the division result.
 
     Parameters
@@ -1767,9 +1767,9 @@ def atan(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
-    the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2,
-    +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result
-    is expressed in radians.
+    the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain
+    ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each
+    element-wise result is expressed in radians.
 
     **Special cases**
 
@@ -1808,7 +1808,6 @@ def atan2(
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
     the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x.
-
     [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs
     of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements
     ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each
