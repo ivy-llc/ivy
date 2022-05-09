@@ -26,12 +26,14 @@ def random_uniform(
     Parameters
     ----------
     low
-        Lower boundary of the output interval. All values generated will be greater than or equal to ``low``.
+        Lower boundary of the output interval. All values generated will be greater than
+        or equal to ``low``.
     high
-        Upper boundary of the output interval. All the values generated will be less than ``high``.
+        Upper boundary of the output interval. All the values generated will be less
+        than ``high``.
     shape
-        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None``
-        (Default), a single value is returned.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
+        If size is ``None`` (Default), a single value is returned.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
@@ -60,10 +62,11 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
     std
         The standard deviation of the normal distribution to sample from. Default is 1.
     shape
-        Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
-        If size is None (default), a single value is returned.
+        Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are
+        drawn. If size is None (default), a single value is returned.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None)
 
     Returns
     -------
@@ -95,7 +98,8 @@ def multinomial(
     replace
         Whether to replace samples once they've been drawn. Default is True.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None)
 
     Returns
     -------
@@ -121,7 +125,8 @@ def randint(low, high, shape, device=None):
     shape
         a tuple defining the shape of the output tensor.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None)
 
     """
     return _cur_framework().randint(low, high, shape, device)
@@ -133,7 +138,8 @@ def seed(seed_value=0):
     Parameters
     ----------
     seed_value
-        Seed for random number generation, must be a positive integer. (Default value = 0)
+        Seed for random number generation, must be a positive integer.
+        (Default value = 0)
 
     """
     return _cur_framework().seed(seed_value)
