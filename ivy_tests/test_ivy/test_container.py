@@ -2539,12 +2539,12 @@ def test_container_has_key(device, call):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert "a" in container
-    assert "b" in container
-    assert "c" in container
-    assert "d" in container
-    assert "e" not in container
-    assert "f" not in container
+    assert container.has_key("a") # noqa
+    assert container.has_key("b") # noqa
+    assert container.has_key("c") # noqa
+    assert container.has_key("d") # noqa
+    assert not container.has_key("e") # noqa
+    assert not container.has_key("f") # noqa
 
 
 def test_container_has_key_chain(device, call):
