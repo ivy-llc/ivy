@@ -238,7 +238,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 
 # to_numpy
 @given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
-def test_to_numpy(x0_n_x1_n_res, device, call,fw):
+def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
         # torch does not support those dtypes
@@ -264,9 +264,11 @@ def test_to_numpy(x0_n_x1_n_res, device, call,fw):
 
 
 # to_scalar
-@given(object_in = st.sampled_from([[0.], [[[1]]], [True], [[1.]]]),
-       dtype = st.sampled_from(ivy_np.valid_dtype_strs))
-def test_to_scalar(object_in, dtype, device, call,fw):
+@given(
+    object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+)
+def test_to_scalar(object_in, dtype, device, call, fw):
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
         # torch does not support those dtypes
         return
@@ -291,11 +293,11 @@ def test_to_scalar(object_in, dtype, device, call,fw):
 
 # to_list
 @given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
-def test_to_list(x0_n_x1_n_res, device, call,fw):
+def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
         # torch does not support those dtypes
-        return    
+        return
     if call in [helpers.mx_call] and dtype == "int16":
         # mxnet does not support int16
         return
@@ -310,8 +312,12 @@ def test_to_list(x0_n_x1_n_res, device, call,fw):
     assert _get_shape_of_list(ret) == _get_shape_of_list(object_in)
     # value test
     assert np.allclose(
-        np.nan_to_num(np.asarray(ivy.to_list(ivy.array(object_in, dtype, device))),posinf=np.inf,neginf=-np.inf),
-        np.nan_to_num(np.array(object_in).astype(dtype),posinf=np.inf,neginf=-np.inf),
+        np.nan_to_num(
+            np.asarray(ivy.to_list(ivy.array(object_in, dtype, device))),
+            posinf=np.inf,
+            neginf=-np.inf,
+        ),
+        np.nan_to_num(np.array(object_in).astype(dtype), posinf=np.inf, neginf=-np.inf),
     )
     # compilation test
     if call in [helpers.torch_call]:
@@ -322,12 +328,15 @@ def test_to_list(x0_n_x1_n_res, device, call,fw):
 # shape
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
-    as_tensor = st.booleans(),
-    tensor_fn = st.sampled_from([ivy.array, helpers.var_fn])
+    as_tensor=st.booleans(),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"] or (not dtype in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)):
+    if fw == "torch" and (
+        dtype in ["uint16", "uint32", "uint64"]
+        or (not dtype in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
+    ):
         # torch does not support those dtypes
         return
     # smoke test
@@ -356,12 +365,15 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 # get_num_dims
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
-    as_tensor = st.booleans(),
-    tensor_fn = st.sampled_from([ivy.array, helpers.var_fn])
+    as_tensor=st.booleans(),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"] or (not dtype in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)):
+    if fw == "torch" and (
+        dtype in ["uint16", "uint32", "uint64"]
+        or (not dtype in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
+    ):
         # torch does not support those dtypes
         return
     # smoke test
@@ -388,65 +400,137 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 
 # minimum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
-def test_minimum(xy, as_variable, with_out, num_positional_args, native_array, container, instance_method, device, call,fw):
+@given(
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_minimum(
+    xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
     # smoke test
     dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
-    if fw == 'torch' and (d in ['uint16', 'uint32', 'uint64'] for d in dtype):
+    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
         return
-    if (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))\
-            and as_variable == True and fw == 'mxnet':
+    if (
+        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        and as_variable == True
+        and fw == "mxnet"
+    ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_array_function(
-        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'minimum',
-        x=np.asarray(x, dtype=dtype[0]),y=np.asarray(y, dtype=dtype[1]))
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "minimum",
+        x=np.asarray(x, dtype=dtype[0]),
+        y=np.asarray(y, dtype=dtype[1]),
+    )
 
 
 # maximum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
-def test_maximum(xy, as_variable, with_out, num_positional_args, native_array, container, instance_method, device, call,fw):
+@given(
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_maximum(
+    xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
     # smoke test
     dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
-    if fw == 'torch' and (d in ['uint16', 'uint32', 'uint64'] for d in dtype):
+    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
         return
-    if (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))\
-            and as_variable == True and fw == 'mxnet':
+    if (
+        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        and as_variable == True
+        and fw == "mxnet"
+    ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_array_function(
-        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'maximum',
-        x=np.asarray(x, dtype=dtype[0]),y=np.asarray(y, dtype=dtype[1]))
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "maximum",
+        x=np.asarray(x, dtype=dtype[0]),
+        y=np.asarray(y, dtype=dtype[1]),
+    )
 
 
 # clip
-@given(x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=3),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(3),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
-def test_clip(x_min_n_max, as_variable, with_out, num_positional_args, native_array, container, instance_method, device, call,fw):
+@given(
+    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=3),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_clip(
+    x_min_n_max,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
     # smoke test
-    if (isinstance(x_min_n_max[1][0], Number) or isinstance(x_min_n_max[1][1], Number) or isinstance(x_min_n_max[1][2], Number))\
-            and as_variable and call is helpers.mx_call:
+    if (
+        (
+            isinstance(x_min_n_max[1][0], Number)
+            or isinstance(x_min_n_max[1][1], Number)
+            or isinstance(x_min_n_max[1][2], Number)
+        )
+        and as_variable
+        and call is helpers.mx_call
+    ):
         # mxnet does not support 0-dimensional variables
         return
     dtype = x_min_n_max[0]
@@ -455,15 +539,28 @@ def test_clip(x_min_n_max, as_variable, with_out, num_positional_args, native_ar
     max_val1 = np.array(x_min_n_max[1][2], dtype=dtype[2])
     min_val = np.minimum(min_val1, max_val1)
     max_val = np.maximum(min_val1, max_val1)
-    if fw == 'torch' and (d in ['uint16', 'uint32', 'uint64'] for d in dtype):
+    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
         return
-    if ((len(min_val) != 0 and len(min_val) != 1) or (len(max_val) != 0 and len(max_val) != 1 ))\
-            and call in [helpers.mx_call]:
+    if (
+        (len(min_val) != 0 and len(min_val) != 1)
+        or (len(max_val) != 0 and len(max_val) != 1)
+    ) and call in [helpers.mx_call]:
         # mxnet only supports numbers or 0 or 1 dimensional arrays for min and max while performing clip
         return
     helpers.test_array_function(
-        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'clip',
-        x=np.asarray(x, dtype=dtype[0]),x_min=min_val,x_max=max_val)
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "clip",
+        x=np.asarray(x, dtype=dtype[0]),
+        x_min=min_val,
+        x_max=max_val,
+    )
 
 
 # clip_vector_norm
