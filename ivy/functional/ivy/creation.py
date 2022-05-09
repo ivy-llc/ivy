@@ -41,7 +41,7 @@ def arange(
         device on which to place the created array. Default: None.
 
     Returns
-    ----------
+    -------
     ret
         a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.
     """
@@ -69,7 +69,7 @@ def asarray(
         device on which to place the created array. Default: None.
 
     Returns
-    --------
+    -------
     An array interpretation of x.
     """
     return _cur_framework(x).asarray(x, dtype, device)
@@ -93,12 +93,12 @@ def zeros(
        device on which to place the created array. Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
        an array containing zeros.
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -127,13 +127,12 @@ def ones(
         device on which to place the created array. Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
         an array containing ones.
 
-    Examples:
-    ---------
-
+    Examples
+    --------
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
@@ -204,13 +203,12 @@ def ones_like(
         Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
         an array having the same shape as x and filled with ones.
 
-    Examples:
-    ---------
-
+    Examples
+    --------
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.ones_like(x)
     >>> print(y)
@@ -269,7 +267,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         below the main diagonal. If k > 0, the diagonal is above the main diagonal. Default: 0.
 
     Returns
-     -------
+    -------
     ret
         an array containing the lower triangular part(s). The returned array must have the same shape and data type as
         x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
@@ -291,7 +289,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         below the main diagonal. If k > 0, the diagonal is above the main diagonal. Default: 0.
 
     Returns
-     -------
+    -------
     ret
         an array containing the upper triangular part(s). The returned array must have the same shape and data type as
         x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
@@ -318,7 +316,7 @@ def empty(
         device on which to place the created array. Default: None.
 
     Returns
-     -------
+    -------
     ret
         an uninitialized array having a specified shape
 
@@ -343,7 +341,7 @@ def empty_like(
         device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
 
     Returns
-     -------
+    -------
     ret
         an array having the same shape as x and containing uninitialized data.
 
@@ -377,7 +375,7 @@ def eye(n_rows: int,
          device on which to place the created array.
 
     Returns
-     -------
+    -------
     ret
         a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
@@ -412,7 +410,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
-     -------
+    -------
     ret
         Tensor of evenly-spaced values.
     """
@@ -424,14 +422,16 @@ def meshgrid(
 ) -> List[ivy.Array]:
     """
     Returns coordinate matrices from coordinate vectors.
+    
     Parameters
     ----------
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``'xy'``.
+    
     Returns
-     -------
+    -------
     ret List[array]
         list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,
         - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.
@@ -490,7 +490,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         input (array) object.
 
     Returns
-     -------
+    -------
     ret
         an array containing the data in `x`.
 
@@ -536,7 +536,7 @@ def logspace(
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
-     -------
+    -------
     ret
         Tensor of evenly-spaced values.
 
