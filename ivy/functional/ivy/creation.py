@@ -20,7 +20,7 @@ def arange(
     device: ivy.Device = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
-     specified.
+    specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
     the interval including start but excluding stop). For integer arguments the function
@@ -436,8 +436,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
-    """
-    Returns coordinate matrices from coordinate vectors.
+    """Returns coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -521,8 +520,8 @@ def full(
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Returns a new array containing the data from another (array) object with
-    a ``__dlpack__`` method.
+    """Returns a new array containing the data from another (array) object with a
+    ``__dlpack__`` method.
 
     Parameters
     ----------

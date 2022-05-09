@@ -31,8 +31,8 @@ class Module(abc.ABC):
         with_partial_v=False,
         devices=None,
     ):
-        """Initialze Ivy layer, which is a stateful object consisting of
-        trainable variables.
+        """Initialze Ivy layer, which is a stateful object consisting of trainable
+        variables.
 
         :param device: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
@@ -302,8 +302,8 @@ class Module(abc.ABC):
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, device):
-        """Create internal trainable variables, and return as arbitrary nested
-        dict. Overridable.
+        """Create internal trainable variables, and return as arbitrary nested dict.
+        Overridable.
 
         :param device: The device string, specifying the device on which to create the variables.
         :type device: ivy.Deviceing
@@ -332,9 +332,7 @@ class Module(abc.ABC):
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """Forward pass while optionally tracking submodule returns and call
-        order.
-        """
+        """Forward pass while optionally tracking submodule returns and call order."""
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
