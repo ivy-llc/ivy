@@ -1527,7 +1527,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        out = None,
+        out=None,
     ):
         """Computes the elementwise minimum between this container and another container
         or number.
@@ -1552,16 +1552,18 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.minimum(x, other[kc] if is_container else other)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
-        out)
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.minimum(x, other[kc] if is_container else other)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
 
     def maximum(
         self,
@@ -1570,7 +1572,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        out = None,
+        out=None,
     ):
         """Computes the elementwise maximum between this container and another container
         or number.
@@ -1595,16 +1597,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.maximum(x, other[kc] if is_container else other)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.maximum(x, other[kc] if is_container else other)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
-            out
+            out,
         )
 
     def clip(
@@ -1615,7 +1618,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        out = None,
+        out=None,
     ):
         """Computes the elementwise clipped values between this container and clip_min
         and clip_max containers or numbers.
@@ -1643,20 +1646,22 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(clip_min, ivy.Container)
         max_is_container = isinstance(clip_max, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.clip(
-                x,
-                clip_min[kc] if min_is_container else clip_min,
-                clip_max[kc] if max_is_container else clip_max,
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
-        out)
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.clip(
+                    x,
+                    clip_min[kc] if min_is_container else clip_min,
+                    clip_max[kc] if max_is_container else clip_max,
+                )
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
 
     def clip_vector_norm(
         self,
@@ -2106,6 +2111,7 @@ class ContainerBase(dict, abc.ABC):
             Container object with all entries boolean evaluated.
 
         """
+
         def _ret_bool(x):
             if assert_is_bool:
                 assert isinstance(x, bool)
@@ -4584,6 +4590,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
+
         def _update_print_limit(cont, _):
             cont._print_limit = print_limit
             return cont
@@ -4616,6 +4623,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
+
         def _update_key_length_limit(cont, _):
             cont._key_length_limit = key_length_limit
             return cont
@@ -4647,6 +4655,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
+
         def _update_print_indent(cont, _):
             cont._print_indent = print_indent
             return cont
@@ -4667,6 +4676,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
+
         def _update_print_line_spacing(cont, _):
             cont._print_line_spacing = print_line_spacing
             return cont
@@ -4687,6 +4697,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
+
         def _update_default_key_color(cont, _):
             cont._default_key_color = default_key_color
             return cont
