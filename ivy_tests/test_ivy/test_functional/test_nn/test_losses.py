@@ -1,5 +1,4 @@
 # global
-import pytest
 import numpy as np
 from hypothesis import given, assume, strategies as st
 

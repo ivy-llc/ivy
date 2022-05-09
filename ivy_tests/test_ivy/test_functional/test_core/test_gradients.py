@@ -4,7 +4,6 @@
 from numbers import Number
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
 
 # local
 import ivy

@@ -1,7 +1,6 @@
 """Collection of tests for elementwise functions."""
 
 # global
-import pytest
 import numpy as np
 from hypothesis import given, assume, strategies as st
 
@@ -1506,7 +1505,7 @@ def test_negative(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(not dtype in ivy.invalid_dtype_strs)
+    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -1579,7 +1578,7 @@ def test_positive(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(not dtype in ivy.invalid_dtype_strs)
+    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -1696,7 +1695,7 @@ def test_round(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(not dtype in ivy.invalid_dtype_strs)
+    assume(dtype not in ivy.invalid_dtype_strs)
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_array_function(
