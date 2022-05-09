@@ -1550,7 +1550,7 @@ def test_gather_nd(prms_n_inds, dtype, tensor_fn, device, call):
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
+    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
     # value test
     assert np.allclose(
         call(ivy.gather_nd, prms, inds, device),
