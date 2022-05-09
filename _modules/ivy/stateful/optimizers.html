@@ -143,8 +143,8 @@
         <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct an general Optimizer. This is an abstract class, and must</span>
-<span class="sd">        be derived.</span>
+        <span class="sd">&quot;&quot;&quot;Construct an general Optimizer. This is an abstract class, and must be</span>
+<span class="sd">        derived.</span>
 
 <span class="sd">        :param lr: Learning rate.</span>
 <span class="sd">        :type lr: function or float.</span>
@@ -184,9 +184,8 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v from update step, using nested</span>
-<span class="sd">        grads container. Override this abstract method with child class custom</span>
-<span class="sd">        implementation.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v from update step, using nested grads</span>
+<span class="sd">        container. Override this abstract method with child class custom implementation.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -222,8 +221,7 @@
     <span class="c1"># Given #</span>
 
 <div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v from overriden private</span>
-<span class="sd">        self._step.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v from overriden private self._step.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -273,8 +271,8 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using</span>
-<span class="sd">        nested gradients container.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using nested</span>
+<span class="sd">        gradients container.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -338,8 +336,8 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using</span>
-<span class="sd">        nested gradients container.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using nested</span>
+<span class="sd">        gradients container.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -419,8 +417,8 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by Adam update step, using</span>
-<span class="sd">        nested grads container.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v by Adam update step, using nested grads</span>
+<span class="sd">        container.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -519,8 +517,8 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by LAMB update step, using</span>
-<span class="sd">        nested grads container.</span>
+        <span class="sd">&quot;&quot;&quot;Update nested variables container v by LAMB update step, using nested grads</span>
+<span class="sd">        container.</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>

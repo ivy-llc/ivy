@@ -151,8 +151,8 @@
         <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialze Ivy layer, which is a stateful object consisting of</span>
-<span class="sd">        trainable variables.</span>
+        <span class="sd">&quot;&quot;&quot;Initialze Ivy layer, which is a stateful object consisting of trainable</span>
+<span class="sd">        variables.</span>
 
 <span class="sd">        :param device: device on which to create the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
@@ -422,8 +422,8 @@
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create internal trainable variables, and return as arbitrary nested</span>
-<span class="sd">        dict. Overridable.</span>
+        <span class="sd">&quot;&quot;&quot;Create internal trainable variables, and return as arbitrary nested dict.</span>
+<span class="sd">        Overridable.</span>
 
 <span class="sd">        :param device: The device string, specifying the device on which to create the variables.</span>
 <span class="sd">        :type device: ivy.Deviceing</span>
@@ -452,9 +452,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call</span>
-<span class="sd">        order.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call order.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

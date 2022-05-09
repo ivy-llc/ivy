@@ -140,7 +140,7 @@
     <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns evenly spaced values within a given interval, with the spacing being</span>
-<span class="sd">     specified.</span>
+<span class="sd">    specified.</span>
 
 <span class="sd">    Values are generated within the half-open interval [start, stop) (in other words,</span>
 <span class="sd">    the interval including start but excluding stop). For integer arguments the function</span>
@@ -556,8 +556,7 @@
 <div class="viewcode-block" id="meshgrid"><a class="viewcode-back" href="../../../../functional/ivy/creation/meshgrid.html#ivy.functional.ivy.creation.meshgrid">[docs]</a><span class="k">def</span> <span class="nf">meshgrid</span><span class="p">(</span>
     <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">indexing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xy&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns coordinate matrices from coordinate vectors.</span>
+    <span class="sd">&quot;&quot;&quot;Returns coordinate matrices from coordinate vectors.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -641,8 +640,8 @@
 
 
 <div class="viewcode-block" id="from_dlpack"><a class="viewcode-back" href="../../../../functional/ivy/creation/from_dlpack.html#ivy.functional.ivy.creation.from_dlpack">[docs]</a><span class="k">def</span> <span class="nf">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array containing the data from another (array) object with</span>
-<span class="sd">    a ``__dlpack__`` method.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array containing the data from another (array) object with a</span>
+<span class="sd">    ``__dlpack__`` method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

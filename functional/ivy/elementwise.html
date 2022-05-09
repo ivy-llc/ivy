@@ -572,7 +572,7 @@ array must have a floating-point data type determined by <span class="xref std s
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.atan2">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">atan2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#atan2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan2" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates an implementation-dependent approximation of the inverse tangent of
-the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span> <span class="pre">x</span>
+the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span> <span class="pre">x.</span>
 <span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> (where the <code class="docutils literal notranslate"><span class="pre">x</span></code> notation denotes the set of ordered pairs
 of elements <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code>) and codomain <code class="docutils literal notranslate"><span class="pre">[-π,</span> <span class="pre">+π]</span></code>, for each pair of elements
 <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code> of the input arrays <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>, respectively. Each
@@ -840,9 +840,8 @@ data type determined by <span class="xref std std-ref">type-promotion</span>.</p
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.ceil">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">ceil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#ceil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.ceil" title="Permalink to this definition"></a></dt>
-<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the smallest
-(i.e., closest to <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>) integer-valued number that is not less than
-<code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
+<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the smallest (i.e.,
+closest to <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>) integer-valued number that is not less than <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
 <p><strong>Special cases</strong></p>
 <ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p></li>
@@ -1104,9 +1103,8 @@ array must have a floating-point data type determined by <span class="xref std s
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.floor">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">floor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#floor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.floor" title="Permalink to this definition"></a></dt>
-<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the greatest
-(i.e., closest to <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>) integer-valued number that is not greater than
-<code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
+<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the greatest (i.e.,
+closest to <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>) integer-valued number that is not greater than <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
 <p><strong>Special cases</strong></p>
 <ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p></li>
@@ -1216,8 +1214,8 @@ data type of bool.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.isfinite">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">isfinite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#isfinite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.isfinite" title="Permalink to this definition"></a></dt>
-<dd><p>Tests each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to determine if finite
-(i.e., not <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and not equal to positive or negative infinity).</p>
+<dd><p>Tests each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to determine if finite (i.e.,
+not <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and not equal to positive or negative infinity).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1854,8 +1852,8 @@ data type determined by <span class="xref std std-ref">type-promotion</span>.</p
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.remainder">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">remainder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#remainder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.remainder" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the remainder of division for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input
-array <code class="docutils literal notranslate"><span class="pre">x1</span></code> and the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<dd><p>Returns the remainder of division for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array
+<code class="docutils literal notranslate"><span class="pre">x1</span></code> and the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function is equivalent to the Python modulus operator <code class="docutils literal notranslate"><span class="pre">x1_i</span> <span class="pre">%</span> <span class="pre">x2_i</span></code>. For
@@ -2112,10 +2110,10 @@ inputs broadcast to.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.tan">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">tan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#tan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tan" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the tangent, having domain
-<code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code>, for each element
-<code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is assumed to be expressed in
-radians.</p>
+<dd><p>Calculates an implementation-dependent approximation to the tangent, having
+domain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code>, for each
+element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is assumed to be
+expressed in radians.</p>
 <p><strong>Special cases</strong></p>
 <p>For floating-point operands,</p>
 <ul class="simple">

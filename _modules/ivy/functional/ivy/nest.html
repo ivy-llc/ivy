@@ -133,8 +133,7 @@
 
 
 <div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Index a nested object, using a tuple of indices or keys in the case of</span>
-<span class="sd">    dicts.</span>
+    <span class="sd">&quot;&quot;&quot;Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -217,8 +216,8 @@
 
 
 <div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/multi_index_nest.html#ivy.functional.ivy.nest.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Repeatedly index a nested object, using a tuple of tuples of indices or</span>
-<span class="sd">    keys in the case of dicts.</span>
+    <span class="sd">&quot;&quot;&quot;Repeatedly index a nested object, using a tuple of tuples of indices or keys in</span>
+<span class="sd">    the case of dicts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -246,8 +245,7 @@
 
 
 <div class="viewcode-block" id="set_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/set_nest_at_indices.html#ivy.functional.ivy.nest.set_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set the value of a nested item at specified indices with specified</span>
-<span class="sd">    values.</span>
+    <span class="sd">&quot;&quot;&quot;Set the value of a nested item at specified indices with specified values.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -265,8 +263,7 @@
 
 
 <div class="viewcode-block" id="insert_into_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_indices.html#ivy.functional.ivy.nest.insert_into_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">insert_into_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Insert a value into the nested item at specified indices with specified</span>
-<span class="sd">    values.</span>
+    <span class="sd">&quot;&quot;&quot;Insert a value into the nested item at specified indices with specified values.</span>
 
 <span class="sd">    :param nest: The nested object to insert into.</span>
 <span class="sd">    :type nest: nested</span>
@@ -308,8 +305,8 @@
     <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest</span>
-<span class="sd">    indices where the method evaluates as True.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest indices</span>
+<span class="sd">    where the method evaluates as True.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -360,8 +357,8 @@
 <div class="viewcode-block" id="all_nested_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/all_nested_indices.html#ivy.functional.ivy.nest.all_nested_indices">[docs]</a><span class="k">def</span> <span class="nf">all_nested_indices</span><span class="p">(</span>
     <span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">include_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest</span>
-<span class="sd">    indices where the method evaluates as True.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest indices</span>
+<span class="sd">    where the method evaluates as True.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -453,9 +450,9 @@
     <span class="n">_list_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_dict_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Applies a function on x in a nested manner, whereby all dicts, lists and</span>
-<span class="sd">    tuples are traversed to their lowest leaves before applying the method and</span>
-<span class="sd">    returning x. If x is not nested, the method is applied to x directly.</span>
+    <span class="sd">&quot;&quot;&quot;Applies a function on x in a nested manner, whereby all dicts, lists and tuples</span>
+<span class="sd">    are traversed to their lowest leaves before applying the method and returning x. If</span>
+<span class="sd">    x is not nested, the method is applied to x directly.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -575,8 +572,8 @@
 <div class="viewcode-block" id="nested_any"><a class="viewcode-back" href="../../../../functional/ivy/nest/nested_any.html#ivy.functional.ivy.nest.nested_any">[docs]</a><span class="k">def</span> <span class="nf">nested_any</span><span class="p">(</span>
     <span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">check_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nest x via function fn, and returns True if any</span>
-<span class="sd">    evaluate to True, else False.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nest x via function fn, and returns True if any evaluate</span>
+<span class="sd">    to True, else False.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -618,8 +615,8 @@
     <span class="n">include_derived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">to_mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Copies a nest deeply, but without copying leaves of the nest, only the</span>
-<span class="sd">    nest lists, tuples and dicts are copied.</span>
+    <span class="sd">&quot;&quot;&quot;Copies a nest deeply, but without copying leaves of the nest, only the nest</span>
+<span class="sd">    lists, tuples and dicts are copied.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

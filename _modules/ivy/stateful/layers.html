@@ -141,11 +141,10 @@
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Linear layer, also referred to as dense or fully connected. The</span>
-<span class="sd">        layer receives tensors with input_channels last dimension and returns a</span>
-<span class="sd">        new tensor with output_channels last dimension, following matrix</span>
-<span class="sd">        multiplication with the weight matrix and addition with the bias</span>
-<span class="sd">        vector.</span>
+        <span class="sd">&quot;&quot;&quot;Linear layer, also referred to as dense or fully connected. The layer</span>
+<span class="sd">        receives tensors with input_channels last dimension and returns a new tensor</span>
+<span class="sd">        with output_channels last dimension, following matrix multiplication with the</span>
+<span class="sd">        weight matrix and addition with the bias vector.</span>
 
 <span class="sd">        :param input_channels: Number of input channels for the layer.</span>
 <span class="sd">        :type input_channels: int</span>
@@ -205,9 +204,8 @@
 
 <div class="viewcode-block" id="Dropout"><a class="viewcode-back" href="../../../stateful/layers/Dropout.html#ivy.stateful.layers.Dropout">[docs]</a><span class="k">class</span> <span class="nc">Dropout</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <div class="viewcode-block" id="Dropout.__init__"><a class="viewcode-back" href="../../../stateful/layers/Dropout.html#ivy.stateful.layers.Dropout.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dropout layer. The layer randomly zeroes some of the elements of the</span>
-<span class="sd">        input tensor with probability p using samples from a Bernoull</span>
-<span class="sd">        distribution.</span>
+        <span class="sd">&quot;&quot;&quot;Dropout layer. The layer randomly zeroes some of the elements of the input</span>
+<span class="sd">        tensor with probability p using samples from a Bernoull distribution.</span>
 
 <span class="sd">        :param prob: The probability of zeroing out each array element.</span>
 <span class="sd">        :type prob: float</span>

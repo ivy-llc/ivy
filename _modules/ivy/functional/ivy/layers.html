@@ -194,8 +194,8 @@
 
 
 <div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../../functional/ivy/layers/dropout.html#ivy.functional.ivy.layers.dropout">[docs]</a><span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Randomly zeroes some of the elements of the input tensor with</span>
-<span class="sd">    probability p using samples from a Bernoull distribution.</span>
+    <span class="sd">&quot;&quot;&quot;Randomly zeroes some of the elements of the input tensor with probability p using</span>
+<span class="sd">    samples from a Bernoull distribution.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -404,8 +404,7 @@
 <div class="viewcode-block" id="conv1d_transpose"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv1d_transpose.html#ivy.functional.ivy.layers.conv1d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv1d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes a 1-D transpose convolution given 3-D input x and filters</span>
-<span class="sd">    arrays.</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 1-D transpose convolution given 3-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -467,8 +466,7 @@
 <div class="viewcode-block" id="conv2d_transpose"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv2d_transpose.html#ivy.functional.ivy.layers.conv2d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NHWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes a 2-D transpose convolution given 4-D input x and filters</span>
-<span class="sd">    arrays.</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 2-D transpose convolution given 4-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -499,8 +497,7 @@
 
 
 <div class="viewcode-block" id="depthwise_conv2d"><a class="viewcode-back" href="../../../../functional/ivy/layers/depthwise_conv2d.html#ivy.functional.ivy.layers.depthwise_conv2d">[docs]</a><span class="k">def</span> <span class="nf">depthwise_conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NHWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes a 2-D depthwise convolution given 4-D input x and filters</span>
-<span class="sd">    arrays.</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -561,8 +558,7 @@
 <div class="viewcode-block" id="conv3d_transpose"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv3d_transpose.html#ivy.functional.ivy.layers.conv3d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes a 3-D transpose convolution given 5-D input x and filters</span>
-<span class="sd">    arrays.</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 3-D transpose convolution given 5-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -598,8 +594,7 @@
 <div class="viewcode-block" id="lstm_update"><a class="viewcode-back" href="../../../../functional/ivy/layers/lstm_update.html#ivy.functional.ivy.layers.lstm_update">[docs]</a><span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">init_h</span><span class="p">,</span> <span class="n">init_c</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">recurrent_kernel</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recurrent_bias</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Perform long-short term memory update by unrolling time dimension of</span>
-<span class="sd">    input array.</span>
+    <span class="sd">&quot;&quot;&quot;Perform long-short term memory update by unrolling time dimension of input array.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
