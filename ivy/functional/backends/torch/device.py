@@ -3,8 +3,6 @@
 # global
 import os
 import importlib
-
-torch_scatter = None
 import torch
 from typing import Optional
 from torch.profiler import ProfilerActivity
@@ -14,6 +12,7 @@ from torch.profiler import profile as _profile
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
+torch_scatter = None
 
 # API #
 # ----#
