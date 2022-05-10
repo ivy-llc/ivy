@@ -2,8 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional, Dict
-from numbers import Number
+from typing import Union, Tuple, List, Optional
 
 # local
 from ivy import (
