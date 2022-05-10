@@ -108,7 +108,7 @@ def float_img_to_uint8_img(x):
     >>> x = ivy.array([0, 0.5, 0.503, 1])
     >>> y = ivy.float_img_to_uint8_img(x)
     >>> print(y)
-    [  0, 128, 128, 255]
+    ivy.array([0, 128, 128, 255])
 
     """
     x_np = ivy.to_numpy(x)
