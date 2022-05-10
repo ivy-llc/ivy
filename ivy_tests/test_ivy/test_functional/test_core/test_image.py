@@ -1,13 +1,13 @@
 """Collection of tests for unified image-related functions."""
 
 # global
-import pytest
-import numpy as np
+# import pytest
+# import numpy as np
 from hypothesis import given, strategies as st
-from operator import mul
+# from operator import mul
 
 # noinspection PyProtectedMember
-from functools import reduce
+# from functools import reduce
 
 # local
 import ivy
