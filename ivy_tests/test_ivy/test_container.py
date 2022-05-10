@@ -2759,8 +2759,8 @@ def test_container_set_at_keys(device, call):
     container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
-    assert not container.has_key("c")
-    assert not container.has_key("d")
+    assert not container.has_key("c") # noqa
+    assert not container.has_key("d") # noqa
     container = orig_container.set_at_keys(
         {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
     )
@@ -5263,7 +5263,7 @@ def test_container_scalar_xor(device, call):
             },
         }
     )
-    container = container != True
+    container = container != True # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))
