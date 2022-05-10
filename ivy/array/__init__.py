@@ -1,6 +1,6 @@
+# flake8: noqa
 # global
 import copy
-import pickle
 import functools
 from operator import mul
 
@@ -153,12 +153,14 @@ class Array(
 
         Returns
         -------
-        out: Optional[int]
-            number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
+        out
+            number of elements in an array. The returned value must be ``None`` if
+            and only if one or more array dimensions are unknown.
 
 
         .. note::
-           For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
+           For array libraries having graph-based computational models, an array may
+           have unknown dimensions due to data-dependent operations.
 
         """
         return self._size
@@ -481,21 +483,14 @@ class Array(
             return res
         return to_ivy(res)
 
-    @_native_wrapper
-    def __rrshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rrshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
-
     # noinspection PyDefaultArgument
     @_native_wrapper
     def __deepcopy__(self, memodict={}):
         try:
             return to_ivy(self._data.__deepcopy__(memodict))
         except AttributeError:
-            # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
+            # ToDo: try and find more elegant solution to jax inability to
+            #  deepcopy device arrays
             if ivy.current_framework_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)

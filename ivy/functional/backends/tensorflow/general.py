@@ -9,7 +9,6 @@ import ivy
 _round = round
 import numpy as _np
 import tensorflow as tf
-from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 from numbers import Number

@@ -1,3 +1,4 @@
+# flake8: noqa
 import re
 import sys
 import json

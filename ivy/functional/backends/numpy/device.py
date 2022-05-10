@@ -35,14 +35,15 @@ def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.
     if device is not None:
         if "gpu" in device:
             raise Exception(
-                "Native Numpy does not support GPU placement, consider using Jax instead"
+                "Native Numpy does not support GPU placement, "
+                "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
             raise Exception(
-                'Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                "but found {}".format(device)
+                "Invalid device specified, must be in the form "
+                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
