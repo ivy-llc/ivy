@@ -133,7 +133,7 @@ def reshape(
 
 def concat(xs: List[Tensor], axis: int = 0, out: Optional[Tensor] = None) -> Tensor:
     is_tuple = type(xs) is tuple
-    is_axis_none = axis == None
+    is_axis_none = axis is None
     if is_tuple:
         xs = list(xs)
     highest_dtype = xs[0].dtype
