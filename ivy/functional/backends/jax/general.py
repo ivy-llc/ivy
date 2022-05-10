@@ -261,7 +261,7 @@ def gather_nd(params, indices, device=None):
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
-        _reduce(_mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)
+        _reduce(_mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -322,8 +322,11 @@ def inplace_increment(x, val):
     return x
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: jax.jit(
-    fn, static_argnums=static_argnums, static_argnames=static_argnames
-)
+def compile(
+    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
+):
+    return jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
+
+
 current_framework_str = lambda: "jax"
 current_framework_str.__name__ = "current_framework_str"

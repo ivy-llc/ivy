@@ -1,10 +1,11 @@
 """Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Union, Tuple
+from typing import List, Tuple
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
+
 tfa = None
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -32,7 +33,7 @@ def stack_images(
     stack_width_int = math.ceil(num_images / stack_height)
     image_rows = list()
     for i in range(stack_width_int):
-        images_to_concat = images[i * stack_height_int: (i + 1) * stack_height_int]
+        images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (
             stack_height_int - len(images_to_concat)
         )

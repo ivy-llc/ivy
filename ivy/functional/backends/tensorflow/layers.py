@@ -22,9 +22,12 @@ def conv1d(
     return res
 
 
-conv1d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1: tf.nn.conv1d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv1d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
+):
+    return tf.nn.conv1d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )
 
 
 def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
@@ -36,9 +39,12 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
     return res
 
 
-conv2d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1: tf.nn.conv2d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv2d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
+):
+    return tf.nn.conv2d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )
 
 
 def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
@@ -55,6 +61,9 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     return tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
 
 
-conv3d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1: tf.nn.conv3d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv3d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
+):
+    return tf.nn.conv3d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )
