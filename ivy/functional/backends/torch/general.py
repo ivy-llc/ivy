@@ -1,21 +1,18 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
-signature.
-"""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import ivy
 import numpy as np
-
-torch_scatter = None
 import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
 from numbers import Number
 
-
 # local
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
+
+torch_scatter = None
 
 
 def is_native_array(x, exclusive=False):
@@ -180,7 +177,7 @@ def scatter_flat(
     if torch_scatter is None:
         try:
             import torch_scatter as torch_scatter
-        except:
+        except ImportError:
             raise Exception(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
@@ -279,7 +276,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        _reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
+        _reduce(mul, shape[i + 1:], 1) for i in range(len(shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -318,7 +315,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     if torch_scatter is None:
         try:
             import torch_scatter as torch_scatter
-        except:
+        except ImportError:
             raise Exception(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
@@ -369,7 +366,7 @@ def gather_nd(params, indices, device: Optional[str] = None):
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())

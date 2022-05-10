@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Iterable
+from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
@@ -20,7 +20,7 @@ def arange(
     device: ivy.Device = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
-     specified.
+    specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
     the interval including start but excluding stop). For integer arguments the function
@@ -402,9 +402,15 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, axis: int = None, device: ivy.Device = None, dtype = None, endpoint: bool = True) \
-        -> Union[ivy.Array, ivy.NativeArray]:
+def linspace(
+    start: Union[ivy.Array, ivy.NativeArray, int],
+    stop: Union[ivy.Array, ivy.NativeArray, int],
+    num: int,
+    axis: int = None,
+    device: ivy.Device = None,
+    dtype=None,
+    endpoint: bool = True,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
 
@@ -430,14 +436,15 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).linspace(start, stop, num, axis, device, dtype, endpoint)
+    return _cur_framework(start).linspace(
+        start, stop, num, axis, device, dtype, endpoint
+    )
 
 
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
-    """
-    Returns coordinate matrices from coordinate vectors.
+    """Returns coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -521,8 +528,8 @@ def full(
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Returns a new array containing the data from another (array) object with
-    a ``__dlpack__`` method.
+    """Returns a new array containing the data from another (array) object with a
+    ``__dlpack__`` method.
 
     Parameters
     ----------

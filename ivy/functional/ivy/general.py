@@ -88,7 +88,8 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -110,7 +111,8 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -129,7 +131,8 @@ def is_array(x: Any, exclusive: bool = False) -> bool:
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+        Whether to check if the data type is exclusively an array, rather than a
+        variable or traced array.
 
     Returns
     -------
@@ -259,7 +262,8 @@ def all_equal(
     Returns
     -------
     ret
-        Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.
+        Boolean, whether or not the inputs are equal, or matrix array of booleans if
+        equality_matrix=True is set.
 
     """
     equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
@@ -369,8 +373,7 @@ def clip_vector_norm(
     p: float = 2.0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Clips (limits) the vector p-norm of an array.
+    """Clips (limits) the vector p-norm of an array.
 
     Parameters
     ----------
@@ -381,12 +384,14 @@ def clip_vector_norm(
     p
         optional float, the p-value for computing the p-norm. Default is 2.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         An array with the vector norm downscaled to the max norm if needed.
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -431,8 +436,7 @@ def floormod(
     y: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise remainder of division.
+    """Returns element-wise remainder of division.
 
     Parameters
     ----------
@@ -441,12 +445,14 @@ def floormod(
     y
         array, denominator input for floormod.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         An array of the same shape and type as x, with the elements floor modded.
+
     """
     return _cur_framework(x).floormod(x, y, out)
 
@@ -493,16 +499,20 @@ def fourier_encode(
     num_bands
         The number of frequency bands for the encoding. Default is 4.
     linear
-        Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
+        Whether to space the frequency bands linearly as opposed to geometrically.
+        Default is False.
     concat
-        Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
+        Whether to concatenate the position, sin and cos values, or return seperately.
+        Default is True.
     flatten
-        Whether to flatten the position dimension into the batch dimension. Default is False.
+        Whether to flatten the position dimension into the batch dimension. Default is
+        False.
 
     Returns
     -------
     ret
-        New array with the final dimension expanded, and the encodings stored in this channel.
+        New array with the final dimension expanded, and the encodings stored in this
+        channel.
 
     """
     x_in = x
@@ -569,8 +579,8 @@ def value_is_nan(
 
 
 def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
-    """Determine whether the array contains any nans, as well as infs or -infs
-    if specified.
+    """Determine whether the array contains any nans, as well as infs or -infs if
+    specified.
 
     Parameters
     ----------
@@ -675,8 +685,8 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
 
 def try_else_none(fn):
-    """Try and return the function, otherwise return None if an exception was
-    raised during function execution.
+    """Try and return the function, otherwise return None if an exception was raised
+    during function execution.
 
     Parameters
     ----------
@@ -708,7 +718,8 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     receivers
         Functions and/or classes to match the keyword arguments to.
     allow_duplicates
-        Whether to allow one keyword argument to be used for multiple receivers. Default is False.
+        Whether to allow one keyword argument to be used for multiple receivers.
+        Default is False.
 
     Returns
     -------
@@ -730,8 +741,8 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
 
 
 def cache_fn(func: Callable) -> Callable:
-    """Wrap a function, such that when cache=True is passed as an argument, a
-    previously cached output is returned.
+    """Wrap a function, such that when cache=True is passed as an argument, a previously
+    cached output is returned.
 
     Parameters
     ----------
@@ -863,8 +874,7 @@ def einops_repeat(
 
 
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable
-    division.
+    """Get the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
@@ -882,8 +892,7 @@ def get_min_denominator() -> float:
 
 
 def set_min_denominator(val: float) -> None:
-    """Set the global minimum denominator used by ivy for numerically stable
-    division.
+    """Set the global minimum denominator used by ivy for numerically stable division.
 
     Parameters
     ----------
@@ -895,16 +904,13 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power
-    raising.
-    """
+    """Get the global minimum base used by ivy for numerically stable power raising."""
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
 
 def set_min_base(val: float) -> None:
-    """Set the global minimum base used by ivy for numerically stable power
-    raising.
+    """Set the global minimum base used by ivy for numerically stable power raising.
 
     Parameters
     ----------
@@ -918,8 +924,8 @@ def set_min_base(val: float) -> None:
 def stable_divide(
     numerator: Any, denominator: Any, min_denominator: float = None
 ) -> Any:
-    """Divide the numerator by the denominator, with min denominator added to
-    the denominator for numerical stability.
+    """Divide the numerator by the denominator, with min denominator added to the
+    denominator for numerical stability.
 
     Parameters
     ----------
@@ -941,8 +947,8 @@ def stable_divide(
 
 
 def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
-    """Raise the base by the power, with MIN_BASE added to the base when
-    exponent > 1 for numerical stability.
+    """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
+    for numerical stability.
 
     Parameters
     ----------
@@ -988,8 +994,8 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without
-    this function being called is 10 seconds.
+    """Set the global queue timeout values (in seconds). Default value without this
+    function being called is 10 seconds.
 
     Parameters
     ----------
@@ -1034,7 +1040,8 @@ def container_types():
     Returns
     -------
     ret
-        a key-value structure, and exposes public methods .keys(), .values() and items().
+        a key-value structure, and exposes public methods .keys(), .values() and
+        items().
 
     """
     # noinspection PyBroadException
@@ -1045,8 +1052,7 @@ def container_types():
 
 
 def inplace_arrays_supported(f=None):
-    """Determine whether inplace arrays are supported for the current backend
-    framework.
+    """Determine whether inplace arrays are supported for the current backend framework.
 
     Parameters
     ----------
@@ -1063,8 +1069,8 @@ def inplace_arrays_supported(f=None):
 
 
 def inplace_variables_supported(f=None):
-    """Determine whether inplace variables are supported for the current
-    backend framework.
+    """Determine whether inplace variables are supported for the current backend
+    framework.
 
     Parameters
     ----------
@@ -1081,8 +1087,7 @@ def inplace_variables_supported(f=None):
 
 
 def supports_inplace(x):
-    """Determine whether inplace operations are supported for the data type of
-    x.
+    """Determine whether inplace operations are supported for the data type of x.
 
     Parameters
     ----------
@@ -1103,8 +1108,7 @@ def supports_inplace(x):
 
 
 def assert_supports_inplace(x):
-    """Asserts that inplace operations are supported for x, else raises
-    exception.
+    """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters
     ----------
@@ -1127,10 +1131,9 @@ def assert_supports_inplace(x):
 
 
 def inplace_update(x, val):
-    """Perform in-place update for the input array. This will always be
-    performed on ivy.Array instances pass in the input, and will also be
-    performed on the native array classes in the backend, when the backend
-    supports this.
+    """Perform in-place update for the input array. This will always be performed on
+    ivy.Array instances pass in the input, and will also be performed on the native
+    array classes in the backend, when the backend supports this.
 
     Parameters
     ----------
@@ -1191,8 +1194,7 @@ def cumsum(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative sum of the elements along a given axis.
+    """Returns the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1207,6 +1209,7 @@ def cumsum(
     -------
     ret
         Input array with cumulatively summed elements along axis
+
     """
     return _cur_framework(x).cumsum(x, axis, out=out)
 
@@ -1217,8 +1220,7 @@ def cumprod(
     exclusive: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative product of the elements along a given axis.
+    """Returns the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1258,12 +1260,14 @@ def scatter_flat(
     size
         The size of the result.
     tensor
-        The tensor in which to scatter the results, default is None, in which case the size is used to
+        The tensor in which to scatter the results, default is None, in which case the
+        size is used to
         scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+        updates if None.
 
     Returns
     -------
@@ -1294,14 +1298,17 @@ def scatter_nd(
     updates
         Values for the new array to hold.
     shape
-        The shape of the result. Default is None, in which case tensor argument must be provided.
+        The shape of the result. Default is None, in which case tensor argument must be
+        provided.
     tensor
-        The tensor in which to scatter the results, default is None, in which case the shape arg is used to
+        The tensor in which to scatter the results, default is None, in which case the
+        shape arg is used to
         scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+        updates if None.
 
     Returns
     -------
@@ -1333,14 +1340,16 @@ def gather(
     axis
         optional int, the axis from which to gather from. Default is -1.
     device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
+        'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        New array with the values gathered at the specified indices along the specified axis.
+        New array with the values gathered at the specified indices along the specified
+        axis.
 
     """
     return _cur_framework(params).gather(params, indices, axis, device, out=out)
@@ -1361,7 +1370,8 @@ def gather_nd(
     indices
         Index array.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
 
     Returns
     -------
@@ -1378,9 +1388,8 @@ def multiprocessing(context: str = None):
     Parameters
     ----------
     context
-        The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
-    context
-         (Default value = None)
+        The context of the multiprocessing, either fork, forkserver or spawn.
+        Default is None.
 
     Returns
     -------
@@ -1423,12 +1432,14 @@ def one_hot(
     depth
         Scalar defining the depth of the one-hot dimension.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
 
     Returns
     -------
     ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
 
     """
     return _cur_framework(indices).one_hot(indices, depth, device)

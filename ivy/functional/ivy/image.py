@@ -17,8 +17,8 @@ def stack_images(
     images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
 ) -> ivy.Array:
-    """Stacks a group of images into a combined windowed image, fitting the
-    desired aspect ratio as closely as possible.
+    """Stacks a group of images into a combined windowed image, fitting the desired
+    aspect ratio as closely as possible.
 
     Parameters
     ----------
@@ -111,8 +111,8 @@ def gradient_image(x):
 
 
 def float_img_to_uint8_img(x):
-    """Converts an image of floats into a bit-cast 4-channel image of uint8s,
-    which can be saved to disk.
+    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
+    be saved to disk.
 
     Parameters
     ----------
@@ -195,7 +195,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     # list of 1 x NH x NW x F
     cropped_list = [
-        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        img[..., xo: xo + crop_size[0], yo: yo + crop_size[1], :]
         for img, xo, yo in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
     ]
 

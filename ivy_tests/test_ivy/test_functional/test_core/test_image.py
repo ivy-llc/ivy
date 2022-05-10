@@ -16,61 +16,101 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-@given(shp_n_num_n_ar_n_newshp=st.sampled_from([((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-                                                ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-                                                ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-                                                ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))]))
-def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
-    # smoke test
-    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-    xs = [ivy.ones(shape)] * num
-    ret = ivy.stack_images(xs, ar)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == new_shape
-    # docstring test
-    helpers.docstring_examples_run(ivy.stack_images)
+@given(shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
+       ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
+       dtype=st.sampled_from(['float32', 'float64']),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       )
+def test_stack_images(shape, ratio, dtype, as_variable, num_positional_args, native_array, fw):
+    images = [img for img in ivy.random_normal(shape=shape)]
+    helpers.test_array_function(dtype, as_variable, False, num_positional_args, native_array, False, False,
+                                fw, "stack_images", images=images, desired_aspect_ratio=ratio)
 
 
 # bilinear_resample
-@given(x_n_warp=st.sampled_from([([[[[0.0], [1.0]], [[2.0], [3.0]]]],
-                                  [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]),
-                                 ([[[[0.0], [1.0]], [[2.0], [3.0]]]],
-                                  [[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]),
-                                 ([[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
-                                  [[[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]])]),
-       dtype=st.sampled_from(["float32", "float64"]),
-       tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
-def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
-    # smoke test
-    x, warp = x_n_warp
-    x = tensor_fn(x, dtype, device)
-    warp = tensor_fn(warp, dtype, device)
-    ret = ivy.bilinear_resample(x, warp)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == warp.shape[:-1] + x.shape[-1:]
-    # value test
-    assert np.allclose(
-        call(ivy.bilinear_resample, x, warp),
-        ivy.functional.backends.numpy.bilinear_resample(
-            ivy.to_numpy(x), ivy.to_numpy(warp)
-        ),
-    )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # torch scripting does not support builtins
-        return
+@given(shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=4),
+       n_samples=st.integers(min_value=1, max_value=8),
+       dtype=st.sampled_from(['float32', 'float64']),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       )
+def test_bilinear_resample(shape, n_samples, dtype, as_variable, num_positional_args, native_array, fw):
+    images = ivy.random_normal(shape=shape)
+    w_shape = shape[:-3] + [n_samples, 2]
+    warp = ivy.random_uniform(shape=w_shape)
+    helpers.test_array_function(dtype, as_variable, False, num_positional_args, native_array, False, False,
+                                fw, "bilinear_resample", x=images, warp=warp)
+
+
+# Smoke Tests #
+
+# bilinear_resample
+# @given(
+#     x_n_warp=st.sampled_from(
+#         [
+#             (
+#                 [[[[0.0], [1.0]], [[2.0], [3.0]]]],
+#                 [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
+#             ),
+#             (
+#                 [[[[0.0], [1.0]], [[2.0], [3.0]]]],
+#                 [[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
+#             ),
+#             (
+#                 [[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
+#                 [[[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]],
+#             ),
+#         ]
+#     ),
+#     dtype=st.sampled_from(["float32", "float64"]),
+#     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+# )
+# def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
+#     # smoke test
+#     x, warp = x_n_warp
+#     x = tensor_fn(x, dtype, device)
+#     warp = tensor_fn(warp, dtype, device)
+#     ret = ivy.bilinear_resample(x, warp)
+#     # type test
+#     assert ivy.is_ivy_array(ret)
+#     # cardinality test
+#     assert ret.shape == warp.shape[:-1] + x.shape[-1:]
+#     # value test
+#     assert np.allclose(
+#         call(ivy.bilinear_resample, x, warp),
+#         ivy.functional.backends.numpy.bilinear_resample(
+#             ivy.to_numpy(x), ivy.to_numpy(warp)
+#         ),
+#     )
+#     # compilation test
+#     if call in [helpers.torch_call]:
+#         # torch scripting does not support builtins
+#         return
 
 
 # gradient_image
-@given(x_n_dy_n_dx=st.sampled_from([([[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
-                                     [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
-                                     [[[[1.0], [1.0], [0.0]],[[-1.0], [-1.0], [0.0]],[[2.0], [-1.0], [0.0]]]])]),
-       dtype=st.sampled_from(["float32", "float64"]),
-       tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
+@given(
+    x_n_dy_n_dx=st.sampled_from(
+        [
+            (
+                    [[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
+                    [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
+                    [
+                        [
+                            [[1.0], [1.0], [0.0]],
+                            [[-1.0], [-1.0], [0.0]],
+                            [[2.0], [-1.0], [0.0]],
+                        ]
+                    ],
+            )
+        ]
+    ),
+    dtype=st.sampled_from(["float32", "float64"]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+)
 def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, device, call):
     # smoke test
     x, dy_true, dx_true = x_n_dy_n_dx
@@ -95,9 +135,17 @@ def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, device, call):
 
 
 # float_img_to_uint8_img
-@given(fi_tui=st.sampled_from([([[0.0, 1.0], [2.0, 3.0]],
-                                [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],)]),
-       tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
+@given(
+    fi_tui=st.sampled_from(
+        [
+            (
+                    [[0.0, 1.0], [2.0, 3.0]],
+                    [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+            )
+        ]
+    ),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+)
 def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
     # smoke test
     if call is helpers.tf_graph_call:
@@ -121,8 +169,16 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
 
 
 # uint8_img_to_float_img
-@given(ui_tfi=st.sampled_from([([[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-                                [[0.0, 1.0], [2.0, 3.0]],)]))
+@given(
+    ui_tfi=st.sampled_from(
+        [
+            (
+                    [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+                    [[0.0, 1.0], [2.0, 3.0]],
+            )
+        ]
+    )
+)
 def test_uint8_img_to_float_img(ui_tfi, device, call):
     # smoke test
     if call is helpers.tf_graph_call:

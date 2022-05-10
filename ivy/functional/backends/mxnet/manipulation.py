@@ -165,7 +165,8 @@ def constant_pad(
     num_dims = len(x_shape)
     if num_dims > 3:
         raise Exception(
-            "Invalid inputs. Pad for mxnet only supports inputs with 3 dimensions or smaller."
+            "Invalid inputs. Pad for mxnet only supports inputs with "
+            "3 dimensions or smaller."
         )
     num_dims_to_add = 4 - num_dims
     new_shape = tuple([1] * num_dims_to_add + x_shape)
