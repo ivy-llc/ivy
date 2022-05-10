@@ -2,7 +2,6 @@
 
 # global
 import jax
-import jax.numpy as jnp
 import jax.lax as jlax
 import jaxlib as jaxlib
 from jaxlib.xla_extension import Buffer

@@ -31,7 +31,7 @@ def dev(x, as_str=False):
     try:
         dv = _to_array(x).device_buffer.device
         dv = dv()
-    except:
+    except Exception:
         dv = jax.devices()[0]
     if as_str:
         return dev_to_str(dv)
