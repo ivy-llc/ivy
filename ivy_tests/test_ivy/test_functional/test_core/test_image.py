@@ -16,27 +16,18 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-@given(
-    shp_n_num_n_ar_n_newshp=st.sampled_from(
-        [
-            ((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-            ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-            ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-            ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5)),
-        ]
-    )
-)
-def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
-    # smoke test
-    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-    xs = [ivy.ones(shape)] * num
-    ret = ivy.stack_images(xs, ar)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == new_shape
-    # docstring test
-    helpers.docstring_examples_run(ivy.stack_images)
+@given(shape=st.lists(st.integers(min_value=1, max_value=12), min_size=3, max_size=4),
+       num=st.integers(min_value=1, max_value=12),
+       ratio=st.lists(st.integers(min_value=1, max_value=12), min_size=2, max_size=2),
+       dtype=st.sampled_from(['float32', 'float64']),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       )
+def test_stack_images(shape, num, ratio, dtype, as_variable, num_positional_args, native_array, fw):
+    images = [ivy.ones(shape, dtype=dtype)] * num
+    helpers.test_array_function(dtype, as_variable, False, num_positional_args, native_array, False, False,
+                                fw, "stack_images", images=images, desired_aspect_ratio=ratio)
 
 
 # bilinear_resample
@@ -127,16 +118,17 @@ def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, device, call):
 
 
 # float_img_to_uint8_img
-@pytest.mark.parametrize(
-    "fi_tui",
-    [
-        (
-            [[0.0, 1.0], [2.0, 3.0]],
-            [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-        )
-    ],
+@given(
+    fi_tui=st.sampled_from(
+        [
+            (
+                [[0.0, 1.0], [2.0, 3.0]],
+                [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+            )
+        ]
+    ),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
     # smoke test
     if call is helpers.tf_graph_call:
@@ -160,14 +152,15 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
 
 
 # uint8_img_to_float_img
-@pytest.mark.parametrize(
-    "ui_tfi",
-    [
-        (
-            [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-            [[0.0, 1.0], [2.0, 3.0]],
-        )
-    ],
+@given(
+    ui_tfi=st.sampled_from(
+        [
+            (
+                [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+                [[0.0, 1.0], [2.0, 3.0]],
+            )
+        ]
+    )
 )
 def test_uint8_img_to_float_img(ui_tfi, device, call):
     # smoke test
@@ -192,7 +185,7 @@ def test_uint8_img_to_float_img(ui_tfi, device, call):
 
 
 # random_crop
-@pytest.mark.parametrize("xshp_n_cs", [([2, 5, 6, 3], [2, 2])])
+@given(xshp_n_cs=st.sampled_from([([2, 5, 6, 3], [2, 2])]))
 def test_random_crop(xshp_n_cs, device, call):
     # seed
     ivy.seed(0)

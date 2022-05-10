@@ -152,8 +152,12 @@ def _differentiable_linspace(start, stop, num, device, dtype=None):
     n_m_1 = num - 1
     increment = (stop - start) / n_m_1
     increment_tiled = increment.repeat(n_m_1)
-    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device, dtype=dtype)
-    res = torch.cat((torch.unsqueeze(torch.tensor(start, dtype=dtype), 0), start + increments), 0)
+    increments = increment_tiled * torch.linspace(
+        1, n_m_1, n_m_1, device=device, dtype=dtype
+    )
+    res = torch.cat(
+        (torch.unsqueeze(torch.tensor(start, dtype=dtype), 0), start + increments), 0
+    )
     return res
 
 
@@ -200,7 +204,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
             res.append(stop)
         else:
             res = [
-                linspace_method(strt, stp, num, device=dev_from_str(device), dtype=dtype)
+                linspace_method(
+                    strt, stp, num, device=dev_from_str(device), dtype=dtype
+                )
                 for strt, stp in zip(start, stop)
             ]
         torch.cat(res, -1).reshape(start_shape + [num])
@@ -211,10 +217,14 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start, device=dev_from_str(device), dtype=dtype) * stop)
+            res.append(
+                torch.ones_like(start, device=dev_from_str(device), dtype=dtype) * stop
+            )
         else:
             res = [
-                linspace_method(strt, stop, num, device=dev_from_str(device), dtype=dtype)
+                linspace_method(
+                    strt, stop, num, device=dev_from_str(device), dtype=dtype
+                )
                 for strt in start
             ]
     elif not start_is_array and stop_is_array:
@@ -222,16 +232,22 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop, device=dev_from_str(device), dtype=dtype) * start]
+            res = [
+                torch.ones_like(stop, device=dev_from_str(device), dtype=dtype) * start
+            ]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
             res = [
-                linspace_method(start, stp, num, device=dev_from_str(device), dtype=dtype)
+                linspace_method(
+                    start, stp, num, device=dev_from_str(device), dtype=dtype
+                )
                 for stp in stop
             ]
     else:
-        return linspace_method(start, stop, num, device=dev_from_str(device), dtype=dtype)
+        return linspace_method(
+            start, stop, num, device=dev_from_str(device), dtype=dtype
+        )
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
@@ -240,13 +256,18 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if not endpoint:
-        ans = linspace_helper(start, stop, num+1, axis, device, dtype=dtype)[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device, dtype=dtype)[:-1]
     else:
         ans = linspace_helper(start, stop, num, axis, device, dtype=dtype)
     if dtype is None:
         dtype = torch.float32
     ans = ans.type(dtype)
-    if endpoint and ans.shape[0] > 1 and (not isinstance(start, torch.Tensor)) and (not isinstance(stop, torch.Tensor)):
+    if (
+        endpoint
+        and ans.shape[0] > 1
+        and (not isinstance(start, torch.Tensor))
+        and (not isinstance(stop, torch.Tensor))
+    ):
         ans[-1] = stop
     return ans
 

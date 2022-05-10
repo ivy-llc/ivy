@@ -1,8 +1,6 @@
 # global
 import sys
 from jax.config import config
-
-config.update("jax_enable_x64", True)
 import jaxlib
 import jax as jax
 import jax.numpy as jnp
@@ -17,6 +15,8 @@ from jax.tree_util import tree_flatten, tree_unflatten
 
 # local
 import ivy
+
+config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
@@ -150,7 +150,6 @@ def closest_valid_dtype(type):
 
 
 backend = "jax"
-
 
 # local sub-modules
 from . import activations

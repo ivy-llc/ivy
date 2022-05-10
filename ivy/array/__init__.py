@@ -1,5 +1,6 @@
 # global
 import copy
+import pickle
 import functools
 from operator import mul
 
@@ -98,6 +99,8 @@ class Array(
         else:
             self._post_repr = ")"
 
+        self.framework_str = ivy.current_framework_str()
+
     # Properties #
     # -----------#
 
@@ -117,12 +120,13 @@ class Array(
 
     @property
     def ndim(self):
-        """
-        Number of array dimensions (axes).
+        """Number of array dimensions (axes).
+
         Returns
         -------
-        out: int
+        ret
             number of array dimensions (axes).
+
         """
         return len(tuple(self._shape))
 
@@ -194,7 +198,7 @@ class Array(
     def __repr__(self):
         return (
             self._pre_repr
-            + ivy.to_numpy(self._data).__repr__()[:-1].replace("\n", "\n    ")
+            + ivy.to_numpy(self._data).__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             + self._post_repr.format(ivy.current_framework_str())
         )
 
@@ -228,6 +232,35 @@ class Array(
     @_native_wrapper
     def __contains__(self, key):
         return self._data.__contains__(key)
+
+    @_native_wrapper
+    def __getstate__(self):
+        data_dict = dict()
+
+        # only pickle the native array
+        data_dict["data"] = self.data
+
+        # also store the local ivy framework that created this array
+        data_dict["framework_str"] = self.framework_str
+        data_dict["device_str"] = ivy.dev_to_str(self.device)
+
+        return data_dict
+
+    @_native_wrapper
+    def __setstate__(self, state):
+        # we can construct other details of ivy.Array
+        # just by re-creating the ivy.Array using the native array
+
+        # get the required backend
+        backend = ivy.get_framework(state["framework_str"])
+        ivy_array = backend.array(state["data"])
+
+        # TODO: what about placement of the array on the right device ?
+        device = backend.dev_from_str(state["device_str"])
+
+        self.__dict__ = ivy_array.__dict__
+
+        backend.to_dev(self, device)
 
     @_native_wrapper
     def __pos__(self):
