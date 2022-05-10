@@ -183,7 +183,8 @@ def test_module_w_partial_v(bs_ic_oc, device, compile_graph, call):
             input_channels, output_channels, device=device, v=v, with_partial_v=True
         )
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed with wrongly shaped variables."
+            "TrainableModule did not raise exception desipite being passed "
+            "with wrongly shaped variables."
         )
     except AssertionError:
         pass
@@ -199,7 +200,8 @@ def test_module_w_partial_v(bs_ic_oc, device, compile_graph, call):
     try:
         TrainableModule(input_channels, output_channels, device=device, v=v)
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed with wrongly shaped variables."
+            "TrainableModule did not raise exception desipite being passed "
+            "with wrongly shaped variables."
         )
     except AssertionError:
         pass
@@ -697,7 +699,8 @@ def test_module_check_submod_rets(bs_ic_oc, device, call):
     try:
         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
         raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, assertion error expected."
+            "forward pass succeeded despite passing random expected_submod_rets, "
+            "assertion error expected."
         )
     except AssertionError:
         pass
@@ -710,7 +713,8 @@ def test_module_check_submod_rets(bs_ic_oc, device, call):
     try:
         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
         raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, assertion error expected."
+            "forward pass succeeded despite passing random expected_submod_rets, "
+            "assertion error expected."
         )
     except AssertionError:
         pass
@@ -725,7 +729,8 @@ def test_module_check_submod_rets(bs_ic_oc, device, call):
     try:
         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
         raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, assertion error expected."
+            "forward pass succeeded despite passing random expected_submod_rets, "
+            "assertion error expected."
         )
     except AssertionError:
         pass
@@ -750,7 +755,8 @@ def test_module_check_submod_rets(bs_ic_oc, device, call):
     try:
         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
         raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, assertion error expected."
+            "forward pass succeeded despite passing random expected_submod_rets, "
+            "assertion error expected."
         )
     except AssertionError:
         pass

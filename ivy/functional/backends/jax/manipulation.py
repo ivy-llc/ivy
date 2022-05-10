@@ -167,6 +167,36 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def clip(x, x_min, x_max, out: Optional[JaxArray] = None):
+    if (
+        hasattr(x_min, "dtype")
+        and hasattr(x_max, "dtype")
+        and (x.dtype != x_min.dtype or x.dtype != x_max.dtype)
+    ):
+        if (jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)) and (
+            jnp.int16 in (x.dtype, x_min.dtype, x_max.dtype)
+            or jnp.uint16 in (x.dtype, x_min.dtype, x_max.dtype)
+        ):
+            promoted_type = jnp.promote_types(x.dtype, jnp.float32)
+            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
+            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
+            x = jnp.asarray(x, dtype=promoted_type)
+        elif (
+            jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
+            or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
+        ) and (
+            jnp.int32 in (x.dtype, x_min.dtype, x_max.dtype)
+            or jnp.uint32 in (x.dtype, x_min.dtype, x_max.dtype)
+            or jnp.uint64 in (x.dtype, x_min.dtype, x_max.dtype)
+            or jnp.int64 in (x.dtype, x_min.dtype, x_max.dtype)
+        ):
+            promoted_type = jnp.promote_types(x.dtype, jnp.float64)
+            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
+            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
+            x = jnp.asarray(x, dtype=promoted_type)
+        else:
+            promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
+            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
+            x = jnp.asarray(x, dtype=promoted_type)
     ret = jnp.clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
