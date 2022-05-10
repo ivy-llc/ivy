@@ -1,7 +1,6 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from optparse import Option
 import jax as jax
 import numpy as np
 import jax.numpy as jnp
@@ -17,7 +16,6 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
 from ivy.functional.backends.jax import JaxArray
 
@@ -44,14 +42,6 @@ def is_native_array(x, exclusive=False):
             jax.interpreters.partial_eval.DynamicJaxprTracer,
         ),
     )
-
-
-def _to_array(x):
-    if isinstance(x, jax.interpreters.ad.JVPTracer):
-        return _to_array(x.primal)
-    elif isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
-        return _to_array(x.aval)
-    return x
 
 
 def copy_array(x: JaxArray) -> JaxArray:
@@ -271,7 +261,7 @@ def gather_nd(params, indices, device=None):
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
-        _reduce(_mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(_mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())

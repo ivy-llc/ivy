@@ -992,7 +992,7 @@ class ContainerBase(dict, abc.ABC):
         """
         if not ivy.exists(_h5py):
             raise Exception(
-                "You must install python package h5py in order to load hdf5 files from " 
+                "You must install python package h5py in order to load hdf5 files from "
                 "disk into a container."
             )
         container_dict = dict()
@@ -1115,7 +1115,8 @@ class ContainerBase(dict, abc.ABC):
         """
         if not ivy.exists(_h5py):
             raise Exception(
-                "You must install python package h5py in order to shuffle hdf5 files on disk."
+                "You must install python package h5py in order to "
+                "shuffle hdf5 files on disk."
             )
         if seed_value is None:
             seed_value = _random.randint(0, 1000)
@@ -1196,7 +1197,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split("/|\.", key_chain)
+        flat_keys = re.split("/|\.", key_chain) # noqa
         num_keys = len(flat_keys)
         pre_keys = list()
         post_keys = list()
@@ -1753,8 +1754,7 @@ class ContainerBase(dict, abc.ABC):
                 raise Exception(
                     "global_norm can only be computed for scalar max_norm "
                     "and p_val arguments, but found {} and {} of type {} and {} "
-                    "respectively".format(max_norm, p, type(max_norm), type(p)
-                    )
+                    "respectively".format(max_norm, p, type(max_norm), type(p))
                 )
             vector_norm = self.vector_norm(p, global_norm=True)
             ratio = max_norm / vector_norm
@@ -3256,7 +3256,7 @@ class ContainerBase(dict, abc.ABC):
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 h5_obj[key][
-                    starting_index : starting_index + amount_to_write
+                    starting_index: starting_index + amount_to_write
                 ] = value_as_np[0:amount_to_write]
 
     def to_disk_as_pickled(self, pickle_filepath):
@@ -4897,7 +4897,7 @@ class ContainerBase(dict, abc.ABC):
         this_repr_split = this_repr.split("\n")
         this_repr_red_split = this_repr_red.split("\n")
         this_repr_above = "\n".join(
-            this_repr_split[0 : num_lines_above - 1]
+            this_repr_split[0: num_lines_above - 1]
             + [this_repr_red_split[num_lines_above - 1]]
         )
         this_repr_below = "\n".join(this_repr_split[-num_lines_below:])
