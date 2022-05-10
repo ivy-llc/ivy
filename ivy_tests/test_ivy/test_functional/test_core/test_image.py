@@ -17,15 +17,18 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # stack_images
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
-    ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=4, max_size=8),
+    ratio=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=2, max_size=2),
     dtype=st.sampled_from(['float32', 'float64']),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
     native_array=helpers.list_of_length(st.booleans(), 2)
 )
 def test_stack_images(
-        shape, ratio, dtype, as_variable, num_positional_args, native_array, fw
+        shape, ratio, dtype, as_variable, num_positional_args,
+        native_array, fw
 ):
     images = [img for img in ivy.random_normal(shape=shape)]
     helpers.test_array_function(
@@ -45,7 +48,8 @@ def test_stack_images(
 
 # bilinear_resample
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=4, max_size=8),
     n_samples=st.integers(min_value=1, max_value=8),
     dtype=st.sampled_from(['float32', 'float64']),
     as_variable=helpers.list_of_length(st.booleans(), 2),
@@ -53,7 +57,8 @@ def test_stack_images(
     native_array=helpers.list_of_length(st.booleans(), 2)
 )
 def test_bilinear_resample(
-        shape, n_samples, dtype, as_variable, num_positional_args, native_array, fw
+        shape, n_samples, dtype, as_variable, num_positional_args,
+        native_array, fw
 ):
     x = ivy.random_normal(shape=shape)
     warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
@@ -74,14 +79,16 @@ def test_bilinear_resample(
 
 # gradient_image
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=4, max_size=8),
     dtype=st.sampled_from(['float32', 'float64']),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans()
 )
 def test_gradient_image(
-        shape, dtype, as_variable, num_positional_args, native_array, fw
+        shape, dtype, as_variable, num_positional_args,
+        native_array, fw
 ):
     x = ivy.random_normal(shape=shape)
     helpers.test_array_function(
@@ -100,23 +107,18 @@ def test_gradient_image(
 
 # Smoke Tests #
 
-# bilinear_resample
+#bilinear_resample
 # @given(
 #     x_n_warp=st.sampled_from(
-#         [
-#             (
-#                 [[[[0.0], [1.0]], [[2.0], [3.0]]]],
-#                 [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
-#             ),
-#             (
-#                 [[[[0.0], [1.0]], [[2.0], [3.0]]]],
-#                 [[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
-#             ),
-#             (
-#                 [[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
-#                 [[[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]],
-#             ),
-#         ]
+#         [([[[[0.0], [1.0]], [[2.0], [3.0]]]],
+#           [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5],
+#             [0.5, 1.0], [1.0, 0.5]]],),
+#          ([[[[0.0], [1.0]], [[2.0], [3.0]]]],
+#           [[[0.0, 1.0], [0.5, 0.5],
+#             [0.5, 1.0], [1.0, 0.5]]],),
+#          ([[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
+#           [[[[0.0, 1.0], [0.5, 0.5],
+#              [0.5, 1.0], [1.0, 0.5]]]],),]
 #     ),
 #     dtype=st.sampled_from(["float32", "float64"]),
 #     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
@@ -142,24 +144,20 @@ def test_gradient_image(
 #     if call in [helpers.torch_call]:
 #         # torch scripting does not support builtins
 #         return
-
-
-# gradient_image
+#
+#
+# #gradient_image
 # @given(
 #     x_n_dy_n_dx=st.sampled_from(
-#         [
-#             (
-#                     [[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
-#                     [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
-#                     [
-#                         [
-#                             [[1.0], [1.0], [0.0]],
-#                             [[-1.0], [-1.0], [0.0]],
-#                             [[2.0], [-1.0], [0.0]],
-#                         ]
-#                     ],
-#             )
-#         ]
+#         [([[[[0.0], [1.0], [2.0]],
+#             [[5.0], [4.0], [3.0]],
+#             [[6.0], [8.0], [7.0]]]],
+#           [[[[5.0], [3.0], [1.0]],
+#             [[1.0], [4.0], [4.0]],
+#             [[0.0], [0.0], [0.0]]]],
+#           [[[[1.0], [1.0], [0.0]],
+#             [[-1.0], [-1.0], [0.0]],
+#             [[2.0], [-1.0], [0.0]],]],)]
 #     ),
 #     dtype=st.sampled_from(["float32", "float64"]),
 #     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
@@ -185,17 +183,14 @@ def test_gradient_image(
 #     if call in [helpers.torch_call]:
 #         # torch device cannot be assigned value of string while scripting
 #         return
-
-
-# float_img_to_uint8_img
+#
+#
+# #float_img_to_uint8_img
 # @given(
 #     fi_tui=st.sampled_from(
-#         [
-#             (
-#                     [[0.0, 1.0], [2.0, 3.0]],
-#                     [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-#             )
-#         ]
+#         [([[0.0, 1.0], [2.0, 3.0]],
+#           [[[0, 0, 0, 0], [0, 0, 128, 63]],
+#            [[0, 0, 0, 64], [0, 0, 64, 64]]],)]
 #     ),
 #     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 # )
@@ -219,18 +214,14 @@ def test_gradient_image(
 #     if call in [helpers.torch_call]:
 #         # torch device cannot be assigned value of string while scripting
 #         return
-
-
-# uint8_img_to_float_img
+#
+#
+# #uint8_img_to_float_img
 # @given(
 #     ui_tfi=st.sampled_from(
-#         [
-#             (
-#                     [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-#                     [[0.0, 1.0], [2.0, 3.0]],
-#             )
-#         ]
-#     )
+#         [([[[0, 0, 0, 0], [0, 0, 128, 63]],
+#            [[0, 0, 0, 64], [0, 0, 64, 64]]],
+#           [[0.0, 1.0], [2.0, 3.0]],)])
 # )
 # def test_uint8_img_to_float_img(ui_tfi, device, call):
 #     # smoke test
@@ -252,9 +243,9 @@ def test_gradient_image(
 #     if call in [helpers.torch_call]:
 #         # torch device cannot be assigned value of string while scripting
 #         return
-
-
-# random_crop
+#
+#
+# #random_crop
 # @given(xshp_n_cs=st.sampled_from([([2, 5, 6, 3], [2, 2])]))
 # def test_random_crop(xshp_n_cs, device, call):
 #     # seed
