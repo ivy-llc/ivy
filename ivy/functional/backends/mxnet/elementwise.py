@@ -95,7 +95,8 @@ def greater_equal(
 def isfinite(
     x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
 ) -> mx.ndarray.ndarray.NDArray:
-    # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
+    # ToDo: remove float32 conversion once int8 and uint8 work correctly.
+    #  Currently 0 returns 0 for these types.
     ret = mx.nd.contrib.isfinite(x.astype("float32")).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

@@ -55,7 +55,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    if dtype == None:
+    if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
             dtype = tf.int32
         elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
