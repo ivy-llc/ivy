@@ -38,7 +38,7 @@ def random_normal(
     mean = mean.item() if isinstance(mean, torch.Tensor) else mean
     std = std.item() if isinstance(std, torch.Tensor) else std
     return torch.normal(
-        mean, std, true_shape, device=default_device(device).replace("gpu", "cuda")
+        mean, std, true_shape, device=default_device(device)
     )
 
 
