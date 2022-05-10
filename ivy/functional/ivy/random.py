@@ -145,12 +145,12 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Parameters
     ----------
-    x:
+    x
         Input array. Should have a numeric data type.
 
     Returns
     -------
-    out:
+    out
         An array object, shuffled along the first dimension.
 
     Examples
