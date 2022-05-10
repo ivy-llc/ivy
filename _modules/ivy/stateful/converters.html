@@ -136,21 +136,25 @@
     <span class="sd">&quot;&quot;&quot;Convert an instance of a trainable module from a native framework into a</span>
 <span class="sd">    trainable ivy.Module instance.</span>
 
-<span class="sd">    :param native_module: The module in the native framework to convert, required if native_module_class is not given.</span>
-<span class="sd">                          Default is None.</span>
+<span class="sd">    :param native_module: The module in the native framework to convert, required if</span>
+<span class="sd">        native_module_class is not given. Default is None.</span>
 <span class="sd">    :type native_module: native module instance, optional</span>
-<span class="sd">    :param native_module_class: The class of the native module, required if native_module is not given. Default is None.</span>
+<span class="sd">    :param native_module_class: The class of the native module, required if</span>
+<span class="sd">        native_module is not given. Default is None.</span>
 <span class="sd">    :type native_module_class: class, optional</span>
-<span class="sd">    :param args: Positional arguments to pass to the native module class. Default is None.</span>
+<span class="sd">    :param args: Positional arguments to pass to the native module class.</span>
+<span class="sd">        Default is None.</span>
 <span class="sd">    :type args: list of any</span>
-<span class="sd">    :param kwargs: Key-word arguments to pass to the native module class. Default is None.</span>
+<span class="sd">    :param kwargs: Key-word arguments to pass to the native module class.</span>
+<span class="sd">        Default is None.</span>
 <span class="sd">    :type kwargs: dict of any</span>
-<span class="sd">    :param device: The device on which to create module variables. Default is None.</span>
+<span class="sd">    :param device: The device on which to create module variables.</span>
+<span class="sd">        Default is None.</span>
 <span class="sd">    :type device: ivy.Device, optional</span>
 <span class="sd">    :param devices: The devices on which to create module variables. Default is None.</span>
 <span class="sd">    :type devices: sequence of str, optional</span>
-<span class="sd">    :param inplace_update: For backends with dedicated variable classes, whether to update these inplace.</span>
-<span class="sd">                           Default is False.</span>
+<span class="sd">    :param inplace_update: For backends with dedicated variable classes, whether</span>
+<span class="sd">        to update these inplace. Default is False.</span>
 <span class="sd">    :type inplace_update: bool, optional</span>
 <span class="sd">    :return: The new trainable ivy.Module instance.</span>
 

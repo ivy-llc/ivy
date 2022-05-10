@@ -153,7 +153,8 @@
 <div class="viewcode-block" id="Uniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">fan_mode</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+                <span class="s2">&quot;Invalid fan mode, must be one of &quot;</span>
+                <span class="s2">&quot;[ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numerator</span> <span class="o">=</span> <span class="n">numerator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">=</span> <span class="n">fan_mode</span>
@@ -190,7 +191,8 @@
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+                <span class="s2">&quot;Invalid denominator mode, must be one of &quot;</span>
+                <span class="s2">&quot;[ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
             <span class="p">)</span>
         <span class="n">wlim</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_numerator</span> <span class="o">/</span> <span class="n">fan</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_power</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span></div></div>
@@ -219,7 +221,8 @@
 <div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s2">&quot;fan_in&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+                <span class="s2">&quot;Invalid fan mode, must be one of &quot;</span>
+                <span class="s2">&quot;[ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">=</span> <span class="n">fan_mode</span></div>
@@ -256,7 +259,8 @@
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+                <span class="s2">&quot;Invalid denominator mode, must be one of &quot;</span>
+                <span class="s2">&quot;[ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
             <span class="p">)</span>
         <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">negative_slope</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">fan</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span>

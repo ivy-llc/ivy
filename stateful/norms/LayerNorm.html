@@ -138,11 +138,16 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>normalized_shape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Trailing shape to applying the normalization to.</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to the denominator, use global ivy._MIN_BASE by default.</p></li>
-<li><p><strong>elementwise_affine</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include learnable affine parameters, default is True.</p></li>
-<li><p><strong>new_std</strong> (<em>float</em><em>, </em><em>optional</em>) – The standard deviation of the new normalized values. Default is 1.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each submodule in the sequence, constructed internally by default.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to the denominator, use global
+ivy._MIN_BASE by default.</p></li>
+<li><p><strong>elementwise_affine</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include learnable affine parameters,
+default is True.</p></li>
+<li><p><strong>new_std</strong> (<em>float</em><em>, </em><em>optional</em>) – The standard deviation of the new normalized values.
+Default is 1.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each submodule in the sequence, constructed
+internally by default.</p></li>
 </ul>
 </dd>
 </dl>

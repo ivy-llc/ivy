@@ -133,8 +133,8 @@
             <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Union&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">typ</span><span class="o">.</span><span class="n">__args__</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception occured: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 
@@ -144,8 +144,8 @@
         <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Union&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception occured: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 
@@ -155,8 +155,8 @@
         <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Dict&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception occured: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 
@@ -166,8 +166,8 @@
         <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;List&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Tuple&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception occured: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 

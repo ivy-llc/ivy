@@ -151,13 +151,17 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_size</strong> (<em>int</em>) – Size of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -180,14 +184,18 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_size</strong> (<em>int</em>) – Size of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights.
+Default is GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -210,13 +218,17 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -239,14 +251,18 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -269,13 +285,17 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list
+indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -298,14 +318,18 @@
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list
+indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -327,13 +351,17 @@
 <li><p><strong>num_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating
+the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -375,13 +403,17 @@ tensor with probability p using samples from a Bernoull distribution.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
-<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
+<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence,
+or just the latest timestep. Default is True.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states.
 Default is True.</p></li>
-<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container,
+constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -412,11 +444,14 @@ weight matrix and addition with the bias vector.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>with_bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to include a bias term, default is True.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the linear layer, as a container, constructed
+internally by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -439,17 +474,24 @@ weight matrix and addition with the bias vector.</p>
 <li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of attention heads. Default is 8.</p></li>
 <li><p><strong>head_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension of each of the heads. Default is 64.</p></li>
 <li><p><strong>dropout_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – The rate of dropout. Default is 0.</p></li>
-<li><p><strong>context_dim</strong> (<em>int</em><em>, </em><em>optional.</em>) – The dimension of the context array. Default is None, in which case the query dim is used.</p></li>
-<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – The value by which to scale the query-key similarity measure. Default is head_dim^-0.5</p></li>
-<li><p><strong>with_to_q_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input x to queries. Default is True.</p></li>
-<li><p><strong>with_to_kv_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input context to keys and values.
-Default is True.</p></li>
-<li><p><strong>with_to_out_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from output scaled dot-product attention to
-final output. Default is True.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the attention layer, as a container, constructed internally by default.</p></li>
-<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now), explicitly by the user by calling
-build(), or the first time the __call__ method is run. Default is on initialization.</p></li>
+<li><p><strong>context_dim</strong> (<em>int</em><em>, </em><em>optional.</em>) – The dimension of the context array. Default is None, in
+which case the query dim is used.</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – The value by which to scale the query-key similarity measure.
+Default is head_dim^-0.5</p></li>
+<li><p><strong>with_to_q_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input x
+to queries. Default is True.</p></li>
+<li><p><strong>with_to_kv_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input
+context to keys and values. Default is True.</p></li>
+<li><p><strong>with_to_out_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from output
+scaled dot-product attention to final output. Default
+is True.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the attention layer, as a container, constructed
+internally by default.</p></li>
+<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now),
+explicitly by the user by calling build(), or the first time
+the __call__ method is run. Default is on initialization.</p></li>
 </ul>
 </dd>
 </dl>

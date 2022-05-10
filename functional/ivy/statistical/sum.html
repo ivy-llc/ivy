@@ -153,7 +153,10 @@ over multiple axes. Default: <code class="docutils literal notranslate"><span cl
 <li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – <p>Data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 -   If the default data type corresponding to the data type “kind” (integer or</p>
 <blockquote>
-<div><p>floating-point) of <code class="docutils literal notranslate"><span class="pre">x</span></code> has a smaller range of values than the data type of <code class="docutils literal notranslate"><span class="pre">x</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">int64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, or <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">uint64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int64</span></code>), the returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div><p>floating-point) of <code class="docutils literal notranslate"><span class="pre">x</span></code> has a smaller range of values than the data type of
+<code class="docutils literal notranslate"><span class="pre">x</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">int64</span></code> and the default data type is
+<code class="docutils literal notranslate"><span class="pre">int32</span></code>, or <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">uint64</span></code> and the default data type is
+<code class="docutils literal notranslate"><span class="pre">int64</span></code>), the returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </div></blockquote>
 <ul>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x</span></code> has a floating-point data type, the returned array must have the
@@ -161,7 +164,9 @@ default floating-point data type.</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x</span></code> has a signed integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">int16</span></code>), the returned
 array must have the default integer data type.</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x</span></code> has an unsigned integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">uint16</span></code>), the returned
-array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, the returned array must have a <code class="docutils literal notranslate"><span class="pre">uint32</span></code> data type).</p></li>
+array must have an unsigned integer data type having the same number of bits
+as the default integer data type (e.g., if the default integer data type is
+<code class="docutils literal notranslate"><span class="pre">int32</span></code>, the returned array must have a <code class="docutils literal notranslate"><span class="pre">uint32</span></code> data type).</p></li>
 </ul>
 <p>If the data type (either specified or resolved) differs from the data type of
 <code class="docutils literal notranslate"><span class="pre">x</span></code>, the input array should be cast to the specified data type before

@@ -150,15 +150,18 @@
 <span class="sd">        :type input_channels: int</span>
 <span class="sd">        :param output_channels: Number of output channels for the layer.</span>
 <span class="sd">        :type output_channels: int</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param with_bias: Whether or not to include a bias term, default is True.</span>
 <span class="sd">        :type with_bias: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for the linear layer, as a container, constructed</span>
+<span class="sd">                  internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -192,7 +195,8 @@
 
 <span class="sd">        :param inputs: Inputs to process *[batch_shape, in]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*</span>
+<span class="sd">        :return: The outputs following the linear operation and bias addition</span>
+<span class="sd">                 *[batch_shape, out]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
@@ -226,7 +230,8 @@
 
 <span class="sd">        :param inputs: Inputs to process *[batch_shape, in]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*</span>
+<span class="sd">        :return: The outputs following the linear operation and bias addition</span>
+<span class="sd">                 *[batch_shape, out]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prob</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">)</span></div>
@@ -262,24 +267,31 @@
 <span class="sd">        :type head_dim: int, optional</span>
 <span class="sd">        :param dropout_rate: The rate of dropout. Default is 0.</span>
 <span class="sd">        :type dropout_rate: float, optional</span>
-<span class="sd">        :param context_dim: The dimension of the context array. Default is None, in which case the query dim is used.</span>
+<span class="sd">        :param context_dim: The dimension of the context array. Default is None, in</span>
+<span class="sd">                            which case the query dim is used.</span>
 <span class="sd">        :type context_dim: int, optional.</span>
-<span class="sd">        :param scale: The value by which to scale the query-key similarity measure. Default is head_dim^-0.5</span>
+<span class="sd">        :param scale: The value by which to scale the query-key similarity measure.</span>
+<span class="sd">                      Default is head_dim^-0.5</span>
 <span class="sd">        :type scale: float, optional</span>
-<span class="sd">        :param with_to_q_fn: Whether to include fully connected mapping from input x to queries. Default is True.</span>
+<span class="sd">        :param with_to_q_fn: Whether to include fully connected mapping from input x</span>
+<span class="sd">                             to queries. Default is True.</span>
 <span class="sd">        :type with_to_q_fn: bool, optional</span>
-<span class="sd">        :param with_to_kv_fn: Whether to include fully connected mapping from input context to keys and values.</span>
-<span class="sd">                              Default is True.</span>
+<span class="sd">        :param with_to_kv_fn: Whether to include fully connected mapping from input</span>
+<span class="sd">                              context to keys and values. Default is True.</span>
 <span class="sd">        :type with_to_kv_fn: bool, optional</span>
-<span class="sd">        :param with_to_out_fn: Whether to include fully connected mapping from output scaled dot-product attention to</span>
-<span class="sd">                               final output. Default is True.</span>
+<span class="sd">        :param with_to_out_fn: Whether to include fully connected mapping from output</span>
+<span class="sd">                               scaled dot-product attention to final output. Default</span>
+<span class="sd">                               is True.</span>
 <span class="sd">        :type with_to_out_fn: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for the attention layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for the attention layer, as a container, constructed</span>
+<span class="sd">                  internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
-<span class="sd">        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling</span>
-<span class="sd">                           build(), or the first time the __call__ method is run. Default is on initialization.</span>
+<span class="sd">        :param build_mode: How the Module is built, either on initialization (now),</span>
+<span class="sd">                           explicitly by the user by calling build(), or the first time</span>
+<span class="sd">                           the __call__ method is run. Default is on initialization.</span>
 <span class="sd">        :type build_mode: str, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -335,14 +347,17 @@
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform forward pass of the MultiHeadAttention layer.</span>
 
-<span class="sd">        :param inputs: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.</span>
+<span class="sd">        :param inputs: The array to determine the queries from</span>
+<span class="sd">                       *[batch_shape,num_queries,x_feats]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :param context: The array to determine the keys and values from. Default is None.</span>
-<span class="sd">                        *[batch_shape,num_values,cont_feats]*.</span>
+<span class="sd">        :param context: The array to determine the keys and values from.</span>
+<span class="sd">                        Default is None. *[batch_shape,num_values,cont_feats]*.</span>
 <span class="sd">        :type context: array, optional</span>
-<span class="sd">        :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*</span>
+<span class="sd">        :param mask: The mask to apply to the query-key values. Default is None.</span>
+<span class="sd">                     *[batch_shape,num_queries,num_values]*</span>
 <span class="sd">        :type mask: array, optional</span>
-<span class="sd">        :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*</span>
+<span class="sd">        :return The output following application of scaled dot-product attention.</span>
+<span class="sd">                *[batch_shape,num_queries,out_feats]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_head_attention</span><span class="p">(</span>
@@ -389,9 +404,11 @@
 <span class="sd">        :type filter_size: int</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">                        the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -399,9 +416,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -480,9 +499,11 @@
 <span class="sd">        :type filter_size: int</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">                        the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights.</span>
+<span class="sd">                                   Default is GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -492,9 +513,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -574,9 +597,11 @@
 <span class="sd">        :type filter_shape: sequence of ints</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">                        the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -584,9 +609,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -665,9 +692,11 @@
 <span class="sd">        :type filter_shape: sequence of ints</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">                        the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -677,9 +706,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -756,9 +787,11 @@
 <span class="sd">        :type filter_shape: sequence of ints</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">                        the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -766,9 +799,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -845,9 +880,11 @@
 <span class="sd">        :type filter_shape: sequence of ints</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">                        indicating the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">                                   GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -855,9 +892,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">                  constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -894,7 +933,8 @@
 
 <span class="sd">        :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*</span>
+<span class="sd">        :return: The outputs following the conv1d layer</span>
+<span class="sd">                 *[batch_size,new_d,new_h,new_w,d_out]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -936,9 +976,11 @@
 <span class="sd">        :type filter_shape: sequence of ints</span>
 <span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
 <span class="sd">        :type strides: int or sequence of ints</span>
-<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">            indicating the per-dimension paddings.</span>
 <span class="sd">        :type padding: string or sequence of ints</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">            GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param bias_initializer: Initializer for the bias. Default is Zeros.</span>
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
@@ -948,9 +990,11 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">            &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container,</span>
+<span class="sd">            constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -988,7 +1032,8 @@
 
 <span class="sd">        :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*</span>
+<span class="sd">        :return: The outputs following the conv1d layer</span>
+<span class="sd">            *[batch_size,new_d,new_h,new_w,d_out]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -1027,18 +1072,22 @@
 <span class="sd">        :type input_channels: int</span>
 <span class="sd">        :param output_channels: Number of output channels for the layer</span>
 <span class="sd">        :type output_channels: int</span>
-<span class="sd">        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.</span>
+<span class="sd">        :param weight_initializer: Initializer for the weights. Default is</span>
+<span class="sd">            GlorotUniform.</span>
 <span class="sd">        :type weight_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param num_layers: Number of lstm cells in the lstm layer, default is 1.</span>
 <span class="sd">        :type num_layers: int, optional</span>
-<span class="sd">        :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.</span>
-<span class="sd">                                Default is True.</span>
+<span class="sd">        :param return_sequence: Whether or not to return the entire output sequence,</span>
+<span class="sd">            or just the latest timestep. Default is True.</span>
 <span class="sd">        :type return_sequence: bool, optional</span>
-<span class="sd">        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.</span>
+<span class="sd">        :param return_state: Whether or not to return the latest hidden and cell states.</span>
+<span class="sd">            Default is True.</span>
 <span class="sd">        :type return_state: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">            &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each of the lstm cells, as a container,</span>
+<span class="sd">            constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of parameter arrays, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1116,11 +1165,11 @@
 
 <span class="sd">        :param inputs: Inputs to process *[batch_shape, t, in]*.</span>
 <span class="sd">        :type inputs: array</span>
-<span class="sd">        :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.</span>
-<span class="sd">                        Created internally if None.</span>
+<span class="sd">        :param initial_state: 2-tuple of lists of the hidden states h and c for each</span>
+<span class="sd">            layer, each of dimension *[batch_shape,out]*. Created internally if None.</span>
 <span class="sd">        :type initial_state: tuple of list of arrays, optional</span>
-<span class="sd">        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,</span>
-<span class="sd">                each of dimension *[batch_shape, out]*</span>
+<span class="sd">        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the</span>
+<span class="sd">            hidden state tuple of lists, each of dimension *[batch_shape, out]*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">initial_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

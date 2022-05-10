@@ -246,7 +246,8 @@
                 <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="c1"># once training is finished, compute the final cost, and update all_grads if fist order method</span>
+    <span class="c1"># once training is finished, compute the final cost, and update</span>
+    <span class="c1"># all_grads if fist order method</span>
     <span class="n">final_cost</span> <span class="o">=</span> <span class="n">_compute_cost_and_update_grads</span><span class="p">(</span>
         <span class="n">inner_cost_fn</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">outer_cost_fn</span><span class="p">,</span>
         <span class="n">order</span><span class="p">,</span>

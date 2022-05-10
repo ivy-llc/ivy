@@ -140,15 +140,20 @@
 
 <span class="sd">        :param normalized_shape: Trailing shape to applying the normalization to.</span>
 <span class="sd">        :type normalized_shape: int or sequence of ints</span>
-<span class="sd">        :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.</span>
+<span class="sd">        :param epsilon: small constant to add to the denominator, use global</span>
+<span class="sd">                        ivy._MIN_BASE by default.</span>
 <span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param elementwise_affine: Whether to include learnable affine parameters, default is True.</span>
+<span class="sd">        :param elementwise_affine: Whether to include learnable affine parameters,</span>
+<span class="sd">                                   default is True.</span>
 <span class="sd">        :type elementwise_affine: bool, optional</span>
-<span class="sd">        :param new_std: The standard deviation of the new normalized values. Default is 1.</span>
+<span class="sd">        :param new_std: The standard deviation of the new normalized values.</span>
+<span class="sd">                        Default is 1.</span>
 <span class="sd">        :type new_std: float, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
+<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each submodule in the sequence, constructed internally by default.</span>
+<span class="sd">        :param v: the variables for each submodule in the sequence, constructed</span>
+<span class="sd">                  internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

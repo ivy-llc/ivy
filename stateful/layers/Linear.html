@@ -152,11 +152,14 @@ weight matrix and addition with the bias vector.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
 <li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
+GlorotUniform.</p></li>
 <li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
 <li><p><strong>with_bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to include a bias term, default is True.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the linear layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
+‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the linear layer, as a container, constructed
+internally by default.</p></li>
 </ul>
 </dd>
 </dl>
