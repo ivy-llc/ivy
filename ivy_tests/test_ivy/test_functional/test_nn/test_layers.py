@@ -865,7 +865,8 @@ def test_conv3d_transpose(
         pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
-        # numpy and jax do not yet support 3d transpose convolutions, and mxnet only supports with CUDNN
+        # numpy and jax do not yet support 3d transpose convolutions, and mxnet only
+        # supports with CUDNN
         pytest.skip()
     if call in [helpers.mx_call] and "cpu" in device:
         # mxnet only supports 3d transpose convolutions with CUDNN

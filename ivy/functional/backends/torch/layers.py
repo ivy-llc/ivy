@@ -1,5 +1,4 @@
-"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
 import math as _math

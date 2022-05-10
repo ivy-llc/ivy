@@ -5,6 +5,7 @@ import pytest
 import random
 import numpy as np
 import multiprocessing
+import pickle
 
 # local
 import ivy
@@ -1238,16 +1239,20 @@ def test_container_einsum(device, call):
 
 
 # def test_container_vector_norm(device, call):
-#     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], device=device),
-#                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], device=device),
-#                      'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], device=device)}}
+#     dict_in = {
+#         "a": ivy.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], device=device),
+#         "b": {
+#             "c": ivy.array([[2.0, 4.0], [6.0, 8.0], [10.0, 12.0]], device=device),
+#             "d": ivy.array([[3.0, 6.0], [9.0, 12.0], [15.0, 18.0]], device=device),
+#         },
+#     }
 #     container = Container(dict_in)
 #     container_normed = container.vector_norm(axis=(-1, -2))
-#     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.5394)
+#     assert np.allclose(ivy.to_numpy(container_normed["a"]), 9.5394)
 #     assert np.allclose(ivy.to_numpy(container_normed.a), 9.5394)
-#     assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.0788)
+#     assert np.allclose(ivy.to_numpy(container_normed["b"]["c"]), 19.0788)
 #     assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.0788)
-#     assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.6182)
+#     assert np.allclose(ivy.to_numpy(container_normed["b"]["d"]), 28.6182)
 #     assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.6182)
 
 
@@ -1501,7 +1506,7 @@ def test_container_distribute(devs_as_dict, device, call):
     batch_size = array_a.shape[0]
 
     if call is helpers.mx_call:
-        # MXNet does not support splitting along an axis with a remainder after division.
+        # MXNet does not support splitting along an axis with a remainder after division
         pytest.skip()
 
     # devices
@@ -1523,15 +1528,15 @@ def test_container_distribute(devs_as_dict, device, call):
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(
             ivy.to_numpy(sub_cont.a),
-            ivy.to_numpy(array_a)[i * sub_size : i * sub_size + sub_size],
+            ivy.to_numpy(array_a)[i * sub_size: i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.c),
-            ivy.to_numpy(array_bc)[i * sub_size : i * sub_size + sub_size],
+            ivy.to_numpy(array_bc)[i * sub_size: i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.d),
-            ivy.to_numpy(array_bd)[i * sub_size : i * sub_size + sub_size],
+            ivy.to_numpy(array_bd)[i * sub_size: i * sub_size + sub_size],
         )
 
 
@@ -2534,12 +2539,12 @@ def test_container_has_key(device, call):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert container.has_key("a")
-    assert container.has_key("b")
-    assert container.has_key("c")
-    assert container.has_key("d")
-    assert not container.has_key("e")
-    assert not container.has_key("f")
+    assert container.has_key("a") # noqa
+    assert container.has_key("b") # noqa
+    assert container.has_key("c") # noqa
+    assert container.has_key("d") # noqa
+    assert not container.has_key("e") # noqa
+    assert not container.has_key("f") # noqa
 
 
 def test_container_has_key_chain(device, call):
@@ -3329,7 +3334,8 @@ def test_container_contains(device, call):
 
 def test_container_shuffle(device, call):
     if call is helpers.tf_graph_call:
-        # tf.random.set_seed is not compiled. The shuffle is then not aligned between container items.
+        # tf.random.set_seed is not compiled. The shuffle is then not
+        # aligned between container items.
         pytest.skip()
     dict_in = {
         "a": ivy.array([1, 2, 3], device=device),
@@ -4144,32 +4150,36 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device, call):
     os.remove(save_filepath)
 
 
-# def test_container_pickle(device, call):
-#     if call in [helpers.tf_graph_call]:
-#         # container disk saving requires eager execution
-#         pytest.skip()
-#     dict_in = {'a': ivy.array([np.float32(1.)], device=device),
-#                'b': {'c': ivy.array([np.float32(2.)], device=device),
-#                      'd': ivy.array([np.float32(3.)], device=device)}}
-#
-#     # without module attribute
-#     cont = Container(dict_in)
-#     assert cont._local_ivy is None
-#     pickled = pickle.dumps(cont)
-#     cont_again = pickle.loads(pickled)
-#     assert cont_again._local_ivy is None
-#     ivy.Container.identical_structure([cont, cont_again])
-#     ivy.Container.identical_configs([cont, cont_again])
-#
-#     # with module attribute
-#     cont = Container(dict_in, ivyh=ivy)
-#     assert cont._local_ivy is ivy
-#     pickled = pickle.dumps(cont)
-#     cont_again = pickle.loads(pickled)
-#     # noinspection PyUnresolvedReferences
-#     assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
-#     ivy.Container.identical_structure([cont, cont_again])
-#     ivy.Container.identical_configs([cont, cont_again])
+def test_container_pickle(device, call):
+    if call in [helpers.tf_graph_call]:
+        # container disk saving requires eager execution
+        pytest.skip()
+    dict_in = {
+        "a": ivy.array([np.float32(1.0)], device=device),
+        "b": {
+            "c": ivy.array([np.float32(2.0)], device=device),
+            "d": ivy.array([np.float32(3.0)], device=device),
+        },
+    }
+
+    # without module attribute
+    cont = Container(dict_in)
+    assert cont._local_ivy is None
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    assert cont_again._local_ivy is None
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
+
+    # with module attribute
+    cont = Container(dict_in, ivyh=ivy)
+    assert cont._local_ivy is ivy
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    # noinspection PyUnresolvedReferences
+    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
 
 
 def test_container_to_and_from_disk_as_pickled(device, call):
@@ -4461,34 +4471,6 @@ def test_container_subtraction(device, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([2]))
 
 
-def test_container_sum(device, call):
-    container_a = Container(
-        {
-            "a": ivy.array([1], device=device),
-            "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
-            },
-        }
-    )
-    container_b = Container(
-        {
-            "a": ivy.array([2], device=device),
-            "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([6], device=device),
-            },
-        }
-    )
-    container = sum([container_a, container_b])
-    assert np.allclose(ivy.to_numpy(container["a"]), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container.a), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([6]))
-    assert np.allclose(ivy.to_numpy(container.b.c), np.array([6]))
-    assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([9]))
-    assert np.allclose(ivy.to_numpy(container.b.d), np.array([9]))
-
-
 def test_container_scalar_multiplication(device, call):
     container = Container(
         {
@@ -4623,7 +4605,8 @@ def test_container_truediv(device, call):
 
 def test_container_scalar_floordiv(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        # MXnet arrays do not overload the // operator, can add if explicit
+        # ivy.floordiv is implemented at some point
         pytest.skip()
     container = Container(
         {
@@ -4645,7 +4628,8 @@ def test_container_scalar_floordiv(device, call):
 
 def test_container_reverse_scalar_floordiv(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        # MXnet arrays do not overload the // operator, can add if explicit
+        # ivy.floordiv is implemented at some point
         pytest.skip()
     container = Container(
         {
@@ -4667,7 +4651,8 @@ def test_container_reverse_scalar_floordiv(device, call):
 
 def test_container_floordiv(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        # MXnet arrays do not overload the // operator, can add if explicit
+        # ivy.floordiv is implemented at some point
         pytest.skip()
     container_a = Container(
         {
@@ -5123,7 +5108,8 @@ def test_container_scalar_and(device, call):
         }
     )
     container = container & True
-    # ToDo: work out why "container and True" does not work. Perhaps bool(container) is called first implicitly?
+    # ToDo: work out why "container and True" does not work. Perhaps bool(container)
+    #  is called first implicitly?
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([True]))
@@ -5265,7 +5251,8 @@ def test_container_not(device, call):
 
 def test_container_scalar_xor(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        # MXnet arrays do not overload the ^ operator, can add if explicit
+        # ivy.logical_xor is implemented at some point
         pytest.skip()
     container = Container(
         {
@@ -5287,7 +5274,8 @@ def test_container_scalar_xor(device, call):
 
 def test_container_reverse_scalar_xor(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        # MXnet arrays do not overload the ^ operator, can add if explicit
+        # ivy.logical_xor is implemented at some point
         pytest.skip()
     container = Container(
         {
@@ -5298,7 +5286,7 @@ def test_container_reverse_scalar_xor(device, call):
             },
         }
     )
-    container = False != container
+    container = False != container # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([True]))
@@ -5309,7 +5297,8 @@ def test_container_reverse_scalar_xor(device, call):
 
 def test_container_xor(device, call):
     if call is helpers.mx_call:
-        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        # MXnet arrays do not overload the ^ operator, can add if explicit
+        # ivy.logical_xor is implemented at some point
         pytest.skip()
     container_a = Container(
         {
@@ -5329,7 +5318,7 @@ def test_container_xor(device, call):
             },
         }
     )
-    container = container_a != container_b
+    container = container_a != container_b # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))
@@ -5474,12 +5463,13 @@ def test_jax_pytree_compatibility(device, call):
 def test_container_from_queues(device, call):
 
     if "gpu" in device:
-        # Cannot re-initialize CUDA in forked subprocess. 'spawn' start method must be used.
+        # Cannot re-initialize CUDA in forked subprocess. 'spawn'
+        # start method must be used.
         pytest.skip()
 
     if ivy.gpu_is_available() and call is helpers.jnp_call:
-        # Not found a way to set default device for JAX, and this causes issues with multiprocessing and CUDA,
-        # even when device=cpu
+        # Not found a way to set default device for JAX, and this causes
+        # issues with multiprocessing and CUDA, even when device=cpu
         # ToDo: find a fix for this problem ^^
         pytest.skip()
 
