@@ -104,10 +104,9 @@ def test_gradient_image(
         x=x
     )
 
-
 # Smoke Tests #
 
-#bilinear_resample
+# #bilinear_resample
 # @given(
 #     x_n_warp=st.sampled_from(
 #         [([[[[0.0], [1.0]], [[2.0], [3.0]]]],
