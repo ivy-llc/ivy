@@ -3,7 +3,7 @@ name: lint
 on: [push, pull_request]
 
 jobs:
-  analyse-code-format:
+  check-formatting:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
