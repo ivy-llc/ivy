@@ -90,7 +90,7 @@ def test_imports(fname, assert_version, update_versions):
                 )
             else:
                 msg = ("no expected version provided, and unable to detect "
-                      "version for {}\n".format(mod_name))
+                       "version for {}\n".format(mod_name))
             WARN = True
             PRINT_MSG += msg
             WARN_MSG += msg

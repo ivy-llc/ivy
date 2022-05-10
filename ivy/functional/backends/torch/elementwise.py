@@ -310,10 +310,6 @@ def tan(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tan(x, out=out)
 
 
-def acos(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.acos(x, out=out)
-
-
 def atan(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.atan(x, out=out)
 
@@ -328,10 +324,6 @@ def atan2(
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.atan2(x1, x2, out=out)
-
-
-def cosh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.cosh(x, out=out)
 
 
 def log(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
