@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
@@ -216,7 +216,7 @@ def diagonal(
 
 def qr(
     x: tf.Tensor, mode: str = "reduced", out: Optional[Tuple[Tensor, Tensor]] = None
-) -> namedtuple("qr", ["Q", "R"]):
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
@@ -226,7 +226,8 @@ def qr(
         ret = res(q, r)
     else:
         raise Exception(
-            "Only 'reduced' and 'complete' qr modes are allowed for the tensorflow backend."
+            "Only 'reduced' and 'complete' qr modes are allowed "
+            "for the tensorflow backend."
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
