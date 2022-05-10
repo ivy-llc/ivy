@@ -1,20 +1,18 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import ivy
 import numpy as np
-
-torch_scatter = None
 import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
 from numbers import Number
 
-
 # local
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
+
+torch_scatter = None
 
 
 def is_native_array(x, exclusive=False):

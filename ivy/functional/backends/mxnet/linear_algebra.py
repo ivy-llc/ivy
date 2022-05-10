@@ -29,9 +29,7 @@ def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 def pinv(x):
-    """
-    reference: https://help.matheass.eu/en/Pseudoinverse.html
-    """
+    """reference: https://help.matheass.eu/en/Pseudoinverse.html"""
     x_dim, y_dim = x.shape[-2:]
     if x_dim == y_dim and mx.nd.sum(mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
         return inv(x)

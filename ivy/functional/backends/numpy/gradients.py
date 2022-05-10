@@ -1,5 +1,4 @@
-"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import logging

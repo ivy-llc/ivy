@@ -1,5 +1,5 @@
 cholesky
-#cross #fails for torch, issue: https://github.com/pytorch/pytorch/issues/76588
+#cross #fails for jax, torch, issue: https://github.com/pytorch/pytorch/issues/76588
 det
 diagonal
 eigh
