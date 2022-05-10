@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Tuple
+from typing import Tuple
 from collections import namedtuple
 
 import ivy
@@ -15,7 +15,6 @@ def unique_all(x: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
 
     flat_tensor = tf.reshape(x, [-1])
     values, inverse_indices, counts = tf.unique_with_counts(flat_tensor)
-    # values = tf.cast(values, 'float64') if values.dtype not in [tf.float32, tf.float64] else values
     tensor_list = flat_tensor.numpy().tolist()
     if (
         x.dtype.is_floating

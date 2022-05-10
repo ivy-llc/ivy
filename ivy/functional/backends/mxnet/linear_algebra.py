@@ -68,12 +68,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    res = results(U, D, VT)
-    return res
-
-    return mx.np.linalg.norm(x, p, axis, keepdims)
+    return mx.np.linalg.svd(x)
 
 
 def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
@@ -146,13 +141,13 @@ def matmul(x1, x2):
     if len(x1_shape) != 3:
         num_x1_dims = len(x1_shape)
         x1 = mx.nd.reshape(
-            x1, [1] * max(2 - num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2) :]
+            x1, [1] * max(2 - num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):]
         )
         expanded = True
     if len(x2_shape) != 3:
         num_x2_dims = len(x2_shape)
         x2 = mx.nd.reshape(
-            x2, [1] * max(2 - num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2) :]
+            x2, [1] * max(2 - num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):]
         )
         expanded = True
     x1_batch_size = x1.shape[0]

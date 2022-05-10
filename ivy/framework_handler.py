@@ -127,8 +127,9 @@ def set_framework(f):
 
 
 def get_framework(f=None):
-    # ToDo: change this so that it doesn't depend at all on the global ivy. Currently all framework-agnostic
-    #  implementations returned in this module will still use the global ivy backend.
+    # ToDo: change this so that it doesn't depend at all on the global ivy. Currently
+    #  all framework-agnostic implementations returned in this module will still
+    #  use the global ivy backend.
     global ivy_original_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
@@ -198,9 +199,8 @@ def try_import_ivy_tf(warn=False):
             return
         logging.warning(
             "{}\n\ntensorflow does not appear to be installed, "
-            "ivy.functional.backends.tensorflow can therefore not be imported.\n".format(
-                e
-            )
+            "ivy.functional.backends.tensorflow can therefore not be "
+            "imported.\n".format(e)
         )
 
 
@@ -260,7 +260,8 @@ def choose_random_framework(excluded=None):
     while True:
         if len(excluded) == 5:
             raise Exception(
-                "Unable to select framework, all backends are either excluded or not installed."
+                "Unable to select framework, all backends are either excluded "
+                "or not installed."
             )
         f = np.random.choice(
             [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]
