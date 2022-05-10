@@ -11,9 +11,11 @@ from typing import Optional
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
-def dev (x: np.ndarray , as_str: bool =False)\
-        ->str:
+
+def dev(x: np.ndarray , as_str: bool = False)\
+        -> str:
     return 'cpu'
+
 
 dev.__name__ = "dev"
 _dev_callable = dev
