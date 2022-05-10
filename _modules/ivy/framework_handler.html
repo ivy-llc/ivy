@@ -247,8 +247,9 @@
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy. Currently all framework-agnostic</span>
-    <span class="c1">#  implementations returned in this module will still use the global ivy backend.</span>
+    <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy. Currently</span>
+    <span class="c1">#  all framework-agnostic implementations returned in this module will still</span>
+    <span class="c1">#  use the global ivy backend.</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -318,9 +319,8 @@
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">tensorflow does not appear to be installed, &quot;</span>
-            <span class="s2">&quot;ivy.functional.backends.tensorflow can therefore not be imported.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">e</span>
-            <span class="p">)</span>
+            <span class="s2">&quot;ivy.functional.backends.tensorflow can therefore not be &quot;</span>
+            <span class="s2">&quot;imported.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -380,7 +380,8 @@
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Unable to select framework, all backends are either excluded or not installed.&quot;</span>
+                <span class="s2">&quot;Unable to select framework, all backends are either excluded &quot;</span>
+                <span class="s2">&quot;or not installed.&quot;</span>
             <span class="p">)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
             <span class="p">[</span><span class="n">f_srt</span> <span class="k">for</span> <span class="n">f_srt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">FW_DICT</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">f_srt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excluded</span><span class="p">]</span>
