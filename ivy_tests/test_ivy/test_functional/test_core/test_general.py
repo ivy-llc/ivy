@@ -898,7 +898,7 @@ def test_repeat(x_n_reps_n_axis, dtype, tensor_fn, device, call):
     else:
         axis_wrapped = axis % len(x_shape)
         expected_shape = (
-            x_shape[0:axis_wrapped] + [sum(reps_raw)] + x_shape[axis_wrapped + 1:]
+            x_shape[0:axis_wrapped] + [sum(reps_raw)] + x_shape[axis_wrapped + 1 :]
         )
     assert list(ret.shape) == expected_shape
     # value test
@@ -1550,7 +1550,7 @@ def test_gather_nd(prms_n_inds, dtype, tensor_fn, device, call):
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
+    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
     # value test
     assert np.allclose(
         call(ivy.gather_nd, prms, inds, device),
@@ -1600,7 +1600,7 @@ def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype, tensor_fn, device, 
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     x_pre_shape = x_shape[0:axis]
-    x_post_shape = x_shape[axis + 1:]
+    x_post_shape = x_shape[axis + 1 :]
     assert list(ret.shape) == x_pre_shape + [samples] + x_post_shape
     # value test
     y_true = np.array(y_true)

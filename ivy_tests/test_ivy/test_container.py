@@ -1528,15 +1528,15 @@ def test_container_distribute(devs_as_dict, device, call):
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(
             ivy.to_numpy(sub_cont.a),
-            ivy.to_numpy(array_a)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_a)[i * sub_size : i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.c),
-            ivy.to_numpy(array_bc)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_bc)[i * sub_size : i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.d),
-            ivy.to_numpy(array_bd)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_bd)[i * sub_size : i * sub_size + sub_size],
         )
 
 
@@ -2539,12 +2539,12 @@ def test_container_has_key(device, call):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert container.has_key("a") # noqa
-    assert container.has_key("b") # noqa
-    assert container.has_key("c") # noqa
-    assert container.has_key("d") # noqa
-    assert not container.has_key("e") # noqa
-    assert not container.has_key("f") # noqa
+    assert container.has_key("a")  # noqa
+    assert container.has_key("b")  # noqa
+    assert container.has_key("c")  # noqa
+    assert container.has_key("d")  # noqa
+    assert not container.has_key("e")  # noqa
+    assert not container.has_key("f")  # noqa
 
 
 def test_container_has_key_chain(device, call):
@@ -2759,8 +2759,8 @@ def test_container_set_at_keys(device, call):
     container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
-    assert not container.has_key("c") # noqa
-    assert not container.has_key("d") # noqa
+    assert not container.has_key("c")  # noqa
+    assert not container.has_key("d")  # noqa
     container = orig_container.set_at_keys(
         {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
     )
@@ -5263,7 +5263,7 @@ def test_container_scalar_xor(device, call):
             },
         }
     )
-    container = container != True # noqa
+    container = container != True  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))
@@ -5286,7 +5286,7 @@ def test_container_reverse_scalar_xor(device, call):
             },
         }
     )
-    container = False != container # noqa
+    container = False != container  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([True]))
@@ -5318,7 +5318,7 @@ def test_container_xor(device, call):
             },
         }
     )
-    container = container_a != container_b # noqa
+    container = container_a != container_b  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))

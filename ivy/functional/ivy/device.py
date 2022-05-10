@@ -690,7 +690,7 @@ class MultiDevItem(MultiDev):
                     ret_dict[ds] = sub_item[rel_slice_obj]
                     return MultiDevItem(ret_dict)
                 else:
-                    ret_dict[ds] = sub_item[rel_slice_obj.start:]
+                    ret_dict[ds] = sub_item[rel_slice_obj.start :]
         return MultiDevItem(ret_dict)
 
     def __getitem__(self, query):
