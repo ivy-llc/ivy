@@ -12,7 +12,7 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: mx.nd.NDArray, as_str: bool =False)\
+def dev(x: mx.nd.NDArray, as_str: bool = False)\
         -> str:
     dv = x.context
     if as_str:
