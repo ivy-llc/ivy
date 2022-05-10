@@ -4,7 +4,6 @@
 import math as _math
 import torch
 from typing import List, Optional
-import numpy as np
 
 
 # noinspection PyUnresolvedReferences

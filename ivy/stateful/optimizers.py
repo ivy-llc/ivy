@@ -112,8 +112,8 @@ class Optimizer(abc.ABC):
         :type v: Ivy container of variables
         :param grads: Nested gradients to update.
         :type grads: sequence of arrays
-        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
-                               Default is False.
+        :param ignore_missing: Whether to ignore keys missing from the gradients which
+                               exist in the variables. Default is False.
         :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
 

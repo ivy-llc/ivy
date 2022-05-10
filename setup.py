@@ -77,7 +77,7 @@ setup(
     author="Ivy Team",
     author_email="ivydl.team@gmail.com",
     description=("The unified machine learning framework, enabling framework-agnostic "
-    "functions, layers and libraries."),
+                 "functions, layers and libraries."),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://lets-unify.ai/ivy",
