@@ -2181,10 +2181,10 @@ def bitwise_right_shift(
         out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
         
     Exemples :
-    >>> lhs = ivy.array([1, 2, 3, 1], dtype=ivy.int64)
+    >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
     >>> rhs = ivy.array([[1, 3, 2, 1], dtype=ivy.int64)
     >>> print(ivy.bitwise_right_shift(lhs, rhs))
-    ivy.array([0, 0, 0, 0])
+    ivy.array([2, 0, 0, 0])
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
 
