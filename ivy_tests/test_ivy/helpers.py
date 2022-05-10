@@ -322,7 +322,8 @@ def test_array_function(
         for v, d in zip(as_variable, dtype)
     ]
 
-    # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
+    # update instance_method flag to only be considered if the
+    # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
     # split the arguments into their positional and keyword components

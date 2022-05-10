@@ -21,11 +21,10 @@ class Linear(Module):
         device=None,
         v=None,
     ):
-        """Linear layer, also referred to as dense or fully connected. The
-        layer receives tensors with input_channels last dimension and returns a
-        new tensor with output_channels last dimension, following matrix
-        multiplication with the weight matrix and addition with the bias
-        vector.
+        """Linear layer, also referred to as dense or fully connected. The layer
+        receives tensors with input_channels last dimension and returns a new tensor
+        with output_channels last dimension, following matrix multiplication with the
+        weight matrix and addition with the bias vector.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -85,9 +84,8 @@ class Linear(Module):
 
 class Dropout(Module):
     def __init__(self, prob, scale=True):
-        """Dropout layer. The layer randomly zeroes some of the elements of the
-        input tensor with probability p using samples from a Bernoull
-        distribution.
+        """Dropout layer. The layer randomly zeroes some of the elements of the input
+        tensor with probability p using samples from a Bernoull distribution.
 
         :param prob: The probability of zeroing out each array element.
         :type prob: float
@@ -630,7 +628,7 @@ class DepthwiseConv2D(Module):
         device=None,
         v=None,
     ):
-        """depthwise 2D convolutional layer.
+        """Depthwise 2D convolutional layer.
 
         :param num_channels: Number of input channels for the layer.
         :type num_channels: int
@@ -936,7 +934,8 @@ class LSTM(Module):
 
     def get_initial_state(self, batch_shape):
         """Get the initial state of the hidden and cell states, if not provided
-        explicitly."""
+        explicitly.
+        """
         batch_shape = list(batch_shape)
         return (
             [

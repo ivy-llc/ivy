@@ -1,5 +1,6 @@
 """Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import tensorflow as tf
