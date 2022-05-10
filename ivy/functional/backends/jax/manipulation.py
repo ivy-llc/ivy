@@ -104,7 +104,7 @@ def concat(
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
 
-    if axis == None:
+    if axis is None:
         if is_tuple:
             xs = list(xs)
         for i in range(len(xs)):
