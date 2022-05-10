@@ -1,6 +1,5 @@
 # global
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
-from collections import namedtuple
 
 # local
 import ivy
