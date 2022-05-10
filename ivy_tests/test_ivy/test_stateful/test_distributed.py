@@ -6,8 +6,7 @@ import pytest
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
-# from ivy_tests.test_ivy.test_stateful.test_converters import
+# from ivy_tests.test_ivy.test_stateful.test_converters import NATIVE_MODULES
 
 
 class TrainableModule(ivy.Module):
@@ -177,112 +176,112 @@ def test_distributed_training(bs_ic_oc, device, call):
 
 
 # distributed multiprocess training
-# @pytest.mark.parametrize("bs_ic_oc", [([2, 1], 4, 5)])
-# def test_distributed_multiprocess_training(bs_ic_oc, device, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#
-#     if call is not helpers.torch_call:
-#         # ToDo: add support for other frameworks, currently only supported for torch
-#         pytest.skip()
-#
-#     # devices and inputs
-#     devices = list()
-#     xs = dict()
-#
-#     # first device
-#     dev0 = device
-#     devices.append(dev0)
-#
-#     # first input
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
-#     xs[dev0] = ivy.astype(
-#         ivy.linspace(
-#             ivy.zeros(dev_batch_shape),
-#             ivy.ones(dev_batch_shape),
-#             input_channels,
-#             device=dev0,
-#         ),
-#         "float32",
-#     )
-#
-#     # second device
-#     if "gpu" in device and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = device[:-1] + str(idx)
-#         devices.append(dev1)
-#
-#         # second input
-#         xs[dev1] = ivy.astype(
-#             ivy.linspace(
-#                 ivy.zeros(dev_batch_shape),
-#                 ivy.ones(dev_batch_shape),
-#                 input_channels,
-#                 device=dev1,
-#             ),
-#             "float32",
-#         )
-#
-#     # combined inputs
-#     x = ivy.DevDistItem(xs)
-#
-#     # module for processes
-#     module = TrainableModule(
-#         input_channels, output_channels, device=dev0, store_vars=False
-#     )
-#
-#     # optimizer
-#     optim = ivy.SGD(1e-4)
-#
-#     # return fn
-#     ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
-#
-#     # device mapper
-#     orig_timeout = ivy.queue_timeout()
-#     ivy.set_queue_timeout(30.0)
-#     dev_mapper = ivy.DevMapperMultiProc(
-#         map_fn, ret_fn, devices, constant={"module": module}
-#     )
-#
-#     # local module
-#     module = TrainableModule(
-#         input_channels, output_channels, device=dev0, store_vars=True
-#     )
-#     module.build()
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss, grads = dev_mapper.map(xn=x, vc=module.v.dev_clone(devs))
-#         module.v = optim.step(module.v, grads)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#     ivy.set_queue_timeout(orig_timeout)
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-#     # delete dev mapper
-#     dev_mapper.__del__()
-#     del dev_mapper
+@pytest.mark.parametrize("bs_ic_oc", [([2, 1], 4, 5)])
+def test_distributed_multiprocess_training(bs_ic_oc, device, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+    if call is not helpers.torch_call:
+        # ToDo: add support for other frameworks, currently only supported for torch
+        pytest.skip()
+
+    # devices and inputs
+    devices = list()
+    xs = dict()
+
+    # first device
+    dev0 = device
+    devices.append(dev0)
+
+    # first input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
+    xs[dev0] = ivy.astype(
+        ivy.linspace(
+            ivy.zeros(dev_batch_shape),
+            ivy.ones(dev_batch_shape),
+            input_channels,
+            device=dev0,
+        ),
+        "float32",
+    )
+
+    # second device
+    if "gpu" in device and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = device[:-1] + str(idx)
+        devices.append(dev1)
+
+        # second input
+        xs[dev1] = ivy.astype(
+            ivy.linspace(
+                ivy.zeros(dev_batch_shape),
+                ivy.ones(dev_batch_shape),
+                input_channels,
+                device=dev1,
+            ),
+            "float32",
+        )
+
+    # combined inputs
+    x = ivy.DevDistItem(xs)
+
+    # module for processes
+    module = TrainableModule(
+        input_channels, output_channels, device=dev0, store_vars=False
+    )
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # return fn
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
+
+    # device mapper
+    orig_timeout = ivy.queue_timeout()
+    ivy.set_queue_timeout(30.0)
+    dev_mapper = ivy.DevMapperMultiProc(
+        map_fn, ret_fn, devices, constant={"module": module}
+    )
+
+    # local module
+    module = TrainableModule(
+        input_channels, output_channels, device=dev0, store_vars=True
+    )
+    module.build()
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = dev_mapper.map(xn=x, vc=module.v.dev_clone(devices))
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+    ivy.set_queue_timeout(orig_timeout)
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev mapper
+    dev_mapper.__del__()
+    del dev_mapper
 
 
 # to_ivy_module_distributed
@@ -430,7 +429,7 @@ def test_distributed_training(bs_ic_oc, device, call):
 #     # first input
 #     batch_shape, input_channels, output_channels = bs_ic_oc
 #     dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
-#     xs[dev0] = ivy.cast(
+#     xs[dev0] = ivy.astype(
 #         ivy.linspace(
 #             ivy.zeros(dev_batch_shape),
 #             ivy.ones(dev_batch_shape),
@@ -443,11 +442,11 @@ def test_distributed_training(bs_ic_oc, device, call):
 #     # second device
 #     if "gpu" in device and ivy.num_gpus() > 1:
 #         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
+#         dev1 = device[:-1] + str(idx)
 #         devices.append(dev1)
 #
 #         # second input
-#         xs[dev1] = ivy.cast(
+#         xs[dev1] = ivy.astype(
 #             ivy.linspace(
 #                 ivy.zeros(dev_batch_shape),
 #                 ivy.ones(dev_batch_shape),
@@ -525,107 +524,107 @@ def test_distributed_training(bs_ic_oc, device, call):
 
 
 # device manager wrapped tuning
-# @pytest.mark.parametrize(
-#     # "bs_ic_oc", [([384, 1], 2048, 2048)])
-#     "bs_ic_oc",
-#     [([2, 1], 4, 5)],
-# )
-# @pytest.mark.parametrize("tune_dev_alloc", [True, False])
-# @pytest.mark.parametrize("tune_dev_splits", [True, False])
-# def test_device_manager_wrapped_tuning(
-#     bs_ic_oc, tune_dev_alloc, tune_dev_splits, device, call
-# ):
-#
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#
-#     if call is not helpers.torch_call:
-#         # ToDo: add support for other frameworks, currently only supported for torch
-#         pytest.skip()
-#
-#     # devices
-#     devices = list()
-#     dev0 = device
-#     devices.append(dev0)
-#     if "gpu" in device and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = device[:-1] + str(idx)
-#         devices.append(dev1)
-#
-#     # input
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.astype(
-#         ivy.linspace(
-#             ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels, device=dev0
-#         ),
-#         "float32",
-#     )
-#
-#     # module for processes
-#     module = TrainableModuleWithSplit(
-#         input_channels, output_channels, device=dev0, store_vars=False
-#     )  # , hidden_size=2048)
-#
-#     # optimizer
-#     optim = ivy.SGD(1e-4)
-#
-#     # return fn
-#     ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
-#
-#     # device mapper
-#     dev_mapper = ivy.DevMapperMultiProc(
-#         map_fn, ret_fn, devices, constant={"module": module}
-#     )
-#
-#     # device manager
-#     dev_manager = ivy.DevManager(
-#         dev_mapper,
-#         devices,
-#         batch_shape[0],
-#         tune_dev_alloc=tune_dev_alloc,
-#         tune_dev_splits=tune_dev_splits,
-#     )
-#
-#     # local module
-#     module = TrainableModuleWithSplit(
-#         input_channels, output_channels, device=dev0, store_vars=True
-#     )  # , hidden_size=2048)
-#     module.build()
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     # for i in range(1000):
-#     for i in range(10):
-#         loss, grads = dev_manager.map(
-#             to_distribute={"xn": x}, to_clone={"vc": module.v}
-#         )
-#         module.v = optim.step(module.v, grads)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-#     # delete dev manager
-#     dev_manager.__del__()
-#     del dev_manager
+@pytest.mark.parametrize(
+    # "bs_ic_oc", [([384, 1], 2048, 2048)])
+    "bs_ic_oc",
+    [([2, 1], 4, 5)],
+)
+@pytest.mark.parametrize("tune_dev_alloc", [True, False])
+@pytest.mark.parametrize("tune_dev_splits", [True, False])
+def test_device_manager_wrapped_tuning(
+    bs_ic_oc, tune_dev_alloc, tune_dev_splits, device, call
+):
+
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+    if call is not helpers.torch_call:
+        # ToDo: add support for other frameworks, currently only supported for torch
+        pytest.skip()
+
+    # devices
+    devices = list()
+    dev0 = device
+    devices.append(dev0)
+    if "gpu" in device and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = device[:-1] + str(idx)
+        devices.append(dev1)
+
+    # input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(
+        ivy.linspace(
+            ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels, device=dev0
+        ),
+        "float32",
+    )
+
+    # module for processes
+    module = TrainableModuleWithSplit(
+        input_channels, output_channels, device=dev0, store_vars=False
+    )  # , hidden_size=2048)
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # return fn
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
+
+    # device mapper
+    dev_mapper = ivy.DevMapperMultiProc(
+        map_fn, ret_fn, devices, constant={"module": module}
+    )
+
+    # device manager
+    dev_manager = ivy.DevManager(
+        dev_mapper,
+        devices,
+        batch_shape[0],
+        tune_dev_alloc=tune_dev_alloc,
+        tune_dev_splits=tune_dev_splits,
+    )
+
+    # local module
+    module = TrainableModuleWithSplit(
+        input_channels, output_channels, device=dev0, store_vars=True
+    )  # , hidden_size=2048)
+    module.build()
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    # for i in range(1000):
+    for i in range(10):
+        loss, grads = dev_manager.map(
+            to_distribute={"xn": x}, to_clone={"vc": module.v}
+        )
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev manager
+    dev_manager.__del__()
+    del dev_manager
 
 
 # device manager unwrapped tuning
