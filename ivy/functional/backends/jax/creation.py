@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
 
 # local
-from ivy import dtype_from_str, dev_from_str
+from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
@@ -139,10 +139,13 @@ def asarray(
         return to_dev(jnp.asarray(object_in, dtype=dtype), device)
 
 
-def linspace(start, stop, num, axis=None, device=None):
+def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if axis is None:
         axis = -1
-    return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(device))
+    ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
+    if dtype is None:
+        ans = jnp.float32(ans)
+    return to_dev(ans, device)
 
 
 def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:

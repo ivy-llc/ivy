@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
@@ -110,7 +110,7 @@ def svdvals(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor
 
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
-) -> namedtuple("qr", ["Q", "R"]):
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = torch.qr(x, some=True)

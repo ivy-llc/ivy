@@ -12,7 +12,7 @@ def argsort(
     stable: bool = True,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.array(mx.nd.argsort(mx.nd.array(x), axis=axis, is_ascend=descending))
+    ret = mx.nd.array(mx.nd.argsort(mx.nd.array(x), axis=axis, is_ascend=descending))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
