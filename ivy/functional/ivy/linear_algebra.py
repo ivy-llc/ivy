@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
@@ -306,23 +306,6 @@ def diagonal(
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def cholesky(x):
-    """Computes the cholesky decomposition of the x matrix.
-
-    Parameters
-    ----------
-    x
-        Matrix to be decomposed.
-
-    Returns
-    -------
-    ret
-        cholesky decomposition of the matrix x.
-
-    """
-    return _cur_framework(x).cholesky(x)
-
-
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
@@ -353,7 +336,7 @@ def matrix_norm(
     return _cur_framework(x).matrix_norm(x, ord, keepdims)
 
 
-def qr(x: ivy.Array, mode: str = "reduced") -> namedtuple("qr", ["Q", "R"]):
+def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an

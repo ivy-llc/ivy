@@ -34,32 +34,41 @@ class Module(abc.ABC):
         """Initialze Ivy layer, which is a stateful object consisting of trainable
         variables.
 
-        :param device: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param device: device on which to create the module's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
-        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
-                           build(), or the first time the __call__ method is run. Default is on initialization.
+        :param build_mode: How the Module is built, either on initialization (now),
+                           explicitly by the user by calling build(), or the first time
+                           the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
-        :param compile_on_next_step: Whether to compile the network on the next forward pass. Default is False.
+        :param compile_on_next_step: Whether to compile the network on the next forward
+                                     pass. Default is False.
         :type compile_on_next_step: bool, optional
-        :param store_vars: Whether or not to store the variables created. Default is True.
+        :param store_vars: Whether or not to store the variables created.
+                           Default is True.
         :type store_vars: bool, optional
-        :param stateful: The constant id stateful items to track as part of the forward pass.
-                         Used when graph compiling, default is None.
+        :param stateful: The constant id stateful items to track as part of the forward
+                         pass. Used when graph compiling, default is None.
         :type stateful: seq of any, optional
-        :param arg_stateful_idxs: The nested argument indices of stateful items to track as part of the forward pass.
-                                  Used when graph compiling, default is None.
+        :param arg_stateful_idxs: The nested argument indices of stateful items to track
+                                  as part of the forward pass. Used when graph
+                                  compiling, default is None.
         :type arg_stateful_idxs: seq of any, optional
-        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful items to track as part of the
-                                    forward pass. Used when graph compiling, default is None.
+        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful
+                                    items to track as part of the forward pass. Used
+                                    when graph compiling, default is None.
         :type kwarg_stateful_idxs: seq of any, optional
-        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
-                                         raised during the compiled forward pass. Default is True.
+        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward
+                                         call in the case that an error is raised during
+                                         the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
-        :param with_partial_v: Whether to allow partial specification of variables. Default is False.
+        :param with_partial_v: Whether to allow partial specification of variables.
+                               Default is False.
         :type with_partial_v: bool, optional
-        :param devices: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param devices: devices on which to distribute the module's variables 'cuda:0',
+                        'cuda:1', 'cpu' etc.
         :type devices: sequence of str, optional
         :type build_mode: str, optional
 
@@ -67,9 +76,8 @@ class Module(abc.ABC):
         valid_build_modes = ["on_init", "explicit", "on_call"]
         if build_mode not in valid_build_modes:
             raise Exception(
-                "build_mode must be one of {} of type str, but found {} of type{}".format(
-                    valid_build_modes, build_mode, type(build_mode)
-                )
+                "build_mode must be one of {} of type str, but found "
+                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
             )
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
@@ -201,7 +209,8 @@ class Module(abc.ABC):
 
     def _find_variables(self, obj=None):
         vs = Container()
-        # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
+        # ToDo: add support for finding local variables, if/when JAX
+        #  supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
             obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
                 depth, flatten_key_chains
@@ -305,7 +314,8 @@ class Module(abc.ABC):
         """Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
 
-        :param device: The device string, specifying the device on which to create the variables.
+        :param device: The device string, specifying the device on which to
+                       create the variables.
         :type device: ivy.Deviceing
 
         """
@@ -404,8 +414,8 @@ class Module(abc.ABC):
             self.top_v(depth).show_sub_container(self.v)
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in top_v,"
-                "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
     def v_with_top_v_key_chains(self, depth=None, flatten_key_chains=False):
@@ -420,8 +430,8 @@ class Module(abc.ABC):
             return ret
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in top_v,"
-                "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
     def mod_with_top_mod_key_chain(self, depth=None, flatten_key_chain=False):
@@ -698,7 +708,8 @@ class Module(abc.ABC):
             # build during forward pass
             self._forward(*args, **kwargs)
 
-            # re-build variables based on additional child on-call layers, if v not passed in constructor
+            # re-build variables based on additional child on-call layers,
+            # if v not passed in constructor
             if not ivy.exists(v_from_constructor):
                 created_n_found = Container(
                     dict(

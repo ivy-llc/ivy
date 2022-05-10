@@ -294,13 +294,18 @@ def sum(
     dtype
         Data type of the returned array. If ``None``,
         -   If the default data type corresponding to the data type "kind" (integer or
-            floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.
+            floating-point) of ``x`` has a smaller range of values than the data type of
+            ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is
+            ``int32``, or ``x`` has data type ``uint64`` and the default data type is
+            ``int64``), the returned array must have the same data type as ``x``.
         -   If ``x`` has a floating-point data type, the returned array must have the
             default floating-point data type.
         -   If ``x`` has a signed integer data type (e.g., ``int16``), the returned
             array must have the default integer data type.
         -   If ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned
-            array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).
+            array must have an unsigned integer data type having the same number of bits
+            as the default integer data type (e.g., if the default integer data type is
+            ``int32``, the returned array must have a ``uint32`` data type).
 
         If the data type (either specified or resolved) differs from the data type of
         ``x``, the input array should be cast to the specified data type before
