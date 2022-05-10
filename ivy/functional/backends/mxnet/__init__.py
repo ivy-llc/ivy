@@ -85,7 +85,7 @@ def _raise(ex):
     raise ex
 
 
-def _mxnet_init_context(device):
+def _mxnet_init_context(device):  # noqa
     device = ivy.dev_to_str(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
@@ -102,14 +102,14 @@ def _mxnet_init_context(device):
 
 def _scalar_or_flat_array_to_scalar(x):
     return (
-        x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
-    )  # noqa
+        x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)  # noqa
+    )
 
 
 def _flat_array_to_1_dim_array(x):
     return (
-        mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x
-    )  # noqa
+        mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x  # noqa
+    )
 
 
 def _1_dim_array_to_flat_array(x):
