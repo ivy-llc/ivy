@@ -690,7 +690,7 @@ class MultiDevItem(MultiDev):
                     ret_dict[ds] = sub_item[rel_slice_obj]
                     return MultiDevItem(ret_dict)
                 else:
-                    ret_dict[ds] = sub_item[rel_slice_obj.start :]
+                    ret_dict[ds] = sub_item[rel_slice_obj.start:]
         return MultiDevItem(ret_dict)
 
     def __getitem__(self, query):
@@ -1001,7 +1001,7 @@ def dev_clone_iter(xs, devices):
 
     """
     if isinstance(devices, str):
-        devs = [devices]
+        devices = [devices]
     return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
@@ -1147,7 +1147,8 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if transpose:
-        # ToDo: make this more elegant, this method should not be responsible for transposing iterators
+        # ToDo: make this more elegant, this method should not be
+        #  responsible for transposing iterators
         xs_t = [
             MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
             for mdi in list(map(list, zip(*xs)))
@@ -1599,7 +1600,8 @@ class DevManager:
 
         # otherwise
 
-        # check if all directions have changed, and if so, half the max dev dim step size
+        # check if all directions have changed, and if so,
+        # half the max dev dim step size
         if self._max_dev_dim_step_size > 1:
             da_directions = {
                 k: 1 if i < math.floor(self._num_devs / 2) else -1

@@ -174,7 +174,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     # list of 1 x NH x NW x F
     cropped_list = [
-        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        img[..., xo: xo + crop_size[0], yo: yo + crop_size[1], :]
         for img, xo, yo in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
     ]
 
