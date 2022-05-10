@@ -2182,8 +2182,8 @@ def bitwise_right_shift(
         
     Exemples :
     >>> lhs = ivy.array([1, 2, 3, 1], dtype=ivy.int64)
-    >>> rhs = ivy.array([4, 3, 2, 1], dtype=ivy.int64)
-    >>> print(bitwise_right_shift(lhs, rhs))
+    >>> rhs = ivy.array([[1, 3, 2, 1], dtype=ivy.int64)
+    >>> print(ivy.bitwise_right_shift(lhs, rhs))
     ivy.array([0, 0, 0, 0])
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
