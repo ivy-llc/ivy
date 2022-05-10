@@ -16,16 +16,16 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-@given(shape=st.lists(st.integers(min_value=1, max_value=12), min_size=3, max_size=4),
+@given(shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
        num=st.integers(min_value=1, max_value=12),
-       ratio=st.lists(st.integers(min_value=1, max_value=12), min_size=2, max_size=2),
+       ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
        dtype=st.sampled_from(['float32', 'float64']),
        as_variable=helpers.list_of_length(st.booleans(), 2),
        num_positional_args=st.integers(0, 2),
        native_array=helpers.list_of_length(st.booleans(), 2),
        )
 def test_stack_images(shape, num, ratio, dtype, as_variable, num_positional_args, native_array, fw):
-    images = [ivy.ones(shape, dtype=dtype)] * num
+    images = [ivy.random_normal(shape=shape)] * num
     helpers.test_array_function(dtype, as_variable, False, num_positional_args, native_array, False, False,
                                 fw, "stack_images", images=images, desired_aspect_ratio=ratio)
 
