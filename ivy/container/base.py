@@ -437,7 +437,7 @@ class ContainerBase(dict, abc.ABC):
         if mode not in ["all", "same_only", "diff_only"]:
             raise Exception(
                 'mode must be one of [ "all" | "same_only" | "diff_only" ], '
-                'but found {}'.format(mode)
+                "but found {}".format(mode)
             )
 
         # if inputs are not dicts, then compare their values to determine the diff dict
@@ -1197,7 +1197,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split("/|\.", key_chain) # noqa
+        flat_keys = re.split("/|\.", key_chain)  # noqa
         num_keys = len(flat_keys)
         pre_keys = list()
         post_keys = list()
@@ -3256,7 +3256,7 @@ class ContainerBase(dict, abc.ABC):
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 h5_obj[key][
-                    starting_index: starting_index + amount_to_write
+                    starting_index : starting_index + amount_to_write
                 ] = value_as_np[0:amount_to_write]
 
     def to_disk_as_pickled(self, pickle_filepath):
@@ -4897,7 +4897,7 @@ class ContainerBase(dict, abc.ABC):
         this_repr_split = this_repr.split("\n")
         this_repr_red_split = this_repr_red.split("\n")
         this_repr_above = "\n".join(
-            this_repr_split[0: num_lines_above - 1]
+            this_repr_split[0 : num_lines_above - 1]
             + [this_repr_red_split[num_lines_above - 1]]
         )
         this_repr_below = "\n".join(this_repr_split[-num_lines_below:])

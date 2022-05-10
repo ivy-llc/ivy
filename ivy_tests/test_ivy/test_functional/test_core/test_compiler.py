@@ -56,7 +56,8 @@ def _fn_2(x, with_non_compiled: bool = False):
 #     non_compiled_return = _fn_1(x)
 #     x = tensor_fn(x, dtype, dev)
 #     compiled_return = comp_fn(x)
-#     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
+#     assert np.allclose(ivy.to_numpy(non_compiled_return),
+#                        ivy.to_numpy(compiled_return))
 #
 #     # function 2
 #     comp_fn = ivy.compile(_fn_2)
@@ -67,4 +68,5 @@ def _fn_2(x, with_non_compiled: bool = False):
 #     non_compiled_return = _fn_2(x)
 #     x = tensor_fn(x, dtype, dev)
 #     compiled_return = comp_fn(x)
-#     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
+#     assert np.allclose(ivy.to_numpy(non_compiled_return),
+#                        ivy.to_numpy(compiled_return))

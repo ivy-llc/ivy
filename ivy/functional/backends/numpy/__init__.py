@@ -108,7 +108,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)
+    type_str = ivy.dtype_to_str(type)
     if type_str in invalid_dtype_strs:
         return {"bfloat16": float16}[type_str]
     return type
@@ -118,37 +118,37 @@ backend = "numpy"
 
 
 # local sub-modules
-from . import activations # noqa
-from .activations import * # noqa
-from . import creation # noqa
-from .creation import * # noqa
-from . import data_type # noqa
-from .data_type import * # noqa
-from . import device # noqa
-from .device import * # noqa
-from . import elementwise # noqa
-from .elementwise import * # noqa
-from . import general # noqa
-from .general import * # noqa
-from . import gradients # noqa
-from .gradients import * # noqa
-from . import image # noqa
-from .image import * # noqa
-from . import layers # noqa
-from .layers import * # noqa
-from . import linear_algebra as linalg # noqa
-from .linear_algebra import * # noqa
-from . import manipulation # noqa
-from .manipulation import * # noqa
-from . import random # noqa
-from .random import * # noqa
-from . import searching # noqa
-from .searching import * # noqa
-from . import set # noqa
-from .set import * # noqa
-from . import sorting # noqa
-from .sorting import * # noqa
-from . import statistical # noqa
-from .statistical import * # noqa
-from . import utility # noqa
-from .utility import * # noqa
+from . import activations  # noqa
+from .activations import *  # noqa
+from . import creation  # noqa
+from .creation import *  # noqa
+from . import data_type  # noqa
+from .data_type import *  # noqa
+from . import device  # noqa
+from .device import *  # noqa
+from . import elementwise  # noqa
+from .elementwise import *  # noqa
+from . import general  # noqa
+from .general import *  # noqa
+from . import gradients  # noqa
+from .gradients import *  # noqa
+from . import image  # noqa
+from .image import *  # noqa
+from . import layers  # noqa
+from .layers import *  # noqa
+from . import linear_algebra as linalg  # noqa
+from .linear_algebra import *  # noqa
+from . import manipulation  # noqa
+from .manipulation import *  # noqa
+from . import random  # noqa
+from .random import *  # noqa
+from . import searching  # noqa
+from .searching import *  # noqa
+from . import set  # noqa
+from .set import *  # noqa
+from . import sorting  # noqa
+from .sorting import *  # noqa
+from . import statistical  # noqa
+from .statistical import *  # noqa
+from . import utility  # noqa
+from .utility import *  # noqa
