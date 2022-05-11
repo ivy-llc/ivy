@@ -204,7 +204,29 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
-
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; batch_size = 1</span>
+<span class="sd">    &gt;&gt;&gt; h = 3</span>
+<span class="sd">    &gt;&gt;&gt; w = 3</span>
+<span class="sd">    &gt;&gt;&gt; d = 1</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(h * w * d, dtype=ivy.float32)</span>
+<span class="sd">    &gt;&gt;&gt; image = ivy.reshape(x,shape=(batch_size, h, w, d))</span>
+<span class="sd">    &gt;&gt;&gt; dy, dx = ivy.gradient_image(image)</span>
+<span class="sd">    &gt;&gt;&gt; print(image[0, :,:,0])</span>
+<span class="sd">    ivy.array([[0., 1., 2.],</span>
+<span class="sd">               [3., 4., 5.],</span>
+<span class="sd">               [6., 7., 8.]])</span>
+<span class="sd">    &gt;&gt;&gt; print(dy[0, :,:,0])</span>
+<span class="sd">     ivy.array([[3., 3., 3.],</span>
+<span class="sd">               [3., 3., 3.],</span>
+<span class="sd">               [0., 0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; print(dx[0, :,:,0])</span>
+<span class="sd">     ivy.array([[1., 1., 0.],</span>
+<span class="sd">               [1., 1., 0.],</span>
+<span class="sd">               [1., 1., 0.]])</span>
+<span class="sd"> </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
