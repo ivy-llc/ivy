@@ -14,12 +14,18 @@ import ivy.functional.backends.numpy as ivy_np
 # sgd
 @given(
     bs_ic_oc_target=st.sampled_from(
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ]),
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs)
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
 )
 def test_sgd_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -87,12 +93,18 @@ def test_sgd_optimizer(
 # lars
 @given(
     bs_ic_oc_target=st.sampled_from(
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ]),
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs)
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
 )
 def test_lars_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -162,12 +174,18 @@ def test_lars_optimizer(
 # adam
 @given(
     bs_ic_oc_target=st.sampled_from(
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ]),
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs)
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
 )
 def test_adam_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -235,12 +253,18 @@ def test_adam_optimizer(
 # lamb
 @given(
     bs_ic_oc_target=st.sampled_from(
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ]),
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs)
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
 )
 def test_lamb_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
