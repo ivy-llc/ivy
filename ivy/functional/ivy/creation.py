@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Iterable
+from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
@@ -32,8 +32,8 @@ def arange(
     Parameters
     ----------
     start
-        if stop is specified, the start of interval (inclusive); 
-        otherwise, the end of the interval (exclusive). 
+        if stop is specified, the start of interval (inclusive);
+        otherwise, the end of the interval (exclusive).
         If stop is not specified, the default starting value is 0.
     stop
         the end of the interval. Default: None.
@@ -52,7 +52,7 @@ def arange(
         device on which to place the created array. Default: None.
 
     Returns
-    ----------
+    -------
     ret
         a one-dimensional array containing evenly spaced values.
         The length of the output array must be ceil((stop-start)/step)
@@ -83,7 +83,7 @@ def asarray(
         device on which to place the created array. Default: None.
 
     Returns
-    --------
+    -------
     An array interpretation of x.
     """
     return _cur_framework(x).asarray(x, dtype, device)
@@ -110,12 +110,12 @@ def zeros(
        device on which to place the created array. Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
        an array containing zeros.
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -147,13 +147,12 @@ def ones(
         device on which to place the created array. Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
         an array containing ones.
 
-    Examples:
-    ---------
-
+    Examples
+    --------
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
@@ -230,13 +229,12 @@ def ones_like(
         Default: ``None``.
 
     Returns
-     -------
+    -------
     ret
         an array having the same shape as x and filled with ones.
 
-    Examples:
-    ---------
-
+    Examples
+    --------
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.ones_like(x)
     >>> print(y)
@@ -301,7 +299,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         Default: 0.
 
     Returns
-     -------
+    -------
     ret
         an array containing the lower triangular part(s).
         The returned array must have the same shape and data type as
@@ -327,7 +325,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         If k > 0, the diagonal is above the main diagonal. Default: 0.
 
     Returns
-     -------
+    -------
     ret
         an array containing the upper triangular part(s).
         The returned array must have the same shape and data type as
@@ -358,7 +356,7 @@ def empty(
         Default: None.
 
     Returns
-     -------
+    -------
     ret
         an uninitialized array having a specified shape
 
@@ -387,7 +385,7 @@ def empty_like(
         Default: None.
 
     Returns
-     -------
+    -------
     ret
         an array having the same shape as x and containing uninitialized data.
 
@@ -425,7 +423,7 @@ def eye(n_rows: int,
          device on which to place the created array.
 
     Returns
-     -------
+    -------
     ret
         a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
@@ -433,7 +431,7 @@ def eye(n_rows: int,
     --------
     >>> y = ivy.eye(2)
     >>> print(y)
-    [[1, 0],[0, 1]]
+    ivy.array([[1, 0],[0, 1]])
     """
     return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
 
@@ -442,7 +440,7 @@ def eye(n_rows: int,
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int],
              stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, axis: int = None, device: ivy.Device = None,
-             dtype = None, endpoint: bool = True) \
+             dtype=None, endpoint: bool = True) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in an interval along
@@ -462,6 +460,14 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int],
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    dtype
+        The type of the output array.
+        If dtype is not given, the data type is inferred from start and stop.
+        The inferred dtype will never be an integer.
+        Float is chosen even if the arguments would produce an array of integers.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included.
+        Default is True.
 
     Returns
      -------
@@ -477,6 +483,7 @@ def meshgrid(
 ) -> List[ivy.Array]:
     """
     Returns coordinate matrices from coordinate vectors.
+
     Parameters
     ----------
     arrays
@@ -487,8 +494,9 @@ def meshgrid(
         If provided zero or one one-dimensional vector(s)
         (i.e., the zero- and one-dimensional cases, respectively),
         the ``indexing`` keyword has no effect and should be ignored. Default: ``'xy'``.
+
     Returns
-     -------
+    -------
     ret List[array]
         list of N arrays,
         where ``N`` is the number of provided one-dimensional input arrays.
@@ -569,7 +577,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         input (array) object.
 
     Returns
-     -------
+    -------
     ret
         an array containing the data in `x`.
 
@@ -618,7 +626,7 @@ def logspace(
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
-     -------
+    -------
     ret
         Tensor of evenly-spaced values.
 
@@ -626,6 +634,6 @@ def logspace(
     --------
     >>> y = ivy.logspace(2,3,num=4)
     >>> print(y)
-    [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
+    ivy.array([ 100.        ,  215.443469  ,  464.15888336, 1000.        ])
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis, device)
