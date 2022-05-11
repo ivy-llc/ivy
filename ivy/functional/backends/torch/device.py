@@ -18,8 +18,7 @@ torch_scatter = None
 # ----#
 
 
-def dev(x: torch.Tensor, as_str: bool = False)\
-        -> str:
+def dev(x: torch.Tensor, as_str: bool = False) -> str:
     dv = x.device
     if as_str:
         return dev_to_str(dv)
