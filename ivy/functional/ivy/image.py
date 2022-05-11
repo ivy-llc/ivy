@@ -84,7 +84,29 @@ def gradient_image(x):
     -------
     ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
-
+        
+    Examples
+    --------
+    >>> batch_size = 1
+    >>> h = 3
+    >>> w = 3
+    >>> d = 1
+    >>> x = ivy.arange(h * w * d, dtype=ivy.float32)
+    >>> image = ivy.reshape(x,shape=(batch_size, h, w, d))
+    >>> dy, dx = ivy.gradient_image(image)
+    >>> print(image[0, :,:,0])
+    ivy.array([[0., 1., 2.],
+               [3., 4., 5.],
+               [6., 7., 8.]])
+    >>> print(dy[0, :,:,0])
+     ivy.array([[3., 3., 3.],
+               [3., 3., 3.],
+               [0., 0., 0.]])
+    >>> print(dx[0, :,:,0])
+     ivy.array([[1., 1., 0.],
+               [1., 1., 0.],
+               [1., 1., 0.]])
+ 
     """
     return _cur_framework(x).gradient_image(x)
 
