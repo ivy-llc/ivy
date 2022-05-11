@@ -40,7 +40,7 @@ Taking all of these points into consideration, let's take a look at the type hin
     ) -> Union[ivy.Array, ivy.Container]:
 
 Because :code:`tan` consumes one array and also returns one array, it is a *flexible* function.
-Therefore, both inputs :code:`x` and :code:`out` and the return are all permitted to be :code`ivy.Container` instances.
+Therefore, both inputs :code:`x` and :code:`out` and the return are all permitted to be :code:`ivy.Container` instances.
 Additionally, in alignment with the above explanations, :code:`x` permits :code:`ivy.NativeArray` instances, but :code:`out` and the
 function return do not.
 
