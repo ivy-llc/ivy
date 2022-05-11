@@ -63,7 +63,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)
+    type_str = ivy.dtype_to_str(type)
     if type_str in invalid_dtype_strs:
         return {
             "int16": int32,
@@ -85,8 +85,8 @@ def _raise(ex):
     raise ex
 
 
-def _mxnet_init_context(device):
-    device = dev_to_str(device)
+def _mxnet_init_context(device):  # noqa
+    device = ivy.dev_to_str(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:
@@ -101,11 +101,15 @@ def _mxnet_init_context(device):
 
 
 def _scalar_or_flat_array_to_scalar(x):
-    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
+    return (
+        x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)  # noqa
+    )
 
 
 def _flat_array_to_1_dim_array(x):
-    return mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x
+    return (
+        mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x  # noqa
+    )
 
 
 def _1_dim_array_to_flat_array(x):
@@ -155,37 +159,37 @@ def _handle_output(x, axis, keepdims, ret):
 
 
 # local sub-modules
-from . import activations
-from .activations import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import image
-from .image import *
-from . import layers
-from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
+from . import activations  # noqa
+from .activations import *  # noqa
+from . import creation  # noqa
+from .creation import *  # noqa
+from . import data_type  # noqa
+from .data_type import *  # noqa
+from . import device  # noqa
+from .device import *  # noqa
+from . import elementwise  # noqa
+from .elementwise import *  # noqa
+from . import general  # noqa
+from .general import *  # noqa
+from . import gradients  # noqa
+from .gradients import *  # noqa
+from . import image  # noqa
+from .image import *  # noqa
+from . import layers  # noqa
+from .layers import *  # noqa
+from . import linear_algebra as linalg  # noqa
+from .linear_algebra import *  # noqa
+from . import manipulation  # noqa
+from .manipulation import *  # noqa
+from . import random  # noqa
+from .random import *  # noqa
+from . import searching  # noqa
+from .searching import *  # noqa
+from . import set  # noqa
+from .set import *  # noqa
+from . import sorting  # noqa
+from .sorting import *  # noqa
+from . import statistical  # noqa
+from .statistical import *  # noqa
+from . import utility  # noqa
+from .utility import *  # noqa
