@@ -62,16 +62,16 @@ def random_normal(
     Draws samples from a normal distribution.
 
     Parameters
-    -----------
+    ----------
     mean
         The mean of the normal distribution to sample from. Default is ``0``.
     std
-        The standard deviation of the normal distribution to sample from. Default is ``1``.
+        The standard deviation of the normal distribution to sample from.
+        Default is ``1``.
     shape
-        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k`` samples
-        are drawn. If size is ``None`` (default), a single value is returned.
+        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k``
+        samples are drawn. If size is ``None`` (default), a single value is returned.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = ``None``)
 
     Returns
