@@ -419,7 +419,14 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
+def conv3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    data_format: str = "NDHWC",
+    dilations: int = 1,
+) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
@@ -442,6 +449,34 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     -------
     ret
         The result of the convolution operation.
+
+    Examples
+    --------
+    >>> x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]
+    >>> x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
+    >>> x = ivy.array([[x1,x2]]) #NDHWC
+    >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
+    >>> result = ivy.conv3d( x, filters, 1, 'VALID',"NDHWC", 1)
+    >>> print(result)
+    ivy.array([[[[[1.],
+              [2.]],
+
+             [[1.],
+              [2.]],
+
+             [[1.],
+              [2.]]],
+
+
+            [[[3.],
+              [4.]],
+
+             [[3.],
+              [4.]],
+
+             [[3.],
+              [4.]]]]])
+
 
     """
     return _cur_framework(x).conv3d(
