@@ -470,7 +470,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int],
         Default is True.
 
     Returns
-     -------
+    -------
     ret
         Tensor of evenly-spaced values.
     """
