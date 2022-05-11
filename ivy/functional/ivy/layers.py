@@ -441,14 +441,11 @@ def conv3d(
 
     Examples
     --------
-    >>> x = ivy.array(
-        [[
-            [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]],
-            [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
-        ]]
-        ) #NDHWC
+    >>> x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]
+    >>> x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
+    >>> x = ivy.array([[x1,x2]]) #NDHWC
     >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
-    >>> result = ivy.conv3d( x, filters, 1, 'SAME', 1)
+    >>> result = ivy.conv3d( x, filters, 1, 'VALID',"NDHWC", 1)
     >>> print(result)
     ivy.array([[[[[1.],
               [2.]],
