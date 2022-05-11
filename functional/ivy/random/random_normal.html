@@ -139,18 +139,27 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mean</strong> – The mean of the normal distribution to sample from. Default is 0.</p></li>
-<li><p><strong>std</strong> – The standard deviation of the normal distribution to sample from. Default is 1.</p></li>
-<li><p><strong>shape</strong> – Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are
-drawn. If size is None (default), a single value is returned.</p></li>
-<li><p><strong>device</strong> – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.
-(Default value = None)</p></li>
+<li><p><strong>mean</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The mean of the normal distribution to sample from. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">0.0</span></code>)</p></li>
+<li><p><strong>std</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The standard deviation of the normal distribution to sample from. (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]]) – Output shape. If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+samples are drawn. If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), a single value is returned.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – (Default value = <code class="docutils literal notranslate"><span class="pre">None</span></code>) (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Drawn samples from the parameterized uniform distribution.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>&lt;module ‘ivy.array’ from ‘/home/root/project/ivy/array/__init__.py’&gt;</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Drawn samples from the parameterized normal distribution.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(0.6444774682897879)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
