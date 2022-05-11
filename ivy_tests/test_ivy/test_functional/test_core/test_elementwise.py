@@ -406,7 +406,7 @@ def test_bitwise_left_shift(
     fw,
 ):
     if fw == "torch":
-        return  # torch has strange behaviour when shifting by a value larger than n bits
+        return  # torch has strange behaviour when shifting more than number of bits
     dtype, x = dtype_and_x
     if any(d in ivy.invalid_dtype_strs for d in dtype):
         return
