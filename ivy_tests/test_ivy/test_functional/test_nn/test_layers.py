@@ -648,7 +648,6 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv3d, x, filters, 1, padding), ivy.to_numpy(true_res))
-    helpers.docstring_examples_run(ivy.conv3d)
 
 
 # conv3d_transpose
