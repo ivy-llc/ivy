@@ -34,7 +34,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
-                map_sequences,
             ),
             out,
         )
