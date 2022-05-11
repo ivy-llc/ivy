@@ -109,7 +109,7 @@ def add(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -295,7 +295,7 @@ def exp(
         an array containing the evaluated exponential function result for each element
         in ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
-    
+
     Examples
     --------
     >>> x = ivy.array([1., 2., 3.])
@@ -1101,7 +1101,7 @@ def cos(
     ret
         an array containing the cosine of each element in ``x``. The returned array must
         have a floating-point data type determined by :ref:`type-promotion`.
-    
+
     Examples
     --------
     >>> x = ivy.array([0., 1., 2.])
@@ -1663,9 +1663,10 @@ def abs(
     return _cur_framework(x).abs(x, out)
 
 
-def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        out: Optional[Union[ivy.Array, ivy.Container]] = None)\
-        -> Union[ivy.Array, ivy.Container]:
+def tan(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
@@ -1698,7 +1699,7 @@ def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -1920,7 +1921,8 @@ def atanh(
     -------
     ret
         an array containing the inverse hyperbolic tangent of each element in ``x``. The
-        returned array must have a floating-point data type determined by Type Promotion Rules.
+        returned array must have a floating-point data type determined by Type Promotion
+        Rules.
 
     Examples
     --------
@@ -2114,13 +2116,17 @@ def remainder(
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative (i.e., less than ``0``)
       finite number, the result is ``NaN``.
     - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is
-      ``+infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)
+      ``+infinity``, the result is ``x1_i``. (note: this result matches Python
+      behavior.)
     - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is
-      ``-infinity``, the result is ``x2_i``. (note: this result matches Python behavior.)
+      ``-infinity``, the result is ``x2_i``. (note: this result matches Python
+      behavior.)
     - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is
-      ``+infinity``, the result is ``x2_i``. (note: this results matches Python behavior.)
+      ``+infinity``, the result is ``x2_i``. (note: this results matches Python
+      behavior.)
     - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is
-      ``-infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)
+      ``-infinity``, the result is ``x1_i``. (note: this result matches Python
+      behavior.)
     - In the remaining cases, the result must match that of the Python ``%`` operator.
 
     Parameters
@@ -2172,9 +2178,16 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        an array containing the element-wise results. The returned array must have a
-        data type determined by :ref:`Type Promotion Rules`.
-
+        out (array), an array containing the element-wise results. 
+        The returned array must have a data type determined by Type Promotion Rules.
+        
+    Examples
+    --------
+    >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
+    >>> rhs = ivy.array([1, 3, 2, 1], dtype=ivy.int64)
+    >>> y = ivy.bitwise_right_shift(lhs, rhs)
+    >>> print(y)
+    ivy.array([2, 0, 0, 0])
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
 

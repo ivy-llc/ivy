@@ -20,15 +20,20 @@ class LayerNorm(Module):
 
         :param normalized_shape: Trailing shape to applying the normalization to.
         :type normalized_shape: int or sequence of ints
-        :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.
+        :param epsilon: small constant to add to the denominator, use global
+                        ivy._MIN_BASE by default.
         :type epsilon: float, optional
-        :param elementwise_affine: Whether to include learnable affine parameters, default is True.
+        :param elementwise_affine: Whether to include learnable affine parameters,
+                                   default is True.
         :type elementwise_affine: bool, optional
-        :param new_std: The standard deviation of the new normalized values. Default is 1.
+        :param new_std: The standard deviation of the new normalized values.
+                        Default is 1.
         :type new_std: float, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
-        :param v: the variables for each submodule in the sequence, constructed internally by default.
+        :param v: the variables for each submodule in the sequence, constructed
+                  internally by default.
         :type v: ivy container of variables, optional
 
         """

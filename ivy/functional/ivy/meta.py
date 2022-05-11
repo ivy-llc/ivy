@@ -126,7 +126,8 @@ def _train_task(
                 stop_gradients=stop_gradients,
             )
 
-    # once training is finished, compute the final cost, and update all_grads if fist order method
+    # once training is finished, compute the final cost, and update
+    # all_grads if fist order method
     final_cost = _compute_cost_and_update_grads(
         inner_cost_fn if outer_cost_fn is None else outer_cost_fn,
         order,

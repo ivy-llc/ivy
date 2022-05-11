@@ -1,13 +1,14 @@
 # global
 torch_scatter = None
 import torch as torch
-from typing import List, Tuple, Union, Optional
+from typing import Tuple, Union, Optional
 
 # local
 import ivy
 
 # Array API Standard #
 # -------------------#
+
 
 # noinspection PyShadowingBuiltins
 def min(
