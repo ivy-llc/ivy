@@ -16,21 +16,36 @@ The *functional* examples should:
 2. vary the values and input shapes considerably between examples
 3. start with the simplest examples first. For example, this means using the default values for all optional arguments in the first example, and using small arrays, with a small number of dimensions, and with *simple* values for the function in question.
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`, and (c) :code:`out` used to inplace update the input array :code:`x`
+5. If broadcasting is relevant for the function, then show examples which highlight this. For example, passing in different shapes for two array arguments.
 
 For *flexible* functions, there should also be an example that:
 
-5. passes in :code:`ivy.Container` instances in place of all array arguments
+6. passes in :code:`ivy.Container` instances in place of all array arguments
 
 For *flexible* functions which accept more than one array, there should also be an example that:
 
-6. passes in a combination of :code:`ivy.Container` and :code:`ivy.Array` instances
+7. passes in a combination of :code:`ivy.Container` and :code:`ivy.Array` instances
 
 **Instance Method Examples**
 
 *Instance method* examples are only relevant for *flexible* functions. These examples should:
 
-7. call the function as an instance method on the :code:`ivy.Array` class
-8. call the function as an instance method on the :code:`ivy.Container` class
+8. call the function as an instance method on the :code:`ivy.Array` class
+9. call the function as an instance method on the :code:`ivy.Container` class
+
+**Operator Examples**
+
+*Operator* examples are only relevant for *operator* functions. These are functions which are called when a
+corresponding operator is applied to an array. For example, the methods x, y, z, a are called when the operators X are
+used respectively. Under the hood, these operators call the instance methods X on the :code:`ivy.Array` or
+:code:`ivy.Container` instance upon which the operator is being applied. These special methods in turn call the
+corresponding methods X.
+
+If the function is an *operator* function, then examples should be added which:
+
+10. call the operator on :code:`ivy.Array` instances
+11. call the operator on :code:`ivy.Container` instances
+12. call the operator on a combination of :code:`ivy.Container` and :code:`ivy.Array` instances
 
 ivy.tan
 -------
@@ -71,7 +86,7 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
     ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
                [-3.0963247,  0.9955841, -0.3278579]])
 
-These examples cover points 1, 2, 3 and 4.
+These examples cover points 1, 2, 3, 4 and 5.
 
 Point 1 is simple to satisfy. Ignoring :code:`ivy.Container` which is covered by points 4 and 5,
 and ignoring the union over :code:`ivy.Array` and :code:`ivy.NativeArray` which is true for **all** array inputs,
@@ -84,8 +99,10 @@ Point 3 is satisfied, there are no optional inputs (aside from :code:`out`) and 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
 
-We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 5.
-Point 6 is not relevant as there is only one array input
+Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
+
+We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 6.
+Point 7 is not relevant as there is only one array input
 (excluding :code:`out` which does not count, as it essentially acts as an output)
 
 .. code-block:: python
@@ -100,7 +117,7 @@ Point 6 is not relevant as there is only one array input
         b: ivy.array([-0.14254655, 1.1578213, -3.380515])
     }
 
-Finally, we add instance method examples to satisfy points 7 and 8.
+We then add instance method examples to satisfy points 8 and 9.
 
 .. code-block:: python
 
@@ -123,6 +140,8 @@ Finally, we add instance method examples to satisfy points 7 and 8.
         a: ivy.array([0., 1.5574077, -2.1850398]),
         b: ivy.array([-0.14254655, 1.1578213, -3.380515])
     }
+
+Points 10-12 are not relevant, as :code:`ivy.tan` is not an *operator* function.
 
 ivy.roll
 --------
@@ -171,7 +190,7 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
                 [ 3., 1.],
                 [ 6., 2.]]])
 
-These examples cover points 1, 2, 3 and 4.
+These examples cover points 1, 2, 3, 4 and 5.
 
 Point 1 is a bit less trivial to satisfy than it was for :code:`ivy.tan` above. While :code:`x` again only has one
 variation (for the same reason as explained in the :code:`ivy.tan` example above), :code:`shift` has two variations
@@ -189,8 +208,10 @@ Point 3 is satisfied, as the first example uses the default values for optional 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
 
-We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 5.
-Point 6 is not relevant as there is again only one array input
+Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
+
+We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 6.
+Point 7 is not relevant as there is again only one array input
 (excluding :code:`out` which does not count, as it essentially acts as an output).
 
 .. code-block:: python
@@ -206,7 +227,7 @@ Point 6 is not relevant as there is again only one array input
         b: ivy.array([5., 3., 4.])
     }
 
-Finally, we add instance method examples to satisfy points 7 and 8.
+We then add instance method examples to satisfy points 8 and 9.
 
 .. code-block:: python
 
@@ -229,3 +250,186 @@ Finally, we add instance method examples to satisfy points 7 and 8.
         a: ivy.array([2., 0., 1.], dtype=float32),
         b: ivy.array([5., 3., 4.], dtype=float32)
     }
+
+Points 10-12 are not relevant, as :code:`ivy.roll` is not an *operator* function.
+
+ivy.add
+-------
+
+The signature for :code:`ivy.add` is as follows:
+
+.. code-block:: python
+
+    def add(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+
+Let's start with the functional examples, with :code:`ivy.Array` instances in the input:
+
+.. code-block:: python
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> z = ivy.zeros((3, 3))
+    >>> ivy.add(x, y, out=z)
+    >>> print(z)
+    ivy.array([[5.9, 7.1, 1.2],
+               [6.3, 7.5, 1.6],
+               [7.2, 8.4, 2.5]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.add(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[9.5],
+                [5.7],
+                [-4.7]]])
+
+These examples cover points 1, 2, 3, 4 and 5.
+
+Point 1 is again trivial to satisfy, as was the case for :code:`ivy.tan`. Ignoring :code:`ivy.Container` which is
+covered by points 4 and 5, and ignoring the union over :code:`ivy.Array` and :code:`ivy.NativeArray` which is true for
+**all** array inputs, then as far as point 1 is concerned, inputs :code:`x1` and :code:`x2` both only have one possible
+variation. They must both be arrays.
+
+Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.
+
+Point 3 is satisfied, there are no optional inputs (aside from :code:`out`) and so this point is irrelevant, and the values and shapes do become increasingly *complex*.
+
+Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
+explained in point 4.
+
+Point 5 is satisfied, as the second example uses different shapes for the inputs :code:`x1` and :code:`x2`. This causes
+the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.
+
+We then also add an example with :code:`ivy.Container` inputs, in order to satisfy point 6.
+
+.. code-block:: python
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+Unlike :code:`ivy.tan` and :code:`ivy.roll` above, point 7 is relevant in this case, as there are two array inputs.
+We also add an example with a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs, in order to satisfy point 7.
+
+.. code-block:: python
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
+
+We then add instance method examples to satisfy points 8 and 9.
+
+.. code-block:: python
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x.add(y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x.add(y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+Finally, we consider points 10-12. For :code:`ivy.tan` and :code:`ivy.roll` these were not relevant.
+However, :code:`ivy.add` *is* an operator function. We therefore add the three operator examples which satisfy points
+10, 11 and 12 respectively.
+
+.. code-block:: python
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x + y
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
+
+**Round Up**
+
+These three examples should give you a good understanding of what is required when adding docsting examples.
+
+If you're ever unsure of how best to proceed, please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
