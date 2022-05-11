@@ -157,6 +157,7 @@ def dev_to_str(device: Union[Device, str]) -> str:
 
 
     Examples
+    --------
     >>> device = ivy.Device()
     >>> print(device)
     'cuda:0'
