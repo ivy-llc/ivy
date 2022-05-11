@@ -271,5 +271,5 @@
 # #     assert not np.allclose(cropped[0], cropped[1])
 # #     # compilation test
 # #     if call in [helpers.torch_call]:
-# #         # reduce(mul) used for flat batch size computation isnt torch jit compilable
+# #     # reduce(mul) used for flat batch size computation is not torch jit compilable
 # #         return
