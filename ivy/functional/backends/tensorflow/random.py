@@ -63,4 +63,3 @@ seed = lambda seed_value=0: tf.random.set_seed(seed_value)
 
 def shuffle(x: Tensor) -> Tensor:
     return tf.random.shuffle(x)
-    
