@@ -12,7 +12,7 @@ There are also *instance method* examples which are called like so :code:`x.func
 
 The *functional* examples should:
 
-1. cover all possible variants for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)
+1. cover all possible variants (explained below) for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)
 2. vary the values and input shapes considerably between examples
 3. start with the simplest examples first. For example, this means using the default values for all optional arguments in the first example, and using small arrays, with a small number of dimensions, and with *simple* values for the function in question.
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`, and (c) :code:`out` used to inplace update the input array :code:`x`
@@ -46,6 +46,50 @@ If the function is an *operator* function, then examples should be added which:
 10. call the operator on :code:`ivy.Array` instances
 11. call the operator on :code:`ivy.Container` instances
 12. call the operator on a combination of :code:`ivy.Container` and :code:`ivy.Array` instances
+
+**All Possible Variants**
+
+Let’s look at an example to make it more clear what is meant by "all possible variants" of each argument independently.
+
+Let’s take an imaginary function with the following argument spec:
+
+.. code-block:: python
+
+    def my_func(x: array,
+                mode: Union[std, prod, var],
+                some_flag: bool,
+                another_flag: Optional[bool] = False,
+                axes: Optional[Union[int, List[int]]]=-1):
+
+In this case, our examples would need to include
+
+*  :code:`x` being an :code:`array`
+*  :code:`mode` being all of: :code:`std`, :code:`prod`, :code:`var`
+*  :code:`some_flag` being both of: :code:`True`, :code:`False`
+*  :code:`another_flag` being all of: :code:`default`, :code:`True`, :code:`False`
+*  :code:`axis` being all of: :code:`default`, :code:`list`, :code:`int`.
+
+Please note, this does not need to be done with a grid search. There are 1 x 3 x 2 x 3 x 3 = 54 possible variations here,
+and we do not need an example for each one!
+Instead, we only need as many examples as there are variations for the argument with the maximum number of variations,
+in this case jointly being the :code:`mode`, :code:`another_flag` and :code:`axis` arguments, each with 3 variations.
+
+For example, we could have three examples using the following arguments:
+
+.. code-block:: python
+
+    my_func(x0, std, True)
+    my_func(x1, prod, False, True, [0, 1, 2])
+    my_func(x2, var, True, False, 1)
+
+It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is
+included in the examples. These three examples procedurally go through the variations from left to right for each
+argument, but this doesn’t need to be the case if you think other combinations make more sense for examples.
+
+You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
+examples that should be included in the docstring!
+
+We'll next go through some examples to make these 12 points more clear.
 
 ivy.tan
 -------
