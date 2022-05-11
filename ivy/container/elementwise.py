@@ -244,7 +244,9 @@ class ContainerWithElementwise(ContainerBase):
             conts["x2"] = x2
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
-                lambda xs, _: ivy.bitwise_left_shift(**dict(zip(conts.keys(), xs)), **kw)
+                lambda xs, _: ivy.bitwise_left_shift(
+                    **dict(zip(conts.keys(), xs)), **kw
+                )
                 if ivy.is_array(xs[0])
                 else xs,
                 list(conts.values()),
@@ -319,7 +321,9 @@ class ContainerWithElementwise(ContainerBase):
             conts["x2"] = x2
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
-                lambda xs, _: ivy.bitwise_right_shift(**dict(zip(conts.keys(), xs)), **kw)
+                lambda xs, _: ivy.bitwise_right_shift(
+                    **dict(zip(conts.keys(), xs)), **kw
+                )
                 if ivy.is_array(xs[0])
                 else xs,
                 list(conts.values()),
