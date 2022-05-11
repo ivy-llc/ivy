@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network activations as stateful classes.
-"""
+"""Collection of Ivy neural network activations as stateful classes."""
 
 # local
 import ivy
@@ -9,9 +7,7 @@ from ivy.stateful.module import Module
 
 class GELU(Module):
     def __init__(self):
-        """
-        Applies the GELU activation function.
-        """
+        """Applies the GELU activation function."""
         Module.__init__(self)
 
     def _forward(self, inputs):
@@ -34,9 +30,7 @@ class GELU(Module):
 
 class GEGLU(Module):
     def __init__(self):
-        """
-        Applies the GEGLU activation function.
-        """
+        """Applies the GEGLU activation function."""
         Module.__init__(self)
 
     def _forward(self, inputs):

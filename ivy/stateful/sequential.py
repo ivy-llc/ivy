@@ -1,6 +1,4 @@
-"""
-Base class for deriving trainable modules
-"""
+"""Base class for deriving trainable modules"""
 
 # local
 from ivy.stateful.module import Module

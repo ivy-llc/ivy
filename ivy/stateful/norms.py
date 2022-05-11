@@ -1,6 +1,4 @@
-"""
-Collection of Ivy normalization classes.
-"""
+"""Collection of Ivy normalization classes."""
 
 # local
 import ivy
@@ -50,9 +48,7 @@ class LayerNorm(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer"""
         if self._elementwise_affine:
             return {
                 "scale": self._scale_init.create_variables(self._scale_shape, device),

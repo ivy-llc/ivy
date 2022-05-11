@@ -1,6 +1,4 @@
-"""
-Base class for deriving trainable modules
-"""
+"""Base class for deriving trainable modules"""
 
 # global
 import os
@@ -77,7 +75,7 @@ class Module(abc.ABC):
             raise Exception(
               "build_mode must be one of {} of type str, but found {} of type{}".format(
                     valid_build_modes, build_mode, type(build_mode)
-              )
+                )
             )
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
@@ -312,7 +310,7 @@ class Module(abc.ABC):
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, device):
         """
-        create internal trainable variables, and return as arbitrary nested dict.
+        Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
 
         Parameters
@@ -336,14 +334,13 @@ class Module(abc.ABC):
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """
-        Forward pass of the layer, called after handling the optional input variables.
+        Forward pass of the layer,
+        called after handling the optional input variables.
         """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """
-        Forward pass while optionally tracking submodule returns and call order
-        """
+        """Forward pass while optionally tracking submodule returns and call order"""
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -357,7 +354,8 @@ class Module(abc.ABC):
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
         """
-        the forward pass of the layer, treating layer instance as callable function.
+        The forward pass of the layer,
+        treating layer instance as callable function.
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
@@ -666,9 +664,7 @@ class Module(abc.ABC):
         self.v.to_disk_as_hdf5(weights_path)
 
     def build(self, *args, from_call=False, device=None, **kwargs):
-        """
-        Build the internal layers and variables for this module.
-        """
+        """Build the internal layers and variables for this module."""
         self._dev = ivy.default(device, self._dev)
 
         # return False if not from_call but build_mode is on_call

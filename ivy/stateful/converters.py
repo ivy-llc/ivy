@@ -1,6 +1,4 @@
-"""
-Converters from Native Modules to Ivy Modules
-"""
+"""Converters from Native Modules to Ivy Modules"""
 
 # local
 from ivy.framework_handler import current_framework as _cur_framework

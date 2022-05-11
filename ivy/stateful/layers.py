@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network layers as stateful classes.
-"""
+"""Collection of Ivy neural network layers as stateful classes."""
 
 # local
 import ivy
@@ -264,11 +262,9 @@ class MultiHeadAttention(Module):
 
     def _create_variables(self, device):
         """
-
         Parameters
         ----------
         device
-
         """
 
         return ivy.Container(to_kv={"k": self._to_k.v, "v": self._to_v.v})
@@ -413,15 +409,15 @@ class Conv1D(Module):
 
         """
         return (
-                ivy.conv1d(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv1d(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -525,16 +521,16 @@ class Conv1DTranspose(Module):
 
         """
         return (
-                ivy.conv1d_transpose(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._output_shape,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv1d_transpose(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._output_shape,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -633,15 +629,15 @@ class Conv2D(Module):
 
         """
         return (
-                ivy.conv2d(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv2d(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -744,16 +740,16 @@ class Conv2DTranspose(Module):
 
         """
         return (
-                ivy.conv2d_transpose(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._output_shape,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv2d_transpose(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._output_shape,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -772,7 +768,8 @@ class DepthwiseConv2D(Module):
             device=None,
             v=None,
     ):
-        """depthwise 2D convolutional layer.
+        """
+        Depthwise 2D convolutional layer.
 
         Parameters
         ----------
@@ -848,15 +845,15 @@ class DepthwiseConv2D(Module):
 
         """
         return (
-                ivy.depthwise_conv2d(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.depthwise_conv2d(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -955,15 +952,15 @@ class Conv3D(Module):
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
         return (
-                ivy.conv3d(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv3d(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 
@@ -1066,16 +1063,16 @@ class Conv3DTranspose(Module):
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
         return (
-                ivy.conv3d_transpose(
-                    inputs,
-                    self.v.w,
-                    self._strides,
-                    self._padding,
-                    self._output_shape,
-                    self._data_format,
-                    self._dilations,
-                )
-                + self.v.b
+            ivy.conv3d_transpose(
+                inputs,
+                self.v.w,
+                self._strides,
+                self._padding,
+                self._output_shape,
+                self._data_format,
+                self._dilations,
+            )
+            + self.v.b
         )
 
 

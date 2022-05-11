@@ -1,6 +1,4 @@
-"""
-Collection of Ivy optimizers.
-"""
+"""Collection of Ivy optimizers."""
 
 # global
 import abc

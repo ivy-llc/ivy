@@ -11,9 +11,7 @@ class Constant:
         self._constant = constant
 
     def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer"""
         return ivy.variable(ivy.ones(var_shape, device=device) * self._constant)
 
 
@@ -44,9 +42,7 @@ class Uniform:
         self._gain = gain
 
     def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
                 raise Exception(
@@ -114,9 +110,7 @@ class KaimingNormal:
     def create_variables(
         self, var_shape, device, fan_out=None, fan_in=None, negative_slope=0.0
     ):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
                 raise Exception(

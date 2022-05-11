@@ -1,4 +1,4 @@
-# flake8: noqa
+# flake: noqa
 from . import activations
 from .activations import *
 from . import converters
