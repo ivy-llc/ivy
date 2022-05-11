@@ -142,7 +142,7 @@
 <p><strong>Functional Examples</strong></p>
 <p>The <em>functional</em> examples should:</p>
 <ol class="arabic simple">
-<li><p>cover all possible variants for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)</p></li>
+<li><p>cover all possible variants (explained below) for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)</p></li>
 <li><p>vary the values and input shapes considerably between examples</p></li>
 <li><p>start with the simplest examples first. For example, this means using the default values for all optional arguments in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the function in question.</p></li>
 <li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>, and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
@@ -174,6 +174,40 @@ corresponding methods X.</p>
 <li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances</p></li>
 <li><p>call the operator on a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
 </ol>
+<p><strong>All Possible Variants</strong></p>
+<p>Let’s look at an example to make it more clear what is meant by “all possible variants” of each argument independently.</p>
+<p>Let’s take an imaginary function with the following argument spec:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">std</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="n">var</span><span class="p">],</span>
+            <span class="n">some_flag</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="n">another_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>In this case, our examples would need to include</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="code docutils literal notranslate"><span class="pre">array</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">mode</span></code> being all of: <code class="code docutils literal notranslate"><span class="pre">std</span></code>, <code class="code docutils literal notranslate"><span class="pre">prod</span></code>, <code class="code docutils literal notranslate"><span class="pre">var</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">some_flag</span></code> being both of: <code class="code docutils literal notranslate"><span class="pre">True</span></code>, <code class="code docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> being all of: <code class="code docutils literal notranslate"><span class="pre">default</span></code>, <code class="code docutils literal notranslate"><span class="pre">True</span></code>, <code class="code docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">axis</span></code> being all of: <code class="code docutils literal notranslate"><span class="pre">default</span></code>, <code class="code docutils literal notranslate"><span class="pre">list</span></code>, <code class="code docutils literal notranslate"><span class="pre">int</span></code>.</p></li>
+</ul>
+<p>Please note, this does not need to be done with a grid search. There are 1 x 3 x 2 x 3 x 3 = 54 possible variations here,
+and we do not need an example for each one!
+Instead, we only need as many examples as there are variations for the argument with the maximum number of variations,
+in this case jointly being the <code class="code docutils literal notranslate"><span class="pre">mode</span></code>, <code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> arguments, each with 3 variations.</p>
+<p>For example, we could have three examples using the following arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_func</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">my_func</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">my_func</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is
+included in the examples. These three examples procedurally go through the variations from left to right for each
+argument, but this doesn’t need to be the case if you think other combinations make more sense for examples.</p>
+<p>You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
+examples that should be included in the docstring!</p>
+<p>We’ll next go through some examples to make these 12 points more clear.</p>
 <section id="ivy-tan">
 <h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this headline"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
