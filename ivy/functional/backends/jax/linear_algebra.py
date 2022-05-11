@@ -1,7 +1,6 @@
 # global
-import jax
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
@@ -16,6 +15,7 @@ import ivy
 
 def eigh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.eigh(x)
+    return ret
 
 
 def pinv(
@@ -130,7 +130,7 @@ def svdvals(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
 
 def qr(
     x: JaxArray, mode: str = "reduced", out: Optional[JaxArray] = None
-) -> namedtuple("qr", ["Q", "R"]):
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     ret = res(q, r)

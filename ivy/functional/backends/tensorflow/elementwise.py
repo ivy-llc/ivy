@@ -32,7 +32,7 @@ def add(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 def bitwise_xor(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
@@ -166,7 +166,10 @@ def equal(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def less_equal(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.math.less_equal(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -367,7 +370,10 @@ def negative(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def not_equal(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.math.not_equal(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -449,7 +455,10 @@ def pow(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def remainder(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.math.floormod(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -555,6 +564,11 @@ def atan2(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def minimum(x, y, out: Optional[Tensor] = None) -> Tensor:
+    if hasattr(y, "dtype"):
+        if x.dtype != y.dtype:
+            promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
+            x = tf.cast(x, promoted_type)
+            y = tf.cast(y, promoted_type)
     ret = tf.minimum(x, y)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -562,6 +576,11 @@ def minimum(x, y, out: Optional[Tensor] = None) -> Tensor:
 
 
 def maximum(x, y, out: Optional[Tensor] = None) -> Tensor:
+    if hasattr(y, "dtype"):
+        if x.dtype != y.dtype:
+            promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
+            x = tf.cast(x, promoted_type)
+            y = tf.cast(y, promoted_type)
     ret = tf.maximum(x, y)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

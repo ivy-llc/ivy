@@ -1,6 +1,4 @@
-"""
-Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import os
@@ -13,7 +11,12 @@ from typing import Optional
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
-dev = lambda x, as_str=False: "cpu"
+
+def dev(x: np.ndarray , as_str: bool = False)\
+        -> str:
+    return 'cpu'
+
+
 dev.__name__ = "dev"
 _dev_callable = dev
 dev_to_str = lambda dev: "cpu"
@@ -37,14 +40,15 @@ def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.
     if device is not None:
         if "gpu" in device:
             raise Exception(
-                "Native Numpy does not support GPU placement, consider using Jax instead"
+                "Native Numpy does not support GPU placement, "
+                "consider using Jax instead"
             )
         elif "cpu" in device:
             pass
         else:
             raise Exception(
-                'Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                "but found {}".format(device)
+                "Invalid device specified, must be in the form "
+                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
     if ivy.exists(out):
         return ivy.inplace_update(out, x)

@@ -107,7 +107,7 @@ def multiply(
 
 def ceil(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
-        ret = x
+        ret = np.copy(x)
     else:
         return np.ceil(x, out=out)
     if ivy.exists(out):
@@ -116,7 +116,10 @@ def ceil(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def floor(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    ret = np.asarray(npa.floor(npa.asarray(x)))
+    if "int" in str(x.dtype):
+        ret = np.copy(x)
+    else:
+        return np.floor(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -278,7 +281,7 @@ def remainder(
 
 def round(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
-        ret = x
+        ret = np.copy(x)
     else:
         return np.round(x, out=out)
     if ivy.exists(out):
@@ -300,7 +303,7 @@ def bitwise_or(
 
 def trunc(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
-        ret = x
+        ret = np.copy(x)
     else:
         return np.trunc(x, out=out)
     if ivy.exists(out):
