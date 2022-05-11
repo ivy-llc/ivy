@@ -32,7 +32,7 @@ def add(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 def bitwise_xor(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
@@ -563,15 +563,25 @@ def atan2(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 # ------#
 
 
-def minimum(x, y, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.minimum(x, y)
+def minimum(x1, x2, out: Optional[Tensor] = None) -> Tensor:
+    if hasattr(x2,'dtype'):
+        if x1.dtype != x2.dtype:
+            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+            x1 = tf.cast(x1, promoted_type)
+            x2 = tf.cast(x2, promoted_type)
+    ret = tf.minimum(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def maximum(x, y, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.maximum(x, y)
+def maximum(x1, x2, out: Optional[Tensor] = None) -> Tensor:
+    if hasattr(x2,'dtype'):
+        if x1.dtype != x2.dtype:
+            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+            x1 = tf.cast(x1, promoted_type)
+            x2 = tf.cast(x2, promoted_type)
+    ret = tf.maximum(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

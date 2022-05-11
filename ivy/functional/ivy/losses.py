@@ -14,8 +14,7 @@ def cross_entropy(
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
 ) -> ivy.Array:
-    """Computes cross-entropy between predicted and true discrete
-    distributions.
+    """Computes cross-entropy between predicted and true discrete distributions.
 
     Parameters
     ----------
@@ -24,10 +23,11 @@ def cross_entropy(
     pred
         input array containing the predicted labels.
     axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``, the cross-entropy will be computed along the last dimension. Default: ``-1``.
+        the axis along which to compute the cross-entropy. If axis is ``-1``, the
+        cross-entropy will be computed along the last dimension. Default: ``-1``.
     epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the loss. If epsilon is ``0``, no smoothing will be applied.
-        Default: ``1e-7``.
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
 
     Returns
     -------
@@ -67,7 +67,7 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The binary cross entropy loss array.
 
     """
@@ -92,7 +92,7 @@ def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The sparse cross entropy loss
 
     """

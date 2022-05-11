@@ -1,5 +1,4 @@
-"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import logging
@@ -7,14 +6,15 @@ import logging
 
 def variable(x):
     logging.warning(
-        "NumPy does not support autograd, "
-        'declaring a "variable" is identical to declaring an "array" when using numpy backend.'
+        "NumPy does not support autograd, declaring a 'variable' "
+        "is identical to declaring an 'array' when using numpy backend."
     )
     return x
 
 
 def is_variable(x, exclusive=False):
-    # NumPy does not support autograd, checking if x is a variable does have any meaning for NumPy. Return False.
+    # NumPy does not support autograd, checking if x is a variable
+    # does have any meaning for NumPy. Return False.
     return False
 
 
@@ -24,7 +24,7 @@ variable_data = lambda x: x
 def execute_with_gradients(func, xs, retain_grads=False):
     logging.warning(
         "NumPy does not support autograd, "
-        '"execute_with_gradients" returns None in place of function gradients.'
+        "'execute_with_gradients' returns None in place of function gradients."
     )
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -38,7 +38,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 def stop_gradient(x, preserve_type=True):
     logging.warning(
-        "NumPy does not support autograd, "
-        '"stop_gradient" has no effect on the array, as gradients are not supported in the first place.'
+        "NumPy does not support autograd, 'stop_gradient' "
+        "has no effect on the array, as gradients are not supported in the first place."
     )
     return x
