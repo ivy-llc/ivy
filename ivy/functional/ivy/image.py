@@ -85,8 +85,8 @@ def gradient_image(x):
     ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
         
-    Examples:
-    
+    Examples
+    --------
     >>> batch_size = 1
     >>> h = 3
     >>> w = 3
