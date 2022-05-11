@@ -119,20 +119,28 @@ def print_all_arrays_on_dev(device):
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
 ) -> Union[ivy.Device, str]:
-    """Get the native device handle for input array x.
+    """
+    Get the native device handle for input array x.
 
     Parameters
     ----------
     x
-        Tensor for which to get the device handle.
+          array for which to get the device handle.
+
     as_str
-        Whether or not to return the dev in string format. Default is False.
+          Whether or not to return the dev in string format. Default is False.
 
     Returns
     -------
     ret
-        Device handle for the array, in native framework format.
+          Device handle for the array, in native framework format.
 
+    Examples
+    --------
+          >>> x = ivy.array([1,0,2])
+          >>> y = ivy.dev(x)
+          >>> print(y)
+          "cpu"
     """
     return _cur_framework(x).dev(x, as_str)
 
@@ -690,7 +698,7 @@ class MultiDevItem(MultiDev):
                     ret_dict[ds] = sub_item[rel_slice_obj]
                     return MultiDevItem(ret_dict)
                 else:
-                    ret_dict[ds] = sub_item[rel_slice_obj.start:]
+                    ret_dict[ds] = sub_item[rel_slice_obj.start :]
         return MultiDevItem(ret_dict)
 
     def __getitem__(self, query):

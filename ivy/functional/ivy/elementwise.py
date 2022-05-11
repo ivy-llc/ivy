@@ -109,7 +109,7 @@ def add(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -134,6 +134,14 @@ def add(
     ivy.array([[5.9, 7.1, 1.2],
                [6.3, 7.5, 1.6],
                [7.2, 8.4, 2.5]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.add(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[9.5],
+                [5.7],
+                [-4.7]]])
 
     With :code:`ivy.Container` input:
 
@@ -1699,7 +1707,7 @@ def tan(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -2178,14 +2186,16 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        an array containing the element-wise results. The returned array must have a
-        data type determined by :ref:`Type Promotion Rules`.
-    Exemples :
-    >>> lhs = ivy.array([-1, -2, -3, -2], dtype=ivy.int64)
-    >>> rhs = ivy.array([4, 3, 2, 1], dtype=ivy.int64)
-    >>> print(bitwise_right_shift(lhs, rhs))
-    ivy.array([-1, -1, -1, -1])
-    
+        out (array), an array containing the element-wise results. 
+        The returned array must have a data type determined by Type Promotion Rules.
+        
+    Examples
+    --------
+    >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
+    >>> rhs = ivy.array([1, 3, 2, 1], dtype=ivy.int64)
+    >>> y = ivy.bitwise_right_shift(lhs, rhs)
+    >>> print(y)
+    ivy.array([2, 0, 0, 0])
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
 
