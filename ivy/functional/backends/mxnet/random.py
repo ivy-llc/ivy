@@ -54,8 +54,13 @@ def random_normal(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[mx.ndarray.ndarray.NDArray] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None,
+) -> mx.ndarray.ndarray.NDArray:
     if not replace:
         raise Exception("MXNet does not support multinomial without replacement")
     ctx = _mxnet_init_context(default_device(device))

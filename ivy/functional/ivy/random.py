@@ -89,35 +89,46 @@ def random_normal(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
-    """Draws samples from a multinomial distribution. Specifcally, returns a tensor
-    where each row contains num_samples indices sampled from the multinomial probability
-    distribution located in the corresponding row of tensor input.
-
-    Parameters
-    ----------
-    population_size
-        The size of the population from which to draw samples.
-    num_samples
-        Number of independent samples to draw from the population.
-    batch_size
-        Number of times to draw a new set of samples from the population.
-    probs
-        The unnormalized probabilities for all elemtns in population,
-        default is uniform *[batch_shape, num_classes]*
-    replace
-        Whether to replace samples once they've been drawn. Default is True.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-        (Default value = None)
-
-    Returns
-    -------
-    ret
-        Drawn samples indices from the multinomial distribution.
-
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Union[ivy.Array, ivy.NativeArray] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None
+) -> ivy.array:
     """
+        Draws samples from a multinomial distribution. Specifically, returns a tensor
+        where each row contains num_samples indices sampled from the multinomial probability
+        distribution located in the corresponding row of tensor input.
+
+        Parameters
+        ----------
+        population_size
+            The size of the population from which to draw samples.
+        num_samples
+            Number of independent samples to draw from the population.
+        batch_size
+            Number of tensors to generate. Default is 1.
+        probs
+            The unnormalized probabilities for all elements in population,
+            default is uniform *[batch_shape, num_classes]*
+        replace
+            Whether to replace samples once they've been drawn. Default is True.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None)
+
+        Returns
+        -------
+         ret
+            Drawn samples indices from the multinomial distribution.
+
+        Examples
+        --------
+        >>> y = ivy.multinomial(10, 5)
+        >>> print(y)
+        ivy.array([[1, 8, 7, 8, 3]])
+        """
     return _cur_framework().multinomial(
         population_size, num_samples, batch_size, probs, replace, device
     )
