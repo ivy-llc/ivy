@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 
 # local
@@ -131,7 +131,7 @@ def qr(
     x: np.ndarray,
     mode: str = "reduced",
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
-) -> namedtuple("qr", ["Q", "R"]):
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     ret = res(q, r)

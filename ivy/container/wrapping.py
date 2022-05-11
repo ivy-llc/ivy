@@ -14,8 +14,9 @@ def _wrap_fn(fn_name):
             and args
             and ivy.is_ivy_container(args[0])
         ):
-            # if the method has been called as an instance method, and self should not be the first positional arg,
-            # then we need to re-arrange and place self in the correct location in the args or kwargs
+            # if the method has been called as an instance method, and self should not
+            # be the first positional arg, then we need to re-arrange and place self
+            # in the correct location in the args or kwargs
             self = args[0]
             args = args[1:]
             if len(args) > data_idx[0][0]:

@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network layers as stateful classes.
-"""
+"""Collection of Ivy neural network layers as stateful classes."""
 
 # local
 import ivy
@@ -23,25 +21,29 @@ class Linear(Module):
         device=None,
         v=None,
     ):
-        """
-        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
-        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
+        """Linear layer, also referred to as dense or fully connected. The layer
+        receives tensors with input_channels last dimension and returns a new tensor
+        with output_channels last dimension, following matrix multiplication with the
         weight matrix and addition with the bias vector.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
         :param output_channels: Number of output channels for the layer.
         :type output_channels: int
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
         :param with_bias: Whether or not to include a bias term, default is True.
         :type with_bias: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for the linear layer, as a container, constructed internally by default.
+        :param v: the variables for the linear layer, as a container, constructed
+                  internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -53,9 +55,7 @@ class Linear(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -71,12 +71,13 @@ class Linear(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
-        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        :return: The outputs following the linear operation and bias addition
+                 *[batch_shape, out]*
+
         """
         return ivy.linear(inputs, self.v.w, self.v.b if self._with_bias else None)
 
@@ -87,32 +88,31 @@ class Linear(Module):
 
 class Dropout(Module):
     def __init__(self, prob, scale=True):
-        """
-        Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
-        samples from a Bernoull distribution.
+        """Dropout layer. The layer randomly zeroes some of the elements of the input
+        tensor with probability p using samples from a Bernoull distribution.
 
         :param prob: The probability of zeroing out each array element.
         :type prob: float
         :param scale: Whether to scale the output by 1/(1-prob), default is True.
         :type scale: bool, optional
+
         """
         self._prob = prob
         self._scale = scale
         Module.__init__(self, None, None)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {}
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
-        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        :return: The outputs following the linear operation and bias addition
+                 *[batch_shape, out]*
+
         """
         return ivy.dropout(inputs, self._prob, self._scale)
 
@@ -137,8 +137,7 @@ class MultiHeadAttention(Module):
         v=None,
         build_mode="on_init",
     ):
-        """
-        Multi Head Attention layer.
+        """Multi Head Attention layer.
 
         :param query_dim: The dimension of the attention queries.
         :type query_dim: int
@@ -148,25 +147,33 @@ class MultiHeadAttention(Module):
         :type head_dim: int, optional
         :param dropout_rate: The rate of dropout. Default is 0.
         :type dropout_rate: float, optional
-        :param context_dim: The dimension of the context array. Default is None, in which case the query dim is used.
+        :param context_dim: The dimension of the context array. Default is None, in
+                            which case the query dim is used.
         :type context_dim: int, optional.
-        :param scale: The value by which to scale the query-key similarity measure. Default is head_dim^-0.5
+        :param scale: The value by which to scale the query-key similarity measure.
+                      Default is head_dim^-0.5
         :type scale: float, optional
-        :param with_to_q_fn: Whether to include fully connected mapping from input x to queries. Default is True.
+        :param with_to_q_fn: Whether to include fully connected mapping from input x
+                             to queries. Default is True.
         :type with_to_q_fn: bool, optional
-        :param with_to_kv_fn: Whether to include fully connected mapping from input context to keys and values.
-                              Default is True.
+        :param with_to_kv_fn: Whether to include fully connected mapping from input
+                              context to keys and values. Default is True.
         :type with_to_kv_fn: bool, optional
-        :param with_to_out_fn: Whether to include fully connected mapping from output scaled dot-product attention to
-                               final output. Default is True.
+        :param with_to_out_fn: Whether to include fully connected mapping from output
+                               scaled dot-product attention to final output. Default
+                               is True.
         :type with_to_out_fn: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for the attention layer, as a container, constructed internally by default.
+        :param v: the variables for the attention layer, as a container, constructed
+                  internally by default.
         :type v: ivy container of variables, optional
-        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
-                           build(), or the first time the __call__ method is run. Default is on initialization.
+        :param build_mode: How the Module is built, either on initialization (now),
+                           explicitly by the user by calling build(), or the first time
+                           the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
+
         """
         v_exists = ivy.exists(v)
         v = ivy.default(v, ivy.Container({"to_q": None, "to_kv": None, "to_out": None}))
@@ -218,17 +225,20 @@ class MultiHeadAttention(Module):
         return ivy.Container(to_kv={"k": self._to_k.v, "v": self._to_v.v})
 
     def _forward(self, inputs, context=None, mask=None):
-        """
-        Perform forward pass of the MultiHeadAttention layer.
+        """Perform forward pass of the MultiHeadAttention layer.
 
-        :param inputs: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
+        :param inputs: The array to determine the queries from
+                       *[batch_shape,num_queries,x_feats]*.
         :type inputs: array
-        :param context: The array to determine the keys and values from. Default is None.
-                        *[batch_shape,num_values,cont_feats]*.
+        :param context: The array to determine the keys and values from.
+                        Default is None. *[batch_shape,num_values,cont_feats]*.
         :type context: array, optional
-        :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+        :param mask: The mask to apply to the query-key values. Default is None.
+                     *[batch_shape,num_queries,num_values]*
         :type mask: array, optional
-        :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
+        :return The output following application of scaled dot-product attention.
+                *[batch_shape,num_queries,out_feats]*
+
         """
         return ivy.multi_head_attention(
             inputs,
@@ -264,8 +274,7 @@ class Conv1D(Module):
         device=None,
         v=None,
     ):
-        """
-        1D convolutional layer.
+        """1D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -275,9 +284,11 @@ class Conv1D(Module):
         :type filter_size: int
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating
+                        the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -285,10 +296,13 @@ class Conv1D(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -308,9 +322,7 @@ class Conv1D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -321,12 +333,12 @@ class Conv1D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1D layer.
+        """Perform forward pass of the Conv1D layer.
 
         :param inputs: Inputs to process *[batch_size,w,d_in]*
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*
+
         """
         return (
             ivy.conv1d(
@@ -357,8 +369,7 @@ class Conv1DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        1D transpose convolutional layer.
+        """1D transpose convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -368,9 +379,11 @@ class Conv1DTranspose(Module):
         :type filter_size: int
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating
+                        the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights.
+                                   Default is GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -380,10 +393,13 @@ class Conv1DTranspose(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -404,9 +420,7 @@ class Conv1DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -417,12 +431,12 @@ class Conv1DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1DTranspose layer.
+        """Perform forward pass of the Conv1DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,w,d_in]*
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*
+
         """
         return (
             ivy.conv1d_transpose(
@@ -453,8 +467,7 @@ class Conv2D(Module):
         device=None,
         v=None,
     ):
-        """
-        2D convolutional layer.
+        """2D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -464,9 +477,11 @@ class Conv2D(Module):
         :type filter_shape: sequence of ints
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating
+                        the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -474,10 +489,13 @@ class Conv2D(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -497,9 +515,7 @@ class Conv2D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -510,12 +526,12 @@ class Conv2D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2D layer.
+        """Perform forward pass of the Conv2D layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv2d(
@@ -546,8 +562,7 @@ class Conv2DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        2D convolutional transpose layer.
+        """2D convolutional transpose layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -557,9 +572,11 @@ class Conv2DTranspose(Module):
         :type filter_shape: sequence of ints
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating
+                        the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -569,10 +586,13 @@ class Conv2DTranspose(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -593,9 +613,7 @@ class Conv2DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -606,12 +624,12 @@ class Conv2DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2DTranspose layer.
+        """Perform forward pass of the Conv2DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv2d_transpose(
@@ -641,8 +659,7 @@ class DepthwiseConv2D(Module):
         device=None,
         v=None,
     ):
-        """
-        depthwise 2D convolutional layer.
+        """Depthwise 2D convolutional layer.
 
         :param num_channels: Number of input channels for the layer.
         :type num_channels: int
@@ -650,9 +667,11 @@ class DepthwiseConv2D(Module):
         :type filter_shape: sequence of ints
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating
+                        the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -660,10 +679,13 @@ class DepthwiseConv2D(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._num_channels = num_channels
         self._filter_shape = filter_shape
@@ -682,9 +704,7 @@ class DepthwiseConv2D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._num_channels, self._num_channels
@@ -695,12 +715,12 @@ class DepthwiseConv2D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the DepthwiseConv2D layer.
+        """Perform forward pass of the DepthwiseConv2D layer.
 
         :param inputs: Inputs to process *[batch_size,h,w,d_in]*.
         :type inputs: array
         :return: The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
+
         """
         return (
             ivy.depthwise_conv2d(
@@ -730,8 +750,7 @@ class Conv3D(Module):
         device=None,
         v=None,
     ):
-        """
-        3D convolutional layer.
+        """3D convolutional layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -741,9 +760,11 @@ class Conv3D(Module):
         :type filter_shape: sequence of ints
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list
+                        indicating the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+                                   GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -751,10 +772,13 @@ class Conv3D(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+                  constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -774,9 +798,7 @@ class Conv3D(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -787,12 +809,13 @@ class Conv3D(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3D layer.
+        """Perform forward pass of the Conv3D layer.
 
         :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.
         :type inputs: array
-        :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*
+        :return: The outputs following the conv1d layer
+                 *[batch_size,new_d,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv3d(
@@ -823,8 +846,7 @@ class Conv3DTranspose(Module):
         device=None,
         v=None,
     ):
-        """
-        3D convolutional transpose layer.
+        """3D convolutional transpose layer.
 
         :param input_channels: Number of input channels for the layer.
         :type input_channels: int
@@ -834,9 +856,11 @@ class Conv3DTranspose(Module):
         :type filter_shape: sequence of ints
         :param strides: The stride of the sliding window for each dimension of input.
         :type strides: int or sequence of ints
-        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
         :type padding: string or sequence of ints
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+            GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
@@ -846,10 +870,13 @@ class Conv3DTranspose(Module):
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+            'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for each of the linear layer, as a container,
+            constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -870,9 +897,7 @@ class Conv3DTranspose(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         return {
             "w": self._w_init.create_variables(
                 self._w_shape, device, self._output_channels, self._input_channels
@@ -883,12 +908,13 @@ class Conv3DTranspose(Module):
         }
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3DTranspose layer.
+        """Perform forward pass of the Conv3DTranspose layer.
 
         :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.
         :type inputs: array
-        :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*
+        :return: The outputs following the conv1d layer
+            *[batch_size,new_d,new_h,new_w,d_out]*
+
         """
         return (
             ivy.conv3d_transpose(
@@ -920,26 +946,30 @@ class LSTM(Module):
         device=None,
         v=None,
     ):
-        """
-        LSTM layer, which is a set of stacked lstm cells.
+        """LSTM layer, which is a set of stacked lstm cells.
 
         :param input_channels: Number of input channels for the layer
         :type input_channels: int
         :param output_channels: Number of output channels for the layer
         :type output_channels: int
-        :param weight_initializer: Initializer for the weights. Default is GlorotUniform.
+        :param weight_initializer: Initializer for the weights. Default is
+            GlorotUniform.
         :type weight_initializer: ivy.Initializer, optional
         :param num_layers: Number of lstm cells in the lstm layer, default is 1.
         :type num_layers: int, optional
-        :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.
-                                Default is True.
+        :param return_sequence: Whether or not to return the entire output sequence,
+            or just the latest timestep. Default is True.
         :type return_sequence: bool, optional
-        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.
+        :param return_state: Whether or not to return the latest hidden and cell states.
+            Default is True.
         :type return_state: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param device: device on which to create the layer's variables 'cuda:0',
+            'cuda:1', 'cpu' etc. Default is cpu.
         :type device: ivy.Device, optional
-        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.
+        :param v: the variables for each of the lstm cells, as a container,
+            constructed internally by default.
         :type v: ivy container of parameter arrays, optional
+
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -952,8 +982,8 @@ class LSTM(Module):
     # Public #
 
     def get_initial_state(self, batch_shape):
-        """
-        Get the initial state of the hidden and cell states, if not provided explicitly
+        """Get the initial state of the hidden and cell states, if not provided
+        explicitly.
         """
         batch_shape = list(batch_shape)
         return (
@@ -970,9 +1000,7 @@ class LSTM(Module):
     # Overridden
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         input_weights = dict(
             zip(
                 ["layer_" + str(i) for i in range(self._num_layers)],
@@ -1013,16 +1041,16 @@ class LSTM(Module):
         return {"input": input_weights, "recurrent": recurrent_weights}
 
     def _forward(self, inputs, initial_state=None):
-        """
-        Perform forward pass of the LSTM layer.
+        """Perform forward pass of the LSTM layer.
 
         :param inputs: Inputs to process *[batch_shape, t, in]*.
         :type inputs: array
-        :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.
-                        Created internally if None.
+        :param initial_state: 2-tuple of lists of the hidden states h and c for each
+            layer, each of dimension *[batch_shape,out]*. Created internally if None.
         :type initial_state: tuple of list of arrays, optional
-        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,
-                each of dimension *[batch_shape, out]*
+        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the
+            hidden state tuple of lists, each of dimension *[batch_shape, out]*
+
         """
         if initial_state is None:
             initial_state = self.get_initial_state(inputs.shape[:-2])
