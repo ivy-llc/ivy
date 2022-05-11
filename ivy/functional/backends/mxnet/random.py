@@ -89,4 +89,3 @@ seed = lambda seed_value=0: mx.random.seed(seed_value)
 
 def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.nd.random.shuffle(x)
-    
