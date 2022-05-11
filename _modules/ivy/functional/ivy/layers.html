@@ -539,7 +539,14 @@
 
 
 <span class="c1"># noinspection PyDefaultArgument</span>
-<div class="viewcode-block" id="conv3d"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv3d.html#ivy.functional.ivy.layers.conv3d">[docs]</a><span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="conv3d"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv3d.html#ivy.functional.ivy.layers.conv3d">[docs]</a><span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
+    <span class="n">dilations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 3-D convolution given 5-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
@@ -562,6 +569,34 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The result of the convolution operation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]</span>
+<span class="sd">    &gt;&gt;&gt; x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[x1,x2]]) #NDHWC</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv3d( x, filters, 1, &#39;VALID&#39;,&quot;NDHWC&quot;, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[[[[1.],</span>
+<span class="sd">              [2.]],</span>
+
+<span class="sd">             [[1.],</span>
+<span class="sd">              [2.]],</span>
+
+<span class="sd">             [[1.],</span>
+<span class="sd">              [2.]]],</span>
+
+
+<span class="sd">            [[[3.],</span>
+<span class="sd">              [4.]],</span>
+
+<span class="sd">             [[3.],</span>
+<span class="sd">              [4.]],</span>
+
+<span class="sd">             [[3.],</span>
+<span class="sd">              [4.]]]]])</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">conv3d</span><span class="p">(</span>
