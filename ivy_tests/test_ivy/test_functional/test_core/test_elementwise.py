@@ -405,8 +405,8 @@ def test_bitwise_left_shift(
     instance_method,
     fw,
 ):
-    if fw == 'torch':
-        return # torch has strange behaviour when shifting by a value larger than n bits
+    if fw == "torch":
+        return  # torch has strange behaviour when shifting by a value larger than n bits
     dtype, x = dtype_and_x
     if any(d in ivy.invalid_dtype_strs for d in dtype):
         return
@@ -520,7 +520,7 @@ def test_bitwise_right_shift(
     instance_method,
     fw,
 ):
-    if fw == 'torch':
+    if fw == "torch":
         return
     dtype, x = dtype_and_x
     if any(d in ivy.invalid_dtype_strs for d in dtype):
