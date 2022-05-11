@@ -135,6 +135,14 @@ def add(
                [6.3, 7.5, 1.6],
                [7.2, 8.4, 2.5]])
 
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.add(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[9.5],
+                [5.7],
+                [-4.7]]])
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
