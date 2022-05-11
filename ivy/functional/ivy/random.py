@@ -156,18 +156,25 @@ def seed(seed_value=0):
     return _cur_framework().seed(seed_value)
 
 
-def shuffle(x):
+def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
     Parameters
     ----------
     x
-        An array object, in the specific Machine learning framework.
+        Input array. Should have a numeric data type.
 
     Returns
     -------
     ret
         An array object, shuffled along the first dimension.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5])
+    >>> y = ivy.shuffle(x)
+    >>> print(y)
+    ivy.array([2, 1, 4, 3, 5])
 
     """
     return _cur_framework(x).shuffle(x)
