@@ -52,7 +52,10 @@ def multinomial(
 
 
 randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
-seed = lambda seed_value=0: np.random.seed(seed_value)
+
+
+def seed(seed_value: int = 0) -> None: 
+    np.random.seed(seed_value)
 
 
 def shuffle(x):

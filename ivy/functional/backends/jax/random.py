@@ -84,7 +84,7 @@ def randint(low, high, shape, device=None):
     )
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     global RNG
     RNG = _jax.random.PRNGKey(seed_value)
     return

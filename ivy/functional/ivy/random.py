@@ -132,7 +132,7 @@ def randint(low, high, shape, device=None):
     return _cur_framework().randint(low, high, shape, device)
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -140,6 +140,10 @@ def seed(seed_value=0):
     seed_value
         Seed for random number generation, must be a positive integer.
         (Default value = 0)
+
+    Examples
+    --------
+    >>> ivy.seed(42)
 
     """
     return _cur_framework().seed(seed_value)
