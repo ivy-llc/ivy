@@ -78,7 +78,7 @@ Finally, we add a section in the docstring which explains that it has been modif
     +:code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     +and also the examples below.
 
-Following these changes, the new doctrsing is as follows:
+Following these changes, the new docstring is as follows:
 
 .. code-block:: python
 
