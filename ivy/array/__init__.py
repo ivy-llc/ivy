@@ -1,6 +1,6 @@
+# flake8: noqa
 # global
 import copy
-import pickle
 import functools
 from operator import mul
 
@@ -98,7 +98,7 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-        
+
         self.framework_str = ivy.current_framework_str()
 
     # Properties #
@@ -120,12 +120,13 @@ class Array(
 
     @property
     def ndim(self):
-        """
-        Number of array dimensions (axes).
+        """Number of array dimensions (axes).
+
         Returns
         -------
-        out: int
+        ret
             number of array dimensions (axes).
+
         """
         return len(tuple(self._shape))
 
@@ -152,12 +153,14 @@ class Array(
 
         Returns
         -------
-        out: Optional[int]
-            number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
+        out
+            number of elements in an array. The returned value must be ``None`` if
+            and only if one or more array dimensions are unknown.
 
 
         .. note::
-           For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
+           For array libraries having graph-based computational models, an array may
+           have unknown dimensions due to data-dependent operations.
 
         """
         return self._size
@@ -197,7 +200,10 @@ class Array(
     def __repr__(self):
         return (
             self._pre_repr
-            + ivy.to_numpy(self._data).__repr__()[:-1].replace("\n", "\n    ")
+            + ivy.to_numpy(self._data)
+            .__repr__()[:-1]
+            .partition(", dtype")[0]
+            .partition(", dev")[0]
             + self._post_repr.format(ivy.current_framework_str())
         )
 
@@ -237,25 +243,25 @@ class Array(
         data_dict = dict()
 
         # only pickle the native array
-        data_dict['data'] = self.data
+        data_dict["data"] = self.data
 
         # also store the local ivy framework that created this array
-        data_dict['framework_str'] = self.framework_str
-        data_dict['device_str'] = ivy.dev_to_str(self.device)
+        data_dict["framework_str"] = self.framework_str
+        data_dict["device_str"] = ivy.dev_to_str(self.device)
 
         return data_dict
 
     @_native_wrapper
     def __setstate__(self, state):
-        # we can construct other details of ivy.Array 
+        # we can construct other details of ivy.Array
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_framework(state['framework_str'])
-        ivy_array = backend.array(state['data'])
+        backend = ivy.get_framework(state["framework_str"])
+        ivy_array = backend.array(state["data"])
 
         # TODO: what about placement of the array on the right device ?
-        device = backend.dev_from_str(state['device_str'])
+        device = backend.dev_from_str(state["device_str"])
 
         self.__dict__ = ivy_array.__dict__
 
@@ -480,21 +486,14 @@ class Array(
             return res
         return to_ivy(res)
 
-    @_native_wrapper
-    def __rrshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rrshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
-
     # noinspection PyDefaultArgument
     @_native_wrapper
     def __deepcopy__(self, memodict={}):
         try:
             return to_ivy(self._data.__deepcopy__(memodict))
         except AttributeError:
-            # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
+            # ToDo: try and find more elegant solution to jax inability to
+            #  deepcopy device arrays
             if ivy.current_framework_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)

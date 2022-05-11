@@ -1,5 +1,4 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import logging
@@ -12,7 +11,6 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 # Helpers #

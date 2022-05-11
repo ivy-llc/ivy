@@ -59,7 +59,7 @@ def sum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
-    if dtype == None and np.issubdtype(x.dtype, np.integer):
+    if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
             np.int8,
             np.int16,
@@ -92,7 +92,7 @@ def prod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
-    if dtype == None and np.issubdtype(x.dtype, np.integer):
+    if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
             np.int8,
             np.int16,

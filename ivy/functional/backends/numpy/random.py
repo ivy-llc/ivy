@@ -1,5 +1,4 @@
-"""Collection of Numpy random functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import numpy as np
@@ -21,9 +20,13 @@ def random_uniform(
     return np.asarray(np.random.uniform(low, high, shape))
 
 
-random_normal = lambda mean=0.0, std=1.0, shape=None, device=None: np.asarray(
-    np.random.normal(mean, std, shape)
-)
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> np.ndarray:
+    return np.asarray(np.random.normal(mean, std, shape))
 
 
 def multinomial(
@@ -56,5 +59,5 @@ randint = lambda low, high, shape, device=None: np.random.randint(low, high, sha
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 
-def shuffle(x):
+def shuffle(x: np.ndarray) -> np.ndarray:
     return np.random.permutation(x)

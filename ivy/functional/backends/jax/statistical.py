@@ -80,7 +80,7 @@ def prod(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
-    if dtype == None and jnp.issubdtype(x.dtype, jnp.integer):
+    if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [
             jnp.int8,
             jnp.int16,

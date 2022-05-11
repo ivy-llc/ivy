@@ -69,8 +69,8 @@ class IvyModule(ivy.Module):
                 native.__setattr__(k, v)
             else:
                 raise Exception(
-                    "found item in variable container {} which was neither a sub ivy.Container"
-                    "nor a variable.".format(v)
+                    "found item in variable container {} which was neither a "
+                    "sub ivy.Container nor a variable.".format(v)
                 )
         return native
 
