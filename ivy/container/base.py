@@ -621,7 +621,7 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
-            Contaienr
+            Container
 
         """
         container0 = containers[0]
@@ -1513,59 +1513,9 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def std(
-        self,
-        axis=None,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Computes standard deviation of array elements along a given axis for all sub-
-        arrays of container object.
-
-        Parameters
-        ----------
-        axis
-            Axis or axes along which a var is performed. The default, axis=None, will
-            var all of the elements of the input array. If axis is negative it counts
-            from the last to the first axis. If axis is a tuple of ints, a var is
-            performed on all of the axes specified in the tuple instead of a single axis
-            or all the axes as before.
-        keepdims
-            If this is set to True, the axes which are reduced are left in the result as
-            dimensions with size one. With this option, the result will broadcast
-            correctly against the input array. (Default value = False)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with the standard deviation computed for all sub-arrays.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.std(x=x, axis=axis, keepdims=keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def minimum(
         self,
-        other,
+        x2,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
@@ -1577,7 +1527,7 @@ class ContainerBase(dict, abc.ABC):
 
         Parameters
         ----------
-        other
+        x2
             The other container or number to compute the minimum against.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1595,10 +1545,10 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-arrays having the minimum values computed.
 
         """
-        is_container = isinstance(other, ivy.Container)
+        is_container = isinstance(x2, ivy.Container)
         return self.handle_inplace(
             self.map(
-                lambda x, kc: self._ivy.minimum(x, other[kc] if is_container else other)
+                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else x,
                 key_chains,
@@ -1611,7 +1561,7 @@ class ContainerBase(dict, abc.ABC):
 
     def maximum(
         self,
-        other,
+        x2,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
@@ -1641,10 +1591,10 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-arrays having the maximum values computed.
 
         """
-        is_container = isinstance(other, ivy.Container)
+        is_container = isinstance(x2, ivy.Container)
         return self.handle_inplace(
             self.map(
-                lambda x, kc: self._ivy.maximum(x, other[kc] if is_container else other)
+                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else x,
                 key_chains,
@@ -1657,8 +1607,8 @@ class ContainerBase(dict, abc.ABC):
 
     def clip(
         self,
-        clip_min,
-        clip_max,
+        x_min,
+        x_max,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
@@ -1670,9 +1620,9 @@ class ContainerBase(dict, abc.ABC):
 
         Parameters
         ----------
-        clip_min
+        x_min
             The minimum container or number to clip against.
-        clip_max
+        x_max
             The maximum container or number to clip against.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1690,14 +1640,14 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-arrays having the clipped values returned.
 
         """
-        min_is_container = isinstance(clip_min, ivy.Container)
-        max_is_container = isinstance(clip_max, ivy.Container)
+        min_is_container = isinstance(x_min, ivy.Container)
+        max_is_container = isinstance(x_max, ivy.Container)
         return self.handle_inplace(
             self.map(
                 lambda x, kc: self._ivy.clip(
                     x,
-                    clip_min[kc] if min_is_container else clip_min,
-                    clip_max[kc] if max_is_container else clip_max,
+                    x_min[kc] if min_is_container else x_min,
+                    x_max[kc] if max_is_container else x_max,
                 )
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else x,
@@ -1707,72 +1657,6 @@ class ContainerBase(dict, abc.ABC):
                 map_sequences,
             ),
             out,
-        )
-
-    def clip_vector_norm(
-        self,
-        max_norm,
-        p,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Computes the elementwise clipped values between this container and clip_min
-        and clip_max containers or numbers.
-
-        Parameters
-        ----------
-        max_norm
-            The max norm container or number to clip against.
-        p
-            The p-value for computing the p-norm container or number.
-        global_norm
-            Whether to compute the norm across all the concattenated sub-arrays.
-            Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the clipped norms returned.
-
-        """
-        max_norm_is_container = isinstance(max_norm, ivy.Container)
-        p_is_container = isinstance(p, ivy.Container)
-        if global_norm:
-            if max_norm_is_container or p_is_container:
-                raise Exception(
-                    "global_norm can only be computed for scalar max_norm "
-                    "and p_val arguments, but found {} and {} of type {} and {} "
-                    "respectively".format(max_norm, p, type(max_norm), type(p))
-                )
-            vector_norm = self.vector_norm(p, global_norm=True)
-            ratio = max_norm / vector_norm
-            if ratio < 1:
-                return self * ratio
-            return self.copy()
-        return self.map(
-            lambda x, kc: self._ivy.clip_vector_norm(
-                x,
-                max_norm[kc] if max_norm_is_container else max_norm,
-                p[kc] if p_is_container else p,
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
         )
 
     def einsum(
@@ -1819,7 +1703,7 @@ class ContainerBase(dict, abc.ABC):
 
     def vector_norm(
         self,
-        p=2,
+        ord=2,
         axis=None,
         keepdims=False,
         global_norm=False,
@@ -1832,7 +1716,7 @@ class ContainerBase(dict, abc.ABC):
 
         Parameters
         ----------
-        p
+        ord
             Order of the norm. Default is 2.
         axis
             If axis is an integer, it specifies the axis of x along which to compute the
@@ -1861,24 +1745,24 @@ class ContainerBase(dict, abc.ABC):
             Container object with the vector norms for each sub-array returned.
 
         """
-        p_is_container = isinstance(p, ivy.Container)
+        p_is_container = isinstance(ord, ivy.Container)
         if global_norm:
             if p_is_container:
                 raise Exception(
                     "global_norm can only be computed for scalar p argument,"
-                    "but found {} of type {}".format(p, type(p))
+                    "but found {} of type {}".format(ord, type(ord))
                 )
             return sum(
                 [
                     v
                     for k, v in self.map(
-                        lambda x, kc: self._ivy.sum(x**p)
+                        lambda x, kc: self._ivy.sum(x**ord)
                     ).to_iterator()
                 ]
-            ) ** (1 / p)
+            ) ** (1 / ord)
         return self.map(
             lambda x, kc: self._ivy.vector_norm(
-                x, axis, keepdims, p[kc] if p_is_container else p
+                x, axis, keepdims, ord[kc] if p_is_container else ord
             )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,

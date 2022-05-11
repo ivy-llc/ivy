@@ -406,7 +406,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(2),
+    num_positional_args=st.integers(1, 2),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -427,7 +427,7 @@ def test_minimum(
     dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
-    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
+    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
         return
     if (
         (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
@@ -446,8 +446,8 @@ def test_minimum(
         instance_method,
         fw,
         "minimum",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(y, dtype=dtype[1]),
+        x1=np.asarray(x, dtype=dtype[0]),
+        x2=ivy.array(y, dtype=dtype[1]),
     )
 
 
@@ -456,7 +456,7 @@ def test_minimum(
     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(2),
+    num_positional_args=st.integers(1, 2),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -477,7 +477,7 @@ def test_maximum(
     dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
-    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
+    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
         return
     if (
         (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
@@ -496,8 +496,8 @@ def test_maximum(
         instance_method,
         fw,
         "maximum",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(y, dtype=dtype[1]),
+        x1=np.asarray(x, dtype=dtype[0]),
+        x2=ivy.array(y, dtype=dtype[1]),
     )
 
 
@@ -506,7 +506,7 @@ def test_maximum(
     x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=3),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(3),
+    num_positional_args=st.integers(2, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -541,7 +541,11 @@ def test_clip(
     max_val1 = np.array(x_min_n_max[1][2], dtype=dtype[2])
     min_val = np.minimum(min_val1, max_val1)
     max_val = np.maximum(min_val1, max_val1)
-    if fw == "torch" and (d in ["uint16", "uint32", "uint64"] for d in dtype):
+    if fw == "torch" and (
+        any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
+        or any(np.isnan(max_val))
+        or len(x) == 0
+    ):
         return
     if (
         (len(min_val) != 0 and len(min_val) != 1)
@@ -561,8 +565,8 @@ def test_clip(
         fw,
         "clip",
         x=np.asarray(x, dtype=dtype[0]),
-        x_min=min_val,
-        x_max=max_val,
+        x_min=ivy.array(min_val),
+        x_max=ivy.array(max_val),
     )
 
 
@@ -625,53 +629,47 @@ def test_clip_vector_norm(
 
 
 # floormod
-@pytest.mark.parametrize(
-    "x_n_divisor_n_x_floormod",
-    [
-        (2.5, 2.0, 0.5),
-        ([10.7], [5.0], [0.7]),
-        (
-            [[0.8, 2.2], [1.7, 0.2]],
-            [[0.3, 0.5], [0.4, 0.11]],
-            [[0.2, 0.2], [0.1, 0.09]],
-        ),
-    ],
+@given(
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(1, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, device, call):
+def test_floormod(
+    xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
     # smoke test
-    if (
-        (
-            isinstance(x_n_divisor_n_x_floormod[0], Number)
-            or isinstance(x_n_divisor_n_x_floormod[1], Number)
-            or isinstance(x_n_divisor_n_x_floormod[2], Number)
-        )
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_divisor_n_x_floormod[0], dtype, device)
-    divisor = ivy.array(x_n_divisor_n_x_floormod[1], dtype, device)
-    if with_out:
-        out = ivy.zeros(x.shape)
-        ret = ivy.floormod(x, divisor, out=out)
-    else:
-        ret = ivy.floormod(x, divisor)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
-    # value test
-    assert np.allclose(
-        call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2])
+    dtype = xy[0]
+    x = xy[1][0]
+    divisor = np.abs(xy[1][1])
+    if 0 in divisor:
+        return
+    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "floormod",
+        x=np.asarray(x, dtype=dtype[0]),
+        y=np.asarray(divisor, dtype=dtype[1]),
     )
 
 
