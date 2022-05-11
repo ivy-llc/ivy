@@ -102,7 +102,9 @@ def _mxnet_init_context(device):  # noqa
 
 def _scalar_or_flat_array_to_scalar(x):
     return (
-        x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)  # noqa
+        x
+        if isinstance(x, Number)  # noqa
+        else (x.asscalar() if len(x.shape) == 0 else x)
     )
 
 
