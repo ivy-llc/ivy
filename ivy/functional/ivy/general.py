@@ -403,7 +403,7 @@ def clip_vector_norm(
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
-        return x
+        return ivy.copy_array(x)._data
 
 
 def clip_matrix_norm(
