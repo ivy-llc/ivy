@@ -12,7 +12,8 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x, as_str=False):
+def dev(x: mx.nd.NDArray, as_str: bool = False)\
+        -> str:
     dv = x.context
     if as_str:
         return dev_to_str(dv)

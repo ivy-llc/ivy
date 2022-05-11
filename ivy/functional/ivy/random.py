@@ -52,27 +52,38 @@ def random_uniform(
     return _cur_framework().random_uniform(low, high, shape, device)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, device=None):
-    """Draws samples from a normal distribution.
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> ivy.array:
+    """
+    Draws samples from a normal distribution.
 
     Parameters
     ----------
     mean
-        The mean of the normal distribution to sample from. Default is 0.
+        The mean of the normal distribution to sample from. Default is ``0``.
     std
-        The standard deviation of the normal distribution to sample from. Default is 1.
+        The standard deviation of the normal distribution to sample from.
+        Default is ``1``.
     shape
-        Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are
-        drawn. If size is None (default), a single value is returned.
+        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k``
+        samples are drawn. If size is ``None`` (default), a single value is returned.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-        (Default value = None)
+        (Default value = ``None``)
 
     Returns
     -------
-    ret
-        Drawn samples from the parameterized uniform distribution.
+     ret
+        Drawn samples from the parameterized normal distribution.
 
+    Examples
+    --------
+    >>> y = ivy.random_normal(0.0, 2.0)
+    >>> print(y)
+    ivy.array(0.6444774682897879)
     """
     return _cur_framework().random_normal(mean, std, shape, device)
 

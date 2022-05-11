@@ -119,20 +119,28 @@ def print_all_arrays_on_dev(device):
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
 ) -> Union[ivy.Device, str]:
-    """Get the native device handle for input array x.
+    """
+    Get the native device handle for input array x.
 
     Parameters
     ----------
     x
-        Tensor for which to get the device handle.
+          array for which to get the device handle.
+
     as_str
-        Whether or not to return the dev in string format. Default is False.
+          Whether or not to return the dev in string format. Default is False.
 
     Returns
     -------
     ret
-        Device handle for the array, in native framework format.
+          Device handle for the array, in native framework format.
 
+    Examples
+    --------
+          >>> x = ivy.array([1,0,2])
+          >>> y = ivy.dev(x)
+          >>> print(y)
+          "cpu"
     """
     return _cur_framework(x).dev(x, as_str)
 
@@ -1001,7 +1009,7 @@ def dev_clone_iter(xs, devices):
 
     """
     if isinstance(devices, str):
-        devs = [devices]
+        devices = [devices]
     return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
@@ -1147,7 +1155,8 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if transpose:
-        # ToDo: make this more elegant, this method should not be responsible for transposing iterators
+        # ToDo: make this more elegant, this method should not be
+        #  responsible for transposing iterators
         xs_t = [
             MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
             for mdi in list(map(list, zip(*xs)))
@@ -1599,7 +1608,8 @@ class DevManager:
 
         # otherwise
 
-        # check if all directions have changed, and if so, half the max dev dim step size
+        # check if all directions have changed, and if so,
+        # half the max dev dim step size
         if self._max_dev_dim_step_size > 1:
             da_directions = {
                 k: 1 if i < math.floor(self._num_devs / 2) else -1

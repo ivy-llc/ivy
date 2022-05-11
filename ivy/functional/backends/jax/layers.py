@@ -1,7 +1,6 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import jax.numpy as jnp
 import jax.lax as jlax
 
 # local

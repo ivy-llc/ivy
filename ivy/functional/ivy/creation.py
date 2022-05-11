@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Iterable
+from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
@@ -389,12 +389,21 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, axis: int = None, device: ivy.Device = None, dtype = None, endpoint: bool = True) \
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """Generates a certain number of evenly-spaced values in an interval along
-    a given axis.
-    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+def linspace(
+    start: Union[ivy.Array, ivy.NativeArray, int],
+    stop: Union[ivy.Array, ivy.NativeArray, int],
+    num: int,
+    axis: int = None,
+    device: ivy.Device = None,
+    dtype=None,
+    endpoint: bool = True,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Generates a certain number of evenly-spaced values in an interval along a given
+    axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in
+    an interval.
+
 
     Parameters
     ----------
@@ -414,7 +423,9 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     ret
         Tensor of evenly-spaced values.
     """
-    return _cur_framework(start).linspace(start, stop, num, axis, device, dtype, endpoint)
+    return _cur_framework(start).linspace(
+        start, stop, num, axis, device, dtype, endpoint
+    )
 
 
 def meshgrid(

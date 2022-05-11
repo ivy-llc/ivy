@@ -29,17 +29,15 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
-    device: ivy.Device = None,
-):
+    device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
     mean = mean.item() if isinstance(mean, torch.Tensor) else mean
     std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(
-        mean, std, true_shape, device=default_device(device).replace("gpu", "cuda")
-    )
+    return torch.normal(mean, std, true_shape, device=default_device(device))
 
 
 def multinomial(
