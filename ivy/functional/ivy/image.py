@@ -91,7 +91,9 @@ def gradient_image(x):
     >>> h = 3
     >>> w = 3
     >>> d = 1
-    >>> image = ivy.reshape(ivy.arange(h * w * d, dtype=ivy.float32),shape=(batch_size, h, w, d))
+    >>> image = ivy.reshape(
+        ivy.arange(h * w * d, dtype=ivy.float32),shape=(batch_size, h, w, d)
+        )
     >>> dy, dx = ivy.gradient_image(image)
     >>> print(image[0, :,:,0])
     ivy.array([[0., 1., 2.],
