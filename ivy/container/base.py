@@ -1548,15 +1548,16 @@ class ContainerBase(dict, abc.ABC):
         is_container = isinstance(x2, ivy.Container)
         return self.handle_inplace(
             self.map(
-                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
+                lambda x, kc: self._ivy.minimum(
+                    x, x2[kc] if is_container else x2
+                ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) 
+                else x, 
+                key_chains, 
+                to_apply, 
+                prune_unapplied, 
+                map_sequences, 
             ),
-            out,
+            out
         )
 
     def maximum(
@@ -1592,16 +1593,16 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.handle_inplace(self.map(
+            lambda x, kc: self._ivy.maximum(
+                x, x2[kc] if is_container else x2
+            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+            else x,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+        ),
             out,
         )
 
@@ -1642,21 +1643,19 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(x_min, ivy.Container)
         max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip(
-                    x,
-                    x_min[kc] if min_is_container else x_min,
-                    x_max[kc] if max_is_container else x_max,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.handle_inplace(self.map(
+            lambda x, kc: self._ivy.clip(
+                x,
+                x_min[kc] if min_is_container else x_min,
+                x_max[kc] if max_is_container else x_max,
+            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+            else x,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+        ),
+            out
         )
 
     def einsum(

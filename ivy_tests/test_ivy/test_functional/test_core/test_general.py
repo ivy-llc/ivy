@@ -402,15 +402,13 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 
 # minimum
-@given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(1, 2),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
 def test_minimum(
     xy,
     as_variable,
@@ -421,7 +419,7 @@ def test_minimum(
     instance_method,
     device,
     call,
-    fw,
+    fw
 ):
     # smoke test
     dtype = xy[0]
@@ -447,20 +445,18 @@ def test_minimum(
         fw,
         "minimum",
         x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1]),
+        x2=ivy.array(y, dtype=dtype[1])
     )
 
 
 # maximum
-@given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(1, 2),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
 def test_maximum(
     xy,
     as_variable,
@@ -471,7 +467,7 @@ def test_maximum(
     instance_method,
     device,
     call,
-    fw,
+    fw
 ):
     # smoke test
     dtype = xy[0]
@@ -497,7 +493,7 @@ def test_maximum(
         fw,
         "maximum",
         x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1]),
+        x2=ivy.array(y, dtype=dtype[1])
     )
 
 
@@ -509,7 +505,7 @@ def test_maximum(
     num_positional_args=st.integers(2, 3),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
+    instance_method=st.booleans()
 )
 def test_clip(
     x_min_n_max,
@@ -521,7 +517,7 @@ def test_clip(
     instance_method,
     device,
     call,
-    fw,
+    fw
 ):
     # smoke test
     if (
@@ -541,11 +537,11 @@ def test_clip(
     max_val1 = np.array(x_min_n_max[1][2], dtype=dtype[2])
     min_val = np.minimum(min_val1, max_val1)
     max_val = np.maximum(min_val1, max_val1)
-    if fw == "torch" and (
-        any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or any(np.isnan(max_val))
-        or len(x) == 0
-    ):
+    if fw == 'torch' and \
+        (
+            any(d in ['uint16', 'uint32', 'uint64', 'float16'] for d in dtype)
+            or any(np.isnan(max_val)) 
+            or len(x) == 0):
         return
     if (
         (len(min_val) != 0 and len(min_val) != 1)
@@ -566,7 +562,7 @@ def test_clip(
         "clip",
         x=np.asarray(x, dtype=dtype[0]),
         x_min=ivy.array(min_val),
-        x_max=ivy.array(max_val),
+        x_max=ivy.array(max_val)
     )
 
 
@@ -636,8 +632,7 @@ def test_clip_vector_norm(
     num_positional_args=st.integers(1, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
-)
+    instance_method=st.booleans())
 def test_floormod(
     xy,
     as_variable,
@@ -648,7 +643,7 @@ def test_floormod(
     instance_method,
     device,
     call,
-    fw,
+    fw
 ):
     # smoke test
     dtype = xy[0]
@@ -669,7 +664,7 @@ def test_floormod(
         fw,
         "floormod",
         x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(divisor, dtype=dtype[1]),
+        y=np.asarray(divisor, dtype=dtype[1])
     )
 
 
