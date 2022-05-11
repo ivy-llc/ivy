@@ -56,8 +56,7 @@ def test_dev_to_str(x, dtype, tensor_fn, device, call):
     ret = ivy.dev_to_str(device)
     # type test
     assert isinstance(ret, str)
-    # docstring
-    assert helpers.docstring_examples_run(ivy.dev_to_str)
+
 
 # dev_from_str
 @pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
