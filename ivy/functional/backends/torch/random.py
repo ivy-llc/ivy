@@ -29,8 +29,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
-    device: ivy.Device = None,
-):
+    device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
