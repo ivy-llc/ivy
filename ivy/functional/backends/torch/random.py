@@ -71,6 +71,6 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x):
+def shuffle(x: torch.Tensor) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size))
