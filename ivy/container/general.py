@@ -23,10 +23,9 @@ class ContainerWithGeneral(ContainerBase):
         if global_norm:
             if max_norm_is_container or p_is_container:
                 raise Exception(
-                    "global_norm can only be computed for scalar max_norm and p_val arguments,"
-                    "but found {} and {} of type {} and {} respectively".format(
-                        max_norm, p, type(max_norm), type(p)
-                    )
+                    "global_norm can only be computed for scalar max_norm and p_val "
+                    "arguments, but found {} and {} of type {} and {} "
+                    "respectively".format(max_norm, p, type(max_norm), type(p))
                 )
             vector_norm = self.vector_norm(p, global_norm=True)
             ratio = max_norm / vector_norm
