@@ -240,7 +240,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 
 # to_numpy
 @given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
-def test_to_numpy(x0_n_x1_n_res, device, call,fw):
+def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
         # torch does not support those dtypes
@@ -402,10 +402,10 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 
 # minimum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
        as_variable=st.booleans(),
        with_out=st.booleans(),
-       num_positional_args=st.integers(1,2),
+       num_positional_args=st.integers(1, 2),
        native_array=st.booleans(),
        container=st.booleans(),
        instance_method=st.booleans())
@@ -420,7 +420,7 @@ def test_minimum(
     device, 
     call,
     fw
-    ):
+):
     # smoke test
     dtype = xy[0]
     x = xy[1][0]
@@ -445,14 +445,14 @@ def test_minimum(
         'minimum',
         x1=np.asarray(x, dtype=dtype[0]),
         x2=ivy.array(y, dtype=dtype[1])
-        )
+    )
 
 
 # maximum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
        as_variable=st.booleans(),
        with_out=st.booleans(),
-       num_positional_args=st.integers(1,2),
+       num_positional_args=st.integers(1, 2),
        native_array=st.booleans(),
        container=st.booleans(),
        instance_method=st.booleans())
@@ -467,7 +467,7 @@ def test_maximum(
     device, 
     call,
     fw
-    ):
+):
     # smoke test
     dtype = xy[0]
     x = xy[1][0]
@@ -493,18 +493,19 @@ def test_maximum(
         'maximum',
         x1=np.asarray(x, dtype=dtype[0]),
         x2=ivy.array(y, dtype=dtype[1])
-        )
+    )
 
 
 # clip
 @given(
-    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=3),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(2,3),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
+    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=3),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(2, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans()
+)
 def test_clip(
     x_min_n_max, 
     as_variable, 
@@ -516,7 +517,7 @@ def test_clip(
     device, 
     call,
     fw
-    ):
+):
     # smoke test
     if (
         (
@@ -536,11 +537,10 @@ def test_clip(
     min_val = np.minimum(min_val1, max_val1)
     max_val = np.maximum(min_val1, max_val1)
     if fw == 'torch' and \
-        ( 
-          any(d in ['uint16', 'uint32', 'uint64','float16'] for d in dtype) or \
-          any(np.isnan(max_val)) or \
-          len(x)==0
-        ):
+        (
+            any(d in ['uint16', 'uint32', 'uint64', 'float16'] for d in dtype)
+            or any(np.isnan(max_val)) 
+            or len(x) == 0):
         return
     if (
         (len(min_val) != 0 and len(min_val) != 1)
@@ -562,7 +562,7 @@ def test_clip(
         x=np.asarray(x, dtype=dtype[0]),
         x_min=ivy.array(min_val),
         x_max=ivy.array(max_val)
-        )
+    )
 
 
 # clip_vector_norm
@@ -625,13 +625,13 @@ def test_clip_vector_norm(
 
 # floormod
 @given(
-       xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(1,2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(1, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans())
 def test_floormod(
     xy,
     as_variable,
@@ -643,8 +643,8 @@ def test_floormod(
     device,
     call,
     fw
-    ):
-        # smoke test
+):
+    # smoke test
     dtype = xy[0]
     x = xy[1][0]
     divisor = np.abs(xy[1][1])
@@ -664,7 +664,7 @@ def test_floormod(
         'floormod',
         x=np.asarray(x, dtype=dtype[0]),
         y=np.asarray(divisor, dtype=dtype[1])
-        )
+    )
 
 
 # linspace
