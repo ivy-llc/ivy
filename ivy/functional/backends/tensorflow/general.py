@@ -9,7 +9,6 @@ import ivy
 _round = round
 import numpy as _np
 import tensorflow as tf
-from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 from numbers import Number
@@ -326,9 +325,12 @@ def one_hot(indices, depth, device=None):
     return tf.one_hot(indices, depth)
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: tf.function(
-    fn
-)
+def compile(
+    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
+):
+    return tf.function(fn)
+
+
 current_framework_str = lambda: "tensorflow"
 current_framework_str.__name__ = "current_framework_str"
 

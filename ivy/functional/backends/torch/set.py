@@ -7,7 +7,7 @@ import ivy
 
 
 def unique_all(
-    x: torch.Tensor, /
+    x: torch.Tensor,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     Results = namedtuple(
         typename="unique_all",
