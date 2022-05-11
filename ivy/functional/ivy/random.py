@@ -150,7 +150,7 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Returns
     -------
-    out
+    ret
         An array object, shuffled along the first dimension.
 
     Examples
