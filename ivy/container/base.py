@@ -621,7 +621,7 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
-            Contaienr
+            Container
 
         """
         container0 = containers[0]
