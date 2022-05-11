@@ -448,11 +448,8 @@ def conv3d(
         ]]
         ) #NDHWC
     >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
-    >>> result = ivy.conv3d(
-        x=x, filters=filters, strides=1, padding='SAME',dilations= 1
-        )
+    >>> result = ivy.conv3d( x, filters, 1, 'SAME', 1)
     >>> print(result)
-
     ivy.array([[[[[1.],
               [2.]],
 
