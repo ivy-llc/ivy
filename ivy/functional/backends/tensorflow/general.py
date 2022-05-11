@@ -47,7 +47,11 @@ def to_list(x: Tensor) -> list:
 
 
 def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None) -> tf.Tensor:
-    ret = x % y
+    if hasattr(x, "dtype") and hasattr(y, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
+        x = tf.cast(x, promoted_type)
+        y = tf.cast(y, promoted_type)
+    ret = tf.math.floormod(x, y)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
