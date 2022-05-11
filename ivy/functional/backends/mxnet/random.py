@@ -88,4 +88,7 @@ def randint(low, high, shape, device=None):
 
 
 seed = lambda seed_value=0: mx.random.seed(seed_value)
-shuffle = lambda x: mx.nd.random.shuffle(x)
+
+
+def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.random.shuffle(x)
