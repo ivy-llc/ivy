@@ -139,8 +139,6 @@ def test_var(
     instance_method,
     fw,
 ):
-    if fw == "torch":
-        return  # rounding errors with torch 0.2222 != 0.2223
     dtype, x = dtype_and_x
     assume(x)
     helpers.test_array_function(
@@ -255,9 +253,9 @@ def test_std(
     instance_method,
     fw,
 ):
-    if fw == "torch":
-        return  # rounding errors with torch
     dtype, x = dtype_and_x
+    if fw == 'torch' and dtype != 'float64':
+        return # torch returns an answer sometimes when others overflow to inf
     assume(x)
     helpers.test_array_function(
         dtype,

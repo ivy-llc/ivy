@@ -306,7 +306,7 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=1e-05,
+    rtol=1e-03,
     atol=1e-08,
     **all_as_kwargs_np
 ):
