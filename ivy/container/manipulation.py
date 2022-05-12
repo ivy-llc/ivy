@@ -44,3 +44,22 @@ class ContainerWithManipulation(ContainerBase):
             ),
             out,
         )
+
+
+    def expand_dims(
+        self: ivy.Container,
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.expand_dims(x_, axis=axis) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
