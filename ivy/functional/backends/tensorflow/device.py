@@ -20,8 +20,7 @@ def _same_device(dev_a, dev_b):
     )
 
 
-def dev(x: Tensor, as_str: bool = False)\
-        -> str:
+def dev(x: Tensor, as_str: bool = False) -> str:
     dv = x.device
     if as_str:
         return dev_to_str(dv)
