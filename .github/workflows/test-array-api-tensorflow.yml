@@ -1,5 +1,5 @@
 name: test-array-api-tensorflow
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 jobs:
   run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
@@ -11,14 +11,29 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
-      - name: Cache hypothesis
-        uses: actions/cache@v3
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: test-array-api-tensorflow.yml
+          workflow_conclusion: success
+          name: hypothesis
           path: |
-            .hypothesis
-          key: ${{ runner.os }}-hypothesis
-
+            ivy/.hypothesis
+            
       - name: Run TensorFlow Tests
+        id: tests
         run: |
           cd ivy
           ./test_array_api.sh tensorflow
+        continue-on-error: true
+        
+      - name: Upload hypothesis
+        uses: actions/upload-artifact@v3
+        with:
+          name: hypothesis
+          path: |
+            ivy/.hypothesis
+    
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

@@ -1,6 +1,6 @@
 # Global
 import mxnet as mx
-from typing import Optional, Union
+from typing import Optional
 
 # Local
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out

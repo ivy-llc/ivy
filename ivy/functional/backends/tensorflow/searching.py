@@ -1,8 +1,7 @@
 # global
 import tensorflow as tf
-from typing import Optional, Union
-from tensorflow.python.types.core import Tensor
 from typing import Optional
+from tensorflow.python.types.core import Tensor
 
 
 def argmax(

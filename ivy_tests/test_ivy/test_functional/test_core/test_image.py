@@ -1,3 +1,112 @@
+# """Collection of tests for unified image-related functions."""
+#
+# # global
+# # import pytest
+# # import numpy as np
+# from hypothesis import given, strategies as st
+# # from operator import mul
+#
+# # noinspection PyProtectedMember
+# # from functools import reduce
+#
+# # local
+# import ivy
+# import ivy.functional.backends.numpy
+# import ivy_tests.test_ivy.helpers as helpers
+#
+#
+# # stack_images
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     ratio=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=2, max_size=2),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=helpers.list_of_length(st.booleans(), 2)
+# )
+# def test_stack_images(
+#         shape, ratio, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     images = [img for img in ivy.random_normal(shape=shape)]
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "stack_images",
+#         images=images,
+#         desired_aspect_ratio=ratio
+#     )
+#
+#
+# # bilinear_resample
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     n_samples=st.integers(min_value=1, max_value=8),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=helpers.list_of_length(st.booleans(), 2)
+# )
+# def test_bilinear_resample(
+#         shape, n_samples, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     x = ivy.random_normal(shape=shape)
+#     warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "bilinear_resample",
+#         x=x,
+#         warp=warp
+#     )
+#
+#
+# # gradient_image
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=st.booleans(),
+#     num_positional_args=st.integers(0, 1),
+#     native_array=st.booleans()
+# )
+# def test_gradient_image(
+#         shape, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     x = ivy.random_normal(shape=shape)
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "gradient_image",
+#         x=x
+#     )
+
+
+# Smoke Tests
+
 """
 Collection of tests for unified image-related functions
 """
