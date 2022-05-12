@@ -567,7 +567,7 @@ def atan2(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def minimum(x1, x2, out: Optional[Tensor] = None) -> Tensor:
-    if hasattr(x2, 'dtype'):
+    if hasattr(x2, "dtype"):
         if x1.dtype != x2.dtype:
             promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
             x1 = tf.cast(x1, promoted_type)
@@ -579,7 +579,7 @@ def minimum(x1, x2, out: Optional[Tensor] = None) -> Tensor:
 
 
 def maximum(x1, x2, out: Optional[Tensor] = None) -> Tensor:
-    if hasattr(x2, 'dtype'):
+    if hasattr(x2, "dtype"):
         if x1.dtype != x2.dtype:
             promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
             x1 = tf.cast(x1, promoted_type)
