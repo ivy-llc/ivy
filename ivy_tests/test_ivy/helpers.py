@@ -282,18 +282,16 @@ def as_cont(x):
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
-def as_lists(dtype, as_variable, with_out, native_array, container):
+def as_lists(dtype, as_variable, native_array, container):
     if not isinstance(dtype, list):
         dtype = [dtype]
     if not isinstance(as_variable, list):
         as_variable = [as_variable]
-    if not isinstance(with_out, list):
-        with_out = [with_out]
     if not isinstance(native_array, list):
         native_array = [native_array]
     if not isinstance(container, list):
         container = [container]
-    return dtype, as_variable, with_out, native_array, container
+    return dtype, as_variable, native_array, container
 
 
 def test_array_function(
@@ -312,8 +310,8 @@ def test_array_function(
 ):
 
     # convert single values to length 1 lists
-    dtype, as_variable, with_out, native_array, container = as_lists(
-        dtype, as_variable, with_out, native_array, container
+    dtype, as_variable, native_array, container = as_lists(
+        dtype, as_variable, native_array, container
     )
 
     # update variable flags to be compatible with float dtype and with_out args
