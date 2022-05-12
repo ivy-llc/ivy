@@ -982,3 +982,324 @@ class ContainerWithElementwise(ContainerBase):
             ),
             out,
         )
+
+    def not_equal(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.not_equal(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def positive(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.positive(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def pow(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.pow(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def remainder(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.remainder(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def round(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.round(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def sign(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.sign(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def sin(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.sin(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def sinh(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.sinh(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def square(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.square(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def sqrt(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.sqrt(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def subtract(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.subtract(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def tan(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.tan(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def tanh(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.tanh(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def trunc(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.trunc(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def erf(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.erf(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )

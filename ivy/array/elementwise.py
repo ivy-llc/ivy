@@ -257,3 +257,86 @@ class ArrayWithElementwise(abc.ABC):
         self: ivy.Array, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.negative(self, out=out)
+
+    def not_equal(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.not_equal(self, x2, out=out)
+
+    def positive(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.positive(self, out=out)
+
+    def pow(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.pow(self, x2, out=out)
+
+    def remainder(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.remainder(self, x2, out=out)
+
+    def round(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.round(self, out=out)
+
+    def sign(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.sign(self, out=out)
+
+    def sin(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.sin(self, out=out)
+
+    def sinh(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.sinh(self, out=out)
+
+    def square(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.square(self, out=out)
+
+    def sqrt(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.sqrt(self, out=out)
+
+    def subtract(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.subtract(self, x2, out=out)
+
+    def tan(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.tan(self, out=out)
+
+    def tanh(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.tanh(self, out=out)
+
+    def trunc(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.trunc(self, out=out)
+
+    def erf(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.erf(self, out=out)
