@@ -184,8 +184,7 @@ def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = 
     >>> dtype = ivy.float64
     >>> y = ivy.astype(x, dtype)
     >>> print(y)
-    [1., 2.]
-    
+    ivy.array([1., 2.])
     """
     return _cur_framework(x).astype(x, dtype, copy)
 

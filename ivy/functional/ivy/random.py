@@ -40,13 +40,7 @@ def random_uniform(low: float = 0.0,
     -------
     ret
         Drawn samples from the parameterized uniform distribution.
-
-    Examples
-    --------
-    >>> y = ivy.random_uniform(0.0, 2.0)
-    >>> print(y)
-    ivy.array(1.89150229)
-    
+            
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
 

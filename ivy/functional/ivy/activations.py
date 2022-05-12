@@ -131,7 +131,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.268, 0.5, 0.880])
+    ivy.array([0.26894142, 0.73105858, 0.88079708])
     """
     return _cur_framework(x).sigmoid(x)
 
@@ -179,6 +179,6 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray])\
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    ivy.array([0.5350, 0.4203])
+    ivy.array([0.53499619,0.42036412])
     """
     return _cur_framework(x).softplus(x)
