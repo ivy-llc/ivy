@@ -256,7 +256,7 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    ivy.array([1.0, 0.0, -0.0])
+    ivy.array([1., 0., -0.])
     """
     return _cur_framework(x).ceil(x, out)
 

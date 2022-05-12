@@ -565,14 +565,14 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
+    ivy.array([[-2.0000002,1.0000001],[1.5000001,-0.50000006]])
 
     Inverses of several matrices can be computed at once:
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])
+    ivy.array([[[-2.0000002,1.0000001],[1.5000001,-0.50000006]],[[-1.2500001,0.75000006],[0.75000006,-0.25000003]]]
      
     """
     return _cur_framework(x).inv(x)

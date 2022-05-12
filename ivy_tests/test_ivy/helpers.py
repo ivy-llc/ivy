@@ -3,6 +3,10 @@ Collection of helpers for ivy unit tests
 """
 
 # global
+from contextlib import redirect_stdout
+from io import StringIO
+import sys
+
 import numpy as np
 try:
     import jax.numpy as _jnp
@@ -192,6 +196,39 @@ def assert_compilable(fn):
     except Exception as e:
         raise e
 
+def trim(docstring):
+    """trim function from PEP-257"""
+    if not docstring:
+        return ""
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxsize
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxsize:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+
+    # Current code/unittests expects a line return at
+    # end of multiline docstrings
+    # workaround expected behavior from unittests
+    if "\n" in docstring:
+        trimmed.append("")
+
+    # Return a single string:
+    return "\n".join(trimmed)
+
 
 def docstring_examples_run(fn):
     if not hasattr(fn, '__name__'):
@@ -199,18 +236,50 @@ def docstring_examples_run(fn):
     fn_name = fn.__name__
     if fn_name not in ivy.framework_handler.ivy_original_dict:
         return True
+    
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+
     if docstring is None:
         return True
-    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
-    for line in executable_lines:
-        # noinspection PyBroadException
-        try:
-            exec(line)
-        except Exception:
-            return False
-    return True
+        
+    sub = ">>> print("
+    trimmed_docstring = trim(docstring)
+    trimmed_docstring = trimmed_docstring.split("\n")
 
+    # fix this output issue
+    end_index = -1
+    parsed_output = ""
+    for index, line in enumerate(trimmed_docstring):
+        if sub in line:
+            end_index = trimmed_docstring.index('', index)
+            p_output = trimmed_docstring[index + 1:end_index]
+            p_output = ("").join(p_output).replace(" ", "")
+            parsed_output += p_output
+
+    
+    if end_index == -1:
+        return True
+
+    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
+    # noinspection PyBroadException
+    f = StringIO()
+    with redirect_stdout(f):
+        for line in executable_lines:
+            try:
+                exec(line)
+            except Exception:
+                return False
+
+        
+    output = f.getvalue()
+    output = output.rstrip()
+    output = output.replace(" ", "").replace("\n", "")
+    print("Output = ", output)
+    print("Parsed output = ", parsed_output)
+
+    if output == parsed_output:
+        return True
+    return False
 
 def var_fn(a, b=None, c=None):
     return ivy.variable(ivy.array(a, b, c))

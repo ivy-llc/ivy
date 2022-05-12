@@ -346,7 +346,7 @@ def gpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.gpu_is_available())
-    True
+    False
     """
     return _cur_framework().gpu_is_available()
 
@@ -384,7 +384,7 @@ def tpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return _cur_framework().tpu_is_available()
 
