@@ -672,3 +672,313 @@ class ContainerWithElementwise(ContainerBase):
             ),
             out,
         )
+
+    def less(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.less(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def less_equal(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.less_equal(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def log(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.log(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def log1p(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.log1p(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def log2(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.log2(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def log10(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.log10(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def logaddexp(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.logaddexp(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def logical_and(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.logical_and(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def logical_not(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.logical_not(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def logical_or(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.logical_or(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def logical_xor(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.logical_xor(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def multiply(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.multiply(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def negative(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.negative(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
