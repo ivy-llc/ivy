@@ -526,11 +526,11 @@ def array_values(draw, dtype, size):
     elif dtype == "uint64":
         values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
     elif dtype == "float16":
-        values = draw(list_of_length(st.floats(width=16), size))
+        values = draw(list_of_length(st.floats(width=16, allow_subnormal=False), size))
     elif dtype == "float32":
-        values = draw(list_of_length(st.floats(width=32), size))
+        values = draw(list_of_length(st.floats(width=32, allow_subnormal=False), size))
     elif dtype == "float64":
-        values = draw(list_of_length(st.floats(width=64), size))
+        values = draw(list_of_length(st.floats(width=64, allow_subnormal=False), size))
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values
