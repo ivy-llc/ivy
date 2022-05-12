@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified dtype functions
-"""
+"""Collection of tests for unified dtype functions."""
 
 # global
 import pytest
@@ -12,7 +10,6 @@ import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy.functional.backends.mxnet
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # dtype objects

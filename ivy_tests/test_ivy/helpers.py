@@ -1,6 +1,4 @@
-"""
-Collection of helpers for ivy unit tests
-"""
+"""Collection of helpers for ivy unit tests."""
 
 # global
 import numpy as np
@@ -308,7 +306,7 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=1e-05,
+    rtol=1e-03,
     atol=1e-08,
     **all_as_kwargs_np
 ):
@@ -324,7 +322,8 @@ def test_array_function(
         for v, d in zip(as_variable, dtype)
     ]
 
-    # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
+    # update instance_method flag to only be considered if the
+    # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
     # split the arguments into their positional and keyword components

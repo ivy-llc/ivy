@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified neural network activations
-"""
+"""Collection of tests for unified neural network activations."""
 
 # global
 import pytest

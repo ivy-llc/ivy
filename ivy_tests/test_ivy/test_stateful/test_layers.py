@@ -1,11 +1,8 @@
-"""
-Collection of tests for unified neural network layers
-"""
+"""Collection of tests for unified neural network layers."""
 
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -185,7 +182,8 @@ def test_multi_head_attention_layer(
     )
     # compilation test
     if call in [helpers.torch_call]:
-        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
+        # torch.jit compiled functions can't take variable number of arguments,
+        # which torch.einsum takes
         return
 
 

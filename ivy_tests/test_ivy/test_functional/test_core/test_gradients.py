@@ -1,12 +1,9 @@
-"""
-Collection of tests for unified gradient functions
-"""
+"""Collection of tests for unified gradient functions."""
 
 # global
 from numbers import Number
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
 
 # local
 import ivy
