@@ -11,20 +11,20 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
-#       - name: Download artifact
-#         uses: dawidd6/action-download-artifact@v2
-#         with:
-#           workflow: test-array-api-torch.yml
-#           workflow_conclusion: success
-#           name: hypothesis
-#           path: |
-#             ivy/.hypothesis
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api-jax.yml
+          workflow_conclusion: success
+          name: hypothesis
+          path: |
+            ivy/.hypothesis
 
       - name: Run JAX Tests
         id: tests
         run: |
           cd ivy
-          ./test_array_api.sh torch
+          ./test_array_api.sh jax
         continue-on-error: true
         
       - name: Upload hypothesis
