@@ -1,6 +1,4 @@
-"""
-Collection of Jax image functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of Jax image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import math
@@ -16,22 +14,24 @@ from ivy.functional.backends import jax as _ivy
 def stack_images(images, desired_aspect_ratio=(1, 1)):
     num_images = len(images)
     if num_images == 0:
-        raise Exception('At least 1 image must be provided')
+        raise Exception("At least 1 image must be provided")
     batch_shape = _ivy.shape(images[0])[:-3]
     image_dims = _ivy.shape(images[0])[-3:-1]
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
-    img_ratio = image_dims[0]/image_dims[1]
-    desired_img_ratio = desired_aspect_ratio[0]/desired_aspect_ratio[1]
-    stack_ratio = img_ratio*desired_img_ratio
-    stack_height = (num_images/stack_ratio)**0.5
+    img_ratio = image_dims[0] / image_dims[1]
+    desired_img_ratio = desired_aspect_ratio[0] / desired_aspect_ratio[1]
+    stack_ratio = img_ratio * desired_img_ratio
+    stack_height = (num_images / stack_ratio) ** 0.5
     stack_height_int = math.ceil(stack_height)
-    stack_width_int = math.ceil(num_images/stack_height)
+    stack_width_int = math.ceil(num_images / stack_height)
     image_rows = list()
     for i in range(stack_width_int):
-        images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
-        images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
+        images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
+        images_to_concat += [_ivy.zeros_like(images[0])] * (
+            stack_height_int - len(images_to_concat)
+        )
         image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
     return _ivy.concat(image_rows, num_batch_dims + 1)
 
@@ -44,12 +44,16 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis + 1:]
+    x_post_shape = x_shape[axis + 1 :]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
     xp = jnp.reshape(jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
-    x_coords = jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
-    x_coords = jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
+    x_coords = (
+        jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    )
+    x_coords = jnp.reshape(
+        x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims
+    )
     x_coords = jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
@@ -124,7 +128,7 @@ def gradient_image(x):
     x_shape = _ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
-    dev = x.device_buffer.device()
+    device = x.device_buffer.device()
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -135,7 +139,23 @@ def gradient_image(x):
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # jax.device_put(x, dev_from_str(dev))
-    dy = _ivy.concat((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
-    dx = _ivy.concat((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
+    dy = _ivy.concat(
+        (
+            dy,
+            jax.device_put(
+                jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), device
+            ),
+        ),
+        -3,
+    )
+    dx = _ivy.concat(
+        (
+            dx,
+            jax.device_put(
+                jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), device
+            ),
+        ),
+        -2,
+    )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

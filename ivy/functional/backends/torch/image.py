@@ -1,6 +1,4 @@
-"""
-Collection of PyTorch image functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of PyTorch image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import math
@@ -13,10 +11,12 @@ from typing import List, Optional
 from ivy.functional.backends import torch as _ivy
 
 
-def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)) -> torch.Tensor:
+def stack_images(
+    images: List[torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)
+) -> torch.Tensor:
     num_images = len(images)
     if num_images == 0:
-        raise Exception('At least 1 image must be provided')
+        raise Exception("At least 1 image must be provided")
     batch_shape = images[0].shape[:-3]
     image_dims = images[0].shape[-3:-1]
     num_batch_dims = len(batch_shape)
@@ -30,8 +30,10 @@ def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (
     stack_width_int: int = math.ceil(num_images / stack_height)
     image_rows = list()
     for i in range(stack_width_int):
-        images_to_concat = images[i * stack_height_int:(i + 1) * stack_height_int]
-        images_to_concat += [torch.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
+        images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
+        images_to_concat += [torch.zeros_like(images[0])] * (
+            stack_height_int - len(images_to_concat)
+        )
         image_rows.append(torch.cat(images_to_concat, num_batch_dims))
     return torch.cat(image_rows, num_batch_dims + 1)
 
@@ -42,12 +44,14 @@ def linear_resample(x, num_samples: int, axis: int = -1):
     num_vals = x_shape[axis]
     axis = axis % num_x_dims
     if axis != num_x_dims - 1:
-        x_pre_shape = x_shape[0:axis] + x_shape[-1:] + x_shape[axis + 1:-1]
+        x_pre_shape = x_shape[0:axis] + x_shape[-1:] + x_shape[axis + 1 : -1]
         x = torch.swapaxes(x, axis, -1)
     else:
         x_pre_shape = x_shape[:-1]
     x = torch.reshape(x, ([-1, 1] + [num_vals]))
-    ret = torch.nn.functional.interpolate(x, num_samples, mode='linear', align_corners=True)
+    ret = torch.nn.functional.interpolate(
+        x, num_samples, mode="linear", align_corners=True
+    )
     ret = torch.reshape(ret, x_pre_shape + [num_samples])
     if axis != num_x_dims - 1:
         return torch.transpose(ret, -1, axis)
@@ -68,19 +72,22 @@ def bilinear_resample(x, warp):
     warp_flat_scaled = torch.cat((warp_flat_x, warp_flat_y), -1)
     mat_flat = x.view([batch_shape_product] + input_image_dims + [-1])
     mat_flat_transposed = mat_flat.permute((0, 3, 1, 2))
-    interpolated_flat_transposed = torch.nn.functional.grid_sample(mat_flat_transposed, warp_flat_scaled,
-                                                                    align_corners=True)
+    interpolated_flat_transposed = torch.nn.functional.grid_sample(
+        mat_flat_transposed, warp_flat_scaled, align_corners=True
+    )
     interpolated_flat = interpolated_flat_transposed.permute((0, 2, 3, 1))
     return interpolated_flat.view(batch_shape + [-1, num_feats])
 
 
-def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optional[List[int]] = None):
+def gradient_image(
+    x, batch_shape: Optional[List[int]] = None, image_dims: Optional[List[int]] = None
+):
     x_shape = x.shape
     if batch_shape is None:
         batch_shape = x_shape[:-3]
     if image_dims is None:
         image_dims = x_shape[-3:-1]
-    dev = x.device
+    device = x.device
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -91,8 +98,12 @@ def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optio
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # noinspection PyTypeChecker
-    dy = _ivy.concat((dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
+    dy = _ivy.concat(
+        (dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
+    )
     # noinspection PyTypeChecker
-    dx = _ivy.concat((dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
+    dx = _ivy.concat(
+        (dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
+    )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

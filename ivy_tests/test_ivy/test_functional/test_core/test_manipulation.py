@@ -1,6 +1,4 @@
-"""
-Collection of tests for sorting functions
-"""
+"""Collection of tests for sorting functions."""
 
 # global
 import pytest
@@ -13,37 +11,67 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # concat
-@given(common_shape=helpers.lists(st.integers(2, 3), min_size='num_dims', max_size='num_dims', size_bounds=[1, 3]),
-       unique_idx=helpers.integers(0, 'num_dims'),
-       unique_dims=helpers.lists(st.integers(2, 3), min_size='num_arrays', max_size='num_arrays', size_bounds=[2, 3]),
-       dtype=helpers.array_dtypes(),
-       as_variable=helpers.array_bools(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(0, 1),
-       native_array=helpers.array_bools(),
-       container=helpers.array_bools(),
-       instance_method=st.booleans(),
-       seed=st.integers(0, 2**32 - 1))
-def test_concat(common_shape, unique_idx, unique_dims, dtype, as_variable, with_out,
-                num_positional_args, native_array, container, instance_method, seed, fw):
+@given(
+    common_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    unique_idx=helpers.integers(0, "num_dims"),
+    unique_dims=helpers.lists(
+        st.integers(2, 3),
+        min_size="num_arrays",
+        max_size="num_arrays",
+        size_bounds=[2, 3],
+    ),
+    dtype=helpers.array_dtypes(),
+    as_variable=helpers.array_bools(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=helpers.array_bools(),
+    container=helpers.array_bools(),
+    instance_method=st.booleans(),
+    seed=st.integers(0, 2**32 - 1),
+)
+def test_concat(
+    common_shape,
+    unique_idx,
+    unique_dims,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    seed,
+    fw,
+):
     np.random.seed(seed)
-    xs = [np.random.uniform(size=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:]).astype(dt)
-          for ud, dt in zip(unique_dims, dtype)]
+    xs = [
+        np.random.uniform(
+            size=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:]
+        ).astype(dt)
+        for ud, dt in zip(unique_dims, dtype)
+    ]
     helpers.test_array_function(
-        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'concat',
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "concat",
         xs=xs,
-        axis=unique_idx)
+        axis=unique_idx,
+    )
 
 
 # expand_dims
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_expand_dims(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -73,14 +101,10 @@ def test_expand_dims(dtype, as_variable, with_out, native_array):
 
 
 # flip
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_flip(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -110,14 +134,10 @@ def test_flip(dtype, as_variable, with_out, native_array):
 
 
 # permute_dims
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_permute_dims(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -147,14 +167,10 @@ def test_permute_dims(dtype, as_variable, with_out, native_array):
 
 
 # reshape
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_reshape(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -184,14 +200,10 @@ def test_reshape(dtype, as_variable, with_out, native_array):
 
 
 # roll
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_roll(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -221,14 +233,10 @@ def test_roll(dtype, as_variable, with_out, native_array):
 
 
 # squeeze
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_squeeze(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -258,14 +266,10 @@ def test_squeeze(dtype, as_variable, with_out, native_array):
 
 
 # stack
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_stack(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -302,16 +306,12 @@ def test_stack(dtype, as_variable, with_out, native_array):
 
 
 # repeat
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_repeat(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'tensorflow' and dtype == 'uint16':
+    if ivy.current_framework_str() == "tensorflow" and dtype == "uint16":
         pytest.skip("tf repeat doesnt allow uint16")
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -341,16 +341,12 @@ def test_repeat(dtype, as_variable, with_out, native_array):
 
 
 # tile
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_tile(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'tensorflow' and dtype == 'uint16':
+    if ivy.current_framework_str() == "tensorflow" and dtype == "uint16":
         pytest.skip("tf tile doesnt allow uint16")
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -380,14 +376,10 @@ def test_tile(dtype, as_variable, with_out, native_array):
 
 
 # constant_pad
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_constant_pad(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -417,14 +409,10 @@ def test_constant_pad(dtype, as_variable, with_out, native_array):
 
 
 # zero_pad
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_zero_pad(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -454,14 +442,10 @@ def test_zero_pad(dtype, as_variable, with_out, native_array):
 
 
 # swapaxes
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_swapaxes(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -491,16 +475,12 @@ def test_swapaxes(dtype, as_variable, with_out, native_array):
 
 
 # clip
-@pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.numeric_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_clip(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+    if ivy.current_framework_str() == "torch" and dtype == "float16":
         pytest.skip("torch clamp doesnt allow float16")
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
