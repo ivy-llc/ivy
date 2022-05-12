@@ -177,7 +177,7 @@ class ArrayWithElementwise(abc.ABC):
     def isnan(
         self: ivy.Array, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        return ivy.isinf(self, out=out)
+        return ivy.isnan(self, out=out)
 
     def less(
         self: ivy.Array,
