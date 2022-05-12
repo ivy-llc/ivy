@@ -3,6 +3,7 @@
 # global
 import numpy as np
 from hypothesis import given, assume, strategies as st
+from numbers import Number
 
 # local
 import ivy
@@ -2152,3 +2153,96 @@ def test_erf(
 
 
 # minimum
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(1, 2),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
+def test_minimum(
+    xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw
+):
+    # smoke test
+    dtype = xy[0]
+    x = xy[1][0]
+    y = xy[1][1]
+    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
+        return
+    if (
+        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        and as_variable is True
+        and fw == "mxnet"
+    ):
+        # mxnet does not support 0-dimensional variables
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "minimum",
+        x1=np.asarray(x, dtype=dtype[0]),
+        x2=ivy.array(y, dtype=dtype[1])
+    )
+
+
+# maximum
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(1, 2),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
+def test_maximum(
+    xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw
+):
+    # smoke test
+    dtype = xy[0]
+    x = xy[1][0]
+    y = xy[1][1]
+    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
+        return
+    if (
+        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        and as_variable is True
+        and fw == "mxnet"
+    ):
+        # mxnet does not support 0-dimensional variables
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "maximum",
+        x1=np.asarray(x, dtype=dtype[0]),
+        x2=ivy.array(y, dtype=dtype[1])
+    )

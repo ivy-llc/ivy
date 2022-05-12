@@ -255,7 +255,7 @@ def test_std(
 ):
     dtype, x = dtype_and_x
     if fw == 'torch' and dtype != 'float64':
-        return # torch returns an answer sometimes when others overflow to inf
+        return  # torch returns an answer sometimes when others overflow to inf
     assume(x)
     helpers.test_array_function(
         dtype,
