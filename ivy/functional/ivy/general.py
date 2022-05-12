@@ -197,11 +197,13 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     >>> z = ivy.array_equal(x,y)
     >>> print(z)
     False
+
     >>> a = ivy.array([1, 2])
     >>> b = ivy.array([1, 2])
     >>> c = ivy.array_equal(a,b)
     >>> print(c)
     True
+
     >>> i = ivy.array([1, 2])
     >>> j = ivy.array([1, 2, 3])
     >>> k = ivy.array_equal(i,j)
@@ -295,7 +297,8 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    array([-1, 0, 1])
+    [-1, 0, 1]
+
     >>> print(type(y))
     <class 'numpy.ndarray'>
     """
@@ -324,6 +327,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     -1
+
+
     >>> print(ivy.is_int_dtype(y))
     True
     """
@@ -352,6 +357,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
+
     >>> print(isinstance(y, list))
     True
     """
