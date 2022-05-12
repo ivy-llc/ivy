@@ -1,12 +1,12 @@
-#arange # failing for TF
+#arange #fails for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796
 asarray
 empty
 empty_like
-#eye # fails non-determinstically for jax, possibly due to +0 vs -0 inconsistencies
+#eye #fails for jax non deterministically, possibly due to +0 vs -0 inconsistencies
 from_dlpack
 full
 full_like
-#linspace
+linspace
 meshgrid
 ones
 ones_like
