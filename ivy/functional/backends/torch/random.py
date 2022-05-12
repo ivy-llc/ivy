@@ -29,8 +29,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
-    device: ivy.Device = None,
-):
+    device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
@@ -71,6 +71,6 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x):
+def shuffle(x: torch.Tensor) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size))

@@ -135,6 +135,14 @@ def add(
                [6.3, 7.5, 1.6],
                [7.2, 8.4, 2.5]])
 
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.add(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[9.5],
+                [5.7],
+                [-4.7]]])
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -2178,9 +2186,9 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        out (array), an array containing the element-wise results. 
+        out (array), an array containing the element-wise results.
         The returned array must have a data type determined by Type Promotion Rules.
-        
+
     Examples
     --------
     >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
@@ -2243,17 +2251,17 @@ def erf(
 
 
 def minimum(
-    x: Union[ivy.Array, ivy.NativeArray],
-    y: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
 
     Parameters
     ----------
-    x
+    x1
         Input array containing elements to minimum threshold.
-    y
+    x2
         Tensor containing minimum values, must be broadcastable to x.
 
     Returns
@@ -2262,12 +2270,12 @@ def minimum(
         An array with the elements of x, but clipped to not exceed the y values.
 
     """
-    return _cur_framework(x).minimum(x, y, out)
+    return _cur_framework(x1).minimum(x1, x2, out)
 
 
 def maximum(
-    x: Union[ivy.Array, ivy.NativeArray, Number],
-    y: Union[ivy.Array, ivy.NativeArray, Number],
+    x1: Union[ivy.Array, ivy.NativeArray, Number],
+    x2: Union[ivy.Array, ivy.NativeArray, Number],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
@@ -2285,4 +2293,4 @@ def maximum(
         An array with the elements of x, but clipped to not be lower than the y values.
 
     """
-    return _cur_framework(x).maximum(x, y, out)
+    return _cur_framework(x1).maximum(x1, x2, out)

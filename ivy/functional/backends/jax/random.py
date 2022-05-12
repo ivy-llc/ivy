@@ -32,7 +32,12 @@ def random_uniform(
     )
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, device=None):
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return (
@@ -90,7 +95,7 @@ def seed(seed_value=0):
     return
 
 
-def shuffle(x):
+def shuffle(x: JaxArray) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return _jax.random.shuffle(rng_input, x)
