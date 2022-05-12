@@ -1371,39 +1371,39 @@ def test_logaddexp(
 
 
 # logical_and
-# @given(
-#     dtype_and_x=helpers.dtype_and_values(("bool",), 2),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     with_out=st.booleans(),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-#     instance_method=st.booleans(),
-# )
-# def test_logical_and(
-#     dtype_and_x,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     dtype, x = dtype_and_x
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         with_out,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "logical_and",
-#         x1=np.asarray(x[0], dtype=dtype[0]),
-#         x2=np.asarray(x[1], dtype=dtype[1]),
-#     )
+@given(
+    dtype_and_x=helpers.dtype_and_values(("bool",), 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_logical_and(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "logical_and",
+        x1=np.asarray(x[0], dtype=dtype[0]),
+        x2=np.asarray(x[1], dtype=dtype[1]),
+    )
 
 
 # logical_not
