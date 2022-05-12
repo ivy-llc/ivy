@@ -441,7 +441,9 @@ def test_array_function(
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+    ivy.set_framework('numpy')
     ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
+    ivy.unset_framework()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
