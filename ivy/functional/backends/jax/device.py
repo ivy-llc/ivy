@@ -1,11 +1,11 @@
-"""Collection of Jax device functions, wrapped to fit Ivy syntax and
-signature.
-"""
+"""Collection of Jax device functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import os
 import jax
 import ivy
+from ivy.functional.backends.jax import JaxArray
+
 
 # local
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -27,13 +27,13 @@ def _to_array(x):
 # ----#
 
 
-def dev(x, as_str=False):
+def dev(x: JaxArray, as_str: bool = False) -> str:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
     try:
         dv = _to_array(x).device_buffer.device
         dv = dv()
-    except:
+    except Exception:
         dv = jax.devices()[0]
     if as_str:
         return dev_to_str(dv)

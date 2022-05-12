@@ -17,13 +17,15 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def linear(x, weight, bias=None):
-    """Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
-    of the weight matrices. This is useful if a batch of different network parameters are to be represented.
+    """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+    The operation also supports batching of the weight matrices. This is useful if a
+    batch of different network parameters are to be represented.
 
     Parameters
     ----------
     x
-        The input x compute linear transformation on. *[outer_batch_shape,inner_batch_shape,in_features]*
+        The input x compute linear transformation on.
+        *[outer_batch_shape,inner_batch_shape,in_features]*
     weight
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
     bias
@@ -32,7 +34,8 @@ def linear(x, weight, bias=None):
     Returns
     -------
     ret
-        Result array of the linear transformation. *[outer_batch_shape,inner_batch_shape,out_features]*
+        Result array of the linear transformation.
+        *[outer_batch_shape,inner_batch_shape,out_features]*
 
     """
     outer_batch_shape = list(weight.shape[:-2])
@@ -74,8 +77,8 @@ def linear(x, weight, bias=None):
 
 
 def dropout(x, prob, scale=True):
-    """Randomly zeroes some of the elements of the input tensor with
-    probability p using samples from a Bernoull distribution.
+    """Randomly zeroes some of the elements of the input tensor with probability p using
+    samples from a Bernoull distribution.
 
     Parameters
     ----------
@@ -120,12 +123,14 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     scale
         The value by which to scale the query-key pairs before softmax.
     mask
-        The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
+        The mask to apply to the query-key values. Default is None.
+        *[batch_shape,num_queries,num_keys]*
 
     Returns
     -------
     ret
-        The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*
+        The output following application of scaled dot-product attention.
+        *[batch_shape,num_queries,feat_dim]*
 
     """
     # BS x Q x K
@@ -174,14 +179,16 @@ def multi_head_attention(
         The array to determine the keys and values from. Default is None.
         *[batch_shape,num_keys,cont_feat_dim]*.
     mask
-        The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
+        The mask to apply to the query-key values. Default is None.
+        *[batch_shape,num_queries,num_keys]*
     to_q_fn
         The function to compute queries from input x, returning queries
         *[batch_shape,num_queries,numheads×feat_dim]*. (Default value = None)
     to_kv_fn
         The function to compute keys and values from the context. (Default value = None)
     to_out_fn
-        The function to compute the output from the scaled dot-product attention. (Default value = None)
+        The function to compute the output from the scaled dot-product attention.
+        (Default value = None)
     to_q_v
         The variables for function to_q_fn. Default is None.
     to_kv_v
@@ -192,7 +199,8 @@ def multi_head_attention(
     Returns
     -------
     ret
-        The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*
+        The output following application of multi-head attention.
+        *[batch_shape,num_queries,out_feat_dim]*
 
     """
     # BS x Q x (HxF)
@@ -256,7 +264,8 @@ def conv1d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     data_format
         NWC" or "NCW". Defaults to "NWC".
     dilations
@@ -284,8 +293,7 @@ def conv1d(
 def conv1d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
 ):
-    """Computes a 1-D transpose convolution given 3-D input x and filters
-    arrays.
+    """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -296,7 +304,8 @@ def conv1d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -327,7 +336,8 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
@@ -347,8 +357,7 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
 def conv2d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
 ):
-    """Computes a 2-D transpose convolution given 4-D input x and filters
-    arrays.
+    """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -359,7 +368,8 @@ def conv2d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -379,8 +389,7 @@ def conv2d_transpose(
 
 
 def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
-    """Computes a 2-D depthwise convolution given 4-D input x and filters
-    arrays.
+    """Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -391,7 +400,8 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
@@ -409,7 +419,14 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
+def conv3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    data_format: str = "NDHWC",
+    dilations: int = 1,
+) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
@@ -421,7 +438,8 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     data_format
         NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
@@ -432,6 +450,34 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     ret
         The result of the convolution operation.
 
+    Examples
+    --------
+    >>> x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]
+    >>> x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
+    >>> x = ivy.array([[x1,x2]]) #NDHWC
+    >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
+    >>> result = ivy.conv3d( x, filters, 1, 'VALID',"NDHWC", 1)
+    >>> print(result)
+    ivy.array([[[[[1.],
+              [2.]],
+
+             [[1.],
+              [2.]],
+
+             [[1.],
+              [2.]]],
+
+
+            [[[3.],
+              [4.]],
+
+             [[3.],
+              [4.]],
+
+             [[3.],
+              [4.]]]]])
+
+
     """
     return _cur_framework(x).conv3d(
         x, filters, strides, padding, data_format, dilations
@@ -441,8 +487,7 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 def conv3d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
 ):
-    """Computes a 3-D transpose convolution given 5-D input x and filters
-    arrays.
+    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -453,7 +498,8 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -478,8 +524,7 @@ def conv3d_transpose(
 def lstm_update(
     x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
 ):
-    """Perform long-short term memory update by unrolling time dimension of
-    input array.
+    """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
     ----------
@@ -501,7 +546,8 @@ def lstm_update(
     Returns
     -------
     ret
-        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*
+        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+        timestep *[batch_shape,out]*
 
     """
     # get shapes

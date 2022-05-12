@@ -1,6 +1,4 @@
-"""Collection of PyTorch random functions, wrapped to fit Ivy syntax and
-signature.
-"""
+"""Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import torch
@@ -28,20 +26,19 @@ def random_uniform(
 
 
 def random_normal(
-        mean: float = 0.0,
-        std: float = 1.0,
-        shape: Optional[List[int]] = None,
-        device: ivy.Device = None,
-):
+
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[List[int]] = None,
+    device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
     mean = mean.item() if isinstance(mean, torch.Tensor) else mean
     std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(
-        mean, std, true_shape, device=default_device(device).replace("gpu", "cuda")
-    )
+    return torch.normal(mean, std, true_shape, device=default_device(device))
 
 
 def multinomial(
@@ -80,6 +77,6 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x):
+def shuffle(x: torch.Tensor) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size))
