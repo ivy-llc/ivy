@@ -42,7 +42,6 @@ def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
-
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],

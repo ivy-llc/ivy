@@ -111,6 +111,7 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
     >>> print(y)
     ivy.array([[[0, 1],
                 [1, 0]]])
+                
     >>> print(x.shape, y.shape)
     (2, 2) (1, 2, 2)
 
