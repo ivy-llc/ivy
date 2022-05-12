@@ -1,6 +1,4 @@
-"""
-Base class for deriving trainable modules
-"""
+"""Base class for deriving trainable modules."""
 
 # global
 import os
@@ -17,49 +15,74 @@ from ivy.container import Container
 # Base #
 # -----#
 
+
 class Module(abc.ABC):
+    def __init__(
+        self,
+        device=None,
+        v=None,
+        build_mode="on_init",
+        compile_on_next_step=False,
+        store_vars=True,
+        stateful=None,
+        arg_stateful_idxs=None,
+        kwarg_stateful_idxs=None,
+        fallback_to_non_compiled=False,
+        with_partial_v=False,
+        devices=None,
+    ):
+        """Initialze Ivy layer, which is a stateful object consisting of trainable
+        variables.
 
-    def __init__(self, dev=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
-                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 with_partial_v=False, devs=None):
-        """
-        Initialze Ivy layer, which is a stateful object consisting of trainable variables.
-
-        :param dev: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: ivy.Device, optional
+        :param device: device on which to create the module's variables 'cuda:0',
+                       'cuda:1', 'cpu' etc.
+        :type device: ivy.Device, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
-        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
-                           build(), or the first time the __call__ method is run. Default is on initialization.
+        :param build_mode: How the Module is built, either on initialization (now),
+                           explicitly by the user by calling build(), or the first time
+                           the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
-        :param compile_on_next_step: Whether to compile the network on the next forward pass. Default is False.
+        :param compile_on_next_step: Whether to compile the network on the next forward
+                                     pass. Default is False.
         :type compile_on_next_step: bool, optional
-        :param store_vars: Whether or not to store the variables created. Default is True.
+        :param store_vars: Whether or not to store the variables created.
+                           Default is True.
         :type store_vars: bool, optional
-        :param stateful: The constant id stateful items to track as part of the forward pass.
-                         Used when graph compiling, default is None.
+        :param stateful: The constant id stateful items to track as part of the forward
+                         pass. Used when graph compiling, default is None.
         :type stateful: seq of any, optional
-        :param arg_stateful_idxs: The nested argument indices of stateful items to track as part of the forward pass.
-                                  Used when graph compiling, default is None.
+        :param arg_stateful_idxs: The nested argument indices of stateful items to track
+                                  as part of the forward pass. Used when graph
+                                  compiling, default is None.
         :type arg_stateful_idxs: seq of any, optional
-        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful items to track as part of the
-                                    forward pass. Used when graph compiling, default is None.
+        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful
+                                    items to track as part of the forward pass. Used
+                                    when graph compiling, default is None.
         :type kwarg_stateful_idxs: seq of any, optional
-        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
-                                         raised during the compiled forward pass. Default is True.
+        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward
+                                         call in the case that an error is raised during
+                                         the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
-        :param with_partial_v: Whether to allow partial specification of variables. Default is False.
+        :param with_partial_v: Whether to allow partial specification of variables.
+                               Default is False.
         :type with_partial_v: bool, optional
-        :param devs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type devs: sequence of str, optional
+        :param devices: devices on which to distribute the module's variables 'cuda:0',
+                        'cuda:1', 'cpu' etc.
+        :type devices: sequence of str, optional
         :type build_mode: str, optional
+
         """
-        valid_build_modes = ['on_init', 'explicit', 'on_call']
+        valid_build_modes = ["on_init", "explicit", "on_call"]
         if build_mode not in valid_build_modes:
-            raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
-                valid_build_modes, build_mode, type(build_mode)))
-        self._dev = ivy.default(dev, ivy.default(lambda: devs[0], ivy.default_device(), True))
-        self._devs = ivy.default(devs, [self._dev])
+            raise Exception(
+                "build_mode must be one of {} of type str, but found "
+                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
+            )
+        self._dev = ivy.default(
+            device, ivy.default(lambda: devices[0], ivy.default_device(), True)
+        )
+        self._devs = ivy.default(devices, [self._dev])
         self._build_mode = build_mode
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
@@ -79,12 +102,16 @@ class Module(abc.ABC):
         self._submod_depth = None
         self._submods_to_track = None
         self._track_submod_call_order = False
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+        self.submod_rets = ivy.Container(
+            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+        )
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+        self.submod_call_order = ivy.Container(
+            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+        )
         self._sub_mods = set()
-        if build_mode != 'on_init':
+        if build_mode != "on_init":
             return
         self.build()
 
@@ -94,12 +121,13 @@ class Module(abc.ABC):
     def _fn_with_var_arg(self, fn, v_fn):
         def new_fn(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads)
-            if 'v' in kw.keys():
-                del kw['v']
+            if "v" in kw.keys():
+                del kw["v"]
             v = v_fn(self.v)
             if not with_grads:
                 v = v.stop_gradients()
             return fn(*a, **kw, v=v)
+
         new_fn.wrapped = True
         return new_fn
 
@@ -133,7 +161,11 @@ class Module(abc.ABC):
                 return False
         depth = top_mod._submod_depth
         if ivy.exists(depth):
-            return self.top_mod(depth - 1)._track_submod_rets if depth > 0 else self._track_submod_rets
+            return (
+                self.top_mod(depth - 1)._track_submod_rets
+                if depth > 0
+                else self._track_submod_rets
+            )
         return top_mod._track_submod_rets
 
     def check_submod_rets(self):
@@ -154,7 +186,11 @@ class Module(abc.ABC):
                 return False
         depth = top_mod._submod_depth
         if ivy.exists(depth):
-            return self.top_mod(depth - 1)._track_submod_call_order if depth > 0 else self._track_submod_call_order
+            return (
+                self.top_mod(depth - 1)._track_submod_call_order
+                if depth > 0
+                else self._track_submod_call_order
+            )
         return top_mod._track_submod_call_order
 
     def mod_depth(self):
@@ -173,9 +209,12 @@ class Module(abc.ABC):
 
     def _find_variables(self, obj=None):
         vs = Container()
-        # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
+        # ToDo: add support for finding local variables, if/when JAX
+        #  supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(depth, flatten_key_chains)
+            obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
+                depth, flatten_key_chains
+            )
             obj.top_mod = lambda depth=None: self._top_mod_fn(depth)
             self._sub_mods.add(obj)
             return obj.v
@@ -183,21 +222,21 @@ class Module(abc.ABC):
             for i, v in enumerate(obj):
                 ret = self._find_variables(v)
                 if ret:
-                    vs['v' + str(i)] = ret
+                    vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
                 ret = self._find_variables(v)
                 if ret:
-                    vs[k[1:] if k[0] == '_' else k] = ret
+                    vs[k[1:] if k[0] == "_" else k] = ret
             return vs
-        elif not hasattr(obj, '__dict__'):
+        elif not hasattr(obj, "__dict__"):
             return vs
         for k, v in obj.__dict__.items():
-            if v is not None and k[0:2] != '__':
+            if v is not None and k[0:2] != "__":
                 ret = self._find_variables(v)
                 if ret:
-                    vs[k[1:] if k[0] == '_' else k] = ret
+                    vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
     @staticmethod
@@ -208,31 +247,35 @@ class Module(abc.ABC):
             ret_cont = ivy.Container()
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key_chain in old_kc:
-                ret_cont = ret_cont.set_at_key_chain('/'.join(new_kc.split('/')[1:]), v.at_key_chain(new_kc))
+                ret_cont = ret_cont.set_at_key_chain(
+                    "/".join(new_kc.split("/")[1:]), v.at_key_chain(new_kc)
+                )
         return ret_cont
 
-    def _wrap_call_methods(self, keychain_mappings, key='', obj=None):
+    def _wrap_call_methods(self, keychain_mappings, key="", obj=None):
         if isinstance(obj, Module) and obj is not self:
-            orig_key_chain = key[1:] if key[0] == '_' else key
+            orig_key_chain = key[1:] if key[0] == "_" else key
 
-            obj.__call__ = self._fn_with_var_arg(obj.__call__,
-                                                 lambda v_: self._extract_v(v_, keychain_mappings, orig_key_chain))
+            obj.__call__ = self._fn_with_var_arg(
+                obj.__call__,
+                lambda v_: self._extract_v(v_, keychain_mappings, orig_key_chain),
+            )
             return
         elif isinstance(obj, (list, tuple)):
             for i, val in enumerate(obj):
-                self._wrap_call_methods(keychain_mappings, key + '/v' + str(i), val)
+                self._wrap_call_methods(keychain_mappings, key + "/v" + str(i), val)
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
-                k = (key + '/' + k) if key != '' else k
+                k = (key + "/" + k) if key != "" else k
                 self._wrap_call_methods(keychain_mappings, k, val)
             return
-        if not hasattr(obj, '__dict__'):
+        if not hasattr(obj, "__dict__"):
             return
         for k, val in obj.__dict__.items():
-            if k[0:2] == '__':
+            if k[0:2] == "__":
                 continue
-            k = (key + '/' + k) if key != '' else k
+            k = (key + "/" + k) if key != "" else k
             if val is not None:
                 self._wrap_call_methods(keychain_mappings, k, val)
         return
@@ -255,7 +298,11 @@ class Module(abc.ABC):
             keychain_mappings[kc] = ids[x]
 
         created_ids.map(lambda x, kc: unique_callback(x, kc))
-        vs_ids.map(lambda x, kc: unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc))
+        vs_ids.map(
+            lambda x, kc: unique_callback(x, kc)
+            if x not in ids
+            else found_dup_callback(x, kc)
+        )
         for dup_kc in duplicate_keychains:
             vs = vs.prune_key_chain(dup_kc)
         return vs, keychain_mappings
@@ -263,20 +310,25 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, dev):
-        """
-        create internal trainable variables, and return as arbitrary nested dict. Overridable.
+    def _create_variables(self, device):
+        """Create internal trainable variables, and return as arbitrary nested dict.
+        Overridable.
 
-        :param dev: The device string, specifying the device on which to create the variables.
-        :type dev: ivy.Deviceing
+        :param device: The device string, specifying the device on which to
+                       create the variables.
+        :type device: ivy.Deviceing
+
         """
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
-        """
-        Build the internal layers and variables for this module. Overridable.
-        Return False or empty Container if the build only partially completed (i.e. some child Modules have
-        "on_call" build mode). Alternatviely, return True or a container of the built variables if the module is built.
+        """Build the internal layers and variables for this module.
+
+        Overridable. Return False or empty Container if the build only
+        partially completed (i.e. some child Modules have "on_call"
+        build mode). Alternatviely, return True or a container of the
+        built variables if the module is built.
+
         """
         return True
 
@@ -284,15 +336,13 @@ class Module(abc.ABC):
 
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
-        """
-        Forward pass of the layer, called after handling the optional input variables.
+        """Forward pass of the layer, called after handling the optional input
+        variables.
         """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """
-        Forward pass while optionally tracking submodule returns and call order
-        """
+        """Forward pass while optionally tracking submodule returns and call order."""
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -305,8 +355,8 @@ class Module(abc.ABC):
         return ret
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
-        """
-        the forward pass of the layer, treating layer instance as callable function.
+        """The forward pass of the layer, treating layer instance as callable
+        function.
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
@@ -315,11 +365,13 @@ class Module(abc.ABC):
             v_orig = self.v
             if not with_grads:
                 v = v.stop_gradients()
-            self.v = Container(v, **v.config) if isinstance(v, Container) else Container(v)
+            self.v = (
+                Container(v, **v.config) if isinstance(v, Container) else Container(v)
+            )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             return ret
-        elif hasattr(self.__call__, 'wrapped'):
+        elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, with_grads=with_grads, **kwargs)
         elif not with_grads:
             v_orig = self.v
@@ -338,40 +390,49 @@ class Module(abc.ABC):
                 if depth == 0:
                     if show_v:
                         return self.v
-                    return ''
+                    return ""
                 next_depth = depth - 1
             else:
                 next_depth = None
             ret = ivy.Container(
-                {ivy.Container.flatten_key_chain(sm.__repr__(), '_'):
-                     sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
+                {
+                    ivy.Container.flatten_key_chain(sm.__repr__(), "_"): sm.sub_mods(
+                        show_v, next_depth
+                    )
+                    for sm in self._sub_mods
+                }
+            )
             if flatten_key_chains:
                 return ret.flatten_key_chains()
             return ret
         if show_v:
             return self.v
-        return ''
+        return ""
 
     def show_v_in_top_v(self, depth=None):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             self.top_v(depth).show_sub_container(self.v)
         else:
-            print('both self.top_v and self.v must be initialized in order to show v in top_v,'
-                  'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
+            print(
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+            )
 
     def v_with_top_v_key_chains(self, depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
             if kc:
-                ret = self.v.restructure_key_chains({'': kc}, keep_orig=False)
+                ret = self.v.restructure_key_chains({"": kc}, keep_orig=False)
             else:
                 ret = self.v
             if flatten_key_chains:
                 return ret.flatten_key_chains()
             return ret
         else:
-            print('both self.top_v and self.v must be initialized in order to show v in top_v,'
-                  'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
+            print(
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+            )
 
     def mod_with_top_mod_key_chain(self, depth=None, flatten_key_chain=False):
         if not ivy.exists(self.top_mod) or depth == 0:
@@ -379,20 +440,22 @@ class Module(abc.ABC):
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), '_')]
+        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), "_")]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
-            mods.append(ivy.Container.flatten_key_chain(top_mod.__repr__(), '_'))
+            mods.append(ivy.Container.flatten_key_chain(top_mod.__repr__(), "_"))
             if depth == max_depth:
                 break
             depth += 1
         if flatten_key_chain:
-            return '__'.join(reversed(mods))
+            return "__".join(reversed(mods))
         return [mod for mod in reversed(mods)]
 
-    def show_mod_in_top_mod(self, upper_depth=None, lower_depth=None, flatten_key_chains=False):
+    def show_mod_in_top_mod(
+        self, upper_depth=None, lower_depth=None, flatten_key_chains=False
+    ):
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
             lower_depth = ivy.default(lower_depth, self.mod_height())
@@ -404,17 +467,28 @@ class Module(abc.ABC):
                 lower_sub_mods = lower_sub_mods.flatten_key_chains()
             upper_sub_mods.show_sub_container(lower_sub_mods)
         else:
-            print('self.top_mod must be initialized in order to show mod in top_mod,'
-                  'but found\n\ntop_mod: {}'.format(self.top_mod))
+            print(
+                "self.top_mod must be initialized in order to show mod in top_mod,"
+                "but found\n\ntop_mod: {}".format(self.top_mod)
+            )
 
-    def _set_submod_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
-                          expected_submod_rets):
+    def _set_submod_flags(
+        self,
+        track_submod_rets,
+        submod_depth,
+        submods_to_track,
+        track_submod_call_order,
+        expected_submod_rets,
+    ):
         self._track_submod_rets = track_submod_rets
         self._submod_depth = submod_depth
         self._submods_to_track = submods_to_track
         self._track_submod_call_order = track_submod_call_order
-        self.expected_submod_rets = ivy.Container(expected_submod_rets).to_numpy(map_sequences=True) \
-            if ivy.exists(expected_submod_rets) else expected_submod_rets
+        self.expected_submod_rets = (
+            ivy.Container(expected_submod_rets).to_numpy(map_sequences=True)
+            if ivy.exists(expected_submod_rets)
+            else expected_submod_rets
+        )
 
     def _unset_submod_flags(self):
         self._track_submod_rets = False
@@ -427,15 +501,15 @@ class Module(abc.ABC):
         if top_mod is None:
             top_mod = self.top_mod()
         submod_dict = top_mod.submod_dict
-        full_key = self.__repr__().split('.')[-1]
-        name_key = full_key.split(' ')[0]
+        full_key = self.__repr__().split(".")[-1]
+        name_key = full_key.split(" ")[0]
         if name_key not in submod_dict:
             submod_dict[name_key] = dict()
-        id_str = full_key.split(' ')[-1][:-1]
+        id_str = full_key.split(" ")[-1][:-1]
         if id_str not in submod_dict[name_key]:
             submod_dict[name_key][id_str] = str(len(submod_dict[name_key]))
         idx_key = submod_dict[name_key][id_str]
-        return ' '*self.mod_depth() + '_'.join([name_key, idx_key])
+        return " " * self.mod_depth() + "_".join([name_key, idx_key])
 
     def _add_submod_ret(self, ret):
         top_mod = self.top_mod()
@@ -453,18 +527,18 @@ class Module(abc.ABC):
         key = self.get_mod_key(top_mod)
         esr_key = key
         if key not in esr:
-            esr_key = key.replace(' ', '')
+            esr_key = key.replace(" ", "")
             if esr_key not in esr:
                 return
         sr = self.top_mod().submod_rets
         rets = sr[key]
         esr_ret = esr[esr_key]
         if isinstance(esr_ret, dict):
-            expected_rets = esr_ret['val']
-            atols = esr_ret['atol'] if 'atol' in esr_ret else None
+            expected_rets = esr_ret["val"]
+            atols = esr_ret["atol"] if "atol" in esr_ret else None
             if not isinstance(atols, list):
                 atols = [atols] * len(expected_rets)
-            rtols = esr_ret['rtol'] if 'rtol' in esr_ret else None
+            rtols = esr_ret["rtol"] if "rtol" in esr_ret else None
             if not isinstance(rtols, list):
                 rtols = [rtols] * len(expected_rets)
         else:
@@ -476,19 +550,24 @@ class Module(abc.ABC):
                 continue
             kwargs = {}
             if atol:
-                kwargs['atol'] = atol
+                kwargs["atol"] = atol
             if rtol:
-                kwargs['rtol'] = rtol
-            assert np.allclose(ret, expected_ret, **kwargs),\
-                'ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough'.format(ret, expected_ret)
+                kwargs["rtol"] = rtol
+            assert np.allclose(
+                ret, expected_ret, **kwargs
+            ), "ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough".format(
+                ret, expected_ret
+            )
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
         submod_depth = self.top_mod()._submod_depth
         submods_to_track = self.top_mod()._submods_to_track
-        return (ivy.exists(submod_depth) and self.mod_depth() == submod_depth) or \
-               self.mod_height() == 0 or \
-               (ivy.exists(submods_to_track) and self in submods_to_track)
+        return (
+            (ivy.exists(submod_depth) and self.mod_depth() == submod_depth)
+            or self.mod_height() == 0
+            or (ivy.exists(submods_to_track) and self in submods_to_track)
+        )
 
     def _add_submod_enter(self):
         sco = self.top_mod().submod_call_order
@@ -497,57 +576,97 @@ class Module(abc.ABC):
             kcs = sco.key_chains_containing(key, include_empty=True)
             if kcs:
                 max_key = sorted(
-                    kcs, key=lambda kc:
-                    int(kc.split('/')[-2 if isinstance(sco[kc], np.ndarray) else -1].split('_')[-1]))[-1].split('/')[0]
+                    kcs,
+                    key=lambda kc: int(
+                        kc.split("/")[
+                            -2 if isinstance(sco[kc], np.ndarray) else -1
+                        ].split("_")[-1]
+                    ),
+                )[-1].split("/")[0]
             else:
-                max_key = key + '_0'
-                sco[max_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+                max_key = key + "_0"
+                sco[max_key] = ivy.Container(
+                    alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+                )
             sco = sco[max_key]
         final_key = key_chain[-1]
         kcs = sco.key_chains_containing(final_key, include_empty=True)
         if kcs:
-            sorted_kcs =\
-                sorted(kcs, key=lambda kc:
-                int(kc.split('/')[-2 if isinstance(sco[kc], np.ndarray) else -1].split('_')[-1]))
+            sorted_kcs = sorted(
+                kcs,
+                key=lambda kc: int(
+                    kc.split("/")[-2 if isinstance(sco[kc], np.ndarray) else -1].split(
+                        "_"
+                    )[-1]
+                ),
+            )
             chosen_kc = sorted_kcs[-1]
-            max_key_idx = int(chosen_kc.split('/')[-2 if isinstance(sco[chosen_kc], np.ndarray) else -1].split('_')[-1])
-            new_key = final_key + '_{}'.format(max_key_idx + 1)
+            max_key_idx = int(
+                chosen_kc.split("/")[
+                    -2 if isinstance(sco[chosen_kc], np.ndarray) else -1
+                ].split("_")[-1]
+            )
+            new_key = final_key + "_{}".format(max_key_idx + 1)
         else:
-            new_key = final_key + '_0'
+            new_key = final_key + "_0"
         if self._is_submod_leaf():
-            sco[new_key] = self.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()
+            sco[new_key] = self.v_with_top_v_key_chains(
+                flatten_key_chains=True
+            ).to_numpy()
         else:
-            sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+            sco[new_key] = ivy.Container(
+                alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            )
 
-    def __call__(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
-                 track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
-                 expected_submod_rets=None, **kwargs):
+    def __call__(
+        self,
+        *args,
+        v=None,
+        with_grads=None,
+        stateful=None,
+        arg_stateful_idxs=None,
+        kwarg_stateful_idxs=None,
+        track_submod_rets=False,
+        submod_depth=None,
+        submods_to_track=None,
+        track_submod_call_order=False,
+        expected_submod_rets=None,
+        **kwargs
+    ):
         with_grads = ivy.with_grads(with_grads)
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+        self.submod_rets = ivy.Container(
+            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+        )
+        self.submod_call_order = ivy.Container(
+            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+        )
         self._set_submod_flags(
-            track_submod_rets, submod_depth, submods_to_track, track_submod_call_order, expected_submod_rets)
+            track_submod_rets,
+            submod_depth,
+            submods_to_track,
+            track_submod_call_order,
+            expected_submod_rets,
+        )
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
 
     def save_weights(self, weights_path):
-        """
-        Save the weights on the Module.
+        """Save the weights on the Module.
+
         :param weights_path: The hdf5 file for saving the weights.
         :type weights_path: string
+
         """
-        os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
+        os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, dev=None, **kwargs):
-        """
-        Build the internal layers and variables for this module.
-        """
-        self._dev = ivy.default(dev, self._dev)
+    def build(self, *args, from_call=False, device=None, **kwargs):
+        """Build the internal layers and variables for this module."""
+        self._dev = ivy.default(device, self._dev)
 
         # return False if not from_call but build_mode is on_call
-        if not from_call and self._build_mode == 'on_call':
+        if not from_call and self._build_mode == "on_call":
             return self.v
 
         # build local Module, and any child modules flagged with "explicit" build mode
@@ -560,11 +679,17 @@ class Module(abc.ABC):
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
-                    created_n_found.assert_contains_sub_structure(v_from_constructor, partial=True)
+                    created_n_found.assert_contains_sub_structure(
+                        v_from_constructor, partial=True
+                    )
                 self.v = created_n_found.set_at_key_chains(v_from_constructor)
             else:
-                created_n_found, _ = self._remove_duplicate_variables(created_n_found, created)
-                ivy.Container.assert_identical_structure([created_n_found, v_from_constructor])
+                created_n_found, _ = self._remove_duplicate_variables(
+                    created_n_found, created
+                )
+                ivy.Container.assert_identical_structure(
+                    [created_n_found, v_from_constructor]
+                )
                 self.v = v_from_constructor
         else:
             self.v = created_n_found
@@ -583,13 +708,21 @@ class Module(abc.ABC):
             # build during forward pass
             self._forward(*args, **kwargs)
 
-            # re-build variables based on additional child on-call layers, if v not passed in constructor
+            # re-build variables based on additional child on-call layers,
+            # if v not passed in constructor
             if not ivy.exists(v_from_constructor):
-                created_n_found = Container(dict(**self._find_variables(self), **self._create_variables(self._dev)))
+                created_n_found = Container(
+                    dict(
+                        **self._find_variables(self),
+                        **self._create_variables(self._dev)
+                    )
+                )
                 self.v = created_n_found
 
             # remove further duplicates with self.v
-            self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
+            self.v, keychain_mappings = self._remove_duplicate_variables(
+                self.v, created
+            )
 
             # set built flag
             built = True
@@ -607,11 +740,11 @@ class Module(abc.ABC):
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
     def show_structure(self):
-        this_repr = termcolor.colored(object.__repr__(self), 'green')
+        this_repr = termcolor.colored(object.__repr__(self), "green")
         sub_mod_repr = self.sub_mods(False).__repr__()
         if sub_mod_repr == "''":
             return this_repr
-        print('\n'.join([this_repr, sub_mod_repr]))
+        print("\n".join([this_repr, sub_mod_repr]))
 
     def __repr__(self):
         return object.__repr__(self)

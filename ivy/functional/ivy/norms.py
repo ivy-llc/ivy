@@ -1,6 +1,4 @@
-"""
-Collection of Ivy normalization functions.
-"""
+"""Collection of Ivy normalization functions."""
 
 # local
 import ivy
@@ -11,7 +9,7 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_std=None):
-    """Applies Layer Normalization over a mini-batch of inputs
+    """Applies Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------
@@ -30,13 +28,13 @@ def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_st
 
     Returns
     -------
-     ret
+    ret
         The layer after applying layer normalization.
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
     var = ivy.var(x, normalized_idxs, keepdims=True)
-    x = ((-mean + x) / ivy.stable_pow(var, 0.5, epsilon))
+    x = (-mean + x) / ivy.stable_pow(var, 0.5, epsilon)
     if new_std is not None:
         x = x * new_std
     if scale is not None:
