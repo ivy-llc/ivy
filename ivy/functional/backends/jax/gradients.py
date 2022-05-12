@@ -1,10 +1,7 @@
-"""
-Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import jax
-import jax.numpy as jnp
 import jax.lax as jlax
 import jaxlib as jaxlib
 from jaxlib.xla_extension import Buffer
@@ -22,7 +19,9 @@ variable = lambda x: x
 def is_variable(x, exclusive=False):
     if exclusive:
         return False
-    return isinstance(x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer))
+    return isinstance(
+        x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+    )
 
 
 variable_data = lambda x: x

@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 
 # local
@@ -11,41 +11,37 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
-def eigh(x: np.ndarray,
-         out: Optional[np.ndarray] = None)\
-    -> np.ndarray:
+
+def eigh(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.eigh(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def inv(x: np.ndarray,
-         out: Optional[np.ndarray] = None)\
-    -> np.ndarray:
+def inv(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.inv(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def pinv(x: np.ndarray,
-         rtol: Optional[Union[float, Tuple[float]]] = None,
-         out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+def pinv(
+    x: np.ndarray,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
 
     if rtol is None:
-        ret =  np.linalg.pinv(x)
+        ret = np.linalg.pinv(x)
     else:
-        ret =  np.linalg.pinv(x, rtol)
+        ret = np.linalg.pinv(x, rtol)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_transpose(x: np.ndarray,
-                     out: Optional[np.ndarray] = None) \
-                -> np.ndarray:
+def matrix_transpose(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.swapaxes(x, -1, -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -53,12 +49,13 @@ def matrix_transpose(x: np.ndarray,
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
-def vector_norm(x: np.ndarray,
-                axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2,
-                out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+def vector_norm(
+    x: np.ndarray,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
 
@@ -74,21 +71,27 @@ def vector_norm(x: np.ndarray,
     return ret
 
 
-def matrix_norm(x: np.ndarray,
-                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False,
-                out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+def matrix_norm(
+    x: np.ndarray,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def svd(x: np.ndarray,
-        full_matrices: bool = True,
-        out: Optional[Union[np.ndarray, Tuple[np.ndarray, ...]]] = None) \
-        -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+def matrix_power(x: np.ndarray, n: int) -> np.ndarray:
+    return np.linalg.matrix_power(x, n)
+
+
+def svd(
+    x: np.ndarray,
+    full_matrices: bool = True,
+    out: Optional[Union[np.ndarray, Tuple[np.ndarray, ...]]] = None,
+) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
 
     results = namedtuple("svd", "U S Vh")
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
@@ -98,56 +101,54 @@ def svd(x: np.ndarray,
     return ret
 
 
-def outer(x1: np.ndarray,
-          x2: np.ndarray,
-          out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
+def outer(
+    x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.outer(x1, x2, out)
 
 
-def diagonal(x: np.ndarray,
-             offset: int = 0,
-             axis1: int = -2,
-             axis2: int = -1,
-             out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+def diagonal(
+    x: np.ndarray,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def svdvals(x: np.ndarray,
-            out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.linalg.svd(x, compute_uv=False)
+def svdvals(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.linalg.svd(x, compute_uv=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def qr(x: np.ndarray,
-       mode: str = 'reduced',
-       out: Optional[Tuple[np.ndarray, np.ndarray]] = None)\
-        -> namedtuple('qr', ['Q', 'R']):
-    res = namedtuple('qr', ['Q', 'R'])
+def qr(
+    x: np.ndarray,
+    mode: str = "reduced",
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+) -> NamedTuple:
+    res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
-    ret =  res(q, r)
+    ret = res(q, r)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def matmul(x1: np.ndarray,
-           x2: np.ndarray,
-           out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
+def matmul(
+    x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.matmul(x1, x2, out)
 
 
-def slogdet(x: np.ndarray,
-            out: Optional[Tuple[np.ndarray, np.ndarray]] = None)\
-        -> Tuple[np.ndarray, np.ndarray]:
+def slogdet(
+    x: np.ndarray, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
+) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
     ret = results(sign, logabsdet)
@@ -156,10 +157,12 @@ def slogdet(x: np.ndarray,
     return ret
 
 
-def tensordot(x1: np.ndarray, x2: np.ndarray,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2,
-              out: Optional[np.ndarray] = None) \
-            -> np.ndarray:
+def tensordot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
 
     ret = np.tensordot(x1, x2, axes=axes)
     if ivy.exists(out):
@@ -167,75 +170,65 @@ def tensordot(x1: np.ndarray, x2: np.ndarray,
     return ret
 
 
-
-def trace(x: np.ndarray,
-          offset: int = 0,
-          out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+def trace(
+    x: np.ndarray, offset: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
-def vecdot(x1: np.ndarray, 
-           x2: np.ndarray,
-           axis: int = -1,
-           out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.tensordot(x1, x2, axes=(axis, axis))
+def vecdot(
+    x1: np.ndarray, x2: np.ndarray, axis: int = -1, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.tensordot(x1, x2, axes=(axis, axis))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def det(x: np.ndarray,
-        out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
-    ret =  np.linalg.det(x)
+def det(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def cholesky(x: np.ndarray,
-             upper: bool = False,
-             out: Optional[np.ndarray] = None) -> np.ndarray:
+def cholesky(
+    x: np.ndarray, upper: bool = False, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if not upper:
-        ret =  np.linalg.cholesky(x)
+        ret = np.linalg.cholesky(x)
     else:
-        axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
-        ret =  np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
-                            axes=axes)
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        ret = np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)), axes=axes)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def eigvalsh(x: np.ndarray,
-             out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.linalg.eigvalsh(x)
+def eigvalsh(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.linalg.eigvalsh(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def cross (x1: np.ndarray,
-           x2: np.ndarray,
-           axis:int = -1,
-           out: Optional[np.ndarray] = None
-           ) -> np.ndarray:
-    ret =  np.cross(a= x1, b = x2, axis= axis)
+def cross(
+    x1: np.ndarray, x2: np.ndarray, axis: int = -1, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.cross(a=x1, b=x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_rank(x: np.ndarray,
-                rtol: Optional[Union[float, Tuple[float]]] = None,
-                out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+def matrix_rank(
+    x: np.ndarray,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if rtol is None:
-        ret =  np.linalg.matrix_rank(x)
-    ret =  np.linalg.matrix_rank(x, rtol)
+        ret = np.linalg.matrix_rank(x)
+    ret = np.linalg.matrix_rank(x, rtol)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -245,9 +238,9 @@ def matrix_rank(x: np.ndarray,
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(vector: np.ndarray,
-                                    out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+def vector_to_skew_symmetric_matrix(
+    vector: np.ndarray, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = np.expand_dims(vector, -1)
@@ -262,13 +255,13 @@ def vector_to_skew_symmetric_matrix(vector: np.ndarray,
     row2 = np.concatenate((a3s, zs, -a1s), -1)
     row3 = np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    ret =  np.concatenate((row1, row2, row3), -2)
+    ret = np.concatenate((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
-def solve(x1: np.ndarray,
-          x2: np.ndarray) -> np.ndarray:
+
+def solve(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     expanded_last = False
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:

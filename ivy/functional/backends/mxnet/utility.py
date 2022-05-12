@@ -4,14 +4,18 @@ from typing import Union, Tuple, Optional, List
 
 # local
 from ivy.functional.backends.mxnet.statistical import prod
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
+from ivy.functional.backends.mxnet import (
+    _flat_array_to_1_dim_array,
+    _1_dim_array_to_flat_array,
+)
 
 
 # noinspection PyShadowingBuiltins
-def all(x: mx.ndarray.ndarray.NDArray,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: bool = False)\
-        -> mx.ndarray.ndarray.NDArray:
+def all(
+    x: mx.ndarray.ndarray.NDArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    keepdims: bool = False,
+) -> mx.ndarray.ndarray.NDArray:
     red_prod = prod(x, axis, keepdims)
     is_flat = red_prod.shape == ()
     if is_flat:
@@ -23,8 +27,9 @@ def all(x: mx.ndarray.ndarray.NDArray,
 
 
 # noinspection PyShadowingBuiltins
-def any(x: mx.ndarray.ndarray.NDArray,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: bool = False)\
-        -> mx.ndarray.ndarray.NDArray:
+def any(
+    x: mx.ndarray.ndarray.NDArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    keepdims: bool = False,
+) -> mx.ndarray.ndarray.NDArray:
     return mx.nd.array(mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims))

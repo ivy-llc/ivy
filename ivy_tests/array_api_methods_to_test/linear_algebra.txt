@@ -1,23 +1,23 @@
 cholesky
-#cross # failing non-deterministically
+#cross #fails for jax, torch, issue: https://github.com/pytorch/pytorch/issues/76588
 det
 diagonal
 eigh
 eigvalsh
-#inv # randomly failing health check for jax and torch
-#matmul # failing non-deterministically for torch
-#matrix_norm # fails non-deterministically for jax
-#matrix_power
+inv
+matmul
+#matrix_norm #failing for jax non-deterministically
+#matrix_power #failing for jax, torch, and tensorflow- waiting on fix for https://github.com/data-apis/array-api-tests/issues/117
 matrix_rank
 matrix_transpose
 outer
 pinv
 qr
 slogdet
-#solve # failing health check for jax
+solve
 svd
 svdvals
 tensordot
-#trace #failing for JAX
+#trace #failing for jax
 vecdot
 vector_norm
