@@ -18,30 +18,34 @@ Iinfo = None
 
 # Dtype Info #
 
-def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
-             to: ivy.Dtype) \
-        -> bool:
+
+def can_cast(
+    from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
+) -> bool:
     """
-    Determines if one data type can be cast to another data type accordingref:`type-promotion` rules.
+    Determines if one data type can be cast to another data type according to
+    :ref:`type-promotion` rules.
+
     Parameters
     ----------
     from_
         input data type or array from which to cast.
     to
         desired data type.
+
     Returns
-     -------
+    -------
     ret
-        ``True`` if the cast can occur according toref:`type-promotion` rules; otherwise, ``False``.
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+        otherwise, ``False``.
+
     """
     return _cur_framework(from_).can_cast(from_, to)
 
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
-        -> Iinfo:
-    """
-    Machine limits for integer data types.
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
+    """Machine limits for integer data types.
 
     Parameters
     ----------
@@ -49,7 +53,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
         the kind of integer data-type about which to get information.
 
     Returns
-     -------
+    -------
     ret
         a class with that encapsules the following attributes:
         - **bits**: *int*
@@ -58,15 +62,14 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
           largest representable number.
         - **min**: *int*
           smallest representable number.
+
     """
     return _cur_framework(None).iinfo(type)
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
-        -> Finfo:
-    """
-    Machine limits for floating-point data types.
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
+    """Machine limits for floating-point data types.
 
     Parameters
     ----------
@@ -74,42 +77,45 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
         the kind of floating-point data-type about which to get information.
 
     Returns
-     -------
+    -------
     ret
         an object having the followng attributes:
         - **bits**: *int*
           number of bits occupied by the floating-point data type.
         - **eps**: *float*
-          difference between 1.0 and the next smallest representable floating-point number larger than 1.0 according to the IEEE-754 standard.
+          difference between 1.0 and the next smallest representable floating-point
+          number larger than 1.0 according to the IEEE-754 standard.
         - **max**: *float*
           largest representable number.
         - **min**: *float*
           smallest representable number.
         - **smallest_normal**: *float*
           smallest positive floating-point number with full precision.
+
     """
     return _cur_framework(None).finfo(type)
 
 
-def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]) -> ivy.Array:
-    """Broadcasts an array to a specified shape
+def broadcast_to(
+    x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
+) -> ivy.Array:
+    """Broadcasts an array to a specified shape.
 
     Parameters
     ----------
     x
-        x (array) – array to broadcast.
+        array to broadcast.
     shape
-        shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \
-        the array is incompatible with the specified shape, the function should raise an \
+        array shape. Must be compatible with x (see Broadcasting). If
+        the array is incompatible with the specified shape, the function should raise an
         exception.
 
     Returns
     -------
-     ret
-        out (array) – an array having a specified shape. Must have the same data type as x.
+    ret
+        an array having a specified shape. Must have the same data type as x.
 
     """
-
     return _cur_framework(x).broadcast_to(x, shape)
 
 
@@ -119,20 +125,19 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     Parameters
     ----------
     x
-        x (array) – an arbitrary number of to-be broadcasted arrays.
+        an arbitrary number of to-be broadcasted arrays.
 
     Returns
     -------
-     ret
-        out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.
+    ret
+        Each array must have the same shape. Each array must have the same dtype as its
+        corresponding input array.
 
     """
-
     return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
 
 
-def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) \
-        -> ivy.Dtype:
+def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) -> ivy.Dtype:
     """Get the data type for input array x.
 
     Parameters
@@ -144,7 +149,7 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) \
 
     Returns
     -------
-     ret
+    ret
         Data type of the array
 
     """
@@ -153,16 +158,24 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) \
 
 # noinspection PyShadowingNames
 
-def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True)\
-         -> ivy.Array:
-    """
-    Copies an array to a specified data type irrespective of :ref:`type-promotion` rules.
+
+def astype(
+    x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True
+) -> ivy.Array:
+    """Copies an array to a specified data type irrespective of :ref:`type-promotion`
+    rules.
 
     .. note::
-       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is not specified and is implementation-dependent.
+       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
+       not specified and is implementation-dependent.
+
     .. note::
-       When casting a boolean input array to a numeric data type, a value of ``True`` must cast to a numeric value equal to ``1``, and a value of ``False`` must cast to a numeric value equal to ``0``.
-       When casting a numeric input array to ``bool``, a value of ``0`` must cast to ``False``, and a non-zero value must cast to ``True``.
+       When casting a boolean input array to a numeric data type, a value of ``True``
+       must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+       to a numeric value equal to ``0``.
+
+       When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+       ``False``, and a non-zero value must cast to ``True``.
 
     Parameters
     ----------
@@ -171,13 +184,18 @@ def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = 
     dtype
         desired data type.
     copy
-        specifies whether to copy an array when the specified ``dtype`` matches the data type of the input array ``x``. If ``True``, a newly allocated array must always be returned. If ``False`` and the specified ``dtype`` matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: ``True``.
+        specifies whether to copy an array when the specified ``dtype`` matches the data
+        type of the input array ``x``. If ``True``, a newly allocated array must always
+        be returned. If ``False`` and the specified ``dtype`` matches the data type of
+        the input array, the input array must be returned; otherwise, a newly allocated
+        must be returned. Default: ``True``.
 
     Returns
     -------
     ret
-        an array having the specified data type. The returned array must have the same shape as ``x``.
-    
+        an array having the specified data type. The returned array must have the same
+        shape as ``x``.
+
     Examples
     --------
     >>> x = ivy.array([1, 2])
@@ -198,7 +216,7 @@ default_int_dtype_stack = list()
 
 
 class DefaultDtype:
-    """ """
+    """"""
 
     # noinspection PyShadowingNames
     def __init__(self, dtype):
@@ -214,7 +232,7 @@ class DefaultDtype:
 
 
 class DefaultFloatDtype:
-    """ """
+    """"""
 
     # noinspection PyShadowingNames
     def __init__(self, float_dtype):
@@ -230,7 +248,7 @@ class DefaultFloatDtype:
 
 
 class DefaultIntDtype:
-    """ """
+    """"""
 
     # noinspection PyShadowingNames
     def __init__(self, float_dtype):
@@ -255,15 +273,14 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
 
     Returns
     -------
-     ret
+    ret
         The number of bits used to represent the data type.
 
     """
     return _cur_framework(dtype_in).dtype_bits(dtype_in)
 
 
-def dtype_to_str(dtype_in: Union[ivy.Dtype, str]) \
-        -> str:
+def dtype_to_str(dtype_in: Union[ivy.Dtype, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -273,15 +290,14 @@ def dtype_to_str(dtype_in: Union[ivy.Dtype, str]) \
 
     Returns
     -------
-     ret
+    ret
         data type string 'float32'
 
     """
     return _cur_framework(None).dtype_to_str(dtype_in)
 
 
-def dtype_from_str(dtype_in: Union[ivy.Dtype, str]) \
-        -> ivy.Dtype:
+def dtype_from_str(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
     """Convert data type string representation to native data type.
 
     Parameters
@@ -291,7 +307,7 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str]) \
 
     Returns
     -------
-     ret
+    ret
         data type e.g. ivy.float32.
 
     """
@@ -300,53 +316,24 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str]) \
 
 # noinspection PyShadowingNames
 def _assert_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    """
-
-    Parameters
-    ----------
-    dtype
-
-    Returns
-    -------
-
-    """
-    assert 'int' in dtype or 'float' in dtype or 'bool' in dtype
+    assert "int" in dtype or "float" in dtype or "bool" in dtype
 
 
 # noinspection PyShadowingNames
 def _assert_int_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    """
-
-    Parameters
-    ----------
-    dtype
-
-    Returns
-    -------
-
-    """
-    assert 'int' in dtype
+    assert "int" in dtype
 
 
 # noinspection PyShadowingNames
 def _assert_float_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    """
-
-    Parameters
-    ----------
-    dtype
-
-    Returns
-    -------
-
-    """
-    assert 'float' in dtype
+    assert "float" in dtype
 
 
 # noinspection PyShadowingNames
-def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False) \
-        -> Union[ivy.Dtype, str]:
-    """
+def default_int_dtype(
+    input=None, int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False
+) -> Union[ivy.Dtype, str]:
+    """Summary.
 
     Parameters
     ----------
@@ -354,14 +341,15 @@ def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_st
          (Default value = None)
     int_dtype
 
-    str]
+    str
          (Default value = None)
     as_str
          (Default value = False)
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default int dtype.
+        Return the input int dtype if provided, otherwise return the global default int
+        dtype.
 
     """
     if ivy.exists(int_dtype):
@@ -373,9 +361,13 @@ def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_st
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(input, lambda x: x > 9223372036854775807 and x != ivy.inf):
+            if ivy.nested_indices_where(
+                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+            ):
                 ret = ivy.uint64
-            elif ivy.nested_indices_where(input, lambda x: x > 2147483647 and x != ivy.inf):
+            elif ivy.nested_indices_where(
+                input, lambda x: x > 2147483647 and x != ivy.inf
+            ):
                 ret = ivy.int64
             else:
                 def_dtype = default_dtype()
@@ -384,7 +376,11 @@ def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_st
                 else:
                     ret = ivy.int32
         elif isinstance(input, Number):
-            if input > 9223372036854775807 and input != ivy.inf and ivy.backend != 'torch':
+            if (
+                input > 9223372036854775807
+                and input != ivy.inf
+                and ivy.backend != "torch"
+            ):
                 ret = ivy.uint64
             elif input > 2147483647 and input != ivy.inf:
                 ret = ivy.int64
@@ -401,7 +397,7 @@ def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_st
             if ivy.is_int_dtype(def_dtype):
                 ret = def_dtype
             else:
-                ret = 'int32'
+                ret = "int32"
         else:
             ret = default_int_dtype_stack[-1]
     if as_str:
@@ -412,18 +408,23 @@ def default_int_dtype(input=None, int_dtype: Union[ivy.Dtype, str] = None, as_st
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 def _check_float64(input):
     if math.isfinite(input):
-        tmp = str(input).replace('-', '').split('.')
+        tmp = str(input).replace("-", "").split(".")
         Exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(tmp[0])).replace('0b', '')
-        return (input > 3.4028235 * 10 ** 38) or (len(mant) > 24 and int(mant[24:]) > 0) or (Exponent < -126) or (
-                Exponent > 127)
+        mant = bin(int(tmp[0])).replace("0b", "")
+        return (
+            (input > 3.4028235 * 10**38)
+            or (len(mant) > 24 and int(mant[24:]) > 0)
+            or (Exponent < -126)
+            or (Exponent > 127)
+        )
     return False
 
 
 # noinspection PyShadowingNames
-def default_float_dtype(input=None, float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False) \
-        -> Union[ivy.Dtype, str]:
-    """
+def default_float_dtype(
+    input=None, float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False
+) -> Union[ivy.Dtype, str]:
+    """Summary.
 
     Parameters
     ----------
@@ -431,14 +432,15 @@ def default_float_dtype(input=None, float_dtype: Union[ivy.Dtype, str] = None, a
          (Default value = None)
     float_dtype
 
-    str]
+    str
          (Default value = None)
     as_str
          (Default value = False)
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global default float dtype.
+        Return the input float dtype if provided, otherwise return the global default
+        float dtype.
 
     """
     if ivy.exists(float_dtype):
@@ -474,7 +476,7 @@ def default_float_dtype(input=None, float_dtype: Union[ivy.Dtype, str] = None, a
             if ivy.is_float_dtype(def_dtype):
                 ret = def_dtype
             else:
-                ret = 'float32'
+                ret = "float32"
         else:
             ret = default_float_dtype_stack[-1]
     if as_str:
@@ -483,15 +485,16 @@ def default_float_dtype(input=None, float_dtype: Union[ivy.Dtype, str] = None, a
 
 
 # noinspection PyShadowingNames
-def default_dtype(dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool = False) \
-        -> Union[ivy.Dtype, str]:
-    """
+def default_dtype(
+    dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool = False
+) -> Union[ivy.Dtype, str]:
+    """Summary.
 
     Parameters
     ----------
     dtype
 
-    str]
+    str
          (Default value = None)
     item
          (Default value = None)
@@ -514,16 +517,16 @@ def default_dtype(dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool =
         elif ivy.is_int_dtype(item):
             return default_int_dtype(item, as_str=as_str)
         elif as_str:
-            return 'bool'
+            return "bool"
         else:
-            return dtype_from_str('bool')
+            return dtype_from_str("bool")
     global default_dtype_stack
     if not default_dtype_stack:
         global default_float_dtype_stack
         if default_float_dtype_stack:
             ret = default_float_dtype_stack[-1]
         else:
-            ret = 'float32'
+            ret = "float32"
     else:
         ret = default_dtype_stack[-1]
     if as_str:
@@ -533,14 +536,11 @@ def default_dtype(dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool =
 
 # noinspection PyShadowingNames
 def set_default_dtype(dtype: Union[ivy.Dtype, str]):
-    """
+    """Summary.
 
     Parameters
     ----------
     dtype
-
-    Returns
-    -------
 
     """
     dtype = ivy.dtype_to_str(dtype)
@@ -550,7 +550,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_dtype():
-    """ """
+    """"""
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)
@@ -558,14 +558,11 @@ def unset_default_dtype():
 
 # noinspection PyShadowingNames
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
-    """
+    """Summary.
 
     Parameters
     ----------
     int_dtype
-
-    Returns
-    -------
 
     """
     int_dtype = ivy.dtype_to_str(int_dtype)
@@ -575,7 +572,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_int_dtype():
-    """ """
+    """"""
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)
@@ -583,14 +580,11 @@ def unset_default_int_dtype():
 
 # noinspection PyShadowingNames
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
-    """
+    """Summary.
 
     Parameters
     ----------
     float_dtype
-
-    Returns
-    -------
 
     """
     float_dtype = ivy.dtype_to_str(float_dtype)
@@ -600,15 +594,14 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_float_dtype():
-    """ """
+    """"""
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
 
 
 # noinspection PyShadowingBuiltins
-def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) \
-        -> Union[ivy.Dtype, str]:
+def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, str]:
     """Determines the closest valid datatype to the datatype passed as input.
 
     Parameters
@@ -617,7 +610,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) \
         The data type for which to check the closest valid type for.
 
     Returns
-     -------
+    -------
     ret
         The closest valid data type as a native ivy.Dtype
 
@@ -625,8 +618,9 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) \
     return _cur_framework(type).closest_valid_dtype(type)
 
 
-def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]) \
-        -> bool:
+def is_int_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+) -> bool:
     """Determine whether the input data type is an int data-type.
 
     Parameters
@@ -635,7 +629,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
         Datatype to test
 
     Returns
-     -------
+    -------
     ret
         Whether or not the data type is an integer data type
 
@@ -643,16 +637,28 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
-        return 'int' in dtype_in.dtype.name
+        return "int" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, (int, np.integer)) and not isinstance(dtype_in, bool) else False
+        return (
+            True
+            if isinstance(dtype_in, (int, np.integer))
+            and not isinstance(dtype_in, bool)
+            else False
+        )
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (int, np.integer))) else False
-    return 'int' in dtype_to_str(dtype_in)
+        return (
+            True
+            if ivy.nested_indices_where(
+                dtype_in, lambda x: isinstance(x, (int, np.integer))
+            )
+            else False
+        )
+    return "int" in dtype_to_str(dtype_in)
 
 
-def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]) \
-        -> bool:
+def is_float_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+) -> bool:
     """Determine whether the input data type is an float data-type.
 
     Parameters
@@ -661,7 +667,7 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
         Datatype to test
 
     Returns
-     -------
+    -------
     ret
         Whether or not the data type is a floating point data type
 
@@ -669,33 +675,45 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
-        return 'float' in dtype_in.dtype.name
+        return "float" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
         return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
-    return 'float' in dtype_to_str(dtype_in)
+        return (
+            True
+            if ivy.nested_indices_where(
+                dtype_in, lambda x: isinstance(x, (float, np.floating))
+            )
+            else False
+        )
+    return "float" in dtype_to_str(dtype_in)
 
 
-def result_type(*arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]) -> ivy.Dtype:
-    """
-    Returns the dtype that results from applying the type promotion rules (see :ref:`type-promotion`) to the arguments.
+def result_type(
+    *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+) -> ivy.Dtype:
+    """Returns the dtype that results from applying the type promotion rules (see
+    :ref:`type-promotion`) to the arguments.
+
     .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.
+       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+       will be implementation-specific.
+
     Parameters
     ----------
     arrays_and_dtypes
         an arbitrary number of input arrays and/or dtypes.
+
     Returns
-     -------
+    -------
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
+
     """
     return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
 
-def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
-        -> bool:
+def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """Determines whether the provided data type is support by the current framework.
 
     Parameters
@@ -704,7 +722,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
         The data type for which to check for backend support
 
     Returns
-     -------
+    -------
     ret
         Boolean, whether or not the data-type string is supported.
 
@@ -714,9 +732,9 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
     return ivy.dtype_to_str(dtype_in) in ivy.valid_dtype_strs
 
 
-def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
-        -> bool:
-    """Determines whether the provided data type is not support by the current framework.
+def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
+    """Determines whether the provided data type is not support by the current
+    framework.
 
     Parameters
     ----------
@@ -724,7 +742,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
         The data type for which to check for backend non-support
 
     Returns
-     -------
+    -------
     ret
         Boolean, whether the data-type string is un-supported.
 
@@ -734,8 +752,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
     return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
 
 
-def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) \
-        -> ivy.Dtype:
+def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
     """Converts a data type from one backend framework representation to another.
 
     Parameters
@@ -746,13 +763,15 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) \
         The backend framework the dtype_in is represented in.
 
     Returns
-     -------
+    -------
     ret
         The data-type in the current ivy backend format
 
     """
-    valid_backends = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
+    valid_backends = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
     if backend not in valid_backends:
-        raise Exception('Invalid backend passed, must be one of {}'.format(valid_backends))
-    ivy_backend = importlib.import_module('ivy.functional.backends.{}'.format(backend))
+        raise Exception(
+            "Invalid backend passed, must be one of {}".format(valid_backends)
+        )
+    ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
     return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))

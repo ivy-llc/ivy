@@ -1,5 +1,5 @@
-"""
-Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and signature.
+"""Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and
+signature.
 """
 
 # global
@@ -11,7 +11,7 @@ from ivy.container import Container
 
 
 def variable(x):
-    with tf.device('/' + ivy.dev(x, as_str=True).upper()):
+    with tf.device("/" + ivy.dev(x, as_str=True).upper()):
         return tf.Variable(x, trainable=True)
 
 
@@ -24,7 +24,9 @@ variable_data = lambda x: x.value()
 
 def execute_with_gradients(func, xs, retain_grads=False):
     xs = xs.to_native()
-    with tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
+    with tf.GradientTape(
+        persistent=retain_grads, watch_accessed_variables=False
+    ) as tape:
         tape.watch(xs)
         func_ret = func(xs)
     if isinstance(func_ret, tuple):

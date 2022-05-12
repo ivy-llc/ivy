@@ -1,6 +1,4 @@
-"""
-Collection of tests for the demos
-"""
+"""Collection of tests for the demos."""
 
 # global
 import pytest
@@ -15,7 +13,7 @@ import ivy_tests.test_ivy.helpers as helpers
 # ------#
 
 # training
-def test_training_demo(dev, call):
+def test_training_demo(device, call):
 
     if call is helpers.np_call:
         # numpy does not support gradients
@@ -33,8 +31,8 @@ def test_training_demo(dev, call):
 
     model = MyModel()
     optimizer = ivy.Adam(1e-4)
-    x_in = ivy.array([1., 2., 3.])
-    target = ivy.array([0.])
+    x_in = ivy.array([1.0, 2.0, 3.0])
+    target = ivy.array([0.0])
 
     def loss_fn(v):
         out = model(x_in, v=v)
@@ -46,15 +44,20 @@ def test_training_demo(dev, call):
 
 
 # functional api
-# def test_array(dev, call):
-#     ivy.unset_framework()
-#     import jax.numpy as jnp
-#     assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
-#     import tensorflow as tf
-#     assert ivy.concat((tf.ones((1,)), tf.ones((1,))), -1).shape == (2,)
-#     import numpy as np
-#     assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
-#     import mxnet as mx
-#     assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
-#     import torch
-#     assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)
+def test_array(device, call):
+    ivy.unset_framework()
+    import jax.numpy as jnp
+
+    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
+    import tensorflow as tf
+
+    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), -1).shape == (2,)
+    import numpy as np
+
+    assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
+    import mxnet as mx
+
+    assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
+    import torch
+
+    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)
