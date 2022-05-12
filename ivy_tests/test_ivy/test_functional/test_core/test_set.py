@@ -6,24 +6,23 @@ import pytest
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
+
 # unique_values
 @pytest.mark.parametrize(
-    "arr_uniqarr", [([1., 1., 2., 2., 3., 4., 5.], [1., 2., 3., 4., 5.])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-@pytest.mark.parametrize(
-    "with_out", [False, True])
-def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, dev):
+    "arr_uniqarr", [([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 5.0], [1.0, 2.0, 3.0, 4.0, 5.0])]
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@pytest.mark.parametrize("with_out", [False, True])
+def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
 
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
 
     arr, gt = arr_uniqarr
-    arr = tensor_fn(arr, dtype, dev)
-    gt = tensor_fn(gt, dtype, dev)
-    
+    arr = tensor_fn(arr, dtype, device)
+    gt = tensor_fn(gt, dtype, device)
+
     # create dummy out so that it is broadcastable to gt
     out = ivy.zeros(ivy.shape(gt)) if with_out else None
 
