@@ -75,34 +75,34 @@ def unique_all(
            The order of unique elements is not specified and may vary between
            implementations.
    
-   Examples
-   --------
-   >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(4, 4))
-   >>> print(x)
-   ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+    Examples
+    --------
+    >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(4, 4))
+    >>> print(x)
+    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
               [-1.2119, -0.3519, -0.6252,  0.4033],
               [ 0.7443,  0.2577, -0.3707, -0.0545],
               [-0.3238,  0.5944,  0.0775, -0.4327]])
-   >>> x[range(4), range(4)] = ivy.constants.nan #Introduce NaN values
-   >>> print(x)
-   ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
+    >>> x[range(4), range(4)] = ivy.constants.nan #Introduce NaN values
+    >>> print(x)
+    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
               [-1.2119,     nan, -0.6252,  0.4033],
               [ 0.7443,  0.2577,     nan, -0.0545],
               [-0.3238,  0.5944,  0.0775,     nan]])
-   >>> values, indices, inverse_indices, counts = ivy.unique_all(x)
-   >>> print(values)
-   ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
+    >>> values, indices, inverse_indices, counts = ivy.unique_all(x)
+    >>> print(values)
+    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
-   >>> print(indices)
-   ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])
-   >>> print(inverse_indices)
-   ivy.array([[ 3, 13, 15, 14],
+    >>> print(indices)
+    ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])
+    >>> print(inverse_indices)
+    ivy.array([[ 3, 13, 15, 14],
               [ 0,  3,  1,  2],
               [12, 10,  3,  8],
               [ 7, 11,  9,  3]])
-   >>> print(counts)
-   ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-   """
+    >>> print(counts)
+    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    """
     return _cur_framework(x).unique_all(x)
 
 
@@ -172,7 +172,6 @@ def unique_values(
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-  
     """Returns the unique elements of an input array x and the corresponding counts for
     each unique element in x.
 
