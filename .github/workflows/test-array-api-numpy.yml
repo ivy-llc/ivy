@@ -11,14 +11,14 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
-#       - name: Download artifact
-#         uses: dawidd6/action-download-artifact@v2
-#         with:
-#           workflow: test-array-api-numpy.yml
-#           workflow_conclusion: success
-#           name: hypothesis
-#           path: |
-#             ivy/.hypothesis
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api-numpy.yml
+          workflow_conclusion: success
+          name: hypothesis
+          path: |
+            ivy/.hypothesis
             
       - name: Run NumPy Tests
         id: tests
