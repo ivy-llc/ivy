@@ -178,3 +178,82 @@ class ArrayWithElementwise(abc.ABC):
         self: ivy.Array, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.isinf(self, out=out)
+
+    def less(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.less(self, x2, out=out)
+
+    def less_equal(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.less_equal(self, x2, out=out)
+
+    def log(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.log(self, out=out)
+
+    def log1p(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.log1p(self, out=out)
+
+    def log2(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.log2(self, out=out)
+
+    def log10(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.log10(self, out=out)
+
+    def logaddexp(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.logaddexp(self, x2, out=out)
+
+    def logical_and(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.logical_and(self, x2, out=out)
+
+    def logical_not(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.logical_not(self, out=out)
+
+    def logical_or(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.logical_or(self, x2, out=out)
+
+    def logical_xor(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.logical_xor(self, x2, out=out)
+
+    def multiply(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.multiply(self, x2, out=out)
+
+    def negative(
+        self: ivy.Array, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.negative(self, out=out)
