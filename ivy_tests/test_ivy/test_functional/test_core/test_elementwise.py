@@ -2153,13 +2153,15 @@ def test_erf(
 
 
 # minimum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(1, 2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
+@given(
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(1, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
 def test_minimum(
     xy,
     as_variable,
@@ -2170,7 +2172,7 @@ def test_minimum(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     # smoke test
     dtype = xy[0]
@@ -2196,18 +2198,20 @@ def test_minimum(
         fw,
         "minimum",
         x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1])
+        x2=ivy.array(y, dtype=dtype[1]),
     )
 
 
 # maximum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
-       as_variable=st.booleans(),
-       with_out=st.booleans(),
-       num_positional_args=st.integers(1, 2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans())
+@given(
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(1, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
 def test_maximum(
     xy,
     as_variable,
@@ -2218,7 +2222,7 @@ def test_maximum(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     # smoke test
     dtype = xy[0]
@@ -2244,5 +2248,5 @@ def test_maximum(
         fw,
         "maximum",
         x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1])
+        x2=ivy.array(y, dtype=dtype[1]),
     )
