@@ -36,10 +36,11 @@ class ArrayWithStatistical(abc.ABC):
     def var(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
-        return ivy.var(self, axis, keepdims, out=out)
+        return ivy.var(self, axis, correction, keepdims, out=out)
 
     def prod(
         self: ivy.Array,
@@ -58,3 +59,12 @@ class ArrayWithStatistical(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         return ivy.sum(self, axis, dtype, keepdims, out=out)
+
+    def std(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> ivy.Array:
+        return ivy.std(self, axis, correction, keepdims, out=out)
