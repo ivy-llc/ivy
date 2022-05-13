@@ -74,10 +74,10 @@ def test_concat(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
     ),
     unique_idx=helpers.integers(0, "num_dims"),
-    dtype=helpers.dtypes(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
+    num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
