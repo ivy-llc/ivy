@@ -529,48 +529,48 @@ def test_clip_vector_norm(
 
 
 # floormod
-@given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_floormod(
-    xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    call,
-    fw,
-):
-    # smoke test
-    dtype = xy[0]
-    x = xy[1][0]
-    divisor = np.abs(xy[1][1])
-    if 0 in divisor:
-        return
-    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "floormod",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(divisor, dtype=dtype[1]),
-    )
+# @given(
+#     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+#     as_variable=st.booleans(),
+#     with_out=st.booleans(),
+#     num_positional_args=st.integers(1, 2),
+#     native_array=st.booleans(),
+#     container=st.booleans(),
+#     instance_method=st.booleans(),
+# )
+# def test_floormod(
+#     xy,
+#     as_variable,
+#     with_out,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     device,
+#     call,
+#     fw,
+# ):
+#     # smoke test
+#     dtype = xy[0]
+#     x = xy[1][0]
+#     divisor = np.abs(xy[1][1])
+#     if 0 in divisor:
+#         return
+#     if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
+#         return
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         with_out,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         instance_method,
+#         fw,
+#         "floormod",
+#         x=np.asarray(x, dtype=dtype[0]),
+#         y=np.asarray(divisor, dtype=dtype[1]),
+#     )
 
 
 # linspace
