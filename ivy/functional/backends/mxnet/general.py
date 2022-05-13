@@ -234,7 +234,9 @@ multiprocessing = (
 one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.ndarray.NDArray, as_tensor: bool = False) -> Union[mx.ndarray.NDArray, List[int]]:
+def shape(
+    x: mx.ndarray.NDArray, as_tensor: bool = False
+) -> Union[mx.ndarray.NDArray, List[int]]:
     if as_tensor:
         return mx.nd.shape_array(x)
     else:

@@ -1445,7 +1445,8 @@ def one_hot(
     return _cur_framework(indices).one_hot(indices, depth, device)
 
 
-def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
+def shape(
+    x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
 ) -> Iterable[int]:
     """Returns the shape of the array ``x``.
 
@@ -1470,8 +1471,8 @@ def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
     (2, 3)
     >>> print(y_tensor)
     ivy.array([2, 3])
-    """
     
+    """
     return _cur_framework(x).shape(x, as_array)
 
 
