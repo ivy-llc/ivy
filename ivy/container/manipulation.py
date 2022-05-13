@@ -34,7 +34,8 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
                 lambda xs_, _: ivy.concat(
-                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
+                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays],
+                    axis=axis
                 )
                 if ivy.is_array(xs_[0])
                 else xs_,
@@ -42,6 +43,28 @@ class ContainerWithManipulation(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+            ),
+            out,
+        )
+
+    def expand_dims(
+        self: ivy.Container,
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.expand_dims(x_, axis=axis)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out,
         )
