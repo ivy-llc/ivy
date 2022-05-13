@@ -20,7 +20,6 @@ class ArrayWithManipulation(abc.ABC):
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.concat([self] + xs, axis, out=out)
 
-
     def expand_dims(
         self: ivy.Array,
         axis: Optional[int] = 0,
