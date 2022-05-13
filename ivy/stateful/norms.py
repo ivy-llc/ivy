@@ -8,13 +8,13 @@ from ivy.stateful.initializers import Zeros, Ones
 
 class LayerNorm(Module):
     def __init__(
-            self,
-            normalized_shape,
-            epsilon=None,
-            elementwise_affine=True,
-            new_std=None,
-            device=None,
-            v=None,
+        self,
+        normalized_shape,
+        epsilon=None,
+        elementwise_affine=True,
+        new_std=None,
+        device=None,
+        v=None,
     ):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
