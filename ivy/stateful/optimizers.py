@@ -2,7 +2,6 @@
 
 # global
 import abc
-import logging
 
 # local
 import ivy
