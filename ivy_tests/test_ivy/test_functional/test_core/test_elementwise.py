@@ -387,43 +387,45 @@ def test_bitwise_and(
 
 
 # bitwise_left_shift
-# @given(
-#     dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs, 2),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     with_out=st.booleans(),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-#     instance_method=st.booleans(),
-# )
-# def test_bitwise_left_shift(
-#     dtype_and_x,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     if fw == "torch":
-#         return  # torch has strange behaviour when shifting more than number of bits
-#     dtype, x = dtype_and_x
-#     if any(d in ivy.invalid_dtype_strs for d in dtype):
-#         return
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         with_out,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "bitwise_left_shift",
-#         x1=np.asarray(x[0], dtype=dtype[0]),
-#         x2=np.asarray(x[1], dtype=dtype[1]),
-#     )
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_bitwise_left_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if dtype in ivy.invalid_dtype_strs:
+        return
+    assume(x)
+    x1 = np.asarray(x, dtype=dtype)
+    n_bits = ivy.dtype_bits(dtype)
+    x2 = np.random.randint(n_bits, size=x1.shape, dtype=dtype)
+    helpers.test_array_function(
+        [dtype, dtype],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "bitwise_left_shift",
+        x1=x1,
+        x2=x2,
+    )
 
 
 # bitwise_invert
@@ -502,43 +504,45 @@ def test_bitwise_or(
 
 
 # bitwise_right_shift
-# @given(
-#     dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs, 2),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     with_out=st.booleans(),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-#     instance_method=st.booleans(),
-# )
-# def test_bitwise_right_shift(
-#     dtype_and_x,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     if fw == "torch":
-#         return
-#     dtype, x = dtype_and_x
-#     if any(d in ivy.invalid_dtype_strs for d in dtype):
-#         return
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         with_out,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "bitwise_right_shift",
-#         x1=np.asarray(x[0], dtype=dtype[0]),
-#         x2=np.asarray(x[1], dtype=dtype[1]),
-#     )
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_bitwise_right_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if dtype in ivy.invalid_dtype_strs:
+        return
+    assume(x)
+    x1 = np.asarray(x, dtype=dtype)
+    n_bits = ivy.dtype_bits(dtype)
+    x2 = np.random.randint(n_bits, size=x1.shape, dtype=dtype)
+    helpers.test_array_function(
+        [dtype, dtype],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "bitwise_right_shift",
+        x1=x1,
+        x2=x2,
+    )
 
 
 # bitwise_xor
