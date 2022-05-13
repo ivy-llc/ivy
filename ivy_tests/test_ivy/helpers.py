@@ -506,14 +506,6 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1):
 
 
 @st.composite
-def dtypes(draw, available_dtypes, n_arrays=1):
-    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
-    if n_arrays == 1:
-        dtype = dtype[0]
-    return dtype
-
-
-@st.composite
 def array_values(draw, dtype, size):
     if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
