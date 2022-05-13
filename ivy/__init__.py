@@ -36,6 +36,7 @@ class Node:
 class Dtype:
     pass
 
+array_significant_figures_stack = list()
 
 # global constants
 _MIN_DENOMINATOR = 1e-12
@@ -359,3 +360,52 @@ backend = "none"
 
 if "IVY_BACKEND" in os.environ:
     ivy.set_framework(os.environ["IVY_BACKEND"])
+
+# Array Significant Figures #
+
+def _assert_array_significant_figures_formatting(sig_figs):
+    assert isinstance(sig_figs, int)
+    assert sig_figs >= 0
+
+
+def array_significant_figures(sig_figs=None):
+    """Summary.
+
+    Parameters
+    ----------
+    sig_figs
+        optional int, number of significant figures to be shown when printing
+
+    Returns
+    -------
+    ret
+
+    """
+    if ivy.exists(sig_figs):
+        _assert_array_significant_figures_formatting(sig_figs)
+        return sig_figs
+    global array_significant_figures_stack
+    if not array_significant_figures_stack:
+        ret = 3 
+    else:
+        ret = array_significant_figures_stack[-1]
+    return ret
+    
+def set_array_significant_figures(sig_figs):
+    """Summary.
+
+    Parameters
+    ----------
+    sig_figs
+        optional int, number of significant figures to be shown when printing
+
+    """
+    _assert_array_significant_figures_formatting(sig_figs)
+    global array_significant_figures_stack
+    array_significant_figures_stack.append(sig_figs)
+
+def unset_array_significant_figures():
+    """"""
+    global array_significant_figures_stack
+    if array_significant_figures_stack:
+        array_significant_figures_stack.pop(-1)
