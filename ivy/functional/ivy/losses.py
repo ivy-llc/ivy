@@ -53,15 +53,19 @@ def cross_entropy(
 
 
 # noinspection PyUnresolvedReferences
-def binary_cross_entropy(true, pred, epsilon=1e-7):
+def binary_cross_entropy(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    epsilon: Optional[float] = 1e-7,
+) -> ivy.Array:
     """Computes the binary cross entropy loss.
 
     Parameters
     ----------
     true
-        true labels
+        input array containing true labels.
     pred
-        Predicted labels
+        input array containing Predicted labels.
     epsilon
         small constant to add to log functions, default is 1e-7
 
@@ -69,6 +73,19 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
     -------
     ret
         The binary cross entropy loss array.
+
+    """
+    """
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 0, 0])
+    >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
+    >>> print(ivy.binary_cross_entropy(x, y))
+    ivy.array([0.2231, 0.2231, 0.3567, 1.6094])
+
+    >>> z = ivy.array([0.6, 0.2, 0.7, 0.3])
+    >>> print(ivy.binary_cross_entropy(x, z))
+    ivy.array([0.9163, 1.6094, 1.2040, 0.3567])
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
