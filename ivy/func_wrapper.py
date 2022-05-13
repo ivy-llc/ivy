@@ -238,7 +238,19 @@ def _wrap_method(fn):
 
 
 def _unwrap_method(method_wrapped):
+    """
+    unwraps the method in method_wrapped.
 
+    Parameters
+    ----------
+    method_wrapped
+        The method to be unwrapped.
+            
+    Returns
+    -------
+    The unwrapped version of the function which is the same as the passed method
+    for unwrapped methods and the inner_fn if the method is wrapped.
+    """
     if not hasattr(method_wrapped, "wrapped") or not method_wrapped.wrapped:
         return method_wrapped
     return method_wrapped.inner_fn
