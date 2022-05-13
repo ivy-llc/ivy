@@ -621,7 +621,7 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
-            Contaienr
+            Container
 
         """
         container0 = containers[0]
@@ -1513,56 +1513,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def std(
-        self,
-        axis=None,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Computes standard deviation of array elements along a given axis for all sub-
-        arrays of container object.
-
-        Parameters
-        ----------
-        axis
-            Axis or axes along which a var is performed. The default, axis=None, will
-            var all of the elements of the input array. If axis is negative it counts
-            from the last to the first axis. If axis is a tuple of ints, a var is
-            performed on all of the axes specified in the tuple instead of a single axis
-            or all the axes as before.
-        keepdims
-            If this is set to True, the axes which are reduced are left in the result as
-            dimensions with size one. With this option, the result will broadcast
-            correctly against the input array. (Default value = False)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with the standard deviation computed for all sub-arrays.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.std(x=x, axis=axis, keepdims=keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def minimum(
         self,
         x2,
@@ -1598,16 +1548,15 @@ class ContainerBase(dict, abc.ABC):
         is_container = isinstance(x2, ivy.Container)
         return self.handle_inplace(
             self.map(
-                lambda x, kc: self._ivy.minimum(
-                    x, x2[kc] if is_container else x2
-                ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) 
-                else x, 
-                key_chains, 
-                to_apply, 
-                prune_unapplied, 
-                map_sequences, 
+                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
-            out
+            out,
         )
 
     def maximum(
@@ -1643,16 +1592,16 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.maximum(
-                x, x2[kc] if is_container else x2
-            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
             out,
         )
 
@@ -1693,19 +1642,21 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(x_min, ivy.Container)
         max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.clip(
-                x,
-                x_min[kc] if min_is_container else x_min,
-                x_max[kc] if max_is_container else x_max,
-            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
-            out
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.clip(
+                    x,
+                    x_min[kc] if min_is_container else x_min,
+                    x_max[kc] if max_is_container else x_max,
+                )
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
         )
 
     def einsum(
