@@ -138,16 +138,14 @@ passed in the constructor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>submodules</strong> (<em>sequence of ivy.Module instances</em>) – Submodules to chain together into a sequence.</p></li>
-<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’,</p></li>
+<li><p><strong>submodules</strong> – Submodules to chain together into a sequence.</p></li>
+<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc.</p></li>
+<li><p><strong>v</strong> – the variables for each submodule in the sequence, constructed internally by
+default.</p></li>
 </ul>
 </dd>
 </dl>
-<p>‘cuda:1’, ‘cpu’ etc.
-:type device: ivy.Device, optional
-:param v: the variables for each submodule in the sequence, constructed
-internally by default.
-:type v: ivy container of variables, optional</p>
 </dd></dl>
 
 </dd></dl>

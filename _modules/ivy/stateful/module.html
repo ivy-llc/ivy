@@ -118,7 +118,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.stateful.module</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Base class for deriving trainable modules.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Base class for deriving trainable modules&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -151,47 +151,44 @@
         <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialze Ivy layer, which is a stateful object consisting of trainable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable</span>
 <span class="sd">        variables.</span>
 
-<span class="sd">        :param device: device on which to create the module&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: Ivy container of trainable variables. Created internally by default.</span>
-<span class="sd">        :type v: ivy container, optional</span>
-<span class="sd">        :param build_mode: How the Module is built, either on initialization (now),</span>
-<span class="sd">                           explicitly by the user by calling build(), or the first time</span>
-<span class="sd">                           the __call__ method is run. Default is on initialization.</span>
-<span class="sd">        :type build_mode: str, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the network on the next forward</span>
-<span class="sd">                                     pass. Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param store_vars: Whether or not to store the variables created.</span>
-<span class="sd">                           Default is True.</span>
-<span class="sd">        :type store_vars: bool, optional</span>
-<span class="sd">        :param stateful: The constant id stateful items to track as part of the forward</span>
-<span class="sd">                         pass. Used when graph compiling, default is None.</span>
-<span class="sd">        :type stateful: seq of any, optional</span>
-<span class="sd">        :param arg_stateful_idxs: The nested argument indices of stateful items to track</span>
-<span class="sd">                                  as part of the forward pass. Used when graph</span>
-<span class="sd">                                  compiling, default is None.</span>
-<span class="sd">        :type arg_stateful_idxs: seq of any, optional</span>
-<span class="sd">        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful</span>
-<span class="sd">                                    items to track as part of the forward pass. Used</span>
-<span class="sd">                                    when graph compiling, default is None.</span>
-<span class="sd">        :type kwarg_stateful_idxs: seq of any, optional</span>
-<span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward</span>
-<span class="sd">                                         call in the case that an error is raised during</span>
-<span class="sd">                                         the compiled forward pass. Default is True.</span>
-<span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
-<span class="sd">        :param with_partial_v: Whether to allow partial specification of variables.</span>
-<span class="sd">                               Default is False.</span>
-<span class="sd">        :type with_partial_v: bool, optional</span>
-<span class="sd">        :param devices: devices on which to distribute the module&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">                        &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type devices: sequence of str, optional</span>
-<span class="sd">        :type build_mode: str, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc. (Default value = None)</span>
+<span class="sd">        v</span>
+<span class="sd">            Ivy container of trainable variables. Created internally by default.</span>
+<span class="sd">        build_mode</span>
+<span class="sd">            How the Module is built, either on initialization (now),</span>
+<span class="sd">            explicitly by the user by calling</span>
+<span class="sd">            build(), or the first time the __call__ method is run.</span>
+<span class="sd">            Default is on initialization.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the network on the next forward pass. Default is False.</span>
+<span class="sd">        store_vars</span>
+<span class="sd">            Whether or not to store the variables created. Default is True.</span>
+<span class="sd">        stateful</span>
+<span class="sd">            The constant id stateful items to track as part of the forward pass.</span>
+<span class="sd">            Used when graph compiling, default is None.</span>
+<span class="sd">        arg_stateful_idxs</span>
+<span class="sd">            The nested argument indices of stateful items to track as part of</span>
+<span class="sd">            the forward pass.</span>
+<span class="sd">            Used when graph compiling, default is None.</span>
+<span class="sd">        kwarg_stateful_idxs</span>
+<span class="sd">            The nested keyword argument indices of stateful items to track as part of</span>
+<span class="sd">            the forward pass. Used when graph compiling, default is None.</span>
+<span class="sd">        fallback_to_non_compiled</span>
+<span class="sd">            Whether to fall back to non-compiled forward call in the case that an error</span>
+<span class="sd">            is raised during the compiled forward pass. Default is True.</span>
+<span class="sd">        with_partial_v</span>
+<span class="sd">            Whether to allow partial specification of variables. Default is False.</span>
+<span class="sd">        devices</span>
+<span class="sd">            devices on which to distribute the module&#39;s variables</span>
+<span class="sd">            &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. (Default value = None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;on_init&quot;</span><span class="p">,</span> <span class="s2">&quot;explicit&quot;</span><span class="p">,</span> <span class="s2">&quot;on_call&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_build_modes</span><span class="p">:</span>
@@ -329,8 +326,8 @@
 
     <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
-        <span class="c1"># ToDo: add support for finding local variables, if/when JAX</span>
-        <span class="c1">#  supports uniquely flagging variables</span>
+        <span class="c1"># ToDo: add support for finding local variables, if/when JAX supports</span>
+        <span class="c1">#  uniquely flagging variables</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Module</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">top_v</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top_v_fn</span><span class="p">(</span>
                 <span class="n">depth</span><span class="p">,</span> <span class="n">flatten_key_chains</span>
@@ -431,24 +428,23 @@
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create internal trainable variables, and return as arbitrary nested dict.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal trainable variables, and return as arbitrary nested dict.</span>
 <span class="sd">        Overridable.</span>
 
-<span class="sd">        :param device: The device string, specifying the device on which to</span>
-<span class="sd">                       create the variables.</span>
-<span class="sd">        :type device: ivy.Deviceing</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        device</span>
+<span class="sd">            The device string, specifying the device on which to create the variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Build the internal layers and variables for this module.</span>
-
-<span class="sd">        Overridable. Return False or empty Container if the build only</span>
-<span class="sd">        partially completed (i.e. some child Modules have &quot;on_call&quot;</span>
-<span class="sd">        build mode). Alternatviely, return True or a container of the</span>
-<span class="sd">        built variables if the module is built.</span>
-
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the internal layers and variables for this module. Overridable. Return</span>
+<span class="sd">        False or empty Container if the build only partially completed (i.e. some</span>
+<span class="sd">        child Modules have &quot;on_call&quot; build mode). Alternatviely, return True or a</span>
+<span class="sd">        container of the built variables if the module is built.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -456,13 +452,14 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forward pass of the layer, called after handling the optional input</span>
-<span class="sd">        variables.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward pass of the layer,</span>
+<span class="sd">        called after handling the optional input variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call order.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call order&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -475,8 +472,9 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The forward pass of the layer, treating layer instance as callable</span>
-<span class="sd">        function.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The forward pass of the layer,</span>
+<span class="sd">        treating layer instance as callable function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
@@ -535,7 +533,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="s2">&quot;both self.top_v and self.v must be initialized in order to show v in &quot;</span>
-                <span class="s2">&quot;top_v, but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+                <span class="s2">&quot;top_v, &quot;</span>
+                <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.v_with_top_v_key_chains"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.v_with_top_v_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">v_with_top_v_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -551,7 +550,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="s2">&quot;both self.top_v and self.v must be initialized in order to show v in &quot;</span>
-                <span class="s2">&quot;top_v, but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+                <span class="s2">&quot;top_v, &quot;</span>
+                <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.mod_with_top_mod_key_chain"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_with_top_mod_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">mod_with_top_mod_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -774,9 +774,10 @@
 <div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save the weights on the Module.</span>
 
-<span class="sd">        :param weights_path: The hdf5 file for saving the weights.</span>
-<span class="sd">        :type weights_path: string</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        weights_path</span>
+<span class="sd">            The hdf5 file for saving the weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
@@ -828,8 +829,8 @@
             <span class="c1"># build during forward pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="c1"># re-build variables based on additional child on-call layers,</span>
-            <span class="c1"># if v not passed in constructor</span>
+            <span class="c1"># re-build variables based on additional child on-call layers, if v not</span>
+            <span class="c1"># passed in constructor</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
                 <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span>
                     <span class="nb">dict</span><span class="p">(</span>

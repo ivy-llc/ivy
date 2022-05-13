@@ -118,7 +118,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.stateful.sequential</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Base class for deriving trainable modules.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Base class for deriving trainable modules&quot;&quot;&quot;</span>
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.stateful.module</span> <span class="kn">import</span> <span class="n">Module</span>
@@ -126,17 +126,20 @@
 
 <div class="viewcode-block" id="Sequential"><a class="viewcode-back" href="../../../stateful/sequential/Sequential.html#ivy.stateful.sequential.Sequential">[docs]</a><span class="k">class</span> <span class="nc">Sequential</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <div class="viewcode-block" id="Sequential.__init__"><a class="viewcode-back" href="../../../stateful/sequential/Sequential.html#ivy.stateful.sequential.Sequential.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sub_modules</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A sequential container. Modules will be added to it in the order they are</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A sequential container. Modules will be added to it in the order they are</span>
 <span class="sd">        passed in the constructor.</span>
 
-<span class="sd">        :param submodules: Submodules to chain together into a sequence.</span>
-<span class="sd">        :type submodules: sequence of ivy.Module instances</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">        &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type device: ivy.Device, optional</span>
-<span class="sd">        :param v: the variables for each submodule in the sequence, constructed</span>
-<span class="sd">        internally by default.</span>
-<span class="sd">        :type v: ivy container of variables, optional</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        submodules</span>
+<span class="sd">            Submodules to chain together into a sequence.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc.</span>
+<span class="sd">        v</span>
+<span class="sd">            the variables for each submodule in the sequence, constructed internally by</span>
+<span class="sd">            default.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -147,17 +150,25 @@
                     <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                             <span class="s2">&quot;variables v passed to Sequential class must have key &quot;</span>
-                            <span class="s2">&quot;chains in the form of `submodules/v</span><span class="si">{}</span><span class="s2">`, where </span><span class="si">{}</span><span class="s2"> is an idx&quot;</span>
+                            <span class="s2">&quot;chains in the form of &quot;</span>
+                            <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>
                         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submodules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sub_modules</span><span class="p">)</span>
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Perform forward pass of the Linear layer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the Linear layer.</span>
 
-<span class="sd">        :param inputs: Inputs to process.</span>
-<span class="sd">        :type inputs: array</span>
-<span class="sd">        :return: The outputs following the linear operation and bias addition.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inputs</span>
+<span class="sd">            Inputs to process.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The outputs following the linear operation and bias addition.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span>
@@ -167,8 +178,9 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                        <span class="s2">&quot;variables v passed to Sequential class must have key chains in&quot;</span>
-                        <span class="s2">&quot;the form of &#39;submodules/v</span><span class="si">{}</span><span class="s2">&#39;, where </span><span class="si">{}</span><span class="s2"> is an idx&quot;</span>
+                        <span class="s2">&quot;variables v passed to Sequential class must have key chains &quot;</span>
+                        <span class="s2">&quot;in the form of &quot;</span>
+                        <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>
                     <span class="p">)</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">submod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div>

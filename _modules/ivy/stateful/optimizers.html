@@ -132,6 +132,7 @@
 
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    
 <div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="p">,</span>
@@ -142,33 +143,31 @@
         <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct an general Optimizer. This is an abstract class, and must be</span>
-<span class="sd">        derived.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
-<span class="sd">        :param lr: Learning rate.</span>
-<span class="sd">        :type lr: function or float.</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
-<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
-<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
-<span class="sd">                        the backend framework supports it.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
-<span class="sd">                               gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param init_on_first_step: Whether the optimizer is initialized on the first</span>
-<span class="sd">                                   step. Default is False.</span>
-<span class="sd">        :type init_on_first_step: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
-<span class="sd">                                     Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward</span>
-<span class="sd">                                         call in the case that an error is raised during</span>
-<span class="sd">                                         the compiled forward pass. Default is True.</span>
-<span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type device: ivy.Device, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
+<span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
+<span class="sd">            PyTorch.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        init_on_first_step</span>
+<span class="sd">            Whether the optimizer is initialized on the first step. Default is False.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        fallback_to_non_compiled</span>
+<span class="sd">            Whether to fall back to non-compiled forward call in the case that an error</span>
+<span class="sd">            is raised during the compiled forward pass. Default is True.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc. (Default value = None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="o">=</span> <span class="n">lr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span> <span class="o">=</span> <span class="n">inplace</span>
@@ -189,14 +188,22 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v from update step, using nested grads</span>
-<span class="sd">        container. Override this abstract method with child class custom implementation.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v from update step, using nested grads</span>
+<span class="sd">        container. Override this abstract method with child class custom</span>
+<span class="sd">        implementation.</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :return: The updated variables, following update step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The updated variables, following update step.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -204,6 +211,17 @@
     <span class="c1"># Given #</span>
 
     <span class="k">def</span> <span class="nf">_step_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+
+<span class="sd">        grads</span>
+
+<span class="sd">        ignore_missing</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
@@ -215,27 +233,37 @@
 
 <div class="viewcode-block" id="Optimizer.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.set_state">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
 
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state</span>
+<span class="sd">            Nested state to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="c1"># Given #</span>
 
 <div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v from overriden private self._step.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v from overriden private self._step</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :param ignore_missing: Whether to ignore keys missing from the gradients which</span>
-<span class="sd">                               exist in the variables. Default is False.</span>
-<span class="sd">        :type ignore_missing: bool, optional</span>
-<span class="sd">        :return: The updated variables, following update step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
+<span class="sd">        ignore_missing</span>
+<span class="sd">            Whether to ignore keys missing from the gradients which exist in</span>
+<span class="sd">            the variables.</span>
+<span class="sd">            Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The updated variables, following update step.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -248,6 +276,7 @@
 
 
 <div class="viewcode-block" id="SGD"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD">[docs]</a><span class="k">class</span> <span class="nc">SGD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    
 <div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
@@ -255,22 +284,23 @@
         <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a Stochastic-Gradient-Descent (SGD) optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a Stochastic-Gradient-Descent (SGD) optimizer.</span>
 
-<span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
-<span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
-<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
-<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
-<span class="sd">                        the backend framework supports it.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
-<span class="sd">                               gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
-<span class="sd">                                     Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
+<span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
+<span class="sd">            PyTorch.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="n">compile_on_next_step</span>
@@ -279,14 +309,21 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using nested</span>
-<span class="sd">        gradients container.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v by gradient descent step,</span>
+<span class="sd">        using nested gradients container.</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :return: The new updated variables container, following gradient descent step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new updated variables container, following gradient descent step.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span>
@@ -298,20 +335,24 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="SGD.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
 
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state</span>
+<span class="sd">            Nested state to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({})</span></div>
 
 
 <div class="viewcode-block" id="LARS"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS">[docs]</a><span class="k">class</span> <span class="nc">LARS</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    
 <div class="viewcode-block" id="LARS.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
@@ -320,24 +361,25 @@
         <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</span>
 
-<span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
-<span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
-<span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
-<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
-<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
-<span class="sd">                        the backend framework supports it.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
-<span class="sd">                               gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
-<span class="sd">                                     Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">        decay_lambda</span>
+<span class="sd">            The factor used for weight decay. Default is zero.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
+<span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
+<span class="sd">            PyTorch.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span> <span class="o">=</span> <span class="n">decay_lambda</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -347,14 +389,21 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by gradient descent step, using nested</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v by gradient descent step, using nested</span>
 <span class="sd">        gradients container.</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :return: The new updated variables container, following LARS step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new updated variables container, following LARS step.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lars_update</span><span class="p">(</span>
@@ -367,20 +416,24 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="LARS.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
 
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state</span>
+<span class="sd">            Nested state to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({})</span></div>
 
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    
 <div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
@@ -392,32 +445,32 @@
         <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct an ADAM optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an ADAM optimizer.</span>
 
-<span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
-<span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param beta1: gradient forgetting factor, default is 0.9</span>
-<span class="sd">        :type beta1: float, optional</span>
-<span class="sd">        :param beta2: second moment of gradient forgetting factor, default is 0.999</span>
-<span class="sd">        :type beta2: float, optional</span>
-<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default</span>
-<span class="sd">                        is 1e-07</span>
-<span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
-<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
-<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
-<span class="sd">                        the backend framework supports it.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
-<span class="sd">                               gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
-<span class="sd">                                     Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type device: ivy.Device, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">        beta1</span>
+<span class="sd">            gradient forgetting factor, default is 0.9</span>
+<span class="sd">        beta2</span>
+<span class="sd">            second moment of gradient forgetting factor, default is 0.999</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
+<span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
+<span class="sd">            PyTorch.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc. (Default value = None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">device</span>
@@ -433,14 +486,21 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by Adam update step, using nested grads</span>
-<span class="sd">        container.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v by Adam update step,</span>
+<span class="sd">        using nested grads container.</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :return: The updated variables, following Adam update step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The updated variables, following Adam update step.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span><span class="p">:</span>
@@ -463,21 +523,25 @@
         <span class="k">return</span> <span class="n">new_v</span>
 
 <div class="viewcode-block" id="Adam.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
 
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state</span>
+<span class="sd">            Nested state to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">vw</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;mw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s2">&quot;vw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="LAMB"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB">[docs]</a><span class="k">class</span> <span class="nc">LAMB</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    
 <div class="viewcode-block" id="LAMB.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
@@ -491,38 +555,37 @@
         <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct an LAMB optimizer.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an LAMB optimizer.</span>
 
-<span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
-<span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param beta1: gradient forgetting factor, default is 0.9</span>
-<span class="sd">        :type beta1: float, optional</span>
-<span class="sd">        :param beta2: second moment of gradient forgetting factor, default is 0.999</span>
-<span class="sd">        :type beta2: float, optional</span>
-<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default</span>
-<span class="sd">                        is 1e-07</span>
-<span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param max_trust_ratio: The max value of the trust ratio; the ratio between the</span>
-<span class="sd">                                norm of the layer weights and norm of gradients update.</span>
-<span class="sd">                                Default is 10.</span>
-<span class="sd">        :type max_trust_ratio: float, optional</span>
-<span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
-<span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new</span>
-<span class="sd">                        variable handles. This is only relevant for frameworks with</span>
-<span class="sd">                        stateful variables such as PyTorch. Default is True, provided</span>
-<span class="sd">                        the backend framework supports it.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each</span>
-<span class="sd">                               gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step.</span>
-<span class="sd">                                     Default is False.</span>
-<span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;,</span>
-<span class="sd">                       &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type device: ivy.Device, optional</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate, default is 1e-4.</span>
+<span class="sd">        beta1</span>
+<span class="sd">            gradient forgetting factor, default is 0.9</span>
+<span class="sd">        beta2</span>
+<span class="sd">            second moment of gradient forgetting factor, default is 0.999</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">        max_trust_ratio</span>
+<span class="sd">            The max value of the trust ratio; the ratio between the norm of the layer</span>
+<span class="sd">            weights and norm of gradients update. Default is 10.</span>
+<span class="sd">        decay_lambda</span>
+<span class="sd">            The factor used for weight decay. Default is zero.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to update the variables in-place, or to create new variable handles.</span>
+<span class="sd">            This is only relevant for frameworks with stateful variables such as</span>
+<span class="sd">            PyTorch.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        compile_on_next_step</span>
+<span class="sd">            Whether to compile the optimizer on the next step. Default is False.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc. (Default value = None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">device</span>
@@ -539,15 +602,21 @@
     <span class="c1"># Custom Step</span>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update nested variables container v by LAMB update step, using nested grads</span>
-<span class="sd">        container.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v by LAMB update step,</span>
+<span class="sd">        using nested grads container.</span>
 
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :return: The updated variables, following LAMB update step.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Nested variables to update.</span>
+<span class="sd">        grads</span>
+<span class="sd">            Nested gradients to update.</span>
 
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The updated variables, following LAMB update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">grads</span>
@@ -573,15 +642,17 @@
 <div class="viewcode-block" id="LAMB.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
 
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state</span>
+<span class="sd">            Nested state to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">vw</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;mw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s2">&quot;vw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span></div>
 </pre></div>
 

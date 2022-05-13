@@ -147,28 +147,30 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query_dim</strong> (<em>int</em>) – The dimension of the attention queries.</p></li>
-<li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of attention heads. Default is 8.</p></li>
-<li><p><strong>head_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension of each of the heads. Default is 64.</p></li>
-<li><p><strong>dropout_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – The rate of dropout. Default is 0.</p></li>
-<li><p><strong>context_dim</strong> (<em>int</em><em>, </em><em>optional.</em>) – The dimension of the context array. Default is None, in
-which case the query dim is used.</p></li>
-<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – The value by which to scale the query-key similarity measure.
+<li><p><strong>query_dim</strong> – The dimension of the attention queries.</p></li>
+<li><p><strong>num_heads</strong> – Number of attention heads. Default is 8.</p></li>
+<li><p><strong>head_dim</strong> – The dimension of each of the heads. Default is 64.</p></li>
+<li><p><strong>dropout_rate</strong> – The rate of dropout. Default is 0.</p></li>
+<li><p><strong>context_dim</strong> – The dimension of the context array.
+Default is None, in which case the query dim is used.</p></li>
+<li><p><strong>scale</strong> – The value by which to scale the query-key similarity measure.
 Default is head_dim^-0.5</p></li>
-<li><p><strong>with_to_q_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input x
-to queries. Default is True.</p></li>
-<li><p><strong>with_to_kv_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input
-context to keys and values. Default is True.</p></li>
-<li><p><strong>with_to_out_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from output
-scaled dot-product attention to final output. Default
-is True.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
-‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the attention layer, as a container, constructed
-internally by default.</p></li>
-<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now),
-explicitly by the user by calling build(), or the first time
-the __call__ method is run. Default is on initialization.</p></li>
+<li><p><strong>with_to_q_fn</strong> – Whether to include fully connected mapping from input x to queries.
+Default is True.</p></li>
+<li><p><strong>with_to_kv_fn</strong> – Whether to include fully connected mapping from input context to keys
+and values.
+Default is True.</p></li>
+<li><p><strong>with_to_out_fn</strong> – Whether to include fully connected mapping from output scaled dot-product
+attention to final output.
+Default is True.</p></li>
+<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> – the variables for the attention layer, as a container,
+constructed internally by default.</p></li>
+<li><p><strong>build_mode</strong> – How the Module is built, either on initialization (now),
+explicitly by the user by calling
+build(), or the first time the __call__ method is run.
+Default is on initialization.</p></li>
 </ul>
 </dd>
 </dl>

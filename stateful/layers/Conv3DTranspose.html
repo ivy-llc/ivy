@@ -147,21 +147,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
-<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
-<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list
-indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is
-GlorotUniform.</p></li>
-<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’,
-‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container,
+<li><p><strong>input_channels</strong> – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or
+list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
+<li><p><strong>data_format</strong> – NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
 </ul>
 </dd>

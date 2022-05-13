@@ -134,23 +134,21 @@ trainable ivy.Module instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>native_module</strong> (<em>native module instance</em><em>, </em><em>optional</em>) – The module in the native framework to convert, required if
-native_module_class is not given. Default is None.</p></li>
-<li><p><strong>native_module_class</strong> (<em>class</em><em>, </em><em>optional</em>) – The class of the native module, required if
-native_module is not given. Default is None.</p></li>
-<li><p><strong>args</strong> (<em>list of any</em>) – Positional arguments to pass to the native module class.
+<li><p><strong>native_module</strong> – The module in the native framework to convert, required if native_module_class
+is not given.
 Default is None.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Key-word arguments to pass to the native module class.
+<li><p><strong>native_module_class</strong> – The class of the native module, required if native_module is not given.
 Default is None.</p></li>
-<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – The device on which to create module variables.
-Default is None.</p></li>
-<li><p><strong>devices</strong> (<em>sequence of str</em><em>, </em><em>optional</em>) – The devices on which to create module variables. Default is None.</p></li>
-<li><p><strong>inplace_update</strong> (<em>bool</em><em>, </em><em>optional</em>) – For backends with dedicated variable classes, whether
-to update these inplace. Default is False.</p></li>
+<li><p><strong>args</strong> – Positional arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>kwargs</strong> – Key-word arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>device</strong> – The device on which to create module variables. Default is None.</p></li>
+<li><p><strong>devices</strong> – The devices on which to create module variables. Default is None.</p></li>
+<li><p><strong>inplace_update</strong> – For backends with dedicated variable classes, whether to update these inplace.
+Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new trainable ivy.Module instance.</p>
+<dd class="field-even"><p><em>ret</em> – The new trainable ivy.Module instance.</p>
 </dd>
 </dl>
 </dd></dl>
