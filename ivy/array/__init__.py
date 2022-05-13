@@ -5,6 +5,7 @@ import functools
 from operator import mul
 
 # local
+import numpy as np
 from . import conversions
 from .conversions import *
 
@@ -198,7 +199,9 @@ class Array(
 
     @_native_wrapper
     def __repr__(self):
-        return (
+        sig_fig = ivy.array_significant_figures()
+        with np.printoptions(precision=sig_fig):
+            return (
             self._pre_repr
             + ivy.to_numpy(self._data)
             .__repr__()[:-1]
