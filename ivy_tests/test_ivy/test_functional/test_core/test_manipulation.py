@@ -8,6 +8,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # concat
@@ -68,36 +69,54 @@ def test_concat(
 
 
 # expand_dims
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_expand_dims(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([[2, 3, 4]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.expand_dims(x, out=out)
-    else:
-        ret = ivy.expand_dims(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    unique_idx=helpers.integers(0, "num_dims"),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    seed=st.integers(0, 2**32 - 1),
+)
+def test_expand_dims(
+    array_shape,
+    unique_idx,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    seed,
+    fw,
+):  
+    # smoke this for torch
+    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+        return
+
+    np.random.seed(seed)    
+
+    x = np.random.uniform(size=array_shape).astype(dtype)
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "expand_dims",
+        x=x,
+        axis=unique_idx,
+    )
 
 
 # flip
