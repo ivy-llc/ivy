@@ -13,14 +13,14 @@ from ivy.stateful.initializers import Zeros, GlorotUniform
 class Linear(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            with_bias=True,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        with_bias=True,
+        device=None,
+        v=None,
     ):
         """
         Linear layer, also referred to as dense or fully connected. The layer
@@ -158,19 +158,19 @@ class Dropout(Module):
 class MultiHeadAttention(Module):
 
     def __init__(
-            self,
-            query_dim,
-            num_heads=8,
-            head_dim=64,
-            dropout_rate=0.0,
-            context_dim=None,
-            scale=None,
-            with_to_q_fn=True,
-            with_to_kv_fn=True,
-            with_to_out_fn=True,
-            device=None,
-            v=None,
-            build_mode="on_init",
+        self,
+        query_dim,
+        num_heads=8,
+        head_dim=64,
+        dropout_rate=0.0,
+        context_dim=None,
+        scale=None,
+        with_to_q_fn=True,
+        with_to_kv_fn=True,
+        with_to_out_fn=True,
+        device=None,
+        v=None,
+        build_mode="on_init",
     ):
         """
         Multi Head Attention layer.
@@ -313,18 +313,18 @@ class MultiHeadAttention(Module):
 class Conv1D(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_size,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            data_format="NWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_size,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        data_format="NWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """
         1D convolutional layer.
@@ -423,19 +423,19 @@ class Conv1D(Module):
 class Conv1DTranspose(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_size,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            output_shape=None,
-            data_format="NWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_size,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        output_shape=None,
+        data_format="NWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """
         1D transpose convolutional layer.
@@ -536,18 +536,18 @@ class Conv1DTranspose(Module):
 class Conv2D(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_shape,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            data_format="NHWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        data_format="NHWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """2D convolutional layer.
 
@@ -643,19 +643,19 @@ class Conv2D(Module):
 class Conv2DTranspose(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_shape,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            output_shape=None,
-            data_format="NHWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        output_shape=None,
+        data_format="NHWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """2D convolutional transpose layer.
 
@@ -755,17 +755,17 @@ class Conv2DTranspose(Module):
 class DepthwiseConv2D(Module):
 
     def __init__(
-            self,
-            num_channels,
-            filter_shape,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            data_format="NHWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        num_channels,
+        filter_shape,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        data_format="NHWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """
         Depthwise 2D convolutional layer.
@@ -859,18 +859,18 @@ class DepthwiseConv2D(Module):
 class Conv3D(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_shape,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            data_format="NDHWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        data_format="NDHWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """3D convolutional layer.
 
@@ -966,19 +966,19 @@ class Conv3D(Module):
 class Conv3DTranspose(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            filter_shape,
-            strides,
-            padding,
-            weight_initializer=GlorotUniform(),
-            bias_initializer=Zeros(),
-            output_shape=None,
-            data_format="NDHWC",
-            dilations=1,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        filter_shape,
+        strides,
+        padding,
+        weight_initializer=GlorotUniform(),
+        bias_initializer=Zeros(),
+        output_shape=None,
+        data_format="NDHWC",
+        dilations=1,
+        device=None,
+        v=None,
     ):
         """3D convolutional transpose layer.
 
@@ -1082,15 +1082,15 @@ class Conv3DTranspose(Module):
 class LSTM(Module):
 
     def __init__(
-            self,
-            input_channels,
-            output_channels,
-            weight_initializer=GlorotUniform(),
-            num_layers=1,
-            return_sequence=True,
-            return_state=True,
-            device=None,
-            v=None,
+        self,
+        input_channels,
+        output_channels,
+        weight_initializer=GlorotUniform(),
+        num_layers=1,
+        return_sequence=True,
+        return_state=True,
+        device=None,
+        v=None,
     ):
         """LSTM layer, which is a set of stacked lstm cells.
 
@@ -1222,10 +1222,10 @@ class LSTM(Module):
         c_n_list = list()
         h_t = inputs
         for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
-                initial_state[0],
-                initial_state[1],
-                self.v.input.items(),
-                self.v.recurrent.items(),
+            initial_state[0],
+            initial_state[1],
+            self.v.input.items(),
+            self.v.recurrent.items(),
         ):
             h_t, c_n = ivy.lstm_update(
                 h_t, h_0, c_0, lstm_input_var.w, lstm_recurrent_var.w
