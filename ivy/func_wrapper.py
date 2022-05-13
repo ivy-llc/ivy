@@ -131,6 +131,18 @@ NATIVE_KEYS_TO_SKIP = {
 
 
 def _wrap_method(fn):
+    """
+    wraps the function fn if it is not a private function and not in the non wrapped methods list.
+
+    Parameters
+    ----------
+    fn
+        native function to be wrapped
+    
+    Returns
+    -------
+        The wrapped version of the function with all the necessary attributes updated.
+    """
 
     if hasattr(fn, "__name__") and (
         fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_METHODS
@@ -144,6 +156,26 @@ def _wrap_method(fn):
         native_args, native_kwargs = ivy.args_to_native(
             *args, **kwargs, include_derived={tuple: True}
         )
+                
+        """
+        computes the result of the function fn, returning the result as an ivy array or
+        a native framework array.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        
+        out
+            optional output array, for writing the result to.
+
+        kwargs
+            The key word arguments to be passed  to the function.
+        
+        Returns
+        -------
+            The result of computing the function fn as an ivy array or a native array.
+        """
         if ivy.exists(out):
             native_out = ivy.to_native(out)
             native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
@@ -157,6 +189,27 @@ def _wrap_method(fn):
         return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
     def _method_wrapped(*args, out=None, **kwargs):
+        
+        """
+        computes the result of the function fn, returning the result as an ivy array,
+        a native framework array, or an ivy container.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        
+        out
+            optional output array, for writing the result to.
+
+        kwargs
+            The key word arguments to be passed to the function.
+        
+        Returns
+        -------
+            The result of computing the function fn as an ivy array, a native array,
+            or an ivy container.
+        """
         fn_name = fn.__name__
         if not hasattr(ivy.Container, fn_name) or fn_name in METHODS_W_CONT_SUPPORT:
             return _method_w_native_handled(*args, out=out, **kwargs)
