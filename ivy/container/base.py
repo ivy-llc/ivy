@@ -1823,48 +1823,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def flip(
-        self,
-        axis=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Reverses the order of elements in for each array in the container, along the
-        given axis. The shape of the array is preserved, but the elements are reordered.
-
-        Parameters
-        ----------
-        axis
-            Axis or axes along which to flip over. The default, axis=None, will flip
-            over all axes.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.flip(x, axis)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def shuffle(
         self,
         seed_value=None,

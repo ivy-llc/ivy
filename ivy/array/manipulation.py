@@ -19,3 +19,11 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.concat([self] + xs, axis, out=out)
+
+
+    def flip(
+        self: ivy.Array,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Array:
+        return ivy.flip(self, axis, out=out)
