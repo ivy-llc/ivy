@@ -26,3 +26,10 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.expand_dims(self, axis, out=out)
+
+    def reshape(
+        self: ivy.Array,
+        shape: Tuple[int, ...],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.reshape(self, shape, out=out)

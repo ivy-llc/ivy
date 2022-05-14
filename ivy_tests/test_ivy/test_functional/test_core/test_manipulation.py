@@ -5,6 +5,7 @@ import pytest
 import numpy as np
 from hypothesis import given, strategies as st
 
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -186,36 +187,50 @@ def test_permute_dims(dtype, as_variable, with_out, native_array):
 
 
 # reshape
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_reshape(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([1, 2, 3, 4], dtype=dtype)
-    out = ivy.array([[2, 3], [4, 5]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.reshape(x, (2, 2), out=out)
-    else:
-        ret = ivy.reshape(x, (2, 2))
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    x=helpers.xps.arrays(dtype=helpers.xps.scalar_dtypes(), shape=helpers.xps.array_shapes()),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans()
+)
+def test_reshape(
+    x, 
+    data, 
+    as_variable, 
+    with_out, 
+    num_positional_args, 
+    native_array,
+    container, 
+    instance_method,
+    fw
+):  
+    x = np.asarray(x)
+    dtype = ivy_np.dtype_to_str(x.dtype)
+
+    # smoke for torch
+    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+        return
+    
+    # draw a valid reshape shape
+    shape = data.draw(helpers.reshape_shapes(x.shape))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "reshape",
+        x=x,
+        shape=shape
+    )
 
 
 # roll
