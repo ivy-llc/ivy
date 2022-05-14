@@ -374,9 +374,12 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 def _sf(x, sig_fig=3):
-    x = float(np.format_float_positional(
+    f = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
     ))
+    if isinstance(x,np.integer):
+        f = int(f)
+    x = f
     return x
 
 
@@ -454,7 +457,7 @@ def array_decimal_values(dec_vals=None):
         return dec_vals
     global array_decimal_values_stack
     if not array_decimal_values_stack:
-        ret = 3 
+        ret = None
     else:
         ret = array_decimal_values_stack[-1]
     return ret
