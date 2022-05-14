@@ -26,3 +26,10 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.expand_dims(self, axis, out=out)
+
+    def permute_dims(
+        self: ivy.Array,
+        axes: Tuple[int, ...],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.permute_dims(self, axes, out=out)
