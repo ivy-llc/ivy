@@ -38,6 +38,7 @@ class Dtype:
 
 
 array_significant_figures_stack = list()
+array_decimal_values_stack = list()
 
 
 # global constants
@@ -46,6 +47,7 @@ _MIN_BASE = 1e-5
 
 
 # local
+from numpy import vectorize
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -368,7 +370,15 @@ if "IVY_BACKEND" in os.environ:
 
 def _assert_array_significant_figures_formatting(sig_figs):
     assert isinstance(sig_figs, int)
-    assert sig_figs >= 0
+    assert sig_figs > 0
+
+
+def _sf(x,sig_fig=3):
+    x = float(np.format_float_positional(x, precision=sig_fig, unique=False, fractional=False,trim='k'))
+    return x
+
+
+vec_sig_fig = np.vectorize(_sf) 
 
 
 def array_significant_figures(sig_figs=None):
@@ -414,3 +424,56 @@ def unset_array_significant_figures():
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
+
+# Decimal Values #
+
+
+def _assert_array_decimal_values_formatting(dec_vals):
+    assert isinstance(dec_vals, int)
+    assert dec_vals >= 0
+
+
+def array_decimal_values(dec_vals=None):
+    """Summary.
+
+    Parameters
+    ----------
+    dec_vals
+        optional int, number of decimal values to be shown when printing
+
+    Returns
+    -------
+    ret
+
+    """
+    if ivy.exists(dec_vals):
+        _assert_array_decimal_values_formatting(dec_vals)
+        return dec_vals
+    global array_decimal_values_stack
+    if not array_decimal_values_stack:
+        ret = 3 
+    else:
+        ret = array_decimal_values_stack[-1]
+    return ret
+
+
+def set_array_decimal_values(dec_vals):
+    """Summary.
+
+    Parameters
+    ----------
+    dec_vals
+        optional int, number of significant figures to be shown when printing
+
+    """
+    _assert_array_decimal_values_formatting(dec_vals)
+    global array_decimal_values_stack
+    array_decimal_values_stack.append(dec_vals)
+
+
+def unset_array_decimal_values():
+    """"""
+    global array_decimal_values_stack
+    if array_decimal_values_stack:
+        array_decimal_values_stack.pop(-1)
+

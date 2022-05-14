@@ -200,10 +200,13 @@ class Array(
     @_native_wrapper
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
-        with np.printoptions(precision=sig_fig):
+        dec_vals = ivy.array_decimal_values()
+        # if ivy.exists(sig_fig) and ivy.exists(dec_vals) and sig_fig > dec_vals:
+        #     dec_vals = sig_fig
+        with np.printoptions(precision=dec_vals):
             return (
             self._pre_repr
-            + ivy.to_numpy(self._data)
+            + ivy.vec_sig_fig(ivy.to_numpy(self._data),sig_fig)
             .__repr__()[:-1]
             .partition(", dtype")[0]
             .partition(", dev")[0]
