@@ -244,10 +244,10 @@ def swapaxes(
 
 
 def clip(x, x_min, x_max, out: Optional[torch.Tensor] = None):
-    if hasattr(x_min, 'dtype'):
+    if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
-        x = x.to(promoted_type)    
+        x = x.to(promoted_type)
     return torch.clamp(x, x_min, x_max, out=out)
