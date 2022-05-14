@@ -202,8 +202,6 @@ class Array(
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         rep = ivy.vec_sig_fig(ivy.to_numpy(self._data),sig_fig) if self._size > 0 else ivy.to_numpy(self._data)
-        # if ivy.exists(sig_fig) and ivy.exists(dec_vals) and sig_fig > dec_vals:
-        #     dec_vals = sig_fig
         with np.printoptions(precision=dec_vals):
             return (
             self._pre_repr

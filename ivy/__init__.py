@@ -377,7 +377,7 @@ def _sf(x, sig_fig=3):
     f = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
     ))
-    if isinstance(x,np.integer):
+    if isinstance(x, np.integer):
         f = int(f)
     x = f
     return x
