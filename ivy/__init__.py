@@ -374,7 +374,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 def _sf(x, sig_fig=3):
-    if isinstance(x,np.bool_):
+    if isinstance(x, np.bool_):
         return x
     f = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
