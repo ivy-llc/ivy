@@ -34,16 +34,19 @@ class ContainerWithGeneral(ContainerBase):
             if ratio < 1:
                 return self.handle_inplace(self * ratio, out)
             return self.handle_inplace(self.copy(), out)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.clip_vector_norm(
-                x,
-                max_norm[kc] if max_norm_is_container else max_norm,
-                p[kc] if p_is_container else p,
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ), out)
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.clip_vector_norm(
+                    x,
+                    max_norm[kc] if max_norm_is_container else max_norm,
+                    p[kc] if p_is_container else p,
+                )
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )

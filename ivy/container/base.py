@@ -1548,16 +1548,15 @@ class ContainerBase(dict, abc.ABC):
         is_container = isinstance(x2, ivy.Container)
         return self.handle_inplace(
             self.map(
-                lambda x, kc: self._ivy.minimum(
-                    x, x2[kc] if is_container else x2
-                ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) 
-                else x, 
-                key_chains, 
-                to_apply, 
-                prune_unapplied, 
-                map_sequences, 
+                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
-            out
+            out,
         )
 
     def maximum(
@@ -1593,16 +1592,16 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.maximum(
-                x, x2[kc] if is_container else x2
-            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
             out,
         )
 
@@ -1643,19 +1642,21 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(x_min, ivy.Container)
         max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(self.map(
-            lambda x, kc: self._ivy.clip(
-                x,
-                x_min[kc] if min_is_container else x_min,
-                x_max[kc] if max_is_container else x_max,
-            ) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        ),
-            out
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.clip(
+                    x,
+                    x_min[kc] if min_is_container else x_min,
+                    x_max[kc] if max_is_container else x_max,
+                )
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
         )
 
     def einsum(
@@ -1814,48 +1815,6 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(
             lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def flip(
-        self,
-        axis=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Reverses the order of elements in for each array in the container, along the
-        given axis. The shape of the array is preserved, but the elements are reordered.
-
-        Parameters
-        ----------
-        axis
-            Axis or axes along which to flip over. The default, axis=None, will flip
-            over all axes.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.flip(x, axis)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2190,46 +2149,6 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(
             lambda x, kc: self._ivy.to_ivy(x, nested=nested),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def expand_dims(
-        self,
-        axis,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Expand dims of all sub-arrays of container object.
-
-        Parameters
-        ----------
-        axis
-            Axis along which to expand dimensions of the sub-arrays.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.expand_dims(x, axis)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
             key_chains,
             to_apply,
             prune_unapplied,
