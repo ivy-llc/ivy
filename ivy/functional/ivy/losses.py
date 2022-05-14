@@ -67,12 +67,13 @@ def binary_cross_entropy(
     pred
         input array containing Predicted labels.
     epsilon
-        small constant to add to log functions, default is 1e-7
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
 
     Returns
     -------
     ret
-        The binary cross entropy loss array.
+        The binary cross entropy between the given distributions.
 
     """
     """
