@@ -373,10 +373,10 @@ def _assert_array_significant_figures_formatting(sig_figs):
     assert sig_figs > 0
 
 
-def _sf(x, sig_fig = 3):
+def _sf(x, sig_fig=3):
     x = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
-        ))
+    ))
     return x
 
 
