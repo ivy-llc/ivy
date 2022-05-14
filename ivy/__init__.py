@@ -383,7 +383,7 @@ def _sf(x, sig_fig=3):
 vec_sig_fig = np.vectorize(_sf) 
 
 
-def array_significant_figures(sig_figs=None):
+def array_significant_figures(sig_figs=3):
     """Summary.
 
     Parameters
