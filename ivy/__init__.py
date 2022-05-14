@@ -380,7 +380,8 @@ def _sf(x, sig_fig=3):
     return x
 
 
-vec_sig_fig = np.vectorize(_sf) 
+vec_sig_fig = np.vectorize(_sf)
+vec_sig_fig.__name__ = 'vec_sig_fig'
 
 
 def array_significant_figures(sig_figs=3):
