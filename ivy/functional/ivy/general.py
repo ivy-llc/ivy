@@ -307,7 +307,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [-1, 0, 1]
+    [-1 0 1]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
