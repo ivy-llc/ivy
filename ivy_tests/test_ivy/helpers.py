@@ -254,7 +254,6 @@ def docstring_examples_run(fn):
     trimmed_docstring = trim(docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
 
-    # fix this output issue
     end_index = -1
     parsed_output = ""
     for index, line in enumerate(trimmed_docstring):
@@ -282,8 +281,8 @@ def docstring_examples_run(fn):
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
-    print("Output = ", output)
-    print("Parsed output = ", parsed_output)
+    # print("Output = ", output)
+    # print("Parsed output = ", parsed_output)
 
     if output == parsed_output:
         return True
