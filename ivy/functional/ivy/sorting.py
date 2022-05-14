@@ -11,11 +11,11 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def argsort(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Returns the indices that sort an array ``x`` along a specified axis.
 
@@ -48,7 +48,8 @@ def argsort(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+        signatures.elementwise_functions.tan.html>`_
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -88,11 +89,11 @@ def argsort(
 
 
 def sort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
 
@@ -124,7 +125,6 @@ def sort(
 
     """
     return _cur_framework(x).sort(x, axis, descending, stable, out)
-
 
 # Extra #
 # ------#
