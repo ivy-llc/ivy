@@ -137,10 +137,10 @@ def dev(
 
     Examples
     --------
-          >>> x = ivy.array([1,0,2])
-          >>> y = ivy.dev(x)
-          >>> print(y)
-          "cpu"
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> print(y)
+    cpu
     """
     return _cur_framework(x).dev(x, as_str)
 
