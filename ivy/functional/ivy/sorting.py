@@ -11,12 +11,12 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def argsort(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Returns the indices that sort an array ``x`` along a specified axis.
 
     Parameters
@@ -45,6 +45,19 @@ def argsort(
     ret
         an array of indices. The returned array must have the same shape as ``x``. The
         returned array must have the default array index data type.
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------
+
+    With：code:`ivy.Array` input:
 
     """
     return _cur_framework(x).argsort(x, axis, descending, stable, out)
