@@ -76,25 +76,46 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
     return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
 
 
-def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
+def sparse_cross_entropy(
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
 
     Parameters
     ----------
     true
-        True labels as logits.
+        input array containing the true labels as logits.
     pred
-        predicted labels as logits.
+        input array containing the predicted labels as logits.
     axis
-        The class dimension, default is -1.
+        the axis along which to compute the cross-entropy. If axis is ``-1``, the
+        cross-entropy will be computed along the last dimension. Default: ``-1``.
     epsilon
-        small constant to add to log functions, default is 1e-7
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
 
     Returns
     -------
     ret
-        The sparse cross entropy loss
+        The sparse cross-entropy loss between the given distributions
 
+    Examples
+    --------
+    >>> x = ivy.array([2])
+    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([0.35667497 ])
+
+    >>> x = ivy.array([3])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array([2.3025851 ])
+
+    >>> x = ivy.array([2,3])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array([0.35667497, 2.3025851 ])
     """
     true = ivy.one_hot(true, pred.shape[axis])
     return cross_entropy(true, pred, axis, epsilon)
