@@ -6,12 +6,13 @@ import ivy
 
 
 def argsort(
-    x: mx.ndarray.ndarray.NDArray,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+        x: mx.ndarray.ndarray.NDArray,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
+    # TODO: This does not pass the unit test in _array_module.py.
     ret = mx.nd.array(mx.nd.argsort(mx.nd.array(x), axis=axis, is_ascend=descending))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -19,11 +20,11 @@ def argsort(
 
 
 def sort(
-    x: mx.ndarray.ndarray.NDArray,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+        x: mx.ndarray.ndarray.NDArray,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     kind = "stable" if stable else "quicksort"
     ret = mx.nd.array((mx.nd.sort(mx.nd.sort(x), axis=axis, is_ascend=kind)))
