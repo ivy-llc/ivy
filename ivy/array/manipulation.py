@@ -16,10 +16,9 @@ class ArrayWithManipulation(abc.ABC):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         axis: Optional[int] = 0,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.concat([self] + xs, axis, out=out)
-
 
     def flip(
         self: ivy.Array,
@@ -27,3 +26,17 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Array:
         return ivy.flip(self, axis, out=out)
+
+    def expand_dims(
+        self: ivy.Array,
+        axis: Optional[int] = 0,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.expand_dims(self, axis, out=out)
+
+    def permute_dims(
+        self: ivy.Array,
+        axes: Tuple[int, ...],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.permute_dims(self, axes, out=out)
