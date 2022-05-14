@@ -134,7 +134,8 @@ def test_expand_dims(
     instance_method=st.booleans(),
     seed=st.integers(0, 2**32 - 1),
 )
-def test_flip(array_shape,
+def test_flip(
+    array_shape,
     axis,
     dtype,
     as_variable,
@@ -145,12 +146,12 @@ def test_flip(array_shape,
     instance_method,
     seed,
     fw,
-):  
+):
     # smoke this for torch
-    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    np.random.seed(seed)    
+    np.random.seed(seed)
 
     x = np.random.uniform(size=array_shape).astype(dtype)
 

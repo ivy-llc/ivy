@@ -486,12 +486,16 @@ def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
         max_size = draw(st.shared(ints, key=max_size))
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
+
 @st.composite
 def valid_axes(draw, ndim=None, size_bounds=None):
     ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     dims = draw(st.shared(ints, key=ndim))
-    any_axis_strategy = st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
+    any_axis_strategy = (
+        st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
+    )
     return draw(any_axis_strategy)
+
 
 @st.composite
 def integers(draw, min_value=None, max_value=None):
