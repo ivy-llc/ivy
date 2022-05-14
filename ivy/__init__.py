@@ -47,7 +47,7 @@ _MIN_BASE = 1e-5
 
 
 # local
-from numpy import vectorize
+from numpy import issubdtype, vectorize
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -374,11 +374,15 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 def _sf(x, sig_fig=3):
+    if isinstance(x,np.bool_):
+        return x
     f = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
     ))
-    if isinstance(x, np.integer):
-        f = int(f)
+    if issubdtype(type(x), np.uint) :
+        f = np.uint(f)
+    if issubdtype(type(x), np.int) :
+        f = np.int(f)
     x = f
     return x
 
@@ -387,7 +391,7 @@ vec_sig_fig = np.vectorize(_sf)
 vec_sig_fig.__name__ = 'vec_sig_fig'
 
 
-def array_significant_figures(sig_figs=3):
+def array_significant_figures(sig_figs=None):
     """Summary.
 
     Parameters
