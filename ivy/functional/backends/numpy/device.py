@@ -12,9 +12,8 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: np.ndarray , as_str: bool = False)\
-        -> str:
-    return 'cpu'
+def dev(x: np.ndarray, as_str: bool = False) -> str:
+    return "cpu"
 
 
 dev.__name__ = "dev"

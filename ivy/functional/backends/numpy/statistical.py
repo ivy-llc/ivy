@@ -146,7 +146,7 @@ def std(
             out, np.std(x, axis=axis, ddof=correction, keepdims=keepdims)
         )
     else:
-        return np.std(x, axis=axis, ddof=correction, keepdims=keepdims)
+        return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims))
 
 
 # Extra #

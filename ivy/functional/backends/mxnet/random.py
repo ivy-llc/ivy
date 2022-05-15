@@ -37,7 +37,12 @@ def random_uniform(
     return mx.nd.random.uniform(low, high, shape, ctx=ctx)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, device=None):
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> mx.ndarray.ndarray.NDArray:
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()
     if isinstance(std, mx.nd.NDArray):
@@ -86,4 +91,5 @@ def seed(seed_value: int = 0) -> None:
     mx.random.seed(seed_value)
 
 
-shuffle = lambda x: mx.nd.random.shuffle(x)
+def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.random.shuffle(x)

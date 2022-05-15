@@ -20,9 +20,13 @@ def random_uniform(
     return np.asarray(np.random.uniform(low, high, shape))
 
 
-random_normal = lambda mean=0.0, std=1.0, shape=None, device=None: np.asarray(
-    np.random.normal(mean, std, shape)
-)
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> np.ndarray:
+    return np.asarray(np.random.normal(mean, std, shape))
 
 
 def multinomial(
@@ -58,5 +62,5 @@ def seed(seed_value: int = 0) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x):
+def shuffle(x: np.ndarray) -> np.ndarray:
     return np.random.permutation(x)

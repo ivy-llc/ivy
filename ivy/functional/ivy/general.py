@@ -403,7 +403,7 @@ def clip_vector_norm(
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
-        return x
+        return ivy.copy_array(x)._data
 
 
 def clip_matrix_norm(
@@ -1448,7 +1448,7 @@ def one_hot(
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
 ) -> Iterable[int]:
-    """Returns the shape of the array x.
+    """Returns the shape of the array ``x``.
 
     Parameters
     ----------
@@ -1460,8 +1460,18 @@ def shape(
     Returns
     -------
     ret
-        Shape of the array
+        Shape of the array ``x``.
 
+    Examples
+    --------
+    >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
+    >>> y_tuple = ivy.shape(x)
+    >>> y_tensor = ivy.shape(x, as_tensor = True)
+    >>> print(y_tuple)
+    (2, 3)
+    >>> print(y_tensor)
+    ivy.array([2, 3])
+    
     """
     return _cur_framework(x).shape(x, as_array)
 

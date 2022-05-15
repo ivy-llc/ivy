@@ -26,9 +26,13 @@ def random_uniform(
         return tf.random.uniform(shape if shape else (), low, high)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, device=None):
-    device = default_device(device)
-    with tf.device("/" + device.upper()):
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> Tensor:
+    with tf.device(default_device(device)):
         return tf.random.normal(shape if shape else (), mean, std)
 
 
@@ -57,9 +61,10 @@ def randint(low, high, shape, device=None):
     with tf.device("/" + device.upper()):
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int32)
 
-
+      
 def seed(seed_value: int = 0) -> None:
      tf.random.set_seed(seed_value)
 
 
-shuffle = lambda x: tf.random.shuffle(x)
+def shuffle(x: Tensor) -> Tensor:
+    return tf.random.shuffle(x)
