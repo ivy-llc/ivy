@@ -260,8 +260,6 @@ def test_reshape(
     # draw a valid reshape shape
     shape = data.draw(helpers.reshape_shapes(x.shape))
 
-    print(x.shape, shape)
-
     helpers.test_array_function(
         dtype,
         as_variable,
