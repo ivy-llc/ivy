@@ -1,8 +1,6 @@
 # global
 import sys
 from jax.config import config
-
-config.update("jax_enable_x64", True)
 import jaxlib
 import jax as jax
 import jax.numpy as jnp
@@ -17,6 +15,8 @@ from jax.tree_util import tree_flatten, tree_unflatten
 
 # local
 import ivy
+
+config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
@@ -143,14 +143,13 @@ invalid_float_dtype_strs = ()
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)
+    type_str = dtype_to_str(type)  # noqa
     if type_str in invalid_dtype_strs:
         return {"int64": int32, "uint64": uint32, "float64": float32}[type_str]
     return type
 
 
 backend = "jax"
-
 
 # local sub-modules
 from . import activations

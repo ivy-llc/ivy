@@ -1,5 +1,4 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import logging
@@ -12,7 +11,6 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 # Helpers #
@@ -46,7 +44,15 @@ inplace_variables_supported = lambda: True
 
 def inplace_update(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+    # make both arrays contigous if not already
+    if not x_native.flags.c_contiguous:
+        x_native = np.ascontiguousarray(x_native)
+    if not val_native.flags.c_contiguous:
+        val_native = np.ascontiguousarray(val_native)
+
     x_native.data = val_native
+
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
