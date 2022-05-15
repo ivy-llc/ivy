@@ -132,7 +132,9 @@ NATIVE_KEYS_TO_SKIP = {
 
 def _wrap_method(fn):
     """
-    wraps the function fn if it is not a private function and not in the non wrapped methods list.
+    Creates a wrapped ivy version of the function if it is not a private function and not 
+    in the non wrapped methods list. This allows the new function to accept as inputs an
+    ivy array before performing the required operation and then returning an ivy array.
 
     Parameters
     ----------
@@ -144,11 +146,13 @@ def _wrap_method(fn):
         The wrapped version of the function with all the necessary attributes updated.
     """
 
+    # do nothing if the function is private or in the non wrapped methods list
     if hasattr(fn, "__name__") and (
         fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_METHODS
     ):
         return fn
 
+    # do nothing if the function is already wrapped
     if hasattr(fn, "wrapped") and fn.wrapped:
         return fn
 
@@ -211,8 +215,18 @@ def _wrap_method(fn):
             or an ivy container.
         """
         fn_name = fn.__name__
+        """ 
+        if the function is not implemented for containers or the function 
+        has built-in container support, call the function using the passed 
+        arguments directly, returning an ivy or a native array.
+        """
         if not hasattr(ivy.Container, fn_name) or fn_name in METHODS_W_CONT_SUPPORT:
             return _method_w_native_handled(*args, out=out, **kwargs)
+        """
+        if any of the arguments or keyword arguments passed to the function contains a 
+        a container, get the container's version of the function and call it using
+        the passed arguments.
+        """
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
@@ -223,6 +237,11 @@ def _wrap_method(fn):
             if "out" in f.__code__.co_varnames:
                 return f(*args, out=out, **kwargs)
             return f(*args, **kwargs)
+
+        """
+        if the passed arguments does not contain a container, the function using the passed
+        arguments, returning an ivy or a native array.
+        """
         return _method_w_native_handled(*args, out=out, **kwargs)
 
     if hasattr(fn, "__name__"):
@@ -249,7 +268,8 @@ def _unwrap_method(method_wrapped):
     Returns
     -------
     The unwrapped version of the function which is the same as the passed method
-    for unwrapped methods and the inner_fn if the method is wrapped.
+    for unwrapped methods and the inner_fn if the method is wrapped. The newly unwrapped 
+    method accepts inputs and returns outputs as native arrays instead of ivy arrays.
     """
     if not hasattr(method_wrapped, "wrapped") or not method_wrapped.wrapped:
         return method_wrapped
