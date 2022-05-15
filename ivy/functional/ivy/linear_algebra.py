@@ -486,7 +486,7 @@ def tensordot(
         The tensor contraction of x1 and x2 over the specified axes.
     
     Examples
-    ---------
+    --------
     1. Axes = 0 : tensor product 
 
     >>> x = ivy.array([[1., 2.], [2., 3.]])
