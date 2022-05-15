@@ -255,7 +255,6 @@ def svd(
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
     
-    
     """
     return _cur_framework(x).svd(x, full_matrices)
 
