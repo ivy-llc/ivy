@@ -5,6 +5,7 @@ import numpy as np
 import math
 from numpy import array_api as xp
 from hypothesis.extra.array_api import make_strategies_namespace
+
 xps = make_strategies_namespace(xp)
 
 
@@ -525,7 +526,9 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
         values = values[0]
     return dtype, values
 
-# taken from https://github.com/data-apis/array-api-tests/blob/03ec5cff037b21d84ebd0187b333cc731ed16d00/array_api_tests/test_manipulation_functions.py#L241
+
+# taken from 
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, shape):
     size = 1 if len(shape) == 0 else math.prod(shape)
@@ -535,7 +538,7 @@ def reshape_shapes(draw, shape):
         index = draw(st.integers(0, len(rshape) - 1))
         rshape[index] = -1
     return tuple(rshape)
-    
+
 
 @st.composite
 def array_values(draw, dtype, size, allow_inf):
