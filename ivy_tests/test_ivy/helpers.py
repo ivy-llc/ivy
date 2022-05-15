@@ -39,6 +39,7 @@ except ImportError:
     _mx = None
     _mx_nd = None
 from hypothesis import assume, strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -431,12 +432,15 @@ def test_array_function(
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+
         if max(container) or not max(native_array):
             assert ret is out
-        if max(container) or fw in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if max(native_array) else out.data)
+
+        if max(container) or fw in ["tensorflow", "jax", "numpy"]:
+            # these frameworks do not always support native inplace updates
+            pass
+        else:
+            assert ret.data is (out if max(native_array) else out.data)
 
     # value test
     if not isinstance(ret, tuple):
@@ -447,7 +451,9 @@ def test_array_function(
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     ivy.set_framework("numpy")
-    ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
+    ret_from_np = ivy.to_native(
+        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
+    )
     ivy.unset_framework()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
@@ -484,6 +490,16 @@ def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
     if isinstance(max_size, str):
         max_size = draw(st.shared(ints, key=max_size))
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+
+
+@st.composite
+def valid_axes(draw, ndim=None, size_bounds=None):
+    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
+    dims = draw(st.shared(ints, key=ndim))
+    any_axis_strategy = (
+        st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
+    )
+    return draw(any_axis_strategy)
 
 
 @st.composite
