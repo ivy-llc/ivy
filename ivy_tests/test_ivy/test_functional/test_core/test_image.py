@@ -1,9 +1,115 @@
-"""Collection of tests for unified image-related functions."""
+# """Collection of tests for unified image-related functions."""
+#
+# # global
+# # import pytest
+# # import numpy as np
+# from hypothesis import given, strategies as st
+# # from operator import mul
+#
+# # noinspection PyProtectedMember
+# # from functools import reduce
+#
+# # local
+# import ivy
+# import ivy.functional.backends.numpy
+# import ivy_tests.test_ivy.helpers as helpers
+#
+#
+# # stack_images
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     ratio=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=2, max_size=2),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=helpers.list_of_length(st.booleans(), 2)
+# )
+# def test_stack_images(
+#         shape, ratio, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     images = [img for img in ivy.random_normal(shape=shape)]
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "stack_images",
+#         images=images,
+#         desired_aspect_ratio=ratio
+#     )
+#
+#
+# # bilinear_resample
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     n_samples=st.integers(min_value=1, max_value=8),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=helpers.list_of_length(st.booleans(), 2)
+# )
+# def test_bilinear_resample(
+#         shape, n_samples, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     x = ivy.random_normal(shape=shape)
+#     warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "bilinear_resample",
+#         x=x,
+#         warp=warp
+#     )
+#
+#
+# # gradient_image
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     dtype=st.sampled_from(['float32', 'float64']),
+#     as_variable=st.booleans(),
+#     num_positional_args=st.integers(0, 1),
+#     native_array=st.booleans()
+# )
+# def test_gradient_image(
+#         shape, dtype, as_variable, num_positional_args,
+#         native_array, fw
+# ):
+#     x = ivy.random_normal(shape=shape)
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         False,
+#         False,
+#         fw,
+#         "gradient_image",
+#         x=x
+#     )
+
+
+# Smoke Tests
 
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
 from operator import mul
 
 # noinspection PyProtectedMember
@@ -16,15 +122,14 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-@given(
-    shp_n_num_n_ar_n_newshp=st.sampled_from(
-        [
-            ((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-            ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-            ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-            ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5)),
-        ]
-    )
+@pytest.mark.parametrize(
+    "shp_n_num_n_ar_n_newshp",
+    [
+        ((1, 2, 3), 4, (2, 1), (2, 4, 3)),
+        ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
+        ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
+        ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5)),
+    ],
 )
 def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
     # smoke test
@@ -40,26 +145,25 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
 
 
 # bilinear_resample
-@given(
-    x_n_warp=st.sampled_from(
-        [
-            (
-                [[[[0.0], [1.0]], [[2.0], [3.0]]]],
-                [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
-            ),
-            (
-                [[[[0.0], [1.0]], [[2.0], [3.0]]]],
-                [[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
-            ),
-            (
-                [[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
-                [[[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]],
-            ),
-        ]
-    ),
-    dtype=st.sampled_from(["float32", "float64"]),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+@pytest.mark.parametrize(
+    "x_n_warp",
+    [
+        (
+            [[[[0.0], [1.0]], [[2.0], [3.0]]]],
+            [[[0.0, 1.0], [0.25, 0.25], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
+        ),
+        (
+            [[[[0.0], [1.0]], [[2.0], [3.0]]]],
+            [[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]],
+        ),
+        (
+            [[[[[0.0], [1.0]], [[2.0], [3.0]]]]],
+            [[[[0.0, 1.0], [0.5, 0.5], [0.5, 1.0], [1.0, 0.5]]]],
+        ),
+    ],
 )
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
     # smoke test
     x, warp = x_n_warp
@@ -84,25 +188,18 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
 
 
 # gradient_image
-@given(
-    x_n_dy_n_dx=st.sampled_from(
-        [
-            (
-                [[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
-                [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
-                [
-                    [
-                        [[1.0], [1.0], [0.0]],
-                        [[-1.0], [-1.0], [0.0]],
-                        [[2.0], [-1.0], [0.0]],
-                    ]
-                ],
-            )
-        ]
-    ),
-    dtype=st.sampled_from(["float32", "float64"]),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+@pytest.mark.parametrize(
+    "x_n_dy_n_dx",
+    [
+        (
+            [[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
+            [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
+            [[[[1.0], [1.0], [0.0]], [[-1.0], [-1.0], [0.0]], [[2.0], [-1.0], [0.0]]]],
+        )
+    ],
 )
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, device, call):
     # smoke test
     x, dy_true, dx_true = x_n_dy_n_dx

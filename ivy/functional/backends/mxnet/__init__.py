@@ -63,7 +63,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)
+    type_str = ivy.dtype_to_str(type)
     if type_str in invalid_dtype_strs:
         return {
             "int16": int32,
@@ -85,8 +85,8 @@ def _raise(ex):
     raise ex
 
 
-def _mxnet_init_context(device):
-    device = dev_to_str(device)
+def _mxnet_init_context(device):  # noqa
+    device = ivy.dev_to_str(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:
@@ -101,11 +101,17 @@ def _mxnet_init_context(device):
 
 
 def _scalar_or_flat_array_to_scalar(x):
-    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
+    return (
+        x
+        if isinstance(x, Number)  # noqa
+        else (x.asscalar() if len(x.shape) == 0 else x)
+    )
 
 
 def _flat_array_to_1_dim_array(x):
-    return mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x
+    return (
+        mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x  # noqa
+    )
 
 
 def _1_dim_array_to_flat_array(x):

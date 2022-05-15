@@ -1,8 +1,6 @@
-"""Collection of Jax general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from optparse import Option
 import jax as jax
 import numpy as np
 import jax.numpy as jnp
@@ -18,7 +16,6 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
 from ivy.functional.backends.jax import JaxArray
 
@@ -45,14 +42,6 @@ def is_native_array(x, exclusive=False):
             jax.interpreters.partial_eval.DynamicJaxprTracer,
         ),
     )
-
-
-def _to_array(x):
-    if isinstance(x, jax.interpreters.ad.JVPTracer):
-        return _to_array(x.primal)
-    elif isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
-        return _to_array(x.aval)
-    return x
 
 
 def copy_array(x: JaxArray) -> JaxArray:
@@ -333,8 +322,11 @@ def inplace_increment(x, val):
     return x
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: jax.jit(
-    fn, static_argnums=static_argnums, static_argnames=static_argnames
-)
+def compile(
+    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
+):
+    return jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
+
+
 current_framework_str = lambda: "jax"
 current_framework_str.__name__ = "current_framework_str"

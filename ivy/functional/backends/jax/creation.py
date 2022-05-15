@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
 
 # local
-from ivy import dtype_from_str, dev_from_str
+from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
