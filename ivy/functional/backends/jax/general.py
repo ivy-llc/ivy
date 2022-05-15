@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
-from typing import List, Iterable, Optional, Union
+from typing import Iterable, Optional
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -67,15 +67,8 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(
-    x: JaxArray, as_tensor: bool = False
-) -> Union[JaxArray, List[int]]:
-    if as_tensor:
-        return jnp.asarray(jnp.shape(x))
-    else:
-        return x.shape
-
-
+shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
+shape.__name__ = "shape"
 get_num_dims = (
     lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x)))
     if as_tensor
