@@ -47,7 +47,6 @@ _MIN_BASE = 1e-5
 
 
 # local
-from numpy import issubdtype, vectorize
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -379,9 +378,9 @@ def _sf(x, sig_fig=3):
     f = float(np.format_float_positional(
         x, precision=sig_fig, unique=False, fractional=False, trim='k'
     ))
-    if issubdtype(type(x), np.uint) :
+    if np.issubdtype(type(x), np.uint) :
         f = np.uint(f)
-    if issubdtype(type(x), np.int) :
+    if np.issubdtype(type(x), np.int) :
         f = np.int(f)
     x = f
     return x
