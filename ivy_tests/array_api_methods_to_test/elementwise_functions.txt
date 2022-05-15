@@ -21,7 +21,7 @@ divide
 exp
 expm1
 floor
-#floor_divide #health check fails. Updates on issue at https://github.com/data-apis/array-api-tests/issues/117
+floor_divide 
 greater
 greater_equal
 isfinite

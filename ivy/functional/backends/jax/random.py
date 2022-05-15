@@ -95,7 +95,7 @@ def seed(seed_value=0):
     return
 
 
-def shuffle(x):
+def shuffle(x: JaxArray) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return _jax.random.shuffle(rng_input, x)
