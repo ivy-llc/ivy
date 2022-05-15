@@ -640,10 +640,10 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
     Returns
     -------
         an array containing the Cholesky factors for each square matrix.
-        If upper is False, the returned array must contain lower-triangular matrices; otherwise,
-        the returned array must contain upper-triangular matrices.
-        The returned array must have a floating-point data type determined by Type Promotion Rules
-        and must have the same shape as x.
+        If upper is False, the returned array must contain lower-triangular matrices; 
+        otherwise, the returned array must contain upper-triangular matrices.
+        The returned array must have a floating-point data type determined 
+        by Type Promotion Rules and must have the same shape as x.
     
     Examples
     --------
