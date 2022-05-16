@@ -44,7 +44,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
 import hypothesis.extra.numpy as nph
 
 # local
@@ -601,9 +601,18 @@ def integers(draw, min_value=None, max_value=None):
 
 @st.composite
 def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
-    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
-    if n_arrays == 2:
-        assume((dtype[0], dtype[1]) in ivy.promotion_table)
+    if n_arrays == 1:
+        types = set(available_dtypes).difference(set(ivy.invalid_dtype_strs))
+        dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
+    else:
+        unwanted_types = set(ivy.invalid_dtype_strs).union(
+            set(ivy.all_dtype_strs).difference(set(available_dtypes)))
+        pairs = ivy.promotion_table.keys()
+        types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtype = list(draw(st.sampled_from(types)))
+    if n_arrays == 3:
+        dtype.append(dtype[0])
+
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):
@@ -614,7 +623,7 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     return dtype, values
 
 
-# taken from 
+# taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, shape):
