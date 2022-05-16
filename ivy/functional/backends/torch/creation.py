@@ -268,6 +268,13 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         and (not isinstance(stop, torch.Tensor))
     ):
         ans[-1] = stop
+    if (
+        ans.shape[0] >= 1
+        and (not isinstance(start, torch.Tensor))
+        and (not isinstance(stop, torch.Tensor))
+        and ans[0] != start
+    ):
+        ans[0] = start
     return ans
 
 
