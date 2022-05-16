@@ -117,35 +117,6 @@ def test_match_kwargs(allow_duplicates):
 #     assert len(some_obj_refs) == 1
 
 
-# array
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
-    from_numpy=st.booleans(),
-)
-def test_array(dtype_and_x, from_numpy, device, call, fw):
-    dtype, object_in = dtype_and_x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
-    # to numpy
-    if from_numpy:
-        object_in = np.array(object_in)
-    # smoke test
-    ret = ivy.array(object_in, dtype, device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == np.array(object_in).shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), np.array(object_in).astype(dtype))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
-
-
 # copy array
 @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
 def test_copy_array(dtype_and_x, device, call, fw):
