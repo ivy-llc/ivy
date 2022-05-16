@@ -401,7 +401,7 @@ def std(
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
     >>> print(y)
-    ivy.array(0.81649658)
+    ivy.array(0.8164966)
     
     """
     return _cur_framework(x).std(x, axis, correction, keepdims, out=out)
