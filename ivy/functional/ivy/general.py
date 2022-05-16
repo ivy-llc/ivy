@@ -238,6 +238,42 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     ret
         Boolean, whether or not all of the input arrays are equal across all elements.
 
+    Examples
+    --------
+    >>> i = ivy.array([1, 2])
+    >>> j = ivy.arrays_equal([i])
+    >>> print(j)
+    True
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.array([1, 0, 2])
+    >>> z = ivy.array([0, 1, 2])
+    >>> w = ivy.arrays_equal([x, y, z])
+    >>> print(w)
+    False
+
+    >>> a = ivy.array([-1, 0, 1])
+    >>> b = ivy.array([-1, 0, 1])
+    >>> c = ivy.array([-1, 0, 1])
+    >>> d = ivy.arrays_equal([a, b, c])
+    >>> print(d)
+    True
+    
+    >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
+    >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
+    >>> o = ivy.arrays_equal([m, n])
+    >>> print(o)
+    False
+
+    >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> t = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([6., 7., 8.]))
+    >>> print(ivy.arrays_equal([r,s,t]))
+    {
+        a: true,
+        b: false
+    } 
+
     """
     x0 = xs[0]
     for x in xs[1:]:
