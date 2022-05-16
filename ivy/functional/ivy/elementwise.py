@@ -1114,7 +1114,7 @@ def cos(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([1., 0.54030234, -0.41614684])
+    ivy.array([1., 0.54, -0.416])
 
     """
     return _cur_framework(x).cos(x, out)
@@ -1935,7 +1935,7 @@ def atanh(
     --------
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
-    ivy.array([0., -0.54930614])
+    ivy.array([0., -0.549])
 
     """
     return _cur_framework(x).atanh(x, out)
