@@ -142,7 +142,7 @@ def test_add(
 ):
     dtype, x = dtype_and_x
     if any([d == "float16" for d in dtype]):
-        return # numpy array api doesnt support float16
+        return  # numpy array api doesnt support float16
     helpers.test_array_function(
         dtype,
         as_variable,
