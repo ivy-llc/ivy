@@ -2,7 +2,7 @@
 
 # global
 import logging
-from typing import Optional
+from typing import List, Optional, Union
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -283,8 +283,15 @@ def one_hot(indices, depth, device=None):
     return res.reshape(list(indices.shape) + [depth])
 
 
-shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
-shape.__name__ = "shape"
+def shape(
+    x: np.ndarray, as_tensor: bool = False
+) -> Union[np.ndarray, List[int]]:
+    if as_tensor:
+        return np.asarray(np.shape(x))
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: np.asarray(len(np.shape(x)))
     if as_tensor

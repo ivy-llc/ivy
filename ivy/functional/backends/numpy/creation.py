@@ -1,4 +1,5 @@
 # global
+import numpy
 import numpy as np
 from typing import Union, Tuple, Optional, List
 
@@ -129,6 +130,14 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
     ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
     if dtype is None:
         ans = np.float32(ans)
+    # Waiting for fix when start is -0.0: https://github.com/numpy/numpy/issues/21513
+    if (
+        ans.shape[0] >= 1
+        and (not isinstance(start, numpy.ndarray))
+        and (not isinstance(stop, numpy.ndarray))
+        and ans[0] != start
+    ):
+        ans[0] = start
     return _to_dev(ans, device)
 
 
