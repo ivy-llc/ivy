@@ -1,7 +1,6 @@
 """Collection of PyTorch image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from ctypes import Union
 import math
 import torch
 from operator import mul as _mul

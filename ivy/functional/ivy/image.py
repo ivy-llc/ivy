@@ -3,8 +3,6 @@
 # local
 import ivy as ivy
 import numpy as _np
-from operator import mul as _mul
-from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
 from typing import Union, List, Tuple, Optional
 

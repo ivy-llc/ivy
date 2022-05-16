@@ -1,10 +1,10 @@
 """Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Tuple, Union, Optional
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
+from typing import List, Tuple, Optional
 
 tfa = None
 import tensorflow as tf
@@ -102,7 +102,7 @@ def gradient_image(x):
 
 def random_crop(
     x: tf.Tensor, 
-    crop_size: Tuple[int,int], 
+    crop_size: Tuple[int, int], 
     batch_shape: Optional[List[int]] = None, 
     image_dims: Optional[List[int]] = None
 ) -> tf.Tensor:
@@ -124,8 +124,10 @@ def random_crop(
     x_flat = _ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
-    x_offsets = tf.random.uniform([flat_batch_size], 0, margins[0] + 1, dtype=tf.int32).numpy().tolist()
-    y_offsets = tf.random.uniform([flat_batch_size], 0, margins[1] + 1, dtype=tf.int32).numpy().tolist()
+    x_offsets = tf.random.uniform(
+        [flat_batch_size], 0, margins[0] + 1, dtype=tf.int32).numpy().tolist()
+    y_offsets = tf.random.uniform(
+        [flat_batch_size], 0, margins[1] + 1, dtype=tf.int32).numpy().tolist()
 
     # list of 1 x NH x NW x F
     cropped_list = [

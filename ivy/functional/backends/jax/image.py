@@ -6,7 +6,7 @@ import jax
 import jax.numpy as jnp
 from operator import mul as _mul
 from functools import reduce as _reduce
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Optional
 
 # local
 from ivy.functional.backends import jax as _ivy
