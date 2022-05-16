@@ -1,49 +1,58 @@
-# """Collection of tests for unified image-related functions."""
-#
-# # global
-# # import pytest
-# # import numpy as np
-# from hypothesis import given, strategies as st
-# # from operator import mul
-#
-# # noinspection PyProtectedMember
-# # from functools import reduce
-#
-# # local
-# import ivy
-# import ivy.functional.backends.numpy
-# import ivy_tests.test_ivy.helpers as helpers
-#
-#
-# # stack_images
-# @given(
-#     shape=st.lists(st.integers(min_value=1, max_value=8),
-#                    min_size=4, max_size=8),
-#     ratio=st.lists(st.integers(min_value=1, max_value=8),
-#                    min_size=2, max_size=2),
-#     dtype=st.sampled_from(['float32', 'float64']),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=helpers.list_of_length(st.booleans(), 2)
-# )
-# def test_stack_images(
-#         shape, ratio, dtype, as_variable, num_positional_args,
-#         native_array, fw
-# ):
-#     images = [img for img in ivy.random_normal(shape=shape)]
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         False,
-#         num_positional_args,
-#         native_array,
-#         False,
-#         False,
-#         fw,
-#         "stack_images",
-#         images=images,
-#         desired_aspect_ratio=ratio
-#     )
+"""Collection of tests for unified image-related functions."""
+
+# global
+# import pytest
+# import numpy as np
+from hypothesis import given, strategies as st
+# from operator import mul
+
+# noinspection PyProtectedMember
+# from functools import reduce
+
+# local
+import ivy
+import ivy.functional.backends.numpy
+import ivy_tests.test_ivy.helpers as helpers
+
+
+# stack_images
+@given(
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=4, max_size=8),
+    ratio=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=2, max_size=2),
+    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+)
+def test_stack_images(
+    shape,
+    ratio,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    if fw == "torch" and dtype == "float16":
+        return
+    images = [img for img in ivy.random_normal(shape=shape)]
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "stack_images",
+        images=images,
+        desired_aspect_ratio=ratio,
+    )
 #
 #
 # # bilinear_resample
@@ -121,27 +130,27 @@ import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-# stack_images
-@pytest.mark.parametrize(
-    "shp_n_num_n_ar_n_newshp",
-    [
-        ((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-        ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-        ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-        ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5)),
-    ],
-)
-def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
-    # smoke test
-    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-    xs = [ivy.ones(shape)] * num
-    ret = ivy.stack_images(xs, ar)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == new_shape
-    # docstring test
-    helpers.docstring_examples_run(ivy.stack_images)
+# # stack_images
+# @pytest.mark.parametrize(
+#     "shp_n_num_n_ar_n_newshp",
+#     [
+#         ((1, 2, 3), 4, (2, 1), (2, 4, 3)),
+#         ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
+#         ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
+#         ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5)),
+#     ],
+# )
+# def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
+#     # smoke test
+#     shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
+#     xs = [ivy.ones(shape)] * num
+#     ret = ivy.stack_images(xs, ar)
+#     # type test
+#     assert ivy.is_ivy_array(ret)
+#     # cardinality test
+#     assert ret.shape == new_shape
+#     # docstring test
+#     helpers.docstring_examples_run(ivy.stack_images)
 
 
 # bilinear_resample
