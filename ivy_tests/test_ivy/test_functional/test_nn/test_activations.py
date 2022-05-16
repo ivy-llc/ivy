@@ -55,7 +55,6 @@ def test_relu(x, dtype, as_variable, with_out, native_array, fw):
     )
 
 
-
 # leaky_relu
 @pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
 @pytest.mark.parametrize("dtype", ["float32"])

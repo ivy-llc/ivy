@@ -221,7 +221,6 @@ def test_conv1d_transpose(
         call(ivy.conv1d_transpose, x, filters, 1, padding, output_shape),
         ivy.to_numpy(true_res),
     )
-    helpers.docstring_examples_run(ivy.conv1d_transpose)
 
 
 # conv2d
