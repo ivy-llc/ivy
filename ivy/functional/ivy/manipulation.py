@@ -364,6 +364,8 @@ def concat(
         The concatenated array.
     
     Examples
+    --------
+    
     >>> x = ivy.array([[1, 2], [3, 4]])
     >>> y = ivy.array([[5, 6]])
     >>> ivy.concat((x, y))
