@@ -583,3 +583,5 @@ def test_clip(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+
+    helpers.docstring_examples_run(ivy.clip)

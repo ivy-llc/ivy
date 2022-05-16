@@ -552,11 +552,83 @@ def clip(
     x_max
         Maximum value.
 
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
     Returns
     -------
     ret
         An array with the elements of x, but where values < x_min are replaced with
         x_min, and those > x_max with x_max.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.clip(x, 1., 5.)
+    >>> print(y)
+    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.zeros(10, float)
+    >>> ivy.clip(x, 2., 7., out=y)
+    >>> print(y)
+    ivy.array([2., 2., 3., 4., 5., 6., 7., 7., 7., 7.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> y = ivy.clip(x, x_min, 7.)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_max = ivy.array([5., 4., 1., 1., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, 2., x_max)
+    >>> print(y)
+    ivy.array([2., 2., 1., 1., 4., 5., 6., 3., 8., 8.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.clip(x, 1., 5.)
+    >>> print(y)
+    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> y = ivy.clip(x, x_min, 7.)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
+
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = x.clip(1., 5.)
+    >>> print(y)
+    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> y = x.clip(x_min, 7.)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = x.clip(1., 5.)
+    >>> print(y)
+    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> y = x.clip(x_min, 7.)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
     """
     return _cur_framework(x).clip(x, x_min, x_max, out)
