@@ -201,16 +201,17 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        rep = ivy.vec_sig_fig(ivy.to_numpy(self._data),sig_fig) if self._size > 0 else ivy.to_numpy(self._data)
+        rep = (
+            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
+            if self._size > 0
+            else ivy.to_numpy(self._data)
+        )
         with np.printoptions(precision=dec_vals):
             return (
-            self._pre_repr
-            + rep
-            .__repr__()[:-1]
-            .partition(", dtype")[0]
-            .partition(", dev")[0]
-            + self._post_repr.format(ivy.current_framework_str())
-        )
+                self._pre_repr
+                + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+                + self._post_repr.format(ivy.current_framework_str())
+            )
 
     @_native_wrapper
     def __dir__(self):
