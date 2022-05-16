@@ -155,9 +155,6 @@ def insert_into_nest_at_indices(nest, indices, values):
     values
         The new values for inserting.
 
-    Returns
-    -------
-
     """
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
