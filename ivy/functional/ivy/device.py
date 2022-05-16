@@ -365,7 +365,6 @@ def num_cpu_cores() -> int:
     >>>print(ivy.num_cpu_cores())
     2
     """
-
     return psutil.cpu_count()
 
 
