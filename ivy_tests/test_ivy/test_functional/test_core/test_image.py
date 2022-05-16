@@ -317,3 +317,5 @@ def test_random_crop(xshp_n_cs, device, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
+    # docstring test
+    helpers.docstring_examples_run(ivy.random_crop)

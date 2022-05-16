@@ -6,9 +6,11 @@ import jax
 import jax.numpy as jnp
 from operator import mul as _mul
 from functools import reduce as _reduce
+from typing import List, Tuple, Optional, Union
 
 # local
 from ivy.functional.backends import jax as _ivy
+from ivy.functional.backends.jax import JaxArray
 
 
 def stack_images(images, desired_aspect_ratio=(1, 1)):
@@ -159,3 +161,44 @@ def gradient_image(x):
     )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
+
+
+def random_crop(
+    x: JaxArray, 
+    crop_size: Tuple[int, int], 
+    batch_shape: Optional[List[int]] = None, 
+    image_dims: Optional[List[int]] = None
+) -> JaxArray:
+    x_shape = x.shape
+    if batch_shape is None:
+        batch_shape = x_shape[:-3]
+    if image_dims is None:
+        image_dims = x_shape[-3:-1]
+    num_channels = x_shape[-1]
+    flat_batch_size = _reduce(_mul, batch_shape, 1)
+
+    # shapes as list
+    crop_size = list(crop_size)
+    batch_shape = list(batch_shape)
+    image_dims = list(image_dims)
+    margins = [img_dim - cs for img_dim, cs in zip(image_dims, crop_size)]
+
+    # FBS x H x W x F
+    x_flat = _ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
+
+    # FBS x 1
+    key = jax.random.PRNGKey(0)
+    x_offsets = jax.random.randint(key, [flat_batch_size], 0, margins[0] + 1).tolist()
+    y_offsets = jax.random.randint(key, [flat_batch_size], 0, margins[1] + 1).tolist()
+
+    # list of 1 x NH x NW x F
+    cropped_list = [
+        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        for img, xo, yo in zip(_ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
+    ]
+
+    # FBS x NH x NW x F
+    flat_cropped = _ivy.concat(cropped_list, 0)
+
+    # BS x NH x NW x F
+    return _ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])

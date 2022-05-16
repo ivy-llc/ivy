@@ -1,11 +1,12 @@
 """Collection of PyTorch image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
+from ctypes import Union
 import math
 import torch
-from operator import mul
-from functools import reduce
-from typing import List, Optional
+from operator import mul as _mul
+from functools import reduce as _reduce
+from typing import List, Tuple, Optional
 
 # local
 from ivy.functional.backends import torch as _ivy
@@ -65,7 +66,7 @@ def bilinear_resample(x, warp):
     num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
-    batch_shape_product = reduce(mul, batch_shape, 1)
+    batch_shape_product = _reduce(_mul, batch_shape, 1)
     warp_flat = warp.view([batch_shape_product] + [-1, 1] + [2])
     warp_flat_x = 2 * warp_flat[..., 0:1] / (input_image_dims[1] - 1) - 1
     warp_flat_y = 2 * warp_flat[..., 1:2] / (input_image_dims[0] - 1) - 1
@@ -107,3 +108,43 @@ def gradient_image(
     )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
+
+
+def random_crop(
+    x: torch.tensor, 
+    crop_size: Tuple[int, int], 
+    batch_shape: Optional[List[int]] = None, 
+    image_dims: Optional[List[int]] = None
+) -> torch.tensor:
+    x_shape = x.shape
+    if batch_shape is None:
+        batch_shape = x_shape[:-3]
+    if image_dims is None:
+        image_dims = x_shape[-3:-1]
+    num_channels = x_shape[-1]
+    flat_batch_size = _reduce(_mul, batch_shape, 1)
+
+    # shapes as list
+    crop_size = list(crop_size)
+    batch_shape = list(batch_shape)
+    image_dims = list(image_dims)
+    margins = [img_dim - cs for img_dim, cs in zip(image_dims, crop_size)]
+
+    # FBS x H x W x F
+    x_flat = _ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
+
+    # FBS x 1
+    x_offsets = torch.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
+    y_offsets = torch.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
+
+    # list of 1 x NH x NW x F
+    cropped_list = [
+        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        for img, xo, yo in zip(_ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
+    ]
+
+    # FBS x NH x NW x F
+    flat_cropped = _ivy.concat(cropped_list, 0)
+
+    # BS x NH x NW x F
+    return _ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])

@@ -6,7 +6,7 @@ import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 
 # Extra #
@@ -154,15 +154,20 @@ def uint8_img_to_float_img(x):
     return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
 
 
-def random_crop(x, crop_size, batch_shape=None, image_dims=None):
-    """Randomly crops the input images.
+def random_crop(
+    x: Union[ivy.Array, ivy.NativeArray], 
+    crop_size: Tuple[int, int], 
+    batch_shape: Optional[List[int]] = None, 
+    image_dims: Optional[List[int]] = None
+) -> ivy.Array:
+    """Randomly crops the input images according to the provided crop size.
 
     Parameters
     ----------
     x
         Input images to crop *[batch_shape,h,w,f]*
     crop_size
-        The 2D crop size.
+        The 2D crop size *[cs_h, cs_w]*
     batch_shape
         Shape of batch. Inferred from inputs if None. (Default value = None)
     image_dims
@@ -171,40 +176,25 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     Returns
     -------
     ret
-        The new cropped image *[batch_shape,nh,nw,f]*
+        An array containing the cropped image of shape *[batch_shape, cs_h, cs_w, f]*
+
+    Examples
+    --------
+    >>> batch_size, h, w, f = 1, 3, 3, 1
+    >>> x = ivy.arange(batch_size * h * w * f, dtype=ivy.float32)
+    >>> x = ivy.reshape(x, shape=(batch_size, h, w, f))
+    >>> cropped_output = ivy.random_crop(x, (2,2))
+    >>> print(x[0, :, :, 0])
+    ivy.array([[0., 1., 2.],
+               [3., 4., 5.],
+               [6., 7., 8.]])
+    >>> print(cropped_output[0, :, :, 0])
+    ivy.array([[3., 4.],
+               [6., 7.]])
 
     """
-    x_shape = x.shape
-    if batch_shape is None:
-        batch_shape = x_shape[:-3]
-    if image_dims is None:
-        image_dims = x_shape[-3:-1]
-    num_channels = x_shape[-1]
-    flat_batch_size = _reduce(_mul, batch_shape, 1)
 
-    # shapes as list
-    batch_shape = list(batch_shape)
-    image_dims = list(image_dims)
-    margins = [img_dim - cs for img_dim, cs in zip(image_dims, crop_size)]
-
-    # FBS x H x W x F
-    x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
-
-    # FBS x 1
-    x_offsets = _np.random.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
-    y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
-
-    # list of 1 x NH x NW x F
-    cropped_list = [
-        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
-        for img, xo, yo in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
-    ]
-
-    # FBS x NH x NW x F
-    flat_cropped = ivy.concat(cropped_list, 0)
-
-    # BS x NH x NW x F
-    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+    return _cur_framework(x).random_crop(x, crop_size, batch_shape, image_dims)
 
 
 def linear_resample(
