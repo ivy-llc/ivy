@@ -31,7 +31,6 @@ def test_min(
 ):
     dtype, x = dtype_and_x
     assume(x)
-    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -68,7 +67,6 @@ def test_max(
 ):
     dtype, x = dtype_and_x
     assume(x)
-    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -176,7 +174,6 @@ def test_prod(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
     if fw == "torch" and (dtype == "float16" or ivy.is_int_dtype(dtype)):
         return  # torch implementation exhibits strange behaviour
@@ -215,7 +212,6 @@ def test_sum(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
     if fw == "torch" and ivy.is_int_dtype(dtype):
         return
