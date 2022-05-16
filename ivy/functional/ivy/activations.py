@@ -131,7 +131,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.26894143, 0.7310586, 0.880797])
+    ivy.array([0.269, 0.731, 0.881])
     """
     return _cur_framework(x).sigmoid(x)
 
