@@ -69,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="creation/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/full.html">full</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/from_dlpack.html">from_dlpack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/native_array.html">native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/logspace.html">logspace</a></li>
 </ul>
 </li>
@@ -481,6 +482,28 @@ array must have shape <code class="docutils literal notranslate"><span class="pr
 each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.</p>
 <p>Each returned array should have the same data type as the input arrays.</p>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.creation.native_array">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">native_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#native_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.native_array" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the input to a native array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – input data, in any form that can be converted to an array. This includes lists,
+lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – datatype, optional. Datatype is inferred from the input data. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – device on which to place the created array. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – A native array interpretation of x.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>meshgrid &mdash; Ivy 1.0 documentation</title>
+  <title>native_array &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="full" href="full.html" />
-    <link rel="prev" title="linspace" href="linspace.html" /> 
+    <link rel="next" title="logspace" href="logspace.html" />
+    <link rel="prev" title="from_dlpack" href="from_dlpack.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,10 +65,10 @@
 <li class="toctree-l2"><a class="reference internal" href="empty_like.html">empty_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eye.html">eye</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">meshgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="full.html">full</a></li>
 <li class="toctree-l2"><a class="reference internal" href="from_dlpack.html">from_dlpack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_array.html">native_array</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
 </ul>
 </li>
@@ -132,9 +132,9 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
           <li><a href="../creation.html">Creation</a> &raquo;</li>
-      <li>meshgrid</li>
+      <li>native_array</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/creation/meshgrid.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/creation/native_array.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -142,46 +142,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="meshgrid">
-<h1>meshgrid<a class="headerlink" href="#meshgrid" title="Permalink to this headline"></a></h1>
+  <section id="native-array">
+<h1>native_array<a class="headerlink" href="#native-array" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.creation.meshgrid">
-<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.meshgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Returns coordinate matrices from coordinate vectors.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.creation.native_array">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">native_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#native_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.native_array" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the input to a native array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arrays</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – an arbitrary number of one-dimensional arrays representing grid coordinates.
-Each array should have the same numeric data type.</p></li>
-<li><p><strong>indexing</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Cartesian <code class="docutils literal notranslate"><span class="pre">'xy'</span></code> or matrix <code class="docutils literal notranslate"><span class="pre">'ij'</span></code> indexing of output. If provided zero or (default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>)
-one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
-respectively), the <code class="docutils literal notranslate"><span class="pre">indexing</span></code> keyword has no effect and should be ignored.
-Default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – input data, in any form that can be converted to an array. This includes lists,
+lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – datatype, optional. Datatype is inferred from the input data. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – device on which to place the created array. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> – list of N arrays, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of provided one-dimensional input
-arrays. Each returned array must have rank <code class="docutils literal notranslate"><span class="pre">N</span></code>. For <code class="docutils literal notranslate"><span class="pre">N</span></code> one-dimensional
-arrays having lengths <code class="docutils literal notranslate"><span class="pre">Ni</span> <span class="pre">=</span> <span class="pre">len(xi)</span></code>,</p>
-<ul class="simple">
-<li><p>if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have the shape
-<code class="docutils literal notranslate"><span class="pre">(N1,</span> <span class="pre">N2,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.</p></li>
-<li><p>if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape
-<code class="docutils literal notranslate"><span class="pre">(N2,</span> <span class="pre">N1,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.</p></li>
-</ul>
-<p>Accordingly, for the two-dimensional case with input one-dimensional arrays of
-length <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must
-have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned
-array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M)</span></code>.</p>
-<p>Similarly, for the three-dimensional case with input one-dimensional arrays of
-length <code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">N</span></code>, and <code class="docutils literal notranslate"><span class="pre">P</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned
-array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">P)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then
-each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.</p>
-<p>Each returned array should have the same data type as the input arrays.</p>
-</p>
+<dd class="field-odd"><p><em>ret</em> – A native array interpretation of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -197,8 +177,8 @@ each returned array must have shape <code class="docutils literal notranslate"><
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="linspace.html" class="btn btn-neutral float-left" title="linspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="full.html" class="btn btn-neutral float-right" title="full" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="from_dlpack.html" class="btn btn-neutral float-left" title="from_dlpack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="logspace.html" class="btn btn-neutral float-right" title="logspace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
