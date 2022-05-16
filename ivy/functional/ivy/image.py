@@ -39,14 +39,14 @@ def stack_images(
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
     >>> print(stacked)
-    [[[1., 1., 1.],
+    ivy.array([[[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
-            [0., 0., 0.]]]
+            [0., 0., 0.]]])
 
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
