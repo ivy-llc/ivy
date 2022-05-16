@@ -1473,6 +1473,7 @@ def shape(
     >>> y_tensor = ivy.shape(x, as_tensor = True)
     >>> print(y_tuple)
     (2, 3)
+    
     >>> print(y_tensor)
     ivy.array([2, 3])
     
