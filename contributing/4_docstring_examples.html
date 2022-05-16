@@ -140,7 +140,8 @@
 <code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code></p>
 <p>There are also <em>instance method</em> examples which are called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code></p>
 <p><strong>Functional Examples</strong></p>
-<p>The <em>functional</em> examples should:</p>
+<p>Firstly, we should include <em>functional</em> examples with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
+<p>These should:</p>
 <ol class="arabic simple">
 <li><p>cover all possible variants (explained below) for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)</p></li>
 <li><p>vary the values and input shapes considerably between examples</p></li>
@@ -148,17 +149,30 @@
 <li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>, and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
 <li><p>If broadcasting is relevant for the function, then show examples which highlight this. For example, passing in different shapes for two array arguments.</p></li>
 </ol>
-<p>For <em>flexible</em> functions, there should also be an example that:</p>
+<p>For all remaining examples, we can repeat input values from these <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> <em>functional</em>
+examples covered by points 1-5.</p>
+<p>The purpose of the extra examples with different input types in points 6-14 is to highlight the versatility
+of the function. The purpose is not to provide an excessive number of variations of possible function inputs.</p>
+<p>Next, we add examples with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.</p>
+<p>There should be an example that:</p>
 <ol class="arabic simple" start="6">
+<li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances for all array arguments</p></li>
+</ol>
+<p>For functions which accept more than one array, there should also be an example that:</p>
+<ol class="arabic simple" start="7">
+<li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
+</ol>
+<p>Going further, for <em>flexible</em> functions there should be an example that:</p>
+<ol class="arabic simple" start="8">
 <li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of all array arguments</p></li>
 </ol>
 <p>For <em>flexible</em> functions which accept more than one array, there should also be an example that:</p>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="9">
 <li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
 </ol>
 <p><strong>Instance Method Examples</strong></p>
 <p><em>Instance method</em> examples are only relevant for <em>flexible</em> functions. These examples should:</p>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="10">
 <li><p>call the function as an instance method on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class</p></li>
 <li><p>call the function as an instance method on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class</p></li>
 </ol>
@@ -169,7 +183,7 @@ used respectively. Under the hood, these operators call the instance methods X o
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance upon which the operator is being applied. These special methods in turn call the
 corresponding methods X.</p>
 <p>If the function is an <em>operator</em> function, then examples should be added which:</p>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="12">
 <li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
 <li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances</p></li>
 <li><p>call the operator on a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
@@ -243,16 +257,27 @@ ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
 </pre></div>
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
-<p>Point 1 is simple to satisfy. Ignoring <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which is covered by points 4 and 5,
-and ignoring the union over <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is true for <strong>all</strong> array inputs,
+<p>Point 1 is simple to satisfy. Ignoring the union over <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by
+points 6 and 7, and ignoring <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which is covered by points 8 and 9,
 then as far as point 1 is concerned, the input <code class="code docutils literal notranslate"><span class="pre">x</span></code> only has one possible variation. It must be an array.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
 <p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant, and the values and shapes do become increasingly <em>complex</em>.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
 explained in point 4.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
-<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 6.
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.
 Point 7 is not relevant as there is only one array input
+(excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.NativeArray` input:
+
+&gt;&gt;&gt; x = ivy.native_array([0, 1, 2])
+&gt;&gt;&gt; y = ivy.tan(x)
+&gt;&gt;&gt; print(y)
+ivy.array([0., 1.5574077, -2.1850398])
+</pre></div>
+</div>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 8.
+Point 9 is not relevant as there is only one array input
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
@@ -265,7 +290,7 @@ Point 7 is not relevant as there is only one array input
 }
 </pre></div>
 </div>
-<p>We then add instance method examples to satisfy points 8 and 9.</p>
+<p>We then add instance method examples to satisfy points 10 and 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Instance Method Examples
 ------------------------
 
@@ -287,7 +312,7 @@ Using :code:`ivy.Container` instance method:
 }
 </pre></div>
 </div>
-<p>Points 10-12 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
+<p>Points 12-14 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-roll">
 <h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this headline"></a></h2>
@@ -344,8 +369,19 @@ that each variation for each argument is demonstrated in at least one of the exa
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
 explained in point 4.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
-<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 6.
-Point 7 is not relevant as there is again only one array input
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.
+Point 7 is not relevant as there is only one array input
+(excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.NativeArray` input:
+
+&gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])
+&gt;&gt;&gt; y = ivy.roll(x, 1)
+&gt;&gt;&gt; print(y)
+ivy.array([2., 0., 1.])
+</pre></div>
+</div>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 8.
+Point 9 is not relevant as there is again only one array input
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
@@ -359,7 +395,7 @@ Point 7 is not relevant as there is again only one array input
 }
 </pre></div>
 </div>
-<p>We then add instance method examples to satisfy points 8 and 9.</p>
+<p>We then add instance method examples to satisfy points 10 and 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Instance Method Examples
 ------------------------
 
@@ -381,7 +417,7 @@ Using :code:`ivy.Container` instance method:
 }
 </pre></div>
 </div>
-<p>Points 10-12 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
+<p>Points 12-14 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-add">
 <h2>ivy.add<a class="headerlink" href="#ivy-add" title="Permalink to this headline"></a></h2>
@@ -434,7 +470,28 @@ variation. They must both be arrays.</p>
 explained in point 4.</p>
 <p>Point 5 is satisfied, as the second example uses different shapes for the inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code>. This causes
 the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.</p>
-<p>We then also add an example with <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 6.</p>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.NativeArray` input:
+
+&gt;&gt;&gt; x = ivy.native_array([1, 2, 3])
+&gt;&gt;&gt; y = ivy.native_array([4, 5, 6])
+&gt;&gt;&gt; z = ivy.add(x, y)
+&gt;&gt;&gt; print(z)
+ivy.array([5, 7, 9])
+</pre></div>
+</div>
+<p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> above, point 7 is relevant in this case, as there are two array inputs.
+We also add an example with a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs, in order to satisfy point 7.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+&gt;&gt;&gt; x = ivy.array([1, 2, 3])
+&gt;&gt;&gt; y = ivy.native_array([4, 5, 6])
+&gt;&gt;&gt; z = ivy.add(x, y)
+&gt;&gt;&gt; print(z)
+ivy.array([5, 7, 9])
+</pre></div>
+</div>
+<p>We then also add an example with <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -449,8 +506,9 @@ the broadcasting rules to apply, which dictates how the operation is performed a
 }
 </pre></div>
 </div>
-<p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> above, point 7 is relevant in this case, as there are two array inputs.
-We also add an example with a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 7.</p>
+<p>Again, unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> above, point 9 is relevant in this case,
+as there are two array inputs.
+We also add an example with a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
@@ -468,7 +526,7 @@ We also add an example with a mix of <code class="code docutils literal notransl
 }
 </pre></div>
 </div>
-<p>We then add instance method examples to satisfy points 8 and 9.</p>
+<p>We then add instance method examples to satisfy points 10 and 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Instance Method Examples
 ------------------------
 
@@ -494,9 +552,9 @@ Using :code:`ivy.Container` instance method:
 }
 </pre></div>
 </div>
-<p>Finally, we consider points 10-12. For <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> these were not relevant.
+<p>Finally, we consider points 12-14. For <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> these were not relevant.
 However, <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> <em>is</em> an operator function. We therefore add the three operator examples which satisfy points
-10, 11 and 12 respectively.</p>
+12, 13 and 14 respectively.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Operator Examples
 -----------------
 
