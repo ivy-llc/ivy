@@ -133,9 +133,10 @@ NATIVE_KEYS_TO_SKIP = {
 
 def _wrap_method(fn):
     """
-    Creates a wrapped ivy version of the function if it is not a private function and not 
-    in the non wrapped methods list. This allows the new function to accept as inputs an
-    ivy array before performing the required operation and then returning an ivy array.
+    Creates a wrapped ivy version of the function if it is not a private function and
+    not in the non wrapped methods list. This allows the new function to accept as 
+    inputs an ivy array before performing the required o  peration and then returning
+    an ivy array.
 
     Parameters
     ----------
@@ -146,7 +147,6 @@ def _wrap_method(fn):
     -------
         The wrapped version of the function with all the necessary attributes updated.
     """
-
     # do nothing if the function is private or in the non wrapped methods list
     if hasattr(fn, "__name__") and (
         fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_METHODS
@@ -194,9 +194,8 @@ def _wrap_method(fn):
         return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
     def _method_wrapped(*args, out=None, **kwargs):
-        
         """
-        computes the result of the function fn, returning the result as an ivy array,
+        Computes the result of the function fn, returning the result as an ivy array,
         a native framework array, or an ivy container.
 
         Parameters
@@ -240,8 +239,8 @@ def _wrap_method(fn):
             return f(*args, **kwargs)
 
         """
-        if the passed arguments does not contain a container, the function using the passed
-        arguments, returning an ivy or a native array.
+        if the passed arguments does not contain a container, the function using 
+        the passed arguments, returning an ivy or a native array.
         """
         return _method_w_native_handled(*args, out=out, **kwargs)
 
@@ -259,7 +258,7 @@ def _wrap_method(fn):
 
 def _unwrap_method(method_wrapped):
     """
-    unwraps the method in method_wrapped.
+    Unwraps the method in method_wrapped.
 
     Parameters
     ----------
