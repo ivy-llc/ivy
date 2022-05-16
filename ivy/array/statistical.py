@@ -68,3 +68,10 @@ class ArrayWithStatistical(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         return ivy.std(self, axis, correction, keepdims, out=out)
+
+    def einsum(
+        self: ivy.Array,
+        equation: str,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> ivy.Array:
+        return ivy.einsum(equation, self, out=out)
