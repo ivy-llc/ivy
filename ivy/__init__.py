@@ -375,19 +375,21 @@ def _assert_array_significant_figures_formatting(sig_figs):
 def _sf(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
-    f = float(np.format_float_positional(
-        x, precision=sig_fig, unique=False, fractional=False, trim='k'
-    ))
-    if np.issubdtype(type(x), np.uint) :
+    f = float(
+        np.format_float_positional(
+            x, precision=sig_fig, unique=False, fractional=False, trim="k"
+        )
+    )
+    if np.issubdtype(type(x), np.uint):
         f = np.uint(f)
-    if np.issubdtype(type(x), np.int) :
+    if np.issubdtype(type(x), np.int):
         f = np.int(f)
     x = f
     return x
 
 
 vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = 'vec_sig_fig'
+vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 def array_significant_figures(sig_figs=None):
@@ -408,7 +410,7 @@ def array_significant_figures(sig_figs=None):
         return sig_figs
     global array_significant_figures_stack
     if not array_significant_figures_stack:
-        ret = 3 
+        ret = 3
     else:
         ret = array_significant_figures_stack[-1]
     return ret
@@ -433,6 +435,7 @@ def unset_array_significant_figures():
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
+
 
 # Decimal Values #
 
