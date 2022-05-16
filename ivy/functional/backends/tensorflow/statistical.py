@@ -66,7 +66,8 @@ def prod(
             dtype = tf.uint64
     if ivy.exists(out):
         return ivy.inplace_update(
-            out, tf.experimental.numpy.prod(x, axis=axis, keepdims=keepdims)
+            out,
+            tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims),
         )
     else:
         return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
