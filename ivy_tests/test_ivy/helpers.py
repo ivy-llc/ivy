@@ -289,8 +289,8 @@ def docstring_examples_run(fn):
         for line in executable_lines:
             try:
                 exec(line)
-            except Exception:
-                return False
+            except RuntimeError:
+                raise Exception("Failed executing code in {}", ivy.framework_handler.ivy_original_dict[fn_name])
 
         
     output = f.getvalue()
