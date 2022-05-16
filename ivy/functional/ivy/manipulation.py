@@ -152,8 +152,6 @@ def squeeze(
     (1, 2, 2)
     >>> print(ivy.squeeze(x, axis=0).shape)
     (2, 2)
-    >>> print(ivy.squeeze(x, axis=1).shape)
-    ValueError: cannot select an axis to squeeze out which has size not equal to one
 
     """
     return _cur_framework(x).squeeze(x, axis, out)
