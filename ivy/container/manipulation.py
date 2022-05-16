@@ -34,8 +34,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
                 lambda xs_, _: ivy.concat(
-                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays],
-                    axis=axis
+                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
                 )
                 if ivy.is_array(xs_[0])
                 else xs_,
@@ -61,6 +60,68 @@ class ContainerWithManipulation(ContainerBase):
                 lambda x_, _: ivy.expand_dims(x_, axis=axis)
                 if ivy.is_array(x_)
                 else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def permute_dims(
+        self: ivy.Container,
+        axes: Tuple[int, ...],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.permute_dims(x_, axes=axes)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def flip(
+        self: ivy.Container,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.flip(x_, axis=axis) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def reshape(
+        self: ivy.Container,
+        shape: Tuple[int, ...],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.reshape(x_, shape=shape) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
