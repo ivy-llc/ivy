@@ -32,8 +32,6 @@ def test_abs(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -143,10 +141,8 @@ def test_add(
     fw,
 ):
     dtype, x = dtype_and_x
-    if dtype[0] in ivy.invalid_dtype_strs or dtype[1] in ivy.invalid_dtype_strs:
-        return
-    if fw == "numpy" and dtype == "float16":
-        return  # numpy array api doesnt support float16
+    if any([d == "float16" for d in dtype]):
+        return # numpy array api doesnt support float16
     helpers.test_array_function(
         dtype,
         as_variable,
