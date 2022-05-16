@@ -1475,7 +1475,7 @@ def shape(
     (2, 3)
     >>> print(y_tensor)
     ivy.array([2, 3])
-    
+
     """
     return _cur_framework(x).shape(x, as_array)
 

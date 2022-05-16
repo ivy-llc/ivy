@@ -17,10 +17,8 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # stack_images
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=4, max_size=8),
-    ratio=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=2, max_size=2),
+    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
+    ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
@@ -55,50 +53,49 @@ def test_stack_images(
     )
 
 
-# bilinear_resample
-@given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=4, max_size=8),
-    n_samples=st.integers(min_value=1, max_value=8),
-    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-)
-def test_bilinear_resample(
-    shape,
-    n_samples,
-    dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    fw,
-):
-    if fw == "torch" and dtype == "float16":
-        return
-    x = ivy.random_normal(shape=shape)
-    warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        False,
-        fw,
-        "bilinear_resample",
-        x=x,
-        warp=warp
-    )
+# # bilinear_resample
+# @given(
+#     shape=st.lists(st.integers(min_value=1, max_value=8),
+#                    min_size=4, max_size=8),
+#     n_samples=st.integers(min_value=1, max_value=8),
+#     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=helpers.list_of_length(st.booleans(), 2),
+#     container=helpers.list_of_length(st.booleans(), 2),
+# )
+# def test_bilinear_resample(
+#     shape,
+#     n_samples,
+#     dtype,
+#     as_variable,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     fw,
+# ):
+#     if fw == "torch" and dtype == "float16":
+#         return
+#     x = ivy.random_normal(shape=shape)
+#     warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         False,
+#         fw,
+#         "bilinear_resample",
+#         x=x,
+#         warp=warp
+#     )
 
 
 # gradient_image
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=4, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -106,13 +103,7 @@ def test_bilinear_resample(
     container=st.booleans(),
 )
 def test_gradient_image(
-    shape,
-    dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    fw
+    shape, dtype, as_variable, num_positional_args, native_array, container, fw
 ):
     if fw == "torch" and dtype == "float16":
         return
@@ -127,7 +118,7 @@ def test_gradient_image(
         False,
         fw,
         "gradient_image",
-        x=x
+        x=x,
     )
 
 
@@ -220,7 +211,7 @@ def test_gradient_image(
 #         (
 #             [[[[0.0], [1.0], [2.0]], [[5.0], [4.0], [3.0]], [[6.0], [8.0], [7.0]]]],
 #             [[[[5.0], [3.0], [1.0]], [[1.0], [4.0], [4.0]], [[0.0], [0.0], [0.0]]]],
-#             [[[[1.0], [1.0], [0.0]], [[-1.0], [-1.0], [0.0]], [[2.0], [-1.0], [0.0]]]],
+#             [[[[1.0], [1.0], [0.0]], [[-1.0], [-1.0], [0.0]], [[2.0], [-1.0], [0.0]]]]
 #         )
 #     ],
 # )
