@@ -527,7 +527,7 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     return dtype, values
 
 
-# taken from 
+# taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, shape):
