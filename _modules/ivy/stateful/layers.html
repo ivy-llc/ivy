@@ -131,7 +131,6 @@
 
 
 <div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../stateful/layers/Linear.html#ivy.stateful.layers.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Linear.__init__"><a class="viewcode-back" href="../../../stateful/layers/Linear.html#ivy.stateful.layers.Linear.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -276,7 +275,6 @@
 
 
 <div class="viewcode-block" id="MultiHeadAttention"><a class="viewcode-back" href="../../../stateful/layers/MultiHeadAttention.html#ivy.stateful.layers.MultiHeadAttention">[docs]</a><span class="k">class</span> <span class="nc">MultiHeadAttention</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="MultiHeadAttention.__init__"><a class="viewcode-back" href="../../../stateful/layers/MultiHeadAttention.html#ivy.stateful.layers.MultiHeadAttention.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query_dim</span><span class="p">,</span>
@@ -340,7 +338,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span> <span class="o">=</span> <span class="n">head_dim</span> <span class="o">*</span> <span class="n">num_heads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span> <span class="o">=</span> <span class="n">dropout_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">context_dim</span><span class="p">,</span> <span class="n">query_dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">head_dim</span> <span class="o">**</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">head_dim</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span> <span class="o">=</span> <span class="n">with_to_q_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="o">=</span> <span class="n">with_to_kv_fn</span>
@@ -431,7 +429,6 @@
 
 
 <div class="viewcode-block" id="Conv1D"><a class="viewcode-back" href="../../../stateful/layers/Conv1D.html#ivy.stateful.layers.Conv1D">[docs]</a><span class="k">class</span> <span class="nc">Conv1D</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv1D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv1D.html#ivy.stateful.layers.Conv1D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -541,7 +538,6 @@
 
 
 <div class="viewcode-block" id="Conv1DTranspose"><a class="viewcode-back" href="../../../stateful/layers/Conv1DTranspose.html#ivy.stateful.layers.Conv1DTranspose">[docs]</a><span class="k">class</span> <span class="nc">Conv1DTranspose</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv1DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv1DTranspose.html#ivy.stateful.layers.Conv1DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -654,7 +650,6 @@
 
 
 <div class="viewcode-block" id="Conv2D"><a class="viewcode-back" href="../../../stateful/layers/Conv2D.html#ivy.stateful.layers.Conv2D">[docs]</a><span class="k">class</span> <span class="nc">Conv2D</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv2D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv2D.html#ivy.stateful.layers.Conv2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -761,7 +756,6 @@
 
 
 <div class="viewcode-block" id="Conv2DTranspose"><a class="viewcode-back" href="../../../stateful/layers/Conv2DTranspose.html#ivy.stateful.layers.Conv2DTranspose">[docs]</a><span class="k">class</span> <span class="nc">Conv2DTranspose</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv2DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv2DTranspose.html#ivy.stateful.layers.Conv2DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -873,7 +867,6 @@
 
 
 <div class="viewcode-block" id="DepthwiseConv2D"><a class="viewcode-back" href="../../../stateful/layers/DepthwiseConv2D.html#ivy.stateful.layers.DepthwiseConv2D">[docs]</a><span class="k">class</span> <span class="nc">DepthwiseConv2D</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="DepthwiseConv2D.__init__"><a class="viewcode-back" href="../../../stateful/layers/DepthwiseConv2D.html#ivy.stateful.layers.DepthwiseConv2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_channels</span><span class="p">,</span>
@@ -977,7 +970,6 @@
 
 
 <div class="viewcode-block" id="Conv3D"><a class="viewcode-back" href="../../../stateful/layers/Conv3D.html#ivy.stateful.layers.Conv3D">[docs]</a><span class="k">class</span> <span class="nc">Conv3D</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv3D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv3D.html#ivy.stateful.layers.Conv3D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -1084,7 +1076,6 @@
 
 
 <div class="viewcode-block" id="Conv3DTranspose"><a class="viewcode-back" href="../../../stateful/layers/Conv3DTranspose.html#ivy.stateful.layers.Conv3DTranspose">[docs]</a><span class="k">class</span> <span class="nc">Conv3DTranspose</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Conv3DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv3DTranspose.html#ivy.stateful.layers.Conv3DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>
@@ -1200,7 +1191,6 @@
 
 
 <div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../stateful/layers/LSTM.html#ivy.stateful.layers.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="LSTM.__init__"><a class="viewcode-back" href="../../../stateful/layers/LSTM.html#ivy.stateful.layers.LSTM.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_channels</span><span class="p">,</span>

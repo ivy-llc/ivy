@@ -132,7 +132,6 @@
 
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    
 <div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="p">,</span>
@@ -276,7 +275,6 @@
 
 
 <div class="viewcode-block" id="SGD"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD">[docs]</a><span class="k">class</span> <span class="nc">SGD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
-    
 <div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
@@ -347,12 +345,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({})</span></div>
 
 
 <div class="viewcode-block" id="LARS"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS">[docs]</a><span class="k">class</span> <span class="nc">LARS</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
-    
 <div class="viewcode-block" id="LARS.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
@@ -428,12 +425,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({})</span></div>
 
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
-    
 <div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
@@ -536,12 +532,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;mw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s2">&quot;vw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="LAMB"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB">[docs]</a><span class="k">class</span> <span class="nc">LAMB</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
-    
 <div class="viewcode-block" id="LAMB.__init__"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
@@ -652,7 +647,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;mw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s2">&quot;vw&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span></div>
 </pre></div>
 
