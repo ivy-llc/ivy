@@ -7,6 +7,12 @@ import sys
 import re
 
 import numpy as np
+import math
+from numpy import array_api as xp
+from hypothesis.extra.array_api import make_strategies_namespace
+
+xps = make_strategies_namespace(xp)
+
 
 try:
     import jax.numpy as _jnp
@@ -606,6 +612,19 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
         dtype = dtype[0]
         values = values[0]
     return dtype, values
+
+
+# taken from 
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
+@st.composite
+def reshape_shapes(draw, shape):
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
+    # assume(all(side <= MAX_SIDE for side in rshape))
+    if len(rshape) != 0 and size > 0 and draw(st.booleans()):
+        index = draw(st.integers(0, len(rshape) - 1))
+        rshape[index] = -1
+    return tuple(rshape)
 
 
 @st.composite
