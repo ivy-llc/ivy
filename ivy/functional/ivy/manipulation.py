@@ -144,7 +144,7 @@ def squeeze(
     ret
         an output array having the same data type and elements as ``x``.
 
- 
+
     Examples
     --------
     >>> x = ivy.array([[[0, 1], [2, 3]]])

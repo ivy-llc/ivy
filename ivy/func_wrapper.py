@@ -76,7 +76,7 @@ NON_WRAPPED_METHODS = [
     "fn_array_spec",
     "insert_into_nest_at_index",
     "insert_into_nest_at_indices",
-    "vec_sig_fig"
+    "vec_sig_fig",
 ]
 METHODS_W_CONT_SUPPORT = [
     "multi_head_attention",
