@@ -5,7 +5,7 @@ import math
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Optional
 
 # local
 from ivy.functional.backends import numpy as _ivy
@@ -148,7 +148,6 @@ def gradient_image(x):
     )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
-
 
 
 def random_crop(

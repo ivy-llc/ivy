@@ -4,7 +4,7 @@ import math
 from functools import reduce as _reduce
 from operator import mul as _mul
 import mxnet as mx
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Optional
 
 # local
 from ivy.functional.backends import mxnet as _ivy
