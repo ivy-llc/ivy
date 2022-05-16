@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Union
+from typing import Union, List, Optional
 
 # local
 import ivy
@@ -291,8 +291,14 @@ def conv1d(
 
 
 def conv1d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
-):
+        x: Union[ivy.Array, ivy.NativeArray],
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        output_shape: Optional[List[int]] = None,
+        data_format: str = "NWC",
+        dilations: int = 1,
+) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters

@@ -5,6 +5,9 @@ import tensorflow as tf
 
 from tensorflow.python.types.core import Tensor
 
+from typing import List, Optional
+
+
 
 def conv1d(
     x: Tensor,
@@ -23,8 +26,14 @@ def conv1d(
 
 
 def conv1d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
-):
+        x: Tensor,
+        filters: Tensor,
+        strides: int,
+        padding: str,
+        output_shape: Optional[List[int]] = None,
+        data_format: str = "NWC",
+        dilations: int = 1,
+) -> Tensor:
     return tf.nn.conv1d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )

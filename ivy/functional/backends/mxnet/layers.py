@@ -3,6 +3,8 @@
 # global
 import math
 import mxnet as mx
+from typing import List, Optional
+
 
 
 def conv1d(
@@ -44,8 +46,14 @@ def conv1d(
 
 
 def conv1d_transpose(
-    x, filters, strides, padding, _=None, data_format="NWC", dilations=1
-):
+        x: mx.nd.NDArray,
+        filters: mx.nd.NDArray,
+        strides: int,
+        padding: str,
+        output_shape: Optional[List[int]] = None,
+        data_format: str = "NWC",
+        dilations: int = 1,
+) -> mx.nd.NDArray:
     if data_format == "NWC":
         x = mx.nd.transpose(x, (0, 2, 1))
     filter_shape = filters.shape[0:-2]
