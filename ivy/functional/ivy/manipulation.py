@@ -67,16 +67,16 @@ def roll(
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    >>> x = ivy.array([[0., 1., 2.],
-    >>>                [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.], \
+                    [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
-               [4., 5., 3.]])
+                [4., 5., 3.]])
 
-    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
-    >>>                [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                   [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -88,8 +88,8 @@ def roll(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    >>>                   b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -113,8 +113,8 @@ def roll(
     >>> y = x.roll(1)
     >>> print(y)
     {
-        a: ivy.array([2., 0., 1.], dtype=float32),
-        b: ivy.array([5., 3., 4.], dtype=float32)
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
     }
 
     """
