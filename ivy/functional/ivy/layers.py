@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Union
+from typing import Optional, Tuple, Union, List
 
 # local
 import ivy
@@ -388,8 +388,16 @@ def conv2d_transpose(
     )
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
-    """Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
+def depthwise_conv2d(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: Union[str, List[int]],
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+) -> Union[ivy.Array, ivy.Container]:
+    """
+    Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
 
     Parameters
     ----------
@@ -400,10 +408,10 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        NHWC" or "NCHW". Defaults to "NHWC".
+        "NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
 
@@ -411,6 +419,19 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
     -------
     ret
         The result of the convolution operation.
+
+    Examples:
+    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=2, padding='VALID')
+    >>> print(y.shape)
+    (1, 13, 13, 3)
+
+    >>> x = ivy.random_normal(0, 1, [1, 7, 7, 64])
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 64])
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='SAME')
+    >>> print(y.shape)
+    (1, 7, 7, 64)
 
     """
     return _cur_framework(x).depthwise_conv2d(

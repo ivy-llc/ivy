@@ -3,6 +3,7 @@
 # global
 import math
 import mxnet as mx
+from typing import Optional, Tuple, Union
 
 
 def conv1d(
@@ -144,7 +145,14 @@ def conv2d_transpose(
         return res
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
+def depthwise_conv2d(
+    x: mx.nd.NDArray,
+    filters: mx.nd.NDArray,
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+) -> mx.nd.NDArray:
     num_filters = filters.shape[-1]
     num_channels = num_filters
     if data_format == "NHWC":
