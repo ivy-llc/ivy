@@ -121,9 +121,7 @@ class ContainerWithManipulation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
             self.map(
-                lambda x_, _: ivy.reshape(x_, shape=shape)
-                if ivy.is_array(x_)
-                else x_,
+                lambda x_, _: ivy.reshape(x_, shape=shape) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
