@@ -556,6 +556,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 array = asarray
 
+
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     dtype: Optional[Union[ivy.Dtype, str]] = None,
