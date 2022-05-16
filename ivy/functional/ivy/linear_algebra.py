@@ -618,7 +618,7 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
     >>> out = ivy.det(x)
     >>> print(out)
-    ivy.array([-2., -3.])
+    ivy.array([-1.9999999, -3.])
 
     """
     return _cur_framework(x).det(x)
