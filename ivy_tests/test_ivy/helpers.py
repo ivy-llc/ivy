@@ -4,6 +4,7 @@
 from contextlib import redirect_stdout
 from io import StringIO
 import sys
+import re
 
 import numpy as np
 
@@ -205,6 +206,7 @@ def assert_compilable(fn):
     except Exception as e:
         raise e
 
+# function that trims white spaces from docstrings
 def trim(docstring):
     """trim function from PEP-257"""
     if not docstring:
@@ -242,7 +244,7 @@ def trim(docstring):
 def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
-    fn_name = fn.__name__
+    fn_name = fn.__name__    
     if fn_name not in ivy.framework_handler.ivy_original_dict:
         return True
     
@@ -250,13 +252,19 @@ def docstring_examples_run(fn):
 
     if docstring is None:
         return True
-        
-    sub = ">>> print("
+    
+    # removing extra new lines and trailing white spaces from the docstrings
     trimmed_docstring = trim(docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
 
+    # end_index: -1, if print statement is not found in the docstring
     end_index = -1
+
+    # parsed_output is set as an empty string to manage functions with multiple inputs
     parsed_output = ""
+
+    # parsing through the docstrings to find lines with print statement; following which is our parsed output
+    sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
             end_index = trimmed_docstring.index('', index)
@@ -282,12 +290,25 @@ def docstring_examples_run(fn):
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
-    # print("Output = ", output)
-    # print("Parsed output = ", parsed_output)
 
-    if output == parsed_output:
-        return True
-    return False
+    # handling cases when the stdout contains ANSI colour codes
+    # 7-bit C1 ANSI sequences
+    ansi_escape = re.compile(r'''
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+    ''', re.VERBOSE)
+
+    output = ansi_escape.sub('', output)
+
+    assert output == parsed_output, "Output is unequal to the docstrings output."
+    return True
 
 def var_fn(a, b=None, c=None):
     return ivy.variable(ivy.array(a, b, c))
