@@ -736,7 +736,7 @@ def test_divide(
         fw,
         "divide",
         x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[0], dtype=dtype[1]),
+        x2=np.asarray(x[1], dtype=dtype[1]),
     )
 
 
