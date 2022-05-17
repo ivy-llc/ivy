@@ -544,46 +544,6 @@ def test_clip_vector_norm(
 #     )
 
 
-# linspace
-@pytest.mark.parametrize(
-    "start_n_stop_n_num_n_axis",
-    [
-        [1, 10, 100, None],
-        [[[0.0, 1.0, 2.0]], [[1.0, 2.0, 3.0]], 150, -1],
-        [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, -2],
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
-    # smoke test
-    start, stop, num, axis = start_n_stop_n_num_n_axis
-    if (
-        (isinstance(start, Number) or isinstance(stop, Number))
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    start = tensor_fn(start, dtype, device)
-    stop = tensor_fn(stop, dtype, device)
-    ret = ivy.linspace(start, stop, num, axis, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    target_shape = list(start.shape)
-    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
-    assert ret.shape == tuple(target_shape)
-    # value test
-    assert np.allclose(
-        call(ivy.linspace, start, stop, num, axis, device=device),
-        np.asarray(
-            ivy.functional.backends.numpy.linspace(
-                ivy.to_numpy(start), ivy.to_numpy(stop), num, axis
-            )
-        ),
-    )
-
 
 # logspace
 @pytest.mark.parametrize(
