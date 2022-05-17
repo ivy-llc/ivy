@@ -40,12 +40,12 @@ def random_normal(
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return (
-            to_dev(
-                _jax.random.normal(rng_input, shape if shape else ()),
-                default_device(device),
-            )
-            * std
-            + mean
+        to_dev(
+            _jax.random.normal(rng_input, shape if shape else ()),
+            default_device(device),
+        )
+        * std
+        + mean
     )
 
 
@@ -56,13 +56,11 @@ def multinomial(
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:
         probs = (
-                _jnp.ones(
-                    (
-                        batch_size,
-                        population_size,
-                    )
-                )
-                / population_size
+            _jnp.ones((
+                batch_size,
+                population_size,
+            ))
+            / population_size
         )
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]

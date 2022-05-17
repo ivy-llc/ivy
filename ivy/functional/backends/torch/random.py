@@ -51,13 +51,13 @@ def multinomial(
 ):
     if probs is None:
         probs = (
-                torch.ones(
-                    (
-                        batch_size,
-                        population_size,
-                    )
+            torch.ones(
+                (
+                    batch_size,
+                    population_size,
                 )
-                / population_size
+            )
+            / population_size
         )
     return torch.multinomial(probs, num_samples, replace).to(default_device(device))
 

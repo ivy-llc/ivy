@@ -123,7 +123,6 @@ def multinomial(
     )
 
 
-
 def randint(
         low: int,
         high: int,
@@ -143,7 +142,8 @@ def randint(
     shape
         a tuple defining the shape of the output array.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None).
+        device on which to create the array 'cuda:0',
+        'cuda:1', 'cpu' etc. (Default value = None).
 
 
     Returns

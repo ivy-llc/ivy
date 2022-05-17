@@ -45,13 +45,13 @@ def multinomial(
     with tf.device("/" + device.upper()):
         if probs is None:
             probs = (
-                    tf.ones(
-                        (
-                            batch_size,
-                            population_size,
-                        )
+                tf.ones(
+                    (
+                        batch_size,
+                        population_size,
                     )
-                    / population_size
+                )
+                / population_size
             )
         return tf.random.categorical(tf.math.log(probs), num_samples)
 
