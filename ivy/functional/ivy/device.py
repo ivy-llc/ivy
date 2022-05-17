@@ -111,16 +111,19 @@ def num_arrays_on_dev(device):
 
 
 # noinspection PyShadowingNames
-def print_all_arrays_on_dev(device):
+def print_all_arrays_on_dev(device: Union[ivy.Device]):
     """Prints all arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        get the device handle
 
 
     Returns
     -------
+    out
+        print all the arrays on device
 
     """
     for arr in get_all_arrays_on_dev(device):
