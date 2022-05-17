@@ -382,6 +382,8 @@ def test_squeeze(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+        # docstring test
+        helpers.docstring_examples_run(ivy.squeeze, x)
 
 
 # stack

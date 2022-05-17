@@ -8,7 +8,6 @@ import mxnet as mx
 import numpy as _np
 from numbers import Number
 import multiprocessing as _multiprocessing
-
 # local
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.mxnet.device import _callable_dev
