@@ -122,6 +122,42 @@ def test_gradient_image(
     )
 
 
+# float_img_to_uint8_img
+@given(
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=3, max_size=8),
+    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+)
+def test_float_img_to_uint8_img(
+    shape,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    if fw == "torch" and dtype == "float16":
+        return
+    x = ivy.random_normal(shape=shape)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "float_img_to_uint8_img",
+        x=x,
+    )
+
+
 # Smoke Tests
 
 # # global
@@ -240,37 +276,37 @@ def test_gradient_image(
 #         return
 
 
-# float_img_to_uint8_img
-@pytest.mark.parametrize(
-    "fi_tui",
-    [
-        (
-            [[0.0, 1.0], [2.0, 3.0]],
-            [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-        )
-    ],
-)
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
-    # smoke test
-    if call is helpers.tf_graph_call:
-        # tensorflow tensors cannot be cast to numpy arrays in graph mode
-        pytest.skip()
-    float_img, true_uint8_img = fi_tui
-    float_img = tensor_fn(float_img, "float32", device)
-    true_uint8_img = np.array(true_uint8_img)
-    uint8_img = ivy.float_img_to_uint8_img(float_img)
-    # type test
-    assert ivy.is_ivy_array(float_img)
-    # cardinality test
-    assert uint8_img.shape == true_uint8_img.shape
-    # value test
-    uint8_img_np = call(ivy.float_img_to_uint8_img, float_img)
-    assert np.allclose(uint8_img_np, true_uint8_img)
-    # compilation test
-    if call in [helpers.torch_call]:
-        # torch device cannot be assigned value of string while scripting
-        return
+# # float_img_to_uint8_img
+# @pytest.mark.parametrize(
+#     "fi_tui",
+#     [
+#         (
+#             [[0.0, 1.0], [2.0, 3.0]],
+#             [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+#         )
+#     ],
+# )
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+# def test_float_img_to_uint8_img(fi_tui, tensor_fn, device, call):
+#     # smoke test
+#     if call is helpers.tf_graph_call:
+#         # tensorflow tensors cannot be cast to numpy arrays in graph mode
+#         pytest.skip()
+#     float_img, true_uint8_img = fi_tui
+#     float_img = tensor_fn(float_img, "float32", device)
+#     true_uint8_img = np.array(true_uint8_img)
+#     uint8_img = ivy.float_img_to_uint8_img(float_img)
+#     # type test
+#     assert ivy.is_ivy_array(float_img)
+#     # cardinality test
+#     assert uint8_img.shape == true_uint8_img.shape
+#     # value test
+#     uint8_img_np = call(ivy.float_img_to_uint8_img, float_img)
+#     assert np.allclose(uint8_img_np, true_uint8_img)
+#     # compilation test
+#     if call in [helpers.torch_call]:
+#         # torch device cannot be assigned value of string while scripting
+#         return
 
 
 # uint8_img_to_float_img
