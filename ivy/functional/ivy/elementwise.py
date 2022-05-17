@@ -143,6 +143,22 @@ def add(
                 [5.7],
                 [-4.7]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 6])
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 6])
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -1735,6 +1751,13 @@ def tan(
     >>> print(x)
     ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
                [-3.0963247,  0.9955841, -0.3278579]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, 1, 2])
+    >>> y = ivy.tan(x)
+    >>> print(y)
+    ivy.array([0., 1.5574077, -2.1850398])
 
     With :code:`ivy.Container` input:
 

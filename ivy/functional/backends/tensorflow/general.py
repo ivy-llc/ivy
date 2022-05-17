@@ -345,9 +345,7 @@ multiprocessing = (
 indices_where = tf.where
 
 
-def shape(
-    x: tf.Tensor, as_tensor: bool = False
-) -> Union[tf.Tensor, List[int]]:
+def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
     if as_tensor:
         return tf.shape(x)
     else:
