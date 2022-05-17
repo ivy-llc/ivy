@@ -39,7 +39,7 @@ Fig. 1.
 .. figure:: https://user-images.githubusercontent.com/53497039/156894484-d02f055d-d7eb-4588-8f8e-8d7ffc60bec5.png
     :width: 520px
     :align: center
-    :height: 164px
+    :height: 387px
     :alt: alternate text
     :figclass: align-center
 Fig. 2.
