@@ -498,3 +498,50 @@ def test_profiler(device, call):
     profiler.stop()
     if call is helpers.mx_call:
         time.sleep(1)  # required by MXNet for some reason
+
+# Still to Add #
+# ---------------#
+
+# get_all_arrays_on_dev
+# num_arrays_on_dev
+# print_all_arrays_on_dev
+# clear_mem_on_dev
+# total_mem_on_dev
+# used_mem_on_dev
+# percent_used_mem_on_dev
+# dev_util
+# gpu_is_available
+# num_cpu_cores
+# num_gpus
+# tpu_is_available
+# _assert_dev_correct_formatting
+# set_default_device
+# unset_default_device
+# split_factor
+# set_split_factor
+# isinstance
+# Class MultiDev
+# class MultiDevItem
+# class MultiDevIter
+# class MultiDevNest
+# class DevDistItem
+# class DevDistIter
+# class DevDistNest
+# class DevClonedItem
+# class DevClonedIter
+# class DevClonedNest
+# dev_clone_array
+# dev_clone
+# dev_clone_iter
+# dev_clone_nest
+# _concat_unify_array
+# _sum_unify_array
+# _mean_unify_array
+# dev_unify_array
+# dev_unify
+# dev_unify_iter
+# dev_unify_nest
+# class DevMapper
+# class DevMapperMultiProc
+# class DevManager
+# class Profiler
