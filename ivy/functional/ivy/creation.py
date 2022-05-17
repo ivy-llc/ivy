@@ -556,6 +556,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 array = asarray
 
+
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     dtype: Optional[Union[ivy.Dtype, str]] = None,
@@ -579,8 +580,9 @@ def native_array(
         A native array interpretation of x.
 
     """
-    # ToDo: Make this more efficient, ideally without first converting to ivy.Array with ivy.asarray and then
-    #  converting back to native with ivy.to_native
+    # ToDo: Make this more efficient,
+    # ideally without first converting to ivy.Array with ivy.asarray and then
+    # converting back to native with ivy.to_native
     return ivy.to_native(ivy.asarray(x, dtype, device))
 
 
