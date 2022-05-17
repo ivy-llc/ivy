@@ -86,3 +86,29 @@ def test_matmul(
         x1=np.random.uniform(size=(a, b)).astype(dtype[0]),
         x2=np.random.uniform(size=(b, c)).astype(dtype[1]),
     )
+
+# Still to Add #
+# ---------------#
+
+# cholesky
+# cross
+# det
+# diagonal
+# eigh
+# eigvalsh
+# inv
+# matrix_norm
+# matrix_power
+# matrix_rank
+# matrix_transpose
+# outer
+# pinv
+# qr
+# slogdet
+# solve
+# svd
+# svdvals
+# tensordot
+# trace
+# vecdot
+# vector_norm
