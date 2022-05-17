@@ -535,13 +535,14 @@ def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
     x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
     (element-wise). For example, if an interval of [0, 1] is specified, values smaller
-    than 0 become 0, and values larger than 1 become 1.
+    than 0 become 0, and values larger than 1 become 1. Minimum value needs to smaller
+    or equal to maximum value to return correct results.
 
     Parameters
     ----------
@@ -570,39 +571,29 @@ def clip(
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> y = ivy.clip(x, 1., 5.)
     >>> print(y)
-    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+    ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> y = ivy.zeros(10, float)
+    >>> y = ivy.zeros_like(x)
     >>> ivy.clip(x, 2., 7., out=y)
     >>> print(y)
-    ivy.array([2., 2., 3., 4., 5., 6., 7., 7., 7., 7.])
+    ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
-    >>> y = ivy.clip(x, x_min, 7.)
+    >>> x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
-
-    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_max = ivy.array([5., 4., 1., 1., 5., 7., 8., 3., 8., 8.])
-    >>> y = ivy.clip(x, 2., x_max)
-    >>> print(y)
-    ivy.array([2., 2., 1., 1., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> y = ivy.clip(x, 1., 5.)
-    >>> print(y)
-    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
-    >>> y = ivy.clip(x, x_min, 7.)
+    >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
-
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     Instance Method Examples
     ------------------------
@@ -611,24 +602,6 @@ def clip(
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> y = x.clip(1., 5.)
     >>> print(y)
-    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
-
-    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
-    >>> y = x.clip(x_min, 7.)
-    >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
-
-    With :code:`ivy.NativeArray` input:
-    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> y = x.clip(1., 5.)
-    >>> print(y)
-    ivy.array([0., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
-    >>> y = x.clip(x_min, 7.)
-    >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 7., 7., 7.])
+    ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
     """
     return _cur_framework(x).clip(x, x_min, x_max, out)
