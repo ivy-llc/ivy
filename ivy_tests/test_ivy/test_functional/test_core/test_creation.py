@@ -3,6 +3,7 @@
 # global
 import numpy as np
 import pytest
+from numbers import Number
 from hypothesis import given, strategies as st
 
 # local
@@ -106,4 +107,44 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
             )
         ),
     )
+
+
+# logspace
+@pytest.mark.parametrize(
+    "start_n_stop_n_num_n_base_n_axis",
+    [
+        [1, 10, 100, 10.0, None],
+        [[[0.0, 1.0, 2.0]], [[1.0, 2.0, 3.0]], 150, 2.0, -1],
+        [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, 5.0, -2],
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, call):
+    # smoke test
+    start, stop, num, base, axis = start_n_stop_n_num_n_base_n_axis
+    if (
+        (isinstance(start, Number) or isinstance(stop, Number))
+        and tensor_fn == helpers.var_fn
+        and call is helpers.mx_call
+    ):
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    start = tensor_fn(start, dtype, device)
+    stop = tensor_fn(stop, dtype, device)
+    ret = ivy.logspace(start, stop, num, base, axis, device=device)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    target_shape = list(start.shape)
+    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
+    assert ret.shape == tuple(target_shape)
+    # value test
+    assert np.allclose(
+        call(ivy.logspace, start, stop, num, base, axis, device=device),
+        ivy.functional.backends.numpy.logspace(
+            ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis
+        ),
+    )
+
 
