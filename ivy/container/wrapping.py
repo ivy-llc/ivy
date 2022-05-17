@@ -37,7 +37,7 @@ def _wrap_fn(fn_name):
         kwarg_cont_idxs = ivy.nested_indices_where(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        #retrieve all the containers in args and kwargs
+        # retrieve all the containers in args and kwargs
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
