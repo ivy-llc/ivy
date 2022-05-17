@@ -152,8 +152,8 @@ Inplace Updates
 ---------------
 
 All Ivy functions which return a single array should support inplace updates, with the inclusion of an :code:`out`
-argument with type hint :code:`Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]]` for *flexible* functions
-and :code:`Optional[Union[ivy.Array, ivy.NativeArray]]` otherwise.
+argument with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
+and :code:`Optional[ivy.Array]` otherwise.
 
 When this argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
 :code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
