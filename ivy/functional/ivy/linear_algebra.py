@@ -654,12 +654,28 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
 
     Returns
     -------
-        an array containing the Cholesky factors for each square matrix. If upper is
-        False, the returned array must contain lower-triangular matrices; otherwise, the
-        returned array must contain upper-triangular matrices. The returned array must
-        have a floating-point data type determined by Type Promotion Rules and must have
-        the same shape as x.
+        an array containing the Cholesky factors for each square matrix.
+        If upper is False, the returned array must contain lower-triangular matrices; 
+        otherwise, the returned array must contain upper-triangular matrices.
+        The returned array must have a floating-point data type determined 
+        by Type Promotion Rules and must have the same shape as x.
+    
+    Examples
+    --------
+    1. Returns a lower-triangular Cholesky factor L
 
+    >>> x = ivy.array([[1., -2.], [2., 5.]])  
+    >>> l = ivy.cholesky(x)
+    >>> print(l)
+    ivy.array([[ 1., 0.], [ 2., 1.]])
+
+    2. Returns an upper-triangular cholesky factor U
+
+    >>> x = ivy.array([[1., -2.], [2., 5.]])  
+    >>> u = ivy.cholesky(x, upper = True)
+    >>> print(u)
+    ivy.array([[ 1., -2.],[ 0.,  1.]])
+    
     """
     return _cur_framework(x).cholesky(x, upper)
 
