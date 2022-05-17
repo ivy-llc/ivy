@@ -86,6 +86,13 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -143,6 +150,15 @@ def squeeze(
     -------
     ret
         an output array having the same data type and elements as ``x``.
+
+
+    Examples
+    --------
+    >>> x = ivy.array([[[0, 1], [2, 3]]])
+    >>> print(x.shape)
+    (1, 2, 2)
+    >>> print(ivy.squeeze(x, axis=0).shape)
+    (2, 2)
 
     """
     return _cur_framework(x).squeeze(x, axis, out)

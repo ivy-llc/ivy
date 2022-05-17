@@ -353,7 +353,19 @@ def gpu_is_available() -> bool:
 
 
 def num_cpu_cores() -> int:
-    """Determine the number of cores available in the cpu."""
+    """Determine the number of cores available in the cpu.
+
+    Returns
+    -------
+    ret
+        Number of cores available in CPU
+
+    Examples
+    --------
+    >>> print(ivy.num_cpu_cores())
+    2
+
+    """
     return psutil.cpu_count()
 
 
