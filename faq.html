@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="functional/ivy.html" />
+    <link rel="prev" title="Docstring Examples" href="contributing/5_docstring_examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-sizes">Dynamic Sizes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#type-and-shape-checking">Type and Shape Checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-control-flow">Dynamic Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auto-differentiation">Auto-Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#replicas-and-data-vs-model-parallelism">Replicas, and Data vs Model Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#support-for-functions">Support for Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alternative-data-structures">Alternative Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-operations">Custom Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-pipeline">The Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#state">State</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>FAQ</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/faq.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline"></a></h1>
+<p>These are some of the most common technical questions that continue to arise when we’re discussing Ivy with developers
+in the community.</p>
+<p>As Ivy becomes more mature and we continue these discussions,
+then many more questions and answers will no doubt be added!</p>
+<p>We are all incredibly grateful to everyone in the community who has put in the time and effort to ask so many important
+and probing questions! We hope these Q&amp;As are a useful reference!</p>
+<section id="dynamic-sizes">
+<h2>Dynamic Sizes<a class="headerlink" href="#dynamic-sizes" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Assuming a static computation graph, can tensors have sizes that dynamically change?
+XLA does not support dynamic sizes, because it JIT-compiles the graph, and pre-allocates all buffers in memory before
+the graph runs. TensorFlow and PyTorch do allow dynamic sizes, but only on certain backends.
+Dynamic sizes require a dynamic memory memory manager, which CPUs/GPUs have, but XLA currently doesn’t.
+How does Ivy deal with all of this?</p>
+<p><strong>A:</strong> Ivy assumes dynamic shapes are supported, but an error will be thrown if/when the function is compiled
+with dynamic shapes enabled, but the backend does not support dynamic shapes in the compiled graph.
+For now, fully framework-agnostic compiled graphs are only possible for static graphs.</p>
+</section>
+<section id="type-and-shape-checking">
+<h2>Type and Shape Checking<a class="headerlink" href="#type-and-shape-checking" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic
+sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of <a class="reference external" href="https://github.com/dexidp/dex">dex</a>.</p>
+<p><strong>A:</strong>  The checks performed during graph compilation will remain framework-specific. The function <code class="code docutils literal notranslate"><span class="pre">ivy.compile</span></code>
+wraps the backend compilation methods, for example <code class="code docutils literal notranslate"><span class="pre">jax.jit</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.function</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.jit.script</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">torch.jit.trace</span></code>. For some backends, shape-checking will be performed during the compilation phase and for others
+it will not.</p>
+</section>
+<section id="dynamic-control-flow">
+<h2>Dynamic Control Flow<a class="headerlink" href="#dynamic-control-flow" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Tensorflow has dynamic control-flow primitives (loops, branches) even within a static computation graph.
+Jax also has dynamic control-flow (<code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>, <code class="code docutils literal notranslate"><span class="pre">lax.while</span></code>), but support is limited; only <code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>
+is differentiable in reverse mode.</p>
+<p>Branching is also tricky, and is backend-dependent. CPUs have branch predictors and can execute tight loops, GPUs don’t,
+but have drivers that can schedule kernels dynamically, some other architectures do static scheduling,
+which limits the kinds of algorithms that can run effectively.</p>
+<p>TensorFlow eager and PyTorch allow you to use full python control flow, (loops, branches, function calls,
+dynamic dispatch, recursion) but there is no static computation graph. How will Ivy handle dynamic control flow?
+Will Ivy parse python ASTs?</p>
+<p><strong>A:</strong> For now, Ivy will not support dynamic control flow by parsing ASTs. The dynamicism of <code class="code docutils literal notranslate"><span class="pre">for</span></code> loops and
+<code class="code docutils literal notranslate"><span class="pre">while</span></code> loops will be ignored during compilation, and just the static trace which chains the array operations
+performed during the forward pass at compile time will be preserved.</p>
+<p>However, Ivy will support the compilation of looping and branching methods such as <code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>, <code class="code docutils literal notranslate"><span class="pre">lax.while</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">tf.while</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.cond</span></code> etc.
+In cases where there is not an associated compilable method in other backends,
+we will strive to implement this as a composition of existing compilable operations.
+If such a composition is not possible, then we will instead convert these to compositions of pure Python <code class="code docutils literal notranslate"><span class="pre">for</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">while</span></code> and <code class="code docutils literal notranslate"><span class="pre">if</span></code> statements (when using a PyTorch backend for example).</p>
+<p>The reverse mode conversions will not be possible without using parsing ASTs though.
+This does mean that for example TensorFlow (with loops + branches) → PyTorch (with for, while + if statements)
+but the reverse mode will not preserve the loops and branches PyTorch (with for, while + if statements) → TensorFlow (static, no loops or branches).</p>
+</section>
+<section id="auto-differentiation">
+<h2>Auto-Differentiation<a class="headerlink" href="#auto-differentiation" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> How do you handle reverse mode, forward mode, and Jacobians?  How about stop gradients, and gradient
+checkpointing, and custom gradients? What about autodiff for control-flow operators like <code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>?
+This is where JAX really shines, and unless you are implementing your own autodiff framework, you are at the mercy of
+whatever the backend supports.</p>
+<p><strong>A:</strong> Ivy will implement all of the general methods that JAX supports, and will provide errors if/when the backend
+does not support this. In general, Ivy will support the superset of functionality, and not just the lowest common
+denominator. Ivy takes a fully functional approach like JAX, and the API enables arbitrary nested
+<code class="code docutils literal notranslate"><span class="pre">execute_with_gradient</span></code> calls up to an arbitrary gradient order. Again, if a backend does not support this then an
+error will be thrown. This means Ivy code is not 100% framework-agnostic, and is indeed at the mercy of what the backend
+autograd package supports in these cases.</p>
+</section>
+<section id="replicas-and-data-vs-model-parallelism">
+<h2>Replicas, and Data vs Model Parallelism<a class="headerlink" href="#replicas-and-data-vs-model-parallelism" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Big models don’t run on just one device, and the major frameworks have <em>very</em> different ways of splitting a model
+up so that it runs on a cluster. There are multiple competing paradigms for parallelisation – e.g. SPMD vs mixture of
+experts. JAX and Tensorflow are very sophisticated in this department, and routinely run models on hundreds or
+thousands of devices. How will Ivy support multi-device training, if at all?</p>
+<p><strong>A:</strong> This is not something we’re diving into too deeply at the moment. However, we have written our own <a class="reference external" href="https://github.com/unifyai/ivy/blob/a2f37b1bae232b7ba5257e59f8b46a0374cca9f1/ivy/functional/ivy/device.py#L660">API
+for distributed training</a>, which broadly follows PyTorch’s approach using a CUDA-enabled multiprocessing module.</p>
+<p>If heavily distributed training is important. Then Ivy can be supplementary for the time being, rather than a total
+replacement. For example, someone can use TensorFlow’s distributed training tools, and just use
+Ivy to copy over a PyTorch model into their TF pipeline.</p>
+<p>We are not trying to encourage anyone to drop any existing tools and just use Ivy instead.
+Projects can use 1% Ivy code or 100%. We’re very happy in either case!</p>
+</section>
+<section id="support-for-functions">
+<h2>Support for Functions<a class="headerlink" href="#support-for-functions" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Is it possible to compile tensor code into a reusable and differentiable function?  If you can’t, then it will
+be difficult to apply any fancy kernel fusion algorithms, and you can expect to lose a lot of performance.
+What about higher-order operations, like <code class="code docutils literal notranslate"><span class="pre">jax.vmap</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax.pmap</span></code>?</p>
+<p><strong>A:</strong> Most functions in Ivy are <em>primary</em> functions, which are generally implemented as light wrapping around a
+near-identical backend-specific function, which itself will likely map to an efficient kernel. <em>Compositional</em> functions
+on the other hand are implemented as a composition of other Ivy functions, meaning there will not be a one-to-one
+mapping to a single backend kernel. However, our experiments (to be published soon!) show this does not lead to a
+significant run-time overhead, even when a composition of operations is required.</p>
+<p>For methods like <code class="code docutils literal notranslate"><span class="pre">jax.vmap</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax.pmap</span></code>, we will need to implement these as (possibly inefficient)
+compositions in other frameworks, until they are supported in these frameworks. However, it seems as though other
+frameworks such as PyTorch are seeing the benefit in these functions, and will eventually <a class="reference external" href="https://pytorch.org/tutorials/prototype/vmap_recipe.html">fully support these</a>.</p>
+</section>
+<section id="alternative-data-structures">
+<h2>Alternative Data Structures<a class="headerlink" href="#alternative-data-structures" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.</p>
+<p><strong>A:</strong> We will of course support these structures in pure python code, but we will not support framework-specific
+alternative compilable data structures. While Ivy will not provide an interface to these data structures directly,
+Ivy code can easily supplement JAX code which does contain these data structures,
+and both can be compiled together without issue. Ivy can act as a supplementary framework if/when some of the more
+unique framework-specific data structures are required.</p>
+</section>
+<section id="custom-operations">
+<h2>Custom Operations<a class="headerlink" href="#custom-operations" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Most frameworks have a backdoor for user-defined ops, implemented in C++/CUDA, or some kind of host callback
+mechanism. Will Ivy support this ability also?</p>
+<p><strong>A:</strong> We will not attempt to provide a unified back-door for all possible backend kernel customizations,
+but of course users can still use the framework-specific backdoors which already exist when using Ivy.</p>
+</section>
+<section id="the-pipeline">
+<h2>The Pipeline<a class="headerlink" href="#the-pipeline" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> How will Ivy manage the training loop and input pipeline?  What about loading and saving models, recording of
+scalar metrics, visualization, etc.? These are often also somewhat framework-dependent.</p>
+<p><strong>A:</strong> We are not advocating to replace all code with Ivy. We would encourage users to continue using
+whatever data loaders they want to, and perhaps just use an Ivy model, or use Ivy to convert a model, or even just a
+single function from a library. If users want to use Ivy more deeply, then they can use <a class="reference external" href="https://github.com/unifyai/builder">Ivy Builder</a>,
+which includes framework-agnostic abstract data loaders, trainers, and other higher level classes for composing full
+training pipelines.</p>
+</section>
+<section id="state">
+<h2>State<a class="headerlink" href="#state" title="Permalink to this headline"></a></h2>
+<p><strong>Q:</strong> Tensorflow handles state as part of the static graph. JAX is purely functional and so outsources it to one of
+several third-party libraries, like Flax. How will Ivy handle state?</p>
+<p><strong>A:</strong> Ivy has a fully functional backend. When using a TensorFlow or PyTorch backend, we pass all of the variables and
+gradients explicitly as function inputs and outputs. This is not actually required for the stateful back-ends, but we
+still return the values such that JAX is also supported. Ivy will remain fully functional in design, and we therefore
+assume behavior similar to JAX. Our simple example on the <a class="reference external" href="https://github.com/unifyai/ivy">README</a> trains correctly for all back-ends, which passes
+everything explicitly in a functional manner.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contributing/5_docstring_examples.html" class="btn btn-neutral float-left" title="Docstring Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="functional/ivy.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
