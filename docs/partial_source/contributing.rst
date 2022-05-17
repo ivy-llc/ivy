@@ -19,19 +19,23 @@ and all are totally welcome on board for our journey! 🙂
 The contributor guide is split into the sections below, it's best to go from start to finish,
 but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
-| (a) :ref:`The Basics`
+
+| (a) :ref:`Setting up`
+| Build the right environment 🏛️
+|
+| (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (b) :ref:`Navigating the Code`
+| (c) :ref:`Navigating the Code`
 | A quick tour through the codebase 🔍
 |
-| (c) :ref:`Type Hints`
+| (d) :ref:`Type Hints`
 | How add the correct type hints 📑
 |
-| (d) :ref:`Docstrings`
+| (e) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (e) :ref:`Docstring Examples`
+| (f) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 
 .. toctree::
@@ -39,8 +43,9 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    :maxdepth: -1
    :caption: Contributing
 
-   contributing/0_the_basics.rst
-   contributing/1_navigating_the_code.rst
-   contributing/2_type_hints.rst
-   contributing/3_docstrings.rst
-   contributing/4_docstring_examples.rst
+   contributing/0_setting_up.rst
+   contributing/1_the_basics.rst
+   contributing/2_navigating_the_code.rst
+   contributing/3_type_hints.rst
+   contributing/4_docstrings.rst
+   contributing/5_docstring_examples.rst
