@@ -1386,7 +1386,33 @@ def test_inplace_increment(x_n_inc, tensor_fn, device, call):
 # Still to Add #
 # ---------------#
 
-# is_native_array(x, exclusive=False)
-# _parse_ellipsis(so, ndims)
-# compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None)
-# current_framework_str()
+# is_ivy_array
+# is_array
+# is_ivy_container
+# all_equal
+# to_numpy
+# clip_matrix_norm
+# unstack
+# value_is_nan
+# has_nans
+# exists
+# shape_to_tuple
+# try_else_none
+# arg_names
+# cache_fn
+# current_framework_str
+# get_min_denominator
+# set_min_denominator
+# get_min_base
+# set_min_base
+# stable_divide
+# stable_pow
+# get_all_arrays_in_memory
+# num_arrays_in_memory
+# print_all_arrays_in_memory
+# set_queue_timeout
+# queue_timeout
+# tmp_dir
+# set_tmp_dir
+# supports_inplace
+# assert_supports_inplace
