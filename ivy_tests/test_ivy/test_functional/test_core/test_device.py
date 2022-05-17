@@ -1,6 +1,7 @@
 """Collection of tests for unified device functions."""
 
 # global
+import os
 import math
 import pytest
 import numpy as np
@@ -468,3 +469,32 @@ def test_unify_args(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert ivy.dev(args_uni[0], as_str=True) == dev0
     assert ivy.dev(kwargs_uni["a"], as_str=True) == dev0
+
+
+# profiler
+def test_profiler(device, call):
+
+    # ToDo: find way to prevent this test from hanging when run
+    #  alongside other tests in parallel
+
+    # log dir
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    log_dir = os.path.join(this_dir, "../log")
+
+    # with statement
+    with ivy.Profiler(log_dir):
+        a = ivy.ones([10])
+        b = ivy.zeros([10])
+        a + b
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
+
+    # start and stop methods
+    profiler = ivy.Profiler(log_dir)
+    profiler.start()
+    a = ivy.ones([10])
+    b = ivy.zeros([10])
+    a + b
+    profiler.stop()
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
