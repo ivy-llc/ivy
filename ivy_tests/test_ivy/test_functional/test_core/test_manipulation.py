@@ -1,4 +1,4 @@
-"""Collection of tests for sorting functions."""
+"""Collection of tests for manipulation functions."""
 
 # global
 import pytest
