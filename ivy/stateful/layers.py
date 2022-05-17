@@ -11,7 +11,6 @@ from ivy.stateful.initializers import Zeros, GlorotUniform
 
 
 class Linear(Module):
-
     def __init__(
         self,
         input_channels,
@@ -156,7 +155,6 @@ class Dropout(Module):
 
 
 class MultiHeadAttention(Module):
-
     def __init__(
         self,
         query_dim,
@@ -220,7 +218,7 @@ class MultiHeadAttention(Module):
         self._inner_dim = head_dim * num_heads
         self._dropout_rate = dropout_rate
         self._context_dim = ivy.default(context_dim, query_dim)
-        self._scale = ivy.default(scale, head_dim ** -0.5)
+        self._scale = ivy.default(scale, head_dim**-0.5)
         self._num_heads = num_heads
         self._with_to_q_fn = with_to_q_fn
         self._with_to_kv_fn = with_to_kv_fn
@@ -311,7 +309,6 @@ class MultiHeadAttention(Module):
 
 
 class Conv1D(Module):
-
     def __init__(
         self,
         input_channels,
@@ -421,7 +418,6 @@ class Conv1D(Module):
 
 
 class Conv1DTranspose(Module):
-
     def __init__(
         self,
         input_channels,
@@ -534,7 +530,6 @@ class Conv1DTranspose(Module):
 
 
 class Conv2D(Module):
-
     def __init__(
         self,
         input_channels,
@@ -641,7 +636,6 @@ class Conv2D(Module):
 
 
 class Conv2DTranspose(Module):
-
     def __init__(
         self,
         input_channels,
@@ -753,7 +747,6 @@ class Conv2DTranspose(Module):
 
 
 class DepthwiseConv2D(Module):
-
     def __init__(
         self,
         num_channels,
@@ -857,7 +850,6 @@ class DepthwiseConv2D(Module):
 
 
 class Conv3D(Module):
-
     def __init__(
         self,
         input_channels,
@@ -964,7 +956,6 @@ class Conv3D(Module):
 
 
 class Conv3DTranspose(Module):
-
     def __init__(
         self,
         input_channels,
@@ -1080,7 +1071,6 @@ class Conv3DTranspose(Module):
 
 
 class LSTM(Module):
-
     def __init__(
         self,
         input_channels,
