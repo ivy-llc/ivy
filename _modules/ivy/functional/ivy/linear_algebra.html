@@ -360,6 +360,21 @@
 
 <span class="sd">        Each returned array must have the same floating-point data type as ``x``.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
+<span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(U.shape, S.shape, Vh.shape)</span>
+<span class="sd">    (9, 9) (6,) (6, 6)</span>
+
+<span class="sd">    Reconstruction from SVD, result is numerically close to x</span>
+
+<span class="sd">    &gt;&gt;&gt; reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)</span>
+<span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &gt; 1e-3).sum())</span>
+<span class="sd">    ivy.array(0)</span>
+<span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &lt; -1e-3).sum())</span>
+<span class="sd">    ivy.array(0)</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">)</span></div>
 
