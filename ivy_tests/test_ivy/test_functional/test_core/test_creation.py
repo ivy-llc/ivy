@@ -145,6 +145,24 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
         ivy.functional.backends.numpy.logspace(
             ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis
         ),
-    )
+    )ct
 
 
+# Still to Add #
+# ---------------#
+
+# arange()
+# asarray()
+# empty()
+# empty_like()
+# eye()
+# from_dlpack()
+# full()
+# full_like()
+# meshgrid()
+# ones()
+# ones_like()
+# tril()
+# triu()
+# zeros()
+# zeros_like()

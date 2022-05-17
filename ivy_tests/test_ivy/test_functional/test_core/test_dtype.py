@@ -161,3 +161,15 @@ def test_dtype_from_str(x, dtype, tensor_fn, device, call):
     dt1 = ivy.dtype(x)
     # value test
     assert dt0 is dt1
+
+# Still to Add #
+# ---------------#
+
+# astype
+# broadcast_arrays
+# broadcast_to
+# can_cast
+# finfo
+# iinfo
+# result_type
+
