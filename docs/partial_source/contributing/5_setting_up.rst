@@ -1,29 +1,29 @@
 *****
 Setting up the Remote python interpreter
 *****
-Using the same remote python intepretor provided as a docket container helps the community to share the same packages 
+Using the same remote python interpreter provided as a docker container helps the community to share the same packages
 and mitigate any version conflicts. In addition, it also becomes possible to use modules not yet provided for an operating system, such as jaxlib for windows.
 Below are the instructions required to setup the docker container for:
 
 
-Window
+Windows
 ****
 
 
 1. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 
-2. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most people, it should only require running the command `wsl --install` in powershell admin mode. Visit the link if it doesn't.
+2. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most people, it only requires running the command `wsl --install` in powershell admin mode. Visit the link if it doesn't.
 
 3. Get the latest Docker Image for Ivy by: 
   * Running Docker desktop.
-  * Open cmd, and run the command: `docker run -it --rm unifyai/ivy:latest python3`
+  * Opening cmd, and running the command: `docker run -it --rm unifyai/ivy:latest python3`
 
 4. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
-5. Open pyharm with your cloned Ivy repository. Add the remote python interpreter by:
+5. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-* Clicking Python Interpretor bar on bottom right and going interpreter settings (or settings>project:...>Python Interpreter)
+* Going to settings>project:...>Python Interpreter)
 
-* Choose add interpretor (currently by clicking the setting logo on the side) (Fig. 1 Below)
+* Choose add interpreter (currently by clicking the setting logo on the side) (Fig. 1 Below)
 
 * Choose Docker from left panel, make sure it says python3 (with the number) in python interpreter path and click ok. (Fig 2 Below)
 
