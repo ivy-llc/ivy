@@ -170,7 +170,8 @@ def clip(
     x: JaxArray,
     x_min: Union[Number, JaxArray],
     x_max: Union[Number, JaxArray],
-    out: Optional[JaxArray] = None):
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")

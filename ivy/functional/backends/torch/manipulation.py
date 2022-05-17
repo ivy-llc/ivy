@@ -253,7 +253,8 @@ def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
     x_max: Union[Number, torch.Tensor],
-    out: Optional[torch.Tensor] = None):
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)

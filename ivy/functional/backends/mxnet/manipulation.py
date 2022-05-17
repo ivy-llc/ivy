@@ -205,7 +205,8 @@ def clip(
     x: mx.ndarray.ndarray.NDArray,
     x_min: float,
     x_max: float,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None):
+    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+) -> mx.ndarray.ndarray.NDArray:
     ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

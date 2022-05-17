@@ -246,7 +246,8 @@ def clip(
     x: Tensor,
     x_min: Union[Number, Tensor],
     x_max: Union[Number, Tensor],
-    out: Optional[Tensor] = None):
+    out: Optional[Tensor] = None,
+) -> Tensor:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
