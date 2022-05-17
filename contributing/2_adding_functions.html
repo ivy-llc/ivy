@@ -255,8 +255,8 @@ adding any instance methods which have not yet been added in source code, or wer
 <section id="inplace-updates">
 <h2>Inplace Updates<a class="headerlink" href="#inplace-updates" title="Permalink to this headline"></a></h2>
 <p>All Ivy functions which return a single array should support inplace updates, with the inclusion of an <code class="code docutils literal notranslate"><span class="pre">out</span></code>
-argument with type hint <code class="code docutils literal notranslate"><span class="pre">Optional[Union[ivy.Array,</span> <span class="pre">ivy.NativeArray,</span> <span class="pre">ivy.Container]]</span></code> for <em>flexible</em> functions
-and <code class="code docutils literal notranslate"><span class="pre">Optional[Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]]</span></code> otherwise.</p>
+argument with type hint <code class="code docutils literal notranslate"><span class="pre">Optional[Union[ivy.Array,</span> <span class="pre">ivy.Container]]</span></code> for <em>flexible</em> functions
+and <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code> otherwise.</p>
 <p>When this argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
