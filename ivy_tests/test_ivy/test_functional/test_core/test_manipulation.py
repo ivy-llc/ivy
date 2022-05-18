@@ -725,4 +725,3 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, tensor_fn, device, call):
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
-
