@@ -178,9 +178,8 @@ def meshgrid(
 )-> List[mx.ndarray.ndarray.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
-    return list(
-        [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
-    )
+    return [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
+
 
 
 def from_dlpack(x):
