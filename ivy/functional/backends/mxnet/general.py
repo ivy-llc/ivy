@@ -3,7 +3,6 @@ from typing import List, Optional, Union
 import ivy
 
 _round = round
-import logging
 import mxnet as mx
 import numpy as _np
 from numbers import Number
@@ -265,18 +264,6 @@ def indices_where(x):
         return res
     res = mx.nd.swapaxes(mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
     return res
-
-
-# noinspection PyUnusedLocal
-def compile(
-    func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    logging.warning(
-        "MXnet does not support compiling arbitrary functions, consider writing a "
-        "function using MXNet Symbolic backend instead for compiling.\n"
-        "Now returning the unmodified function."
-    )
-    return func
 
 
 current_framework_str = lambda: "mxnet"

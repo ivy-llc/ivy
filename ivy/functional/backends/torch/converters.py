@@ -50,7 +50,7 @@ class IvyModule(ivy.Module):
 
     @staticmethod
     def _inplace_update(p, v):
-        p.data = v
+        p.data = v.data
 
     def _inplace_update_v(self, new_v):
         ivy.Container.multi_map(
@@ -65,8 +65,12 @@ class IvyModule(ivy.Module):
                 # noinspection PyProtectedMember
                 native._modules[k] = self._replace_update_v(v, native._modules[k])
             elif ivy.is_variable(v):
-                # noinspection PyProtectedMember
-                native.__setattr__(k, v)
+                if isinstance(v, torch.nn.Parameter):
+                    # noinspection PyProtectedMember
+                    native.__setattr__(k, v)
+                else:
+                    # noinspection PyProtectedMember
+                    native.__setattr__(k, v.data)
             else:
                 raise Exception(
                     "found item in variable container {} which was neither a "
