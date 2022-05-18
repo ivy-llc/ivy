@@ -408,39 +408,54 @@ def test_squeeze(
 
 
 # stack
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_stack(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([1, 2, 3, 4], dtype=dtype)
-    x2 = ivy.array([1, 2, 3, 4], dtype=dtype)
-    out = ivy.array([[2, 3, 4, 5], [4, 5, 6, 7]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.stack([x1, x2], 0, out=out)
-    else:
-        ret = ivy.stack([x1, x2], 0)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[0, 5]
+    ),
+    num_arrays=st.shared(st.integers(1, 5), key="num_arrays"),
+    dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    data=st.data(),
+    as_variable=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    container=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    instance_method=st.booleans(),
+)
+def test_stack(
+    array_shape,
+    num_arrays,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    xs = [data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype[i])) for i in range(num_arrays)]
+    ndim = len(xs[0].shape)
+    axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        [False for _ in range(num_arrays)],
+        False,
+        fw,
+        "stack",
+        x=xs,
+        axis=axis,
+    )
 
 
 # Extra #
