@@ -12,6 +12,7 @@ import tensorflow as tf
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 from numbers import Number
+
 # local
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
@@ -326,12 +327,6 @@ def one_hot(indices, depth, device=None):
         with tf.device(dev_from_str(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
-
-
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    return tf.function(fn)
 
 
 current_framework_str = lambda: "tensorflow"
