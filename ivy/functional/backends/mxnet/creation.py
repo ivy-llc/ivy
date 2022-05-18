@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Tuple, Union, Optional, Iterable
+from typing import Tuple, Union, List, Optional, Iterable
 from numbers import Number
 
 # local
@@ -175,10 +175,10 @@ def full(shape, fill_value, dtype=None, device=None):
 def meshgrid(
     *xs: mx.ndarray.ndarray.NDArray,
     indexing: Optional[str]="ij"
-)-> tuple(mx.ndarray.ndarray.NDArray):
+)-> List[mx.ndarray.ndarray.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
-    return tuple(
+    return list(
         [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
     )
 
