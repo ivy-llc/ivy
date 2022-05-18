@@ -124,8 +124,7 @@ def test_gradient_image(
 
 # float_img_to_uint8_img
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=3, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
