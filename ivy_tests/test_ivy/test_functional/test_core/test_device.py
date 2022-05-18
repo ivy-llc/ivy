@@ -260,7 +260,7 @@ def test_split_func_call_with_cont_input(
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @pytest.mark.parametrize("devs_as_dict", [True, False])
-def test_distribute_array(x, axis, tensor_fn, devs_as_dict, device, call):
+def test_dist_array(x, axis, tensor_fn, devs_as_dict, device, call):
 
     # inputs
     x = tensor_fn(x, "float32", device)
@@ -348,7 +348,7 @@ def test_unify_array(xs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_distribute_args(args, kwargs, axis, tensor_fn, device, call):
+def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # inputs
     args = [tensor_fn(args[0], "float32", device)] + args[1:]
@@ -390,7 +390,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_clone_args(args, kwargs, axis, tensor_fn, device, call):
+def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # inputs
     args = [tensor_fn(args[0], "float32", device)] + args[1:]
@@ -432,7 +432,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [[0, 1, 2], [3, 4]], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_unify_args(args, kwargs, axis, tensor_fn, device, call):
+def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # devices
     devices = list()
@@ -500,6 +500,7 @@ def test_profiler(device, call):
     if call is helpers.mx_call:
         time.sleep(1)  # required by MXNet for some reason
 
+
 # Still to Add #
 # ---------------#
 
@@ -531,17 +532,14 @@ def test_profiler(device, call):
 # class DevClonedItem
 # class DevClonedIter
 # class DevClonedNest
-# dev_clone_array
 # dev_clone
 # dev_clone_iter
-# dev_clone_nest
 # _concat_unify_array
 # _sum_unify_array
 # _mean_unify_array
 # dev_unify_array
 # dev_unify
 # dev_unify_iter
-# dev_unify_nest
 # class DevMapper
 # class DevMapperMultiProc
 # class DevManager
