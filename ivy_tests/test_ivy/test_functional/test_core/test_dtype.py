@@ -2,6 +2,8 @@
 
 # global
 import pytest
+from numbers import Number
+import ivy_tests.test_ivy.helpers as helpers
 
 # local
 import ivy
@@ -76,3 +78,97 @@ def test_is_float_dtype(device, call, in_n_asarray_n_res):
     if asarray:
         x = ivy.array(x)
     assert ivy.is_float_dtype(x) is res
+
+
+# dtype bits
+@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("tensor_fn", [ivy.array])
+def test_dtype_bits(x, dtype, tensor_fn, device, call):
+    # smoke test
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    if (
+        (isinstance(x, Number) or len(x) == 0)
+        and tensor_fn == helpers.var_fn
+        and call is helpers.mx_call
+    ):
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, device)
+    ret = ivy.dtype_bits(ivy.dtype(x))
+    # type test
+    assert isinstance(ret, int)
+    assert ret in [1, 8, 16, 32, 64]
+
+
+# dtype_to_str
+@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype",
+    ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
+)
+@pytest.mark.parametrize("tensor_fn", [ivy.array])
+def test_dtype_to_str(x, dtype, tensor_fn, device, call):
+    # smoke test
+    if call is helpers.mx_call and dtype == "int16":
+        # mxnet does not support int16
+        pytest.skip()
+    if call is helpers.jnp_call and dtype in ["int64", "float64"]:
+        # jax does not support int64 or float64 arrays
+        pytest.skip()
+    if (
+        (isinstance(x, Number) or len(x) == 0)
+        and tensor_fn == helpers.var_fn
+        and call is helpers.mx_call
+    ):
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, device)
+    dtype_as_str = ivy.dtype(x, as_str=True)
+    dtype_to_str = ivy.dtype_to_str(ivy.dtype(x))
+    # type test
+    assert isinstance(dtype_as_str, str)
+    assert isinstance(dtype_to_str, str)
+    # value test
+    assert dtype_to_str == dtype_as_str
+
+
+# dtype_from_str
+@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype",
+    ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
+)
+@pytest.mark.parametrize("tensor_fn", [ivy.array])
+def test_dtype_from_str(x, dtype, tensor_fn, device, call):
+    # smoke test
+    if call is helpers.mx_call and dtype == "int16":
+        # mxnet does not support int16
+        pytest.skip()
+    if call is helpers.jnp_call and dtype in ["int64", "float64"]:
+        # jax does not support int64 or float64 arrays
+        pytest.skip()
+    if (
+        (isinstance(x, Number) or len(x) == 0)
+        and tensor_fn == helpers.var_fn
+        and call is helpers.mx_call
+    ):
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, device)
+    dt0 = ivy.dtype_from_str(ivy.dtype(x, as_str=True))
+    dt1 = ivy.dtype(x)
+    # value test
+    assert dt0 is dt1
+
+# Still to Add #
+# ---------------#
+
+# astype
+# broadcast_arrays
+# broadcast_to
+# can_cast
+# finfo
+# iinfo
+# result_type

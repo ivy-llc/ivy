@@ -124,8 +124,7 @@ def test_gradient_image(
 
 # float_img_to_uint8_img
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=3, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -154,6 +153,42 @@ def test_float_img_to_uint8_img(
         False,
         fw,
         "float_img_to_uint8_img",
+        x=x,
+    )
+
+
+# uint8_img_to_float_img
+@given(
+    shape=st.lists(st.integers(min_value=1, max_value=8),
+                   min_size=3, max_size=8),
+    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+)
+def test_uint8_img_to_float_img(
+    shape,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    if fw == "torch" and dtype == "float16":
+        return
+    x = ivy.randint(0, 256, shape=shape+[4])
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "uint8_img_to_float_img",
         x=x,
     )
 
@@ -309,36 +344,36 @@ def test_float_img_to_uint8_img(
 #         return
 
 
-# uint8_img_to_float_img
-@pytest.mark.parametrize(
-    "ui_tfi",
-    [
-        (
-            [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
-            [[0.0, 1.0], [2.0, 3.0]],
-        )
-    ],
-)
-def test_uint8_img_to_float_img(ui_tfi, device, call):
-    # smoke test
-    if call is helpers.tf_graph_call:
-        # tensorflow tensors cannot be cast to numpy arrays in graph mode
-        pytest.skip()
-    uint8_img, true_float_img = ui_tfi
-    uint8_img = ivy.array(uint8_img, "uint8", device)
-    true_float_img = np.array(true_float_img)
-    float_img = ivy.uint8_img_to_float_img(uint8_img)
-    # type test
-    assert ivy.is_ivy_array(float_img)
-    # cardinality test
-    assert float_img.shape == true_float_img.shape
-    # value test
-    float_img_np = call(ivy.uint8_img_to_float_img, uint8_img)
-    assert np.allclose(float_img_np, true_float_img)
-    # compilation test
-    if call in [helpers.torch_call]:
-        # torch device cannot be assigned value of string while scripting
-        return
+# # uint8_img_to_float_img
+# @pytest.mark.parametrize(
+#     "ui_tfi",
+#     [
+#         (
+#             [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+#             [[0.0, 1.0], [2.0, 3.0]],
+#         )
+#     ],
+# )
+# def test_uint8_img_to_float_img(ui_tfi, device, call):
+#     # smoke test
+#     if call is helpers.tf_graph_call:
+#         # tensorflow tensors cannot be cast to numpy arrays in graph mode
+#         pytest.skip()
+#     uint8_img, true_float_img = ui_tfi
+#     uint8_img = ivy.array(uint8_img, "uint8", device)
+#     true_float_img = np.array(true_float_img)
+#     float_img = ivy.uint8_img_to_float_img(uint8_img)
+#     # type test
+#     assert ivy.is_ivy_array(float_img)
+#     # cardinality test
+#     assert float_img.shape == true_float_img.shape
+#     # value test
+#     float_img_np = call(ivy.uint8_img_to_float_img, uint8_img)
+#     assert np.allclose(float_img_np, true_float_img)
+#     # compilation test
+#     if call in [helpers.torch_call]:
+#         # torch device cannot be assigned value of string while scripting
+#         return
 
 
 # random_crop
@@ -370,3 +405,49 @@ def test_random_crop(xshp_n_cs, device, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
+
+
+# linear_resample
+@pytest.mark.parametrize(
+    "x_n_samples_n_axis_n_y_true",
+    [
+        (
+            [[10.0, 9.0, 8.0]],
+            9,
+            -1,
+            [[10.0, 9.75, 9.5, 9.25, 9.0, 8.75, 8.5, 8.25, 8.0]],
+        ),
+        (
+            [[[10.0, 9.0], [8.0, 7.0]]],
+            5,
+            -2,
+            [[[10.0, 9.0], [9.5, 8.5], [9.0, 8.0], [8.5, 7.5], [8.0, 7.0]]],
+        ),
+        (
+            [[[10.0, 9.0], [8.0, 7.0]]],
+            5,
+            -1,
+            [[[10.0, 9.75, 9.5, 9.25, 9.0], [8.0, 7.75, 7.5, 7.25, 7.0]]],
+        ),
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype, tensor_fn, device, call):
+    # smoke test
+    x, samples, axis, y_true = x_n_samples_n_axis_n_y_true
+    x = tensor_fn(x, dtype, device)
+    ret = ivy.linear_resample(x, samples, axis)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    x_post_shape = x_shape[axis + 1 :]
+    assert list(ret.shape) == x_pre_shape + [samples] + x_post_shape
+    # value test
+    y_true = np.array(y_true)
+    y = call(ivy.linear_resample, x, samples, axis)
+    assert np.allclose(y, y_true)
