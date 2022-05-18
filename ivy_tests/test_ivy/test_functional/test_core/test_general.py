@@ -3,7 +3,6 @@
 # global
 import os
 import math
-import time
 import einops
 import pytest
 from hypothesis import given, strategies as st
@@ -1382,6 +1381,7 @@ def test_inplace_increment(x_n_inc, tensor_fn, device, call):
         assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
         return
     pytest.skip()
+
 
 # Still to Add #
 # ---------------#

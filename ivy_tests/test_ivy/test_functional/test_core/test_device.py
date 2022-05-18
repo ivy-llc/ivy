@@ -4,6 +4,7 @@
 import os
 import math
 import pytest
+import time
 import numpy as np
 from numbers import Number
 
