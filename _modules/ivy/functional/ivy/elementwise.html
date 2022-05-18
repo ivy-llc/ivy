@@ -1855,7 +1855,7 @@
 
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0., 1.5574077, -2.1850398])</span>
@@ -1866,8 +1866,8 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.5463025, -0.8422884, -0.91601413])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
-<span class="sd">    &gt;&gt;&gt;                [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],\</span>
+<span class="sd">                        [-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.tan(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],</span>
@@ -1875,7 +1875,7 @@
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0., 1.5574077, -2.1850398])</span>
