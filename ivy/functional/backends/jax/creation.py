@@ -125,12 +125,11 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = dtype_from_str(default_dtype())
         if copy is True:
-            return to_dev(jnp.array(object_in, copy=True), device)
+            return to_dev(jnp.array(object_in, dtype = dtype, copy=True), device)
         else:
-            return to_dev(jnp.asarray(object_in), device)
+            return to_dev(jnp.asarray(object_in,dtype=dtype), device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:

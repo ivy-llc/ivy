@@ -34,12 +34,11 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = dtype_from_str(default_dtype())
         if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(device))
+            return torch.as_tensor(object_in,dtype=dtype).clone().detach().to(dev_from_str(device))
         else:
-            return torch.as_tensor(object_in).to(dev_from_str(device))
+            return torch.as_tensor(object_in,dtype=dtype).to(dev_from_str(device))
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = dtype_from_str(np_dtype_to_str(object_in.dtype))
