@@ -113,6 +113,7 @@ def test_mean(
         instance_method,
         fw,
         "mean",
+        rtol=1e-1,
         x=np.asarray(x, dtype=dtype),
     )
 
