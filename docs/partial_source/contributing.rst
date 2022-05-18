@@ -41,6 +41,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
 
    contributing/0_the_basics.rst
    contributing/1_navigating_the_code.rst
-   contributing/2_type_hints.rst
-   contributing/3_docstrings.rst
-   contributing/4_docstring_examples.rst
+   contributing/2_adding_functions.rst
+   contributing/3_type_hints.rst
+   contributing/4_docstrings.rst
+   contributing/5_docstring_examples.rst
