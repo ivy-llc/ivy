@@ -5,9 +5,6 @@
     <orderEntry type="jdk" jdkName="Remote Python 3.8.10 Docker (unifyai/ivy:latest)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
-  <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="E:\PycharmProjects\ivy\optional.txt" />
-  </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
     <option name="myDocStringFormat" value="Plain" />
