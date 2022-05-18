@@ -445,7 +445,7 @@ def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype, tensor_fn, device, 
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     x_pre_shape = x_shape[0:axis]
-    x_post_shape = x_shape[axis + 1 :]
+    x_post_shape = x_shape[axis + 1:]
     assert list(ret.shape) == x_pre_shape + [samples] + x_post_shape
     # value test
     y_true = np.array(y_true)
