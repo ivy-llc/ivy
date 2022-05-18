@@ -1340,6 +1340,7 @@ def test_logaddexp(
         instance_method,
         fw,
         "logaddexp",
+        rtol=1e-2,
         x1=np.asarray(x[0], dtype=dtype[0]),
         x2=np.asarray(x[1], dtype=dtype[1]),
     )
