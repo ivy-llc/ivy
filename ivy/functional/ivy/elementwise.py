@@ -1734,7 +1734,7 @@ def tan(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
     ivy.array([0., 1.5574077, -2.1850398])
@@ -1745,8 +1745,8 @@ def tan(
     >>> print(y)
     ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    >>>                [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                        [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
     ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
@@ -1754,7 +1754,7 @@ def tan(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0, 1, 2])
+    >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
     ivy.array([0., 1.5574077, -2.1850398])
