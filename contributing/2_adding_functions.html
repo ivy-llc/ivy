@@ -246,6 +246,34 @@ are called respectively.</p>
 <p>However, the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance methods should also be implemented explicitly in the
 source code. Once the explicit implementation is added in the source code, it will then prevent this specific
 programmatic implementation <a class="reference external" href="https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L78">from being added</a>.</p>
+<p>For example, the implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.Array.tan</span></code> is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Likewise, the implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.tan</span></code> is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Container.tan</span></code> implementation is a bit more complicated as there are a few arugments which dictate how
+the mapping is performed across the leaves of the container, when using <code class="code docutils literal notranslate"><span class="pre">ivy.Container.map</span></code>.</p>
 <p>Adding the implementation explicitly in source has the benefit that autocompletions and will work in the IDE,
 and other IDE checks won’t show errors which otherwise appear when calling unfound instance methods or using types in
 the arguments which are not supported in the source code implementation.</p>
