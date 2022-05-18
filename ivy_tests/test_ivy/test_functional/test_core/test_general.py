@@ -1,8 +1,6 @@
 """Collection of tests for unified general functions."""
 
 # global
-import os
-import math
 import einops
 import pytest
 from hypothesis import given, strategies as st
