@@ -496,69 +496,47 @@ def meshgrid(
         With :code:`ivy.Array` input:
         >>> x=ivy.array([1,2])
         >>> y=ivy.array([3,4])
-
         >>> xv, yv = ivy.meshgrid(x, y)
-
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
-
         >>> print(yv)
         ivy.array([[4, 4],
                    [3, 3]])
-
 
         >>> x=ivy.array([1,2,5])
         >>> y=ivy.array([4,1])
-
         >>> xv, yv = ivy.meshgrid(x, y,indexing='ij')
-
         >>> print(xv)
         ivy.array([[1, 1],
                    [2, 2],
                    [5, 5]])
-
         >>> print(yv)
         ivy.array([[4, 1],
                    [4, 1],
                    [4, 1]])
 
-
-
         With :code:`ivy.NativeArray` input:
-
         >>> x=ivy.native_array([1,2])
         >>> y=ivy.native_array([3,4])
-
         >>> xv, yv = ivy.meshgrid(x, y)
-
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
-
         >>> print(yv)
         ivy.array([[4, 4],
                    [3, 3]])
-
-
         >>> x=ivy.native_array([1,2,5])
         >>> y=ivy.native_array([4,1])
-
         >>> xv, yv = ivy.meshgrid(x, y,indexing='ij')
-
         >>> print(xv)
         ivy.array([[1, 1],
                    [2, 2],
                    [5, 5]])
-
         >>> print(yv)
         ivy.array([[4, 1],
                    [4, 1],
                    [4, 1]])
-
-
-
-
     """
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 

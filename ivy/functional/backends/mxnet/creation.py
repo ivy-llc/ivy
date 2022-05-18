@@ -172,7 +172,10 @@ def full(shape, fill_value, dtype=None, device=None):
     )
 
 
-def meshgrid(*xs, indexing="ij"):
+def meshgrid(
+    *xs: mx.ndarray.ndarray.NDArray,
+    indexing: Optional[str]="ij"
+)-> tuple(mx.ndarray.ndarray.NDArray):
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
     return tuple(
