@@ -62,3 +62,14 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.squeeze(self, axis=axis, out=out)
+
+    def stack(
+        self: ivy.Array,
+        x: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.stack([self] + x, axis, out=out)

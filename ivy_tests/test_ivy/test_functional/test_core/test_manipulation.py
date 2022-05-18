@@ -410,16 +410,16 @@ def test_squeeze(
 # stack
 @given(
     array_shape=helpers.lists(
-        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[0, 5]
+        st.integers(0, 3), min_size="num_dims", max_size="num_dims", size_bounds=[0, 3]
     ),
-    num_arrays=st.shared(st.integers(1, 5), key="num_arrays"),
-    dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    num_arrays=st.shared(st.integers(1, 3), key="num_arrays"),
+    dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 3), key="num_arrays")),
     data=st.data(),
-    as_variable=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    as_variable=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
-    native_array=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
-    container=helpers.array_bools(na=st.shared(st.integers(1, 5), key="num_arrays")),
+    native_array=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    container=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     instance_method=st.booleans(),
 )
 def test_stack(
@@ -449,8 +449,8 @@ def test_stack(
         with_out,
         num_positional_args,
         native_array,
-        [False for _ in range(num_arrays)],
-        False,
+        container,
+        instance_method,
         fw,
         "stack",
         x=xs,
