@@ -240,6 +240,21 @@ def svd(
 
         Each returned array must have the same floating-point data type as ``x``.
 
+    Examples
+    --------
+    >>> x = ivy.random_normal(shape = (9, 6))
+    >>> U, S, Vh = ivy.svd(x)
+    >>> print(U.shape, S.shape, Vh.shape)
+    (9, 9) (6,) (6, 6)
+
+    Reconstruction from SVD, result is numerically close to x
+
+    >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
+    >>> print((reconstructed_x - x > 1e-3).sum())
+    ivy.array(0)
+    >>> print((reconstructed_x - x < -1e-3).sum())
+    ivy.array(0)
+    
     """
     return _cur_framework(x).svd(x, full_matrices)
 

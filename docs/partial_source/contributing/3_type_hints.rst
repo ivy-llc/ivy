@@ -1,7 +1,6 @@
 Type Hints
 ==========
 
-.. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
 All arguments should use full and thorough type hints.

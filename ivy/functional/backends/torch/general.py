@@ -422,13 +422,5 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    if dynamic:
-        return torch.jit.script(fn)
-    return torch.jit.trace(fn, example_inputs)
-
-
 def current_framework_str():
     return "torch"
