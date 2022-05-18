@@ -172,4 +172,3 @@ def test_dtype_from_str(x, dtype, tensor_fn, device, call):
 # finfo
 # iinfo
 # result_type
-
