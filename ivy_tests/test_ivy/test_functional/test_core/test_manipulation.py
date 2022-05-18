@@ -287,8 +287,7 @@ def test_reshape(
     num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
+    instance_method=st.booleans()
 )
 def test_roll(
     array_shape,
@@ -301,10 +300,7 @@ def test_roll(
     container,
     instance_method,
     fw,
-    seed,
 ):
-    np.random.seed(seed)
-
     # smoke for torch
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
@@ -363,8 +359,7 @@ def test_roll(
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
+    instance_method=st.booleans()
 )
 def test_squeeze(
     array_shape,
@@ -377,10 +372,7 @@ def test_squeeze(
     container,
     instance_method,
     fw,
-    seed,
 ):
-    np.random.seed(seed)
-
     # smoke for torch
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
