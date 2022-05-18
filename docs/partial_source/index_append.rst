@@ -9,3 +9,4 @@
    extensions.rst
    roadmap.rst
    contributing.rst
+   faq.rst

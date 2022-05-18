@@ -47,3 +47,18 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.permute_dims(self, axes, out=out)
+
+    def roll(
+        self: ivy.Array,
+        shift: Union[int, Tuple[int, ...]],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.roll(self, shift=shift, axis=axis, out=out)
+
+    def squeeze(
+        self: ivy.Array,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.squeeze(self, axis=axis, out=out)

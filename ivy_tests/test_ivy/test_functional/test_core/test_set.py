@@ -41,3 +41,10 @@ def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
 
         # native arrays should be the same object
         assert res.data is out.data
+
+# Still to Add #
+# ---------------#
+
+# unique_all
+# unique_counts
+# unique_inverse

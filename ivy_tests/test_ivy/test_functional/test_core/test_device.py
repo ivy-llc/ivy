@@ -1,8 +1,10 @@
 """Collection of tests for unified device functions."""
 
 # global
+import os
 import math
 import pytest
+import time
 import numpy as np
 from numbers import Number
 
@@ -258,7 +260,7 @@ def test_split_func_call_with_cont_input(
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @pytest.mark.parametrize("devs_as_dict", [True, False])
-def test_distribute_array(x, axis, tensor_fn, devs_as_dict, device, call):
+def test_dist_array(x, axis, tensor_fn, devs_as_dict, device, call):
 
     # inputs
     x = tensor_fn(x, "float32", device)
@@ -346,7 +348,7 @@ def test_unify_array(xs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_distribute_args(args, kwargs, axis, tensor_fn, device, call):
+def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # inputs
     args = [tensor_fn(args[0], "float32", device)] + args[1:]
@@ -388,7 +390,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_clone_args(args, kwargs, axis, tensor_fn, device, call):
+def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # inputs
     args = [tensor_fn(args[0], "float32", device)] + args[1:]
@@ -430,7 +432,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("kwargs", [{"a": [[0, 1, 2], [3, 4]], "b": "another_str"}])
 @pytest.mark.parametrize("axis", [0])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_unify_args(args, kwargs, axis, tensor_fn, device, call):
+def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
 
     # devices
     devices = list()
@@ -468,3 +470,77 @@ def test_unify_args(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert ivy.dev(args_uni[0], as_str=True) == dev0
     assert ivy.dev(kwargs_uni["a"], as_str=True) == dev0
+
+
+# profiler
+def test_profiler(device, call):
+
+    # ToDo: find way to prevent this test from hanging when run
+    #  alongside other tests in parallel
+
+    # log dir
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    log_dir = os.path.join(this_dir, "../log")
+
+    # with statement
+    with ivy.Profiler(log_dir):
+        a = ivy.ones([10])
+        b = ivy.zeros([10])
+        a + b
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
+
+    # start and stop methods
+    profiler = ivy.Profiler(log_dir)
+    profiler.start()
+    a = ivy.ones([10])
+    b = ivy.zeros([10])
+    a + b
+    profiler.stop()
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
+
+
+# Still to Add #
+# ---------------#
+
+# get_all_arrays_on_dev
+# num_arrays_on_dev
+# print_all_arrays_on_dev
+# clear_mem_on_dev
+# total_mem_on_dev
+# used_mem_on_dev
+# percent_used_mem_on_dev
+# dev_util
+# gpu_is_available
+# num_cpu_cores
+# num_gpus
+# tpu_is_available
+# _assert_dev_correct_formatting
+# set_default_device
+# unset_default_device
+# split_factor
+# set_split_factor
+# isinstance
+# Class MultiDev
+# class MultiDevItem
+# class MultiDevIter
+# class MultiDevNest
+# class DevDistItem
+# class DevDistIter
+# class DevDistNest
+# class DevClonedItem
+# class DevClonedIter
+# class DevClonedNest
+# dev_clone
+# dev_clone_iter
+# _concat_unify_array
+# _sum_unify_array
+# _mean_unify_array
+# dev_unify_array
+# dev_unify
+# dev_unify_iter
+# class DevMapper
+# class DevMapperMultiProc
+# class DevManager
+# class Profiler
