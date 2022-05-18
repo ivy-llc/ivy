@@ -226,6 +226,7 @@ def test_sum(
         instance_method,
         fw,
         "sum",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -264,6 +265,7 @@ def test_std(
         instance_method,
         fw,
         "std",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
