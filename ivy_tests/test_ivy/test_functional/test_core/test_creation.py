@@ -69,6 +69,7 @@ def test_native_array(dtype_and_x, from_numpy, device, call, fw):
         # pytorch scripting does not support string devices
         return
 
+
 # linspace
 @pytest.mark.parametrize(
     "start_n_stop_n_num_n_axis",
