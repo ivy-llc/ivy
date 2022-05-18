@@ -12,4 +12,5 @@ def test_docstrings():
         success = False
         failures.append(k)
     if not success:
-        raise Exception('the following methods had failing docstrings:\n\n{}'.format('\n'.join(failures)))
+        raise Exception('the following methods had failing docstrings:\n\n{}'.
+                        format('\n'.join(failures)))
