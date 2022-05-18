@@ -893,7 +893,7 @@ def test_floor_divide(
 ):
     dtype, x = dtype_and_x
     assume(0 not in x[1])
-    if fw == "tensorflow":
+    if fw in ["tensorflow", "torch"]:
         return
     helpers.test_array_function(
         dtype,
@@ -1340,6 +1340,7 @@ def test_logaddexp(
         instance_method,
         fw,
         "logaddexp",
+        rtol=1e-2,
         x1=np.asarray(x[0], dtype=dtype[0]),
         x2=np.asarray(x[1], dtype=dtype[1]),
     )
@@ -1680,7 +1681,9 @@ def test_pow(
 
 # remainder
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtype_strs, n_arrays=2, allow_inf=False
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
