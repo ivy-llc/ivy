@@ -147,7 +147,7 @@ def uint8_img_to_float_img(x):
         The new float image *[batch_shape,h,w]*
 
     """
-    x_np = ivy.to_numpy(x)
+    x_np = ivy.to_numpy(x).astype('uint8')
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)
