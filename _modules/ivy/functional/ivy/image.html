@@ -268,7 +268,7 @@
 <span class="sd">        The new float image *[batch_shape,h,w]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x_np</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_np</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
     <span class="n">x_shape</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">x_bytes</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
     <span class="n">x_float</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">x_bytes</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
