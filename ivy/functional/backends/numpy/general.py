@@ -1,7 +1,6 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import logging
 from typing import List, Optional, Union
 import numpy as np
 from operator import mul as _mul
@@ -283,9 +282,7 @@ def one_hot(indices, depth, device=None):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(
-    x: np.ndarray, as_tensor: bool = False
-) -> Union[np.ndarray, List[int]]:
+def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
     if as_tensor:
         return np.asarray(np.shape(x))
     else:
@@ -297,17 +294,6 @@ get_num_dims = (
     if as_tensor
     else len(x.shape)
 )
-
-
-# noinspection PyUnusedLocal
-def compile(
-    func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    logging.warning(
-        "Numpy does not support compiling functions.\n"
-        "Now returning the unmodified function."
-    )
-    return func
 
 
 current_framework_str = lambda: "numpy"

@@ -67,9 +67,7 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(
-    x: JaxArray, as_tensor: bool = False
-) -> Union[JaxArray, List[int]]:
+def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
     if as_tensor:
         return jnp.asarray(jnp.shape(x))
     else:
@@ -327,12 +325,6 @@ def inplace_increment(x, val):
     else:
         x = ivy.Array(val_native)
     return x
-
-
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    return jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 
 
 current_framework_str = lambda: "jax"

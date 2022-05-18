@@ -86,6 +86,13 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -144,7 +151,7 @@ def squeeze(
     ret
         an output array having the same data type and elements as ``x``.
 
- 
+
     Examples
     --------
     >>> x = ivy.array([[[0, 1], [2, 3]]])
@@ -152,8 +159,6 @@ def squeeze(
     (1, 2, 2)
     >>> print(ivy.squeeze(x, axis=0).shape)
     (2, 2)
-    >>> print(ivy.squeeze(x, axis=1).shape)
-    ValueError: cannot select an axis to squeeze out which has size not equal to one
 
     """
     return _cur_framework(x).squeeze(x, axis, out)
@@ -357,7 +362,15 @@ def concat(
     -------
     ret
         The concatenated array.
-
+    
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> y = ivy.array([[5, 6]])
+    >>> ivy.concat((x, y))
+    ivy.array([[1, 2],
+               [3, 4],
+               [5, 6]])  
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 

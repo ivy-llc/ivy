@@ -557,6 +557,35 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 array = asarray
 
 
+def native_array(
+    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    dtype: Optional[Union[ivy.Dtype, str]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
+) -> ivy.NativeArray:
+    """Converts the input to a native array.
+
+    Parameters
+    ----------
+    x
+        input data, in any form that can be converted to an array. This includes lists,
+        lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    dtype
+        datatype, optional. Datatype is inferred from the input data.
+    device
+        device on which to place the created array. Default: None.
+
+    Returns
+    -------
+    ret
+        A native array interpretation of x.
+
+    """
+    # ToDo: Make this more efficient,
+    # ideally without first converting to ivy.Array with ivy.asarray and then
+    # converting back to native with ivy.to_native
+    return ivy.to_native(ivy.asarray(x, dtype, device))
+
+
 # noinspection PyShadowingNames
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
