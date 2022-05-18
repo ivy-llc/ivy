@@ -227,3 +227,15 @@ def test_copy_nest(device, call):
     assert nest["a"][1] is nest_copy["a"][1]
     assert nest["b"]["c"][0] is nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
+
+
+# Still to Add #
+# ---------------#
+
+# prune_nest_at_index
+# insert_into_nest_at_index
+# prune_nest_at_indices
+# insert_into_nest_at_indices
+# map
+# nested_map
+# nested_any
