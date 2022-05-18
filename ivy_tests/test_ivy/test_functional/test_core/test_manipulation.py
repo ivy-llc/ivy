@@ -289,8 +289,7 @@ def test_reshape(
     num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
+    instance_method=st.booleans()
 )
 def test_roll(
     array_shape,
@@ -303,10 +302,7 @@ def test_roll(
     container,
     instance_method,
     fw,
-    seed,
 ):
-    np.random.seed(seed)
-
     # smoke for torch
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
@@ -354,36 +350,61 @@ def test_roll(
 
 
 # squeeze
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_squeeze(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([[[1, 2], [3, 4]]], dtype=dtype)
-    out = ivy.array([[2, 3], [4, 5]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.squeeze(x, 0, out=out)
-    else:
-        ret = ivy.squeeze(x, 0)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ).filter(lambda s: 1 in s),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans()
+)
+def test_squeeze(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    squeezable_axes = [i for i, side in enumerate(x.shape) if side == 1]
+
+    valid_axis = st.sampled_from(squeezable_axes) | helpers.subsets(squeezable_axes)
+
+    axis = data.draw(valid_axis)
+
+    # we need subset of size atleast 1, think of better way to do this
+    # right now, we are just ignoring when we sample an empty subset
+    if not isinstance(axis, int):
+        if len(axis) == 0:
             return
-        assert ret.data is (out if native_array else out.data)
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "squeeze",
+        x=x,
+        axis=axis,
+    )
 
 
 # stack
