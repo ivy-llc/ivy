@@ -174,7 +174,7 @@ def full(shape, fill_value, dtype=None, device=None):
 
 def meshgrid(
     *xs: mx.ndarray.ndarray.NDArray,
-    indexing: Optional[str]="ij"
+    indexing: Optional[str]="xy"
 )-> List[mx.ndarray.ndarray.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
