@@ -25,13 +25,19 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (b) :ref:`Navigating the Code`
 | A quick tour through the codebase 🔍
 |
-| (c) :ref:`Type Hints`
-| How add the correct type hints 📑
+| (c) :ref:`Adding Functions`
+| How to add functions 🧮
 |
-| (d) :ref:`Docstrings`
+| (d) :ref:`Adding Tests`
+| How to add tests for these ❓
+|
+| (e) :ref:`Type Hints`
+| How to add the correct type hints 📑
+|
+| (f) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (e) :ref:`Docstring Examples`
+| (g) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 
 .. toctree::
@@ -42,6 +48,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/0_the_basics.rst
    contributing/1_navigating_the_code.rst
    contributing/2_adding_functions.rst
-   contributing/3_type_hints.rst
-   contributing/4_docstrings.rst
-   contributing/5_docstring_examples.rst
+   contributing/3_adding_tests.rst
+   contributing/4_type_hints.rst
+   contributing/5_docstrings.rst
+   contributing/6_docstring_examples.rst
