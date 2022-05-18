@@ -141,6 +141,39 @@ However, the :code:`ivy.Array` and :code:`ivy.Container` instance methods should
 source code. Once the explicit implementation is added in the source code, it will then prevent this specific
 programmatic implementation `from being added`_.
 
+For example, the implementation of :code:`ivy.Array.tan` is as follows:
+
+.. code-block:: python
+
+    def tan(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        return ivy.tan(self, out=out)
+
+Likewise, the implementation of :code:`ivy.Container.tan` is as follows:
+
+.. code-block:: python
+
+    def tan(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.tan(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+The :code:`ivy.Container.tan` implementation is a bit more complicated as there are a few arugments which dictate how
+the mapping is performed across the leaves of the container, when using :code:`ivy.Container.map`.
+
 Adding the implementation explicitly in source has the benefit that autocompletions and will work in the IDE,
 and other IDE checks won't show errors which otherwise appear when calling unfound instance methods or using types in
 the arguments which are not supported in the source code implementation.
