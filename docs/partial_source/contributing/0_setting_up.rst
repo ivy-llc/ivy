@@ -28,22 +28,22 @@ Windows
 
 .. figure:: https://user-images.githubusercontent.com/53497039/156894436-d09fcddf-aff1-4514-9536-50f77badff4e.png
     :width: 520px
-    :align: center
+    :align: left
     :height: 164px
     :alt: alternate text
-    :figclass: align-center
+    :figclass: align-left
 
-Fig. 1.
+    Fig. 1.
 
 
 .. figure:: https://user-images.githubusercontent.com/53497039/156894484-d02f055d-d7eb-4588-8f8e-8d7ffc60bec5.png
     :width: 520px
-    :align: center
+    :align: left
     :height: 387px
     :alt: alternate text
-    :figclass: align-center
+    :figclass: align-left
 
-Fig. 2.
+    Fig. 2.
 
 DONE. You're set.
 
