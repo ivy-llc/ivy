@@ -252,6 +252,7 @@ def svd(
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
     ivy.array(0)
+    
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
     
