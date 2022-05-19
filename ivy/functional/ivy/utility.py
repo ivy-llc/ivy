@@ -58,7 +58,7 @@ def all(
         results. The returned array must have a data type of ``bool``.
         
     Examples
-    -------
+    --------
     >>> a = ivy.all([[True,False],[True,True]])
     >>> print(a)
     ivy.array(False)
