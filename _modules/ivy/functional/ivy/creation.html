@@ -44,33 +44,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy.html">Ivy</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
@@ -601,6 +579,53 @@
 <span class="sd">        each returned array must have shape ``(N, M, P)``.</span>
 
 <span class="sd">        Each returned array should have the same data type as the input arrays.</span>
+
+
+<span class="sd">        This method conforms to the `Array API Standard</span>
+<span class="sd">        &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of</span>
+<span class="sd">        the `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm&gt;`_  </span>
+<span class="sd">        in the standard. The descriptions above assume an array input for simplicity,</span>
+<span class="sd">        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`</span>
+<span class="sd">        instances, as shown in the type hints and also the examples below.</span>
+
+<span class="sd">        Functional Examples</span>
+<span class="sd">        -------------------</span>
+<span class="sd">        </span>
+<span class="sd">        With :code:`ivy.Array` input:</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(xv)</span>
+<span class="sd">        ivy.array([[1, 2],</span>
+<span class="sd">                   [1, 2]])</span>
+<span class="sd">        &gt;&gt;&gt; print(yv)</span>
+<span class="sd">        ivy.array([[3, 3],</span>
+<span class="sd">                   [4, 4]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 5])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 1])</span>
+<span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y, indexing=&#39;ij&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(xv)</span>
+<span class="sd">        ivy.array([[1, 1],</span>
+<span class="sd">                   [2, 2],</span>
+<span class="sd">                   [5, 5]])</span>
+<span class="sd">        &gt;&gt;&gt; print(yv)</span>
+<span class="sd">        ivy.array([[4, 1],</span>
+<span class="sd">                   [4, 1],</span>
+<span class="sd">                   [4, 1]])</span>
+
+<span class="sd">        With :code:`ivy.NativeArray` input:</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.native_array([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.native_array([3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(xv)</span>
+<span class="sd">        ivy.array([[1, 2],</span>
+<span class="sd">                   [1, 2]])</span>
+<span class="sd">        &gt;&gt;&gt; print(yv)</span>
+<span class="sd">        ivy.array([[3, 3],</span>
+<span class="sd">                   [4, 4]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>

@@ -23,11 +23,11 @@ a:visited {
     color: #fcfcfc;
 }
 
-.rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
+.rst-content tt.literal, .rst-content tt.literal, .rst-content span.literal {
     color: #009600;
 }
 
-.rst-content dl:not(.docutils) dt {
+html.writer-html4 .rst-content dl:not(.docutils)>dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt {
     background: #ebffe1;
     color: #006400;
     border-top: solid 3px #009600;

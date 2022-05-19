@@ -298,7 +298,7 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Functional
+   :caption: Functions
 
    functional/backends.rst
    functional/ivy.rst
@@ -307,7 +307,7 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Stateful
+   :caption: Classes
 
    stateful/activations.rst
    stateful/converters.rst
