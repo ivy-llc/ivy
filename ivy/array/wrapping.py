@@ -4,6 +4,11 @@ import ivy
 
 def _wrap_fn(fn_name):
     def new_fn(self, *args, **kwargs):
+        """
+        Add the data of the current array from which the instance function is invoked 
+        as the first arg parameter or kwarg parameter. Return the new function with 
+        the name fn_name and the new args variable or kwargs as the new inputs.
+        """
         fn = ivy.__dict__[fn_name]
         data_idx = fn.array_spec[0]
         if len(args) > data_idx[0][0]:
@@ -24,6 +29,10 @@ def _wrap_fn(fn_name):
 
 
 def add_ivy_array_instance_methods(cls, modules, to_ignore=()):
+    """
+    Loop over all ivy modules such as activations, general, etc. and add
+    the module functions to ivy arrays as instance methods using _wrap_fn.
+    """
     for module in modules:
         for key, val in module.__dict__.items():
             if (
