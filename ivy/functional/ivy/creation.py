@@ -481,6 +481,53 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
+
+        This method conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        in the standard. The descriptions above assume an array input for simplicity,
+        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
+        instances, as shown in the type hints and also the examples below.
+
+        Functional Examples
+        -------------------
+        
+        With :code:`ivy.Array` input:
+        
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
+        >>> x = ivy.array([1, 2, 5])
+        >>> y = ivy.array([4, 1])
+        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+        >>> print(xv)
+        ivy.array([[1, 1],
+                   [2, 2],
+                   [5, 5]])
+        >>> print(yv)
+        ivy.array([[4, 1],
+                   [4, 1],
+                   [4, 1]])
+
+        With :code:`ivy.NativeArray` input:
+        
+        >>> x = ivy.native_array([1, 2])
+        >>> y = ivy.native_array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
     """
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 
