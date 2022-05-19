@@ -15,3 +15,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.matmul(self, x2, out=out)
+
+    def outer(
+            self: ivy.Array,
+            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        ) -> Union[ivy.Array, ivy.Container]:
+            return ivy.outer(self, x2, out=out)
