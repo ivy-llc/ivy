@@ -1,7 +1,6 @@
 Setting up
 ==========
-Using the same remote python interpreter provided as a docker container helps the community to share the same packages
-and mitigate any version conflicts. In addition, it also becomes possible to use modules not yet provided for an operating system, such as jaxlib for windows.
+This page provides the instructions to set up a specific python environment to contribute towards Ivy. Setting up and using the same remote python interpreter provided as a docker container helps the community to share the same packages and mitigate any version conflicts. In addition, it makes it possible to use modules not yet provided for an operating system, such as jaxlib for windows.
 Below are the instructions required to setup the docker container for:
 
 
@@ -36,7 +35,11 @@ Windows
     Fig. 1.
 |
 |
-
+|
+|
+|
+|
+|
 .. figure:: https://user-images.githubusercontent.com/53497039/156894484-d02f055d-d7eb-4588-8f8e-8d7ffc60bec5.png
     :width: 520px
     :align: left
