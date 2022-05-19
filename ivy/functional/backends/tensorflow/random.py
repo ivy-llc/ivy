@@ -37,8 +37,13 @@ def random_normal(
 
 
 def multinomial(
-        population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[Tensor] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None,
+) -> Tensor:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
     device = default_device(device)

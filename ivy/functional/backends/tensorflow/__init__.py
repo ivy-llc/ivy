@@ -122,37 +122,39 @@ backend = "tensorflow"
 
 
 # local sub-modules
-from . import activations  # noqa
-from .activations import *  # noqa
-from . import creation  # noqa
-from .creation import *  # noqa
-from . import data_type  # noqa
-from .data_type import *  # noqa
-from . import device  # noqa
-from .device import *  # noqa
-from . import elementwise  # noqa
-from .elementwise import *  # noqa
-from . import general  # noqa
-from .general import *  # noqa
-from . import gradients  # noqa
-from .gradients import *  # noqa
-from . import image  # noqa
-from .image import *  # noqa
-from . import layers  # noqa
-from .layers import *  # noqa
-from . import linear_algebra as linalg  # noqa
-from .linear_algebra import *  # noqa
-from . import manipulation  # noqa
-from .manipulation import *  # noqa
-from . import random  # noqa
-from .random import *  # noqa
-from . import searching  # noqa
-from .searching import *  # noqa
-from . import set  # noqa
-from .set import *  # noqa
-from . import sorting  # noqa
-from .sorting import *  # noqa
-from . import statistical  # noqa
-from .statistical import *  # noqa
-from . import utility  # noqa
-from .utility import *  # noqa
+from . import activations
+from .activations import *
+from . import compilation
+from .compilation import *
+from . import creation
+from .creation import *
+from . import data_type
+from .data_type import *
+from . import device
+from .device import *
+from . import elementwise
+from .elementwise import *
+from . import general
+from .general import *
+from . import gradients
+from .gradients import *
+from . import image
+from .image import *
+from . import layers
+from .layers import *
+from . import linear_algebra as linalg
+from .linear_algebra import *
+from . import manipulation
+from .manipulation import *
+from . import random
+from .random import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *

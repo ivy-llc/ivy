@@ -42,13 +42,13 @@ def random_normal(
 
 
 def multinomial(
-        population_size: int,
-        num_samples: int,
-        batch_size: int,
-        probs: Optional[torch.Tensor] = None,
-        replace: bool = True,
-        device: ivy.Device = None,
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[torch.Tensor] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     if probs is None:
         probs = (
             torch.ones(

@@ -31,8 +31,13 @@ def random_normal(
 
 
 def multinomial(
-        population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[np.ndarray] = None,
+    replace=True,
+    device: Optional[ivy.Device] = None,
+) -> np.ndarray:
     if probs is None:
         probs = (
             np.ones(

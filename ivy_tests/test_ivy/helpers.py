@@ -2,6 +2,12 @@
 
 # global
 import numpy as np
+import math
+from numpy import array_api as xp
+from hypothesis.extra.array_api import make_strategies_namespace
+
+xps = make_strategies_namespace(xp)
+
 
 try:
     import jax.numpy as _jnp
@@ -33,7 +39,8 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -282,18 +289,16 @@ def as_cont(x):
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
-def as_lists(dtype, as_variable, with_out, native_array, container):
+def as_lists(dtype, as_variable, native_array, container):
     if not isinstance(dtype, list):
         dtype = [dtype]
     if not isinstance(as_variable, list):
         as_variable = [as_variable]
-    if not isinstance(with_out, list):
-        with_out = [with_out]
     if not isinstance(native_array, list):
         native_array = [native_array]
     if not isinstance(container, list):
         container = [container]
-    return dtype, as_variable, with_out, native_array, container
+    return dtype, as_variable, native_array, container
 
 
 def test_array_function(
@@ -306,14 +311,14 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=1e-05,
+    rtol=1e-03,
     atol=1e-08,
     **all_as_kwargs_np
 ):
 
     # convert single values to length 1 lists
-    dtype, as_variable, with_out, native_array, container = as_lists(
-        dtype, as_variable, with_out, native_array, container
+    dtype, as_variable, native_array, container = as_lists(
+        dtype, as_variable, native_array, container
     )
 
     # update variable flags to be compatible with float dtype and with_out args
@@ -428,12 +433,15 @@ def test_array_function(
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+
         if max(container) or not max(native_array):
             assert ret is out
-        if max(container) or fw in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if max(native_array) else out.data)
+
+        if max(container) or fw in ["tensorflow", "jax", "numpy"]:
+            # these frameworks do not always support native inplace updates
+            pass
+        else:
+            assert ret.data is (out if max(native_array) else out.data)
 
     # value test
     if not isinstance(ret, tuple):
@@ -443,7 +451,11 @@ def test_array_function(
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
+    ivy.set_framework("numpy")
+    ret_from_np = ivy.to_native(
+        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
+    )
+    ivy.unset_framework()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
@@ -482,6 +494,16 @@ def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
 
 
 @st.composite
+def valid_axes(draw, ndim=None, size_bounds=None):
+    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
+    dims = draw(st.shared(ints, key=ndim))
+    any_axis_strategy = (
+        st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
+    )
+    return draw(any_axis_strategy)
+
+
+@st.composite
 def integers(draw, min_value=None, max_value=None):
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
@@ -491,22 +513,51 @@ def integers(draw, min_value=None, max_value=None):
 
 
 @st.composite
-def dtype_and_values(draw, available_dtypes, n_arrays=1):
-    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
-    if n_arrays == 2:
-        assume((dtype[0], dtype[1]) in ivy.promotion_table)
+def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
+    if n_arrays == 1:
+        types = set(available_dtypes).difference(set(ivy.invalid_dtype_strs))
+        dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
+    else:
+        unwanted_types = set(ivy.invalid_dtype_strs).union(
+            set(ivy.all_dtype_strs).difference(set(available_dtypes))
+        )
+        pairs = ivy.promotion_table.keys()
+        types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtype = list(draw(st.sampled_from(types)))
+    if n_arrays == 3:
+        dtype.append(dtype[0])
+
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):
-        values.append(draw(array_values(dtype[i], size)))
+        values.append(draw(array_values(dtype[i], size, allow_inf)))
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
     return dtype, values
 
 
+# taken from
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
-def array_values(draw, dtype, size):
+def reshape_shapes(draw, shape):
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
+    # assume(all(side <= MAX_SIDE for side in rshape))
+    if len(rshape) != 0 and size > 0 and draw(st.booleans()):
+        index = draw(st.integers(0, len(rshape) - 1))
+        rshape[index] = -1
+    return tuple(rshape)
+
+
+# taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
+@st.composite
+def subsets(draw, elements):
+    return tuple(e for e in elements if draw(st.booleans()))
+
+
+@st.composite
+def array_values(draw, dtype, size, allow_inf):
     if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
     elif dtype == "int16":
@@ -526,11 +577,26 @@ def array_values(draw, dtype, size):
     elif dtype == "uint64":
         values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
     elif dtype == "float16":
-        values = draw(list_of_length(st.floats(width=16), size))
+        values = draw(
+            list_of_length(
+                st.floats(width=16, allow_subnormal=False, allow_infinity=allow_inf),
+                size,
+            )
+        )
     elif dtype == "float32":
-        values = draw(list_of_length(st.floats(width=32), size))
+        values = draw(
+            list_of_length(
+                st.floats(width=32, allow_subnormal=False, allow_infinity=allow_inf),
+                size,
+            )
+        )
     elif dtype == "float64":
-        values = draw(list_of_length(st.floats(width=64), size))
+        values = draw(
+            list_of_length(
+                st.floats(width=64, allow_subnormal=False, allow_infinity=allow_inf),
+                size,
+            )
+        )
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values

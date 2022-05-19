@@ -31,7 +31,6 @@ def test_min(
 ):
     dtype, x = dtype_and_x
     assume(x)
-    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -68,7 +67,6 @@ def test_max(
 ):
     dtype, x = dtype_and_x
     assume(x)
-    assume(dtype not in ivy.invalid_dtype_strs)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -85,7 +83,9 @@ def test_max(
 
 # mean
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtype_strs, allow_inf=False
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -115,6 +115,7 @@ def test_mean(
         instance_method,
         fw,
         "mean",
+        rtol=1e-1,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -139,8 +140,6 @@ def test_var(
     instance_method,
     fw,
 ):
-    if fw == "torch":
-        return  # rounding errors with torch 0.2222 != 0.2223
     dtype, x = dtype_and_x
     assume(x)
     helpers.test_array_function(
@@ -177,8 +176,9 @@ def test_prod(
     instance_method,
     fw,
 ):
+    if fw in ["torch", "tensorflow"]:
+        return  # different overflow behaviour in torch/tf
     dtype, x = dtype_and_x
-    assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
     if fw == "torch" and (dtype == "float16" or ivy.is_int_dtype(dtype)):
         return  # torch implementation exhibits strange behaviour
@@ -217,7 +217,6 @@ def test_sum(
     fw,
 ):
     dtype, x = dtype_and_x
-    assume(dtype not in ivy.invalid_dtype_strs)
     assume(x)
     if fw == "torch" and ivy.is_int_dtype(dtype):
         return
@@ -231,6 +230,7 @@ def test_sum(
         instance_method,
         fw,
         "sum",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -255,9 +255,9 @@ def test_std(
     instance_method,
     fw,
 ):
-    if fw == "torch":
-        return  # rounding errors with torch
     dtype, x = dtype_and_x
+    if fw == "torch" and dtype != "float64":
+        return  # torch returns an answer sometimes when others overflow to inf
     assume(x)
     helpers.test_array_function(
         dtype,
@@ -269,6 +269,7 @@ def test_std(
         instance_method,
         fw,
         "std",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 

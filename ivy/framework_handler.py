@@ -55,30 +55,89 @@ _framework_reverse_dict["ivy.functional.backends.mxnet"] = "mxnet"
 
 
 def _determine_framework_from_args(args):
+    """Return the appropriate Ivy backend, given some arguments.
+
+    Parameters
+    ----------
+    args
+        the arguments from which to figure out the corresponding Ivy backend.
+
+    Returns
+    -------
+    ret
+        the Ivy backend inferred from `args`.
+
+    Examples
+    --------
+    If `args` is a jax.numpy array, then Ivy's jax backend will be returned:
+
+    >>> from ivy.framework_handler import _determine_framework_from_args
+    >>> import jax.numpy as jnp
+    >>> x = jnp.array([1])
+    >>> print(_determine_framework_from_args(x))
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
+
+    """
     for arg in args:
         arg_type = type(arg)
+        # function is called recursively if arg is a list/tuple
         if arg_type in [list, tuple]:
             lib = _determine_framework_from_args(arg)
             if lib:
                 return lib
+        # function is called recursively if arg is a dict
         elif arg_type is dict:
             lib = _determine_framework_from_args(list(arg.values()))
             if lib:
                 return lib
         else:
+            # use the _array_types dict to map the module where arg comes from, to the
+            # corresponding Ivy backend
             if arg.__class__.__module__ in _array_types:
                 module_name = _array_types[arg.__class__.__module__]
                 return importlib.import_module(module_name)
 
 
 def current_framework(*args, **kwargs):
-    """Priorities: global_framework > argument's framework."""
+    """Returns the current backend framework. Priorities:
+    global_framework > argument's framework.
+
+    Parameters
+    ----------
+    *args/**kwargs
+        the arguments from which to try to infer the backend framework, when there is
+        no globally set framework.
+
+    Returns
+    -------
+    ret
+        Ivy's current backend framework.
+
+    Examples
+    --------
+    If no global framework is set, then the framework is inferred from the arguments:
+    >>> import numpy as np
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+
+    The global framework set in set_framework has priority over any arguments
+    passed to current_framework:
+    >>> import numpy as np
+    >>> ivy.set_framework('jax')
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
+
+    """
+    # if a global framework has been set with set_framework then this will be returned
     if framework_stack:
         f = framework_stack[-1]
         if verbosity.level > 0:
             verbosity.cprint("Using framework from stack: {}".format(f))
         return f
 
+    # if no global framework exists, we try to infer the framework from the arguments
     f = _determine_framework_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(

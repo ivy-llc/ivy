@@ -13,7 +13,13 @@ def roll(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
+    # manually cover the case when shift is int, and axis is a tuple/list
+    if isinstance(shift, int) and (type(axis) in [list, tuple]):
+        shift = [shift for _ in range(len(axis))]
+
     ret = torch.roll(x, shift, axis)
+
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -244,10 +250,10 @@ def swapaxes(
 
 
 def clip(x, x_min, x_max, out: Optional[torch.Tensor] = None):
-    if hasattr(x_min, 'dtype'):
+    if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
-        x = x.to(promoted_type)    
+        x = x.to(promoted_type)
     return torch.clamp(x, x_min, x_max, out=out)

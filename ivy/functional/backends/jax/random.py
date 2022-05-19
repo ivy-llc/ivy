@@ -50,8 +50,14 @@ def random_normal(
 
 
 def multinomial(
-        population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[JaxArray] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None,
+) -> JaxArray:
+
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:
