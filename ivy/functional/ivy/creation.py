@@ -486,10 +486,9 @@ def meshgrid(
         This docstring is an extension of the
         `docstring
         <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_
-        in the standard. The descriptions above assume an array input for simplicity,
-        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray` instances,
-         as shown in the type hints
-        and also the examples below.
+        in the standard. The descriptions above assume an array input for simplicity, but
+        the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray` instances,
+        as shown in the type hints and also the examples below.
 
         Functional Examples
         -------------------

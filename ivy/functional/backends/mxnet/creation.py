@@ -174,12 +174,11 @@ def full(shape, fill_value, dtype=None, device=None):
 
 def meshgrid(
     *xs: mx.ndarray.ndarray.NDArray,
-    indexing: Optional[str]="xy"
-)-> List[mx.ndarray.ndarray.NDArray]:
+    indexing: Optional[str] = "xy"
+) -> List[mx.ndarray.ndarray.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
     return [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
-
 
 
 def from_dlpack(x):
