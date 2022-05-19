@@ -23,7 +23,7 @@ a:visited {
     color: #fcfcfc;
 }
 
-.rst-content tt.literal, .rst-content tt.literal, .rst-content span.literal {
+.rst-content code.literal, .rst-content tt.literal, .rst-content span.literal {
     color: #009600;
 }
 
