@@ -52,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#categorization">Categorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#primary-functions">Primary Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositional-functions">Compositional Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-primary-functions">Partial Primary Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#flexible-functions">Flexible Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#inplace-updates">Inplace Updates</a></li>
 </ul>
@@ -204,6 +205,23 @@ implementations in any of the backend files <code class="code docutils literal n
     <span class="k">return</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="partial-primary-functions">
+<h2>Partial Primary Functions<a class="headerlink" href="#partial-primary-functions" title="Permalink to this headline"></a></h2>
+<p><em>Partial primary</em> functions have some framework-specific implementations in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>, but not for all backends.
+To support backends that do not have a framework-specific implementation,
+a compositional implementation is also provided in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
+<p>When using ivy without a framework set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> has not been called),
+then the function called is always the one implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
+For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">_cur_framework(x).func_name(...)</span></code>
+will call the framework-specific implementation in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>
+directly. However, as just explained, <em>partial primary</em> functions implement a compositional approach in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, without deferring to the backend.
+Therefore, without any explicit framework setting, then the compositional implementation is always used,
+even for backends that have a more efficient framework-specific implementation.
+Typically the framework should always be set explicitly (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> for example),
+and in this case the efficient framework-specific implementation will always be used if it exists.</p>
 </section>
 <section id="flexible-functions">
 <h2>Flexible Functions<a class="headerlink" href="#flexible-functions" title="Permalink to this headline"></a></h2>

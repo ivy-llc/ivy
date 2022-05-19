@@ -112,6 +112,25 @@ For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/funct
         return -ivy.sum(log_pred * true, axis)
 
 
+Partial Primary Functions
+-------------------------
+
+*Partial primary* functions have some framework-specific implementations in
+:code:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends.
+To support backends that do not have a framework-specific implementation,
+a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
+
+When using ivy without a framework set explicitly (for example :code:`ivy.set_framework()` has not been called),
+then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
+For *primary* functions, then :code:`_cur_framework(x).func_name(...)`
+will call the framework-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
+directly. However, as just explained, *partial primary* functions implement a compositional approach in
+:code:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
+Therefore, without any explicit framework setting, then the compositional implementation is always used,
+even for backends that have a more efficient framework-specific implementation.
+Typically the framework should always be set explicitly (using :code:`ivy.set_framework()` for example),
+and in this case the efficient framework-specific implementation will always be used if it exists.
+
 Flexible Functions
 ------------------
 
