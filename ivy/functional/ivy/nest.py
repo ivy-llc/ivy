@@ -548,3 +548,70 @@ def copy_nest(
             {k: copy_nest(v, include_derived, to_mutable) for k, v in nest.items()}
         )
     return nest
+
+def nested_multi_map(
+        func,
+        nests,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        key_chain="",
+        config=None,
+    ):
+        """Apply function to all array values from a collection of identically
+        structured arrays.
+
+        Parameters
+        ----------
+        func
+            Function to apply to each container entry.
+        nest
+            nests to map.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied,
+            otherwise the leftmost container value is used. Default is False.
+        key_chain
+            Chain of keys for this dict entry (Default value = '')
+        config
+            The configuration for the containers. Default is the same as container0.
+
+        Returns
+        -------
+            Container
+
+        """
+        nest0 = nests[0]
+        return_list = list()
+        for index,val in enumerate(nest0):
+            values = [nest[index] for nest in nests]
+            value0 = values[0]
+            this_key_chain = index if key_chain == "" else (key_chain + "/" + index)
+            if isinstance(value0, ivy.Array):
+                ret = ivy.nested_multi_map(
+                    func,
+                    values,
+                    key_chains,
+                    to_apply,
+                    prune_unapplied,
+                    this_key_chain,
+                    config,
+                )
+                if ret:
+                    return_list.insert(index, ret)
+            else:
+                if key_chains is not None:
+                    if (this_key_chain in key_chains and not to_apply) or (
+                        this_key_chain not in key_chains and to_apply
+                    ):
+                        if prune_unapplied:
+                            continue
+                        return_list.insert(index,value0)
+                        continue
+                return_list.insert(index,func(values, this_key_chain)) 
+        # noinspection PyProtectedMember
+        return ivy.array(return_list)
