@@ -28,7 +28,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 return tf.identity(object_in)
             if dtype is None and not isinstance(object_in, tf.Tensor):
                 try:
-                    dtype = dtype_from_str(default_dtype())
+                    dtype = dtype_from_str(default_dtype(item=object_in))
                     tensor = tf.convert_to_tensor(object_in,dtype= dtype)
                 except (TypeError, ValueError):
                     dtype = dtype_to_str(default_dtype(dtype, object_in))

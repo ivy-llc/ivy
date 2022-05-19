@@ -34,7 +34,7 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = dtype_from_str(default_dtype())
+        dtype = dtype_from_str(default_dtype(item=object_in))
         if copy is True:
             return torch.as_tensor(object_in,dtype=dtype).clone().detach().to(dev_from_str(device))
         else:

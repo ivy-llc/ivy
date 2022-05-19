@@ -24,7 +24,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = dtype_from_str(default_dtype())        
+        dtype = dtype_from_str(default_dtype(item=object_in))        
         if copy is True:
             return _to_dev(np.copy(np.asarray(object_in,dtype=dtype)), device)
         else:

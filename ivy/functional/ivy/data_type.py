@@ -650,7 +650,7 @@ def is_int_dtype(
         return (
             True
             if ivy.nested_indices_where(
-                dtype_in, lambda x: isinstance(x, (int, np.integer))
+                dtype_in, lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool
             )
             else False
         )
