@@ -157,7 +157,7 @@ def dev_to_str(
     Parameters
     ----------
     x
-          array for which to get the device handle to convert to string.
+        Array for which to get the device handle to convert to string.
 
     Returns
     -------
