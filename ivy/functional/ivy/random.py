@@ -125,7 +125,6 @@ def multinomial(
 
     Examples
     --------
-
     >>> y = ivy.multinomial(10,5)
     >>> print(y)
     ivy.array([[1, 8, 7, 8, 3]])
