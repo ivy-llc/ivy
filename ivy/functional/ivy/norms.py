@@ -1,6 +1,10 @@
-"""Collection of Ivy normalization functions."""
+"""
+Collection of Ivy normalization functions.
+"""
 
 # local
+from ctypes import Union
+from typing import Tuple, List
 import ivy
 
 
@@ -8,8 +12,9 @@ import ivy
 # ------#
 
 # noinspection PyUnresolvedReferences
-def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_std=None):
-    """Applies Layer Normalization over a mini-batch of inputs.
+def layer_norm(x: Union[ivy.Array, ivy.Container], normalized_idxs: List[int], epsilon: float=ivy._MIN_BASE, scale=None, offset=None, new_std: float=1.0)\
+    -> Union[ivy.Array, ivy.Container]:
+    """Applies Layer Normalization over a mini-batch of inputs
 
     Parameters
     ----------
@@ -28,8 +33,16 @@ def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_st
 
     Returns
     -------
-    ret
+     ret
         The layer after applying layer normalization.
+    
+    Example
+    -------
+    >>> import ivy
+    >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
+
+    >>> arr = layer_norm(arr, [0, 1], new_std=2.0)
+    >>> print(arr)
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
