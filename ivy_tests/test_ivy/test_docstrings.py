@@ -32,7 +32,7 @@ def test_docstrings():
         'trace', 'full_like', 'ones_like',  
         'zeros_like', 'bitwise_invert', 'copy_array',
         'expand_dims', 'reshape', 'einsum', 'shape'
-        ]
+    ]
 
     for k, v in ivy.__dict__.items():
         if k in skip_functions:

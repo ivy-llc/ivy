@@ -283,9 +283,9 @@ def docstring_examples_run(fn):
     if end_index == -1:
         return True
 
-    executable_lines = [line.split('>>>')[1][1:] \
-                        for line in docstring.split('\n') \
-                            if '>>>' in line]
+    executable_lines = [line.split('>>>')[1][1:]
+                        for line in docstring.split('\n')
+                        if '>>>' in line]
             
     # noinspection PyBroadException
     f = StringIO()
