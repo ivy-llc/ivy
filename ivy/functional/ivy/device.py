@@ -148,21 +148,29 @@ def dev(
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
-    """Convert native data type to string representation.
+def dev_to_str(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> str:
+    """
+    Convert native data type to string representation.
 
     Parameters
     ----------
-    device
-        The device handle to convert to string.
+    x
+          array for which to get the device handle to convert to string.
 
     Returns
     -------
     ret
         Device string e.g. 'cuda:0'.
 
+    Examples
+    --------
+          >>> x = ivy.array([1,0,2])
+          >>> print(ivy.dev_to_str(x))
+          "cpu"
     """
-    return _cur_framework().dev_to_str(device)
+    return _cur_framework().dev_to_str(x)
 
 
 # noinspection PyShadowingNames
