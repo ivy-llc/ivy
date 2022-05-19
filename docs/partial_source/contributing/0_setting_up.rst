@@ -1,6 +1,5 @@
-*****
-Setting up the Remote python interpreter
-*****
+Setting up
+==========
 Using the same remote python interpreter provided as a docker container helps the community to share the same packages
 and mitigate any version conflicts. In addition, it also becomes possible to use modules not yet provided for an operating system, such as jaxlib for windows.
 Below are the instructions required to setup the docker container for:
@@ -33,6 +32,7 @@ Windows
     :height: 164px
     :alt: alternate text
     :figclass: align-center
+
 Fig. 1.
 
 
@@ -42,6 +42,7 @@ Fig. 1.
     :height: 387px
     :alt: alternate text
     :figclass: align-center
+
 Fig. 2.
 
 DONE. You're set.
