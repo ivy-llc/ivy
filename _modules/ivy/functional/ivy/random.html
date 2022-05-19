@@ -188,9 +188,15 @@
 
 
 <div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../../functional/ivy/random/multinomial.html#ivy.functional.ivy.random.multinomial">[docs]</a><span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span>
-    <span class="n">population_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">probs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draws samples from a multinomial distribution. Specifcally, returns a tensor</span>
+    <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">probs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws samples from a multinomial distribution. Specifically, returns a tensor</span>
 <span class="sd">    where each row contains num_samples indices sampled from the multinomial probability</span>
 <span class="sd">    distribution located in the corresponding row of tensor input.</span>
 
@@ -201,9 +207,9 @@
 <span class="sd">    num_samples</span>
 <span class="sd">        Number of independent samples to draw from the population.</span>
 <span class="sd">    batch_size</span>
-<span class="sd">        Number of times to draw a new set of samples from the population.</span>
+<span class="sd">        Number of tensors to generate. Default is 1.</span>
 <span class="sd">    probs</span>
-<span class="sd">        The unnormalized probabilities for all elemtns in population,</span>
+<span class="sd">        The unnormalized probabilities for all elements in population,</span>
 <span class="sd">        default is uniform *[batch_shape, num_classes]*</span>
 <span class="sd">    replace</span>
 <span class="sd">        Whether to replace samples once they&#39;ve been drawn. Default is True.</span>
@@ -215,6 +221,56 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Drawn samples indices from the multinomial distribution.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[1, 8, 7, 8, 3]])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,batch_size=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[9, 7, 9, 0, 7],</span>
+<span class="sd">       [7, 3, 8, 5, 4]])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,replace=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2, 6, 4, 7, 0]])</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,probs=ivy.array([1/10]*10))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([5, 2, 7, 6, 9])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0, 4, 3, 4, 5],</span>
+<span class="sd">       [1, 1, 0, 3, 2]])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]),</span>
+<span class="sd">    ... replace=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2, 6, 1, 0, 3],</span>
+<span class="sd">       [1, 0, 2, 5, 6]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,probs=ivy.native_array([1/10]*10))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([5, 7, 4, 2, 1])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,batch_size=2,</span>
+<span class="sd">    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[8, 0, 4, 1, 7],</span>
+<span class="sd">       [2, 3, 4, 9, 3]])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.multinomial(10,5,batch_size=2,</span>
+<span class="sd">    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]),replace=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0, 2, 6, 9, 1],</span>
+<span class="sd">       [6, 7, 2, 4, 3]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span>
