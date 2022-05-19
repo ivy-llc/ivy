@@ -43,11 +43,13 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
 |
 | (h) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings ðŸ’¯
+|
 
 .. toctree::
    :hidden:
    :maxdepth: -1
    :caption: Contributing
+
 
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
@@ -57,3 +59,4 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
    contributing/5_type_hints.rst
    contributing/6_docstrings.rst
    contributing/7_docstring_examples.rst
+

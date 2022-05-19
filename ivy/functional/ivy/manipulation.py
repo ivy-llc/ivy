@@ -362,7 +362,15 @@ def concat(
     -------
     ret
         The concatenated array.
-
+    
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> y = ivy.array([[5, 6]])
+    >>> ivy.concat((x, y))
+    ivy.array([[1, 2],
+               [3, 4],
+               [5, 6]])  
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 
