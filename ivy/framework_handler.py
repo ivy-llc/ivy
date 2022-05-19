@@ -99,13 +99,45 @@ def _determine_framework_from_args(args):
 
 
 def current_framework(*args, **kwargs):
-    """Priorities: global_framework > argument's framework."""
+    """Returns the current backend framework. Priorities:
+    global_framework > argument's framework.
+
+    Parameters
+    ----------
+    *args/**kwargs
+        the arguments from which to try to infer the backend framework, when there is
+        no globally set framework.
+
+    Returns
+    -------
+    ret
+        Ivy's current backend framework.
+
+    Examples
+    --------
+    If no global framework is set, then the framework is inferred from the arguments:
+    >>> import numpy as np
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+
+    The global framework set in set_framework has priority over any arguments
+    passed to current_framework:
+    >>> import numpy as np
+    >>> ivy.set_framework('jax')
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
+
+    """
+    # if a global framework has been set with set_framework then this will be returned
     if framework_stack:
         f = framework_stack[-1]
         if verbosity.level > 0:
             verbosity.cprint("Using framework from stack: {}".format(f))
         return f
 
+    # if no global framework exists, we try to infer the framework from the arguments
     f = _determine_framework_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(
