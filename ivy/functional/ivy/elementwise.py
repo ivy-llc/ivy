@@ -1733,30 +1733,30 @@ def tan(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tan(x, out=y)
     >>> print(y)
-    ivy.array([0.5463025, -0.8422884, -0.91601413])
+    ivy.array([0.546, -0.842, -0.916])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],\
                         [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
-               [-3.0963247,  0.9955841, -0.3278579]])
+    ivy.array([[1.96, -1.37, 0.16], 
+        [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0, 1, 2])
+    >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
@@ -1764,8 +1764,8 @@ def tan(
     >>> y = ivy.tan(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+        a: ivy.array([0., 1.56, -2.19]),
+        b: ivy.array([-0.143, 1.16, -3.38])
     }
 
     Instance Method Examples
@@ -1776,7 +1776,7 @@ def tan(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.tan()
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     Using :code:`ivy.Container` instance method:
 
@@ -1784,9 +1784,8 @@ def tan(
     >>> y = x.tan()
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
-    }
+        a:ivy.array([0., 1.56, -2.19]),
+        b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
     return _cur_framework(x).tan(x, out)
