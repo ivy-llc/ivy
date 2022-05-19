@@ -10,7 +10,6 @@ import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-
 # stack_images
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
