@@ -154,10 +154,32 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(3, 10, (2, 2))
+    >>> y = ivy.randint(0, 9, 1)
     >>> print(y)
-    ivy.array([[9, 9],
-           [8, 9]])
+    ivy.array([3])
+
+    >>> y = ivy.randint(0, 10, (3,))
+    >>> print(y)
+    ivy.array([2, 6, 7])
+
+    >>> y = ivy.randint(2, 20, (3, 2))
+    >>> print(y)
+    ivy.array([[ 7,  5],
+       [16,  5],
+       [15, 15]])
+
+    >>> y = ivy.randint(3, 15, (3, 3), 'cpu')
+    >>> print(y)
+    ivy.array([[13,  5, 12],
+       [10,  9, 13],
+       [ 6, 14, 11]])
+
+    >>> y = ivy.randint(3, 15, (3, 3), 'gpu:1')
+    >>> print(y)
+    ivy.array([[ 7,  7,  5],
+       [12,  8,  8],
+       [ 8, 11,  3]])
+
     """
     return _cur_framework().randint(low, high, shape, device)
 
