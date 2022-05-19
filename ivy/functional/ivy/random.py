@@ -89,9 +89,15 @@ def random_normal(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
-    """Draws samples from a multinomial distribution. Specifcally, returns a tensor
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Union[ivy.Array, ivy.NativeArray] = None,
+    replace: bool = True,
+    device: Optional[ivy.Device] = None
+) -> ivy.array:
+    """
+    Draws samples from a multinomial distribution. Specifically, returns a tensor
     where each row contains num_samples indices sampled from the multinomial probability
     distribution located in the corresponding row of tensor input.
 
@@ -102,9 +108,9 @@ def multinomial(
     num_samples
         Number of independent samples to draw from the population.
     batch_size
-        Number of times to draw a new set of samples from the population.
+        Number of tensors to generate. Default is 1.
     probs
-        The unnormalized probabilities for all elemtns in population,
+        The unnormalized probabilities for all elements in population,
         default is uniform *[batch_shape, num_classes]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
@@ -116,6 +122,56 @@ def multinomial(
     -------
     ret
         Drawn samples indices from the multinomial distribution.
+
+    Examples
+    --------
+    >>> y = ivy.multinomial(10,5)
+    >>> print(y)
+    ivy.array([[1, 8, 7, 8, 3]])
+
+    >>> y = ivy.multinomial(10,5,batch_size=2)
+    >>> print(y)
+    ivy.array([[9, 7, 9, 0, 7],
+       [7, 3, 8, 5, 4]])
+
+    >>> y = ivy.multinomial(10,5,replace=False)
+    >>> print(y)
+    ivy.array([[2, 6, 4, 7, 0]])
+
+    With :code:`ivy.Array` input:
+
+    >>> y = ivy.multinomial(10,5,probs=ivy.array([1/10]*10))
+    >>> print(y)
+    ivy.array([5, 2, 7, 6, 9])
+
+    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]))
+    >>> print(y)
+    ivy.array([[0, 4, 3, 4, 5],
+       [1, 1, 0, 3, 2]])
+
+    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]),
+    ... replace=False)
+    >>> print(y)
+    ivy.array([[2, 6, 1, 0, 3],
+       [1, 0, 2, 5, 6]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> y = ivy.multinomial(10,5,probs=ivy.native_array([1/10]*10))
+    >>> print(y)
+    ivy.array([5, 7, 4, 2, 1])
+
+    >>> y = ivy.multinomial(10,5,batch_size=2,
+    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]))
+    >>> print(y)
+    ivy.array([[8, 0, 4, 1, 7],
+       [2, 3, 4, 9, 3]])
+
+    >>> y = ivy.multinomial(10,5,batch_size=2,
+    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]),replace=False)
+    >>> print(y)
+    ivy.array([[0, 2, 6, 9, 1],
+       [6, 7, 2, 4, 3]])
 
     """
     return _cur_framework().multinomial(
