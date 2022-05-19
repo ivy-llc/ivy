@@ -13,6 +13,8 @@ def squeeze(
     axis: Union[int, Tuple[int], List[int]],
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):

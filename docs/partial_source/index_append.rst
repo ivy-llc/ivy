@@ -9,3 +9,5 @@
    extensions.rst
    roadmap.rst
    contributing.rst
+   faq.rst
+   building_the_docs.rst

@@ -83,7 +83,9 @@ def test_max(
 
 # mean
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtype_strs, allow_inf=False
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -113,6 +115,7 @@ def test_mean(
         instance_method,
         fw,
         "mean",
+        rtol=1e-1,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -173,6 +176,8 @@ def test_prod(
     instance_method,
     fw,
 ):
+    if fw in ["torch", "tensorflow"]:
+        return  # different overflow behaviour in torch/tf
     dtype, x = dtype_and_x
     assume(x)
     if fw == "torch" and (dtype == "float16" or ivy.is_int_dtype(dtype)):
@@ -225,6 +230,7 @@ def test_sum(
         instance_method,
         fw,
         "sum",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -263,6 +269,7 @@ def test_std(
         instance_method,
         fw,
         "std",
+        rtol=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
