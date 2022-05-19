@@ -10,3 +10,4 @@
    roadmap.rst
    contributing.rst
    faq.rst
+   documentation_building_pipeline.rst
