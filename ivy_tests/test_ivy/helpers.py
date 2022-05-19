@@ -270,7 +270,8 @@ def docstring_examples_run(fn):
     # parsed_output is set as an empty string to manage functions with multiple inputs
     parsed_output = ""
 
-    # parsing through the docstrings to find lines with print statement; following which is our parsed output
+    # parsing through the docstrings to find lines with print statement 
+    # following which is our parsed output
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
