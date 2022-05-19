@@ -198,13 +198,45 @@
 
 
 <div class="viewcode-block" id="current_framework"><a class="viewcode-back" href="../../framework_handler/current_framework.html#ivy.framework_handler.current_framework">[docs]</a><span class="k">def</span> <span class="nf">current_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Priorities: global_framework &gt; argument&#39;s framework.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Returns the current backend framework. Priorities:</span>
+<span class="sd">    global_framework &gt; argument&#39;s framework.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args/**kwargs</span>
+<span class="sd">        the arguments from which to try to infer the backend framework, when there is</span>
+<span class="sd">        no globally set framework.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Ivy&#39;s current backend framework.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    If no global framework is set, then the framework is inferred from the arguments:</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_framework(x))</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.numpy&#39; from &#39;/ivy/ivy/functional/backends/numpy/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    The global framework set in set_framework has priority over any arguments</span>
+<span class="sd">    passed to current_framework:</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_framework(x))</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if a global framework has been set with set_framework then this will be returned</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Using framework from stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f</span>
 
+    <span class="c1"># if no global framework exists, we try to infer the framework from the arguments</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_determine_framework_from_args</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
     <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

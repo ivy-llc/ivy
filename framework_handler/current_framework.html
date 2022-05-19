@@ -102,7 +102,31 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.framework_handler.current_framework">
 <span class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></span><span class="sig-name descname"><span class="pre">current_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/framework_handler.html#current_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.current_framework" title="Permalink to this definition"></a></dt>
-<dd><p>Priorities: global_framework &gt; argument’s framework.</p>
+<dd><p>Returns the current backend framework. Priorities:
+global_framework &gt; argument’s framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args/**kwargs</strong> – <p>the arguments from which to try to infer the backend framework, when there is
+no globally set framework.</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Ivy’s current backend framework.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>If no global framework is set, then the framework is inferred from the arguments:
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; x = np.array([2.0])
+&gt;&gt;&gt; print(ivy.current_framework(x))
+&lt;module ‘ivy.functional.backends.numpy’ from ‘/ivy/ivy/functional/backends/numpy/__init__.py’&gt;   </p>
+<p>The global framework set in set_framework has priority over any arguments
+passed to current_framework:
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; ivy.set_framework(‘jax’)
+&gt;&gt;&gt; x = np.array([2.0])
+&gt;&gt;&gt; print(ivy.current_framework(x))
+&lt;module ‘ivy.functional.backends.jax’ from ‘/ivy/ivy/functional/backends/jax/__init__.py’&gt;   </p>
 </dd></dl>
 
 <div class="line-block">
