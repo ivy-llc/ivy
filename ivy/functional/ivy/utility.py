@@ -56,6 +56,12 @@ def all(
         array must be a zero-dimensional array containing the test result; otherwise,
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
+        
+    Examples
+    -------
+    >>> a = ivy.all([[True,False],[True,True]])
+    >>> print(a)
+    ivy.array(False)
 
     """
     return _cur_framework(x).all(x, axis, keepdims, out=out)
