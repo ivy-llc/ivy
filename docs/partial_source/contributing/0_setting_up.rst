@@ -11,11 +11,11 @@ Windows
 
 1. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 
-2. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most people, it only requires running the command `wsl --install` in powershell admin mode. Visit the link if it doesn't.
+2. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most, it will only require running the command :code:`wsl --install` in powershell admin mode. Visit the link if it doesn't.
 
 3. Get the latest Docker Image for Ivy by: 
   * Running Docker desktop.
-  * Opening cmd, and running the command: `docker run -it --rm unifyai/ivy:latest python3`
+  * Opening cmd, and running the command: :code:`docker run -it --rm unifyai/ivy:latest python3`
 
 4. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 5. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
