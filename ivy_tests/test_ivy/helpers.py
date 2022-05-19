@@ -212,9 +212,10 @@ def assert_compilable(fn):
     except Exception as e:
         raise e
 
+
 # function that trims white spaces from docstrings
 def trim(docstring):
-    """trim function from PEP-257"""
+    """Trim function from PEP-257"""
     if not docstring:
         return ""
     # Convert tabs to spaces (following the normal Python rules)
@@ -277,12 +278,14 @@ def docstring_examples_run(fn):
             p_output = trimmed_docstring[index + 1:end_index]
             p_output = ("").join(p_output).replace(" ", "")
             parsed_output += p_output
-
     
     if end_index == -1:
         return True
 
-    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
+    executable_lines = [line.split('>>>')[1][1:] \
+                        for line in docstring.split('\n') \
+                            if '>>>' in line]
+            
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
@@ -290,9 +293,8 @@ def docstring_examples_run(fn):
             try:
                 exec(line)
             except RuntimeError:
-                raise Exception("Failed executing code in {}", ivy.framework_handler.ivy_original_dict[fn_name])
+                raise Exception("ERROR EXECUTING FUNCTION IN DOCSTRING")
 
-        
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
@@ -313,8 +315,12 @@ def docstring_examples_run(fn):
 
     output = ansi_escape.sub('', output)
 
+    print("Output: ", output)
+    print("Putput: ", parsed_output)
+
     assert output == parsed_output, "Output is unequal to the docstrings output."
     return True
+
 
 def var_fn(a, b=None, c=None):
     return ivy.variable(ivy.array(a, b, c))
