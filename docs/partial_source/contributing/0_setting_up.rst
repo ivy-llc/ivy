@@ -25,7 +25,7 @@ Windows
 * Choose add interpreter (currently by clicking the setting logo on the side) (Fig. 1 Below)
 
 * Choose Docker from left panel, make sure it says python3 (with the number) in python interpreter path and click ok. (Fig 2 Below)
-
+|
 .. figure:: https://user-images.githubusercontent.com/53497039/156894436-d09fcddf-aff1-4514-9536-50f77badff4e.png
     :width: 520px
     :align: left
@@ -34,7 +34,8 @@ Windows
     :figclass: align-left
 
     Fig. 1.
-
+|
+|
 
 .. figure:: https://user-images.githubusercontent.com/53497039/156894484-d02f055d-d7eb-4588-8f8e-8d7ffc60bec5.png
     :width: 520px
@@ -44,7 +45,7 @@ Windows
     :figclass: align-left
 
     Fig. 2.
-
+|
 DONE. You're set.
-
+|
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/windows/release-notes/>`_
