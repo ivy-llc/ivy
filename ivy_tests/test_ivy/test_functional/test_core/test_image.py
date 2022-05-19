@@ -1,19 +1,14 @@
 """Collection of tests for unified image-related functions."""
 
 # global
-import pytest
-import numpy as np
-from hypothesis import given, strategies as st
-from operator import mul
 
-# noinspection PyProtectedMember
-from functools import reduce
+from hypothesis import given, strategies as st
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
-import random
+
 
 
 # stack_images
@@ -179,7 +174,7 @@ def test_uint8_img_to_float_img(
 ):
     if fw == "torch" and dtype == "float16":
         return
-    x = ivy.randint(0, 256, shape=shape+[4])
+    x = ivy.randint(0, 256, shape=shape + [4])
     helpers.test_array_function(
         dtype,
         as_variable,
