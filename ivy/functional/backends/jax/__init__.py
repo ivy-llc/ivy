@@ -40,8 +40,8 @@ NativeArray = (
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
-Device = jaxlib.xla_extension.Device
-Dtype = jnp.dtype
+NativeDevice = jaxlib.xla_extension.Device
+NativeDtype = jnp.dtype
 
 # data types
 int8 = jnp.dtype("int8")
