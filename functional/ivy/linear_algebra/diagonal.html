@@ -186,8 +186,7 @@ diagonals. The returned array must have the same data type as <code class="docut
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
-<span class="go">                   [3., 4.]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="go">ivy.array([1., 4.])</span>
@@ -197,22 +196,13 @@ diagonals. The returned array must have the same data type as <code class="docut
 </pre></div>
 </div>
 <p>A 3-D Example
-&gt;&gt;&gt; x = ivy.array([[[1., 2.],</p>
+&gt;&gt;&gt; x = ivy.array([[[1., 2.],                        [3., 4.]],                       [[5., 6.],                        [7., 8.]]])
+&gt;&gt;&gt; d = ivy.diagonal(x, 0, 0, 1)
+&gt;&gt;&gt; print(d)
+ivy.array([[1., 7.],</p>
 <blockquote>
-<div><blockquote>
-<div><p>[3., 4.]],</p>
+<div><p>[2., 8.]])</p>
 </div></blockquote>
-<dl class="simple">
-<dt>[[5., 6.],</dt><dd><p>[7., 8.]]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go">ivy.array([[1., 7.],</span>
-<span class="go">           [2., 8.]])</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <div class="line-block">
