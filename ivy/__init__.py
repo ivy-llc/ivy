@@ -21,19 +21,27 @@ class Variable:
     pass
 
 
-class Framework:
+class Framework(str):
     pass
 
 
-class Device:
+class NativeDevice:
     pass
 
 
-class Node:
+class NativeDtype:
     pass
 
 
-class Dtype:
+class Device(str):
+    pass
+
+
+class Dtype(str):
+    pass
+
+
+class Node(str):
     pass
 
 
