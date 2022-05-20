@@ -22,7 +22,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -36,7 +36,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -56,7 +56,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[JaxArray] = None,
     replace: bool = True,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
