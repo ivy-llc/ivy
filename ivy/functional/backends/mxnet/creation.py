@@ -16,8 +16,8 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 def asarray(
     object_in,
-    dtype: Optional[str] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
     copy: Optional[bool] = None,
 ):
     # mxnet don't have asarray implementation, haven't properly tested
@@ -44,8 +44,8 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[type] = None,
-    device: Optional[mx.context.Context] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     if len(shape) == 0 or 0 in shape:
@@ -55,8 +55,8 @@ def zeros(
 
 def ones(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[type] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     shape = [shape] if shape is not isinstance(shape, Iterable) else shape
@@ -67,8 +67,8 @@ def ones(
 
 def ones_like(
     x: mx.ndarray.ndarray.NDArray,
-    dtype: Optional[Union[type, str]] = None,
-    device: Optional[Union[mx.context.Context, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     if x.shape == ():
         return mx.nd.array(1.0, ctx=_mxnet_init_context(default_device(device)))
@@ -82,8 +82,8 @@ def tril(x: mx.ndarray.ndarray.NDArray, k: int = 0) -> mx.ndarray.ndarray.NDArra
 
 def empty(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[type] = None,
-    device: Optional[mx.context.Context] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
@@ -135,8 +135,8 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[mx.nd.NDArray] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
@@ -173,8 +173,7 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 def meshgrid(
-    *xs: mx.ndarray.ndarray.NDArray,
-    indexing: Optional[str] = "xy"
+    *xs: mx.ndarray.ndarray.NDArray, indexing: Optional[str] = "xy"
 ) -> List[mx.ndarray.ndarray.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
