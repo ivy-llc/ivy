@@ -268,11 +268,11 @@ def outer(
     ----------
     x1
         first one-dimensional input array of size N. Should have a numeric data type.
-        a(M,) array_like
+        a(N,) array_like
         First input vector. Input is flattened if not already 1-dimensional.
     x2
         second one-dimensional input array of size M. Should have a numeric data type.
-        b(N,) array_like
+        b(M,) array_like
         Second input vector. Input is flattened if not already 1-dimensional.
 
     Returns
@@ -281,6 +281,45 @@ def outer(
         a two-dimensional array containing the outer product and whose shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
 
+
+    Examples
+    --------
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.]])
+    >>> y = ivy.array([[5., 6.],\
+                       [7., 8.]])
+    >>> d = ivy.outer(x,y)
+    >>> print(d)
+    ivy.array([[ 5.,  6.,  7.,  8.],
+                [10., 12., 14., 16.],
+                [15., 18., 21., 24.],
+                [20., 24., 28., 32.]])
+    >>> d = ivy.outer(x, 1)
+    >>> print(d)
+    ivy.array([[1.],
+                [2.],
+                [3.],
+                [4.]])
+
+    A 3-D Example
+    >>> x = ivy.array([[[1., 2.],\
+                        [3., 4.]],\
+                       [[5., 6.],\
+                        [7., 8.]]])
+    >>> y = ivy.array([[[9., 10.],\
+                        [11., 12.]],\
+                       [[13., 14.],\
+                        [15., 16.]]])
+    >>> d = ivy.outer(x, y)
+    >>> print(d)
+    ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],
+                [ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],
+                [ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],
+                [ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],
+                [ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],
+                [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
+                [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
+                [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])
     """
     return _cur_framework(x1, x2).outer(x1, x2)
 

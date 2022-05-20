@@ -102,9 +102,14 @@ def svd(
 
 
 def outer(
-    x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.outer(x1, x2, out)
+    ret = np.outer(x1, x2, out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def diagonal(
