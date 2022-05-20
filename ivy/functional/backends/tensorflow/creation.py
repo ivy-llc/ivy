@@ -72,7 +72,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 def zeros(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[ivy.Dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[str] = None,
 ) -> Tensor:
     device = default_device(device)
@@ -115,7 +115,9 @@ def ones_like(
 
 
 def zeros_like(
-    x: Tensor, dtype: Optional[ivy.Dtype] = None, device: Optional[str] = None
+    x: Tensor,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[str] = None,
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
@@ -132,7 +134,7 @@ def triu(x: tf.Tensor, k: int = 0) -> tf.Tensor:
 
 def empty(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[ivy.Dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[str] = None,
 ) -> Tensor:
     device = default_device(device)
@@ -176,7 +178,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[ivy.Dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[str] = None,
 ) -> tf.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
@@ -234,7 +236,7 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[ivy.Dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[str] = None,
 ) -> Tensor:
     with tf.device(dev_from_str(default_device(device))):
