@@ -12,8 +12,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = Tensor
 NativeVariable = Tensor
-Device = str
-Dtype = DType
+NativeDevice = str
+NativeDtype = DType
 
 # data types
 int8 = tf.int8
