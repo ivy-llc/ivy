@@ -21,33 +21,10 @@ Windows
 
 * Going to settings>project:...>Python Interpreter)
 
-* Choose add interpreter (currently by clicking the setting logo on the side) (Fig. 1 Below)
+* Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
-* Choose Docker from left panel, make sure it says python3 (with the number) in python interpreter path and click ok. (Fig 2 Below)
-|
-.. figure:: https://user-images.githubusercontent.com/53497039/156894436-d09fcddf-aff1-4514-9536-50f77badff4e.png
-    :width: 520px
-    :align: left
-    :height: 164px
-    :alt: alternate text
-    :figclass: align-left
+* Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-    Fig. 1.
-|
-|
-|
-|
-|
-|
-|
-.. figure:: https://user-images.githubusercontent.com/53497039/156894484-d02f055d-d7eb-4588-8f8e-8d7ffc60bec5.png
-    :width: 520px
-    :align: left
-    :height: 387px
-    :alt: alternate text
-    :figclass: align-left
-
-    Fig. 2.
 |
 DONE. You're set.
 |
