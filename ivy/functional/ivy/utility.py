@@ -57,14 +57,38 @@ def all(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
         
-    Examples
-    --------
-    >>> a = ivy.all([[True,False],[True,True]])
+    Functional Examples
+    -------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([True,False])
+    >>> y = ivy.array([True,True])
+    >>> a = ivy.all(ivy.array([x,y]))
     >>> print(a)
     ivy.array(False)
+    
+    
+    >>> x = ivy.array([True,False])
+    >>> y = ivy.array([True,True])
+    >>> a = ivy.all(ivy.array([x,y]), axis=0)
+    >>> print(a)
+    ivy.array([ True, False])
+
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> a = ivy.all(x)
+    >>> print(a)
+    ivy.array(True)
+
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> a = ivy.all(x)
+    >>> print(a)
+    ivy.array(True)
 
     """
-    return _cur_framework(x).all(x, axis, keepdims, out=out)
 
 
 # noinspection PyShadowingBuiltins
