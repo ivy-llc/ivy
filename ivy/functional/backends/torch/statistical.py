@@ -36,7 +36,7 @@ def min(
 def sum(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[torch.dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -97,7 +97,7 @@ def sum(
 def prod(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[torch.dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
