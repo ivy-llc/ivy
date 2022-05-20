@@ -2,16 +2,17 @@
 import jaxlib
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
+from jaxlib.xla_extension import Buffer, Device, DeviceArray
+from jax.interpreters.xla import _DeviceArray
+from jax.dlpack import from_dlpack as jax_from_dlpack
 
 # local
+import ivy
 from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
-from jaxlib.xla_extension import Buffer, Device, DeviceArray
-from jax.interpreters.xla import _DeviceArray
-from jax.dlpack import from_dlpack as jax_from_dlpack
 
 
 # Array API Standard #
@@ -20,8 +21,8 @@ from jax.dlpack import from_dlpack as jax_from_dlpack
 
 def ones(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
         jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
@@ -30,8 +31,8 @@ def ones(
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
         jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
@@ -41,8 +42,8 @@ def zeros(
 def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> DeviceArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -72,8 +73,8 @@ def ones_like(
 
 def zeros_like(
     x: JaxArray,
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
@@ -90,8 +91,8 @@ def triu(x: JaxArray, k: int = 0) -> JaxArray:
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
         jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
@@ -156,8 +157,8 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     dtype = dtype_from_str(default_dtype(dtype))
     device = default_device(device)
@@ -180,8 +181,8 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
         jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),

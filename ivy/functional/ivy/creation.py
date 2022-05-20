@@ -15,7 +15,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 def arange(
     start: Number,
     stop: Optional[Number] = None,
-    step: Optional[Number] = 1,
+    step: Number = 1,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
