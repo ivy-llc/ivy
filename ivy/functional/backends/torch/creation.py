@@ -5,6 +5,7 @@ from torch import Tensor
 from typing import Union, Tuple, List, Optional
 
 # local
+import ivy
 from ivy import (
     dtype_from_str,
     default_dtype,
@@ -22,8 +23,8 @@ from ivy.functional.backends.numpy.data_type import dtype_to_str as np_dtype_to_
 
 def asarray(
     object_in,
-    dtype: Optional[str] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
     copy: Optional[bool] = None,
 ):
     device = default_device(device)
@@ -59,8 +60,8 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[torch.device] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> Tensor:
     return torch.zeros(
         shape,
@@ -71,8 +72,8 @@ def zeros(
 
 def ones(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[Union[torch.device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     dtype_val: torch.dtype = dtype_from_str(dtype)
     device = default_device(device)
@@ -82,8 +83,8 @@ def ones(
 def full_like(
     x: torch.Tensor,
     fill_value: Union[int, float],
-    dtype: Optional[Union[torch.dtype, str]] = None,
-    device: Optional[Union[torch.device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
@@ -93,8 +94,8 @@ def full_like(
 
 def ones_like(
     x: torch.Tensor,
-    dtype: Optional[Union[torch.dtype, str]] = None,
-    device: Optional[Union[torch.device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
@@ -104,8 +105,8 @@ def ones_like(
 
 def zeros_like(
     x: torch.Tensor,
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[Union[torch.device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
@@ -124,8 +125,8 @@ def triu(x: torch.Tensor, k: int = 0) -> torch.Tensor:
 
 def empty(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[torch.device] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> Tensor:
     return torch.empty(
         shape,
@@ -136,8 +137,8 @@ def empty(
 
 def empty_like(
     x: torch.Tensor,
-    dtype: Optional[Union[torch.dtype, str]] = None,
-    device: Optional[Union[torch.device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
@@ -282,8 +283,8 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[torch.device] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> torch.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
@@ -343,8 +344,8 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[torch.device] = None,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ) -> Tensor:
     return torch.full(
         shape_to_tuple(shape),

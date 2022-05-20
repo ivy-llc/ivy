@@ -148,7 +148,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ):
     target = tensor
     target_given = ivy.exists(target)
@@ -345,7 +345,7 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -359,7 +359,9 @@ def gather(
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices, device: Optional[str] = None):
+def gather_nd(
+    params, indices, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(params)
     indices_shape = indices.shape
@@ -403,7 +405,9 @@ def indices_where(x):
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, device: Optional[str] = None):
+def one_hot(
+    indices, depth: int, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
