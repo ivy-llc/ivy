@@ -2132,7 +2132,7 @@
 <span class="c1"># ----------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_handle_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_handle_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">arr</span><span class="p">))</span>
 </pre></div>
 
