@@ -16,7 +16,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -56,7 +56,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
     Draws samples from a normal distribution.
@@ -94,7 +94,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
-    device: Optional[ivy.Device] = None
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor

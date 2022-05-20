@@ -782,5 +782,5 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
 # ----------------#
 
 # noinspection PyShadowingNames
-def _handle_dtype(dtype: Optional[ivy.Dtype] = None, arr=None):
+def _handle_dtype(dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None, arr=None):
     return ivy.dtype_from_str(ivy.default_dtype(dtype, item=arr))

@@ -2032,5 +2032,5 @@ class Profiler(abc.ABC):
 # ----------------#
 
 # noinspection PyShadowingNames
-def _handle_device(dtype: Optional[ivy.Dtype] = None, arr=None):
+def _handle_device(dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None, arr=None):
     return ivy.dev_from_str(ivy.default_device(dtype, item=arr))
