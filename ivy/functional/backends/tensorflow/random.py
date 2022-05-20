@@ -63,7 +63,7 @@ def randint(low, high, shape, device=None):
 
       
 def seed(seed_value: int = 0) -> None:
-     tf.random.set_seed(seed_value)
+    tf.random.set_seed(seed_value)
 
 
 def shuffle(x: Tensor) -> Tensor:
