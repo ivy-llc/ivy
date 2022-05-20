@@ -4,7 +4,7 @@
 import os
 import importlib
 import torch
-from typing import Optional
+from typing import Optional, Union
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
@@ -26,7 +26,9 @@ def dev(x: torch.Tensor, as_str: bool = False) -> str:
 
 
 def to_dev(
-    x, device: Optional[str] = None, out: Optional[torch.Tensor] = None
+    x,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = x.to(dev_from_str(device))
     if isinstance(x, torch.nn.Parameter):
@@ -50,7 +52,9 @@ def dev_to_str(device: torch.device):
     )
 
 
-def dev_from_str(device: Optional[str] = None) -> Optional[torch.device]:
+def dev_from_str(
+    device: Optional[Union[ivy.Device, torch.device]] = None
+) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
     return torch.device(device.replace("gpu", "cuda"))
