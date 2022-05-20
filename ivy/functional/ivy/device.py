@@ -414,13 +414,17 @@ def _assert_dev_correct_formatting(device):
 
 
 # noinspection PyShadowingNames
-def default_device(device=None):
+def default_device(device=None, item=None, as_str: bool = False):
     """Summary.
 
     Parameters
     ----------
     device
          (Default value = None)
+    item
+         (Default value = None)
+    as_str
+         (Default value = False)
 
     Returns
     -------
@@ -430,11 +434,18 @@ def default_device(device=None):
     if ivy.exists(device):
         _assert_dev_correct_formatting(ivy.dev_to_str(device))
         return device
+    elif ivy.exists(item):
+        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+            pass
+        elif ivy.is_array(item):
+            return ivy.dev(item, as_str=as_str)
     global default_device_stack
     if not default_device_stack:
         ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
     else:
         ret = default_device_stack[-1]
+    if as_str:
+        return ivy.dev_to_str(ret)
     return ivy.dev_from_str(ret)
 
 
