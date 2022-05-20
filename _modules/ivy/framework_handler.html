@@ -249,29 +249,51 @@
     <span class="k">return</span> <span class="n">f</span></div>
 
 
-<div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">framework</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sets `framework` to be the global framework.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    If we set the global framework to be numpy, then subsequent calls to ivy functions</span>
+<span class="sd">    will be called from Ivy&#39;s numpy backend:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(native))</span>
+<span class="sd">    &lt;class &#39;numpy.ndarray&#39;&gt;</span>
+
+<span class="sd">    Or with jax as the global framework:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(native))</span>
+<span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">global</span> <span class="n">ivy_original_fn_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">temp_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">framework_stack</span><span class="p">:</span>
             <span class="n">temp_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unset_framework</span><span class="p">())</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">framework</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">fw</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">temp_stack</span><span class="p">):</span>
             <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">framework</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-    <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">framework</span><span class="p">)</span>
     <span class="n">ivy_original_fn_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="c1"># loop through items in ivy dict and replace ivy&#39;s implementations `v` with the</span>
+    <span class="c1"># appropriate backend implementation (backend specified by `framework`)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">framework</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtype_strs</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
                 <span class="k">continue</span>
-            <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="n">specific_v</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">framework</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">specific_v</span> <span class="o">=</span> <span class="n">framework</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;array_spec&quot;</span><span class="p">):</span>
             <span class="n">specific_v</span><span class="o">.</span><span class="n">array_spec</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">array_spec</span>
         <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">specific_v</span>
