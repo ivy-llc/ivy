@@ -20,7 +20,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     with tf.device(default_device(device)):
         return tf.random.uniform(shape if shape else (), low, high)
@@ -30,7 +30,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     with tf.device(default_device(device)):
         return tf.random.normal(shape if shape else (), mean, std)
@@ -42,7 +42,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[Tensor] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
