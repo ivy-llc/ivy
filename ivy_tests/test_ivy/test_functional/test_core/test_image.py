@@ -10,7 +10,6 @@ import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-
 # stack_images
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
@@ -155,8 +154,7 @@ def test_float_img_to_uint8_img(
 
 # uint8_img_to_float_img
 @given(
-    shape=st.lists(st.integers(min_value=1, max_value=8),
-                   min_size=3, max_size=8),
+    shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -226,8 +224,8 @@ def test_uint8_img_to_float_img(
 #         x=x,
 #         crop_size=crop_size,
 #     )
-    
-    
+
+
 # # linear_resample
 # @given(
 #     shape=st.lists(st.integers(min_value=1, max_value=8),
