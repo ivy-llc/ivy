@@ -23,7 +23,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
@@ -41,7 +41,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()
@@ -59,7 +59,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[mx.ndarray.ndarray.NDArray] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     if not replace:
         raise Exception("MXNet does not support multinomial without replacement")
