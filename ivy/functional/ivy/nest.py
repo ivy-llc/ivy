@@ -559,7 +559,7 @@ def nested_multi_map(
         config=None,
     ):
         """Apply function to all array values from a collection of identically
-        structured arrays.
+        structured ivy arrays.
 
         Parameters
         ----------
@@ -591,7 +591,7 @@ def nested_multi_map(
             values = [nest[index] for nest in nests]
             value0 = values[0]
             this_key_chain = index if key_chain == "" else (key_chain + "/" + index)
-            if isinstance(value0, ivy.Array):
+            if isinstance(value0, ivy.Array) or isinstance(value0,ivy.NativeArray) and ivy.get_num_dims(value0) > 0:
                 ret = ivy.nested_multi_map(
                     func,
                     values,
