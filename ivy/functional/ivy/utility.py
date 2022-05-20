@@ -89,6 +89,8 @@ def all(
     ivy.array(True)
 
     """
+    return _cur_framework(x).all(x, axis, keepdims, out=out)
+
 
 
 # noinspection PyShadowingBuiltins
