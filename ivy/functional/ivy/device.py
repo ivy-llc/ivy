@@ -11,7 +11,6 @@ import psutil
 import inspect
 import logging
 import nvidia_smi
-
 from typing import Optional
 
 # noinspection PyUnresolvedReferences
@@ -2027,3 +2026,11 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
         raise NotImplementedError
+
+
+# Function Helper #
+# ----------------#
+
+# noinspection PyShadowingNames
+def _handle_device(dtype: Optional[ivy.Dtype] = None, arr=None):
+    return ivy.dev_from_str(ivy.default_device(dtype, item=arr))
