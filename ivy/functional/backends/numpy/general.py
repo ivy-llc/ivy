@@ -218,7 +218,7 @@ def gather(
     params: np.ndarray,
     indices: np.ndarray,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if device is None:
