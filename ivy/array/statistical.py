@@ -45,7 +45,7 @@ class ArrayWithStatistical(abc.ABC):
     def prod(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -54,7 +54,7 @@ class ArrayWithStatistical(abc.ABC):
     def sum(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
