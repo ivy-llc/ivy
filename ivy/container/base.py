@@ -1659,48 +1659,6 @@ class ContainerBase(dict, abc.ABC):
             out,
         )
 
-    def einsum(
-        self,
-        equation,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Sums the product of the elements of the input operands along dimensions
-        specified using a notation based on the Einstein summation convention, for each
-        array in the container.
-
-        Parameters
-        ----------
-        equation
-            A str describing the contraction, in the same format as numpy.einsum.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.einsum(equation, x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def vector_norm(
         self,
         ord=2,

@@ -1,9 +1,9 @@
 # global
 import math
-import numpy as np
 import importlib
-from typing import Union, Tuple, List
+import numpy as np
 from numbers import Number
+from typing import Union, Tuple, List, Optional
 
 # local
 import ivy
@@ -776,3 +776,11 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
         )
     ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
     return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
+
+
+# Function Helper #
+# ----------------#
+
+# noinspection PyShadowingNames
+def _handle_dtype(dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None, arr=None):
+    return ivy.dtype_from_str(ivy.default_dtype(dtype, item=arr))

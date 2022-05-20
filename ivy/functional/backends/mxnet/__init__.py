@@ -11,8 +11,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = mx.ndarray.ndarray.NDArray
 NativeVariable = mx.ndarray.ndarray.NDArray
-Device = mx.context.Context
-Dtype = type
+NativeDevice = mx.context.Context
+NativeDtype = type
 
 # data types
 int8 = np.int8
@@ -163,6 +163,8 @@ def _handle_output(x, axis, keepdims, ret):
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type
