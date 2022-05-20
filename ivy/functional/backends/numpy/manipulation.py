@@ -13,6 +13,8 @@ def squeeze(
     axis: Union[int, Tuple[int], List[int]],
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):
@@ -48,8 +50,6 @@ def flip(
     axis = [item + num_dims if item < 0 else item for item in axis]
     ret = np.flip(x, axis)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order="C")
         return ivy.inplace_update(out, ret)
     return ret
 
@@ -68,8 +68,6 @@ def permute_dims(
 ) -> np.ndarray:
     ret = np.transpose(x, axes)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order="C")
         return ivy.inplace_update(out, ret)
     return ret
 
@@ -201,8 +199,6 @@ def swapaxes(
 ) -> np.ndarray:
     ret = np.swapaxes(x, axis0, axis1)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order="C")
         return ivy.inplace_update(out, ret)
     return ret
 

@@ -20,9 +20,45 @@ class ArrayWithManipulation(abc.ABC):
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.concat([self] + xs, axis, out=out)
 
+    def flip(
+        self: ivy.Array,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Array:
+        return ivy.flip(self, axis, out=out)
+
     def expand_dims(
         self: ivy.Array,
         axis: Optional[int] = 0,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.expand_dims(self, axis, out=out)
+
+    def reshape(
+        self: ivy.Array,
+        shape: Tuple[int, ...],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.reshape(self, shape, out=out)
+
+    def permute_dims(
+        self: ivy.Array,
+        axes: Tuple[int, ...],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.permute_dims(self, axes, out=out)
+
+    def roll(
+        self: ivy.Array,
+        shift: Union[int, Tuple[int, ...]],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.roll(self, shift=shift, axis=axis, out=out)
+
+    def squeeze(
+        self: ivy.Array,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
+        return ivy.squeeze(self, axis=axis, out=out)

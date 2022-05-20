@@ -12,7 +12,6 @@ import ivy
 
 
 class Optimizer(abc.ABC):
-    
     def __init__(
         self,
         lr,
@@ -156,7 +155,6 @@ class Optimizer(abc.ABC):
 
 
 class SGD(Optimizer):
-    
     def __init__(
         self,
         lr=lambda: 1e-4,
@@ -227,12 +225,11 @@ class SGD(Optimizer):
 
     @property
     def state(self):
-        
+
         return ivy.Container({})
 
 
 class LARS(Optimizer):
-    
     def __init__(
         self,
         lr=lambda: 1e-4,
@@ -308,12 +305,11 @@ class LARS(Optimizer):
 
     @property
     def state(self):
-        
+
         return ivy.Container({})
 
 
 class Adam(Optimizer):
-    
     def __init__(
         self,
         lr=1e-4,
@@ -416,12 +412,11 @@ class Adam(Optimizer):
 
     @property
     def state(self):
-        
+
         return ivy.Container({"mw": self._mw, "vw": self._vw})
 
 
 class LAMB(Optimizer):
-    
     def __init__(
         self,
         lr=1e-4,
@@ -532,5 +527,5 @@ class LAMB(Optimizer):
 
     @property
     def state(self):
-        
+
         return ivy.Container({"mw": self._mw, "vw": self._vw})

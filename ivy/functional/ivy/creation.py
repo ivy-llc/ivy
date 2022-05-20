@@ -481,6 +481,53 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
+
+        This method conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        in the standard. The descriptions above assume an array input for simplicity,
+        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
+        instances, as shown in the type hints and also the examples below.
+
+        Functional Examples
+        -------------------
+        
+        With :code:`ivy.Array` input:
+        
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
+        >>> x = ivy.array([1, 2, 5])
+        >>> y = ivy.array([4, 1])
+        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+        >>> print(xv)
+        ivy.array([[1, 1],
+                   [2, 2],
+                   [5, 5]])
+        >>> print(yv)
+        ivy.array([[4, 1],
+                   [4, 1],
+                   [4, 1]])
+
+        With :code:`ivy.NativeArray` input:
+        
+        >>> x = ivy.native_array([1, 2])
+        >>> y = ivy.native_array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
     """
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 
@@ -555,6 +602,35 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 # ------#
 
 array = asarray
+
+
+def native_array(
+    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    dtype: Optional[Union[ivy.Dtype, str]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
+) -> ivy.NativeArray:
+    """Converts the input to a native array.
+
+    Parameters
+    ----------
+    x
+        input data, in any form that can be converted to an array. This includes lists,
+        lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    dtype
+        datatype, optional. Datatype is inferred from the input data.
+    device
+        device on which to place the created array. Default: None.
+
+    Returns
+    -------
+    ret
+        A native array interpretation of x.
+
+    """
+    # ToDo: Make this more efficient,
+    # ideally without first converting to ivy.Array with ivy.asarray and then
+    # converting back to native with ivy.to_native
+    return ivy.to_native(ivy.asarray(x, dtype, device))
 
 
 # noinspection PyShadowingNames

@@ -1,8 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import logging
-from typing import Optional
+from typing import List, Optional, Union
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -44,7 +43,15 @@ inplace_variables_supported = lambda: True
 
 def inplace_update(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+    # make both arrays contigous if not already
+    if not x_native.flags.c_contiguous:
+        x_native = np.ascontiguousarray(x_native)
+    if not val_native.flags.c_contiguous:
+        val_native = np.ascontiguousarray(val_native)
+
     x_native.data = val_native
+
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
@@ -275,24 +282,18 @@ def one_hot(indices, depth, device=None):
     return res.reshape(list(indices.shape) + [depth])
 
 
-shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
-shape.__name__ = "shape"
+def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
+    if as_tensor:
+        return np.asarray(np.shape(x))
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: np.asarray(len(np.shape(x)))
     if as_tensor
     else len(x.shape)
 )
-
-
-# noinspection PyUnusedLocal
-def compile(
-    func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    logging.warning(
-        "Numpy does not support compiling functions.\n"
-        "Now returning the unmodified function."
-    )
-    return func
 
 
 current_framework_str = lambda: "numpy"

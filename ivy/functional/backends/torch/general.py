@@ -411,20 +411,15 @@ def one_hot(indices, depth: int, device: Optional[str] = None):
     )
 
 
-def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
-    return torch.tensor(x.shape) if as_tensor else x.shape
+def shape(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, List[int]]:
+    if as_tensor:
+        return torch.tensor(x.shape)
+    else:
+        return x.shape
 
 
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    if dynamic:
-        return torch.jit.script(fn)
-    return torch.jit.trace(fn, example_inputs)
 
 
 def current_framework_str():
