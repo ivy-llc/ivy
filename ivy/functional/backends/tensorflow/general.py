@@ -31,7 +31,7 @@ def copy_array(x: Tensor) -> Tensor:
 
 
 def array_equal(x0: Tensor, x1: Tensor) -> bool:
-    return tf.experimental.numpy.array_equal(x0, x1)
+    return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
 def to_numpy(x: Tensor) -> _np.ndarray:
