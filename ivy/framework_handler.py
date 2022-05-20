@@ -149,29 +149,51 @@ def current_framework(*args, **kwargs):
     return f
 
 
-def set_framework(f):
+def set_framework(framework):
+    """Sets `framework` to be the global framework.
+
+    Examples
+    --------
+    If we set the global framework to be numpy, then subsequent calls to ivy functions
+    will be called from Ivy's numpy backend:
+
+    >>> ivy.set_framework('numpy')
+    >>> native = ivy.native_array([1])
+    >>> print(type(native))
+    <class 'numpy.ndarray'>
+
+    Or with jax as the global framework:
+
+    >>> ivy.set_framework('jax')
+    >>> native = ivy.native_array([1])
+    >>> print(type(native))
+    <class 'jaxlib.xla_extension.DeviceArray'>
+
+    """
     global ivy_original_dict
     global ivy_original_fn_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
-    if isinstance(f, str):
+    if isinstance(framework, str):
         temp_stack = list()
         while framework_stack:
             temp_stack.append(unset_framework())
-        f = importlib.import_module(_framework_dict[f])
+        framework = importlib.import_module(_framework_dict[framework])
         for fw in reversed(temp_stack):
             framework_stack.append(fw)
-    if f.current_framework_str() == "numpy":
+    if framework.current_framework_str() == "numpy":
         ivy.set_default_device("cpu")
-    framework_stack.append(f)
+    framework_stack.append(framework)
     ivy_original_fn_dict.clear()
+    # loop through items in ivy dict and replace ivy's implementations `v` with the
+    # appropriate backend implementation (backend specified by `framework`)
     for k, v in ivy_original_dict.items():
-        if k not in f.__dict__:
+        if k not in framework.__dict__:
             if k in ivy.valid_dtype_strs:
                 del ivy.__dict__[k]
                 continue
-            f.__dict__[k] = v
-        specific_v = f.__dict__[k]
+            framework.__dict__[k] = v
+        specific_v = framework.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
         ivy.__dict__[k] = specific_v
