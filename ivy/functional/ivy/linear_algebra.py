@@ -254,7 +254,7 @@ def svd(
     ivy.array(0)
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
-    
+
     """
     return _cur_framework(x).svd(x, full_matrices)
 
@@ -318,7 +318,7 @@ def diagonal(
 
     Examples
     --------
-    >>> x = ivy.array([[1., 2.],
+    >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
@@ -328,9 +328,9 @@ def diagonal(
     ivy.array([1.])
 
     A 3-D Example
-    >>> x = ivy.array([[[1., 2.],
-                        [3., 4.]],
-                       [[5., 6.],
+    >>> x = ivy.array([[[1., 2.],\
+                        [3., 4.]],\
+                       [[5., 6.],\
                         [7., 8.]]])
     >>> d = ivy.diagonal(x, 0, 0, 1)
     >>> print(d)
