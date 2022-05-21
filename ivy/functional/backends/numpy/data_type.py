@@ -6,7 +6,7 @@ from typing import Union, Tuple, List
 import ivy
 
 
-DTYPE_TO_STR = {
+as_ivy_dtype = {
     np.dtype("int8"): "int8",
     np.dtype("int16"): "int16",
     np.dtype("int32"): "int32",
@@ -34,7 +34,7 @@ DTYPE_TO_STR = {
     np.bool_: "bool",
 }
 
-DTYPE_FROM_STR = {
+as_native_dtype = {
     "int8": np.dtype("int8"),
     "int16": np.dtype("int16"),
     "int32": np.dtype("int32"),
@@ -53,7 +53,7 @@ DTYPE_FROM_STR = {
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
-    return np.iinfo(ivy.dtype_from_str(type))
+    return np.iinfo(ivy.as_native_dtype(type))
 
 
 class Finfo:
@@ -95,7 +95,7 @@ def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
 
 # noinspection PyShadowingBuiltins
 def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
-    return Finfo(np.finfo(ivy.dtype_from_str(type)))
+    return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
 def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
@@ -131,7 +131,7 @@ def astype(x: np.ndarray, dtype: np.dtype, copy: bool = True) -> np.ndarray:
 
 
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -145,17 +145,17 @@ def dtype_bits(dtype_in):
 def dtype(x, as_str=False):
     dt = x.dtype
     if as_str:
-        return dtype_to_str(dt)
+        return as_ivy_dtype(dt)
     return dt
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(DTYPE_TO_STR[dtype_in])
+    return ivy.Dtype(as_ivy_dtype[dtype_in])
 
 
-def dtype_from_str(dtype_in):
+def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_FROM_STR[ivy.Dtype(dtype_in)]
+    return as_native_dtype[ivy.Dtype(dtype_in)]

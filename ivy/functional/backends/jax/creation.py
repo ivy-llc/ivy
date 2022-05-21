@@ -6,7 +6,7 @@ from jax.dlpack import from_dlpack as jax_from_dlpack
 
 # local
 import ivy
-from ivy import dtype_from_str
+from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
@@ -23,7 +23,7 @@ def ones(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
     )
 
 
@@ -33,7 +33,8 @@ def zeros(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.zeros(shape, default_dtype(dtype, as_str=False)),
+        default_device(device, as_str=False),
     )
 
 
@@ -50,7 +51,7 @@ def full_like(
 
     return to_dev(
         jnp.full_like(
-            x, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))
+            x, fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
         ),
         default_device(device),
     )
@@ -93,7 +94,7 @@ def empty(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
     )
 
 
@@ -158,7 +159,7 @@ def eye(
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
     return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device)
 
@@ -166,7 +167,7 @@ def eye(
 # noinspection PyShadowingNames
 def arange(start, stop=None, step=1, dtype=None, device=None):
     if dtype:
-        dtype = dtype_from_str(dtype)
+        dtype = as_native_dtype(dtype)
     res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), device)
     if not dtype:
         if res.dtype == jnp.float64:
@@ -183,7 +184,7 @@ def full(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+        jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
         default_device(device),
     )
 
