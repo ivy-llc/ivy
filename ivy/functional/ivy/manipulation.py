@@ -443,7 +443,13 @@ def tile(
     reps: Iterable[int],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Constructs an array by repeating x the number of times given by reps.
+    """Constructs an array by repeating x the number of times given by reps. If reps has 
+       length d, the result will have dimension of max(d, A.ndim). If A.ndim < d, A is 
+       promoted to be d-dimensional by prepending new axes. So a shape (3,) array is 
+       promoted to (1, 3) for 2-D replication, or shape (1, 1, 3) for 3-D replication. 
+       If this is not the desired behavior, promote A to d-dimensions manually before 
+       calling this function. If A.ndim > d, reps is promoted to A.ndim by pre-pending 
+       1's to it. Thus for an A of shape (2, 3, 4, 5), a reps of (2, 2) is treated as (1, 1, 2, 2).
 
     Parameters
     ----------
@@ -451,11 +457,86 @@ def tile(
         Input array.
     reps
         The number of repetitions of x along each axis.
+    out
+        Optional output array for writing ther reuslt to. It must have a shape that the input
+        broadcasts to.
 
     Returns
     -------
     ret
         The tiled output array.
+
+
+    This method conforms to the `Array API Standard
+    <https://numpy.org/devdocs/reference/array_api.html>`_. This docstring is an extension of the
+    `docstring <https://numpy.org/devdocs/reference/generated/numpy.tile.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[0, 1], [1, 0]])
+    >>> y = ivy.tile(x, 3)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0]])
+
+    >>> x = ivy.array([[0.9, 1, 3], [1, 0.9, 3]])
+    >>> y = ivy.tile(1, 2)
+    >>> ivy.tile(x, out = y)
+    >>> print(y)
+    ivy.array([[0.9, 1, 3], [1, 0.9, 3]], 
+              [[0.9, 1, 3], [1, 0.9, 3]])
+
+    >>> x = ivy.array([[0.9, 1, 3], [1, 0.9, 3]])
+    >>> ivy.tile(x, out = x)
+    >>> print(x)
+    ivy.array([[0.9, 1, 3], [1, 0.9, 3]], 
+              [[0.9, 1, 3], [1, 0.9, 3]])
+              
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[1.1, 2.3, -3.6], [6.3, 7.4, 1.1]])
+    >>> y = ivy.tile(x, 4)
+    >>> print(y)
+    ivy.array([[1.1, 2.3, -3.6],[1.1, 2.3, -3.6],[1.1, 2.3, -3.6],[1.1, 2.3, -3.6],
+               [6.3, 7.4, 1.1], [6.3, 7.4, 1.1], [6.3, 7.4, 1.1], [6.3, 7.4, 1.1]])
+
+    With :code :`ivy.Container' input:
+
+    >>> x = ivy.Container(a= ivy.array([1.1, 2.3, -3.6]), b= ivy.array([1.1, 2.3,-7]))
+    >>> y = ivy.tile(x, 2)
+    >>> print(y)
+    a: ivy.array([[1.1, 2.3, -3.6], 
+                  [1.1, 2.3, -3.6]])
+    b: ivy.array([[1.1, 2.3, -7  ], 
+                  [1.1, 2.3, -7  ]])
+
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y= x.tile(2)
+    >>> print(y)
+    ivy.array([0, 1, 2, 0, 1, 2])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a= ivy.array([1.1, 2.3, -3.6]), b= ivy.array([1.1, 2.3,-7]))
+    >>> y = x.tile(2)
+    >>> print(y)
+    a: ivy.array([[1.1, 2.3, -3.6], 
+                  [1.1, 2.3, -3.6]])
+    b: ivy.array([[1.1, 2.3, -7  ], 
+                  [1.1, 2.3, -7  ]])
 
     """
     return _cur_framework(x).tile(x, reps, out)
