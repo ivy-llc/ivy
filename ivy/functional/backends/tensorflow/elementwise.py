@@ -18,15 +18,12 @@ def bitwise_left_shift(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> 
     return ret
 
 
-def add(x1: Tensor, x2: Tensor, *, out: Optional[Tensor] = None) -> Tensor:
+def add(x1: Tensor, x2: Tensor) -> Tensor:
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.add(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.add(x1, x2)
 
 
 def bitwise_xor(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
