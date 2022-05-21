@@ -13,10 +13,10 @@ import ivy
 
 
 def random_uniform(
-        low: float = 0.0,
-        high: float = 1.0,
-        shape: Optional[Union[int, Tuple[int, ...]]] = None,
-        device: Optional[ivy.Device] = None,
+    low: float = 0.0,
+    high: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
@@ -25,7 +25,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
@@ -36,7 +36,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
     replace=True,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     if probs is None:
         probs = (

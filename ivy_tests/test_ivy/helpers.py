@@ -312,7 +312,7 @@ def test_array_function(
     fw,
     fn_name,
     rtol=1e-03,
-    atol=1e-08,
+    atol=1e-06,
     **all_as_kwargs_np
 ):
 

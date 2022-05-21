@@ -10,8 +10,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray
-Device = str
-Dtype = np.dtype
+NativeDevice = str
+NativeDtype = np.dtype
 
 # data types
 int8 = np.dtype("int8")

@@ -33,7 +33,7 @@ should adhere to the following type hint format:
 
     def my_func(x: Union[ivy.Array, ivy.NativeArray],
                 axes: Union[int, Tuple[int], List[int]],
-                dtype: Optional[Union[ivy.Dtype, str]] = None,
+                dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
                 dev: Optional[Union[ivy.Dev, str]] = None) \
             -> ivy.Array:
         """

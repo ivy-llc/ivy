@@ -4,7 +4,6 @@ signature.
 
 # global
 from typing import List, Optional, Union
-import ivy
 
 _round = round
 import numpy as _np
@@ -14,6 +13,7 @@ from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
@@ -31,7 +31,7 @@ def copy_array(x: Tensor) -> Tensor:
 
 
 def array_equal(x0: Tensor, x1: Tensor) -> bool:
-    return tf.experimental.numpy.array_equal(x0, x1)
+    return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
 def to_numpy(x: Tensor) -> _np.ndarray:
@@ -300,7 +300,7 @@ def gather(
     params: tf.Tensor,
     indices: tf.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)

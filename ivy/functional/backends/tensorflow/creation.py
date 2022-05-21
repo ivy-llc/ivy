@@ -2,11 +2,9 @@
 import tensorflow as tf
 from tensorflow import Tensor
 from typing import Union, Tuple, List, Optional
-from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
-from ivy.functional.backends.tensorflow import Dtype
 from ivy import (
     dev_from_str,
     default_device,
@@ -73,8 +71,8 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 def zeros(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[Dtype] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
@@ -83,8 +81,8 @@ def zeros(
 
 def ones(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[DType] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
@@ -95,8 +93,8 @@ def ones(
 def full_like(
     x: Tensor,
     fill_value: Union[int, float],
-    dtype: Optional[Union[DType, str, None]] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = dev_from_str(default_device(device))
@@ -106,8 +104,8 @@ def full_like(
 
 def ones_like(
     x: Tensor,
-    dtype: Optional[Union[DType, str, None]] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
@@ -116,7 +114,9 @@ def ones_like(
 
 
 def zeros_like(
-    x: Tensor, dtype: Optional[Dtype] = None, device: Optional[str] = None
+    x: Tensor,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
@@ -133,8 +133,8 @@ def triu(x: tf.Tensor, k: int = 0) -> tf.Tensor:
 
 def empty(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[Dtype] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
@@ -143,8 +143,8 @@ def empty(
 
 def empty_like(
     x: Tensor,
-    dtype: Optional[Union[DType, str, None]] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
@@ -177,8 +177,8 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[Dtype] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
@@ -235,8 +235,8 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[Dtype] = None,
-    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     with tf.device(dev_from_str(default_device(device))):
         return tf.fill(

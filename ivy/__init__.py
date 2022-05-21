@@ -21,19 +21,41 @@ class Variable:
     pass
 
 
+class FrameworkStr(str):
+    def __new__(cls, fw_str):
+        assert fw_str in ["jax", "tensorflow", "torch", "mxnet", "numpy"]
+        return str.__new__(cls, fw_str)
+
+
 class Framework:
     pass
 
 
-class Device:
+class NativeDevice:
     pass
 
 
-class Node:
+class NativeDtype:
     pass
 
 
-class Dtype:
+class Device(str):
+    def __new__(cls, dev_str):
+        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+        if dev_str != "cpu":
+            assert dev_str[3] == ":"
+            assert dev_str[4:].isnumeric()
+        return str.__new__(cls, dev_str)
+
+
+class Dtype(str):
+    def __new__(cls, dtype_str):
+        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class Node(str):
+    # ToDo: add formatting checks once multi-node is supported
     pass
 
 
