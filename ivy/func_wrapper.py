@@ -101,6 +101,7 @@ ARRAYLESS_RET_FUNCTIONS = [
 ]
 NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
 NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
+NON_DEV_WRAPPED_FUNCTIONS = []
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -212,17 +213,15 @@ def _wrap_function(fn):
         return arr
 
     def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        if fn.__name__ in NON_DTYPE_WRAPPED_FUNCTIONS:
-            return _function_w_arrays_handled(*args, **kwargs)
         handle_dtype = "dtype" in kwargs
         handle_dev = "device" in kwargs
         if handle_dtype or handle_dev:
             arr = _get_first_array(*args, **kwargs)
-            if handle_dtype:
+            if handle_dtype and fn.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
                 kwargs["dtype"] = ivy.default_dtype(
                     kwargs["dtype"], item=arr, as_native=True
                 )
-            if handle_dev:
+            if handle_dev and fn.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
                 kwargs["device"] = ivy.default_device(
                     kwargs["device"], item=arr, as_native=True
                 )
