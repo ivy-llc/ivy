@@ -316,11 +316,6 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
 
 
 # noinspection PyShadowingNames
-def _assert_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    assert "int" in dtype or "float" in dtype or "bool" in dtype
-
-
-# noinspection PyShadowingNames
 def _assert_int_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
     assert "int" in dtype
 
@@ -508,7 +503,8 @@ def default_dtype(
 
     """
     if ivy.exists(dtype):
-        _assert_dtype_correct_formatting(ivy.dtype_to_str(dtype))
+        # assert the string formatting is correct if string input
+        ivy.dtype_to_str(dtype)
         return dtype
     elif ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
@@ -545,7 +541,6 @@ def set_default_dtype(dtype: Union[ivy.Dtype, str]):
 
     """
     dtype = ivy.dtype_to_str(dtype)
-    _assert_dtype_correct_formatting(dtype)
     global default_dtype_stack
     default_dtype_stack.append(dtype)
 
