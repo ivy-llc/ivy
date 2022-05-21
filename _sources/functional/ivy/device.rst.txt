@@ -17,8 +17,8 @@ Device
    device/num_arrays_on_dev.rst
    device/print_all_arrays_on_dev.rst
    device/dev.rst
-   device/dev_to_str.rst
-   device/dev_from_str.rst
+   device/as_ivy_dev.rst
+   device/as_native_dev.rst
    device/clear_mem_on_dev.rst
    device/total_mem_on_dev.rst
    device/used_mem_on_dev.rst

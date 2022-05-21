@@ -61,8 +61,8 @@
 <li class="toctree-l3"><a class="reference internal" href="device/num_arrays_on_dev.html">num_arrays_on_dev</a></li>
 <li class="toctree-l3"><a class="reference internal" href="device/print_all_arrays_on_dev.html">print_all_arrays_on_dev</a></li>
 <li class="toctree-l3"><a class="reference internal" href="device/dev.html">dev</a></li>
-<li class="toctree-l3"><a class="reference internal" href="device/dev_to_str.html">dev_to_str</a></li>
-<li class="toctree-l3"><a class="reference internal" href="device/dev_from_str.html">dev_from_str</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device/as_ivy_dev.html">as_ivy_dev</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device/as_native_dev.html">as_native_dev</a></li>
 <li class="toctree-l3"><a class="reference internal" href="device/clear_mem_on_dev.html">clear_mem_on_dev</a></li>
 <li class="toctree-l3"><a class="reference internal" href="device/total_mem_on_dev.html">total_mem_on_dev</a></li>
 <li class="toctree-l3"><a class="reference internal" href="device/used_mem_on_dev.html">used_mem_on_dev</a></li>
@@ -519,6 +519,40 @@ Default is None.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.as_ivy_dev">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">as_ivy_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#as_ivy_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.as_ivy_dev" title="Permalink to this definition"></a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The device handle to convert to string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Device string e.g. ‘cuda:0’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.as_native_dev">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">as_native_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#as_native_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.as_native_dev" title="Permalink to this definition"></a></dt>
+<dd><p>Convert device string representation to native device type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The device string to conver to native device handle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Native device handle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.clear_mem_on_dev">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">clear_mem_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#clear_mem_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.clear_mem_on_dev" title="Permalink to this definition"></a></dt>
 <dd><p>Clear memory cache on target device.</p>
@@ -731,40 +765,6 @@ deeper.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>ret</em> – nested arguments distributed to the target devices</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_from_str">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dev_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_from_str" title="Permalink to this definition"></a></dt>
-<dd><p>Convert device string representation to native device type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The device string to conver to native device handle.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Native device handle.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_to_str">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dev_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_to_str" title="Permalink to this definition"></a></dt>
-<dd><p>Convert native data type to string representation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The device handle to convert to string.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Device string e.g. ‘cuda:0’.</p>
 </dd>
 </dl>
 </dd></dl>
