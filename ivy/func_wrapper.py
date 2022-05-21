@@ -100,6 +100,7 @@ ARRAYLESS_RET_FUNCTIONS = [
     "is_variable",
 ]
 NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
+NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -159,10 +160,6 @@ def _wrap_function(fn):
         return fn
 
     def _function_w_arrays_handled(*args, out=None, **kwargs):
-        native_args, native_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
-        )
-
         """
         computes the result of the function fn, returning the result as an ivy array or
         a native framework array.
@@ -171,17 +168,20 @@ def _wrap_function(fn):
         ----------
         args
             The arguments to be passed to the function.
-        
+
         out
             optional output array, for writing the result to.
 
         kwargs
             The key word arguments to be passed  to the function.
-        
+
         Returns
         -------
             The result of computing the function fn as an ivy array or a native array.
         """
+        native_args, native_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
         if ivy.exists(out):
             native_out = ivy.to_native(out)
             native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
@@ -212,18 +212,20 @@ def _wrap_function(fn):
         return arr
 
     def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        # handle_dtype = "dtype" in kwargs
-        # handle_dev = "device" in kwargs
-        # if handle_dtype or handle_dev:
-        #     arr = _get_first_array(*args, **kwargs)
-        #     if handle_dtype:
-        #         kwargs["dtype"] = ivy.default_dtype(
-        #             kwargs["dtype"], item=arr, as_native=True
-        #         )
-        #     if handle_dev:
-        #         kwargs["device"] = ivy.default_device(
-        #             kwargs["device"], item=arr, as_native=True
-        #         )
+        if fn.__name__ in NON_DTYPE_WRAPPED_FUNCTIONS:
+            return _function_w_arrays_handled(*args, **kwargs)
+        handle_dtype = "dtype" in kwargs
+        handle_dev = "device" in kwargs
+        if handle_dtype or handle_dev:
+            arr = _get_first_array(*args, **kwargs)
+            if handle_dtype:
+                kwargs["dtype"] = ivy.default_dtype(
+                    kwargs["dtype"], item=arr, as_native=True
+                )
+            if handle_dev:
+                kwargs["device"] = ivy.default_device(
+                    kwargs["device"], item=arr, as_native=True
+                )
         return _function_w_arrays_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
