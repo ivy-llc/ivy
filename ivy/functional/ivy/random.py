@@ -125,53 +125,49 @@ def multinomial(
 
     Examples
     --------
-    >>> y = ivy.multinomial(10,5)
+    >>> y = ivy.multinomial(10, 5)
     >>> print(y)
     ivy.array([[1, 8, 7, 8, 3]])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2)
+    >>> y = ivy.multinomial(10, 5, batch_size=2)
     >>> print(y)
     ivy.array([[9, 7, 9, 0, 7],
        [7, 3, 8, 5, 4]])
 
-    >>> y = ivy.multinomial(10,5,replace=False)
+    >>> y = ivy.multinomial(10, 5, replace=False)
     >>> print(y)
     ivy.array([[2, 6, 4, 7, 0]])
 
     With :code:`ivy.Array` input:
 
-    >>> y = ivy.multinomial(10,5,probs=ivy.array([1/10]*10))
+    >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
     ivy.array([5, 2, 7, 6, 9])
 
-    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]))
+    >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]))
     >>> print(y)
-    ivy.array([[0, 4, 3, 4, 5],
-       [1, 1, 0, 3, 2]])
+    ivy.array([[0, 4, 3, 4, 5], [1, 1, 0, 3, 2]])
 
-    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]),
-    ... replace=False)
+    >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]),\
+                            replace=False)
     >>> print(y)
-    ivy.array([[2, 6, 1, 0, 3],
-       [1, 0, 2, 5, 6]])
+    ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> y = ivy.multinomial(10,5,probs=ivy.native_array([1/10]*10))
+    >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
     ivy.array([5, 7, 4, 2, 1])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2,
-    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]))
+    >>> y = ivy.multinomial(10, 5, batch_size=2,\
+                            probs=ivy.native_array([[1/10]*10, [1/10]*10]))
     >>> print(y)
-    ivy.array([[8, 0, 4, 1, 7],
-       [2, 3, 4, 9, 3]])
+    ivy.array([[8, 0, 4, 1, 7], [2, 3, 4, 9, 3]])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2,
-    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]),replace=False)
+    >>> y = ivy.multinomial(10, 5, batch_size=2,\
+                     probs=ivy.native_array([[1/10]*10, [1/10]*10]), replace=False)
     >>> print(y)
-    ivy.array([[0, 2, 6, 9, 1],
-       [6, 7, 2, 4, 3]])
+    ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
     return _cur_framework().multinomial(

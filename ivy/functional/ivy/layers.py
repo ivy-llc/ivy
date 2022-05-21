@@ -477,7 +477,6 @@ def conv3d(
              [[3.],
               [4.]]]]])
 
-
     """
     return _cur_framework(x).conv3d(
         x, filters, strides, padding, data_format, dilations
