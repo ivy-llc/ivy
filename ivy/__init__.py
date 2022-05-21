@@ -56,13 +56,13 @@ class Dtype(str):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "int" in dtype
+        assert "int" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "float" in dtype
+        assert "float" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
