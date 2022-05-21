@@ -170,11 +170,11 @@ def dtype(x, as_str=False):
 
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(DTYPE_TO_STR[dtype_in])
 
 
 def dtype_from_str(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
+    return DTYPE_FROM_STR[ivy.Dtype(dtype_in)]

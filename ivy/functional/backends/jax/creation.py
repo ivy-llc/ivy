@@ -1,9 +1,7 @@
 # global
-import jaxlib
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
-from jaxlib.xla_extension import Buffer, Device, DeviceArray
-from jax.interpreters.xla import _DeviceArray
+import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
 # local
@@ -44,7 +42,7 @@ def full_like(
     fill_value: Union[int, float],
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
-) -> DeviceArray:
+) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
@@ -60,9 +58,9 @@ def full_like(
 
 def ones_like(
     x: JaxArray,
-    dtype: Optional[Union[jnp.dtype, str]] = None,
-    device: Optional[Union[Device, str]] = None,
-) -> DeviceArray:
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
 
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -101,9 +99,9 @@ def empty(
 
 def empty_like(
     x: JaxArray,
-    dtype: Optional[Union[jnp.dtype, str]] = None,
-    device: Optional[Union[Device, str]] = None,
-) -> DeviceArray:
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
 
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -119,7 +117,7 @@ def asarray(
     device: Optional[str] = None,
     copy: Optional[bool] = None,
 ):
-    if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)) and dtype != "bool":
+    if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
         isinstance(object_in, (list, tuple, dict))
