@@ -75,6 +75,7 @@ For example, the implementation of :code:`ivy.tan` in :code:`ivy/functional/ivy/
 
     def tan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return _cur_framework(x).tan(x, out)
@@ -84,8 +85,8 @@ The framework-specific implementation of :code:`ivy.tan`  for PyTorch in
 
 .. code-block:: python
 
-    def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-        return torch.tanh(x, out=out)
+    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return torch.tan(x, out=out)
 
 Compositional Functions
 -----------------------
@@ -106,6 +107,8 @@ For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/funct
         pred: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
@@ -164,7 +167,7 @@ For example, the implementation of :code:`ivy.Array.tan` is as follows:
 
 .. code-block:: python
 
-    def tan(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.tan(self, out=out)
 
 Likewise, the implementation of :code:`ivy.Container.tan` is as follows:
@@ -177,6 +180,7 @@ Likewise, the implementation of :code:`ivy.Container.tan` is as follows:
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -203,8 +207,8 @@ adding any instance methods which have not yet been added in source code, or wer
 Inplace Updates
 ---------------
 
-All Ivy functions which return a single array should support inplace updates, with the inclusion of an :code:`out`
-argument with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
+All Ivy functions which return a single array should support inplace updates, with the inclusion of a **keyword-only**
+:code:`out` argument, with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
 and :code:`Optional[ivy.Array]` otherwise.
 
 When this argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or

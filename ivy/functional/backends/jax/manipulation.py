@@ -13,6 +13,7 @@ def roll(
     x: JaxArray,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.roll(x, shift, axis)

@@ -15,6 +15,7 @@ from ivy.functional.backends.mxnet import (
 def add(
     x1: mx.ndarray.ndarray.NDArray,
     x2: mx.ndarray.ndarray.NDArray,
+    *,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     ret = mx.nd.add(x1, x2)

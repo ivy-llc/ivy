@@ -122,6 +122,7 @@ def roll(
     x: np.ndarray,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.roll(x, shift, axis)
