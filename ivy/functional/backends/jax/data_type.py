@@ -25,7 +25,7 @@ def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
     return jnp.can_cast(from_, to)
 
 
-as_ivy_dtype = {
+ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
     jnp.dtype("int16"): "int16",
     jnp.dtype("int32"): "int32",
@@ -54,7 +54,7 @@ as_ivy_dtype = {
     jnp.bool_: "bool",
 }
 
-as_native_dtype = {
+native_dtype_dict = {
     "int8": jnp.dtype("int8"),
     "int16": jnp.dtype("int16"),
     "int32": jnp.dtype("int32"),
@@ -124,6 +124,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
+# noinspection PyShadowingNames
 def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
     if copy:
         if x.dtype == dtype:
@@ -150,20 +151,20 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return as_ivy_dtype(dt)
-    return dt
+    if as_native:
+        return dt
+    return as_ivy_dtype(dt)
 
 
 def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(as_ivy_dtype[dtype_in])
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return as_native_dtype[ivy.Dtype(dtype_in)]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
