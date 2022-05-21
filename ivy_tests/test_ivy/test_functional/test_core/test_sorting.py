@@ -11,7 +11,7 @@
 
 # argsort
 # @given(
-#     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+#     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
 #     num_positional_args=st.integers(0, 1),
@@ -49,7 +49,7 @@
 
 # sort
 # @given(
-#     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+#     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
 #     num_positional_args=st.integers(0, 1),
