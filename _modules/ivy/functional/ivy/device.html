@@ -216,7 +216,7 @@
 
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../../functional/ivy/device/dev.html#ivy.functional.ivy.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the native device handle for input array x.</span>
@@ -226,8 +226,8 @@
 <span class="sd">    x</span>
 <span class="sd">          array for which to get the device handle.</span>
 
-<span class="sd">    as_str</span>
-<span class="sd">          Whether or not to return the dev in string format. Default is False.</span>
+<span class="sd">    as_native</span>
+<span class="sd">          Whether or not to return the dev in native format. Default is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -241,7 +241,7 @@
 <span class="sd">          &gt;&gt;&gt; print(y)</span>
 <span class="sd">          &quot;cpu&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="p">)</span></div>
 
 
 <span class="c1"># Conversions</span>
@@ -265,7 +265,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="as_native_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_native_dev.html#ivy.functional.ivy.device.as_native_dev">[docs]</a><span class="k">def</span> <span class="nf">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
+<div class="viewcode-block" id="as_native_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_native_dev.html#ivy.functional.ivy.device.as_native_dev">[docs]</a><span class="k">def</span> <span class="nf">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert device string representation to native device type.</span>
 
 <span class="sd">    Parameters</span>
@@ -509,7 +509,7 @@
 <span class="c1"># Default Device #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Parameters</span>
@@ -518,8 +518,8 @@
 <span class="sd">         (Default value = None)</span>
 <span class="sd">    item</span>
 <span class="sd">         (Default value = None)</span>
-<span class="sd">    as_str</span>
-<span class="sd">         (Default value = False)</span>
+<span class="sd">    as_native</span>
+<span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -527,25 +527,25 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">as_str</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">as_str</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">device</span>
-    <span class="n">as_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">as_native</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">as_native</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="n">as_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_device_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">default_device_stack</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;gpu:0&quot;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">default_device_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">as_str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">as_native</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
