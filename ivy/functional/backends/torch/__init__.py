@@ -89,7 +89,7 @@ invalid_float_dtype_strs = ()
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
+    type_str = ivy.as_ivy_dtype(type)
     if type_str in invalid_dtype_strs:
         return {"uint16": uint8, "uint32": uint8, "uint64": uint8}[type_str]
     return type
