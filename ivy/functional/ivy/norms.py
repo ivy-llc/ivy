@@ -12,7 +12,7 @@ import ivy
 # ------#
 
 # noinspection PyUnresolvedReferences
-def layer_norm(x: Union[ivy.Array, ivy.Container], normalized_idxs: List[int], epsilon: float=ivy._MIN_BASE, scale=None, offset=None, new_std: float=1.0)\
+def layer_norm(x: Union[ivy.Array, ivy.Container, ivy.NativeArray], normalized_idxs: List[int], epsilon: float=ivy._MIN_BASE, scale=None, offset=None, new_std: float=1.0)\
     -> Union[ivy.Array, ivy.Container]:
     """Applies Layer Normalization over a mini-batch of inputs
 
@@ -38,11 +38,16 @@ def layer_norm(x: Union[ivy.Array, ivy.Container], normalized_idxs: List[int], e
     
     Example
     -------
-    >>> import ivy
-    >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
 
-    >>> arr = layer_norm(arr, [0, 1], new_std=2.0)
+    >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
+    >>> arr = ivy.layer_norm(arr, [0, 1], new_std=2.0)
     >>> print(arr)
+    [[-0.5  0.5  1.5]]
+
+    >>> arr = np.array([[1, 2, 3], [4, 5, 6]])
+    >>> arr = ivy.layer_norm(arr, [0, 1])
+    >>> print(arr)
+    
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
