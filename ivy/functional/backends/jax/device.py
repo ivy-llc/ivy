@@ -36,7 +36,7 @@ def dev(x: JaxArray, as_str: bool = False) -> str:
     except Exception:
         dv = jax.devices()[0]
     if as_str:
-        return dev_to_str(dv)
+        return as_ivy_dev(dv)
     return dv
 
 
@@ -45,15 +45,15 @@ _callable_dev = dev
 
 def to_dev(x, device=None, out=None):
     if device is not None:
-        cur_dev = dev_to_str(_callable_dev(x))
+        cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
-            x = jax.device_put(x, dev_from_str(device))
+            x = jax.device_put(x, as_native_dev(device))
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str):
         return ivy.Device(device)
     if device is None:
@@ -64,7 +64,7 @@ def dev_to_str(device):
     return ivy.Device(p + ":" + str(dev_id))
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if not isinstance(device, str):
         return device
     dev_split = ivy.Device(device).split(":")

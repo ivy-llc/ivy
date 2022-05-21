@@ -18,8 +18,8 @@ def dev(x: np.ndarray, as_str: bool = False) -> str:
 
 dev.__name__ = "dev"
 _dev_callable = dev
-dev_to_str = lambda device: ivy.Device("cpu")
-dev_from_str = lambda device: "cpu"
+as_ivy_dev = lambda device: ivy.Device("cpu")
+as_native_dev = lambda device: "cpu"
 clear_mem_on_dev = lambda device: None
 
 
