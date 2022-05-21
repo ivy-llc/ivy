@@ -223,7 +223,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         [updates] if isinstance(updates, (float, int, bool)) else updates,
         dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
-        else ivy.default_dtype(item=updates),
+        else ivy.default_dtype(item=updates, as_native=True),
     )
 
     # hanle non-tensor indices
