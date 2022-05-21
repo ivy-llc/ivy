@@ -1,5 +1,6 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict
+from typing import Optional, Union, List, Tuple, Dict, Iterable
+from numbers import Number
 
 # local
 import ivy
@@ -205,6 +206,118 @@ class ContainerWithManipulation(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+            ),
+            out,
+        )
+
+    def repeats(
+        self: ivy.Container,
+        repeats: Union[int, Iterable[int]],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.repeat(x_, repeats=repeats, axis=axis)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def tile(
+        self: ivy.Container,
+        reps: Iterable[int],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.tile(x_, reps=reps) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def constant_pad(
+        self: ivy.Container,
+        pad_width: Iterable[Tuple[int]],
+        value: Number = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.constant_pad(x_, pad_width=pad_width, value=value)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def zero_pad(
+        self: ivy.Container,
+        pad_width: Iterable[Tuple[int]],
+        value: Number = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.zero_pad(x_, pad_width=pad_width)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
+    def swapaxes(
+        self: ivy.Container,
+        axis0: int,
+        axis1: int,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.swapaxes(x_, axis0=axis0, axis1=axis1)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out,
         )
