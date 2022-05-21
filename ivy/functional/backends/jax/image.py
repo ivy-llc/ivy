@@ -138,7 +138,7 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    # jax.device_put(x, dev_from_str(dev))
+    # jax.device_put(x, as_native_dev(dev))
     dy = _ivy.concat(
         (
             dy,
