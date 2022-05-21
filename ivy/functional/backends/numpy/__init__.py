@@ -10,8 +10,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray
-Device = str
-Dtype = np.dtype
+NativeDevice = str
+NativeDtype = np.dtype
 
 # data types
 int8 = np.dtype("int8")
@@ -108,7 +108,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
+    type_str = ivy.as_ivy_dtype(type)
     if type_str in invalid_dtype_strs:
         return {"bfloat16": float16}[type_str]
     return type
@@ -120,6 +120,8 @@ backend = "numpy"
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type

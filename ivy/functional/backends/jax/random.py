@@ -3,6 +3,7 @@
 # global
 import jax as _jax
 import jax.numpy as _jnp
+import jaxlib.xla_extension
 from typing import Optional, Union, Tuple
 
 # local
@@ -22,7 +23,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -36,7 +37,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -51,8 +52,13 @@ def random_normal(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[JaxArray] = None,
+    replace: bool = True,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:

@@ -11,8 +11,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = mx.ndarray.ndarray.NDArray
 NativeVariable = mx.ndarray.ndarray.NDArray
-Device = mx.context.Context
-Dtype = type
+NativeDevice = mx.context.Context
+NativeDtype = type
 
 # data types
 int8 = np.int8
@@ -63,7 +63,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
+    type_str = ivy.as_ivy_dtype(type)
     if type_str in invalid_dtype_strs:
         return {
             "int16": int32,
@@ -86,7 +86,7 @@ def _raise(ex):
 
 
 def _mxnet_init_context(device):  # noqa
-    device = ivy.dev_to_str(device)
+    device = ivy.as_ivy_dev(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:
@@ -163,6 +163,8 @@ def _handle_output(x, axis, keepdims, ret):
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type

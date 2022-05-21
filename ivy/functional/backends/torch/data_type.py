@@ -29,7 +29,7 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
-    return torch.iinfo(ivy.dtype_from_str(type))
+    return torch.iinfo(ivy.as_native_dtype(type))
 
 
 class Finfo:
@@ -59,7 +59,7 @@ class Finfo:
 
 # noinspection PyShadowingBuiltins
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
-    return Finfo(torch.finfo(ivy.dtype_from_str(type)))
+    return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
@@ -85,7 +85,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 
 def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True) -> torch.Tensor:
     if isinstance(dtype, str):
-        dtype = ivy.dtype_from_str(dtype)
+        dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = x.clone().detach()
@@ -100,7 +100,7 @@ def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True) -> torch.Tens
 
 
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -112,31 +112,33 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
+    if as_native:
+        return dt
+    return as_ivy_dtype(dt)
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return {
-        torch.int8: "int8",
-        torch.int16: "int16",
-        torch.int32: "int32",
-        torch.int64: "int64",
-        torch.uint8: "uint8",
-        torch.bfloat16: "bfloat16",
-        torch.float16: "float16",
-        torch.float32: "float32",
-        torch.float64: "float64",
-        torch.bool: "bool",
-    }[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(
+        {
+            torch.int8: "int8",
+            torch.int16: "int16",
+            torch.int32: "int32",
+            torch.int64: "int64",
+            torch.uint8: "uint8",
+            torch.bfloat16: "bfloat16",
+            torch.float16: "float16",
+            torch.float32: "float32",
+            torch.float64: "float64",
+            torch.bool: "bool",
+        }[dtype_in]
+    )
 
 
-def dtype_from_str(dtype_in: str) -> torch.dtype:
+def as_native_dtype(dtype_in: str) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     return {
@@ -150,4 +152,4 @@ def dtype_from_str(dtype_in: str) -> torch.dtype:
         "float32": torch.float32,
         "float64": torch.float64,
         "bool": torch.bool,
-    }[dtype_in]
+    }[ivy.Dtype(dtype_in)]

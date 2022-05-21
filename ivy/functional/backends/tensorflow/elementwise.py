@@ -488,7 +488,7 @@ def trunc(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def abs(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    if "uint" in ivy.dtype(x, as_str=True):
+    if "uint" in ivy.dtype(x):
         ret = x
     else:
         ret = tf.abs(x)

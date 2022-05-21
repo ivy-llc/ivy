@@ -40,8 +40,8 @@ NativeArray = (
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
-Device = jaxlib.xla_extension.Device
-Dtype = jnp.dtype
+NativeDevice = jaxlib.xla_extension.Device
+NativeDtype = jnp.dtype
 
 # data types
 int8 = jnp.dtype("int8")
@@ -143,7 +143,7 @@ invalid_float_dtype_strs = ()
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)  # noqa
+    type_str = as_ivy_dtype(type)  # noqa
     if type_str in invalid_dtype_strs:
         return {"int64": int32, "uint64": uint32, "float64": float32}[type_str]
     return type
@@ -154,6 +154,8 @@ backend = "jax"
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import converters
 from .converters import *
 from . import creation
