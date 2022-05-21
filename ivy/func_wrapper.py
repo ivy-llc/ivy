@@ -161,7 +161,7 @@ def _wrap_function(fn):
 
     def _function_w_arrays_handled(*args, out=None, **kwargs):
         """
-        computes the result of the function fn, returning the result as an ivy array or
+        Computes the result of the function fn, returning the result as an ivy array or
         a native framework array.
 
         Parameters
@@ -300,8 +300,9 @@ def _unwrap_function(function_wrapped):
     Returns
     -------
     The unwrapped version of the function which is the same as the passed function
-    for unwrapped functions and the inner_fn if the function is wrapped. The newly unwrapped
-    function accepts inputs and returns outputs as native arrays instead of ivy arrays.
+    for unwrapped functions and the inner_fn if the function is wrapped.
+    The newly unwrapped function accepts inputs and returns outputs as native arrays
+    instead of ivy arrays.
     """
     if not hasattr(function_wrapped, "wrapped") or not function_wrapped.wrapped:
         return function_wrapped
