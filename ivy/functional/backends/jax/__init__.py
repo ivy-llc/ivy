@@ -143,7 +143,7 @@ invalid_float_dtype_strs = ()
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = dtype_to_str(type)  # noqa
+    type_str = as_ivy_dtype(type)  # noqa
     if type_str in invalid_dtype_strs:
         return {"int64": int32, "uint64": uint32, "float64": float32}[type_str]
     return type
