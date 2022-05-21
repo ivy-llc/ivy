@@ -11,7 +11,7 @@ from ivy.container import Container
 
 
 def variable(x):
-    with ivy.dev(x, as_native=True):
+    with tf.device(ivy.dev(x, as_native=True)):
         return tf.Variable(x, trainable=True)
 
 
