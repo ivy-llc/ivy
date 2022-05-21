@@ -15,13 +15,13 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 def dev(x: mx.nd.NDArray, as_str: bool = False) -> str:
     dv = x.context
     if as_str:
-        return dev_to_str(dv)
+        return as_ivy_dev(dv)
     return dv
 
 
 def to_dev(x, device=None, out=None):
     if device is not None:
-        ret = x.as_in_context(dev_from_str(device))
+        ret = x.as_in_context(as_native_dev(device))
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
         return ret
@@ -30,7 +30,7 @@ def to_dev(x, device=None, out=None):
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str):
         return ivy.Device(device)
     device_type = device.device_type
@@ -42,7 +42,7 @@ def dev_to_str(device):
     )
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if not isinstance(device, str):
         return device
     dev_split = ivy.Device(device).split(":")
