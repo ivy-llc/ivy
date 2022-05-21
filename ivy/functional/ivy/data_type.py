@@ -124,7 +124,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 
     Parameters
     ----------
-    x
+    arrays
         an arbitrary number of to-be broadcasted arrays.
 
     Returns
@@ -298,7 +298,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
     return _cur_framework(None).as_ivy_dtype(dtype_in)
 
 
-def as_native_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.NativeDtype:
+def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDtype:
     """Convert data type string representation to native data type.
 
     Parameters
@@ -315,10 +315,12 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.NativeDtype:
     return _cur_framework(None).as_native_dtype(dtype_in)
 
 
-# noinspection PyShadowingNames
+# noinspection PyShadowingNames,PyShadowingBuiltins
 def default_int_dtype(
-    input=None, int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False
-) -> Union[ivy.Dtype, str]:
+    input=None,
+    int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
+    as_str: Optional[bool] = False,
+) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -327,8 +329,6 @@ def default_int_dtype(
          (Default value = None)
     int_dtype
 
-    str
-         (Default value = None)
     as_str
          (Default value = False)
 
@@ -339,9 +339,13 @@ def default_int_dtype(
 
     """
     if ivy.exists(int_dtype):
-        ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
+        if as_str is True:
+            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
+        elif as_str is False:
+            return ivy.as_native_dtype(int_dtype)
         return int_dtype
-    elif ivy.exists(input):
+    as_str = ivy.default(as_str, False)
+    if ivy.exists(input):
         if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
@@ -387,28 +391,31 @@ def default_int_dtype(
         else:
             ret = default_int_dtype_stack[-1]
     if as_str:
-        return ivy.as_ivy_dtype(ret)
+        return ivy.IntDtype(ivy.as_ivy_dtype(ret))
     return ivy.as_native_dtype(ret)
 
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
+# noinspection PyShadowingBuiltins
 def _check_float64(input):
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
-        Exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
+        exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
         mant = bin(int(tmp[0])).replace("0b", "")
         return (
             (input > 3.4028235 * 10**38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
-            or (Exponent < -126)
-            or (Exponent > 127)
+            or (exponent < -126)
+            or (exponent > 127)
         )
     return False
 
 
-# noinspection PyShadowingNames
+# noinspection PyShadowingNames,PyShadowingBuiltins
 def default_float_dtype(
-    input=None, float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False
+    input=None,
+    float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
+    as_str: Optional[bool] = False,
 ) -> Union[ivy.Dtype, str]:
     """Summary.
 
@@ -418,8 +425,6 @@ def default_float_dtype(
          (Default value = None)
     float_dtype
 
-    str
-         (Default value = None)
     as_str
          (Default value = False)
 
@@ -430,9 +435,13 @@ def default_float_dtype(
 
     """
     if ivy.exists(float_dtype):
-        ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
+        if as_str is True:
+            return ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
+        elif as_str is False:
+            return ivy.as_native_dtype(float_dtype)
         return float_dtype
-    elif ivy.exists(input):
+    as_str = ivy.default(as_str, False)
+    if ivy.exists(input):
         if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
@@ -466,7 +475,7 @@ def default_float_dtype(
         else:
             ret = default_float_dtype_stack[-1]
     if as_str:
-        return ivy.as_ivy_dtype(ret)
+        return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
     return ivy.as_native_dtype(ret)
 
 
@@ -480,8 +489,6 @@ def default_dtype(
     ----------
     dtype
 
-    str
-         (Default value = None)
     item
          (Default value = None)
     as_str
