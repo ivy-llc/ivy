@@ -65,7 +65,7 @@ def randint(
         low: int,
         high: int,
         shape: Union[int, Tuple[int, ...]],
-        device: Optional[ivy.Device] = None,
+        device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 

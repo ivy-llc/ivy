@@ -67,7 +67,7 @@ def randint(
         low: int,
         high: int,
         shape: Union[int, Tuple[int, ...]],
-        device: Optional[ivy.Device] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 

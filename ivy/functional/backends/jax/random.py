@@ -89,7 +89,7 @@ def randint(
         low: int,
         high: int,
         shape: Union[int, Tuple[int, ...]],
-        device: Optional[ivy.Device] = None,
+        device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
