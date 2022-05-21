@@ -82,7 +82,7 @@ def test_is_float_dtype(device, call, in_n_asarray_n_res):
 
 # dtype bits
 @pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("dtype", ivy.all_dtypes)
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
 def test_dtype_bits(x, dtype, tensor_fn, device, call):
     # smoke test
