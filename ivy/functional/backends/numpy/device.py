@@ -3,24 +3,25 @@
 # global
 import os
 import time
-
 import numpy as np
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: np.ndarray, as_str: bool = False) -> str:
-    return "cpu"
+def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
+    if as_native:
+        return "cpu"
+    return as_ivy_dev("cpu")
 
 
 dev.__name__ = "dev"
 _dev_callable = dev
-dev_to_str = lambda dev: "cpu"
-dev_from_str = lambda dev: "cpu"
-clear_mem_on_dev = lambda dev: None
+as_ivy_dev = lambda device: ivy.Device("cpu")
+as_native_dev = lambda device: "cpu"
+clear_mem_on_dev = lambda device: None
 
 
 def tpu_is_available() -> bool:

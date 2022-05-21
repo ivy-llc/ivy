@@ -44,7 +44,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, device, call):
 
 # matmul
 @given(
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtype_strs), 2),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -86,3 +86,30 @@ def test_matmul(
         x1=np.random.uniform(size=(a, b)).astype(dtype[0]),
         x2=np.random.uniform(size=(b, c)).astype(dtype[1]),
     )
+
+
+# Still to Add #
+# ---------------#
+
+# cholesky
+# cross
+# det
+# diagonal
+# eigh
+# eigvalsh
+# inv
+# matrix_norm
+# matrix_power
+# matrix_rank
+# matrix_transpose
+# outer
+# pinv
+# qr
+# slogdet
+# solve
+# svd
+# svdvals
+# tensordot
+# trace
+# vecdot
+# vector_norm

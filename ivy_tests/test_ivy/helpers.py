@@ -312,7 +312,7 @@ def test_array_function(
     fw,
     fn_name,
     rtol=1e-03,
-    atol=1e-08,
+    atol=1e-06,
     **all_as_kwargs_np
 ):
 
@@ -335,7 +335,7 @@ def test_array_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
-    dtype = ["float32" if d in ivy.invalid_dtype_strs else d for d in dtype]
+    dtype = ["float32" if d in ivy.invalid_dtypes else d for d in dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
@@ -472,7 +472,7 @@ def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(
         st.lists(
-            st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size
+            st.sampled_from(ivy_np.valid_float_dtypes), min_size=size, max_size=size
         )
     )
 
@@ -515,11 +515,12 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     if n_arrays == 1:
-        types = set(available_dtypes).difference(set(ivy.invalid_dtype_strs))
+        types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
     else:
-        unwanted_types = set(ivy.invalid_dtype_strs).union(
-            set(ivy.all_dtype_strs).difference(set(available_dtypes)))
+        unwanted_types = set(ivy.invalid_dtypes).union(
+            set(ivy.all_dtypes).difference(set(available_dtypes))
+        )
         pairs = ivy.promotion_table.keys()
         types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
         dtype = list(draw(st.sampled_from(types)))
@@ -547,6 +548,12 @@ def reshape_shapes(draw, shape):
         index = draw(st.integers(0, len(rshape) - 1))
         rshape[index] = -1
     return tuple(rshape)
+
+
+# taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
+@st.composite
+def subsets(draw, elements):
+    return tuple(e for e in elements if draw(st.booleans()))
 
 
 @st.composite

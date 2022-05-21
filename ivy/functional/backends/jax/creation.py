@@ -1,17 +1,16 @@
 # global
-import jaxlib
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
+import jaxlib.xla_extension
+from jax.dlpack import from_dlpack as jax_from_dlpack
 
 # local
-from ivy import dtype_from_str
+import ivy
+from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
-from jaxlib.xla_extension import Buffer, Device, DeviceArray
-from jax.interpreters.xla import _DeviceArray
-from jax.dlpack import from_dlpack as jax_from_dlpack
 
 
 # Array API Standard #
@@ -20,30 +19,31 @@ from jax.dlpack import from_dlpack as jax_from_dlpack
 
 def ones(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
     )
 
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.zeros(shape, default_dtype(dtype, as_native=True)),
+        default_device(device, as_native=True),
     )
 
 
 def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
-) -> DeviceArray:
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
@@ -51,7 +51,7 @@ def full_like(
 
     return to_dev(
         jnp.full_like(
-            x, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))
+            x, fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
         ),
         default_device(device),
     )
@@ -59,9 +59,9 @@ def full_like(
 
 def ones_like(
     x: JaxArray,
-    dtype: Optional[Union[jnp.dtype, str]] = None,
-    device: Optional[Union[Device, str]] = None,
-) -> DeviceArray:
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
 
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -72,8 +72,8 @@ def ones_like(
 
 def zeros_like(
     x: JaxArray,
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
@@ -90,19 +90,19 @@ def triu(x: JaxArray, k: int = 0) -> JaxArray:
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device)
+        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
     )
 
 
 def empty_like(
     x: JaxArray,
-    dtype: Optional[Union[jnp.dtype, str]] = None,
-    device: Optional[Union[Device, str]] = None,
-) -> DeviceArray:
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+) -> JaxArray:
 
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -118,7 +118,7 @@ def asarray(
     device: Optional[str] = None,
     copy: Optional[bool] = None,
 ):
-    if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)) and dtype != "bool":
+    if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
         isinstance(object_in, (list, tuple, dict))
@@ -156,10 +156,10 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
     return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device)
 
@@ -167,7 +167,7 @@ def eye(
 # noinspection PyShadowingNames
 def arange(start, stop=None, step=1, dtype=None, device=None):
     if dtype:
-        dtype = dtype_from_str(dtype)
+        dtype = as_native_dtype(dtype)
     res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), device)
     if not dtype:
         if res.dtype == jnp.float64:
@@ -180,11 +180,11 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[jnp.dtype] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+        jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
         default_device(device),
     )
 

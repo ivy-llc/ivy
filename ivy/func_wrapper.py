@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = [
+NON_WRAPPED_FUNCTIONS = [
     "copy_nest",
     "current_framework",
     "current_framework_str",
@@ -36,14 +36,14 @@ NON_WRAPPED_METHODS = [
     "compile_graph",
     "dev",
     "dev",
-    "dev_to_str",
-    "dev_from_str",
+    "as_ivy_dev",
+    "as_native_dev",
     "memory_on_dev",
     "gpu_is_available",
     "num_gpus",
     "tpu_is_available",
     "dtype",
-    "dtype_to_str",
+    "as_ivy_dtype",
     "cprint",
     "to_ivy_module",
     "tree_flatten",
@@ -62,7 +62,7 @@ NON_WRAPPED_METHODS = [
     "unset_default_device",
     "closest_valid_dtype",
     "default_dtype",
-    "dtype_from_str",
+    "as_native_dtype",
     "is_ivy_array",
     "is_ivy_container",
     "inplace_update",
@@ -77,9 +77,9 @@ NON_WRAPPED_METHODS = [
     "insert_into_nest_at_index",
     "insert_into_nest_at_indices",
     "vec_sig_fig",
-    "native_array"
+    "native_array",
 ]
-METHODS_W_CONT_SUPPORT = [
+FUNCTIONS_W_CONT_SUPPORT = [
     "multi_head_attention",
     "execute_with_gradients",
     "adam_step",
@@ -91,7 +91,7 @@ METHODS_W_CONT_SUPPORT = [
     "stable_divide",
     "stable_pow",
 ]
-ARRAYLESS_RET_METHODS = [
+ARRAYLESS_RET_FUNCTIONS = [
     "to_numpy",
     "to_list",
     "to_scalar",
@@ -99,7 +99,8 @@ ARRAYLESS_RET_METHODS = [
     "is_ivy_array",
     "is_variable",
 ]
-NESTED_ARRAY_RET_METHODS = ["unstack", "split"]
+NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
+NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -129,20 +130,55 @@ NATIVE_KEYS_TO_SKIP = {
 }
 
 
-# Methods #
+# Functions #
 
 
-def _wrap_method(fn):
+def _wrap_function(fn):
+    """
+    Creates a wrapped ivy version of the function if it is not a private function and
+    not in the non wrapped functions list. This allows the new function to accept as
+    inputs an ivy array before performing the required o  peration and then returning
+    an ivy array.
 
+    Parameters
+    ----------
+    fn
+        native function to be wrapped
+
+    Returns
+    -------
+        The wrapped version of the function with all the necessary attributes updated.
+    """
+    # do nothing if the function is private or in the non wrapped functions list
     if hasattr(fn, "__name__") and (
-        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_METHODS
+        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
     ):
         return fn
 
+    # do nothing if the function is already wrapped
     if hasattr(fn, "wrapped") and fn.wrapped:
         return fn
 
-    def _method_w_native_handled(*args, out=None, **kwargs):
+    def _function_w_arrays_handled(*args, out=None, **kwargs):
+        """
+        computes the result of the function fn, returning the result as an ivy array or
+        a native framework array.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        out
+            optional output array, for writing the result to.
+
+        kwargs
+            The key word arguments to be passed  to the function.
+
+        Returns
+        -------
+            The result of computing the function fn as an ivy array or a native array.
+        """
         native_args, native_kwargs = ivy.args_to_native(
             *args, **kwargs, include_derived={tuple: True}
         )
@@ -151,17 +187,78 @@ def _wrap_method(fn):
             native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
         else:
             native_or_ivy_ret = fn(*native_args, **native_kwargs)
-        if fn.__name__ in ARRAYLESS_RET_METHODS + NESTED_ARRAY_RET_METHODS:
+        if fn.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
             return native_or_ivy_ret
         elif ivy.exists(out) and ivy.is_ivy_array(out):
             out.data = ivy.to_native(native_or_ivy_ret)
             return out
         return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
-    def _method_wrapped(*args, out=None, **kwargs):
+    def _get_first_array(*args, **kwargs):
+        # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+        arr = None
+        if args:
+            arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(args, arr_idxs[0])
+            else:
+                arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+                if arr_idxs:
+                    arr = ivy.index_nest(kwargs, arr_idxs[0])
+        elif kwargs:
+            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(kwargs, arr_idxs[0])
+        return arr
+
+    def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
+        if fn.__name__ in NON_DTYPE_WRAPPED_FUNCTIONS:
+            return _function_w_arrays_handled(*args, **kwargs)
+        handle_dtype = "dtype" in kwargs
+        handle_dev = "device" in kwargs
+        if handle_dtype or handle_dev:
+            arr = _get_first_array(*args, **kwargs)
+            if handle_dtype:
+                kwargs["dtype"] = ivy.default_dtype(
+                    kwargs["dtype"], item=arr, as_native=True
+                )
+            if handle_dev:
+                kwargs["device"] = ivy.default_device(
+                    kwargs["device"], item=arr, as_native=True
+                )
+        return _function_w_arrays_handled(*args, **kwargs)
+
+    def _function_wrapped(*args, **kwargs):
+        """
+        Computes the result of the function fn, returning the result as an ivy array,
+        a native framework array, or an ivy container.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The key word arguments to be passed to the function.
+
+        Returns
+        -------
+            The result of computing the function fn as an ivy array, a native array,
+            or an ivy container.
+        """
         fn_name = fn.__name__
-        if not hasattr(ivy.Container, fn_name) or fn_name in METHODS_W_CONT_SUPPORT:
-            return _method_w_native_handled(*args, out=out, **kwargs)
+        """ 
+        if the function is not implemented for containers or the function 
+        has built-in container support, call the function using the passed 
+        arguments directly, returning an ivy or a native array.
+        """
+        if not hasattr(ivy.Container, fn_name) or fn_name in FUNCTIONS_W_CONT_SUPPORT:
+            return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
+        """
+        if any of the arguments or keyword arguments passed to the function contains a 
+        a container, get the container's version of the function and call it using
+        the passed arguments.
+        """
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
@@ -170,27 +267,45 @@ def _wrap_method(fn):
             else:
                 f = getattr(ivy.StaticContainer, fn_name)
             if "out" in f.__code__.co_varnames:
-                return f(*args, out=out, **kwargs)
+                return f(*args, **kwargs)
             return f(*args, **kwargs)
-        return _method_w_native_handled(*args, out=out, **kwargs)
+
+        """
+        if the passed arguments does not contain a container, the function using 
+        the passed arguments, returning an ivy or a native array.
+        """
+        return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
 
     if hasattr(fn, "__name__"):
-        _method_wrapped.__name__ = fn.__name__
-    _method_wrapped.wrapped = True
-    _method_wrapped.inner_fn = fn
+        _function_wrapped.__name__ = fn.__name__
+    _function_wrapped.wrapped = True
+    _function_wrapped.inner_fn = fn
     if hasattr(fn, "array_spec"):
-        _method_wrapped.array_spec = fn.array_spec
+        _function_wrapped.array_spec = fn.array_spec
     if hasattr(fn, "reduce"):
-        _method_wrapped.reduce = fn.reduce
+        _function_wrapped.reduce = fn.reduce
 
-    return _method_wrapped
+    return _function_wrapped
 
 
-def _unwrap_method(method_wrapped):
+def _unwrap_function(function_wrapped):
+    """
+    Unwraps the function in function_wrapped.
 
-    if not hasattr(method_wrapped, "wrapped") or not method_wrapped.wrapped:
-        return method_wrapped
-    return method_wrapped.inner_fn
+    Parameters
+    ----------
+    function_wrapped
+        The function to be unwrapped.
+
+    Returns
+    -------
+    The unwrapped version of the function which is the same as the passed function
+    for unwrapped functions and the inner_fn if the function is wrapped. The newly unwrapped
+    function accepts inputs and returns outputs as native arrays instead of ivy arrays.
+    """
+    if not hasattr(function_wrapped, "wrapped") or not function_wrapped.wrapped:
+        return function_wrapped
+    return function_wrapped.inner_fn
 
 
 def _invalid_fn(fn, fs=None):
@@ -207,7 +322,7 @@ def _invalid_fn(fn, fs=None):
     return True
 
 
-def _wrap_or_unwrap_methods(
+def _wrap_or_unwrap_functions(
     wrap_or_unwrap_fn, val=None, fs=None, classes_to_wrap=None, native=False, depth=0
 ):
     classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
@@ -239,7 +354,7 @@ def _wrap_or_unwrap_methods(
                         setattr(
                             val,
                             k,
-                            _wrap_or_unwrap_methods(
+                            _wrap_or_unwrap_functions(
                                 wrap_or_unwrap_fn,
                                 v,
                                 fs,
@@ -259,7 +374,7 @@ def _wrap_or_unwrap_methods(
                 else:
                     # noinspection PyBroadException
                     try:
-                        val.__dict__[k] = _wrap_or_unwrap_methods(
+                        val.__dict__[k] = _wrap_or_unwrap_functions(
                             wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1
                         )
                     except Exception:
@@ -280,9 +395,9 @@ def _wrap_or_unwrap_methods(
     return val
 
 
-def _wrap_methods():
-    return _wrap_or_unwrap_methods(_wrap_method)
+def _wrap_functions():
+    return _wrap_or_unwrap_functions(_wrap_function)
 
 
-def _unwrap_methods():
-    return _wrap_or_unwrap_methods(_unwrap_method)
+def _unwrap_functions():
+    return _wrap_or_unwrap_functions(_unwrap_function)
