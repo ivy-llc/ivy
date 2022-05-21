@@ -79,7 +79,12 @@ def multinomial(
     return mx.nd.sample_multinomial(probs, (num_samples,))
 
 
-def randint(low, high, shape, device=None):
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.ndarray.ndarray.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = int(low.asscalar())
     if isinstance(high, mx.nd.NDArray):

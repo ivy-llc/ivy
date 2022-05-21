@@ -7,6 +7,7 @@ from typing import Optional, Union, Tuple
 # local
 import ivy
 
+
 # Extra #
 # ------#
 
@@ -60,7 +61,15 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[Union[ivy.Device, str]] = None,
+) -> np.ndarray:
+    return np.random.randint(low, high, shape)
+
+
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 
