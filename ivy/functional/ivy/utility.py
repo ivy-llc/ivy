@@ -83,7 +83,7 @@ def all(
 
     With :code:`ivy.NativeArray` input:
     
-    >>> x = ivy.array([1, 2, 3])
+    >>> x = ivy.NativeArray([1, 2, 3])
     >>> a = ivy.all(x)
     >>> print(a)
     ivy.array(True)
