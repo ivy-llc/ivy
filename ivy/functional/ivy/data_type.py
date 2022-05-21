@@ -316,16 +316,6 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.NativeDtype:
 
 
 # noinspection PyShadowingNames
-def _assert_int_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    assert "int" in dtype
-
-
-# noinspection PyShadowingNames
-def _assert_float_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
-    assert "float" in dtype
-
-
-# noinspection PyShadowingNames
 def default_int_dtype(
     input=None, int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False
 ) -> Union[ivy.Dtype, str]:
@@ -349,7 +339,7 @@ def default_int_dtype(
 
     """
     if ivy.exists(int_dtype):
-        _assert_int_dtype_correct_formatting(ivy.as_ivy_dtype(int_dtype))
+        ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
         return int_dtype
     elif ivy.exists(input):
         if ivy.is_native_array(input):
@@ -440,7 +430,7 @@ def default_float_dtype(
 
     """
     if ivy.exists(float_dtype):
-        _assert_float_dtype_correct_formatting(ivy.as_ivy_dtype(float_dtype))
+        ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
         return float_dtype
     elif ivy.exists(input):
         if ivy.is_native_array(input):
@@ -564,8 +554,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     int_dtype
 
     """
-    int_dtype = ivy.as_ivy_dtype(int_dtype)
-    _assert_int_dtype_correct_formatting(int_dtype)
+    int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
     default_int_dtype_stack.append(int_dtype)
 
@@ -586,8 +575,7 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
     float_dtype
 
     """
-    float_dtype = ivy.as_ivy_dtype(float_dtype)
-    _assert_float_dtype_correct_formatting(float_dtype)
+    float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
     global default_float_dtype_stack
     default_float_dtype_stack.append(float_dtype)
 

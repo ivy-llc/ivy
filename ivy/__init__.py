@@ -54,6 +54,18 @@ class Dtype(str):
         return str.__new__(cls, dtype_str)
 
 
+class IntDtype(str):
+    def __new__(cls, dtype_str):
+        assert "int" in dtype
+        return str.__new__(cls, dtype_str)
+
+
+class FloatDtype(str):
+    def __new__(cls, dtype_str):
+        assert "float" in dtype
+        return str.__new__(cls, dtype_str)
+
+
 class Node(str):
     # ToDo: add formatting checks once multi-node is supported
     pass
