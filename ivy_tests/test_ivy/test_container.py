@@ -2210,12 +2210,12 @@ def test_container_to_dev(device, call):
     container = Container(dict_in)
 
     container_to_cpu = container.to_dev(device)
-    assert ivy.dev(container_to_cpu["a"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.a, as_str=True) == device
-    assert ivy.dev(container_to_cpu["b"]["c"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.b.c, as_str=True) == device
-    assert ivy.dev(container_to_cpu["b"]["d"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.b.d, as_str=True) == device
+    assert ivy.dev(container_to_cpu["a"]) == device
+    assert ivy.dev(container_to_cpu.a) == device
+    assert ivy.dev(container_to_cpu["b"]["c"]) == device
+    assert ivy.dev(container_to_cpu.b.c) == device
+    assert ivy.dev(container_to_cpu["b"]["d"]) == device
+    assert ivy.dev(container_to_cpu.b.d) == device
 
 
 def test_container_stop_gradients(device, call):
