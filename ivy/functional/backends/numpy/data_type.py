@@ -6,7 +6,7 @@ from typing import Union, Tuple, List
 import ivy
 
 
-as_ivy_dtype = {
+ivy_dtype_dict = {
     np.dtype("int8"): "int8",
     np.dtype("int16"): "int16",
     np.dtype("int32"): "int32",
@@ -34,7 +34,7 @@ as_ivy_dtype = {
     np.bool_: "bool",
 }
 
-as_native_dtype = {
+native_dtype_dict = {
     "int8": np.dtype("int8"),
     "int16": np.dtype("int16"),
     "int32": np.dtype("int32"),
@@ -142,20 +142,20 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return as_ivy_dtype(dt)
-    return dt
+    if as_native:
+        return dt
+    return as_ivy_dtype(dt)
 
 
 def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(as_ivy_dtype[dtype_in])
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return as_native_dtype[ivy.Dtype(dtype_in)]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
