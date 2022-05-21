@@ -60,23 +60,25 @@ def all(
     Functional Examples
     -------
     With :code:`ivy.Array` input:
-    >>> ivy.set_framework("numpy")
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.all(x)
     >>> print(y)
     ivy.array(True)
 
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.zeros(3)
-    >>> ivy.all(x, out=y)
-    >>> print(y)
-    ivy.array([0., 0., 0.])
+    >>> x = np.array([1, 2, 3])
+    >>> y = ivy.zeros(1,dtype='bool')
+    >>> a = np.all(x,out = y,keepdims=True)
+    >>> print(a)
+    [ True]
 
-    >>> x = ivy.array([[1, 2, 3],[4, 5, 6]])
-    >>> ivy.all(x, out=x)
-    >>> print(x)
-    ivy.array([[1, 2, 3],
-           [4, 5, 6]])
+
+    >>> x = ivy.array([False])
+    >>> y = ivy.all(x,out = x,keepdims=True)
+    >>> print(y)
+    ivy.array([False])
+
+
 
 
     With :code:`ivy.NativeArray` input:
@@ -94,7 +96,7 @@ def all(
         a: ivy.array(False),
         b: ivy.array(True)
     }
-    
+
     Instance Method Examples
     ------------------------
 
@@ -104,6 +106,7 @@ def all(
     >>> y = x.all()
     >>> print(y)
     ivy.array(True)
+
 
 
     Using :code:`ivy.Container` instance method:
