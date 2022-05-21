@@ -1,11 +1,3 @@
-Ivy
-===
-
-.. automodule:: ivy.functional.ivy
-    :members:
-    :special-members: __init__
-    :undoc-members:
-    :show-inheritance:
 
 
 .. toctree::
