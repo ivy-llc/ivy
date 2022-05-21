@@ -5,6 +5,7 @@ import os
 
 _round = round
 import mxnet as mx
+from typing import Union
 from mxnet import profiler as _profiler
 
 # local
@@ -12,11 +13,13 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: mx.nd.NDArray, as_str: bool = False) -> str:
+def dev(
+    x: mx.nd.NDArray, as_native: bool = False
+) -> Union[ivy.Device, mx.context.Context]:
     dv = x.context
-    if as_str:
-        return as_ivy_dev(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
 def to_dev(x, device=None, out=None):
