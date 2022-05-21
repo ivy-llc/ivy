@@ -104,7 +104,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">,</span> <span class="n">NON_WRAPPED_METHODS</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">,</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
 
 
 <span class="n">queue_timeout</span> <span class="o">=</span> <span class="kc">None</span>
@@ -120,8 +120,8 @@
         <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span>
         <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">NON_WRAPPED_METHODS</span>
-            <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;has_nans&quot;</span><span class="p">,</span> <span class="s2">&quot;is_array&quot;</span><span class="p">,</span> <span class="s2">&quot;value_is_nan&quot;</span><span class="p">,</span> <span class="s2">&quot;reduce_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;to_scalar&quot;</span><span class="p">]</span>
+        <span class="n">NON_WRAPPED_FUNCTIONS</span>
+        <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;has_nans&quot;</span><span class="p">,</span> <span class="s2">&quot;is_array&quot;</span><span class="p">,</span> <span class="s2">&quot;value_is_nan&quot;</span><span class="p">,</span> <span class="s2">&quot;reduce_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;to_scalar&quot;</span><span class="p">]</span>
         <span class="p">)</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="n">fn</span>
@@ -163,11 +163,11 @@
 
 
 <span class="k">def</span> <span class="nf">_wrap_methods_for_debugging</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_wrap_method_for_debugging</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span><span class="n">_wrap_method_for_debugging</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_unwrap_methods_from_debugging</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_unwrap_method_from_debugging</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span><span class="n">_unwrap_method_from_debugging</span><span class="p">)</span>
 
 
 <span class="c1"># Mode #</span>
