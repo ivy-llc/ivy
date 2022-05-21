@@ -55,19 +55,19 @@ def to_dev(x, device=None, out=None):
 
 def dev_to_str(device):
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     if device is None:
         return None
     p, dev_id = (device.platform, device.id)
     if p == "cpu":
-        return p
-    return p + ":" + str(dev_id)
+        return ivy.Device(p)
+    return ivy.Device(p + ":" + str(dev_id))
 
 
 def dev_from_str(device):
     if not isinstance(device, str):
         return device
-    dev_split = device.split(":")
+    dev_split = ivy.Device(device).split(":")
     device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
@@ -76,7 +76,7 @@ def dev_from_str(device):
     return jax.devices(device)[idx]
 
 
-clear_mem_on_dev = lambda dev: None
+clear_mem_on_dev = lambda device: None
 
 
 def _dev_is_available(base_dev):

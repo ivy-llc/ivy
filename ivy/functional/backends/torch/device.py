@@ -43,12 +43,13 @@ def to_dev(
 
 def dev_to_str(device: torch.device):
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     dev_type, dev_idx = (device.type, device.index)
     if dev_type == "cpu":
-        return dev_type
-    return dev_type.replace("cuda", "gpu") + (
-        ":" + (str(dev_idx) if dev_idx is not None else "0")
+        return ivy.Device(dev_type)
+    return ivy.Device(
+        dev_type.replace("cuda", "gpu")
+        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
     )
 
 
@@ -57,7 +58,7 @@ def dev_from_str(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    return torch.device(device.replace("gpu", "cuda"))
+    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
 def clear_mem_on_dev(device):

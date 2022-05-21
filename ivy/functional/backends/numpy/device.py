@@ -18,9 +18,9 @@ def dev(x: np.ndarray, as_str: bool = False) -> str:
 
 dev.__name__ = "dev"
 _dev_callable = dev
-dev_to_str = lambda dev: "cpu"
-dev_from_str = lambda dev: "cpu"
-clear_mem_on_dev = lambda dev: None
+dev_to_str = lambda device: ivy.Device("cpu")
+dev_from_str = lambda device: "cpu"
+clear_mem_on_dev = lambda device: None
 
 
 def tpu_is_available() -> bool:
