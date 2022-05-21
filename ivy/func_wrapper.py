@@ -150,6 +150,9 @@ def _wrap_function(fn):
     -------
         The wrapped version of the function with all the necessary attributes updated.
     """
+    # determine whether the function has an out argument
+    has_out = "out" in inspect.signature(fn).parameters.keys()
+
     # do nothing if the function is private or in the non wrapped functions list
     if hasattr(fn, "__name__") and (
         fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
@@ -180,20 +183,31 @@ def _wrap_function(fn):
         -------
             The result of computing the function fn as an ivy array or a native array.
         """
+        # convert all arrays in the inputs to ivy.NativeArray instances
         native_args, native_kwargs = ivy.args_to_native(
             *args, **kwargs, include_derived={tuple: True}
         )
         if ivy.exists(out):
+            # extract underlying native array for out
             native_out = ivy.to_native(out)
-            native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
+            if has_out:
+                # compute return, with backend inplace update handled by
+                # the backend function
+                ret = fn(*native_args, out=native_out, **native_kwargs)
+            else:
+                # compute return, with backend inplace update handled explicitly
+                ret = fn(*native_args, **native_kwargs)
+                ret = ivy.inplace_update(native_out, ivy.to_native(ret))
         else:
-            native_or_ivy_ret = fn(*native_args, **native_kwargs)
+            ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
-            return native_or_ivy_ret
+            return ret
         elif ivy.exists(out) and ivy.is_ivy_array(out):
-            out.data = ivy.to_native(native_or_ivy_ret)
+            # handle ivy.Array inplace update as well, if out was an ivy.Array
+            out.data = ivy.to_native(ret)
             return out
-        return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
+        # convert all returned arrays to ivy.Array instances
+        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
 
     def _get_first_array(*args, **kwargs):
         # ToDo: make this more efficient, with function ivy.nested_nth_index_where
