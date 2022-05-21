@@ -407,7 +407,7 @@ def linspace(
     stop: Union[ivy.Array, ivy.NativeArray, int],
     num: int,
     axis: int = None,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     dtype=None,
     endpoint: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -640,7 +640,7 @@ def logspace(
     num: int,
     base: float = 10.0,
     axis: int = None,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
