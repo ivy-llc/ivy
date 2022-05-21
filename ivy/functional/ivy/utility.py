@@ -94,6 +94,27 @@ def all(
         a: ivy.array(False),
         b: ivy.array(True)
     }
+    
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.all()
+    >>> print(y)
+    ivy.array(True)
+
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = x.all()
+    >>> print(y)
+     {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
 
     """
     return _cur_framework(x).all(x, axis, keepdims, out=out)
