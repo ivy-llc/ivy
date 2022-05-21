@@ -427,10 +427,13 @@ def default_device(device=None, item=None, as_str: bool = False):
 
     """
     if ivy.exists(device):
-        # assert the string formatting is correct if string input
-        ivy.dev_to_str(device)
+        if as_str is True:
+            return ivy.dev_to_str(device)
+        elif as_str is False:
+            return ivy.dev_from_str(device)
         return device
-    elif ivy.exists(item):
+    as_str = ivy.default(as_str, False)
+    if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_array(item):
@@ -2022,11 +2025,3 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
         raise NotImplementedError
-
-
-# Function Helper #
-# ----------------#
-
-# noinspection PyShadowingNames
-def _handle_device(dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None, arr=None):
-    return ivy.dev_from_str(ivy.default_device(dtype, item=arr))

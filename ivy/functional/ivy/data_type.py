@@ -482,7 +482,7 @@ def default_float_dtype(
 
 # noinspection PyShadowingNames
 def default_dtype(
-    dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool = False
+    dtype: Union[ivy.Dtype, str] = None, item=None, as_str: Optional[bool] = None
 ) -> Union[ivy.Dtype, str]:
     """Summary.
 
@@ -503,10 +503,13 @@ def default_dtype(
 
     """
     if ivy.exists(dtype):
-        # assert the string formatting is correct if string input
-        ivy.dtype_to_str(dtype)
+        if as_str is True:
+            return ivy.dtype_to_str(dtype)
+        elif as_str is False:
+            return ivy.dtype_from_str(dtype)
         return dtype
-    elif ivy.exists(item):
+    as_str = ivy.default(as_str, False)
+    if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
@@ -771,11 +774,3 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
         )
     ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
     return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
-
-
-# Function Helper #
-# ----------------#
-
-# noinspection PyShadowingNames
-def _handle_dtype(dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None, arr=None):
-    return ivy.dtype_from_str(ivy.default_dtype(dtype, item=arr))
