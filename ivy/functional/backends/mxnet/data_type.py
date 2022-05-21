@@ -9,7 +9,7 @@ import ivy
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
-as_ivy_dtype = {
+ivy_dtype_dict = {
     _np.dtype("int8"): "int8",
     _np.dtype("int16"): "int16",
     _np.dtype("int32"): "int32",
@@ -37,7 +37,7 @@ as_ivy_dtype = {
     _np.bool_: "bool",
 }
 
-as_native_dtype = {
+native_dtype_dict = {
     "int8": _np.int8,
     "int16": _np.int16,
     "int32": _np.int32,
@@ -119,20 +119,20 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return as_ivy_dtype(dt)
-    return x.dtype
+    if as_native:
+        return x.dtype
+    return as_ivy_dtype(dt)
 
 
 def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(as_ivy_dtype[dtype_in])
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return as_native_dtype[ivy.Dtype(dtype_in)]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]

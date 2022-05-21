@@ -137,14 +137,16 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
 
 
-def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) -> ivy.Dtype:
+def dtype(
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
     """Get the data type for input array x.
 
     Parameters
     ----------
     x
         Tensor for which to get the data type.
-    as_str
+    as_native
         Whether or not to return the dtype in string format. Default is False.
 
     Returns
@@ -153,7 +155,7 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) -> ivy.Dty
         Data type of the array
 
     """
-    return _cur_framework(x).dtype(x, as_str)
+    return _cur_framework(x).dtype(x, as_native)
 
 
 # noinspection PyShadowingNames
@@ -319,7 +321,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
 def default_int_dtype(
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_str: Optional[bool] = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
@@ -329,8 +331,8 @@ def default_int_dtype(
          (Default value = None)
     int_dtype
 
-    as_str
-         (Default value = False)
+    as_native
+         (Default value = None)
 
     Returns
     -------
@@ -339,12 +341,12 @@ def default_int_dtype(
 
     """
     if ivy.exists(int_dtype):
-        if as_str is True:
-            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
-        elif as_str is False:
+        if as_native is True:
             return ivy.as_native_dtype(int_dtype)
+        elif as_native is False:
+            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
         return int_dtype
-    as_str = ivy.default(as_str, False)
+    as_native = ivy.default(as_native, False)
     if ivy.exists(input):
         if ivy.is_native_array(input):
             ret = ivy.dtype(input)
@@ -390,9 +392,9 @@ def default_int_dtype(
                 ret = "int32"
         else:
             ret = default_int_dtype_stack[-1]
-    if as_str:
-        return ivy.IntDtype(ivy.as_ivy_dtype(ret))
-    return ivy.as_native_dtype(ret)
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
@@ -415,7 +417,7 @@ def _check_float64(input):
 def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-    as_str: Optional[bool] = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str]:
     """Summary.
 
@@ -425,8 +427,8 @@ def default_float_dtype(
          (Default value = None)
     float_dtype
 
-    as_str
-         (Default value = False)
+    as_native
+         (Default value = None)
 
     Returns
     -------
@@ -435,12 +437,12 @@ def default_float_dtype(
 
     """
     if ivy.exists(float_dtype):
-        if as_str is True:
-            return ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
-        elif as_str is False:
+        if as_native is True:
             return ivy.as_native_dtype(float_dtype)
+        elif as_native is False:
+            return ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
         return float_dtype
-    as_str = ivy.default(as_str, False)
+    as_native = ivy.default(as_native, False)
     if ivy.exists(input):
         if ivy.is_native_array(input):
             ret = ivy.dtype(input)
@@ -474,14 +476,14 @@ def default_float_dtype(
                 ret = "float32"
         else:
             ret = default_float_dtype_stack[-1]
-    if as_str:
-        return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
-    return ivy.as_native_dtype(ret)
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
 
 
 # noinspection PyShadowingNames
 def default_dtype(
-    dtype: Union[ivy.Dtype, str] = None, item=None, as_str: Optional[bool] = None
+    dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
 ) -> Union[ivy.Dtype, str]:
     """Summary.
 
@@ -491,8 +493,8 @@ def default_dtype(
 
     item
          (Default value = None)
-    as_str
-         (Default value = False)
+    as_native
+         (Default value = None)
 
     Returns
     -------
@@ -500,23 +502,23 @@ def default_dtype(
 
     """
     if ivy.exists(dtype):
-        if as_str is True:
-            return ivy.as_ivy_dtype(dtype)
-        elif as_str is False:
+        if as_native is True:
             return ivy.as_native_dtype(dtype)
+        elif as_native is False:
+            return ivy.as_ivy_dtype(dtype)
         return dtype
-    as_str = ivy.default(as_str, False)
+    as_native = ivy.default(as_native, False)
     if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
-            return default_float_dtype(item, as_str=as_str)
+            return default_float_dtype(item, as_native=as_native)
         elif ivy.is_int_dtype(item):
-            return default_int_dtype(item, as_str=as_str)
-        elif as_str:
-            return "bool"
-        else:
+            return default_int_dtype(item, as_native=as_native)
+        elif as_native:
             return as_native_dtype("bool")
+        else:
+            return "bool"
     global default_dtype_stack
     if not default_dtype_stack:
         global default_float_dtype_stack
@@ -526,9 +528,9 @@ def default_dtype(
             ret = "float32"
     else:
         ret = default_dtype_stack[-1]
-    if as_str:
-        return ivy.as_ivy_dtype(ret)
-    return ivy.as_native_dtype(ret)
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.as_ivy_dtype(ret)
 
 
 # noinspection PyShadowingNames

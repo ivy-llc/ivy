@@ -112,11 +112,11 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return as_ivy_dtype(dt)
-    return dt
+    if as_native:
+        return dt
+    return as_ivy_dtype(dt)
 
 
 def as_ivy_dtype(dtype_in):
