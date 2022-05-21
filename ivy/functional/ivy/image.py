@@ -72,7 +72,9 @@ def bilinear_resample(x, warp):
     return _cur_framework(x).bilinear_resample(x, warp)
 
 
-def gradient_image(x):
+def gradient_image(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container])\
+        -> Tuple[Union[ivy.Array, ivy.Container]]:
     """Computes image gradients (dy, dx) for each channel.
 
     Parameters
@@ -87,6 +89,7 @@ def gradient_image(x):
 
     Examples
     --------
+
     >>> batch_size = 1
     >>> h = 3
     >>> w = 3
@@ -96,16 +99,16 @@ def gradient_image(x):
     >>> dy, dx = ivy.gradient_image(image)
     >>> print(image[0, :,:,0])
     ivy.array([[0., 1., 2.],
-               [3., 4., 5.],
-               [6., 7., 8.]])
+           [3., 4., 5.],
+           [6., 7., 8.]])
     >>> print(dy[0, :,:,0])
-     ivy.array([[3., 3., 3.],
-               [3., 3., 3.],
-               [0., 0., 0.]])
+    ivy.array([[3., 3., 3.],
+           [3., 3., 3.],
+           [0., 0., 0.]])
     >>> print(dx[0, :,:,0])
-     ivy.array([[1., 1., 0.],
-               [1., 1., 0.],
-               [1., 1., 0.]])
+    ivy.array([[1., 1., 0.],
+           [1., 1., 0.],
+           [1., 1., 0.]])
 
     """
     return _cur_framework(x).gradient_image(x)
