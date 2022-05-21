@@ -319,7 +319,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
 def default_int_dtype(
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_str: Optional[bool] = False,
+    as_str: Optional[bool] = None,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
@@ -415,7 +415,7 @@ def _check_float64(input):
 def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-    as_str: Optional[bool] = False,
+    as_str: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str]:
     """Summary.
 
