@@ -33,7 +33,7 @@ def zeros(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.zeros(shape, default_dtype(dtype, as_str=False)),
+        jnp.zeros(shape, default_dtype(dtype, as_native=False)),
         default_device(device, as_str=False),
     )
 
