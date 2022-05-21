@@ -5,10 +5,11 @@ signature.
 # global
 _round = round
 import tensorflow as tf
+from typing import Union
 from tensorflow.python.types.core import Tensor
-import ivy
 
 # local
+import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -20,11 +21,11 @@ def _same_device(dev_a, dev_b):
     )
 
 
-def dev(x: Tensor, as_str: bool = False) -> str:
+def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
     dv = x.device
-    if as_str:
-        return as_ivy_dev(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
 def to_dev(x: Tensor, device=None, out: Tensor = None) -> Tensor:
