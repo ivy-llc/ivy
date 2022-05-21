@@ -4,7 +4,7 @@ import pdb
 import logging
 
 # local
-from ivy.func_wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS
+from ivy.func_wrapper import _wrap_or_unwrap_functions, NON_WRAPPED_FUNCTIONS
 
 
 queue_timeout = None
@@ -20,8 +20,8 @@ def _wrap_method_for_debugging(fn):
         fn.__name__[0] == "_"
         or fn.__name__
         in set(
-            NON_WRAPPED_METHODS
-            + ["has_nans", "is_array", "value_is_nan", "reduce_sum", "to_scalar"]
+        NON_WRAPPED_FUNCTIONS
+        + ["has_nans", "is_array", "value_is_nan", "reduce_sum", "to_scalar"]
         )
     ):
         return fn
@@ -63,11 +63,11 @@ def _unwrap_method_from_debugging(method_wrapped):
 
 
 def _wrap_methods_for_debugging():
-    return _wrap_or_unwrap_methods(_wrap_method_for_debugging)
+    return _wrap_or_unwrap_functions(_wrap_method_for_debugging)
 
 
 def _unwrap_methods_from_debugging():
-    return _wrap_or_unwrap_methods(_unwrap_method_from_debugging)
+    return _wrap_or_unwrap_functions(_unwrap_method_from_debugging)
 
 
 # Mode #
