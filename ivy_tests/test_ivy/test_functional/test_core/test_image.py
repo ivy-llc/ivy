@@ -14,7 +14,7 @@ import ivy_tests.test_ivy.helpers as helpers
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
     ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
-    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -53,7 +53,7 @@ def test_stack_images(
 #     shape=st.lists(st.integers(min_value=1, max_value=8),
 #                    min_size=4, max_size=8),
 #     n_samples=st.integers(min_value=1, max_value=8),
-#     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+#     dtype=st.sampled_from(ivy.valid_float_dtypes),
 #     as_variable=helpers.list_of_length(st.booleans(), 2),
 #     num_positional_args=st.integers(0, 2),
 #     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -91,7 +91,7 @@ def test_stack_images(
 # gradient_image
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
-    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -120,7 +120,7 @@ def test_gradient_image(
 # float_img_to_uint8_img
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
-    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -155,7 +155,7 @@ def test_float_img_to_uint8_img(
 # uint8_img_to_float_img
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
-    dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -191,7 +191,7 @@ def test_uint8_img_to_float_img(
 # @given(
 #     shape=st.lists(st.integers(min_value=1, max_value=8),
 #                    min_size=4, max_size=8),
-#     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+#     dtype=st.sampled_from(ivy.valid_float_dtypes),
 #     as_variable=helpers.list_of_length(st.booleans(), 2),
 #     num_positional_args=st.integers(0, 2),
 #     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -231,7 +231,7 @@ def test_uint8_img_to_float_img(
 #     shape=st.lists(st.integers(min_value=1, max_value=8),
 #                    min_size=1, max_size=8),
 #     num_samples=st.integers(min_value=2, max_value=8),
-#     dtype=st.sampled_from(ivy.valid_float_dtype_strs),
+#     dtype=st.sampled_from(ivy.valid_float_dtypes),
 #     as_variable=helpers.list_of_length(st.booleans(), 2),
 #     num_positional_args=st.integers(0, 2),
 #     native_array=helpers.list_of_length(st.booleans(), 2),
