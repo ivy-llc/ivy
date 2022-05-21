@@ -194,7 +194,7 @@ def _wrap_method(fn):
             return out
         return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
-    def _method_wrapped(*args, out=None, **kwargs):
+    def _method_wrapped(*args, **kwargs):
         """
         Computes the result of the function fn, returning the result as an ivy array,
         a native framework array, or an ivy container.
@@ -203,9 +203,6 @@ def _wrap_method(fn):
         ----------
         args
             The arguments to be passed to the function.
-
-        out
-            optional output array, for writing the result to.
 
         kwargs
             The key word arguments to be passed to the function.
@@ -222,7 +219,7 @@ def _wrap_method(fn):
         arguments directly, returning an ivy or a native array.
         """
         if not hasattr(ivy.Container, fn_name) or fn_name in METHODS_W_CONT_SUPPORT:
-            return _method_w_native_handled(*args, out=out, **kwargs)
+            return _method_w_native_handled(*args, **kwargs)
         """
         if any of the arguments or keyword arguments passed to the function contains a 
         a container, get the container's version of the function and call it using
@@ -236,14 +233,14 @@ def _wrap_method(fn):
             else:
                 f = getattr(ivy.StaticContainer, fn_name)
             if "out" in f.__code__.co_varnames:
-                return f(*args, out=out, **kwargs)
+                return f(*args, **kwargs)
             return f(*args, **kwargs)
 
         """
         if the passed arguments does not contain a container, the function using 
         the passed arguments, returning an ivy or a native array.
         """
-        return _method_w_native_handled(*args, out=out, **kwargs)
+        return _method_w_native_handled(*args, **kwargs)
 
     if hasattr(fn, "__name__"):
         _method_wrapped.__name__ = fn.__name__
