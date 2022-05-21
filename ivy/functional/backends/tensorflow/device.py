@@ -23,7 +23,7 @@ def _same_device(dev_a, dev_b):
 def dev(x: Tensor, as_str: bool = False) -> str:
     dv = x.device
     if as_str:
-        return dev_to_str(dv)
+        return as_ivy_dev(dv)
     return dv
 
 
@@ -44,7 +44,7 @@ def to_dev(x: Tensor, device=None, out: Tensor = None) -> Tensor:
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
     dev_in_split = device[1:].split(":")[-2:]
@@ -57,7 +57,7 @@ def dev_to_str(device):
     return ivy.Device(":".join([dev_type, dev_idx]))
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if isinstance(device, str) and "/" in device:
         return device
     ret = "/" + ivy.Device(device).upper()
