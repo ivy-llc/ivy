@@ -60,33 +60,40 @@ def all(
     Functional Examples
     -------
     With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([True,False])
-    >>> y = ivy.array([True,True])
-    >>> a = ivy.all(ivy.array([x,y]))
-    >>> print(a)
-    ivy.array(False)
-    
-    
-    >>> x = ivy.array([True,False])
-    >>> y = ivy.array([True,True])
-    >>> a = ivy.all(ivy.array([x,y]), axis=0)
-    >>> print(a)
-    ivy.array([ True, False])
-
+    >>> ivy.set_framework("numpy")
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.all(x)
+    >>> print(y)
+    ivy.array(True)
 
     >>> x = ivy.array([1, 2, 3])
-    >>> a = ivy.all(x)
-    >>> print(a)
-    ivy.array(True)
+    >>> y = ivy.zeros(3)
+    >>> ivy.all(x, out=y)
+    >>> print(y)
+    ivy.array([0., 0., 0.])
+
+    >>> x = ivy.array([[1, 2, 3],[4, 5, 6]])
+    >>> ivy.all(x, out=x)
+    >>> print(x)
+    ivy.array([[1, 2, 3],
+           [4, 5, 6]])
 
 
     With :code:`ivy.NativeArray` input:
-    
-    >>> x = ivy.NativeArray([1, 2, 3])
-    >>> a = ivy.all(x)
-    >>> print(a)
+    >>> x = ivy.native_array([1, 2, 3])
+    >>> y = ivy.all(x)
+    >>> print(y)
     ivy.array(True)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.all(x)
+    >>> print(y)
+    {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
 
     """
     return _cur_framework(x).all(x, axis, keepdims, out=out)
