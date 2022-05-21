@@ -93,9 +93,7 @@ class WeConFC(ivy.Module):
     def _forward(self, implicit_weights):
         batch_shape = [i for i in implicit_weights.shape if i]
         total_batch_size = np.prod(batch_shape)
-        reshaped_weights = implicit_weights.reshape(
-            pre_shape=[total_batch_size], post_shape=[-1]
-        )
+        reshaped_weights = implicit_weights.reshape(shape=(total_batch_size, -1))
         xs = self._layer_specific_fc(reshaped_weights)
         x = ivy.concat([v for k, v in xs.to_iterator()], -1)
         ret_flat = self._fc(x)
@@ -103,56 +101,56 @@ class WeConFC(ivy.Module):
 
 
 # WeConFC
-# @given(
-#     batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
-#     dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
-# )
-# def test_weight_conditioned_network_training(batch_shape, dtype, device, call):
-#
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         return
-#     x = ivy.Container(
-#         {
-#             "layer0": {
-#                 "w": ivy.random_uniform(shape=batch_shape + [64, 3], device=device),
-#                 "b": ivy.random_uniform(shape=batch_shape + [64], device=device),
-#             },
-#             "layer1": {
-#                 "w": ivy.random_uniform(shape=batch_shape + [1, 64], device=device),
-#                 "b": ivy.random_uniform(shape=batch_shape + [1], device=device),
-#             },
-#         }
-#     )
-#     we_con_net = WeConFC(device=device)
-#
-#     def loss_fn(v_=None):
-#         out = we_con_net(x, v=v_)
-#         return ivy.mean(out)
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     loss_fn()  # build on_call layers
-#     for i in range(10):
-#         loss, grads = ivy.execute_with_gradients(loss_fn, we_con_net.v)
-#         we_con_net.v = ivy.gradient_descent_update(we_con_net.v, grads, 1e-3)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).max() > 0).all_true()
+@given(
+    batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+)
+def test_weight_conditioned_network_training(batch_shape, dtype, device, call):
+
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        return
+    x = ivy.Container(
+        {
+            "layer0": {
+                "w": ivy.random_uniform(shape=batch_shape + [64, 3], device=device),
+                "b": ivy.random_uniform(shape=batch_shape + [64], device=device),
+            },
+            "layer1": {
+                "w": ivy.random_uniform(shape=batch_shape + [1, 64], device=device),
+                "b": ivy.random_uniform(shape=batch_shape + [1], device=device),
+            },
+        }
+    )
+    we_con_net = WeConFC(device=device)
+
+    def loss_fn(v_=None):
+        out = we_con_net(x, v=v_)
+        return ivy.mean(out)
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    loss_fn()  # build on_call layers
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, we_con_net.v)
+        we_con_net.v = ivy.gradient_descent_update(we_con_net.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
 
 
 # HyperNetwork #
