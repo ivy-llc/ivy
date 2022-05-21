@@ -290,54 +290,6 @@ class ContainerBase(dict, abc.ABC):
         }[mode](containers, device, axis)
 
     @staticmethod
-    def stack(containers, dim, config=None):
-        """Stack containers together along the specified dimension.
-
-        Parameters
-        ----------
-        containers
-            containers to stack
-        dim
-            dimension along which to stack
-        config
-            The configuration for the containers. Default is the same as container0.
-
-        Returns
-        -------
-            Stacked containers
-
-        """
-        container0 = containers[0]
-        if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
-
-        if isinstance(container0, ivy.Container):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = ivy.Container.stack(
-                    [container[key] for container in containers], dim, config
-                )
-            return ivy.Container(return_dict, **config)
-        else:
-            # noinspection PyProtectedMember
-            ivyh = ivy.default(lambda: config["ivyh"], ivy, True)
-            # noinspection PyBroadException
-            try:
-                if len(containers[0].shape) == 0:
-                    return ivyh.stack(
-                        [ivyh.reshape(item, [1] * (dim + 1)) for item in containers],
-                        dim,
-                        config,
-                    )
-                else:
-                    return ivyh.stack(containers, dim)
-            except Exception as e:
-                raise Exception(
-                    str(e)
-                    + "\nContainer stack operation only valid for containers of arrays"
-                )
-
-    @staticmethod
     def combine(*containers, config=None):
         """Combine keys and values in a sequence of containers, with priority given to
         the right-most container in the case of duplicates.
