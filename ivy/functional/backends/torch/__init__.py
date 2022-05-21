@@ -10,8 +10,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
-Device = torch.device
-Dtype = torch.dtype
+NativeDevice = torch.device
+NativeDtype = torch.dtype
 
 # data types
 int8 = torch.int8
@@ -101,6 +101,8 @@ backend = "torch"
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import converters
 from .converters import *
 from . import creation

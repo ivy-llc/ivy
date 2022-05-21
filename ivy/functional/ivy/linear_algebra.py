@@ -240,6 +240,21 @@ def svd(
 
         Each returned array must have the same floating-point data type as ``x``.
 
+    Examples
+    --------
+    >>> x = ivy.random_normal(shape = (9, 6))
+    >>> U, S, Vh = ivy.svd(x)
+    >>> print(U.shape, S.shape, Vh.shape)
+    (9, 9) (6,) (6, 6)
+
+    Reconstruction from SVD, result is numerically close to x
+
+    >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
+    >>> print((reconstructed_x - x > 1e-3).sum())
+    ivy.array(0)
+    >>> print((reconstructed_x - x < -1e-3).sum())
+    ivy.array(0)
+
     """
     return _cur_framework(x).svd(x, full_matrices)
 
@@ -301,6 +316,26 @@ def diagonal(
         last two dimensions and appending a dimension equal to the size of the resulting
         diagonals. The returned array must have the same data type as ``x``.
 
+    Examples
+    --------
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([1., 4.])
+    >>> d = ivy.diagonal(x, 1)
+    >>> print(d)
+    ivy.array([1.])
+
+    A 3-D Example
+    >>> x = ivy.array([[[1., 2.],\
+                        [3., 4.]],\
+                       [[5., 6.],\
+                        [7., 8.]]])
+    >>> d = ivy.diagonal(x, 0, 0, 1)
+    >>> print(d)
+    ivy.array([[1., 7.],
+               [2., 8.]])
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 

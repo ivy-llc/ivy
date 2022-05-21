@@ -289,53 +289,55 @@ class ContainerBase(dict, abc.ABC):
             "mean": ivy.Container._mean_unify,
         }[mode](containers, device, axis)
 
-    @staticmethod
-    def stack(containers, dim, config=None):
-        """Stack containers together along the specified dimension.
+# @staticmethod
+# def stack(containers, dim, config=None):
+#     """Stack containers together along the specified dimension.
 
-        Parameters
-        ----------
-        containers
-            containers to stack
-        dim
-            dimension along which to stack
-        config
-            The configuration for the containers. Default is the same as container0.
+#     Parameters
+#     ----------
+#     containers
+#         containers to stack
+#     dim
+#         dimension along which to stack
+#     config
+#         The configuration for the containers. Default is the same as container0.
 
-        Returns
-        -------
-            Stacked containers
+#     Returns
+#     -------
+#         Stacked containers
 
-        """
-        container0 = containers[0]
-        if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+#     """
+#     container0 = containers[0]
+#     if not ivy.exists(config):
+#         config = container0.config if isinstance(container0, ivy.Container) 
+#     else: 
+#           {}
 
-        if isinstance(container0, ivy.Container):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = ivy.Container.stack(
-                    [container[key] for container in containers], dim, config
-                )
-            return ivy.Container(return_dict, **config)
-        else:
-            # noinspection PyProtectedMember
-            ivyh = ivy.default(lambda: config["ivyh"], ivy, True)
-            # noinspection PyBroadException
-            try:
-                if len(containers[0].shape) == 0:
-                    return ivyh.stack(
-                        [ivyh.reshape(item, [1] * (dim + 1)) for item in containers],
-                        dim,
-                        config,
-                    )
-                else:
-                    return ivyh.stack(containers, dim)
-            except Exception as e:
-                raise Exception(
-                    str(e)
-                    + "\nContainer stack operation only valid for containers of arrays"
-                )
+#     if isinstance(container0, ivy.Container):
+#         return_dict = dict()
+#         for key in container0.keys():
+#             return_dict[key] = ivy.Container.stack(
+#                 [container[key] for container in containers], dim, config
+#             )
+#         return ivy.Container(return_dict, **config)
+#     else:
+#         # noinspection PyProtectedMember
+#         ivyh = ivy.default(lambda: config["ivyh"], ivy, True)
+#         # noinspection PyBroadException
+#         try:
+#             if len(containers[0].shape) == 0:
+#                 return ivyh.stack(
+#                     [ivyh.reshape(item, [1] * (dim + 1)) for item in containers],
+#                     dim,
+#                     config,
+#                 )
+#             else:
+#                 return ivyh.stack(containers, dim)
+#         except Exception as e:
+#             raise Exception(
+#                 str(e)
+#                 + "\nContainer stack operation only valid for containers of arrays"
+#             )
 
     @staticmethod
     def combine(*containers, config=None):
@@ -1659,48 +1661,6 @@ class ContainerBase(dict, abc.ABC):
             out,
         )
 
-    def einsum(
-        self,
-        equation,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Sums the product of the elements of the input operands along dimensions
-        specified using a notation based on the Einstein summation convention, for each
-        array in the container.
-
-        Parameters
-        ----------
-        equation
-            A str describing the contraction, in the same format as numpy.einsum.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.einsum(equation, x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def vector_norm(
         self,
         ord=2,
@@ -1815,48 +1775,6 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(
             lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def flip(
-        self,
-        axis=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Reverses the order of elements in for each array in the container, along the
-        given axis. The shape of the array is preserved, but the elements are reordered.
-
-        Parameters
-        ----------
-        axis
-            Axis or axes along which to flip over. The default, axis=None, will flip
-            over all axes.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions expanded along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.flip(x, axis)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2442,168 +2360,168 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def repeat(
-        self,
-        repeats,
-        axis=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Repeat values along a given dimension for each array in the container.
+# def repeat(
+#     self,
+#     repeats,
+#     axis=None,
+#     key_chains=None,
+#     to_apply=True,
+#     prune_unapplied=False,
+#     map_sequences=False,
+# ):
+#     """Repeat values along a given dimension for each array in the container.
 
-        Parameters
-        ----------
-        repeats
-            Number of repetitions for each element. repeats is broadcast to fit the
-            shape of the given axis.
-        axis
-            The axis along which to repeat values.
-            By default, use the flattened input array, and return a flat output array.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+#     Parameters
+#     ----------
+#     repeats
+#         Number of repetitions for each element. repeats is broadcast to fit the
+#         shape of the given axis.
+#     axis
+#         The axis along which to repeat values.
+#         By default, use the flattened input array, and return a flat output array.
+#     key_chains
+#         The key-chains to apply or not apply the method to. Default is None.
+#     to_apply
+#         If True, the method will be applied to key_chains, otherwise key_chains will
+#         be skipped. Default is True.
+#     prune_unapplied
+#         Whether to prune key_chains for which the function was not applied. Default
+#         is False.
+#     map_sequences
+#         Whether to also map method to sequences (lists, tuples). Default is False.
 
-        Returns
-        -------
-            container with each array being repeated along the specified dimension.
+#     Returns
+#     -------
+#         container with each array being repeated along the specified dimension.
 
-        """
-        return self.map(
-            lambda x, kc: self._ivy.repeat(x, repeats, axis)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+#     """
+#     return self.map(
+#         lambda x, kc: self._ivy.repeat(x, repeats, axis)
+#         if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+#         else x,
+#         key_chains,
+#         to_apply,
+#         prune_unapplied,
+#         map_sequences,
+#     )
 
-    def swapaxes(
-        self,
-        axis0,
-        axis1,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Interchange two axes for each array in the container.
+# def swapaxes(
+#     self,
+#     axis0,
+#     axis1,
+#     key_chains=None,
+#     to_apply=True,
+#     prune_unapplied=False,
+#     map_sequences=False,
+# ):
+#     """Interchange two axes for each array in the container.
 
-        Parameters
-        ----------
-        axis0
-            First axis to be swapped.
-        axis1
-            Second axis to be swapped.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+#     Parameters
+#     ----------
+#     axis0
+#         First axis to be swapped.
+#     axis1
+#         Second axis to be swapped.
+#     key_chains
+#         The key-chains to apply or not apply the method to. Default is None.
+#     to_apply
+#         If True, the method will be applied to key_chains, otherwise key_chains will
+#         be skipped. Default is True.
+#     prune_unapplied
+#         Whether to prune key_chains for which the function was not applied. Default
+#         is False.
+#     map_sequences
+#         Whether to also map method to sequences (lists, tuples). Default is False.
 
-        Returns
-        -------
-            ivy.Container with each chosen array having the axes swapped.
+#     Returns
+#     -------
+#         ivy.Container with each chosen array having the axes swapped.
 
-        """
-        return self.map(
-            lambda x, kc: self._ivy.swapaxes(x, axis0, axis1)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+#     """
+#     return self.map(
+#         lambda x, kc: self._ivy.swapaxes(x, axis0, axis1)
+#         if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+#         else x,
+#         key_chains,
+#         to_apply,
+#         prune_unapplied,
+#         map_sequences,
+#     )
 
-    def reshape(
-        self,
-        pre_shape=None,
-        shape_slice=None,
-        post_shape=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Reshapes each array x in the container, to a new shape given by pre_shape +
-        x.shape[shape_slice] + post_shape. If shape_slice or post_shape are not
-        specified, then the term is ignored.
+# def reshape(
+#     self,
+#     pre_shape=None,
+#     shape_slice=None,
+#     post_shape=None,
+#     key_chains=None,
+#     to_apply=True,
+#     prune_unapplied=False,
+#     map_sequences=False,
+# ):
+#     """Reshapes each array x in the container, to a new shape given by pre_shape +
+#     x.shape[shape_slice] + post_shape. If shape_slice or post_shape are not
+#     specified, then the term is ignored.
 
-        Parameters
-        ----------
-        pre_shape
-            The first elements in the new array shape. (Default value = None)
-        shape_slice
-            The slice of the original shape to use in the new shape. Default is None.
-        post_shape
-            The final elements in the new array shape. Default is None.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+#     Parameters
+#     ----------
+#     pre_shape
+#         The first elements in the new array shape. (Default value = None)
+#     shape_slice
+#         The slice of the original shape to use in the new shape. Default is None.
+#     post_shape
+#         The final elements in the new array shape. Default is None.
+#     key_chains
+#         The key-chains to apply or not apply the method to. Default is None.
+#     to_apply
+#         If True, the method will be applied to key_chains, otherwise
+#       key_chains will be skipped. Default is True.
+#     prune_unapplied
+#         Whether to prune key_chains for which the function was not applied.
+#           Default is False.
+#     map_sequences
+#         Whether to also map method to sequences (lists, tuples). Default is False.
 
-        Returns
-        -------
-            ivy.Container with each array reshaped as specified.
+#     Returns
+#     -------
+#         ivy.Container with each array reshaped as specified.
 
-        """
-        pre_shape = (
-            []
-            if pre_shape is None
-            else ([pre_shape] if isinstance(pre_shape, int) else list(pre_shape))
-        )
-        post_shape = (
-            []
-            if post_shape is None
-            else ([post_shape] if isinstance(post_shape, int) else list(post_shape))
-        )
-        if shape_slice is None:
-            return self.map(
-                lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            )
-        shape_slice = (
-            slice(shape_slice, shape_slice + 1)
-            if isinstance(shape_slice, int)
-            else shape_slice
-        )
-        return self.map(
-            lambda x, kc: self._ivy.reshape(
-                x, pre_shape + list(x.shape[shape_slice]) + post_shape
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+#     """
+#     pre_shape = (
+#         []
+#         if pre_shape is None
+#         else ([pre_shape] if isinstance(pre_shape, int) else list(pre_shape))
+#     )
+#     post_shape = (
+#         []
+#         if post_shape is None
+#         else ([post_shape] if isinstance(post_shape, int) else list(post_shape))
+#     )
+#     if shape_slice is None:
+#         return self.map(
+#             lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape)
+#             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+#             else x,
+#             key_chains,
+#             to_apply,
+#             prune_unapplied,
+#             map_sequences,
+#         )
+#     shape_slice = (
+#         slice(shape_slice, shape_slice + 1)
+#         if isinstance(shape_slice, int)
+#         else shape_slice
+#     )
+#     return self.map(
+#         lambda x, kc: self._ivy.reshape(
+#             x, pre_shape + list(x.shape[shape_slice]) + post_shape
+#         )
+#         if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+#         else x,
+#         key_chains,
+#         to_apply,
+#         prune_unapplied,
+#         map_sequences,
+#     )
 
     def einops_rearrange(
         self,

@@ -121,19 +121,21 @@ def dtype(x, as_str=False):
 
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return {
-        torch.int8: "int8",
-        torch.int16: "int16",
-        torch.int32: "int32",
-        torch.int64: "int64",
-        torch.uint8: "uint8",
-        torch.bfloat16: "bfloat16",
-        torch.float16: "float16",
-        torch.float32: "float32",
-        torch.float64: "float64",
-        torch.bool: "bool",
-    }[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(
+        {
+            torch.int8: "int8",
+            torch.int16: "int16",
+            torch.int32: "int32",
+            torch.int64: "int64",
+            torch.uint8: "uint8",
+            torch.bfloat16: "bfloat16",
+            torch.float16: "float16",
+            torch.float32: "float32",
+            torch.float64: "float64",
+            torch.bool: "bool",
+        }[dtype_in]
+    )
 
 
 def dtype_from_str(dtype_in: str) -> torch.dtype:
@@ -150,4 +152,4 @@ def dtype_from_str(dtype_in: str) -> torch.dtype:
         "float32": torch.float32,
         "float64": torch.float64,
         "bool": torch.bool,
-    }[dtype_in]
+    }[ivy.Dtype(dtype_in)]

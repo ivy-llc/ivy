@@ -3,8 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional
-import ivy
+from typing import List, Optional, Union
 
 _round = round
 import numpy as _np
@@ -14,6 +13,7 @@ from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
@@ -31,7 +31,7 @@ def copy_array(x: Tensor) -> Tensor:
 
 
 def array_equal(x0: Tensor, x1: Tensor) -> bool:
-    return tf.experimental.numpy.array_equal(x0, x1)
+    return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
 def to_numpy(x: Tensor) -> _np.ndarray:
@@ -300,7 +300,7 @@ def gather(
     params: tf.Tensor,
     indices: tf.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)
@@ -329,12 +329,6 @@ def one_hot(indices, depth, device=None):
     return tf.one_hot(indices, depth)
 
 
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    return tf.function(fn)
-
-
 current_framework_str = lambda: "tensorflow"
 current_framework_str.__name__ = "current_framework_str"
 
@@ -344,8 +338,15 @@ multiprocessing = (
     else _multiprocessing.get_context(context)
 )
 indices_where = tf.where
-shape = lambda x, as_tensor=False: tf.shape(x) if as_tensor else tuple(x.shape)
-shape.__name__ = "shape"
+
+
+def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
+    if as_tensor:
+        return tf.shape(x)
+    else:
+        return tuple(x.shape)
+
+
 get_num_dims = (
     lambda x, as_tensor=False: tf.shape(tf.shape(x))[0]
     if as_tensor

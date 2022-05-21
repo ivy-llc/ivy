@@ -10,8 +10,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray
-Device = str
-Dtype = np.dtype
+NativeDevice = str
+NativeDtype = np.dtype
 
 # data types
 int8 = np.dtype("int8")
@@ -120,6 +120,8 @@ backend = "numpy"
 # local sub-modules
 from . import activations
 from .activations import *
+from . import compilation
+from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type

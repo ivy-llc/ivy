@@ -26,7 +26,7 @@ def min(
 def sum(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[tf.DType] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     keepdims: bool = False,
     out: Optional[Tensor] = None,
 ) -> Tensor:
@@ -51,7 +51,7 @@ def sum(
 def prod(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[tf.DType] = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     keepdims: bool = False,
     out: Optional[Tensor] = None,
 ) -> Tensor:
@@ -66,7 +66,8 @@ def prod(
             dtype = tf.uint64
     if ivy.exists(out):
         return ivy.inplace_update(
-            out, tf.experimental.numpy.prod(x, axis=axis, keepdims=keepdims)
+            out,
+            tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims),
         )
     else:
         return tf.experimental.numpy.prod(x, axis, dtype, keepdims)

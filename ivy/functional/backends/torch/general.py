@@ -148,7 +148,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ):
     target = tensor
     target_given = ivy.exists(target)
@@ -345,7 +345,7 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -359,7 +359,9 @@ def gather(
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices, device: Optional[str] = None):
+def gather_nd(
+    params, indices, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(params)
     indices_shape = indices.shape
@@ -403,7 +405,9 @@ def indices_where(x):
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, device: Optional[str] = None):
+def one_hot(
+    indices, depth: int, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
@@ -411,20 +415,15 @@ def one_hot(indices, depth: int, device: Optional[str] = None):
     )
 
 
-def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
-    return torch.tensor(x.shape) if as_tensor else x.shape
+def shape(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, List[int]]:
+    if as_tensor:
+        return torch.tensor(x.shape)
+    else:
+        return x.shape
 
 
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    if dynamic:
-        return torch.jit.script(fn)
-    return torch.jit.trace(fn, example_inputs)
 
 
 def current_framework_str():

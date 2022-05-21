@@ -1247,7 +1247,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -1287,7 +1287,7 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -1326,7 +1326,7 @@ def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
@@ -1359,7 +1359,7 @@ def gather(
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
@@ -1421,7 +1421,9 @@ def indices_where(
 
 # noinspection PyShadowingNames
 def one_hot(
-    indices: Union[ivy.Array, ivy.NativeArray], depth: int, device: ivy.Device = None
+    indices: Union[ivy.Array, ivy.NativeArray],
+    depth: int,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array.
 
@@ -1448,7 +1450,7 @@ def one_hot(
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
 ) -> Iterable[int]:
-    """Returns the shape of the array x.
+    """Returns the shape of the array ``x``.
 
     Parameters
     ----------
@@ -1460,7 +1462,17 @@ def shape(
     Returns
     -------
     ret
-        Shape of the array
+        Shape of the array ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
+    >>> y_tuple = ivy.shape(x)
+    >>> y_tensor = ivy.shape(x, as_tensor = True)
+    >>> print(y_tuple)
+    (2, 3)
+    >>> print(y_tensor)
+    ivy.array([2, 3])
 
     """
     return _cur_framework(x).shape(x, as_array)
