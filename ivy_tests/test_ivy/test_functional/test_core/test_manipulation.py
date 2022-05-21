@@ -289,7 +289,7 @@ def test_reshape(
     num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_roll(
     array_shape,
@@ -361,7 +361,7 @@ def test_roll(
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_squeeze(
     array_shape,
@@ -408,39 +408,57 @@ def test_squeeze(
 
 
 # stack
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_stack(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([1, 2, 3, 4], dtype=dtype)
-    x2 = ivy.array([1, 2, 3, 4], dtype=dtype)
-    out = ivy.array([[2, 3, 4, 5], [4, 5, 6, 7]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.stack([x1, x2], 0, out=out)
-    else:
-        ret = ivy.stack([x1, x2], 0)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(0, 3), min_size="num_dims", max_size="num_dims", size_bounds=[0, 3]
+    ),
+    num_arrays=st.shared(st.integers(1, 3), key="num_arrays"),
+    dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    data=st.data(),
+    as_variable=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    container=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    instance_method=st.booleans(),
+)
+def test_stack(
+    array_shape,
+    num_arrays,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    xs = [
+        data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype[i]))
+        for i in range(num_arrays)
+    ]
+    ndim = len(xs[0].shape)
+    axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "stack",
+        x=xs,
+        axis=axis,
+    )
 
 
 # Extra #
@@ -448,172 +466,277 @@ def test_stack(dtype, as_variable, with_out, native_array):
 
 
 # repeat
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_repeat(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == "tensorflow" and dtype == "uint16":
-        pytest.skip("tf repeat doesnt allow uint16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([1, 2, 3], dtype=dtype)
-    out = ivy.array([2, 3, 4, 5, 6, 7], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.repeat(x, 2, out=out)
-    else:
-        ret = ivy.repeat(x, 2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_repeat(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+
+    # smoke for torch
+    # smoke for tensorflow as well, since it was throwing an error
+    # as unint16 not implemented in Tile or something
+    if (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]) or (
+        fw == "tensorflow" and dtype in ["uint16"]
+    ):
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    ndim = len(x.shape)
+
+    valid_axis = st.none() | st.integers(-ndim, ndim - 1)
+    axis = data.draw(valid_axis)
+
+    repeats = data.draw(st.integers(1, 3))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "repeat",
+        x=x,
+        repeats=repeats,
+        axis=axis,
+    )
 
 
 # tile
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_tile(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == "tensorflow" and dtype == "uint16":
-        pytest.skip("tf tile doesnt allow uint16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([1, 2, 3], dtype=dtype)
-    out = ivy.array([2, 3, 4, 5, 6, 7], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.tile(x, 2, out=out)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_tile(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+
+    # tensorflow needs that reps is exactly of same dimensions as the input
+    # other frameworks can broadcast the results
+    if fw == "tensorflow":
+        reps = data.draw(
+            helpers.nph.broadcastable_shapes(
+                shape=x.shape, min_dims=len(x.shape), max_dims=len(x.shape)
+            )
+        )
     else:
-        ret = ivy.tile(x, 2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+        reps = data.draw(
+            helpers.nph.broadcastable_shapes(shape=x.shape, min_dims=len(x.shape))
+        )
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "tile",
+        x=x,
+        reps=reps,
+    )
 
 
 # constant_pad
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_constant_pad(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([1, 2, 3], dtype=dtype)
-    out = ivy.array([2, 3, 4, 5, 6, 7], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.constant_pad(x, [[2, 1]], out=out)
-    else:
-        ret = ivy.constant_pad(x, [[2, 1]])
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_constant_pad(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    pads = [
+        (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
+        for _ in range(len(x.shape))
+    ]
+    constant = data.draw(st.integers(0, 10))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "constant_pad",
+        x=x,
+        pad_width=pads,
+        value=constant,
+    )
 
 
 # zero_pad
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_zero_pad(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([1, 2, 3], dtype=dtype)
-    out = ivy.array([2, 3, 4, 5, 6, 7], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.zero_pad(x, [[2, 1]], out=out)
-    else:
-        ret = ivy.zero_pad(x, [[2, 1]])
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_zero_pad(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    pads = [
+        (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
+        for _ in range(len(x.shape))
+    ]
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "zero_pad",
+        x=x,
+        pad_width=pads,
+    )
 
 
 # swapaxes
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_swapaxes(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([[1, 2], [3, 4]], dtype=dtype)
-    out = ivy.array([[2, 3], [4, 5]], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.swapaxes(x, 0, 1, out=out)
-    else:
-        ret = ivy.swapaxes(x, 0, 1)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_swapaxes(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    valid_axes = st.integers(0, len(x.shape) - 1)
+    axis0 = data.draw(valid_axes)
+    axis1 = data.draw(valid_axes)
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "swapaxes",
+        x=x,
+        axis0=axis0,
+        axis1=axis1,
+    )
 
 
 # clip
@@ -686,19 +809,21 @@ def test_clip(
 
 
 # split
-@pytest.mark.parametrize(
-    "x_n_noss_n_axis_n_wr",
-    [
-        (1, 1, -1, False),
-        ([[0.0, 1.0, 2.0, 3.0]], 2, 1, False),
-        ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], 2, 0, False),
-        ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], 2, 1, True),
-        ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], [2, 1], 1, False),
-    ],
+@given(
+    x_n_noss_n_axis_n_wr=st.sampled_from(
+        [
+            (1, 1, -1, False),
+            ([[0.0, 1.0, 2.0, 3.0]], 2, 1, False),
+            ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], 2, 0, False),
+            ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], 2, 1, True),
+            ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], [2, 1], 1, False),
+        ],
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    data=st.data(),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_split(x_n_noss_n_axis_n_wr, dtype, tensor_fn, device, call):
+def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
     # smoke test
     x, num_or_size_splits, axis, with_remainder = x_n_noss_n_axis_n_wr
     if (
