@@ -364,7 +364,7 @@ class Array(
 
     @_native_wrapper
     def __abs__(self):
-        if "uint" in ivy.dtype(self._data, as_str=True):
+        if "uint" in ivy.dtype(self._data):
             return self
         res = self._data.__abs__()
         if res is NotImplemented:
