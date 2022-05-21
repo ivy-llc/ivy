@@ -8,9 +8,9 @@ import ivy
 from ivy import (
     dev_from_str,
     default_device,
-    dtype_from_str,
+    as_native_dtype,
     default_dtype,
-    dtype_to_str,
+    as_ivy_dtype,
 )
 
 
@@ -28,7 +28,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 try:
                     return tf.identity(tf.convert_to_tensor(object_in))
                 except (TypeError, ValueError):
-                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                     return tf.identity(
                         tf.convert_to_tensor(
                             ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
@@ -36,7 +36,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                         )
                     )
             else:
-                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -52,13 +52,13 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 try:
                     return tf.convert_to_tensor(object_in)
                 except (TypeError, ValueError):
-                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                     return tf.convert_to_tensor(
                         ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -76,7 +76,7 @@ def zeros(
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
-        return tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
+        return tf.zeros(shape, as_native_dtype(default_dtype(dtype)))
 
 
 def ones(
@@ -84,7 +84,7 @@ def ones(
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     device = dev_from_str(default_device(device))
     with tf.device(device):
         return tf.ones(shape, dtype)
@@ -138,7 +138,7 @@ def empty(
 ) -> Tensor:
     device = default_device(device)
     with tf.device(dev_from_str(device)):
-        return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))
+        return tf.experimental.numpy.empty(shape, as_native_dtype(default_dtype(dtype)))
 
 
 def empty_like(
@@ -180,7 +180,7 @@ def eye(
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     device = dev_from_str(default_device(device))
     with tf.device(device):
         if n_cols is None:
@@ -225,7 +225,7 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = dtype_from_str(default_dtype(dtype))
+            dtype = as_native_dtype(default_dtype(dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
@@ -242,7 +242,7 @@ def full(
         return tf.fill(
             shape,
             tf.constant(
-                fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))
+                fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
             ),
         )
 

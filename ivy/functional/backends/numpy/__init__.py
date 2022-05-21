@@ -108,7 +108,7 @@ invalid_float_dtype_strs = ("bfloat16",)
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
+    type_str = ivy.as_ivy_dtype(type)
     if type_str in invalid_dtype_strs:
         return {"bfloat16": float16}[type_str]
     return type
