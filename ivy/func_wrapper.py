@@ -43,7 +43,7 @@ NON_WRAPPED_METHODS = [
     "num_gpus",
     "tpu_is_available",
     "dtype",
-    "dtype_to_str",
+    "as_ivy_dtype",
     "cprint",
     "to_ivy_module",
     "tree_flatten",
@@ -62,7 +62,7 @@ NON_WRAPPED_METHODS = [
     "unset_default_device",
     "closest_valid_dtype",
     "default_dtype",
-    "dtype_from_str",
+    "as_native_dtype",
     "is_ivy_array",
     "is_ivy_container",
     "inplace_update",
@@ -77,7 +77,7 @@ NON_WRAPPED_METHODS = [
     "insert_into_nest_at_index",
     "insert_into_nest_at_indices",
     "vec_sig_fig",
-    "native_array"
+    "native_array",
 ]
 METHODS_W_CONT_SUPPORT = [
     "multi_head_attention",
@@ -135,7 +135,7 @@ NATIVE_KEYS_TO_SKIP = {
 def _wrap_method(fn):
     """
     Creates a wrapped ivy version of the function if it is not a private function and
-    not in the non wrapped methods list. This allows the new function to accept as 
+    not in the non wrapped methods list. This allows the new function to accept as
     inputs an ivy array before performing the required o  peration and then returning
     an ivy array.
 
@@ -143,7 +143,7 @@ def _wrap_method(fn):
     ----------
     fn
         native function to be wrapped
-    
+
     Returns
     -------
         The wrapped version of the function with all the necessary attributes updated.
@@ -162,7 +162,7 @@ def _wrap_method(fn):
         native_args, native_kwargs = ivy.args_to_native(
             *args, **kwargs, include_derived={tuple: True}
         )
-                
+
         """
         computes the result of the function fn, returning the result as an ivy array or
         a native framework array.
@@ -203,13 +203,13 @@ def _wrap_method(fn):
         ----------
         args
             The arguments to be passed to the function.
-        
+
         out
             optional output array, for writing the result to.
 
         kwargs
             The key word arguments to be passed to the function.
-        
+
         Returns
         -------
             The result of computing the function fn as an ivy array, a native array,
@@ -265,11 +265,11 @@ def _unwrap_method(method_wrapped):
     ----------
     method_wrapped
         The method to be unwrapped.
-            
+
     Returns
     -------
     The unwrapped version of the function which is the same as the passed method
-    for unwrapped methods and the inner_fn if the method is wrapped. The newly unwrapped 
+    for unwrapped methods and the inner_fn if the method is wrapped. The newly unwrapped
     method accepts inputs and returns outputs as native arrays instead of ivy arrays.
     """
     if not hasattr(method_wrapped, "wrapped") or not method_wrapped.wrapped:
