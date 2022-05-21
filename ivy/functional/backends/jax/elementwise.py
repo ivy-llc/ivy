@@ -16,7 +16,7 @@ def bitwise_left_shift(
     return jnp.left_shift(x1, x2)
 
 
-def add(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def add(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.add(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -419,7 +419,7 @@ def bitwise_right_shift(
     return ret
 
 
-def tan(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def tan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.tan(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
