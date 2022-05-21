@@ -125,53 +125,49 @@ def multinomial(
 
     Examples
     --------
-    >>> y = ivy.multinomial(10,5)
+    >>> y = ivy.multinomial(10, 5)
     >>> print(y)
     ivy.array([[1, 8, 7, 8, 3]])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2)
+    >>> y = ivy.multinomial(10, 5, batch_size=2)
     >>> print(y)
     ivy.array([[9, 7, 9, 0, 7],
        [7, 3, 8, 5, 4]])
 
-    >>> y = ivy.multinomial(10,5,replace=False)
+    >>> y = ivy.multinomial(10, 5, replace=False)
     >>> print(y)
     ivy.array([[2, 6, 4, 7, 0]])
 
     With :code:`ivy.Array` input:
 
-    >>> y = ivy.multinomial(10,5,probs=ivy.array([1/10]*10))
+    >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
     ivy.array([5, 2, 7, 6, 9])
 
-    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]))
+    >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]))
     >>> print(y)
-    ivy.array([[0, 4, 3, 4, 5],
-       [1, 1, 0, 3, 2]])
+    ivy.array([[0, 4, 3, 4, 5], [1, 1, 0, 3, 2]])
 
-    >>> y = ivy.multinomial(7,5,batch_size=2,probs=ivy.array([[1/7]*7, [1/7]*7]),
-    ... replace=False)
+    >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]),\
+                            replace=False)
     >>> print(y)
-    ivy.array([[2, 6, 1, 0, 3],
-       [1, 0, 2, 5, 6]])
+    ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> y = ivy.multinomial(10,5,probs=ivy.native_array([1/10]*10))
+    >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
     ivy.array([5, 7, 4, 2, 1])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2,
-    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]))
+    >>> y = ivy.multinomial(10, 5, batch_size=2,\
+                            probs=ivy.native_array([[1/10]*10, [1/10]*10]))
     >>> print(y)
-    ivy.array([[8, 0, 4, 1, 7],
-       [2, 3, 4, 9, 3]])
+    ivy.array([[8, 0, 4, 1, 7], [2, 3, 4, 9, 3]])
 
-    >>> y = ivy.multinomial(10,5,batch_size=2,
-    ... probs=ivy.native_array([[1/10]*10, [1/10]*10]),replace=False)
+    >>> y = ivy.multinomial(10, 5, batch_size=2,\
+                     probs=ivy.native_array([[1/10]*10, [1/10]*10]), replace=False)
     >>> print(y)
-    ivy.array([[0, 2, 6, 9, 1],
-       [6, 7, 2, 4, 3]])
+    ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
     return _cur_framework().multinomial(
@@ -179,9 +175,15 @@ def multinomial(
     )
 
 
-def randint(low, high, shape, device=None):
-    """Returns a tensor filled with random integers generated uniformly between low
-    (inclusive) and high (exclusive).
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> ivy.array:
+    """Returns an array filled with random integers generated uniformly between
+    low (inclusive) and high (exclusive).
+
 
     Parameters
     ----------
@@ -190,10 +192,45 @@ def randint(low, high, shape, device=None):
     high
         One above the highest integer to be drawn from the distribution.
     shape
-        a tuple defining the shape of the output tensor.
+        a tuple defining the shape of the output array.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-        (Default value = None)
+        device on which to create the array 'cuda:0',
+        'cuda:1', 'cpu' etc. (Default value = None).
+
+
+    Returns
+    -------
+    ret
+        Returns an array with the given shape filled with integers from
+        the uniform distribution in the “half-open” interval [low, high)
+
+    Examples
+    --------
+    >>> y = ivy.randint(0, 9, 1)
+    >>> print(y)
+    ivy.array([3])
+
+    >>> y = ivy.randint(0, 10, (3,))
+    >>> print(y)
+    ivy.array([2, 6, 7])
+
+    >>> y = ivy.randint(2, 20, (3, 2))
+    >>> print(y)
+    ivy.array([[ 7,  5],
+       [16,  5],
+       [15, 15]])
+
+    >>> y = ivy.randint(3, 15, (3, 3), 'cpu')
+    >>> print(y)
+    ivy.array([[13,  5, 12],
+       [10,  9, 13],
+       [ 6, 14, 11]])
+
+    >>> y = ivy.randint(3, 15, (3, 3), 'gpu:1')
+    >>> print(y)
+    ivy.array([[ 7,  7,  5],
+       [12,  8,  8],
+       [ 8, 11,  3]])
 
     """
     return _cur_framework().randint(low, high, shape, device)
