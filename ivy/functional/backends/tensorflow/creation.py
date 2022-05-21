@@ -6,7 +6,7 @@ from typing import Union, Tuple, List, Optional
 # local
 import ivy
 from ivy import (
-    dev_from_str,
+    as_native_dev,
     default_device,
     as_native_dtype,
     default_dtype,
@@ -20,7 +20,7 @@ from ivy import (
 
 def asarray(object_in, dtype=None, device=None, copy=None):
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         if copy:
             if dtype is None and isinstance(object_in, tf.Tensor):
                 return tf.identity(object_in)
@@ -75,7 +75,7 @@ def zeros(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.zeros(shape, as_native_dtype(default_dtype(dtype)))
 
 
@@ -85,7 +85,7 @@ def ones(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
-    device = dev_from_str(default_device(device))
+    device = as_native_dev(default_device(device))
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -97,7 +97,7 @@ def full_like(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
-    device = dev_from_str(default_device(device))
+    device = as_native_dev(default_device(device))
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
@@ -109,7 +109,7 @@ def ones_like(
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.ones_like(x, dtype=dtype)
 
 
@@ -119,7 +119,7 @@ def zeros_like(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.zeros_like(x, dtype=dtype)
 
 
@@ -137,7 +137,7 @@ def empty(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty(shape, as_native_dtype(default_dtype(dtype)))
 
 
@@ -148,7 +148,7 @@ def empty_like(
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
@@ -156,7 +156,7 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
     if axis is None:
         axis = -1
     device = default_device(device)
-    with tf.device(ivy.dev_from_str(device)):
+    with tf.device(ivy.as_native_dev(device)):
         start = tf.constant(start, dtype=dtype)
         stop = tf.constant(stop, dtype=dtype)
         if not endpoint:
@@ -181,7 +181,7 @@ def eye(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> tf.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
-    device = dev_from_str(default_device(device))
+    device = as_native_dev(default_device(device))
     with tf.device(device):
         if n_cols is None:
             n_cols = n_rows
@@ -210,7 +210,7 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
         else:
             stop = start
 
-    device = dev_from_str(default_device(device))
+    device = as_native_dev(default_device(device))
     with tf.device(device):
 
         if dtype is None:
@@ -238,7 +238,7 @@ def full(
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
-    with tf.device(dev_from_str(default_device(device))):
+    with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
             shape,
             tf.constant(

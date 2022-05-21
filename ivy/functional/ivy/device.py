@@ -147,7 +147,7 @@ def dev(
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -161,11 +161,11 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_framework().dev_to_str(device)
+    return _cur_framework().as_ivy_dev(device)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
+def as_native_dev(device: Union[ivy.Device, str]) -> ivy.Device:
     """Convert device string representation to native device type.
 
     Parameters
@@ -179,7 +179,7 @@ def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
         Native device handle.
 
     """
-    return _cur_framework().dev_from_str(device)
+    return _cur_framework().as_native_dev(device)
 
 
 # Memory
@@ -428,9 +428,9 @@ def default_device(device=None, item=None, as_str: bool = False):
     """
     if ivy.exists(device):
         if as_str is True:
-            return ivy.dev_to_str(device)
+            return ivy.as_ivy_dev(device)
         elif as_str is False:
-            return ivy.dev_from_str(device)
+            return ivy.as_native_dev(device)
         return device
     as_str = ivy.default(as_str, False)
     if ivy.exists(item):
@@ -444,8 +444,8 @@ def default_device(device=None, item=None, as_str: bool = False):
     else:
         ret = default_device_stack[-1]
     if as_str:
-        return ivy.dev_to_str(ret)
-    return ivy.dev_from_str(ret)
+        return ivy.as_ivy_dev(ret)
+    return ivy.as_native_dev(ret)
 
 
 # noinspection PyShadowingNames
