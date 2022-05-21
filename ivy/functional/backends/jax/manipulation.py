@@ -13,13 +13,8 @@ def roll(
     x: JaxArray,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    *,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return jnp.roll(x, shift, axis)
 
 
 def squeeze(
