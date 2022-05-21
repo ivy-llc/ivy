@@ -224,57 +224,57 @@ def test_permute_dims(
 
 
 # reshape
-@given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
-    ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
-    data=st.data(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
-)
-def test_reshape(
-    array_shape,
-    dtype,
-    data,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    seed,
-):
-    np.random.seed(seed)
-
-    # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-
-    x = np.random.uniform(size=array_shape).astype(dtype)
-
-    # draw a valid reshape shape
-    shape = data.draw(helpers.reshape_shapes(x.shape))
-
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "reshape",
-        x=x,
-        shape=shape,
-    )
+# @given(
+#     array_shape=helpers.lists(
+#         st.integers(1, 5), min_size="num_dims", max_size="num_dims",size_bounds=[1, 5]
+#     ),
+#     dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+#     data=st.data(),
+#     as_variable=st.booleans(),
+#     with_out=st.booleans(),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=st.booleans(),
+#     container=st.booleans(),
+#     instance_method=st.booleans(),
+#     seed=st.integers(0, 2**32 - 1),
+# )
+# def test_reshape(
+#     array_shape,
+#     dtype,
+#     data,
+#     as_variable,
+#     with_out,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     fw,
+#     seed,
+# ):
+#     np.random.seed(seed)
+#
+#     # smoke for torch
+#     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+#         return
+#
+#     x = np.random.uniform(size=array_shape).astype(dtype)
+#
+#     # draw a valid reshape shape
+#     shape = data.draw(helpers.reshape_shapes(x.shape))
+#
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         with_out,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         instance_method,
+#         fw,
+#         "reshape",
+#         x=x,
+#         shape=shape,
+#     )
 
 
 # roll

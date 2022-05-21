@@ -7,7 +7,11 @@ def test_docstrings():
     failures = list()
     success = True
     for k, v in ivy.__dict__.copy().items():
-        if k in ["namedtuple", "DType", "Dtype"] or helpers.docstring_examples_run(v):
+        if (
+            k in ["namedtuple", "DType", "Dtype"]
+            or (ivy.current_framework_str() in ["jax", "numpy"] and k == "conv3d")
+            or helpers.docstring_examples_run(v)
+        ):
             continue
         success = False
         failures.append(k)
