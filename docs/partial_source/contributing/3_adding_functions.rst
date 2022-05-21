@@ -207,8 +207,8 @@ adding any instance methods which have not yet been added in source code, or wer
 Inplace Updates
 ---------------
 
-All Ivy functions which return a single array should support inplace updates, with the inclusion of an :code:`out`
-argument with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
+All Ivy functions which return a single array should support inplace updates, with the inclusion of a **keyword-only**
+:code:`out` argument, with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
 and :code:`Optional[ivy.Array]` otherwise.
 
 When this argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
