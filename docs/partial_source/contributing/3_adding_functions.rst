@@ -85,8 +85,8 @@ The framework-specific implementation of :code:`ivy.tan`  for PyTorch in
 
 .. code-block:: python
 
-    def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-        return torch.tanh(x, out=out)
+    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return torch.tan(x, out=out)
 
 Compositional Functions
 -----------------------
