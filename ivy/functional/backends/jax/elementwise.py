@@ -419,11 +419,8 @@ def bitwise_right_shift(
     return ret
 
 
-def tan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.tan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def tan(x: JaxArray) -> JaxArray:
+    return jnp.tan(x)
 
 
 def atan(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:

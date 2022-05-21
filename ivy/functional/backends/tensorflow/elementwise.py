@@ -530,11 +530,8 @@ def bitwise_right_shift(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) ->
     return ret
 
 
-def tan(x: Tensor, *, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.tan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def tan(x: Tensor) -> Tensor:
+    return tf.tan(x)
 
 
 def atan(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
