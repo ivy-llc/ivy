@@ -77,11 +77,11 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
 
 def sparse_cross_entropy(
-        true: Union[ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
+        true: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        pred: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.Container]:
     """Computes sparse cross entropy between logits and labels.
 
     Parameters
@@ -102,8 +102,11 @@ def sparse_cross_entropy(
     ret
         The sparse cross-entropy loss between the given distributions
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.sparse_cross_entropy(x, y))
@@ -116,6 +119,67 @@ def sparse_cross_entropy(
     >>> x = ivy.array([2,3])
     >>> print(ivy.cross_entropy(x, y))
     ivy.array([0.35667497, 2.3025851 ])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4])
+    >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([0.693])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4]))
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    {
+        a: ivy.array([0.693])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.array([0])
+    >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
+    >>> print(ivy.sparse_cross_entropy(x,y))
+    ivy.array([2.3])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.native_array([0])
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
+    >>> print(ivy.sparse_cross_entropy(x,y))
+    {
+        a: ivy.array([2.3])
+    }
+    
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
+    >>> print(ivy.sparse_cross_entropy(x,y))
+    {
+        a: ivy.array([2.3])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2])
+    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(x.sparse_cross_entropy(y))
+    ivy.array([0.357])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([2]))
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
+    >>> print(x.sparse_cross_entropy(y))
+    {
+        a: ivy.array([0.357])
+    }
+
     """
     true = ivy.one_hot(true, pred.shape[axis])
     return cross_entropy(true, pred, axis, epsilon)
