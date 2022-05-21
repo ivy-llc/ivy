@@ -125,7 +125,7 @@ def test_as_ivy_dtype(x, dtype, tensor_fn, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, device)
-    dtype_as_str = ivy.dtype(x, as_str=True)
+    dtype_as_str = ivy.dtype(x)
     as_ivy_dtype = ivy.as_ivy_dtype(ivy.dtype(x))
     # type test
     assert isinstance(dtype_as_str, str)
@@ -157,7 +157,7 @@ def test_as_native_dtype(x, dtype, tensor_fn, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, device)
-    dt0 = ivy.as_native_dtype(ivy.dtype(x, as_str=True))
+    dt0 = ivy.as_native_dtype(ivy.dtype(x))
     dt1 = ivy.dtype(x)
     # value test
     assert dt0 is dt1
