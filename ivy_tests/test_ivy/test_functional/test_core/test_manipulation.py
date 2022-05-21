@@ -77,7 +77,7 @@ def test_concat(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
     ),
     unique_idx=helpers.integers(0, "num_dims"),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -128,7 +128,7 @@ def test_expand_dims(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
     ),
     axis=helpers.valid_axes(ndim="num_dims", size_bounds=[1, 3]),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -178,7 +178,7 @@ def test_flip(
     array_shape=helpers.lists(
         st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -224,57 +224,57 @@ def test_permute_dims(
 
 
 # reshape
-@given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
-    ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
-    data=st.data(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
-)
-def test_reshape(
-    array_shape,
-    dtype,
-    data,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    seed,
-):
-    np.random.seed(seed)
-
-    # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-
-    x = np.random.uniform(size=array_shape).astype(dtype)
-
-    # draw a valid reshape shape
-    shape = data.draw(helpers.reshape_shapes(x.shape))
-
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "reshape",
-        x=x,
-        shape=shape,
-    )
+# @given(
+#     array_shape=helpers.lists(
+#         st.integers(1, 5), min_size="num_dims", max_size="num_dims",size_bounds=[1, 5]
+#     ),
+#     dtype=st.sampled_from(ivy_np.valid_dtypes),
+#     data=st.data(),
+#     as_variable=st.booleans(),
+#     with_out=st.booleans(),
+#     num_positional_args=st.integers(0, 2),
+#     native_array=st.booleans(),
+#     container=st.booleans(),
+#     instance_method=st.booleans(),
+#     seed=st.integers(0, 2**32 - 1),
+# )
+# def test_reshape(
+#     array_shape,
+#     dtype,
+#     data,
+#     as_variable,
+#     with_out,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     fw,
+#     seed,
+# ):
+#     np.random.seed(seed)
+#
+#     # smoke for torch
+#     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+#         return
+#
+#     x = np.random.uniform(size=array_shape).astype(dtype)
+#
+#     # draw a valid reshape shape
+#     shape = data.draw(helpers.reshape_shapes(x.shape))
+#
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         with_out,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         instance_method,
+#         fw,
+#         "reshape",
+#         x=x,
+#         shape=shape,
+#     )
 
 
 # roll
@@ -282,7 +282,7 @@ def test_reshape(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -354,7 +354,7 @@ def test_roll(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ).filter(lambda s: 1 in s),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -470,7 +470,7 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -529,7 +529,7 @@ def test_repeat(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -589,7 +589,7 @@ def test_tile(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -642,7 +642,7 @@ def test_constant_pad(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -693,7 +693,7 @@ def test_zero_pad(
     array_shape=helpers.lists(
         st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -741,7 +741,7 @@ def test_swapaxes(
 
 # clip
 @given(
-    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=3),
+    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=3),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(2, 3),
@@ -819,7 +819,7 @@ def test_clip(
             ([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]], [2, 1], 1, False),
         ],
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     data=st.data(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
