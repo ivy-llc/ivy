@@ -185,7 +185,7 @@ def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
 # Memory
 
 # noinspection PyShadowingNames
-def clear_mem_on_dev(device: ivy.Device) -> None:
+def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
     Parameters
@@ -198,7 +198,7 @@ def clear_mem_on_dev(device: ivy.Device) -> None:
 
 
 # noinspection PyShadowingNames
-def total_mem_on_dev(device: ivy.Device) -> float:
+def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
 
@@ -227,7 +227,9 @@ def total_mem_on_dev(device: ivy.Device) -> float:
 
 
 # noinspection PyShadowingNames
-def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
 
@@ -265,7 +267,9 @@ def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
 
 
 # noinspection PyShadowingNames
-def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def percent_used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
 
@@ -305,7 +309,7 @@ def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float
 # Utilization
 
 # noinspection PyShadowingNames
-def dev_util(device: ivy.Device) -> float:
+def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
     Parameters
@@ -405,14 +409,6 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
-def _assert_dev_correct_formatting(device):
-    assert device[0:3] in ["gpu", "tpu", "cpu"]
-    if device != "cpu":
-        assert device[3] == ":"
-        assert device[4:].isnumeric()
-
-
-# noinspection PyShadowingNames
 def default_device(device=None, item=None, as_str: bool = False):
     """Summary.
 
@@ -431,7 +427,8 @@ def default_device(device=None, item=None, as_str: bool = False):
 
     """
     if ivy.exists(device):
-        _assert_dev_correct_formatting(ivy.dev_to_str(device))
+        # assert the string formatting is correct if string input
+        ivy.dev_to_str(device)
         return device
     elif ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
@@ -457,7 +454,6 @@ def set_default_device(device):
     device
 
     """
-    _assert_dev_correct_formatting(device)
     global default_device_stack
     default_device_stack.append(device)
 
@@ -474,7 +470,7 @@ def unset_default_device():
 # noinspection PyShadowingNames
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
