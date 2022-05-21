@@ -194,8 +194,32 @@ def _wrap_function(fn):
             return out
         return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
+    def _get_first_array(*args, **kwargs):
+        # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+        arr = None
+        if args:
+            arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(args, arr_idxs[0])
+            else:
+                arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+                if arr_idxs:
+                    arr = ivy.index_nest(kwargs, arr_idxs[0])
+        elif kwargs:
+            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(kwargs, arr_idxs[0])
+        return arr
+
     def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        # ToDo: implement dtype and device handling here
+        handle_dtype = 'dtype' in kwargs
+        handle_dev = 'device' in kwargs
+        if handle_dtype or handle_dev:
+            arr = _get_first_array(*args, **kwargs)
+            if handle_dtype:
+                kwargs['dtype'] = ivy.default_dtype(kwargs['dtype'], item=arr, as_native=True)
+            if handle_dev:
+                kwargs['dev'] = ivy.default_device(kwargs['device'], item=arr, as_native=True)
         return _function_w_arrays_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
