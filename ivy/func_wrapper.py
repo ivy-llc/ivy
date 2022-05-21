@@ -163,10 +163,13 @@ def _wrap_function(fn):
     if hasattr(fn, "wrapped") and fn.wrapped:
         return fn
 
-    def _function_w_arrays_handled(*args, out=None, **kwargs):
+    def _function_w_arrays_n_out_handled(*args, out=None, **kwargs):
         """
-        Computes the result of the function fn, returning the result as an ivy array or
-        a native framework array.
+        Converts all :code:`ivy.Array` instances in both the positional and
+        keyword arguments into :code:`ivy.NativeArray` instances, calls the internal
+        function :code:`fn`, and then converts all :code:`ivy.NativeArray` instances
+        in the return back to :code:`ivy.Array` instances. Also handles :code:`out`
+        argument correctly, enabling an inplace update.
 
         Parameters
         ----------
@@ -239,7 +242,7 @@ def _wrap_function(fn):
                 kwargs["device"] = ivy.default_device(
                     kwargs["device"], item=arr, as_native=True
                 )
-        return _function_w_arrays_handled(*args, **kwargs)
+        return _function_w_arrays_n_out_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
         """
