@@ -189,7 +189,7 @@ def set_framework(framework):
     # appropriate backend implementation (backend specified by `framework`)
     for k, v in ivy_original_dict.items():
         if k not in framework.__dict__:
-            if k in ivy.valid_dtype_strs:
+            if k in ivy.valid_dtypes:
                 del ivy.__dict__[k]
                 continue
             framework.__dict__[k] = v

@@ -725,7 +725,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """
     if dtype_in is None:
         return True
-    return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtype_strs
+    return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
@@ -745,7 +745,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """
     if dtype_in is None:
         return False
-    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtype_strs
+    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:

@@ -150,7 +150,7 @@ def _wrap_function(fn):
     """
     # do nothing if the function is private or in the non wrapped functions list
     if hasattr(fn, "__name__") and (
-            fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
+        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
     ):
         return fn
 
@@ -212,14 +212,18 @@ def _wrap_function(fn):
         return arr
 
     def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        handle_dtype = 'dtype' in kwargs
-        handle_dev = 'device' in kwargs
+        handle_dtype = "dtype" in kwargs
+        handle_dev = "device" in kwargs
         if handle_dtype or handle_dev:
             arr = _get_first_array(*args, **kwargs)
             if handle_dtype:
-                kwargs['dtype'] = ivy.default_dtype(kwargs['dtype'], item=arr, as_native=True)
+                kwargs["dtype"] = ivy.default_dtype(
+                    kwargs["dtype"], item=arr, as_native=True
+                )
             if handle_dev:
-                kwargs['dev'] = ivy.default_device(kwargs['device'], item=arr, as_native=True)
+                kwargs["device"] = ivy.default_device(
+                    kwargs["device"], item=arr, as_native=True
+                )
         return _function_w_arrays_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
