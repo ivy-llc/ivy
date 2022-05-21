@@ -21,8 +21,8 @@ Data type
    data_type/dtype.rst
    data_type/astype.rst
    data_type/dtype_bits.rst
-   data_type/dtype_to_str.rst
-   data_type/dtype_from_str.rst
+   data_type/as_ivy_dtype.rst
+   data_type/as_native_dtype.rst
    data_type/default_int_dtype.rst
    data_type/default_float_dtype.rst
    data_type/default_dtype.rst

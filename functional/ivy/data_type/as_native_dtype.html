@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>set_default_float_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>as_native_dtype &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="unset_default_float_dtype" href="unset_default_float_dtype.html" />
-    <link rel="prev" title="unset_default_int_dtype" href="unset_default_int_dtype.html" /> 
+    <link rel="next" title="default_int_dtype" href="default_int_dtype.html" />
+    <link rel="prev" title="as_ivy_dtype" href="as_ivy_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,7 +65,7 @@
 <li class="toctree-l3"><a class="reference internal" href="astype.html">astype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="as_ivy_dtype.html">as_ivy_dtype</a></li>
-<li class="toctree-l3"><a class="reference internal" href="as_native_dtype.html">as_native_dtype</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">as_native_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="default_float_dtype.html">default_float_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="default_dtype.html">default_dtype</a></li>
@@ -73,7 +73,7 @@
 <li class="toctree-l3"><a class="reference internal" href="unset_default_dtype.html">unset_default_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="set_default_int_dtype.html">set_default_int_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="unset_default_int_dtype.html">unset_default_int_dtype</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">set_default_float_dtype</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set_default_float_dtype.html">set_default_float_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="unset_default_float_dtype.html">unset_default_float_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l3"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
@@ -145,9 +145,9 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../ivy.html">Ivy</a> &raquo;</li>
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>set_default_float_dtype</li>
+      <li>as_native_dtype</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/set_default_float_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/as_native_dtype.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -155,15 +155,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="set-default-float-dtype">
-<h1>set_default_float_dtype<a class="headerlink" href="#set-default-float-dtype" title="Permalink to this headline"></a></h1>
+  <section id="as-native-dtype">
+<h1>as_native_dtype<a class="headerlink" href="#as-native-dtype" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.set_default_float_dtype">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_default_float_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#set_default_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.set_default_float_dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.as_native_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">as_native_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#as_native_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.as_native_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Convert data type string representation to native data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>float_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The data type string to convert to native data type.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – data type e.g. ivy.float32.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,8 +185,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="unset_default_int_dtype.html" class="btn btn-neutral float-left" title="unset_default_int_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="unset_default_float_dtype.html" class="btn btn-neutral float-right" title="unset_default_float_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="as_ivy_dtype.html" class="btn btn-neutral float-left" title="as_ivy_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="default_int_dtype.html" class="btn btn-neutral float-right" title="default_int_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
