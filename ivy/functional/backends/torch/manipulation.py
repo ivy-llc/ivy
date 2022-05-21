@@ -11,6 +11,7 @@ def roll(
     x: torch.Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 

@@ -13,6 +13,7 @@ def roll(
     x: Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     out: Optional[Tensor] = None,
 ) -> Tensor:
     if axis is None:
