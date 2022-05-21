@@ -102,14 +102,14 @@ def test_dtype_bits(x, dtype, tensor_fn, device, call):
     assert ret in [1, 8, 16, 32, 64]
 
 
-# dtype_to_str
+# as_ivy_dtype
 @pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
     "dtype",
     ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
 )
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_dtype_to_str(x, dtype, tensor_fn, device, call):
+def test_as_ivy_dtype(x, dtype, tensor_fn, device, call):
     # smoke test
     if call is helpers.mx_call and dtype == "int16":
         # mxnet does not support int16
@@ -126,22 +126,22 @@ def test_dtype_to_str(x, dtype, tensor_fn, device, call):
         pytest.skip()
     x = tensor_fn(x, dtype, device)
     dtype_as_str = ivy.dtype(x, as_str=True)
-    dtype_to_str = ivy.dtype_to_str(ivy.dtype(x))
+    as_ivy_dtype = ivy.as_ivy_dtype(ivy.dtype(x))
     # type test
     assert isinstance(dtype_as_str, str)
-    assert isinstance(dtype_to_str, str)
+    assert isinstance(as_ivy_dtype, str)
     # value test
-    assert dtype_to_str == dtype_as_str
+    assert as_ivy_dtype == dtype_as_str
 
 
-# dtype_from_str
+# as_native_dtype
 @pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
     "dtype",
     ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
 )
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_dtype_from_str(x, dtype, tensor_fn, device, call):
+def test_as_native_dtype(x, dtype, tensor_fn, device, call):
     # smoke test
     if call is helpers.mx_call and dtype == "int16":
         # mxnet does not support int16
@@ -157,10 +157,11 @@ def test_dtype_from_str(x, dtype, tensor_fn, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, device)
-    dt0 = ivy.dtype_from_str(ivy.dtype(x, as_str=True))
+    dt0 = ivy.as_native_dtype(ivy.dtype(x, as_str=True))
     dt1 = ivy.dtype(x)
     # value test
     assert dt0 is dt1
+
 
 # Still to Add #
 # ---------------#

@@ -5,7 +5,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
+from ivy import default_device, as_native_dtype, default_dtype, as_ivy_dtype
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
@@ -30,7 +30,7 @@ def asarray(
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
         else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
     else:
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
@@ -38,7 +38,7 @@ def asarray(
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
         else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
@@ -86,7 +86,7 @@ def empty(
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
-    return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
+    return mx.nd.empty(shape, as_native_dtype(default_dtype(dtype)), cont)
 
 
 def _linspace(start, stop, num, cont):
@@ -164,11 +164,14 @@ def full(shape, fill_value, dtype=None, device=None):
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             mx.nd.full(
-                (1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))
+                (1,),
+                fill_value,
+                cont,
+                as_native_dtype(default_dtype(dtype, fill_value)),
             )
         )
     return mx.nd.full(
-        shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))
+        shape, fill_value, cont, as_native_dtype(default_dtype(dtype, fill_value))
     )
 
 
