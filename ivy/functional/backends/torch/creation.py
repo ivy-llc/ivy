@@ -345,14 +345,15 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
+    *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    device: torch.device,
 ) -> Tensor:
     return torch.full(
         shape_to_tuple(shape),
         fill_value,
-        dtype=as_native_dtype(default_dtype(dtype, fill_value)),
-        device=default_device(device),
+        dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+        device=device,
     )
 
 
