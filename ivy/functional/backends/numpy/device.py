@@ -17,11 +17,19 @@ def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
     return as_ivy_dev("cpu")
 
 
-dev.__name__ = "dev"
 _dev_callable = dev
-as_ivy_dev = lambda device: ivy.Device("cpu")
-as_native_dev = lambda device: "cpu"
-clear_mem_on_dev = lambda device: None
+
+
+def as_ivy_dev(device):
+    return ivy.Device("cpu")
+
+
+def as_native_dev(device):
+    return "cpu"
+
+
+def clear_mem_on_dev(device):
+    return None
 
 
 def tpu_is_available() -> bool:

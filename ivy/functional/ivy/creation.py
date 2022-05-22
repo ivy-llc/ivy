@@ -88,6 +88,7 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:

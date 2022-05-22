@@ -46,7 +46,7 @@ def dev(
 _callable_dev = dev
 
 
-def to_dev(x, device=None, out=None):
+def to_dev(x, *, device=None, out=None):
     if device is not None:
         cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
