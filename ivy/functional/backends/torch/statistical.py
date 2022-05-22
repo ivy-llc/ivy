@@ -97,8 +97,9 @@ def sum(
 def prod(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     keepdims: bool = False,
+    *,
+    dtype: torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
