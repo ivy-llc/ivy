@@ -49,7 +49,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.prod(self, axis, dtype, keepdims, out=out)
+        return ivy.prod(self, axis, keepdims, dtype=dtype, out=out)
 
     def sum(
         self: ivy.Array,
