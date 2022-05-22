@@ -139,6 +139,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(

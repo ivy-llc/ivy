@@ -21,7 +21,7 @@ torch_scatter = None
 def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
-        return dv
+        return torch.device(dv)
     return as_ivy_dev(dv)
 
 

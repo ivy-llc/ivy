@@ -154,16 +154,16 @@ def test_to_dev(x, dtype, tensor_fn, with_out, device, call):
     # create a dummy array for out that is broadcastable to x
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
-    device = ivy.dev(x)
+    device = ivy.dev(x, as_native=True)
     x_on_dev = ivy.to_dev(x, device, out=out)
-    dev_from_new_x = ivy.dev(x_on_dev)
+    dev_from_new_x = ivy.dev(x_on_dev, as_native=True)
 
     if with_out:
         # should be the same array test
         assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
 
         # should be the same device
-        assert ivy.dev(x_on_dev) == ivy.dev(out)
+        assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
         if ivy.current_framework_str() in ["tensorflow", "jax"]:
