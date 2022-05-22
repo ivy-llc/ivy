@@ -394,7 +394,6 @@ def empty_like(
     return _cur_framework(x).empty_like(x, dtype, device)
 
 
-
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
