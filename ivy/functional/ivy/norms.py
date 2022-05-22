@@ -1,4 +1,4 @@
-'''Collection of Ivy normalization functions.'''
+"""Collection of Ivy normalization functions."""
 
 
 # local
