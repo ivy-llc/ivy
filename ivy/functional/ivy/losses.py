@@ -82,8 +82,8 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
 
 def sparse_cross_entropy(
-        true: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        pred: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
 ) -> ivy.Array:
