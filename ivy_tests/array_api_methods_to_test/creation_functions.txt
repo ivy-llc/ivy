@@ -6,7 +6,7 @@ empty_like
 from_dlpack
 full
 full_like
-#linspace
+#linspace #failing for numpy, jax
 meshgrid
 ones
 ones_like

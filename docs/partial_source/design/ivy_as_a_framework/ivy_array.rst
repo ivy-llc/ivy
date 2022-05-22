@@ -28,7 +28,7 @@ Let’s dive straight in and check out what the :code:`ivy.Array` constructor lo
             self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
             self._dtype = ivy.dtype(self._data)
             self._device = ivy.dev(self._data)
-            self._dev_str = ivy.dev_to_str(self._device)
+            self._dev_str = ivy.as_ivy_dev(self._device)
             self._pre_repr = 'ivy.'
             if 'gpu' in self._dev_str:
                 self._post_repr = ', dev={})'.format(self._dev_str)

@@ -9,7 +9,7 @@ import ivy
 
 
 def add(
-    x1: torch.Tensor, x2: torch.Tensor, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
@@ -229,7 +229,7 @@ def not_equal(x1: Tensor, x2: Tensor, out: Optional[torch.Tensor] = None) -> Ten
     return torch.not_equal(x1, x2, out=out)
 
 
-def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tanh(x, out=out)
 
 
@@ -306,7 +306,7 @@ def logaddexp(
     return torch.logaddexp(x1, x2, out=out)
 
 
-def tan(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tan(x, out=out)
 
 

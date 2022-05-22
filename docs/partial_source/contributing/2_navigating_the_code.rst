@@ -33,7 +33,7 @@ should adhere to the following type hint format:
 
     def my_func(x: Union[ivy.Array, ivy.NativeArray],
                 axes: Union[int, Tuple[int], List[int]],
-                dtype: Optional[Union[ivy.Dtype, str]] = None,
+                dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
                 dev: Optional[Union[ivy.Dev, str]] = None) \
             -> ivy.Array:
         """
@@ -103,8 +103,8 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
                 dtype: Optional[Union[torch.dtype, str]] = None,
                 dev: Optional[Union[torch.device, str]] = None) \
             -> torch.Tensor:
-        dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x))
-        dev = ivy.dev_from_str(ivy.default_dev(dev, x))
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype, x))
+        dev = ivy.as_native_dev(ivy.default_dev(dev, x))
         return torch.something_cool(x, dtype, dev)
 
 Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints

@@ -35,6 +35,7 @@ Taking all of these points into consideration, let's take a look at the type hin
 
     def tan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None
     ) -> Union[ivy.Array, ivy.Container]:
 
@@ -51,6 +52,7 @@ Similarly, the type hints for :code:`ivy.roll`
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         shift: Union[int, Tuple[int, ...]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
 
@@ -61,6 +63,7 @@ and :code:`ivy.add`
     def add(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
 

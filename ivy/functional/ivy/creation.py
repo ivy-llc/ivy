@@ -14,10 +14,10 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def arange(
     start: Number,
-    stop: Number = None,
+    stop: Optional[Number] = None,
     step: Number = 1,
-    dtype: ivy.Dtype = None,
-    device: ivy.Device = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval
      with the spacing being specified.
@@ -63,8 +63,8 @@ def arange(
 
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Converts the input to an array.
@@ -91,8 +91,9 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with zeros.
@@ -123,13 +124,13 @@ def zeros(
                [0., 0., 0., 0., 0.],
                [0., 0., 0., 0., 0.]])
     """
-    return _cur_framework().zeros(shape, dtype, device)
+    return _cur_framework().zeros(shape, dtype=dtype, device=device)
 
 
 def ones(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with ones.
@@ -165,8 +166,8 @@ def ones(
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array filled with ``fill_value``
@@ -209,8 +210,8 @@ def full_like(
 
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array filled with ones and having the same shape as an input array x.
@@ -245,8 +246,8 @@ def ones_like(
 
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array filled with zeros
@@ -337,8 +338,8 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Return a new array of given shape and type, filled with zeros.
 
@@ -366,8 +367,8 @@ def empty(
 
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
 
@@ -393,14 +394,15 @@ def empty_like(
     return _cur_framework(x).empty_like(x, dtype, device)
 
 
-def eye(n_rows: int,
-        n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
-        dtype: Optional[ivy.Dtype] = None,
-        device: Optional[ivy.Device] = None) \
-        -> ivy.Array:
-    """
-    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+
+def eye(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> ivy.Array:
+    """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
     Parameters
     ----------
@@ -437,16 +439,21 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray, int],
-             stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, axis: int = None, device: ivy.Device = None,
-             dtype=None, endpoint: bool = True) \
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Generates a certain number of evenly-spaced values in an interval along
-    a given axis.
-    See :math:`arange`
-    that allows to specify the step size of evenly spaced values in an interval.
+def linspace(
+    start: Union[ivy.Array, ivy.NativeArray, int],
+    stop: Union[ivy.Array, ivy.NativeArray, int],
+    num: int,
+    axis: int = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    dtype=None,
+    endpoint: bool = True,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Generates a certain number of evenly-spaced values in an interval along a given
+    axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in
+    an interval.
+
 
     Parameters
     ----------
@@ -517,6 +524,54 @@ def meshgrid(
         if Cartesian indexing ``xy``,
         then each returned array must have shape ``(N, M, P)``.
         Each returned array should have the same data type as the input arrays.
+
+
+        This method conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/API_specification/
+        generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        in the standard. The descriptions above assume an array input for simplicity,
+        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
+        instances, as shown in the type hints and also the examples below.
+
+        Functional Examples
+        -------------------
+
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
+        >>> x = ivy.array([1, 2, 5])
+        >>> y = ivy.array([4, 1])
+        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+        >>> print(xv)
+        ivy.array([[1, 1],
+                   [2, 2],
+                   [5, 5]])
+        >>> print(yv)
+        ivy.array([[4, 1],
+                   [4, 1],
+                   [4, 1]])
+
+        With :code:`ivy.NativeArray` input:
+
+        >>> x = ivy.native_array([1, 2])
+        >>> y = ivy.native_array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
     """
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 
@@ -524,8 +579,8 @@ def meshgrid(
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with ``fill_value``.
@@ -598,8 +653,8 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
     """Converts the input to a native array.
 
@@ -632,7 +687,7 @@ def logspace(
     num: int,
     base: float = 10.0,
     axis: int = None,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space,
     in an interval along a given axis.
