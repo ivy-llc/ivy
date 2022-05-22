@@ -86,9 +86,10 @@ def sum(
 
 def prod(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: np.dtype,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
