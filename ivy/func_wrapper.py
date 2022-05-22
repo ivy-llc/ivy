@@ -58,6 +58,7 @@ NON_WRAPPED_FUNCTIONS = [
     "map_nest_at_indices",
     "nested_indices_where",
     "map",
+    "set_default_device",
     "unset_default_device",
     "closest_valid_dtype",
     "default_dtype",
