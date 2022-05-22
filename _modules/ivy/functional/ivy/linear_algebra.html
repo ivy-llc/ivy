@@ -781,7 +781,10 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/cholesky.html#ivy.functional.ivy.linear_algebra.cholesky">[docs]</a><span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/cholesky.html#ivy.functional.ivy.linear_algebra.cholesky">[docs]</a><span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+     <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Computes the cholesky decomposition of the x matrix.</span>
 
 <span class="sd">    Parameters</span>
@@ -796,11 +799,51 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    ret </span>
 <span class="sd">        an array containing the Cholesky factors for each square matrix. If upper is</span>
 <span class="sd">        False, the returned array must contain lower-triangular matrices; otherwise, the</span>
 <span class="sd">        returned array must contain upper-triangular matrices. The returned array must</span>
 <span class="sd">        have a floating-point data type determined by Type Promotion Rules and must have</span>
 <span class="sd">        the same shape as x.</span>
+<span class="sd">    </span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">     -------------------</span>
+<span class="sd">     With :code:`ivy.Array` input:</span>
+<span class="sd">      </span>
+<span class="sd">     1. Returns a lower-triangular Cholesky factor L</span>
+
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])  </span>
+<span class="sd">     &gt;&gt;&gt; l = ivy.cholesky(x)</span>
+<span class="sd">     &gt;&gt;&gt; print(l)</span>
+<span class="sd">     ivy.array([[ 1., 0.], [ 2., 1.]])</span>
+
+
+<span class="sd">     With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">     2. Returns an upper-triangular cholesky factor U</span>
+
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])  </span>
+<span class="sd">     &gt;&gt;&gt; u = ivy.cholesky(x, upper = True)</span>
+<span class="sd">     &gt;&gt;&gt; print(u)</span>
+<span class="sd">     ivy.array([[ 1., -2.], [ 0.,  1.]])</span>
+
+
+
+<span class="sd">     Instance Method Examples</span>
+<span class="sd">     ------------------------</span>
+
+<span class="sd">     With :code:`ivy.Container` input:</span>
+
+<span class="sd">     3. Returns a lower-triangular Cholesky factor</span>
+
+<span class="sd">     &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">     &gt;&gt;&gt; y = x.cholesky()</span>
+<span class="sd">     &gt;&gt;&gt; print(y)</span>
+<span class="sd">     &gt;&gt;&gt;</span>
+<span class="sd">     {</span>
+<span class="sd">         a: ivy.array([[1.73, 0.], [-0.57,  1.63]])</span>
+<span class="sd">         b: ivy.array([[1.41, 0.], [0.70, 0.70]])</span>
+<span class="sd">     }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span></div>
