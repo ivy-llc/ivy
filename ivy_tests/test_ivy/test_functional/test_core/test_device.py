@@ -33,7 +33,7 @@ def test_dev(x, dtype, tensor_fn, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, device)
-    ret = ivy.dev(x, as_str=True)
+    ret = ivy.dev(x)
     # type test
     assert isinstance(ret, str)
     # value test
@@ -75,7 +75,7 @@ def test_as_native_dev(x, dtype, tensor_fn, device, call):
         pytest.skip()
     x = tensor_fn(x, dtype, device)
     device = ivy.as_native_dev(device)
-    ret = ivy.as_native_dev(ivy.dev(x, as_str=True))
+    ret = ivy.as_native_dev(ivy.dev(x))
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
@@ -154,16 +154,16 @@ def test_to_dev(x, dtype, tensor_fn, with_out, device, call):
     # create a dummy array for out that is broadcastable to x
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
-    device = ivy.dev(x)
+    device = ivy.dev(x, as_native=True)
     x_on_dev = ivy.to_dev(x, device, out=out)
-    dev_from_new_x = ivy.dev(x_on_dev)
+    dev_from_new_x = ivy.dev(x_on_dev, as_native=True)
 
     if with_out:
         # should be the same array test
         assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
 
         # should be the same device
-        assert ivy.dev(x_on_dev) == ivy.dev(out)
+        assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
         if ivy.current_framework_str() in ["tensorflow", "jax"]:
@@ -285,7 +285,7 @@ def test_dist_array(x, axis, tensor_fn, devs_as_dict, device, call):
     assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devices))
 
     # value test
-    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize("x", [[0, 1, 2, 3, 4]])
@@ -312,7 +312,7 @@ def test_clone_array(x, axis, tensor_fn, device, call):
     assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devices))
 
     # value test
-    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize("xs", [([0, 1, 2], [3, 4])])
@@ -341,7 +341,7 @@ def test_unify_array(xs, axis, tensor_fn, device, call):
     assert x_unified.shape[axis] == expected_size
 
     # value test
-    assert ivy.dev(x_unified, as_str=True) == dev0
+    assert ivy.dev(x_unified) == dev0
 
 
 @pytest.mark.parametrize("args", [[[0, 1, 2, 3, 4], "some_str", ([1, 2])]])
@@ -374,13 +374,13 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert min(
         [
-            ivy.dev(dist_args_ds[0], as_str=True) == ds
+            ivy.dev(dist_args_ds[0]) == ds
             for ds, dist_args_ds in dist_args.at_devs().items()
         ]
     )
     assert min(
         [
-            ivy.dev(dist_kwargs_ds["a"], as_str=True) == ds
+            ivy.dev(dist_kwargs_ds["a"]) == ds
             for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()
         ]
     )
@@ -416,13 +416,13 @@ def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert min(
         [
-            ivy.dev(dist_args_ds[0], as_str=True) == ds
+            ivy.dev(dist_args_ds[0]) == ds
             for ds, dist_args_ds in cloned_args.at_devs().items()
         ]
     )
     assert min(
         [
-            ivy.dev(dist_kwargs_ds["a"], as_str=True) == ds
+            ivy.dev(dist_kwargs_ds["a"]) == ds
             for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()
         ]
     )
@@ -468,8 +468,8 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     assert kwargs_uni["a"].shape[axis] == expected_size_kwarg
 
     # value test
-    assert ivy.dev(args_uni[0], as_str=True) == dev0
-    assert ivy.dev(kwargs_uni["a"], as_str=True) == dev0
+    assert ivy.dev(args_uni[0]) == dev0
+    assert ivy.dev(kwargs_uni["a"]) == dev0
 
 
 # profiler

@@ -39,11 +39,13 @@ def sum(
 
 
 def prod(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.ndarray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    *,
+    dtype: type,
+    out: Optional[mx.ndarray] = None,
+) -> mx.ndarray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -179,7 +181,7 @@ def max(
 def einsum(
     equation: str,
     *operands: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None
+    out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(

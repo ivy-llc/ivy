@@ -8,7 +8,7 @@ from ivy import verbosity
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_methods, _unwrap_methods
+from ivy.func_wrapper import _wrap_functions, _unwrap_functions
 
 
 framework_stack = []
@@ -189,7 +189,7 @@ def set_framework(framework):
     # appropriate backend implementation (backend specified by `framework`)
     for k, v in ivy_original_dict.items():
         if k not in framework.__dict__:
-            if k in ivy.valid_dtype_strs:
+            if k in ivy.valid_dtypes:
                 del ivy.__dict__[k]
                 continue
             framework.__dict__[k] = v
@@ -202,7 +202,7 @@ def set_framework(framework):
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    _wrap_methods()
+    _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
 
@@ -233,7 +233,7 @@ def get_framework(f=None):
 def unset_framework():
     fw = None
     if framework_stack:
-        _unwrap_methods()
+        _unwrap_functions()
         fw = framework_stack.pop(-1)
         if fw.current_framework_str() == "numpy":
             ivy.unset_default_device()
@@ -243,7 +243,7 @@ def unset_framework():
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
     if framework_stack:
-        _wrap_methods()
+        _wrap_functions()
     return fw
 
 

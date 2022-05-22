@@ -61,7 +61,12 @@ def multinomial(
     return torch.multinomial(probs, num_samples, replace).to(default_device(device))
 
 
-def randint(low: int, high: int, shape: List[int], device: ivy.Device = None):
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 
 

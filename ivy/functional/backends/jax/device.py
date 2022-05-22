@@ -3,11 +3,12 @@
 # global
 import os
 import jax
-import ivy
-from ivy.functional.backends.jax import JaxArray
-
+from typing import Union
+import jaxlib.xla_extension
 
 # local
+import ivy
+from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -27,7 +28,9 @@ def _to_array(x):
 # ----#
 
 
-def dev(x: JaxArray, as_str: bool = False) -> str:
+def dev(
+    x: JaxArray, as_native: bool = False
+) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
     try:
@@ -35,15 +38,15 @@ def dev(x: JaxArray, as_str: bool = False) -> str:
         dv = dv()
     except Exception:
         dv = jax.devices()[0]
-    if as_str:
-        return as_ivy_dev(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
 _callable_dev = dev
 
 
-def to_dev(x, device=None, out=None):
+def to_dev(x, *, device=None, out=None):
     if device is not None:
         cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:

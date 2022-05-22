@@ -30,9 +30,9 @@ def copy_array(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
-    if ivy.dtype(x0, as_str=True) == "bool":
+    if ivy.dtype(x0) == "bool":
         x0 = x0.astype("int32")
-    if ivy.dtype(x1, as_str=True) == "bool":
+    if ivy.dtype(x1) == "bool":
         x1 = x1.astype("int32")
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 

@@ -41,10 +41,11 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: np.dtype,
+    device: str,
 ) -> np.ndarray:
-    return _to_dev(np.zeros(shape, as_native_dtype(default_dtype(dtype))), device)
+    return _to_dev(np.zeros(shape, dtype), device)
 
 
 def ones(

@@ -56,13 +56,13 @@ class Dtype(str):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "int" in dtype
+        assert "int" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "float" in dtype
+        assert "float" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
@@ -226,22 +226,40 @@ add_ivy_container_instance_methods(
 )
 
 # data types
-int8 = "int8"
-int16 = "int16"
-int32 = "int32"
-int64 = "int64"
-uint8 = "uint8"
-uint16 = "uint16"
-uint32 = "uint32"
-uint64 = "uint64"
-bfloat16 = "bfloat16"
-float16 = "float16"
-float32 = "float32"
-float64 = "float64"
+int8 = IntDtype("int8")
+int16 = IntDtype("int16")
+int32 = IntDtype("int32")
+int64 = IntDtype("int64")
+uint8 = IntDtype("uint8")
+uint16 = IntDtype("uint16")
+uint32 = IntDtype("uint32")
+uint64 = IntDtype("uint64")
+bfloat16 = FloatDtype("bfloat16")
+float16 = FloatDtype("float16")
+float32 = FloatDtype("float32")
+float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 bool = "bool"
 nan = float("nan")
 inf = float("inf")
+
+# native data types
+native_int8 = IntDtype("int8")
+native_int16 = IntDtype("int16")
+native_int32 = IntDtype("int32")
+native_int64 = IntDtype("int64")
+native_uint8 = IntDtype("uint8")
+native_uint16 = IntDtype("uint16")
+native_uint32 = IntDtype("uint32")
+native_uint64 = IntDtype("uint64")
+native_bfloat16 = FloatDtype("bfloat16")
+native_float16 = FloatDtype("float16")
+native_float32 = FloatDtype("float32")
+native_float64 = FloatDtype("float64")
+# noinspection PyShadowingBuiltins
+native_bool = "bool"
+native_nan = float("nan")
+native_inf = float("inf")
 
 valid_dtypes = (
     int8,
@@ -276,7 +294,7 @@ valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (bfloat16, float16, float32, float64)
 
 # all
-all_dtype_strs = (
+all_dtypes = (
     "int8",
     "int16",
     "int32",
@@ -291,7 +309,7 @@ all_dtype_strs = (
     "float64",
     "bool",
 )
-numeric_dtype_strs = (
+numeric_dtypes = (
     "int8",
     "int16",
     "int32",
@@ -305,7 +323,7 @@ numeric_dtype_strs = (
     "float32",
     "float64",
 )
-int_dtype_strs = (
+int_dtypes = (
     "int8",
     "int16",
     "int32",
@@ -315,19 +333,13 @@ int_dtype_strs = (
     "uint32",
     "uint64",
 )
-float_dtype_strs = ("bfloat16", "float16", "float32", "float64")
-
-# valid
-valid_dtype_strs = all_dtype_strs
-valid_numeric_dtype_strs = numeric_dtype_strs
-valid_int_dtype_strs = int_dtype_strs
-valid_float_dtype_strs = float_dtype_strs
+float_dtypes = ("bfloat16", "float16", "float32", "float64")
 
 # invalid
-invalid_dtype_strs = ()
-invalid_numeric_dtype_strs = ()
-invalid_int_dtype_strs = ()
-invalid_float_dtype_strs = ()
+invalid_dtypes = ()
+invalid_numeric_dtypes = ()
+invalid_int_dtypes = ()
+invalid_float_dtypes = ()
 
 promotion_table = {
     (int8, int8): int8,

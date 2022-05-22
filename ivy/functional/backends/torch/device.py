@@ -18,11 +18,11 @@ torch_scatter = None
 # ----#
 
 
-def dev(x: torch.Tensor, as_str: bool = False) -> str:
+def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
-    if as_str:
-        return as_ivy_dev(dv)
-    return dv
+    if as_native:
+        return torch.device(dv)
+    return as_ivy_dev(dv)
 
 
 def to_dev(
