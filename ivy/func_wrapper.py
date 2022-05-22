@@ -35,7 +35,6 @@ NON_WRAPPED_FUNCTIONS = [
     "compile",
     "compile_graph",
     "dev",
-    "dev",
     "as_ivy_dev",
     "as_native_dev",
     "memory_on_dev",
