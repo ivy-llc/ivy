@@ -158,7 +158,7 @@ def test_as_native_dtype(x, dtype, tensor_fn, device, call):
         pytest.skip()
     x = tensor_fn(x, dtype, device)
     dt0 = ivy.as_native_dtype(ivy.dtype(x))
-    dt1 = ivy.dtype(x)
+    dt1 = ivy.dtype(x, as_native=True)
     # value test
     assert dt0 is dt1
 
