@@ -53,6 +53,7 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         shift: Union[int, Tuple[int, ...]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.roll(self, shift=shift, axis=axis, out=out)

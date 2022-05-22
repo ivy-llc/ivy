@@ -63,10 +63,12 @@ def multinomial(
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:
         probs = (
-            _jnp.ones((
-                batch_size,
-                population_size,
-            ))
+            _jnp.ones(
+                (
+                    batch_size,
+                    population_size,
+                )
+            )
             / population_size
         )
     orig_probs_shape = list(probs.shape)
@@ -86,10 +88,10 @@ def multinomial(
 
 
 def randint(
-        low: int,
-        high: int,
-        shape: Union[int, Tuple[int, ...]],
-        device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
