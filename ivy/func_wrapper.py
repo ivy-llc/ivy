@@ -153,7 +153,7 @@ def _wrap_function(fn):
     """
     # determine whether the function has an out argument
     keys = inspect.signature(fn).parameters.keys()
-    handle_out = "out" in keys
+    handle_out_with_backend = "out" in keys
     handle_dtype = "dtype" in keys
     handle_dev = "device" in keys
 
@@ -197,7 +197,7 @@ def _wrap_function(fn):
         if ivy.exists(out):
             # extract underlying native array for out
             native_out = ivy.to_native(out)
-            if handle_out:
+            if handle_out_with_backend:
                 # compute return, with backend inplace update handled by
                 # the backend function
                 ret = fn(*native_args, out=native_out, **native_kwargs)
