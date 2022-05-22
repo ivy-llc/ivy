@@ -22,6 +22,7 @@ class ArrayWithElementwise(abc.ABC):
     def add(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.add(self, x2, out=out)
@@ -261,7 +262,7 @@ class ArrayWithElementwise(abc.ABC):
     ) -> Union[ivy.Array, ivy.Container]:
         return ivy.subtract(self, x2, out=out)
 
-    def tan(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.tan(self, out=out)
 
     def tanh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:

@@ -14,7 +14,6 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -27,7 +26,6 @@ def random_uniform(
 
 
 def random_normal(
-
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
@@ -64,10 +62,10 @@ def multinomial(
 
 
 def randint(
-        low: int,
-        high: int,
-        shape: Union[int, Tuple[int, ...]],
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 
