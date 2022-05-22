@@ -266,12 +266,11 @@ class Array(
         backend = ivy.get_framework(state["framework_str"])
         ivy_array = backend.array(state["data"])
 
-        # TODO: what about placement of the array on the right device ?
-        device = backend.as_native_dev(state["device_str"])
-
         self.__dict__ = ivy_array.__dict__
 
-        backend.to_dev(self, device)
+        # TODO: what about placement of the array on the right device ?
+        # device = backend.as_native_dev(state["device_str"])
+        # backend.to_dev(self, device)
 
     @_native_wrapper
     def __pos__(self):
