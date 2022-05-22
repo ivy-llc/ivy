@@ -1,6 +1,5 @@
-"""
-Collection of Ivy normalization functions.
-"""
+'''Collection of Ivy normalization functions.'''
+
 
 # local
 from ctypes import Union
@@ -20,7 +19,6 @@ def layer_norm(
     offset=None,
     new_std: float = 1.0,
 ) -> Union[ivy.Array, ivy.Container]:
-     
     """Applies Layer Normalization over a mini-batch of inputs
 
     Parameters
