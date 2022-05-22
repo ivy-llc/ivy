@@ -62,10 +62,10 @@ def multinomial(
 
 
 def randint(
-        low: int,
-        high: int,
-        shape: Union[int, Tuple[int, ...]],
-        device: Optional[Union[ivy.Device, str]] = None,
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
     with tf.device("/" + device.upper()):

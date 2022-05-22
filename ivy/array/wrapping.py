@@ -5,8 +5,8 @@ import ivy
 def _wrap_fn(fn_name):
     def new_fn(self, *args, **kwargs):
         """
-        Add the data of the current array from which the instance function is invoked 
-        as the first arg parameter or kwarg parameter. Return the new function with 
+        Add the data of the current array from which the instance function is invoked
+        as the first arg parameter or kwarg parameter. Return the new function with
         the name fn_name and the new args variable or kwargs as the new inputs.
         """
         fn = ivy.__dict__[fn_name]
