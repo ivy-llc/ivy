@@ -60,13 +60,14 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
 ) -> Tensor:
     return torch.zeros(
         shape,
-        dtype=as_native_dtype(default_dtype(dtype)),
-        device=as_native_dev(default_device(device)),
+        dtype=dtype,
+        device=device,
     )
 
 
