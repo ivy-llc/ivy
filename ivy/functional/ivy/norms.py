@@ -4,7 +4,7 @@ Collection of Ivy normalization functions.
 
 # local
 from ctypes import Union
-from typing import Tuple, List
+from typing import List
 import ivy
 
 
@@ -12,8 +12,11 @@ import ivy
 # ------#
 
 # noinspection PyUnresolvedReferences
-def layer_norm(x: Union[ivy.Array, ivy.Container, ivy.NativeArray], normalized_idxs: List[int], epsilon: float=ivy._MIN_BASE, scale=None, offset=None, new_std: float=1.0)\
-    -> Union[ivy.Array, ivy.Container]:
+def layer_norm(x: Union[ivy.Array, ivy.Container, ivy.NativeArray],
+     normalized_idxs: List[int], epsilon: float = ivy._MIN_BASE,
+     scale = None, offset = None, new_std: float = 1.0\
+)   -> Union[ivy.Array, ivy.Container]:
+     
     """Applies Layer Normalization over a mini-batch of inputs
 
     Parameters
@@ -47,7 +50,7 @@ def layer_norm(x: Union[ivy.Array, ivy.Container, ivy.NativeArray], normalized_i
     >>> arr = np.array([[1, 2, 3], [4, 5, 6]])
     >>> arr = ivy.layer_norm(arr, [0, 1])
     >>> print(arr)
-    
+
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
