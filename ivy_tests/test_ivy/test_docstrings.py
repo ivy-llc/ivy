@@ -24,4 +24,3 @@ def test_docstrings():
                 "\n".join(failures)
             )
         )
-
