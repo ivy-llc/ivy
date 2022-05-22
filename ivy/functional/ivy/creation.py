@@ -119,7 +119,7 @@ def zeros(
                [0., 0., 0., 0., 0.]])
 
     """
-    return _cur_framework().zeros(shape, dtype, device)
+    return _cur_framework().zeros(shape, dtype=dtype, device=device)
 
 
 def ones(
