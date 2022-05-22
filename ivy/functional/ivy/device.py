@@ -116,7 +116,7 @@ def print_all_arrays_on_dev(device):
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, str]:
     """
     Get the native device handle for input array x.
@@ -126,8 +126,8 @@ def dev(
     x
           array for which to get the device handle.
 
-    as_str
-          Whether or not to return the dev in string format. Default is False.
+    as_native
+          Whether or not to return the dev in native format. Default is False.
 
     Returns
     -------
@@ -141,13 +141,13 @@ def dev(
           >>> print(y)
           "cpu"
     """
-    return _cur_framework(x).dev(x, as_str)
+    return _cur_framework(x).dev(x, as_native)
 
 
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -161,11 +161,11 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_framework().dev_to_str(device)
+    return _cur_framework().as_ivy_dev(device)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
+def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
     Parameters
@@ -179,7 +179,7 @@ def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
         Native device handle.
 
     """
-    return _cur_framework().dev_from_str(device)
+    return _cur_framework().as_native_dev(device)
 
 
 # Memory
@@ -409,7 +409,7 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
-def default_device(device=None, item=None, as_str: bool = False):
+def default_device(device=None, item=None, as_native: bool = None):
     """Summary.
 
     Parameters
@@ -418,8 +418,8 @@ def default_device(device=None, item=None, as_str: bool = False):
          (Default value = None)
     item
          (Default value = None)
-    as_str
-         (Default value = False)
+    as_native
+         (Default value = None)
 
     Returns
     -------
@@ -427,25 +427,25 @@ def default_device(device=None, item=None, as_str: bool = False):
 
     """
     if ivy.exists(device):
-        if as_str is True:
-            return ivy.dev_to_str(device)
-        elif as_str is False:
-            return ivy.dev_from_str(device)
+        if as_native is True:
+            return ivy.as_native_dev(device)
+        elif as_native is False:
+            return ivy.as_ivy_dev(device)
         return device
-    as_str = ivy.default(as_str, False)
+    as_native = ivy.default(as_native, False)
     if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_array(item):
-            return ivy.dev(item, as_str=as_str)
+            return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
         ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
     else:
         ret = default_device_stack[-1]
-    if as_str:
-        return ivy.dev_to_str(ret)
-    return ivy.dev_from_str(ret)
+    if as_native:
+        return ivy.as_native_dev(ret)
+    return ivy.as_ivy_dev(ret)
 
 
 # noinspection PyShadowingNames
