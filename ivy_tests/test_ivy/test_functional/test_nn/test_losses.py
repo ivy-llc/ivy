@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -47,7 +47,7 @@ def test_cross_entropy(
 
 # binary_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -85,7 +85,7 @@ def test_binary_cross_entropy(
 
 # sparse_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(0, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),

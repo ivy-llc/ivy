@@ -7,6 +7,7 @@ from typing import Optional, Union, Tuple
 # local
 import ivy
 
+
 # Extra #
 # ------#
 
@@ -15,7 +16,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
@@ -24,7 +25,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
@@ -35,7 +36,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
     replace=True,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -60,7 +61,15 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, str]] = None,
+) -> np.ndarray:
+    return np.random.randint(low, high, shape)
+
+
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 
