@@ -122,12 +122,8 @@ def roll(
     x: np.ndarray,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return np.roll(x, shift, axis)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
