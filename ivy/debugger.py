@@ -20,8 +20,8 @@ def _wrap_method_for_debugging(fn):
         fn.__name__[0] == "_"
         or fn.__name__
         in set(
-        NON_WRAPPED_FUNCTIONS
-        + ["has_nans", "is_array", "value_is_nan", "reduce_sum", "to_scalar"]
+            NON_WRAPPED_FUNCTIONS
+            + ["has_nans", "is_array", "value_is_nan", "reduce_sum", "to_scalar"]
         )
     ):
         return fn
