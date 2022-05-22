@@ -176,10 +176,10 @@ def multinomial(
 
 
 def randint(
-        low: int,
-        high: int,
-        shape: Union[int, Tuple[int, ...]],
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Returns an array filled with random integers generated uniformly between
     low (inclusive) and high (exclusive).
