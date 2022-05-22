@@ -56,6 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#flexible-functions">Flexible Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#inplace-updates">Inplace Updates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#devices">Devices</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_adding_tests.html">Adding Tests</a></li>
@@ -382,6 +383,115 @@ As discussed above, this is applied to all applicable function dynamically durin
 <li><p>otherwise, if a <em>relevant</em> scalar is present in the arguments, set <code class="code docutils literal notranslate"><span class="pre">arr</span></code> to this scalar and derive the data type from this by calling either <code class="code docutils literal notranslate"><span class="pre">ivy.default_int_dtype</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.default_int_dtype</span></code> depending on whether the scalar is an <code class="code docutils literal notranslate"><span class="pre">int</span></code> or <code class="code docutils literal notranslate"><span class="pre">float</span></code>. This will either return the globally set default <code class="code docutils literal notranslate"><span class="pre">int</span></code> or globally set default <code class="code docutils literal notranslate"><span class="pre">float</span></code> (settable via <code class="code docutils literal notranslate"><span class="pre">ivy.set_default_int_dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.set_default_float_dtype</span></code> respectively). An example of a <em>relevant</em> scalar is <code class="code docutils literal notranslate"><span class="pre">start</span></code> in the function <code class="code docutils literal notranslate"><span class="pre">ivy.arange</span></code>, which is used to set the starting value of the returned array.Examples of <em>irrelevant</em> scalars which should <strong>not</strong> be used for determining the data type are <code class="code docutils literal notranslate"><span class="pre">axis</span></code>, <code class="code docutils literal notranslate"><span class="pre">axes</span></code>, <code class="code docutils literal notranslate"><span class="pre">dims</span></code> etc. which must be integers, and control other configurations of the function being called, with no bearing at all on the data types used by that function.</p></li>
 <li><p>otherwise, if no arrays or relevant scalars are present in the arguments, then use the global default data type, which can either be an <code class="code docutils literal notranslate"><span class="pre">int</span></code> or <code class="code docutils literal notranslate"><span class="pre">float</span></code> data type. This is settable via <code class="code docutils literal notranslate"><span class="pre">ivy.set_default_dtype</span></code>.</p></li>
 </ol>
+<p>For the majority of functions which defer to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> for handling the data type,
+these steps will have been followed and the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument will be populated with the correct value
+before the framework-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is
+listed as optional in the ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
+the argument is listed as required in the framework-specific implementations at
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
+<p>Let’s take a look at the function <code class="code docutils literal notranslate"><span class="pre">ivy.prod</span></code> as an example.</p>
+<p>The implementation in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/statistical.py</span></code> has the following signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>Whereas the framework-specific implementations in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/statistical.py</span></code>
+all list <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as required.</p>
+<p>Jax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">JaxArray</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>MXNet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>NumPy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>TensorFlow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">DType</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>PyTorch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This makes it clear that these framework-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>
+has been determined.</p>
+<p>However, the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument for functions listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>
+are <strong>not</strong> handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>,
+and so these defaults must be handled by the framework-specific implementations themselves.</p>
+<p>One reason for adding a function to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> is because it includes <em>relevant</em> scalar arguments
+for inferring the data type from. <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> is not able to correctly handle such cases,
+and so such functions are added to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> and the dtype handling is delegated to the
+framework-specific implementations.</p>
+<p>For example <code class="code docutils literal notranslate"><span class="pre">ivy.full</span></code> is listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> because of the <em>relevant</em> <code class="code docutils literal notranslate"><span class="pre">fill_value</span></code>
+which cannot be correctly handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>.</p>
+<p>The PyTorch-specific implementation is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">full</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+        <span class="n">shape_to_tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span>
+        <span class="n">fill_value</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The implementations for all other backends follow a similar pattern to this PyTorch implementation,
+where the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is optional and <code class="code docutils literal notranslate"><span class="pre">ivy.default_dtype</span></code> is called inside the
+framework-specific implementation.</p>
+</section>
+<section id="devices">
+<h2>Devices<a class="headerlink" href="#devices" title="Permalink to this headline"></a></h2>
+<p># ToDo: write this section, using <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code> as an example</p>
 </section>
 </section>
 
