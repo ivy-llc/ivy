@@ -205,8 +205,8 @@ def _wrap_function(fn):
             ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
             return ret
-        elif ivy.exists(out) and ivy.is_ivy_array(out):
-            # handle ivy.Array inplace update as well, if out was an ivy.Array
+        elif ivy.exists(out):
+            # handle ivy.Array inplace update as well
             out.data = ivy.to_native(ret)
             return out
         # convert all returned arrays to ivy.Array instances
