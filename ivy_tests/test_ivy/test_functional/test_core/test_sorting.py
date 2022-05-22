@@ -14,7 +14,7 @@ import ivy.functional.backends.numpy as ivy_np
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -73,7 +73,7 @@ def test_argsort(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
