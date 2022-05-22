@@ -46,7 +46,7 @@ def _wrap_fn(fn_name):
         if not conts:
             raise Exception("no containers found in arguments")
         cont0 = conts[0]
-        # Get the function with the name fn_name, enabling containers to specify 
+        # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
         fn = cont0.ivy.__dict__[fn_name]
 
@@ -58,6 +58,7 @@ def _wrap_fn(fn_name):
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
             return fn(*a, **kw)
+
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
