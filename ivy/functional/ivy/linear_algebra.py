@@ -663,7 +663,6 @@ def cholesky(
      x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
      upper: bool = False
  ) -> Union[ivy.Array, ivy.Container]:
-
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -723,8 +722,6 @@ def cholesky(
          a: ivy.array([[1.73, 0.], [-0.57,  1.63]])
          b: ivy.array([[1.41, 0.], [0.70, 0.70]])
      }
-
-
 
     """
     return _cur_framework(x).cholesky(x, upper)
