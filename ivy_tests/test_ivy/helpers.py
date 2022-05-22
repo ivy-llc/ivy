@@ -427,21 +427,19 @@ def test_array_function(
             assert ivy.is_ivy_container(ret)
         else:
             assert ivy.is_array(ret)
-            if max(native_array):
-                out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
 
-        if max(container) or not max(native_array):
+        if max(container):
             assert ret is out
 
         if max(container) or fw in ["tensorflow", "jax", "numpy"]:
             # these frameworks do not always support native inplace updates
             pass
         else:
-            assert ret.data is (out if max(native_array) else out.data)
+            assert ret.data is out.data
 
     # value test
     if not isinstance(ret, tuple):
