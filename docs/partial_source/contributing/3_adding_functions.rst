@@ -19,6 +19,9 @@ Adding Functions
 .. _`by the wrapper`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L203
 .. _`handled by the wrapper`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L210
 .. _`_wrap_fn`: https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69
+.. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
+.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
+.. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
 
 
 
@@ -161,7 +164,8 @@ Every function which receives at least one array argument in the input and also 
 is implemented as a *flexible* function by default.
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
-is applied to every function in the :code:`ivy` namespace during `framework setting`_.
+is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
+in the :code:`ivy` namespace during `framework setting`_.
 
 As part of this wrapping, `_function_w_arrays_n_out_handled`_ also ensures that :code:`ivy.Array` instances in the input
 are converted to :code:`ivy.NativeArray` instances before passing to the backend implementation,
@@ -232,7 +236,8 @@ In the case of :code:`ivy.Array` return types, the :code:`out` argument is predo
 `_function_w_arrays_n_out_handled`_, which as discussed above,
 is also responsible for converting :code:`ivy.Array` instances to :code:`ivy.NativeArray`
 instances before calling the backend function, and then back to :code:`ivy.Array` instances again for returning.
-As explained above, this wrapping is applied to every function dynamically during `framework setting`_.
+As explained above, this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
+dynamically during `framework setting`_.
 
 However, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
 argument directly, such as `torch.tan`_ and `numpy.tan`_.
@@ -290,3 +295,36 @@ which is how :code:`out` is provided to the function. This inplace update is alw
 
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
+
+Data Types
+----------
+
+All :code:`dtype` arguments are keyword-only.
+All creation functions include the :code:`dtype` argument, for specifying the data type of the created array.
+Some other non-creation functions also support the :code:`dtype` argument,
+such as :code:`ivy.prod` and :code:`ivy.sum`, but most functions do not include it.
+The non-creation functions which do support it are generally functions that involve a compounding reduction across the
+array, which could result in overflows, and so an explicit :code:`dtype` argument is useful to handling such cases.
+
+The :code:`dtype` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
+appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_.
+As discussed above, this is applied to all applicable function dynamically during `framework setting`_.
+
+Overall, the data type is inferred as follows:
+
+#. if the :code:`dtype` argument is provided, use this directly
+#. otherwise, if an array is present in the arguments, set :code:`arr` to this array. \
+   This will then be used to infer the data type by calling :code:`ivy.dtype` on the array
+#. otherwise, if a *relevant* scalar is present in the arguments, set :code:`arr` to this scalar \
+   and derive the data type from this by calling either :code:`ivy.default_int_dtype` or :code:`ivy.default_int_dtype` \
+   depending on whether the scalar is an :code:`int` or :code:`float`. \
+   This will either return the globally set default :code:`int` or globally set default :code:`float` \
+   (settable via :code:`ivy.set_default_int_dtype` and :code:`ivy.set_default_float_dtype` respectively). \
+   An example of a *relevant* scalar is :code:`start` in the function :code:`ivy.arange`, \
+   which is used to set the starting value of the returned array.\
+   Examples of *irrelevant* scalars which should **not** be used for determining the data type are :code:`axis`, \
+   :code:`axes`, :code:`dims` etc. which must be integers, and control other configurations of the function \
+   being called, with no bearing at all on the data types used by that function.
+#. otherwise, if no arrays or relevant scalars are present in the arguments, \
+   then use the global default data type, which can either be an :code:`int` or :code:`float` data type. \
+   This is settable via :code:`ivy.set_default_dtype`.
