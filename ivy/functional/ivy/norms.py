@@ -2,8 +2,7 @@
 
 
 # local
-from ctypes import Union
-from typing import List
+from typing import List, Union
 import ivy
 
 
@@ -52,6 +51,7 @@ def layer_norm(
     >>> arr = np.array([[1, 2, 3], [4, 5, 6]])
     >>> arr = ivy.layer_norm(arr, [0, 1])
     >>> print(arr)
+    [[-0.5  0.5  1.5]]
 
 
     """
