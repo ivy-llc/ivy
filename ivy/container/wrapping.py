@@ -73,7 +73,7 @@ def _wrap_fn(fn_name):
     return new_fn
 
 
-def add_ivy_container_instance_methods(cls, modules, to_ignore=()):
+def add_ivy_container_instance_methods(cls, modules, name_prepend="", to_ignore=()):
     """
     Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy container as instance methods using _wrap_fn.
@@ -81,17 +81,18 @@ def add_ivy_container_instance_methods(cls, modules, to_ignore=()):
     to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:
         for key, val in module.__dict__.items():
+            full_key = name_prepend + key
             if (
                 key.startswith("_")
                 or key[0].isupper()
                 or not callable(val)
-                or key in cls.__dict__
-                or hasattr(cls, key)
-                or key in to_ignore
+                or full_key in cls.__dict__
+                or hasattr(cls, full_key)
+                or full_key in to_ignore
                 or key not in ivy.__dict__
             ):
                 continue
             try:
-                setattr(cls, key, _wrap_fn(key))
+                setattr(cls, full_key, _wrap_fn(key))
             except AttributeError:
                 pass
