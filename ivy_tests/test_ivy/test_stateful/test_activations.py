@@ -2,16 +2,19 @@
 
 # global
 import pytest
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
+
 
 
 # GELU
-@pytest.mark.parametrize(
-    "bs_oc_target",
+@given(
+    bs_oc_target=st.sampled_from(
     [
         (
             [1, 2],
@@ -45,11 +48,10 @@ import ivy_tests.test_ivy.helpers as helpers
                 ]
             ],
         )
-    ],
+    ]),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
+def test_gelu(bs_oc_target, dtype, device, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
@@ -74,8 +76,8 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
 
 
 # GEGLU
-@pytest.mark.parametrize(
-    "bs_oc_target",
+@given(
+    bs_oc_target=st.sampled_from(
     [
         (
             [1, 2],
@@ -109,11 +111,10 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
                 ]
             ],
         )
-    ],
+    ]),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
+def test_geglu(bs_oc_target, dtype, device, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
