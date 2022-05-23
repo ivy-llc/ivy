@@ -142,8 +142,8 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
     >>> print(y)
     ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    >>>                [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
     ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
@@ -248,16 +248,16 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    >>> x = ivy.array([[0., 1., 2.],
-    >>>                [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.], \
+                       [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
                [4., 5., 3.]])
 
-    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
-    >>>                [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                       [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -308,8 +308,8 @@ Point 9 is not relevant as there is again only one array input
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    >>>                   b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -437,10 +437,10 @@ We then also add an example with :code:`ivy.Container` inputs, in order to satis
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\ 
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\ 
+                          b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -457,8 +457,8 @@ We also add an example with a mix of :code:`ivy.Array` and :code:`ivy.Container`
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\ 
+                          b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -487,10 +487,10 @@ We then add instance method examples to satisfy points 10 and 11.
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\ 
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\ 
+                          b=ivy.array([5, 6, 7]))
     >>> z = x.add(y)
     >>> print(z)
     {
@@ -517,10 +517,10 @@ However, :code:`ivy.add` *is* an operator function. We therefore add the three o
 
     With :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\ 
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\ 
+                          b=ivy.array([5, 6, 7]))
     >>> z = x + y
     >>> print(z)
     {
@@ -531,8 +531,8 @@ However, :code:`ivy.add` *is* an operator function. We therefore add the three o
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\ 
+                          b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x + y
     >>> print(z)
     {
