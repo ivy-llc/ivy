@@ -44,7 +44,7 @@ inplace_variables_supported = lambda: True
 def inplace_update(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
 
-    # make both arrays contigous if not already
+    # make both arrays contiguous if not already
     if not x_native.flags.c_contiguous:
         x_native = np.ascontiguousarray(x_native)
     if not val_native.flags.c_contiguous:

@@ -196,12 +196,8 @@ add_ivy_container_instance_methods(
 )
 
 
-class StaticContainer(ContainerBase):
-    pass
-
-
 add_ivy_container_instance_methods(
-    StaticContainer,
+    Container,
     [
         activations,
         creation,
@@ -223,6 +219,7 @@ add_ivy_container_instance_methods(
         statistical,
         utility,
     ],
+    name_prepend="static_",
 )
 
 # data types

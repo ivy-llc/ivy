@@ -568,8 +568,8 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10, 10],
-               [10, 10]])
+    ivy.array([[10., 10.],
+               [10., 10.]])
 
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
