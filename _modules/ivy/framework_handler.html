@@ -329,27 +329,54 @@
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;framework stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">framework</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `framework` if specified, or if it isn&#39;t specified it</span>
+<span class="sd">    returns the Ivy backend associated with the current globally set framework.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    framework</span>
+<span class="sd">        The framework for which we want to retrieve Ivy&#39;s backend i.e. one of &#39;jax&#39;,</span>
+<span class="sd">        &#39;torch&#39;, &#39;tensorflow&#39;, &#39;numpy&#39;, &#39;mxnet&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Ivy&#39;s backend for either `framework` or for the current global framework.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Global framework doesn&#39;t matter, if `framework` argument has been specified:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy_np = ivy.get_framework(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy_np)</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.numpy&#39; from &#39;/ivy/ivy/functional/backends/numpy/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    If framework isn&#39;t specified, the global framework is used:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy_jax = ivy.get_framework()</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy_jax)</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy. Currently</span>
     <span class="c1">#  all framework-agnostic implementations returned in this module will still</span>
     <span class="c1">#  use the global ivy backend.</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="c1"># current global framework is retrieved if framework isn&#39;t specified,</span>
+    <span class="c1"># otherwise `framework` argument will be used</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">framework</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">return</span> <span class="n">f</span></div>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">framework</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">framework</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">framework</span></div>
 
 
 <div class="viewcode-block" id="unset_framework"><a class="viewcode-back" href="../../framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[docs]</a><span class="k">def</span> <span class="nf">unset_framework</span><span class="p">():</span>
