@@ -207,27 +207,54 @@ def set_framework(framework):
         verbosity.cprint("framework stack: {}".format(framework_stack))
 
 
-def get_framework(f=None):
+def get_framework(framework=None):
+    """Returns Ivy's backend for `framework` if specified, or if it isn't specified it
+    returns the Ivy backend associated with the current globally set framework.
+
+    Parameters
+    ----------
+    framework
+        The framework for which we want to retrieve Ivy's backend i.e. one of 'jax',
+        'torch', 'tensorflow', 'numpy', 'mxnet'.
+
+    Returns
+    -------
+    ret
+        Ivy's backend for either `framework` or for the current global framework.
+
+    Examples
+    --------
+    Global framework doesn't matter, if `framework` argument has been specified:
+
+    >>> ivy.set_framework('jax')
+    >>> ivy_np = ivy.get_framework('numpy')
+    >>> print(ivy_np)
+    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+
+    If framework isn't specified, the global framework is used:
+
+    >>> ivy.set_framework('jax')
+    >>> ivy_jax = ivy.get_framework()
+    >>> print(ivy_jax)
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
+
+    """
     # ToDo: change this so that it doesn't depend at all on the global ivy. Currently
     #  all framework-agnostic implementations returned in this module will still
     #  use the global ivy backend.
     global ivy_original_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
-    if f is None:
-        f = ivy.current_framework()
-    if isinstance(f, str):
-        if framework_stack:
-            for k, v in ivy_original_dict.items():
-                ivy.__dict__[k] = v
-        f = importlib.import_module(_framework_dict[f])
-        if framework_stack:
-            for k, v in framework_stack[-1].__dict__.items():
-                ivy.__dict__[k] = v
+    # current global framework is retrieved if framework isn't specified,
+    # otherwise `framework` argument will be used
+    if framework is None:
+        framework = ivy.current_framework()
+    elif isinstance(framework, str):
+        framework = importlib.import_module(_framework_dict[framework])
     for k, v in ivy_original_dict.items():
-        if k not in f.__dict__:
-            f.__dict__[k] = v
-    return f
+        if k not in framework.__dict__:
+            framework.__dict__[k] = v
+    return framework
 
 
 def unset_framework():
