@@ -130,6 +130,37 @@
              
   <section id="reptile-step">
 <h1>reptile_step<a class="headerlink" href="#reptile-step" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.meta.reptile_step">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">reptile_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_grad_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_optimization_step=&lt;function</span> <span class="pre">gradient_descent_update&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batched=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_inner_v=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tasks=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/meta.html#reptile_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.meta.reptile_step" title="Permalink to this definition"></a></dt>
+<dd><p>Perform step of Reptile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> – The input batch</p></li>
+<li><p><strong>cost_fn</strong> – callable for the cost function, receivng the task-specific sub-batch and
+variables</p></li>
+<li><p><strong>variables</strong> – Variables to be optimized</p></li>
+<li><p><strong>inner_grad_steps</strong> – Number of gradient steps to perform during the inner loop.</p></li>
+<li><p><strong>inner_learning_rate</strong> – The learning rate of the inner loop.</p></li>
+<li><p><strong>inner_optimization_step</strong> – The function used for the inner loop optimization.
+Default is ivy.gradient_descent_update.</p></li>
+<li><p><strong>batched</strong> – Whether to batch along the time dimension, and run the meta steps in batch.
+Default is True.</p></li>
+<li><p><strong>return_inner_v</strong> – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task
+inner loop will also be returned. variables for all tasks will be returned with
+‘all’. Default is False.</p></li>
+<li><p><strong>num_tasks</strong> – Number of unique tasks to inner-loop optimize for the meta step. Determined from
+batch by default.</p></li>
+<li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the cost. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The cost and the gradients with respect to the outer loop variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

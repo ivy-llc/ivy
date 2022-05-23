@@ -125,8 +125,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="norms">
-<h1>Norms<a class="headerlink" href="#norms" title="Permalink to this headline"></a></h1>
+  <section id="module-ivy.functional.ivy.norms">
+<span id="norms"></span><h1>Norms<a class="headerlink" href="#module-ivy.functional.ivy.norms" title="Permalink to this headline"></a></h1>
+<p>Collection of Ivy normalization functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.norms.layer_norm">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">layer_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/norms.html#layer_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.norms.layer_norm" title="Permalink to this definition"></a></dt>
+<dd><p>Applies Layer Normalization over a mini-batch of inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array</p></li>
+<li><p><strong>normalized_idxs</strong> – Indices to apply the normalization to.</p></li>
+<li><p><strong>epsilon</strong> – small constant to add to the denominator, use global ivy._MIN_BASE by default.</p></li>
+<li><p><strong>scale</strong> – Learnable gamma variables for post-multiplication, default is None.</p></li>
+<li><p><strong>offset</strong> – Learnable beta variables for post-addition, default is None.</p></li>
+<li><p><strong>new_std</strong> – The standard deviation of the new normalized values. Default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The layer after applying layer normalization.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>

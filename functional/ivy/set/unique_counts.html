@@ -131,6 +131,33 @@
              
   <section id="unique-counts">
 <h1>unique_counts<a class="headerlink" href="#unique-counts" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.set.unique_counts">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unique_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/set.html#unique_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_counts" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the unique elements of an input array x and the corresponding counts for
+each unique element in x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. If x has more than one dimension, the function must flatten x and
+return the unique elements of the flattened array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><em>ret</em> – a namedtuple (values, counts) whose</p>
+<ul class="simple">
+<li><p>first element must have the field name values and must be an array containing
+the unique elements of x. The array must have the same data type as x.</p></li>
+<li><p>second element must have the field name counts and must be an array containing
+the number of times each unique element occurs in x. The returned array must
+have same shape as values and must have the default array index data type.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

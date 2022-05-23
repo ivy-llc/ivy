@@ -139,6 +139,29 @@
              
   <section id="lstm-update">
 <h1>lstm_update<a class="headerlink" href="#lstm-update" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.lstm_update">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">lstm_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition"></a></dt>
+<dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
+<li><p><strong>init_h</strong> – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>init_c</strong> – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>kernel</strong> – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
+<li><p><strong>recurrent_kernel</strong> – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
+<li><p><strong>bias</strong> – bias for cell kernel <em>[4 x out]</em>. (Default value = None)</p></li>
+<li><p><strong>recurrent_bias</strong> – bias for cell recurrent kernel <em>[4 x out]</em>. (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last
+timestep <em>[batch_shape,out]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

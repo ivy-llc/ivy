@@ -173,6 +173,26 @@
              
   <section id="dev-dist-iter">
 <h1>dev_dist_iter<a class="headerlink" href="#dev-dist-iter" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_dist_iter">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dev_dist_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_iter" title="Permalink to this definition"></a></dt>
+<dd><p>Distribute elements of the iterbale xs across the specified devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> – The iterable of items to distribute.</p></li>
+<li><p><strong>devices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – The devices to distribute the iterable elements across.</p></li>
+<li><p><strong>axis</strong> – The axis along which to split the arrays in the iterable xs. Default is 0.</p></li>
+<li><p><strong>devices</strong> – </p></li>
+<li><p><strong>Dict</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – iterable with each element distributed to the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

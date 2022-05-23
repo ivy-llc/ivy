@@ -133,6 +133,40 @@
              
   <section id="random-uniform">
 <h1>random_uniform<a class="headerlink" href="#random-uniform" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.random.random_uniform">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">random_uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/random.html#random_uniform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_uniform" title="Permalink to this definition"></a></dt>
+<dd><p>Draws samples from a uniform distribution. Samples are uniformly distributed over
+the half-open interval <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high)</span></code> (includes <code class="docutils literal notranslate"><span class="pre">low</span></code>, but excludes <code class="docutils literal notranslate"><span class="pre">high</span></code>). In
+other words, any value within the given interval is equally likely to be drawn by
+uniform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Lower boundary of the output interval. All values generated will be greater than (default: <code class="docutils literal notranslate"><span class="pre">0.0</span></code>)
+or equal to <code class="docutils literal notranslate"><span class="pre">low</span></code>.</p></li>
+<li><p><strong>high</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Upper boundary of the output interval. All the values generated will be less (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)
+than <code class="docutils literal notranslate"><span class="pre">high</span></code>.</p></li>
+<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]]) – If the given shape is, e.g <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> (Default), a single value is returned.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>&lt;module ‘ivy.array’ from ‘/home/root/project/ivy/array/__init__.py’&gt;</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(1.89150229)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

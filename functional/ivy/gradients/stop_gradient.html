@@ -141,6 +141,25 @@
              
   <section id="stop-gradient">
 <h1>stop_gradient<a class="headerlink" href="#stop-gradient" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.gradients.stop_gradient">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">stop_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#stop_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.stop_gradient" title="Permalink to this definition"></a></dt>
+<dd><p>Stops gradient computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Array for which to stop the gradient.</p></li>
+<li><p><strong>preserve_type</strong> – Whether to preserve the input type (ivy.Variable or ivy.Array),
+otherwise an array is always returned. Default is True.</p></li>
+<li><p><strong>preserve_type</strong> – bool, optional (Default value = True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The same array x, but with no gradient information.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

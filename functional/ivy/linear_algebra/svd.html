@@ -151,6 +151,81 @@
              
   <section id="svd">
 <h1>svd<a class="headerlink" href="#svd" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.svd">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a singular value decomposition A = USVh of a matrix (or a stack of
+matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">U</span></code> is a matrix (or a stack of matrices) with orthonormal
+columns, <code class="docutils literal notranslate"><span class="pre">S</span></code> is a vector of non-negative numbers (or stack of vectors), and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>
+is a matrix (or a stack of matrices) with orthonormal rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+matrices on which to perform singular value decomposition. Should have a
+floating-point data type.</p></li>
+<li><p><strong>full_matrices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute full-sized <code class="docutils literal notranslate"><span class="pre">U</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, compute on
+the leading <code class="docutils literal notranslate"><span class="pre">K</span></code> singular vectors, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> and where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul>
+<li><p><em>..</em> – NOTE: once complex numbers are supported, each square matrix must be Hermitian.</p></li>
+<li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(U,</span> <span class="pre">S,</span> <span class="pre">Vh)</span></code> whose</p>
+<ul class="simple">
+<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose
+shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain matrices with
+orthonormal columns (i.e., the columns are left singular vectors). If
+<code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions
+must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>second element must have the field name <code class="docutils literal notranslate"><span class="pre">S</span></code> and must be an array with
+shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length
+<code class="docutils literal notranslate"><span class="pre">K</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. For each vector, the singular values must be
+sorted in descending order by magnitude, such that <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">0]</span></code> is the
+largest value, <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">1]</span></code> is the second largest value, et cetera. The
+first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input
+<code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>third element must have the field name <code class="docutils literal notranslate"><span class="pre">Vh</span></code> and must be an array whose
+shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain orthonormal rows
+(i.e., the rows are the right singular vectors and the array is the
+adjoint). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have
+shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code>
+dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+</ul>
+<p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Vh</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(9, 9) (6,) (6, 6)</span>
+</pre></div>
+</div>
+<p>Reconstruction from SVD, result is numerically close to x</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">U</span><span class="p">[:,:</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">reconstructed_x</span> <span class="o">-</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="go">ivy.array(0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">reconstructed_x</span> <span class="o">-</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="go">ivy.array(0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
