@@ -40,7 +40,7 @@ def _wrap_fn(fn_name, static):
                 ivy.insert_into_nest_at_index(kwargs, data_idx, self)
 
         # return function multi-mapped across the corresponding leaves of the containers
-        return ivy.ContainerBase.call_static_multi_map_method(
+        return ivy.ContainerBase.multi_map_in_static_method(
             fn_name,
             *args,
             key_chains=key_chains,
