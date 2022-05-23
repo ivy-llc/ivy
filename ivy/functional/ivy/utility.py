@@ -72,11 +72,10 @@ def all(
     >>> print(a)
     [ True]
 
-
-    >>> x = ivy.array([False])
-    >>> y = ivy.all(x,out = x,keepdims=True)
+    >>> x=np.array(False)
+    >>> y=ivy.all([-1, 4, 5], out=x)
     >>> print(y)
-    ivy.array([False])
+    ivy.array(True)
 
 
 
