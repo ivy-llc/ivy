@@ -67,6 +67,27 @@ class ContainerWithElementwise(ContainerBase):
             out,
         )
 
+    @staticmethod
+    def static_add(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.call_static_multi_map_method(
+            {"x1": x1, "x2": x2},
+            ivy.add,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out,
+        )
+
     def add(
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -77,23 +98,8 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.add(**dict(zip(conts.keys(), xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains,
-                to_apply,
-                prune_unapplied,
-            ),
-            out,
+        return self.static_add(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def asin(
@@ -1239,15 +1245,8 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return x.handle_inplace(
-            x.map(
-                lambda x_, _: ivy.tan(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return ContainerBase.call_static_multi_map_method(
+            {"x": x}, ivy.tan, key_chains, to_apply, prune_unapplied, map_sequences, out
         )
 
     def tan(
