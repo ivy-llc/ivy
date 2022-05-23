@@ -38,16 +38,6 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 
-def arrays_equal(xs: list) -> bool:
-    x0 = xs[0]
-    if ivy.dtype(x0, as_str=True) == "bool":
-        x0 = x0.astype("int32")
-    for x in xs[1:]:
-        if not mx.nd.min(mx.nd.broadcast_equal(x0, x)) == 1:
-            return False
-    return True
-
-
 def to_numpy(x: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, _np.ndarray):
         return x

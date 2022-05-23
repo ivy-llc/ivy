@@ -232,6 +232,8 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     ----------
     xs
         Sequence of arrays to compare for equality
+    dtype
+        list data type
 
     Returns
     -------
@@ -258,11 +260,30 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     >>> d = ivy.arrays_equal([a, b, c])
     >>> print(d)
     True
+
+    >>> x = ivy.array([0.1, 1.1])
+    >>> y = ivy.array([0.1, 1.1, 2.1])
+    >>> z = ivy.array([0.1, 1.1])
+    >>> w = ivy.arrays_equal([x, y, z])
+    >>> print(w)
+    False
     
     >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
     >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
     >>> o = ivy.arrays_equal([m, n])
     >>> print(o)
+    False
+
+    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> b = ivy.array([1, 2, 3, 0, -1])
+    >>> c = ivy.arrays_equal([a,b])
+    >>> print(c)
+    True
+
+    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> b = ivy.array([1, 2, 3, 0, -2])
+    >>> c = ivy.arrays_equal([a,b])
+    >>> print(c)
     False
 
     >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -272,7 +293,16 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     {
         a: true,
         b: false
-    } 
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.array([0,1,2])
+    >>> z = ivy.arrays_equal([x,y])
+    >>> print(z)
+    {
+        a: true,
+        b: false
+    }
 
     """
     x0 = xs[0]

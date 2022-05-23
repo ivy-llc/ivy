@@ -34,16 +34,6 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
     return torch.equal(x0, x1)
 
 
-def arrays_equal(xs: list) -> bool:
-    x0 = xs[0]
-    dtype = torch.promote_types(x0.dtype, x0.dtype)
-    x0 = x0.type(dtype=dtype)
-    for x in xs[1:]:
-        if not torch.equal(x0, x):
-            return False
-    return True
-
-
 def to_numpy(x: torch.Tensor) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x

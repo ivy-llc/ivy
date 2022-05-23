@@ -52,14 +52,6 @@ def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return jnp.array_equal(x0, x1)
 
 
-def arrays_equal(xs: list) -> bool:
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not jnp.array_equal(x0, x):
-            return False
-    return True
-
-
 def to_numpy(x: JaxArray) -> np.ndarray:
     return np.asarray(_to_array(x))
 

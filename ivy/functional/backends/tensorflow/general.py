@@ -34,14 +34,6 @@ def array_equal(x0: Tensor, x1: Tensor) -> bool:
     return tf.experimental.numpy.array_equal(x0, x1)
 
 
-def arrays_equal(xs: list) -> bool:
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not tf.experimental.numpy.array_equal(x0, x):
-            return False
-    return True
-
-
 def to_numpy(x: Tensor) -> _np.ndarray:
     return _np.asarray(tf.convert_to_tensor(x))
 

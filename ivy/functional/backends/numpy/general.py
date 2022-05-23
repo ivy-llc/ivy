@@ -25,14 +25,6 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def arrays_equal(xs: list) -> bool:
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not np.array_equal(x0, x):
-            return False
-    return True
-
-
 def to_numpy(x: np.ndarray) -> np.ndarray:
     return x
 
