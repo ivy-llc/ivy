@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 @pytest.mark.parametrize("with_out", [False, True])
 def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
 
-    if dtype in ivy.invalid_dtype_strs:
+    if dtype in ivy.invalid_dtypes:
         pytest.skip("invalid dtype")
 
     arr, gt = arr_uniqarr
@@ -41,6 +41,7 @@ def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
 
         # native arrays should be the same object
         assert res.data is out.data
+
 
 # Still to Add #
 # ---------------#

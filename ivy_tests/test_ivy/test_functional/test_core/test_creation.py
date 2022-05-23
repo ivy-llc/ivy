@@ -14,7 +14,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 # array
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes),
     from_numpy=st.booleans(),
 )
 def test_array(dtype_and_x, from_numpy, device, call, fw):
@@ -43,7 +43,7 @@ def test_array(dtype_and_x, from_numpy, device, call, fw):
 
 # native_array
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes),
     from_numpy=st.booleans(),
 )
 def test_native_array(dtype_and_x, from_numpy, device, call, fw):
@@ -85,9 +85,9 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
     # smoke test
     start, stop, num, axis = start_n_stop_n_num_n_axis
     if (
-            (isinstance(start, Number) or isinstance(stop, Number))
-            and tensor_fn == helpers.var_fn
-            and call is helpers.mx_call
+        (isinstance(start, Number) or isinstance(stop, Number))
+        and tensor_fn == helpers.var_fn
+        and call is helpers.mx_call
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()

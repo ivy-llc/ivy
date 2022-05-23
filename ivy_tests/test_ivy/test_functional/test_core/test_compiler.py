@@ -9,7 +9,7 @@ from numbers import Number
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.func_wrapper import _wrap_methods, _unwrap_methods
+from ivy.func_wrapper import _wrap_functions, _unwrap_functions
 
 
 # Tests #
@@ -48,7 +48,7 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
 
-    _unwrap_methods()
+    _unwrap_functions()
 
     # function 1
     comp_fn = ivy.compile(_fn_1)
@@ -59,8 +59,7 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, device, call):
     non_compiled_return = _fn_1(x)
     x = tensor_fn(x, dtype, device)
     compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return),
-                       ivy.to_numpy(compiled_return))
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     # function 2
     comp_fn = ivy.compile(_fn_2)
@@ -71,7 +70,6 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, device, call):
     non_compiled_return = _fn_2(x)
     x = tensor_fn(x, dtype, device)
     compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return),
-                       ivy.to_numpy(compiled_return))
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
-    _wrap_methods()
+    _wrap_functions()

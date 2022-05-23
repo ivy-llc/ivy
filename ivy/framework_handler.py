@@ -8,7 +8,7 @@ from ivy import verbosity
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_methods, _unwrap_methods
+from ivy.func_wrapper import _wrap_functions, _unwrap_functions
 
 
 framework_stack = []
@@ -99,13 +99,45 @@ def _determine_framework_from_args(args):
 
 
 def current_framework(*args, **kwargs):
-    """Priorities: global_framework > argument's framework."""
+    """Returns the current backend framework. Priorities:
+    global_framework > argument's framework.
+
+    Parameters
+    ----------
+    *args/**kwargs
+        the arguments from which to try to infer the backend framework, when there is
+        no globally set framework.
+
+    Returns
+    -------
+    ret
+        Ivy's current backend framework.
+
+    Examples
+    --------
+    If no global framework is set, then the framework is inferred from the arguments:
+    >>> import numpy as np
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+
+    The global framework set in set_framework has priority over any arguments
+    passed to current_framework:
+    >>> import numpy as np
+    >>> ivy.set_framework('jax')
+    >>> x = np.array([2.0])
+    >>> print(ivy.current_framework(x))
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
+
+    """
+    # if a global framework has been set with set_framework then this will be returned
     if framework_stack:
         f = framework_stack[-1]
         if verbosity.level > 0:
             verbosity.cprint("Using framework from stack: {}".format(f))
         return f
 
+    # if no global framework exists, we try to infer the framework from the arguments
     f = _determine_framework_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(
@@ -117,29 +149,51 @@ def current_framework(*args, **kwargs):
     return f
 
 
-def set_framework(f):
+def set_framework(framework):
+    """Sets `framework` to be the global framework.
+
+    Examples
+    --------
+    If we set the global framework to be numpy, then subsequent calls to ivy functions
+    will be called from Ivy's numpy backend:
+
+    >>> ivy.set_framework('numpy')
+    >>> native = ivy.native_array([1])
+    >>> print(type(native))
+    <class 'numpy.ndarray'>
+
+    Or with jax as the global framework:
+
+    >>> ivy.set_framework('jax')
+    >>> native = ivy.native_array([1])
+    >>> print(type(native))
+    <class 'jaxlib.xla_extension.DeviceArray'>
+
+    """
     global ivy_original_dict
     global ivy_original_fn_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
-    if isinstance(f, str):
+    if isinstance(framework, str):
         temp_stack = list()
         while framework_stack:
             temp_stack.append(unset_framework())
-        f = importlib.import_module(_framework_dict[f])
+        framework = importlib.import_module(_framework_dict[framework])
         for fw in reversed(temp_stack):
             framework_stack.append(fw)
-    if f.current_framework_str() == "numpy":
+    if framework.current_framework_str() == "numpy":
         ivy.set_default_device("cpu")
-    framework_stack.append(f)
+    framework_stack.append(framework)
     ivy_original_fn_dict.clear()
+    # loop through items in ivy dict and replace ivy's implementations `v` with the
+    # appropriate backend implementation (backend specified by `framework`)
     for k, v in ivy_original_dict.items():
-        if k not in f.__dict__:
-            if k in ivy.valid_dtype_strs:
+        if k not in framework.__dict__:
+            if k in ivy.valid_dtypes:
                 del ivy.__dict__[k]
                 continue
-            f.__dict__[k] = v
-        specific_v = f.__dict__[k]
+            framework.__dict__[k] = v
+        specific_v = framework.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
         ivy.__dict__[k] = specific_v
@@ -148,7 +202,7 @@ def set_framework(f):
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    _wrap_methods()
+    _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
 
@@ -179,7 +233,7 @@ def get_framework(f=None):
 def unset_framework():
     fw = None
     if framework_stack:
-        _unwrap_methods()
+        _unwrap_functions()
         fw = framework_stack.pop(-1)
         if fw.current_framework_str() == "numpy":
             ivy.unset_default_device()
@@ -189,7 +243,7 @@ def unset_framework():
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
     if framework_stack:
-        _wrap_methods()
+        _wrap_functions()
     return fw
 
 
