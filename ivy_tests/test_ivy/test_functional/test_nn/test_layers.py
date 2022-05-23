@@ -461,10 +461,9 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
     assert np.allclose(
         call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res)
     )
-    # docstring test
-    helpers.docstring_examples_run(ivy.depthwise_conv2d)
 
 
+    
 # conv3d
 @pytest.mark.parametrize(
     "x_n_filters_n_pad_n_res",
