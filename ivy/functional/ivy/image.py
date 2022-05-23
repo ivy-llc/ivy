@@ -39,15 +39,14 @@ def stack_images(
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
     >>> print(stacked)
-    [[[1., 1., 1.],
+    ivy.array([[[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
-
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
-            [0., 0., 0.]]]
+            [0., 0., 0.]]])
 
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
@@ -98,10 +97,12 @@ def gradient_image(x):
     ivy.array([[0., 1., 2.],
                [3., 4., 5.],
                [6., 7., 8.]])
+
     >>> print(dy[0, :,:,0])
      ivy.array([[3., 3., 3.],
                [3., 3., 3.],
                [0., 0., 0.]])
+               
     >>> print(dx[0, :,:,0])
      ivy.array([[1., 1., 0.],
                [1., 1., 0.],
