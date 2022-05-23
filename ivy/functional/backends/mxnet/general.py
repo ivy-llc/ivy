@@ -1,5 +1,5 @@
 # global
-from typing import Optional
+from typing import List, Optional, Union
 import ivy
 
 _round = round
@@ -233,8 +233,17 @@ multiprocessing = (
 )
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
-shape = lambda x, as_tensor=False: mx.nd.shape_array(x) if as_tensor else x.shape
-shape.__name__ = "shape"
+
+
+def shape(
+    x: mx.ndarray.NDArray, as_tensor: bool = False
+) -> Union[mx.ndarray.NDArray, List[int]]:
+    if as_tensor:
+        return mx.nd.shape_array(x)
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: mx.nd.shape_array(mx.nd.shape_array(x)).reshape([])
     if as_tensor

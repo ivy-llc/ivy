@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional
+from typing import List, Optional, Union
 import ivy
 
 _round = round
@@ -344,8 +344,15 @@ multiprocessing = (
     else _multiprocessing.get_context(context)
 )
 indices_where = tf.where
-shape = lambda x, as_tensor=False: tf.shape(x) if as_tensor else tuple(x.shape)
-shape.__name__ = "shape"
+
+
+def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
+    if as_tensor:
+        return tf.shape(x)
+    else:
+        return tuple(x.shape)
+
+
 get_num_dims = (
     lambda x, as_tensor=False: tf.shape(tf.shape(x))[0]
     if as_tensor
