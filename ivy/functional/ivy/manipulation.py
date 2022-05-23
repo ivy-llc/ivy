@@ -543,8 +543,8 @@ def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
     x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.Container]] = None
+) -> Union[ivy.Array, ivy.Container]:
     """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
