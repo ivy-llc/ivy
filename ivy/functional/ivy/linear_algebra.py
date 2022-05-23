@@ -252,6 +252,7 @@ def svd(
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
     ivy.array(0)
+    
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
 
@@ -769,15 +770,15 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
+    ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Inverses of several matrices can be computed at once:
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])
-
+    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
+     
     """
     return _cur_framework(x).inv(x)
 
