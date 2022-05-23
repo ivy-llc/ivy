@@ -307,6 +307,33 @@ def stack(
            This specification leaves type promotion between data type families (i.e.,
            ``intxx`` and ``floatxx``) unspecified.
 
+    Examples
+    -------
+    The function joins arrays along first dimension by default:
+
+    >>> x_1 = ivy.array([1, 2, 3])
+    >>> x_2 = ivy.array([4, 5, 6])
+    >>> y = ivy.stack([x_1, x_2])
+
+    >>> y
+    ivy.array([[1, 2, 3],
+               [4, 5, 6]])
+    >>> y.shape
+    (2, 3)
+
+    if ``axis=1`` it will stack arrays along the second dimension:
+
+    >>> x_1 = ivy.array([1, 2, 3])
+    >>> x_2 = ivy.array([4, 5, 6])
+    >>> y = ivy.zero((3,2))
+
+    >>> ivy.stack((x_1, x_2), axis=1, out=y)
+    ivy.array([[1., 4.],
+               [2., 5.],
+               [3., 6.]], dtype=float32)
+    >>> y.shape
+    (3, 2)
+
     """
     return _cur_framework(arrays).stack(arrays, axis, out)
 
