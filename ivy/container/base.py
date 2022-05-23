@@ -388,7 +388,7 @@ class ContainerBase(dict, abc.ABC):
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.combine(
                 *[cont[key] for cont, kp in zip(containers, keys_present) if kp],
-                config=config
+                config=config,
             )
         return ivy.Container(return_dict, **config)
 
@@ -454,7 +454,7 @@ class ContainerBase(dict, abc.ABC):
             if detect_shape_diffs:
                 shape_equal_mat = ivy.all_equal(
                     *[c.shape if ivy.is_array(c) else None for c in containers],
-                    equality_matrix=True
+                    equality_matrix=True,
                 )
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
@@ -511,7 +511,7 @@ class ContainerBase(dict, abc.ABC):
                     detect_key_diffs=detect_key_diffs,
                     detect_value_diffs=detect_value_diffs,
                     detect_shape_diffs=detect_shape_diffs,
-                    config=config
+                    config=config,
                 )
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
@@ -586,7 +586,7 @@ class ContainerBase(dict, abc.ABC):
             detect_key_diffs=detect_key_diffs,
             detect_value_diffs=False,
             detect_shape_diffs=detect_shape_diffs,
-            config=config
+            config=config,
         )
 
     @staticmethod
@@ -1248,6 +1248,46 @@ class ContainerBase(dict, abc.ABC):
 
     # Private Methods #
     # ----------------#
+
+    def _call_static_method(
+        self,
+        kw,
+        required,
+        defaults,
+        static_method,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=None,
+        out=None,
+    ) -> ivy.Container:
+        self_set = False
+        # set to leftmost non-specified required arg, if present
+        for k in required:
+            if kw[k] is None:
+                kw[k] = self
+                self_set = True
+                break
+        # go through each key and value of the keyword arguments
+        for k, v in kw.items():
+            if v is None:
+                if self_set:
+                    if k in defaults:
+                        # if self is set and a default value exists, set it
+                        kw[k] = defaults[k]
+                else:
+                    # otherwise set self to this argument
+                    kw[k] = self
+                    self_set = True
+        # call the static method
+        return static_method(
+            **kw,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     def _get_shape(self):
 
@@ -2182,7 +2222,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.MultiDevContainer(
             self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
             devices,
-            **self._config
+            **self._config,
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):
@@ -3940,7 +3980,7 @@ class ContainerBase(dict, abc.ABC):
                 ): v
                 for kc, v in self.to_iterator(include_empty=include_empty)
             },
-            **self._config
+            **self._config,
         )
 
     def copy(self):
