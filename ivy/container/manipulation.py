@@ -166,8 +166,8 @@ class ContainerWithManipulation(ContainerBase):
 
     def roll(
         self: ivy.Container,
-        shift: Union[int, Tuple[int, ...]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        shift: Union[int, Tuple[int, ...], ivy.Container],
+        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
