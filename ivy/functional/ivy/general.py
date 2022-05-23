@@ -307,7 +307,8 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    array([-1, 0, 1])
+    [-1 0 1]
+
     >>> print(type(y))
     <class 'numpy.ndarray'>
 
@@ -334,6 +335,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     -1
+
+
     >>> print(ivy.is_int_dtype(y))
     True
 
@@ -360,6 +363,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
+
     >>> print(isinstance(y, list))
     True
 
@@ -1471,6 +1475,7 @@ def shape(
     >>> y_tensor = ivy.shape(x, as_tensor = True)
     >>> print(y_tuple)
     (2, 3)
+    
     >>> print(y_tensor)
     ivy.array([2, 3])
 
