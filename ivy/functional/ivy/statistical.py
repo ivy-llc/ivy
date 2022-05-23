@@ -403,7 +403,7 @@ def std(
     >>> y = ivy.std(x)
     >>> print(y)
     ivy.array(0.8164966)
-
+    
     """
     return _cur_framework(x).std(x, axis, correction, keepdims, out=out)
 
