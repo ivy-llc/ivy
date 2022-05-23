@@ -429,7 +429,8 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_numpy(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    array([-1, 0, 1])</span>
+<span class="sd">    [-1 0 1]</span>
+
 <span class="sd">    &gt;&gt;&gt; print(type(y))</span>
 <span class="sd">    &lt;class &#39;numpy.ndarray&#39;&gt;</span>
 
@@ -456,6 +457,8 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_scalar(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    -1</span>
+
+
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(y))</span>
 <span class="sd">    True</span>
 
@@ -482,6 +485,7 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_list(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    [-1, 0, 1]</span>
+
 <span class="sd">    &gt;&gt;&gt; print(isinstance(y, list))</span>
 <span class="sd">    True</span>
 
@@ -1593,6 +1597,7 @@
 <span class="sd">    &gt;&gt;&gt; y_tensor = ivy.shape(x, as_tensor = True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y_tuple)</span>
 <span class="sd">    (2, 3)</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; print(y_tensor)</span>
 <span class="sd">    ivy.array([2, 3])</span>
 

@@ -161,15 +161,14 @@
 <span class="sd">    &gt;&gt;&gt; data = [ivy.ones(shape)] * num</span>
 <span class="sd">    &gt;&gt;&gt; stacked = ivy.stack_images(data, (2, 1))</span>
 <span class="sd">    &gt;&gt;&gt; print(stacked)</span>
-<span class="sd">    [[[1., 1., 1.],</span>
+<span class="sd">    ivy.array([[[1., 1., 1.],</span>
 <span class="sd">            [1., 1., 1.],</span>
 <span class="sd">            [0., 0., 0.],</span>
 <span class="sd">            [0., 0., 0.]],</span>
-
 <span class="sd">           [[1., 1., 1.],</span>
 <span class="sd">            [1., 1., 1.],</span>
 <span class="sd">            [0., 0., 0.],</span>
-<span class="sd">            [0., 0., 0.]]]</span>
+<span class="sd">            [0., 0., 0.]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
@@ -220,10 +219,12 @@
 <span class="sd">    ivy.array([[0., 1., 2.],</span>
 <span class="sd">               [3., 4., 5.],</span>
 <span class="sd">               [6., 7., 8.]])</span>
+
 <span class="sd">    &gt;&gt;&gt; print(dy[0, :,:,0])</span>
 <span class="sd">     ivy.array([[3., 3., 3.],</span>
 <span class="sd">               [3., 3., 3.],</span>
 <span class="sd">               [0., 0., 0.]])</span>
+<span class="sd">               </span>
 <span class="sd">    &gt;&gt;&gt; print(dx[0, :,:,0])</span>
 <span class="sd">     ivy.array([[1., 1., 0.],</span>
 <span class="sd">               [1., 1., 0.],</span>

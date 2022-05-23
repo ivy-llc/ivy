@@ -418,14 +418,14 @@ same shape as <code class="docutils literal notranslate"><span class="pre">x</sp
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[-2.0, 1.0], [1.5, -0.5]])</span>
+<span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
 </pre></div>
 </div>
 <p>Inverses of several matrices can be computed at once:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])</span>
+<span class="go">ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -811,7 +811,9 @@ dimensions must have the same shape as those of the input <code class="docutils 
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">U</span><span class="p">[:,:</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">reconstructed_x</span> <span class="o">-</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 <span class="go">ivy.array(0)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">reconstructed_x</span> <span class="o">-</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">reconstructed_x</span> <span class="o">-</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 <span class="go">ivy.array(0)</span>
 </pre></div>
 </div>

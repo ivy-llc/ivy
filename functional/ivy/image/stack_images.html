@@ -159,20 +159,16 @@ aspect ratio as closely as possible.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stacked</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">stacked</span><span class="p">)</span>
-<span class="go">[[[1., 1., 1.],</span>
+<span class="go">ivy.array([[[1., 1., 1.],</span>
 <span class="go">        [1., 1., 1.],</span>
 <span class="go">        [0., 0., 0.],</span>
 <span class="go">        [0., 0., 0.]],</span>
+<span class="go">       [[1., 1., 1.],</span>
+<span class="go">        [1., 1., 1.],</span>
+<span class="go">        [0., 0., 0.],</span>
+<span class="go">        [0., 0., 0.]]])</span>
 </pre></div>
 </div>
-<blockquote>
-<div><dl class="simple">
-<dt>[[1., 1., 1.],</dt><dd><p>[1., 1., 1.],
-[0., 0., 0.],
-[0., 0., 0.]]]</p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
