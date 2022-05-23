@@ -22,6 +22,7 @@ Adding Functions
 .. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
+.. _`NON_DEV_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104
 
 
 
@@ -459,4 +460,26 @@ framework-specific implementation.
 Devices
 -------
 
-# ToDo: write this section, using :code:`ivy.zeros` as an example
+Like with :code:`dtype`, all :code:`device` arguments are also keyword-only.
+All creation functions include the :code:`device` argument,
+for specifying the device on which to place the created array.
+Some other functions outside of the :code:`creation.py` submodule also support the :code:`device` argument,
+such as :code:`ivy.random_uniform` which is located in :code:`random.py`,
+but this is simply because of dual categorization.
+:code:`ivy.random_uniform` is also essentially a creation function,
+despite not being being located in :code:`creation.py`.
+
+The :code:`device` argument is **not** included for functions which accept arrays in the input and perform
+operations on these arrays. In such cases, the device of the output arrays is the same as the device for
+the input arrays. In cases where the input arrays are located on different devices, an error will be thrown.
+
+The :code:`device` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
+appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_.
+This is similar to how :code:`dtype` is handled,
+with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUNCTIONS`_ in this case rather than
+`NON_DTYPE_WRAPPED_FUNCTIONS`_. As discussed above,
+this is applied to all applicable function dynamically during `framework setting`_.
+
+Overall, the device is inferred as follows:
+
+# ToDo: add the pipeline
