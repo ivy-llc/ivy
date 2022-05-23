@@ -25,7 +25,7 @@ def min(
 def sum(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[jnp.dtype] = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -75,8 +75,9 @@ def mean(
 def prod(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[jnp.dtype] = None,
     keepdims: bool = False,
+    *,
+    dtype: jnp.dtype,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 

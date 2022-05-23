@@ -145,13 +145,15 @@ def set_nest_at_indices(nest, indices, values):
 def insert_into_nest_at_indices(nest, indices, values):
     """Insert a value into the nested item at specified indices with specified values.
 
-    :param nest: The nested object to insert into.
-    :type nest: nested
-    :param indices: A tuple of tuples of indices for the indices at which to insert
-    values.
-    :type indices: tuple of tuples of indices
-    :param values: The new values for inserting.
-    :type values: sequence of any
+    Parameters
+    ----------
+    nest
+        The nested object to insert into.
+    indices
+        A tuple of tuples of indices for the indices at which to insert
+        values.
+    values
+        The new values for inserting.
 
     """
     if not isinstance(values, (list, tuple)):
@@ -198,6 +200,8 @@ def nested_indices_where(
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is False.
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     _index
         The indices detected so far. None at the beginning. Used internally, do not set
         manually.

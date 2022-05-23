@@ -37,13 +37,17 @@ def _wrap_fn(fn_name):
         kwarg_cont_idxs = ivy.nested_indices_where(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
+        # retrieve all the containers in args and kwargs
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
+        # Combine the retrieved containers from args and kwargs into a single list
         conts = arg_conts + kwarg_conts
         if not conts:
             raise Exception("no containers found in arguments")
         cont0 = conts[0]
+        # Get the function with the name fn_name, enabling containers to specify
+        # their backends irrespective of global ivy's backend
         fn = cont0.ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
@@ -55,6 +59,9 @@ def _wrap_fn(fn_name):
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
             return fn(*a, **kw)
 
+        # Replace each container in arg and kwarg with the arrays at the leaf
+        # levels of that container using map_fn and call fn using those arrays
+        # as inputs
         ret = ivy.Container.multi_map(
             map_fn, conts, key_chains, to_apply, prune_unapplied
         )
@@ -66,21 +73,26 @@ def _wrap_fn(fn_name):
     return new_fn
 
 
-def add_ivy_container_instance_methods(cls, modules, to_ignore=()):
+def add_ivy_container_instance_methods(cls, modules, name_prepend="", to_ignore=()):
+    """
+    Loop over all ivy modules such as activations, general, etc. and add
+    the module functions to ivy container as instance methods using _wrap_fn.
+    """
     to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:
         for key, val in module.__dict__.items():
+            full_key = name_prepend + key
             if (
                 key.startswith("_")
                 or key[0].isupper()
                 or not callable(val)
-                or key in cls.__dict__
-                or hasattr(cls, key)
-                or key in to_ignore
+                or full_key in cls.__dict__
+                or hasattr(cls, full_key)
+                or full_key in to_ignore
                 or key not in ivy.__dict__
             ):
                 continue
             try:
-                setattr(cls, key, _wrap_fn(key))
+                setattr(cls, full_key, _wrap_fn(key))
             except AttributeError:
                 pass

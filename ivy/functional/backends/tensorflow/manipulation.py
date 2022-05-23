@@ -13,7 +13,6 @@ def roll(
     x: Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[Tensor] = None,
 ) -> Tensor:
     if axis is None:
         originalShape = x.shape
@@ -22,9 +21,9 @@ def roll(
         roll = tf.roll(x, shift, axis)
         ret = tf.reshape(roll, originalShape)
     else:
+        if isinstance(shift, int) and (type(axis) in [list, tuple]):
+            shift = [shift for _ in range(len(axis))]
         ret = tf.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 

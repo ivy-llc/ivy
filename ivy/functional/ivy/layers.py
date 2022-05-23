@@ -141,7 +141,7 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
-            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim, as_str=True))).max,
+            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim))).max,
             sim,
         )
 
@@ -458,25 +458,14 @@ def conv3d(
     >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
     >>> result = ivy.conv3d( x, filters, 1, 'VALID',"NDHWC", 1)
     >>> print(result)
-    ivy.array([[[[[1.],
-              [2.]],
-
-             [[1.],
-              [2.]],
-
-             [[1.],
-              [2.]]],
-
-
-            [[[3.],
-              [4.]],
-
-             [[3.],
-              [4.]],
-
-             [[3.],
-              [4.]]]]])
-
+    ivy.array([[
+        [
+            [[1.]],[[1.]],[[1.]]
+        ],
+        [
+            [[3.]],[[3.]],[[3.]]
+        ]
+            ]])
 
     """
     return _cur_framework(x).conv3d(
