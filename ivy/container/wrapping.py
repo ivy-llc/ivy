@@ -6,7 +6,13 @@ TO_IGNORE = ["is_variable", "is_ivy_array", "is_native_array", "is_array"]
 
 def _wrap_fn(fn_name):
     def new_fn(
-        *args, key_chains=None, to_apply=True, prune_unapplied=False, out=None, **kwargs
+        *args,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
+        out=None,
+        **kwargs
     ):
         data_idx = ivy.__dict__[fn_name].array_spec[0]
         if (
@@ -31,44 +37,18 @@ def _wrap_fn(fn_name):
                     0 if idx is int else idx for idx in data_idx[1:]
                 ]
                 ivy.insert_into_nest_at_index(kwargs, data_idx, self)
-        arg_cont_idxs = ivy.nested_indices_where(
-            args, ivy.is_ivy_container, to_ignore=ivy.Container
-        )
-        kwarg_cont_idxs = ivy.nested_indices_where(
-            kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
-        )
-        # retrieve all the containers in args and kwargs
-        arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
-        num_arg_conts = len(arg_conts)
-        kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
-        # Combine the retrieved containers from args and kwargs into a single list
-        conts = arg_conts + kwarg_conts
-        if not conts:
-            raise Exception("no containers found in arguments")
-        cont0 = conts[0]
-        # Get the function with the name fn_name, enabling containers to specify
-        # their backends irrespective of global ivy's backend
-        fn = cont0.ivy.__dict__[fn_name]
 
-        def map_fn(vals, _):
-            arg_vals = vals[:num_arg_conts]
-            a = ivy.copy_nest(args, to_mutable=True)
-            ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
-            kwarg_vals = vals[num_arg_conts:]
-            kw = ivy.copy_nest(kwargs, to_mutable=True)
-            ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-            return fn(*a, **kw)
-
-        # Replace each container in arg and kwarg with the arrays at the leaf
-        # levels of that container using map_fn and call fn using those arrays
-        # as inputs
-        ret = ivy.Container.multi_map(
-            map_fn, conts, key_chains, to_apply, prune_unapplied
+        # return function multi-mapped across the corresponding leaves of the containers
+        return ivy.ContainerBase.call_static_multi_map_method(
+            fn_name,
+            *args,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            **kwargs
         )
-        if ivy.exists(out):
-            out.inplace_update(ret)
-            ret = out
-        return ret
 
     return new_fn
 
