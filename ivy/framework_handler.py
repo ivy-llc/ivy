@@ -258,20 +258,56 @@ def get_framework(framework=None):
 
 
 def unset_framework():
-    fw = None
+    """Unsets the current global framework, and adjusts the ivy dict such that either
+    a previously set global framework is then used as the backend, otherwise we return
+    to Ivy's implementations.
+
+    Returns
+    -------
+    ret
+        the framework that was unset, or None if there was no set global framework.
+
+    Examples
+    --------
+    Torch is the last set framework hence is the backend framework used here:
+
+    >>> ivy.set_framework('tensorflow')
+    >>> ivy.set_framework('torch')
+    >>> x = ivy.native_array([1])
+    >>> print(type(x))
+    <class 'torch.Tensor'>
+
+    However if `unset_framework` is called before `ivy.native_array` then tensorflow
+    will become the current framework and any torch backend implementations in the
+    Ivy dict will be swapped with the tensorflow implementation:
+
+    >>> ivy.set_framework('tensorflow')
+    >>> ivy.set_framework('torch')
+    >>> ivy.unset_framework()
+    >>> x = ivy.native_array([1])
+    >>> print(type(x))
+    <class 'tensorflow.python.framework.ops.EagerTensor'>
+
+    """
+    framework = None
+    # if the framework stack is empty, nothing is done and we just return `None`
     if framework_stack:
         _unwrap_functions()
-        fw = framework_stack.pop(-1)
-        if fw.current_framework_str() == "numpy":
+        framework = framework_stack.pop(-1)  # remove last framework from the stack
+        if framework.current_framework_str() == "numpy":
             ivy.unset_default_device()
-        f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
-        for k, v in f_dict.items():
+        # the new framework is the framework that was set before the one we just removed
+        # from the stack, or Ivy if there was no previously set framework
+        new_framework_dict = (
+            framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        )
+        for k, v in new_framework_dict.items():
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
     if framework_stack:
         _wrap_functions()
-    return fw
+    return framework
 
 
 def clear_framework_stack():
