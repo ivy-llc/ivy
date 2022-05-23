@@ -139,37 +139,6 @@
              
   <section id="multi-head-attention">
 <h1>multi_head_attention<a class="headerlink" href="#multi-head-attention" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.layers.multi_head_attention">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">multi_head_attention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_q_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_kv_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_out_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_q_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_kv_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_out_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#multi_head_attention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.multi_head_attention" title="Permalink to this definition"></a></dt>
-<dd><p>Applies multi-head attention to inputs x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p></li>
-<li><p><strong>scale</strong> – The value by which to scale the query-key similarity measure before softmax.</p></li>
-<li><p><strong>num_heads</strong> – The number of attention heads to use.</p></li>
-<li><p><strong>context</strong> – The array to determine the keys and values from. Default is None.
-<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
-<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None.
-<em>[batch_shape,num_queries,num_keys]</em></p></li>
-<li><p><strong>to_q_fn</strong> – The function to compute queries from input x, returning queries
-<em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p></li>
-<li><p><strong>to_kv_fn</strong> – The function to compute keys and values from the context. (Default value = None)</p></li>
-<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention.
-(Default value = None)</p></li>
-<li><p><strong>to_q_v</strong> – The variables for function to_q_fn. Default is None.</p></li>
-<li><p><strong>to_kv_v</strong> – The variables for function to_kv_fn. Default is None.</p></li>
-<li><p><strong>to_out_v</strong> – The variables for function to_out_fn. Default is None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The output following application of multi-head attention.
-<em>[batch_shape,num_queries,out_feat_dim]</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

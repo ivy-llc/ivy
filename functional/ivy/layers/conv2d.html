@@ -139,28 +139,6 @@
              
   <section id="conv2d">
 <h1>conv2d<a class="headerlink" href="#conv2d" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv2d">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">conv2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv2d" title="Permalink to this definition"></a></dt>
-<dd><p>Computes a 2-D convolution given 4-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension
-paddings.</p></li>
-<li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
-<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The result of the convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
