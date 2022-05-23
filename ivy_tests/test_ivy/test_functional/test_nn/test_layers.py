@@ -463,7 +463,6 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
     )
 
 
-    
 # conv3d
 @pytest.mark.parametrize(
     "x_n_filters_n_pad_n_res",
