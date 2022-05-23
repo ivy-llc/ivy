@@ -59,7 +59,7 @@ def asarray(
 
 
 def zeros(
-    shape: Union[int, Tuple[int, ...], List[int, ...]],
+    shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
