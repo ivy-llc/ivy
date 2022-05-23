@@ -231,7 +231,7 @@ def test_copy_nest(device, call):
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
 
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     num_positional_args = st.integers(min_value=0, max_value=2),
 )
 def test_nested_multi_map(x0_n_x1_n_res,num_positional_args,device, call,fw):
