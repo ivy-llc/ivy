@@ -40,7 +40,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[int, Tuple[int, ...], List[int, ...]],
     *,
     dtype: np.dtype,
     device: str,
