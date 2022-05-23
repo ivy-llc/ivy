@@ -70,7 +70,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 
 def zeros(
-    shape: Union[int, Tuple[int]],
+    shape: Union[int, Tuple[int, ...], List[int, ...]],
     *,
     dtype: tf.DType,
     device: str,
