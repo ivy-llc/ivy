@@ -7,11 +7,13 @@ import pytest
 import time
 import numpy as np
 from numbers import Number
+from hypothesis import strategies as st, given, extra
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # Tests #
@@ -20,19 +22,20 @@ import ivy_tests.test_ivy.helpers as helpers
 # Device Queries #
 
 # dev
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_dev(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
+
+@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_dev(array_shape, dtype, as_variable, fw, device):
+
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
     ret = ivy.dev(x)
     # type test
     assert isinstance(ret, str)
@@ -41,19 +44,25 @@ def test_dev(x, dtype, tensor_fn, device, call):
 
 
 # as_ivy_dev
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_as_ivy_dev(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
+@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
+
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    if ((isinstance(x, Number) or x.size == 0)
+        and as_variable
+        and fw == "mxnet"):
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
+        return
+
     device = ivy.dev(x)
     ret = ivy.as_ivy_dev(device)
     # type test
@@ -61,19 +70,24 @@ def test_as_ivy_dev(x, dtype, tensor_fn, device, call):
 
 
 # as_native_dev
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_as_native_dev(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
+@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_as_native_dev(array_shape, dtype, as_variable, device, fw, call):
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    if ((isinstance(x, Number) or x.size == 0)
+        and as_variable
+        and fw == "mxnet"):
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
+        return
+
     device = ivy.as_native_dev(device)
     ret = ivy.as_native_dev(ivy.dev(x))
     # value test
