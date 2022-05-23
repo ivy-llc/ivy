@@ -79,13 +79,14 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.call_static_multi_map_method(
-            {"x1": x1, "x2": x2},
-            ivy.add,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            "add",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def add(
@@ -1246,7 +1247,13 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.call_static_multi_map_method(
-            {"x": x}, ivy.tan, key_chains, to_apply, prune_unapplied, map_sequences, out
+            "tan",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def tan(
