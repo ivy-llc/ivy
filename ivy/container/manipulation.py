@@ -143,24 +143,13 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        kw = {}
-        conts = {}
-        for k, v in {"x": x, "shift": shift, "axis": axis}.items():
-            if ivy.is_ivy_container(v):
-                conts[k] = v
-            else:
-                kw[k] = v
-        cont_keys = conts.keys()
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.roll(**dict(zip(cont_keys, xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains,
-                to_apply,
-                prune_unapplied,
-            ),
+        return ContainerBase.call_static_multi_map_method(
+            {"x": x, "shift": shift, "axis": axis},
+            ivy.roll,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
         )
 

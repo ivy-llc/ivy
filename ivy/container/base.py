@@ -164,6 +164,31 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
+    def call_static_multi_map_method(
+        all_args_as_kw, fn, key_chains, to_apply, prune_unapplied, map_sequences, out
+    ) -> ivy.Container:
+        kw = {}
+        conts = {}
+        for k, v in all_args_as_kw.items():
+            if ivy.is_ivy_container(v):
+                conts[k] = v
+            else:
+                kw[k] = v
+        cont_keys = conts.keys()
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: fn(**dict(zip(cont_keys, xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    @staticmethod
     def handle_inplace(ret, out):
         """Returns an inplace update of out, provided it is not None, by updating with
         the values in ret.
