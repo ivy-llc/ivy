@@ -491,3 +491,82 @@ Overall, the device is inferred as follows:
    but more device types and multi-node configurations are in the pipeline. \
    The default device is settable via :code:`ivy.set_default_device`.
 
+For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the device,
+these steps will have been followed and the :code:`device` argument will be populated with the correct value
+before the framework-specific implementation is even enterred into. Therefore, whereas the :code:`device` argument is
+listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
+the argument is listed as required in the framework-specific implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py`.
+
+This is exactly the same as with the :code:`dtype` argument, which is explained above.
+
+Let's take a look at the function :code:`ivy.zeros` as an example.
+
+The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Array:
+
+Whereas the framework-specific implementations in :code:`ivy/functional/backends/backend_name/creation.py`
+all list :code:`device` as required.
+
+Jax:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: jnp.dtype,
+        device: jaxlib.xla_extension.Device,
+    ) -> JaxArray:
+
+MXNet:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: type,
+        device: mx.context.Context,
+    ) -> mx.ndarray:
+
+NumPy:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: np.dtype,
+        device: str,
+    ) -> np.ndarray:
+
+TensorFlow:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: tf.DType,
+        device: str,
+    ) -> Tensor:
+
+PyTorch:
+
+.. code-block:: python
+
+    def zeros(
+        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        *,
+        dtype: torch.dtype,
+        device: torch.device,
+    ) -> Tensor:
