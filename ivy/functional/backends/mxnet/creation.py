@@ -43,7 +43,7 @@ def asarray(
 
 
 def zeros(
-    shape: Union[int, Tuple[int]],
+    shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: type,
     device: mx.context.Context,
