@@ -12,13 +12,10 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def add(x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
 
 
 def pow(x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -363,7 +360,7 @@ def bitwise_left_shift(
     return np.left_shift(x1, x2, out=out)
 
 
-def tan(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.tan(x, out=out)
 
 

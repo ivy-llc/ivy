@@ -93,7 +93,7 @@ class Array(
         )
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
-        self._dev_str = ivy.dev_to_str(self._device)
+        self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy."
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
@@ -253,7 +253,7 @@ class Array(
 
         # also store the local ivy framework that created this array
         data_dict["framework_str"] = self.framework_str
-        data_dict["device_str"] = ivy.dev_to_str(self.device)
+        data_dict["device_str"] = ivy.as_ivy_dev(self.device)
 
         return data_dict
 
@@ -266,12 +266,11 @@ class Array(
         backend = ivy.get_framework(state["framework_str"])
         ivy_array = backend.array(state["data"])
 
-        # TODO: what about placement of the array on the right device ?
-        device = backend.dev_from_str(state["device_str"])
-
         self.__dict__ = ivy_array.__dict__
 
-        backend.to_dev(self, device)
+        # TODO: what about placement of the array on the right device ?
+        # device = backend.as_native_dev(state["device_str"])
+        # backend.to_dev(self, device)
 
     @_native_wrapper
     def __pos__(self):
@@ -364,7 +363,7 @@ class Array(
 
     @_native_wrapper
     def __abs__(self):
-        if "uint" in ivy.dtype(self._data, as_str=True):
+        if "uint" in ivy.dtype(self._data):
             return self
         res = self._data.__abs__()
         if res is NotImplemented:
