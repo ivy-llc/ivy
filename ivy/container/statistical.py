@@ -100,7 +100,7 @@ class ContainerWithStatistical(ContainerBase):
     def prod(
         self: ivy.Container,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -110,7 +110,7 @@ class ContainerWithStatistical(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.prod(x_, axis, dtype, keepdims)
+                lambda x_, _: ivy.prod(x_, axis, keepdims, dtype=dtype)
                 if ivy.is_array(x_)
                 else x_,
                 key_chains,
@@ -124,7 +124,7 @@ class ContainerWithStatistical(ContainerBase):
     def sum(
         self: ivy.Container,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
