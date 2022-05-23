@@ -386,11 +386,11 @@ def concat(
 
 
 def split(
-    x: Union[ivy.Array, ivy.NativeArray],
-    num_or_size_splits: Union[int, Iterable[int]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> Union[ivy.Array, ivy.Container]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -412,6 +412,53 @@ def split(
     ret
         A list of sub-arrays.
 
+    Functional Examples
+    -------------------
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.split(x)
+    >>> print(y)
+    ivy.array([[1], [2], [3]])
+
+    >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
+    >>> y = ivy.split(x, 2, 1, False)
+    >>> print(y)
+    ivy.array([[3, 4], [2, 5], [1, 6]])
+
+    >>> x = ivy.array([4, 6, 5, 3])
+    >>> y = ivy.split(x, [1, 2], 0, True)
+    >>> print(y)
+    ivy.array([[4], [6, 5, 3]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 8, 9])
+    >>> y = ivy.split(x)
+    >>> print(y)
+    ivy.array([[7], [8], [9]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
+    >>> y = ivy.split(x)
+    >>> print(y)
+    {
+        a: ivy.array([[10], [45], [2]])
+    }
+
+    Instance Method Examples
+    ------------------------
+    >>> x = ivy.array([4, 6, 5, 3])
+    >>> y = x.split()
+    >>> print(y)
+    ivy.array([[4], [6], [5], [3]])
+
+    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
+    >>> y = x.split()
+    >>> print(y)
+    {
+        a: ivy.array([[2], [5], [9]])
+    }
     """
     return _cur_framework(x).split(x, num_or_size_splits, axis, with_remainder)
 
