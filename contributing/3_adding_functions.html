@@ -578,6 +578,12 @@ all list <code class="code docutils literal notranslate"><span class="pre">devic
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 </pre></div>
 </div>
+<p>This makes it clear that these framework-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">device</span></code>
+has been determined.</p>
+<p>However, the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument for functions listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104">NON_DEV_WRAPPED_FUNCTIONS</a>
+are <strong>not</strong> handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>,
+and so these defaults must be handled by the framework-specific implementations themselves,
+by calling <code class="code docutils literal notranslate"><span class="pre">ivy.default_device</span></code> internally.</p>
 </section>
 </section>
 
