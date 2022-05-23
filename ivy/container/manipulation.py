@@ -144,13 +144,15 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.call_static_multi_map_method(
-            {"x": x, "shift": shift, "axis": axis},
-            ivy.roll,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            "roll",
+            x,
+            shift,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def roll(
