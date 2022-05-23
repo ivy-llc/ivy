@@ -24,13 +24,16 @@ class ContainerWithRandom(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.call_static_multi_map_method(
-            {"low": low, "high": high, "shape": shape, "device": device},
-            ivy.random_uniform,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            "random_uniform",
+            low,
+            high,
+            shape,
+            device,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def random_uniform(
