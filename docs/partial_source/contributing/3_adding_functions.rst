@@ -570,3 +570,11 @@ PyTorch:
         dtype: torch.dtype,
         device: torch.device,
     ) -> Tensor:
+
+This makes it clear that these framework-specific functions are only enterred into once the correct :code:`device`
+has been determined.
+
+However, the :code:`device` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_
+are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
+and so these defaults must be handled by the framework-specific implementations themselves,
+by calling :code:`ivy.default_device` internally.
