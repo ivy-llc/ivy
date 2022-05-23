@@ -87,7 +87,7 @@ from .container import (
     ContainerBase,
     Container,
     MultiDevContainer,
-    add_ivy_container_instance_methods,
+    add_ivy_container_methods,
 )
 from .framework_handler import (
     current_framework,
@@ -170,7 +170,7 @@ add_ivy_array_instance_methods(
     ],
 )
 
-add_ivy_container_instance_methods(
+add_ivy_container_methods(
     Container,
     [
         activations,
@@ -196,7 +196,7 @@ add_ivy_container_instance_methods(
 )
 
 
-add_ivy_container_instance_methods(
+add_ivy_container_methods(
     Container,
     [
         activations,
@@ -219,7 +219,7 @@ add_ivy_container_instance_methods(
         statistical,
         utility,
     ],
-    name_prepend="static_",
+    static=True,
 )
 
 # data types
