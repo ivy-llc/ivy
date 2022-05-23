@@ -254,7 +254,35 @@ will be called from Ivy’s numpy backend:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.framework_handler.unset_framework">
 <span class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></span><span class="sig-name descname"><span class="pre">unset_framework</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.unset_framework" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Unsets the current global framework, and adjusts the ivy dict such that either
+a previously set global framework is then used as the backend, otherwise we return
+to Ivy’s implementations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – the framework that was unset, or None if there was no set global framework.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Torch is the last set framework hence is the backend framework used here:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">&lt;class &#39;torch.Tensor&#39;&gt;</span>
+</pre></div>
+</div>
+<p>However if <cite>unset_framework</cite> is called before <cite>ivy.native_array</cite> then tensorflow
+will become the current framework and any torch backend implementations in the
+Ivy dict will be swapped with the tensorflow implementation:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">&lt;class &#39;tensorflow.python.framework.ops.EagerTensor&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <div class="toctree-wrapper compound">
 </div>

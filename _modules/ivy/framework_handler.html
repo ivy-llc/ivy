@@ -380,20 +380,56 @@
 
 
 <div class="viewcode-block" id="unset_framework"><a class="viewcode-back" href="../../framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[docs]</a><span class="k">def</span> <span class="nf">unset_framework</span><span class="p">():</span>
-    <span class="n">fw</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Unsets the current global framework, and adjusts the ivy dict such that either</span>
+<span class="sd">    a previously set global framework is then used as the backend, otherwise we return</span>
+<span class="sd">    to Ivy&#39;s implementations.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the framework that was unset, or None if there was no set global framework.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Torch is the last set framework hence is the backend framework used here:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;tensorflow&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(x))</span>
+<span class="sd">    &lt;class &#39;torch.Tensor&#39;&gt;</span>
+
+<span class="sd">    However if `unset_framework` is called before `ivy.native_array` then tensorflow</span>
+<span class="sd">    will become the current framework and any torch backend implementations in the</span>
+<span class="sd">    Ivy dict will be swapped with the tensorflow implementation:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;tensorflow&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_framework()</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(x))</span>
+<span class="sd">    &lt;class &#39;tensorflow.python.framework.ops.EagerTensor&#39;&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">framework</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if the framework stack is empty, nothing is done and we just return `None`</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">_unwrap_functions</span><span class="p">()</span>
-        <span class="n">fw</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># remove last framework from the stack</span>
+        <span class="k">if</span> <span class="n">framework</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
-        <span class="n">f_dict</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># the new framework is the framework that was set before the one we just removed</span>
+        <span class="c1"># from the stack, or Ivy if there was no previously set framework</span>
+        <span class="n">new_framework_dict</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_framework_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;framework stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">_wrap_functions</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">fw</span></div>
+    <span class="k">return</span> <span class="n">framework</span></div>
 
 
 <div class="viewcode-block" id="clear_framework_stack"><a class="viewcode-back" href="../../framework_handler/clear_framework_stack.html#ivy.framework_handler.clear_framework_stack">[docs]</a><span class="k">def</span> <span class="nf">clear_framework_stack</span><span class="p">():</span>
