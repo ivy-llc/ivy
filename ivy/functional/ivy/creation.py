@@ -83,7 +83,7 @@ def asarray(
         An array interpretation of x.
 
     """
-    return _cur_framework(x).asarray(x, dtype, device)
+    return _cur_framework(x).asarray(x, dtype=dtype, device=device)
 
 
 def zeros(
