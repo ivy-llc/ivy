@@ -499,7 +499,7 @@ such as <code class="code docutils literal notranslate"><span class="pre">ivy.ra
 but this is simply because of dual categorization.
 <code class="code docutils literal notranslate"><span class="pre">ivy.random_uniform</span></code> is also essentially a creation function,
 despite not being being located in <code class="code docutils literal notranslate"><span class="pre">creation.py</span></code>.</p>
-<p>The <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is <strong>not</strong> included for functions which accept arrays in the input and perform
+<p>The <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
 the input arrays. In cases where the input arrays are located on different devices, an error will be thrown.</p>
 <p>The <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is handled in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> for all functions except those
@@ -509,7 +509,11 @@ with the exception that functions are omitted if they’re in <a class="referenc
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>. As discussed above,
 this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">framework setting</a>.</p>
 <p>Overall, the device is inferred as follows:</p>
-<p># ToDo: add the pipeline</p>
+<ol class="arabic simple">
+<li><p>if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is provided, use this directly</p></li>
+<li><p>otherwise, if an array is present in the arguments (very rare if <code class="code docutils literal notranslate"><span class="pre">device</span></code> is present), set <code class="code docutils literal notranslate"><span class="pre">arr</span></code> to this array. This will then be used to infer the device by calling <code class="code docutils literal notranslate"><span class="pre">ivy.dev</span></code> on the array</p></li>
+<li><p>otherwise, if no arrays are present in the arguments (by far the most common case if <code class="code docutils literal notranslate"><span class="pre">device</span></code> is present), then use the global default device, which currently can either be <code class="code docutils literal notranslate"><span class="pre">cpu</span></code> or <code class="code docutils literal notranslate"><span class="pre">gpu:idx</span></code>, but more device types and multi-node configurations are in the pipeline. The default device is settable via <code class="code docutils literal notranslate"><span class="pre">ivy.set_default_device</span></code>.</p></li>
+</ol>
 </section>
 </section>
 
