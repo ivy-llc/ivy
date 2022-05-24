@@ -127,6 +127,7 @@
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="c1"># local</span>
 <span class="c1"># noinspection PyProtectedMember</span>
@@ -246,7 +247,7 @@
 <span class="sd">    The global framework set in set_framework has priority over any arguments</span>
 <span class="sd">    passed to current_framework:</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;jax&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.current_framework(x))</span>
 <span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
@@ -271,7 +272,7 @@
     <span class="k">return</span> <span class="n">f</span></div>
 
 
-<div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">framework</span><span class="p">):</span>
+<div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">framework</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sets `framework` to be the global framework.</span>
 
 <span class="sd">    Examples</span>
@@ -279,14 +280,14 @@
 <span class="sd">    If we set the global framework to be numpy, then subsequent calls to ivy functions</span>
 <span class="sd">    will be called from Ivy&#39;s numpy backend:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;numpy&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(native))</span>
 <span class="sd">    &lt;class &#39;numpy.ndarray&#39;&gt;</span>
 
 <span class="sd">    Or with jax as the global framework:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;jax&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(native))</span>
 <span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
@@ -329,7 +330,7 @@
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;framework stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">framework</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">framework</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `framework` if specified, or if it isn&#39;t specified it</span>
 <span class="sd">    returns the Ivy backend associated with the current globally set framework.</span>
 
@@ -348,14 +349,14 @@
 <span class="sd">    --------</span>
 <span class="sd">    Global framework doesn&#39;t matter, if `framework` argument has been specified:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy_np = ivy.get_framework(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;jax&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy_np = ivy.get_framework(&quot;numpy&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy_np)</span>
 <span class="sd">    &lt;module &#39;ivy.functional.backends.numpy&#39; from &#39;/ivy/ivy/functional/backends/numpy/__init__.py&#39;&gt;   </span>
 
 <span class="sd">    If framework isn&#39;t specified, the global framework is used:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;jax&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;jax&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy_jax = ivy.get_framework()</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy_jax)</span>
 <span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
@@ -393,8 +394,8 @@
 <span class="sd">    --------</span>
 <span class="sd">    Torch is the last set framework hence is the backend framework used here:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;tensorflow&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;torch&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(x))</span>
 <span class="sd">    &lt;class &#39;torch.Tensor&#39;&gt;</span>
@@ -403,8 +404,8 @@
 <span class="sd">    will become the current framework and any torch backend implementations in the</span>
 <span class="sd">    Ivy dict will be swapped with the tensorflow implementation:</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;tensorflow&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_framework(&quot;torch&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.unset_framework()</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(x))</span>
