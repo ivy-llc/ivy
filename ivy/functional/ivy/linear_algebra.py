@@ -730,9 +730,9 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 
 def cholesky(
-     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-     upper: bool = False
- ) -> Union[ivy.Array, ivy.Container]:
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    upper: bool = False
+ )-> Union[ivy.Array, ivy.Container]:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -784,7 +784,8 @@ def cholesky(
 
      3. Returns a lower-triangular Cholesky factor
 
-     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))
+     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),
+                           b = ivy.array([[2., 1.], [1., 1.]]))
      >>> y = x.cholesky()
      >>> print(y)
      >>>
