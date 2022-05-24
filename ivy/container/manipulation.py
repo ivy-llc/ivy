@@ -143,7 +143,7 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.call_static_multi_map_method(
+        return ContainerBase.multi_map_in_static_method(
             "roll",
             x,
             shift,

@@ -1,7 +1,46 @@
 Navigating the Code
 ===================
 
-.. _`Array API`: https://data-apis.org/array-api/latest/
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
+
+Categorization
+--------------
+
+Ivy uses the following categories taken from the `Array API Standard`_:
+
+* constants
+* creation
+* data_type
+* elementwise
+* linear_algebra
+* manipulation
+* searching
+* set
+* sorting
+* statistical
+* utility
+
+In addition to these, we also add the following categories,
+used for additional functions in Ivy that are not in the `Array API Standard`_:
+
+* activations
+* compilation
+* device
+* general
+* gradients
+* image
+* layers
+* losses
+* meta
+* nest
+* norms
+* random
+
+Some functions that you're considering adding might overlap several of these categorizations,
+and in such cases you should look at the other functions included in each file,
+and use your best judgement for which categorization is most suitable.
+
+We can always suggest a more suitable location when reviewing your pull request if needed 🙂
 
 Submodule Design
 ----------------
@@ -25,7 +64,7 @@ Ivy API
 -------
 
 All function signatures for the Ivy API are defined in the :code:`ivy.functional.ivy` submodule. Functions written here
-should adhere to the following type hint format:
+look something like the following, (explained in much more detail in the following sections):
 
 
 .. code-block:: python
@@ -33,8 +72,10 @@ should adhere to the following type hint format:
 
     def my_func(x: Union[ivy.Array, ivy.NativeArray],
                 axes: Union[int, Tuple[int], List[int]],
+                *,
                 dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-                dev: Optional[Union[ivy.Dev, str]] = None) \
+                device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+                out: Optional[ivy.Array] = None) \
             -> ivy.Array:
         """
         My function does something cool.
@@ -52,44 +93,34 @@ should adhere to the following type hint format:
 
         Parameters
         ----------
-        x:
+        x
             input array. Should have a numeric data type.
-        axes:
+        axes
             the axes along which to perform the op.
-        dtype:
+        dtype
             array data type.
-        dev:
+        device
             the device on which to place the new array.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------
-        out:
+        ret:
             a cooler array.
+
+        Examples
+        --------
+
+        Some cool examples go here
         """
-        return _cur_framework(x).my_func(x, dtype, dev)
+        return _cur_framework(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
-Note that the input array has type :code:`Union[ivy.Array, ivy.NativeArray]` whereas the output array has type
-:code:`ivy.Array`. This is the case for all functions in the ivy API.
-We always return an :code:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
-all operators performed on the array being handled by Ivy, and not the backend framework. However, there is no need to
-prevent native arrays from being permitted in the input. For Ivy methods which wrap backend-specific implementations, the
-input would need to be converted to a native array (such as :code:`torch.Tensor`) anyway before calling the backend method,
-and for Ivy methods implemented as a composition of other Ivy methods such as :code:`ivy.lstm_update`, the native inputs can
-just be converted to :code:`ivy.Array` instances before executing the Ivy implementation.
-
-As for the :code:`axes` arg, generally the `Array API`_ standard dictates that shapes, axes and other similar args should be
-of type :code:`Tuple[int]` when representing a sequence, not :code:`List[int]`. However, in order to make Ivy code
-less brittle, we accept both tuples and lists for such arguments. This does not break the standard, as the standard is only
-intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.
-
-As for the other arguments in the example above, :code:`dtype` and :code:`dev` do not need to be added to all methods,
-these are just examples. These should be added to all creation methods though. Note that for both of these, the type is a
-:code:`Union` including :code:`str`. This is because, in order to remain fully framework agnostic, Ivy accepts string
-representations of devices and data types, such as :code:`"int32"`, :code:`"float32"`, :code:`"bool"`, :code:`"cpu"`,
-:code:`"gpu0"`, :code:`"gpu2"` etc.
-
-All functions which adhere to the `Array API`_ standard should be placed in the correct file in alignment with the
-categories used in the standard.
+The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
+Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+All functions which produce a single array include the :code:`out` argument.
+The reasons for these features are explained in the following sections.
 
 Backend API
 -----------
@@ -100,18 +131,17 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
 
     def my_func(x: torch.Tensor,
-                dtype: Optional[Union[torch.dtype, str]] = None,
-                dev: Optional[Union[torch.device, str]] = None) \
+                axes: Union[int, Tuple[int], List[int]],
+                *,
+                dtype: torch.dtype,
+                device: torch.device,
+                out: Optional[torch.Tensor] = None) \
             -> torch.Tensor:
-        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype, x))
-        dev = ivy.as_native_dev(ivy.default_dev(dev, x))
-        return torch.something_cool(x, dtype, dev)
+        return torch.something_cool(x, dtype, device, out)
 
-Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints
-should be identical apart from all :code:`ivy.Array`, :code:`ivy.Dtype` and :code:`ivy.Dev` types replaced by
-framework-specific types, in this case :code:`torch.Tensor`, :code:`torch.dtype` and :code:`torch.device`.
-
-The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.
-
-All backend functions which adhere to the `Array API`_ standard should also be placed in the correct file in alignment with the
-categories used in the standard.
+The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
+but :code:`dtype` and :code:`device` and now required, rather than optional as they were in the Ivy API.
+All arrays also now have the same type hint :code:`torch.Tensor`,
+rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+The backend methods also should not add a docstring.
+Again, the reasons for these features are explained in the following sections.

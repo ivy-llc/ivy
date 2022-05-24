@@ -5,6 +5,7 @@ import importlib
 import collections
 import numpy as np
 from ivy import verbosity
+from typing import Optional
 
 # local
 # noinspection PyProtectedMember
@@ -124,7 +125,7 @@ def current_framework(*args, **kwargs):
     The global framework set in set_framework has priority over any arguments
     passed to current_framework:
     >>> import numpy as np
-    >>> ivy.set_framework('jax')
+    >>> ivy.set_framework("jax")
     >>> x = np.array([2.0])
     >>> print(ivy.current_framework(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
@@ -149,7 +150,7 @@ def current_framework(*args, **kwargs):
     return f
 
 
-def set_framework(framework):
+def set_framework(framework: str):
     """Sets `framework` to be the global framework.
 
     Examples
@@ -157,14 +158,14 @@ def set_framework(framework):
     If we set the global framework to be numpy, then subsequent calls to ivy functions
     will be called from Ivy's numpy backend:
 
-    >>> ivy.set_framework('numpy')
+    >>> ivy.set_framework("numpy")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'numpy.ndarray'>
 
     Or with jax as the global framework:
 
-    >>> ivy.set_framework('jax')
+    >>> ivy.set_framework("jax")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
@@ -207,7 +208,7 @@ def set_framework(framework):
         verbosity.cprint("framework stack: {}".format(framework_stack))
 
 
-def get_framework(framework=None):
+def get_framework(framework: Optional[str] = None):
     """Returns Ivy's backend for `framework` if specified, or if it isn't specified it
     returns the Ivy backend associated with the current globally set framework.
 
@@ -226,14 +227,14 @@ def get_framework(framework=None):
     --------
     Global framework doesn't matter, if `framework` argument has been specified:
 
-    >>> ivy.set_framework('jax')
-    >>> ivy_np = ivy.get_framework('numpy')
+    >>> ivy.set_framework("jax")
+    >>> ivy_np = ivy.get_framework("numpy")
     >>> print(ivy_np)
     <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
 
     If framework isn't specified, the global framework is used:
 
-    >>> ivy.set_framework('jax')
+    >>> ivy.set_framework("jax")
     >>> ivy_jax = ivy.get_framework()
     >>> print(ivy_jax)
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
@@ -258,20 +259,56 @@ def get_framework(framework=None):
 
 
 def unset_framework():
-    fw = None
+    """Unsets the current global framework, and adjusts the ivy dict such that either
+    a previously set global framework is then used as the backend, otherwise we return
+    to Ivy's implementations.
+
+    Returns
+    -------
+    ret
+        the framework that was unset, or None if there was no set global framework.
+
+    Examples
+    --------
+    Torch is the last set framework hence is the backend framework used here:
+
+    >>> ivy.set_framework("tensorflow")
+    >>> ivy.set_framework("torch")
+    >>> x = ivy.native_array([1])
+    >>> print(type(x))
+    <class 'torch.Tensor'>
+
+    However if `unset_framework` is called before `ivy.native_array` then tensorflow
+    will become the current framework and any torch backend implementations in the
+    Ivy dict will be swapped with the tensorflow implementation:
+
+    >>> ivy.set_framework("tensorflow")
+    >>> ivy.set_framework("torch")
+    >>> ivy.unset_framework()
+    >>> x = ivy.native_array([1])
+    >>> print(type(x))
+    <class 'tensorflow.python.framework.ops.EagerTensor'>
+
+    """
+    framework = None
+    # if the framework stack is empty, nothing is done and we just return `None`
     if framework_stack:
         _unwrap_functions()
-        fw = framework_stack.pop(-1)
-        if fw.current_framework_str() == "numpy":
+        framework = framework_stack.pop(-1)  # remove last framework from the stack
+        if framework.current_framework_str() == "numpy":
             ivy.unset_default_device()
-        f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
-        for k, v in f_dict.items():
+        # the new framework is the framework that was set before the one we just removed
+        # from the stack, or Ivy if there was no previously set framework
+        new_framework_dict = (
+            framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        )
+        for k, v in new_framework_dict.items():
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
     if framework_stack:
         _wrap_functions()
-    return fw
+    return framework
 
 
 def clear_framework_stack():

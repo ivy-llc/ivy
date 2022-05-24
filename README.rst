@@ -247,7 +247,7 @@ Roadmap
 | Align Ivy with the `Consortium for Python Data API Standards <https://data-apis.org>`_
 |
 | (b) **Front-Ends [page coming soon!]** 🚧
-| Create framework-specific front-ends for each supported ML framework
+| Create backend-specific front-ends for each supported ML framework
 |
 | (c) **Transpiler [page coming soon!]** 🚧
 | Verify code conversions work for each back-end and front-end combo

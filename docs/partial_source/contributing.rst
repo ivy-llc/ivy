@@ -20,8 +20,8 @@ The contributor guide is split into the sections below, it's best to go from sta
 but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
 
-| (a) :ref:`Setting up`
-| Build the right environment 🏛️
+| (a) :ref:`Setting Up`
+| Building the right environment 🏛️
 |
 | (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
@@ -29,19 +29,40 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (c) :ref:`Navigating the Code`
 | A quick tour through the codebase 🔍
 |
-| (d) :ref:`Adding Functions`
-| How to add functions 🧮
+| (d) :ref:`Function Wrapping`
+| How functions are dynamically wrapped at runtime  🎁
 |
-| (e) :ref:`Adding Tests`
-| How to add tests for these ❓
+| (e) :ref:`Function Types`
+| Primary, compositional, mixed and nestable functions  🧮
 |
-| (f) :ref:`Type Hints`
+| (f) :ref:`Method Types`
+| :code:`ivy.Container` and :code:`ivy.Array` methods 🗜️️
+|
+| (g) :ref:`Native Arrays`
+| How each function converts arrays to :code:`ivy.NativeArray` and back  🔙
+|
+| (h) :ref:`Inplace Updates`
+| How the :code:`out` argument is used to specify the output target  🎯
+|
+| (i) :ref:`Handling Data Types`
+| How functions infer the correct data type  💾
+|
+| (j) :ref:`Handling Devices`
+| How functions infer the correct device  💽
+|
+| (k) :ref:`Array API Tests`
+| How we're borrowing the test suite from the Array API Standard 🤝
+|
+| (l) :ref:`Ivy Tests`
+| How to add new Ivy tests for each function ❓
+|
+| (m) :ref:`Type Hints`
 | How to add the correct type hints 📑
 |
-| (g) :ref:`Docstrings`
+| (n) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (h) :ref:`Docstring Examples`
+| (o) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 |
 
@@ -50,13 +71,18 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    :maxdepth: -1
    :caption: Contributing
 
-
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
    contributing/2_navigating_the_code.rst
-   contributing/3_adding_functions.rst
-   contributing/4_adding_tests.rst
-   contributing/5_type_hints.rst
-   contributing/6_docstrings.rst
-   contributing/7_docstring_examples.rst
-
+   contributing/3_function_wrapping.rst
+   contributing/4_function_types.rst
+   contributing/5_method_types.rst
+   contributing/6_native_arrays.rst
+   contributing/7_inplace_updates.rst
+   contributing/8_handling_data_types.rst
+   contributing/9_handling_devices.rst
+   contributing/10_array_api_tests.rst
+   contributing/11_ivy_tests.rst
+   contributing/12_type_hints.rst
+   contributing/13_docstrings.rst
+   contributing/14_docstring_examples.rst

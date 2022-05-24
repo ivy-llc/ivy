@@ -71,7 +71,7 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize container object from input dict representation.
 
@@ -164,7 +164,7 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
-    def call_static_multi_map_method(
+    def multi_map_in_static_method(
         fn_name,
         *args,
         key_chains=None,
@@ -172,7 +172,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=None,
         out=None,
-        **kwargs
+        **kwargs,
     ) -> ivy.Container:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
@@ -388,7 +388,7 @@ class ContainerBase(dict, abc.ABC):
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.combine(
                 *[cont[key] for cont, kp in zip(containers, keys_present) if kp],
-                config=config
+                config=config,
             )
         return ivy.Container(return_dict, **config)
 
@@ -400,7 +400,7 @@ class ContainerBase(dict, abc.ABC):
         detect_key_diffs=True,
         detect_value_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and values in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -454,7 +454,7 @@ class ContainerBase(dict, abc.ABC):
             if detect_shape_diffs:
                 shape_equal_mat = ivy.all_equal(
                     *[c.shape if ivy.is_array(c) else None for c in containers],
-                    equality_matrix=True
+                    equality_matrix=True,
                 )
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
@@ -511,7 +511,7 @@ class ContainerBase(dict, abc.ABC):
                     detect_key_diffs=detect_key_diffs,
                     detect_value_diffs=detect_value_diffs,
                     detect_shape_diffs=detect_shape_diffs,
-                    config=config
+                    config=config,
                 )
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
@@ -546,7 +546,7 @@ class ContainerBase(dict, abc.ABC):
         diff_keys="diff",
         detect_key_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and shapes in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -586,7 +586,7 @@ class ContainerBase(dict, abc.ABC):
             detect_key_diffs=detect_key_diffs,
             detect_value_diffs=False,
             detect_shape_diffs=detect_shape_diffs,
-            config=config
+            config=config,
         )
 
     @staticmethod
@@ -1248,6 +1248,70 @@ class ContainerBase(dict, abc.ABC):
 
     # Private Methods #
     # ----------------#
+
+    def _call_static_method_with_flexible_args(
+        self,
+        static_method,
+        *args,
+        kw,
+        required,
+        defaults,
+        self_idx=0,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=None,
+        out=None,
+    ) -> ivy.Container:
+        if args:
+            num_args = len(args)
+            kw = {
+                k: defaults[k] if k in defaults else v
+                for i, (k, v) in enumerate(kw.items())
+                if i > num_args
+            }
+            args = list(args)
+            if self_idx > num_args:
+                k = list(kw.keys())[self_idx - num_args - 1]
+                kw[k] = self
+            else:
+                args.insert(self_idx, self)
+            return static_method(
+                *args,
+                **kw,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            )
+        self_set = False
+        # set to leftmost non-specified required arg, if present
+        for k in required:
+            if kw[k] is None:
+                kw[k] = self
+                self_set = True
+                break
+        # go through each key and value of the keyword arguments
+        for k, v in kw.items():
+            if v is None:
+                if self_set:
+                    if k in defaults:
+                        # if self is set and a default value exists, set it
+                        kw[k] = defaults[k]
+                else:
+                    # otherwise set self to this argument
+                    kw[k] = self
+                    self_set = True
+        # call the static method
+        return static_method(
+            **kw,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     def _get_shape(self):
 
@@ -2182,7 +2246,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.MultiDevContainer(
             self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
             devices,
-            **self._config
+            **self._config,
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):
@@ -2367,7 +2431,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops rearrange operation on each sub array in the container.
 
@@ -2413,7 +2477,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops reduce operation on each sub array in the container.
 
@@ -2460,7 +2524,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops repeat operation on each sub array in the container.
 
@@ -3940,7 +4004,7 @@ class ContainerBase(dict, abc.ABC):
                 ): v
                 for kc, v in self.to_iterator(include_empty=include_empty)
             },
-            **self._config
+            **self._config,
         )
 
     def copy(self):

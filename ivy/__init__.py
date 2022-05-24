@@ -219,7 +219,7 @@ add_ivy_container_instance_methods(
         statistical,
         utility,
     ],
-    name_prepend="static_",
+    static=True,
 )
 
 # data types
@@ -237,8 +237,6 @@ float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 bool = "bool"
-nan = float("nan")
-inf = float("inf")
 
 # native data types
 native_int8 = IntDtype("int8")
@@ -255,8 +253,6 @@ native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 native_bool = "bool"
-native_nan = float("nan")
-native_inf = float("inf")
 
 valid_dtypes = (
     int8,
