@@ -143,13 +143,13 @@
              
   <section id="function-wrapping">
 <h1>Function Wrapping<a class="headerlink" href="#function-wrapping" title="Permalink to this headline"></a></h1>
-<p>When a backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(backend_name)</span></code>,
+<p>When a backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>,
 then all Ivy functions are <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/framework_handler.py#L206">wrapped</a>. This is achieved by calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L341">_wrap_or_unwrap_functions</a>,
 with <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> as an argument.
 <code class="code docutils literal notranslate"><span class="pre">_wrap_or_unwrap_functions</span></code> is then called recursively,
 and <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> is called on each function <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L408">at the leaves</a> of the ivy module,
 with the returned function replacing the original function.</p>
-<p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code>, <code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>,
+<p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> (<code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>)
 is a replacement of the original function with extra code added to support requirements common to many functions
 in the API. This is the main purpose of the wrapping, to avoid code duplication by re-writing identical logic in every
 single function independenly. Depending on the function being wrapped, the new function <code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>
