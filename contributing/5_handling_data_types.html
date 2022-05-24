@@ -156,9 +156,9 @@ As discussed above, this is applied to all applicable function dynamically durin
 </ol>
 <p>For the majority of functions which defer to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> for handling the data type,
 these steps will have been followed and the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument will be populated with the correct value
-before the framework-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is
+before the backend-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is
 listed as optional in the ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
-the argument is listed as required in the framework-specific implementations at
+the argument is listed as required in the backend-specific implementations at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>Let’s take a look at the function <code class="code docutils literal notranslate"><span class="pre">ivy.prod</span></code> as an example.</p>
 <p>The implementation in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/statistical.py</span></code> has the following signature:</p>
@@ -172,7 +172,7 @@ the argument is listed as required in the framework-specific implementations at
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>Whereas the framework-specific implementations in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/statistical.py</span></code>
+<p>Whereas the backend-specific implementations in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/statistical.py</span></code>
 all list <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as required.</p>
 <p>Jax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
@@ -229,15 +229,15 @@ all list <code class="code docutils literal notranslate"><span class="pre">dtype
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>This makes it clear that these framework-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>
+<p>This makes it clear that these backend-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>
 has been determined.</p>
 <p>However, the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument for functions listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>
 are <strong>not</strong> handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>,
-and so these defaults must be handled by the framework-specific implementations themselves.</p>
+and so these defaults must be handled by the backend-specific implementations themselves.</p>
 <p>One reason for adding a function to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> is because it includes <em>relevant</em> scalar arguments
 for inferring the data type from. <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> is not able to correctly handle such cases,
 and so such functions are added to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> and the dtype handling is delegated to the
-framework-specific implementations.</p>
+backend-specific implementations.</p>
 <p>For example <code class="code docutils literal notranslate"><span class="pre">ivy.full</span></code> is listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a> because of the <em>relevant</em> <code class="code docutils literal notranslate"><span class="pre">fill_value</span></code>
 which cannot be correctly handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>.</p>
 <p>The PyTorch-specific implementation is as follows:</p>
@@ -258,7 +258,7 @@ which cannot be correctly handled by <a class="reference external" href="https:/
 </div>
 <p>The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is optional and <code class="code docutils literal notranslate"><span class="pre">ivy.default_dtype</span></code> is called inside the
-framework-specific implementation.</p>
+backend-specific implementation.</p>
 </section>
 
 

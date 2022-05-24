@@ -163,9 +163,9 @@ this is applied to all applicable function dynamically during <a class="referenc
 </ol>
 <p>For the majority of functions which defer to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> for handling the device,
 these steps will have been followed and the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument will be populated with the correct value
-before the framework-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is
+before the backend-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is
 listed as optional in the ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
-the argument is listed as required in the framework-specific implementations at
+the argument is listed as required in the backend-specific implementations at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>This is exactly the same as with the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument, which is explained above.</p>
 <p>Let’s take a look at the function <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code> as an example.</p>
@@ -178,7 +178,7 @@ the argument is listed as required in the framework-specific implementations at
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>Whereas the framework-specific implementations in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/creation.py</span></code>
+<p>Whereas the backend-specific implementations in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/creation.py</span></code>
 all list <code class="code docutils literal notranslate"><span class="pre">device</span></code> as required.</p>
 <p>Jax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
@@ -225,11 +225,11 @@ all list <code class="code docutils literal notranslate"><span class="pre">devic
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>This makes it clear that these framework-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">device</span></code>
+<p>This makes it clear that these backend-specific functions are only enterred into once the correct <code class="code docutils literal notranslate"><span class="pre">device</span></code>
 has been determined.</p>
 <p>However, the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument for functions listed in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104">NON_DEV_WRAPPED_FUNCTIONS</a>
 are <strong>not</strong> handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a>,
-and so these defaults must be handled by the framework-specific implementations themselves,
+and so these defaults must be handled by the backend-specific implementations themselves,
 by calling <code class="code docutils literal notranslate"><span class="pre">ivy.default_device</span></code> internally.</p>
 </section>
 

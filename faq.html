@@ -157,7 +157,7 @@ For now, fully framework-agnostic compiled graphs are only possible for static g
 <h2>Type and Shape Checking<a class="headerlink" href="#type-and-shape-checking" title="Permalink to this headline"></a></h2>
 <p><strong>Q:</strong> What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic
 sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of <a class="reference external" href="https://github.com/dexidp/dex">dex</a>.</p>
-<p><strong>A:</strong>  The checks performed during graph compilation will remain framework-specific. The function <code class="code docutils literal notranslate"><span class="pre">ivy.compile</span></code>
+<p><strong>A:</strong>  The checks performed during graph compilation will remain backend-specific. The function <code class="code docutils literal notranslate"><span class="pre">ivy.compile</span></code>
 wraps the backend compilation methods, for example <code class="code docutils literal notranslate"><span class="pre">jax.jit</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.function</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.jit.script</span></code> and
 <code class="code docutils literal notranslate"><span class="pre">torch.jit.trace</span></code>. For some backends, shape-checking will be performed during the compilation phase and for others
 it will not.</p>
@@ -230,18 +230,18 @@ frameworks such as PyTorch are seeing the benefit in these functions, and will e
 <section id="alternative-data-structures">
 <h2>Alternative Data Structures<a class="headerlink" href="#alternative-data-structures" title="Permalink to this headline"></a></h2>
 <p><strong>Q:</strong> Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.</p>
-<p><strong>A:</strong> We will of course support these structures in pure python code, but we will not support framework-specific
+<p><strong>A:</strong> We will of course support these structures in pure python code, but we will not support backend-specific
 alternative compilable data structures. While Ivy will not provide an interface to these data structures directly,
 Ivy code can easily supplement JAX code which does contain these data structures,
 and both can be compiled together without issue. Ivy can act as a supplementary framework if/when some of the more
-unique framework-specific data structures are required.</p>
+unique backend-specific data structures are required.</p>
 </section>
 <section id="custom-operations">
 <h2>Custom Operations<a class="headerlink" href="#custom-operations" title="Permalink to this headline"></a></h2>
 <p><strong>Q:</strong> Most frameworks have a backdoor for user-defined ops, implemented in C++/CUDA, or some kind of host callback
 mechanism. Will Ivy support this ability also?</p>
 <p><strong>A:</strong> We will not attempt to provide a unified back-door for all possible backend kernel customizations,
-but of course users can still use the framework-specific backdoors which already exist when using Ivy.</p>
+but of course users can still use the backend-specific backdoors which already exist when using Ivy.</p>
 </section>
 <section id="the-pipeline">
 <h2>The Pipeline<a class="headerlink" href="#the-pipeline" title="Permalink to this headline"></a></h2>
