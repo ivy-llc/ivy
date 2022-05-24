@@ -115,7 +115,7 @@ look something like the following, (explained in much more detail in the followi
 
         Some cool examples go here
         """
-        return _cur_framework(x).my_func(x, axes, dtype=dtype, device=device, out=out)
+        return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.

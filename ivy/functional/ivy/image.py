@@ -5,7 +5,7 @@ import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 from typing import Union, List, Tuple
 
 
@@ -49,7 +49,7 @@ def stack_images(
             [0., 0., 0.]]])
 
     """
-    return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
+    return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp):
@@ -68,7 +68,7 @@ def bilinear_resample(x, warp):
         Image after bilinear re-sampling.
 
     """
-    return _cur_framework(x).bilinear_resample(x, warp)
+    return _cur_backend(x).bilinear_resample(x, warp)
 
 
 def gradient_image(x):
@@ -102,14 +102,14 @@ def gradient_image(x):
      ivy.array([[3., 3., 3.],
                [3., 3., 3.],
                [0., 0., 0.]])
-               
+
     >>> print(dx[0, :,:,0])
      ivy.array([[1., 1., 0.],
                [1., 1., 0.],
                [1., 1., 0.]])
 
     """
-    return _cur_framework(x).gradient_image(x)
+    return _cur_backend(x).gradient_image(x)
 
 
 def float_img_to_uint8_img(x):
@@ -228,4 +228,4 @@ def linear_resample(
         The array after the linear resampling.
 
     """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
+    return _cur_backend(x).linear_resample(x, num_samples, axis)

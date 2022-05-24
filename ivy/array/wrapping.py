@@ -21,7 +21,7 @@ def _wrap_function(function_name: str) -> Callable:
 
     Examples
     --------
-    >>> ivy.set_framework("torch")
+    >>> ivy.set_backend("torch")
     >>> from ivy.array.wrapping import _wrap_function
     >>> absolute = _wrap_function("abs")
     >>> x = ivy.array([-1])

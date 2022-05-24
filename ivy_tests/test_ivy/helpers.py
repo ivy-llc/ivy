@@ -252,10 +252,10 @@ def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
-    if fn_name not in ivy.framework_handler.ivy_original_dict:
+    if fn_name not in ivy.backend_handler.ivy_original_dict:
         return True
 
-    docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+    docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
 
     if docstring is None:
         return True
@@ -533,7 +533,7 @@ def test_array_function(
             assert ret is out
 
         if max(container) or fw in ["tensorflow", "jax", "numpy"]:
-            # these frameworks do not always support native inplace updates
+            # these backends do not always support native inplace updates
             pass
         else:
             assert ret.data is out.data
@@ -546,11 +546,11 @@ def test_array_function(
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ivy.set_framework("numpy")
+    ivy.set_backend("numpy")
     ret_from_np = ivy.to_native(
         ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
     )
-    ivy.unset_framework()
+    ivy.unset_backend()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
