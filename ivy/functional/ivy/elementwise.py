@@ -1791,7 +1791,7 @@ def tan(
         b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
-    return _cur_framework(x).tan(x, out)
+    return ivy.current_framework(x).tan(x, out)
 
 
 def atan(
