@@ -48,10 +48,10 @@
 <li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Navigating the Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#categorization">Categorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend-api">Backend API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#categorization">Categorization</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -144,6 +144,43 @@
              
   <section id="navigating-the-code">
 <h1>Navigating the Code<a class="headerlink" href="#navigating-the-code" title="Permalink to this headline"></a></h1>
+<section id="categorization">
+<h2>Categorization<a class="headerlink" href="#categorization" title="Permalink to this headline"></a></h2>
+<p>Ivy uses the following categories taken from the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
+<ul class="simple">
+<li><p>constants</p></li>
+<li><p>creation</p></li>
+<li><p>data_type</p></li>
+<li><p>elementwise</p></li>
+<li><p>linear_algebra</p></li>
+<li><p>manipulation</p></li>
+<li><p>searching</p></li>
+<li><p>set</p></li>
+<li><p>sorting</p></li>
+<li><p>statistical</p></li>
+<li><p>utility</p></li>
+</ul>
+<p>In addition to these, we also add the following categories,
+used for additional functions in Ivy that are not in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
+<ul class="simple">
+<li><p>activations</p></li>
+<li><p>compilation</p></li>
+<li><p>device</p></li>
+<li><p>general</p></li>
+<li><p>gradients</p></li>
+<li><p>image</p></li>
+<li><p>layers</p></li>
+<li><p>losses</p></li>
+<li><p>meta</p></li>
+<li><p>nest</p></li>
+<li><p>norms</p></li>
+<li><p>random</p></li>
+</ul>
+<p>Some functions that you’re considering adding might overlap several of these categorizations,
+and in such cases you should look at the other functions included in each file,
+and use your best judgement for which categorization is most suitable.</p>
+<p>We can always suggest a more suitable location when reviewing your pull request if needed 🙂</p>
+</section>
 <section id="submodule-design">
 <h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this headline"></a></h2>
 <p>Ivy is designed so that all methods are called directly from the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="code docutils literal notranslate"><span class="pre">ivy.matmul</span></code>,
@@ -235,43 +272,6 @@ All arrays also now have the same type hint <code class="code docutils literal n
 rather than <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.</p>
-</section>
-<section id="categorization">
-<h2>Categorization<a class="headerlink" href="#categorization" title="Permalink to this headline"></a></h2>
-<p>Ivy uses the following categories taken from the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
-<ul class="simple">
-<li><p>constants</p></li>
-<li><p>creation</p></li>
-<li><p>data_type</p></li>
-<li><p>elementwise</p></li>
-<li><p>linear_algebra</p></li>
-<li><p>manipulation</p></li>
-<li><p>searching</p></li>
-<li><p>set</p></li>
-<li><p>sorting</p></li>
-<li><p>statistical</p></li>
-<li><p>utility</p></li>
-</ul>
-<p>In addition to these, we also add the following categories,
-used for additional functions in Ivy that are not in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
-<ul class="simple">
-<li><p>activations</p></li>
-<li><p>compilation</p></li>
-<li><p>device</p></li>
-<li><p>general</p></li>
-<li><p>gradients</p></li>
-<li><p>image</p></li>
-<li><p>layers</p></li>
-<li><p>losses</p></li>
-<li><p>meta</p></li>
-<li><p>nest</p></li>
-<li><p>norms</p></li>
-<li><p>random</p></li>
-</ul>
-<p>Some functions that you’re considering adding might overlap several of these categorizations,
-and in such cases you should look at the other functions included in each file,
-and use your best judgement for which categorization is most suitable.</p>
-<p>We can always suggest a more suitable location when reviewing your pull request if needed 🙂</p>
 </section>
 </section>
 
