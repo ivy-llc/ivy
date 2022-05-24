@@ -253,8 +253,6 @@ native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 native_bool = "bool"
-native_nan = float("nan")
-native_inf = float("inf")
 
 valid_dtypes = (
     int8,
