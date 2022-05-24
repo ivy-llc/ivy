@@ -38,7 +38,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return _cur_framework(x).tan(x, out=out)
+        return ivy.current_framework(x).tan(x, out)
 
 The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
@@ -52,11 +52,16 @@ The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
     ) -> torch.Tensor:
         return torch.tan(x, out=out)
 
+The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch
+implementation has :code:`torch.Tensor` is explained in the :ref:`Native Arrays` section.
+Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :code:`ivy.Array`
+whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the :ref:`Native Arrays` section.
+
 Compositional Functions
 -----------------------
 
 *Compositional* functions on the other hand **do not** have backend-specific implementations. They are implemented as
-a *composition* of other Ivy methods, which themselves can be either compositional or primary.
+a *composition* of other Ivy functions, which themselves can be either compositional or primary.
 
 Therefore, compositional functions are only implemented in :code:`ivy/functional/ivy/category_name.py`, and there are no
 implementations in any of the backend files :code:`ivy/functional/backends/backend_name/category_name.py`
@@ -91,11 +96,11 @@ implementation, these functions are refered to as *mixed*.
 
 When using ivy without a framework set explicitly (for example :code:`ivy.set_framework()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
-For *primary* functions, then :code:`_cur_framework(x).func_name(...)`
+For *primary* functions, then :code:`ivy.current_framework(array_arg).func_name(...)`
 will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
 directly. However, as just explained, *mixed* functions implement a compositional approach in
 :code:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
-Therefore, when no framework is explicitly setting,
+Therefore, when no framework is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
 Typically the framework should always be set explicitly though (using :code:`ivy.set_framework()` for example),
@@ -118,8 +123,8 @@ This *nestable* property of Ivy functions means that the same function can be us
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
 is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
-in the :code:`ivy` namespace during `framework setting`_.
+in the :code:`ivy` module during `framework setting`_.
+This function wrapping process is covered in more detail in the :ref:`Function Wrapping` section.
 
-As part of this wrapping, `_function_w_arrays_n_out_handled`_ also ensures that :code:`ivy.Array` instances in the input
-are converted to :code:`ivy.NativeArray` instances before passing to the backend implementation,
-and are then converted back to :code:`ivy.Array` instances before returning.
+Under the hood, the static :code:`ivy.Container` methods are called when :code:`ivy.Container` instances are passed in
+the input. This is explained in more detail in the :ref:`Method Types` section.
