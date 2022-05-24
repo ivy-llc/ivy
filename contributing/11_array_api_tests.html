@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Basics &mdash; Ivy 1.0 documentation</title>
+  <title>Array API Tests &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Navigating the Code" href="2_navigating_the_code.html" />
-    <link rel="prev" title="Setting up" href="0_setting_up.html" /> 
+    <link rel="next" title="Ivy Tests" href="12_ivy_tests.html" />
+    <link rel="prev" title="Devices" href="10_devices.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,12 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">The Basics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_framework_setting.html">Framework Setting</a></li>
@@ -61,7 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_type_hints.html">Type Hints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_docstrings.html">Docstrings</a></li>
@@ -136,9 +131,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
-      <li>The Basics</li>
+      <li>Array API Tests</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/contributing/1_the_basics.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/contributing/11_array_api_tests.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -146,78 +141,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="the-basics">
-<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline"></a></h1>
-<section id="managing-your-fork">
-<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline"></a></h2>
-<p>When contributing to Ivy, the first step is create a fork of the repository.
-Then, it’s best practice to create a separate branch for each new pull request you create.
-The master branch then simply has the role of being kept up to date with upstream.
-You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.</p>
-<p>For keeping any branch on your fork up to date, there is a script in the root folder of the repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>.
-To update your fork’s branch to the upstream master branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
-To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
-</section>
-<section id="todo-list-issues">
-<h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this headline"></a></h2>
-<p>We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
-<p>We have a clear process for contributors to engage with such ToDo lists:</p>
-<p>&lt;a&gt; Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.</p>
-<p>&lt;b&gt; Create a new issue with the title being just the name of the task you would like to work on.</p>
-<p>&lt;c&gt; comment on the ToDo list issue with a reference to this issue like so:</p>
-<ul class="simple">
-<li><p>[ ] #Issue_number</p></li>
-</ul>
-<p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-No need to wait for this to happen before progressing to stage.</p>
-<p>&lt;d&gt; Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
-reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
-the process of getting it working 🙂</p>
-<p>&lt;e&gt; Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
-respond to our requested changes you must re-request a review in order for us to re-engage with the PR.</p>
-<p>&lt;f&gt; Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p>
-<p>In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
-changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
-you should request a new code review to flag to us that our attention is again needed to further the discussion.</p>
-<p>The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
-priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
-allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
-on these instead.</p>
-<p>Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
-these just so we can keep our communuty engaged with these tasks :)</p>
-<p>Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
-reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
-people, and sometimes there is not as much free time available as initially thought. Please don’t take it personally
-if your issue or PR gets closed because of these time limits.</p>
-<p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
-investigate!</p>
-</section>
-<section id="creating-pull-requests">
-<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this headline"></a></h2>
-<p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
-and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
-you will then need to request a code review once you have addressed our requested changes.
-We will then take another look, and either merge the PR or request further changes.
-This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.</p>
-<p>If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
-This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
-attention is needed.</p>
-<p>Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
-receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!</p>
-<p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
-lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
-much more quickly without us needing to request very simple fixes from yourself.</p>
-</section>
+  <section id="array-api-tests">
+<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this headline"></a></h1>
+<p>All functions which are present in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> have a corresponding unit test in the
+<a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a> for the standard.</p>
+<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
+which we keep updated with the upstream test suite.</p>
+<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
+Therefore, every method which exists in the standard is thoroughly tested for adherence standard on a continuous basis.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="0_setting_up.html" class="btn btn-neutral float-left" title="Setting up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="2_navigating_the_code.html" class="btn btn-neutral float-right" title="Navigating the Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="10_devices.html" class="btn btn-neutral float-left" title="Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="12_ivy_tests.html" class="btn btn-neutral float-right" title="Ivy Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
