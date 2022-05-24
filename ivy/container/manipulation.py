@@ -157,7 +157,7 @@ class ContainerWithManipulation(ContainerBase):
 
     def roll(
         self: ivy.Container,
-        *,
+        *args,
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         shift: Union[int, Tuple[int, ...], ivy.Container] = None,
         axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
@@ -168,15 +168,16 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self._call_static_method(
-            {"x": x, "shift": shift, "axis": axis},
-            ("x", "shift"),
-            {},
             self.static_roll,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            *args,
+            kw={"x": x, "shift": shift, "axis": axis},
+            required=("x", "shift"),
+            defaults={},
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def squeeze(
