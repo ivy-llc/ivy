@@ -119,6 +119,16 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
     ret
         Boolean, whether or not x is an array.
 
+    Examples
+    --------
+    >>> x = [0., 1., 2.]
+    >>> ivy.is_ivy_array(x)
+    False
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> ivy.is_ivy_array(x)
+    True
+
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
