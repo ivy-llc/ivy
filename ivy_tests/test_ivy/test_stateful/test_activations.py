@@ -1,15 +1,14 @@
 """Collection of tests for unified neural network activations."""
 
 # global
-import pytest
+#import pytest
 from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
+#import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-
 
 
 # GELU
@@ -20,7 +19,7 @@ import ivy.functional.backends.numpy as ivy_np
     with_out=st.booleans(),
     native_array=st.booleans(),
 )
-def test_gelu(x, dtype ,with_out, as_variable, native_array, fw,):
+def test_gelu(x, dtype ,with_out, as_variable, native_array, fw):
     if dtype in ivy.invalid_dtypes:
         return  # invalid dtype
     if dtype == "float16" and fw == "torch":
@@ -54,6 +53,7 @@ def test_gelu(x, dtype ,with_out, as_variable, native_array, fw,):
     assert np.allclose(
         np.nan_to_num(ivy.to_numpy(ret)), np.nan_to_num(ivy_np.gelu(ivy.to_numpy(x)))
     )
+
 
 # GEGLU
 @given(
