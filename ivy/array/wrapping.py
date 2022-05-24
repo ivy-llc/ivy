@@ -52,16 +52,39 @@ def _wrap_function(function_name):
 
 
 def add_ivy_array_instance_methods(cls, modules, to_ignore=()):
-    """
-    Loop over all ivy modules such as activations, general, etc. and add
-    the module functions to ivy arrays as instance methods using _wrap_fn.
+    """Loop over all ivy modules such as activations, general, etc. and add
+    the module functions to ivy arrays as instance methods using _wrap_function.
+
+    Parameters
+    ----------
+    cls
+        the class we want to add the instance methods to.
+    modules
+        the modules to loop over: activations, general etc.
+    to_ignore
+        any items we don't want to add an instance method for.
+
+    Examples
+    --------
+    As shown, `add_ivy_array_instance_methods` adds all the appropriate functions from
+    the activations module as instance methods to our toy `ArrayExample` class:
+
+    >>> from ivy.functional.ivy import activations
+    >>> class ArrayExample: \
+            pass
+    >>> ivy.add_ivy_array_instance_methods(ArrayExample, [activations])
+    >>> print(hasattr(ArrayExample, "relu"), hasattr(ArrayExample, "softmax"))
+    True True
+
     """
     for module in modules:
-        for key, val in module.__dict__.items():
+        for key, value in module.__dict__.items():
+            # we skip the cases where the function is protected, the instance
+            # method has already been added manually and a few other cases
             if (
                 key.startswith("_")
                 or key[0].isupper()
-                or not callable(val)
+                or not callable(value)
                 or key in cls.__dict__
                 or hasattr(cls, key)
                 or key in to_ignore
