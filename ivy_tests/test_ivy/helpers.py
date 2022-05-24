@@ -251,15 +251,15 @@ def trim(docstring):
 def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
-    fn_name = fn.__name__    
+    fn_name = fn.__name__
     if fn_name not in ivy.framework_handler.ivy_original_dict:
         return True
-    
+
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
 
     if docstring is None:
         return True
-    
+
     # removing extra new lines and trailing white spaces from the docstrings
     trimmed_docstring = trim(docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
@@ -270,23 +270,23 @@ def docstring_examples_run(fn):
     # parsed_output is set as an empty string to manage functions with multiple inputs
     parsed_output = ""
 
-    # parsing through the docstrings to find lines with print statement 
+    # parsing through the docstrings to find lines with print statement
     # following which is our parsed output
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            end_index = trimmed_docstring.index('', index)
-            p_output = trimmed_docstring[index + 1:end_index]
+            end_index = trimmed_docstring.index("", index)
+            p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
             parsed_output += p_output
-    
+
     if end_index == -1:
         return True
 
-    executable_lines = [line.split('>>>')[1][1:]
-                        for line in docstring.split('\n')
-                        if '>>>' in line]
-            
+    executable_lines = [
+        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
+    ]
+
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
@@ -302,7 +302,8 @@ def docstring_examples_run(fn):
 
     # handling cases when the stdout contains ANSI colour codes
     # 7-bit C1 ANSI sequences
-    ansi_escape = re.compile(r'''
+    ansi_escape = re.compile(
+        r"""
     \x1B  # ESC
     (?:   # 7-bit C1 Fe (except CSI)
         [@-Z\\-_]
@@ -312,9 +313,11 @@ def docstring_examples_run(fn):
         [ -/]*  # Intermediate bytes
         [@-~]   # Final byte
     )
-    ''', re.VERBOSE)
+    """,
+        re.VERBOSE,
+    )
 
-    output = ansi_escape.sub('', output)
+    output = ansi_escape.sub("", output)
 
     print("Output: ", output)
     print("Putput: ", parsed_output)
