@@ -16,11 +16,11 @@ from ivy.functional.backends.mxnet import (
 
 
 def sum(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
 
     if axis is None:
         num_dims = len(x.shape)
@@ -39,13 +39,13 @@ def sum(
 
 
 def prod(
-    x: mx.ndarray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
     dtype: type,
-    out: Optional[mx.ndarray] = None,
-) -> mx.ndarray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -63,11 +63,11 @@ def prod(
 
 
 def mean(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -85,11 +85,11 @@ def mean(
 
 
 def var(
-    x: mx.ndarray.ndarray,
+    x: mx.nd.NDArray,
     axis: Union[int, Tuple[int, ...]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     mean_of_x_sqrd = mean(x**2, axis, keepdims)
     mean_of_x = mean(x, axis, keepdims)
     is_flat = mean_of_x.shape == ()
@@ -109,11 +109,11 @@ def var(
 
 
 def std(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     red_var = var(x, axis, keepdims)
     is_flat = red_var.shape == ()
     if is_flat:
@@ -131,11 +131,11 @@ def std(
 
 
 def min(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Union[int, Tuple[int, ...]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -153,11 +153,11 @@ def min(
 
 
 def max(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Union[int, Tuple[int, ...]] = None,
     keepdims: bool = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -180,9 +180,9 @@ def max(
 
 def einsum(
     equation: str,
-    *operands: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    *operands: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(
             out,
