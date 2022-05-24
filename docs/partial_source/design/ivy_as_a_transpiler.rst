@@ -3,7 +3,7 @@ Ivy as a Transpiler
 
 On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the framework handler and the graph compiler. These are parts are labelled as (a) in the image below.
 
-Here, we explain the role of the framework-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks. This part is labelled as (b) in the image below.
+Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks. This part is labelled as (b) in the image below.
 
 The code conversion tools described on this page are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
 
@@ -326,6 +326,6 @@ Overall, we have taken a :code:`torch.nn.Module` instance, which can be trained 
 
 **Round Up**
 
-Hopefully this has explained how, with the addition of framework-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
+Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
 
 Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
