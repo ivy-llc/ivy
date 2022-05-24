@@ -40,9 +40,9 @@ Overall, the device is inferred as follows:
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the device,
 these steps will have been followed and the :code:`device` argument will be populated with the correct value
-before the framework-specific implementation is even enterred into. Therefore, whereas the :code:`device` argument is
+before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`device` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
-the argument is listed as required in the framework-specific implementations at
+the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
 This is exactly the same as with the :code:`dtype` argument, which is explained above.
@@ -60,7 +60,7 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
-Whereas the framework-specific implementations in :code:`ivy/functional/backends/backend_name/creation.py`
+Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/creation.py`
 all list :code:`device` as required.
 
 Jax:
@@ -118,10 +118,10 @@ PyTorch:
         device: torch.device,
     ) -> Tensor:
 
-This makes it clear that these framework-specific functions are only enterred into once the correct :code:`device`
+This makes it clear that these backend-specific functions are only enterred into once the correct :code:`device`
 has been determined.
 
 However, the :code:`device` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_
 are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
-and so these defaults must be handled by the framework-specific implementations themselves,
+and so these defaults must be handled by the backend-specific implementations themselves,
 by calling :code:`ivy.default_device` internally.
