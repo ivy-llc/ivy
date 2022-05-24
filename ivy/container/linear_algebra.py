@@ -25,9 +25,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             kw["x2"] = x2
         else:
             conts["x2"] = x2
+        cont_keys = conts.keys()
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
-                lambda xs, _: ivy.matmul(**dict(zip(conts.keys(), xs)), **kw)
+                lambda xs, _: ivy.matmul(**dict(zip(cont_keys, xs)), **kw)
                 if ivy.is_array(xs[0])
                 else xs,
                 list(conts.values()),
