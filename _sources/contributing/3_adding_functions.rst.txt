@@ -373,13 +373,13 @@ MXNet:
 .. code-block:: python
 
     def prod(
-        x: mx.ndarray,
+        x: mx.nd.NDArray,
         axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: type,
-        out: Optional[mx.ndarray] = None,
-    ) -> mx.ndarray:
+        out: Optional[mx.nd.NDArray] = None,
+    ) -> mx.nd.NDArray:
 
 NumPy:
 
@@ -536,7 +536,7 @@ MXNet:
         *,
         dtype: type,
         device: mx.context.Context,
-    ) -> mx.ndarray:
+    ) -> mx.nd.NDArray:
 
 NumPy:
 
