@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Framework Setting &mdash; Ivy 1.0 documentation</title>
+  <title>Backend Setting &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -49,7 +49,7 @@
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Framework Setting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
@@ -131,7 +131,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
-      <li>Framework Setting</li>
+      <li>Backend Setting</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/contributing/4_backend_setting.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -141,12 +141,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="framework-setting">
-<h1>Framework Setting<a class="headerlink" href="#framework-setting" title="Permalink to this headline"></a></h1>
-<p>The backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>. When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/framework_handler.py#L153">this function</a>,
+  <section id="backend-setting">
+<h1>Backend Setting<a class="headerlink" href="#backend-setting" title="Permalink to this headline"></a></h1>
+<p>The backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>. When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L153">this function</a>,
 we go through the following steps:</p>
 <ol class="arabic simple">
-<li><p>store a global copy of the original <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> with no backend set.</p></li>
+<li><p>store a global copy of the original <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> to <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>, if this is not already stored.</p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L182">import the backend module</a>, for example <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code>, if the backend has been passed in as a string. All functions in this unmodified backend module are <em>primary</em> functions, because primary functions are stored in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.backend_name</span></code>. This backend module does not include any compositional functions.</p></li>
+<li><p>loop through the original <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code> (which has all functions, including compositional),
+and for each function, (a) add the primary function from the backend if it exists, (b) else add the compositional
+function from <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>, writing the function to <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L200">in either case</a>.</p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L206">wrap the functions</a>, extending each of them with shared required functionality, which is solved via wrapping in
+order to avoid excessive code duplication in every function implementation. This is explained in more detail in the next section: <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
 </ol>
 </section>
 
