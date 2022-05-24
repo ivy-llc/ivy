@@ -44,10 +44,10 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
 | (h) :ref:`Inplace Updates`
 | How the :code:`out` argument is used to specify the output target  ðŸŽ¯
 |
-| (i) :ref:`Handling Data Types`
+| (i) :ref:`Data Types`
 | How functions infer the correct data type  ðŸ’¾
 |
-| (j) :ref:`Handling Devices`
+| (j) :ref:`Devices`
 | How functions infer the correct device  ðŸ’½
 |
 | (k) :ref:`Array API Tests`
@@ -79,8 +79,8 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
    contributing/5_method_types.rst
    contributing/6_native_arrays.rst
    contributing/7_inplace_updates.rst
-   contributing/8_handling_data_types.rst
-   contributing/9_handling_devices.rst
+   contributing/8_data_types.rst
+   contributing/9_devices.rst
    contributing/10_array_api_tests.rst
    contributing/11_ivy_tests.rst
    contributing/12_type_hints.rst
