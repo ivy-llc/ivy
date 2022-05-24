@@ -19,17 +19,7 @@ import ivy_tests.test_ivy.helpers as helpers
     tensor_fn=st.sampled_from([ivy.array]),
 )
 def test_random_uniform(data, shape, dtype, tensor_fn, device, call):
-    bounds = data.draw(helpers.none_or_list_of_floats(dtype, 2))
-    if bounds[0] is not None and bounds[1] is not None:
-        low, high =  min(bounds), max(bounds)
-    else:
-        low, high = bounds[0], bounds[1]
-    if low is None and high is not None:
-        if high <= 0.0:
-            return
-    elif high is None and low is not None:
-        if low >= 1.0:
-            return
+    low, high = data.draw(helpers.get_bounds(dtype))
     ivy.seed(0)
     # smoke test
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
@@ -55,11 +45,6 @@ def test_random_uniform(data, shape, dtype, tensor_fn, device, call):
 
 
 # random_normal
-# @pytest.mark.parametrize("mean", [None, -1.0, 0.2])
-# @pytest.mark.parametrize("std", [None, 0.5, 2.0])
-# @pytest.mark.parametrize("shape", [None, (), (1, 2, 3)])
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
 @given(
     data=st.data(),
     shape=helpers.get_shape(),
@@ -67,11 +52,8 @@ def test_random_uniform(data, shape, dtype, tensor_fn, device, call):
     tensor_fn=st.sampled_from([ivy.array]),
 )
 def test_random_normal(data, shape, dtype, tensor_fn, device, call):
-    params = data.draw(helpers.none_or_list_of_floats(dtype, 2))
-    mean, std = params[0], params[1]
+    mean, std = data.draw(helpers.get_mean_std(dtype))
     ivy.seed(0)
-    print('mean', mean)
-    print('std', std)
     # smoke test
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -91,23 +73,6 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
         assert ret.shape == shape
     # value test
     ret_np = call(ivy.random_normal, **kwargs, device=device)
-    print('REACHED HERE')
-    assert (
-        np.min(
-            (ret_np > (ivy.default(mean, 0.0) - 3 * ivy.default(std, 1.0))).astype(
-                np.int32
-            )
-        )
-        == 1
-    )
-    assert (
-        np.min(
-            (ret_np < (ivy.default(mean, 0.0) + 3 * ivy.default(std, 1.0))).astype(
-                np.int32
-            )
-        )
-        == 1
-    )
 
 
 # multinomial

@@ -734,3 +734,20 @@ def none_or_list_of_floats(dtype, size):
     elif dtype == "float64":
         values = list_of_length(st.none() | st.floats(width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False), size)
     return values
+
+@st.composite
+def get_mean_std(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    values[1] = abs(values[1]) if values[1] else None
+    return values[0], values[1]
+
+@st.composite
+def get_bounds(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    if values[0] is not None and values[1] is not None:
+        low, high =  min(values), max(values)
+    else:
+        low, high = values[0], values[1]
+    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+        return draw(get_bounds(dtype))
+    return low, high
