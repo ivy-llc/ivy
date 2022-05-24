@@ -2,7 +2,7 @@ Function Types
 ==============
 
 .. _`_wrap_function`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137
-.. _`framework setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
 .. _`at import time`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
 .. _`add_ivy_array_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
 .. _`add_ivy_container_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
@@ -38,7 +38,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.current_framework(x).tan(x, out)
+        return ivy.current_backend(x).tan(x, out)
 
 The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
@@ -94,16 +94,16 @@ a compositional implementation is also provided in :code:`ivy/functional/ivy/cat
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are refered to as *mixed*.
 
-When using ivy without a framework set explicitly (for example :code:`ivy.set_framework()` has not been called),
+When using ivy without a backend set explicitly (for example :code:`ivy.set_framework()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
-For *primary* functions, then :code:`ivy.current_framework(array_arg).func_name(...)`
+For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
 will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
 directly. However, as just explained, *mixed* functions implement a compositional approach in
 :code:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
-Therefore, when no framework is explicitly set,
+Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the framework should always be set explicitly though (using :code:`ivy.set_framework()` for example),
+Typically the backend should always be set explicitly though (using :code:`ivy.set_framework()` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Nestable Functions
@@ -123,7 +123,7 @@ This *nestable* property of Ivy functions means that the same function can be us
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
 is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
-in the :code:`ivy` module during `framework setting`_.
+in the :code:`ivy` module during `backend setting`_.
 This function wrapping process is covered in more detail in the :ref:`Function Wrapping` section.
 
 Under the hood, the static :code:`ivy.Container` methods are called when :code:`ivy.Container` instances are passed in

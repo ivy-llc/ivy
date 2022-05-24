@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 inf = float("inf")
 
@@ -51,7 +51,7 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return _cur_framework(x).eigh(x)
+    return _cur_backend(x).eigh(x)
 
 
 def pinv(
@@ -87,7 +87,7 @@ def pinv(
         two dimensions must be transposed).
 
     """
-    return _cur_framework(x).pinv(x, rtol)
+    return _cur_backend(x).pinv(x, rtol)
 
 
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -106,7 +106,7 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         ``(..., N, M)``. The returned array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).matrix_transpose(x)
+    return _cur_backend(x).matrix_transpose(x)
 
 
 # noinspection PyShadowingBuiltins
@@ -252,12 +252,12 @@ def svd(
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
     ivy.array(0)
-    
+
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
 
     """
-    return _cur_framework(x).svd(x, full_matrices)
+    return _cur_backend(x).svd(x, full_matrices)
 
 
 def outer(
@@ -283,7 +283,7 @@ def outer(
         The returned array must have a data type determined by Type Promotion Rules.
 
     """
-    return _cur_framework(x1, x2).outer(x1, x2)
+    return _cur_backend(x1, x2).outer(x1, x2)
 
 
 def diagonal(
@@ -338,7 +338,7 @@ def diagonal(
     ivy.array([[1., 7.],
                [2., 8.]])
     """
-    return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return _cur_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 def matrix_norm(
@@ -368,7 +368,7 @@ def matrix_norm(
         Matrix norm of the array at specified axes.
 
     """
-    return _cur_framework(x).matrix_norm(x, ord, keepdims)
+    return _cur_backend(x).matrix_norm(x, ord, keepdims)
 
 
 def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
@@ -407,7 +407,7 @@ def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
           dimensions must have the same size as those of the input x.
 
     """
-    return _cur_framework(x).qr(x, mode)
+    return _cur_backend(x).qr(x, mode)
 
 
 def matmul(
@@ -463,14 +463,14 @@ def matmul(
         (..., L, N), and K != L.
 
     """
-    return _cur_framework(x1).matmul(x1, x2)
+    return _cur_backend(x1).matmul(x1, x2)
 
 
 def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
     """
-    return _cur_framework(x).matrix_power(x, n)
+    return _cur_backend(x).matrix_power(x, n)
 
 
 def slodget(
@@ -494,7 +494,7 @@ def slodget(
             The natural log of the absolute value of the determinant.
 
     """
-    return _cur_framework(x).slodget(x)
+    return _cur_backend(x).slodget(x)
 
 
 def tensordot(
@@ -520,14 +520,14 @@ def tensordot(
     -------
     ret
         The tensor contraction of x1 and x2 over the specified axes.
-    
+
 
     Functional Examples
     -------------------
 
     With :code:`ivy.Array` input:
-    
-    1. Axes = 0 : tensor product 
+
+    1. Axes = 0 : tensor product
 
     >>> x = ivy.array([[1., 2.], [2., 3.]])
     >>> y = ivy.array([[3., 4.], [4., 5.]])
@@ -546,7 +546,7 @@ def tensordot(
                   [12., 15.]]]])
 
 
-    
+
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     2. Axes = 1 : tensor dot product
@@ -559,27 +559,27 @@ def tensordot(
                 [26.],
                 [20.]])
 
-    
+
     With :code:`ivy.Container` input:
 
-    3. Axes = 2: (default) tensor double contraction 
+    3. Axes = 2: (default) tensor double contraction
 
     >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),
                           b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
     >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),
                           b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))
-    >>> res = ivy.tensordot(x, y) 
+    >>> res = ivy.tensordot(x, y)
     >>> print(res)
     {
         a: ivy.array(89.)
         b: ivy.array(76.)
     }
-    
+
 
 
 
     Instance Method Examples
-    ------------------------    
+    ------------------------
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([[1., 0., 2.]])
@@ -588,10 +588,10 @@ def tensordot(
     >>> print(res)
     >>> ivy.array([[ 7.,  8.,  0.],
                    [ 0.,  0.,  0.],
-                   [14., 16.,  0.]])    
+                   [14., 16.,  0.]])
 
     """
-    return _cur_framework(x1, x2).tensordot(x1, x2, axes)
+    return _cur_backend(x1, x2).tensordot(x1, x2, axes)
 
 
 def svdvals(
@@ -613,7 +613,7 @@ def svdvals(
         magnitude.
 
     """
-    return _cur_framework(x).svdvals(x)
+    return _cur_backend(x).svdvals(x)
 
 
 def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
@@ -656,7 +656,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
     ivy.array(5.)
 
     """
-    return _cur_framework(x).trace(x, offset)
+    return _cur_backend(x).trace(x, offset)
 
 
 def vecdot(
@@ -698,7 +698,7 @@ def vecdot(
         for both ``x1`` and ``x2``.
 
     """
-    return _cur_framework(x1).vecdot(x1, x2, axis)
+    return _cur_backend(x1).vecdot(x1, x2, axis)
 
 
 def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -726,13 +726,12 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([-2., -3.])
 
     """
-    return _cur_framework(x).det(x)
+    return _cur_backend(x).det(x)
 
 
 def cholesky(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    upper: bool = False
- )-> Union[ivy.Array, ivy.Container]:
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container], upper: bool = False
+) -> Union[ivy.Array, ivy.Container]:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -747,20 +746,20 @@ def cholesky(
 
     Returns
     -------
-    ret 
+    ret
         an array containing the Cholesky factors for each square matrix. If upper is
         False, the returned array must contain lower-triangular matrices; otherwise, the
         returned array must contain upper-triangular matrices. The returned array must
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
-    
+
     Functional Examples
      -------------------
      With :code:`ivy.Array` input:
-      
+
      1. Returns a lower-triangular Cholesky factor L
 
-     >>> x = ivy.array([[1., -2.], [2., 5.]])  
+     >>> x = ivy.array([[1., -2.], [2., 5.]])
      >>> l = ivy.cholesky(x)
      >>> print(l)
      ivy.array([[ 1., 0.], [ 2., 1.]])
@@ -770,7 +769,7 @@ def cholesky(
 
      2. Returns an upper-triangular cholesky factor U
 
-     >>> x = ivy.array([[1., -2.], [2., 5.]])  
+     >>> x = ivy.array([[1., -2.], [2., 5.]])
      >>> u = ivy.cholesky(x, upper = True)
      >>> print(u)
      ivy.array([[ 1., -2.], [ 0.,  1.]])
@@ -795,7 +794,7 @@ def cholesky(
      }
 
     """
-    return _cur_framework(x).cholesky(x, upper)
+    return _cur_backend(x).cholesky(x, upper)
 
 
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
@@ -815,7 +814,7 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
         (..., M) and have the same data type as x.
 
     """
-    return _cur_framework(x).eigvalsh(x)
+    return _cur_backend(x).eigvalsh(x)
 
 
 def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -848,9 +847,9 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> y = ivy.inv(x)
     >>> print(y)
     ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
-     
+
     """
-    return _cur_framework(x).inv(x)
+    return _cur_backend(x).inv(x)
 
 
 def matrix_rank(
@@ -892,7 +891,7 @@ def matrix_rank(
     ivy.array(2)
 
     """
-    return _cur_framework(x).matrix_rank(x, rtol)
+    return _cur_backend(x).matrix_rank(x, rtol)
 
 
 def cross(
@@ -923,7 +922,7 @@ def cross(
          type determined by Type Promotion Rules.
 
     """
-    return _cur_framework(x1).cross(x1, x2, axis)
+    return _cur_backend(x1).cross(x1, x2, axis)
 
 
 # Extra #
@@ -949,7 +948,7 @@ def vector_to_skew_symmetric_matrix(
         Skew-symmetric matrix *[batch_shape,3,3]*.
 
     """
-    return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
+    return _cur_backend(vector).vector_to_skew_symmetric_matrix(vector)
 
 
 def solve(
@@ -981,4 +980,4 @@ def solve(
         Rules.
 
     """
-    return _cur_framework(x1, x2).solve(x1, x2)
+    return _cur_backend(x1, x2).solve(x1, x2)

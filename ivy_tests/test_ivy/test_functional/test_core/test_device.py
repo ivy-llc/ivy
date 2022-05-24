@@ -7,7 +7,7 @@ import pytest
 import time
 import numpy as np
 from numbers import Number
-from hypothesis import strategies as st, given, extra
+from hypothesis import strategies as st, given
 
 # local
 import ivy
@@ -23,9 +23,14 @@ import ivy.functional.backends.numpy as ivy_np
 
 # dev
 
-@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
-       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
-       as_variable = st.booleans())
+
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+)
 def test_dev(array_shape, dtype, as_variable, fw, device):
 
     if fw == "torch" and "int" in dtype:
@@ -44,9 +49,13 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
 
 
 # as_ivy_dev
-@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
-       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
-       as_variable = st.booleans())
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+)
 def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
 
     if fw == "torch" and "int" in dtype:
@@ -57,9 +66,7 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
     if as_variable:
         x = ivy.variable(x)
 
-    if ((isinstance(x, Number) or x.size == 0)
-        and as_variable
-        and fw == "mxnet"):
+    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
         # mxnet does not support 0-dimensional variables
         return
 
@@ -70,9 +77,13 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
 
 
 # as_native_dev
-@given(array_shape=helpers.lists(st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
-       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
-       as_variable = st.booleans())
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+)
 def test_as_native_dev(array_shape, dtype, as_variable, device, fw, call):
     if fw == "torch" and "int" in dtype:
         return
@@ -82,9 +93,7 @@ def test_as_native_dev(array_shape, dtype, as_variable, device, fw, call):
     if as_variable:
         x = ivy.variable(x)
 
-    if ((isinstance(x, Number) or x.size == 0)
-        and as_variable
-        and fw == "mxnet"):
+    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
         # mxnet does not support 0-dimensional variables
         return
 
@@ -149,10 +158,14 @@ def test_default_device(device, call):
 
 
 # to_dev
-@given(array_shape=helpers.lists(st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
-       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
-       as_variable = st.booleans(),
-       with_out=st.booleans())
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+)
 def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     if fw == "torch" and "int" in dtype:
         return
@@ -162,9 +175,7 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     if as_variable:
         x = ivy.variable(x)
 
-    if ((isinstance(x, Number) or x.size == 0)
-            and as_variable
-            and fw == "mxnet"):
+    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
         # mxnet does not support 0-dimensional variables
         return
 
@@ -183,8 +194,8 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
         assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             return
 
         assert x_on_dev.data is out.data
