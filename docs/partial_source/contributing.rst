@@ -32,8 +32,8 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (d) :ref:`Function Types`
 | Primary, compositional, mixed and nestable functions  🧮
 |
-| (e) :ref:`Framework Setting`
-| How the framework is set, and what this means for each function type ⚙️
+| (e) :ref:`Backend Setting`
+| How the backend is set, and what this means for each function type ⚙️
 |
 | (f) :ref:`Function Wrapping`
 | How functions are dynamically wrapped at runtime  🎁
@@ -78,7 +78,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/1_the_basics.rst
    contributing/2_navigating_the_code.rst
    contributing/3_function_types.rst
-   contributing/4_framework_setting.rst
+   contributing/4_backend_setting.rst
    contributing/5_function_wrapping.rst
    contributing/6_method_types.rst
    contributing/7_native_arrays.rst
