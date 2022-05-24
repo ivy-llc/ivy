@@ -1,0 +1,4 @@
+Method Types
+============
+
+# ToDo: write
