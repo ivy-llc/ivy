@@ -29,40 +29,43 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (c) :ref:`Navigating the Code`
 | A quick tour through the codebase 🔍
 |
-| (d) :ref:`Function Wrapping`
-| How functions are dynamically wrapped at runtime  🎁
-|
-| (e) :ref:`Function Types`
+| (d) :ref:`Function Types`
 | Primary, compositional, mixed and nestable functions  🧮
 |
-| (f) :ref:`Method Types`
+| (e) :ref:`Framework Setting`
+| How the framework is set, and what this means for each function type ⚙️
+|
+| (f) :ref:`Function Wrapping`
+| How functions are dynamically wrapped at runtime  🎁
+|
+| (g) :ref:`Method Types`
 | :code:`ivy.Container` and :code:`ivy.Array` methods 🗜️️
 |
-| (g) :ref:`Native Arrays`
+| (h) :ref:`Native Arrays`
 | How each function converts arrays to :code:`ivy.NativeArray` and back  🔙
 |
-| (h) :ref:`Inplace Updates`
+| (i) :ref:`Inplace Updates`
 | How the :code:`out` argument is used to specify the output target  🎯
 |
-| (i) :ref:`Data Types`
+| (j) :ref:`Data Types`
 | How functions infer the correct data type  💾
 |
-| (j) :ref:`Devices`
+| (k) :ref:`Devices`
 | How functions infer the correct device  💽
 |
-| (k) :ref:`Array API Tests`
+| (l) :ref:`Array API Tests`
 | How we're borrowing the test suite from the Array API Standard 🤝
 |
-| (l) :ref:`Ivy Tests`
+| (m) :ref:`Ivy Tests`
 | How to add new Ivy tests for each function ❓
 |
-| (m) :ref:`Type Hints`
+| (n) :ref:`Type Hints`
 | How to add the correct type hints 📑
 |
-| (n) :ref:`Docstrings`
+| (o) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (o) :ref:`Docstring Examples`
+| (p) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 |
 
@@ -74,15 +77,16 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
    contributing/2_navigating_the_code.rst
-   contributing/3_function_wrapping.rst
-   contributing/4_function_types.rst
-   contributing/5_method_types.rst
-   contributing/6_native_arrays.rst
-   contributing/7_inplace_updates.rst
-   contributing/8_data_types.rst
-   contributing/9_devices.rst
-   contributing/10_array_api_tests.rst
-   contributing/11_ivy_tests.rst
-   contributing/12_type_hints.rst
-   contributing/13_docstrings.rst
-   contributing/14_docstring_examples.rst
+   contributing/3_function_types.rst
+   contributing/4_framework_setting.rst
+   contributing/5_function_wrapping.rst
+   contributing/6_method_types.rst
+   contributing/7_native_arrays.rst
+   contributing/8_inplace_updates.rst
+   contributing/9_data_types.rst
+   contributing/10_devices.rst
+   contributing/11_array_api_tests.rst
+   contributing/12_ivy_tests.rst
+   contributing/13_type_hints.rst
+   contributing/14_docstrings.rst
+   contributing/15_docstring_examples.rst
