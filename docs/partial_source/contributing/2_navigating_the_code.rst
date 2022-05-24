@@ -3,6 +3,45 @@ Navigating the Code
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 
+Categorization
+--------------
+
+Ivy uses the following categories taken from the `Array API Standard`_:
+
+* constants
+* creation
+* data_type
+* elementwise
+* linear_algebra
+* manipulation
+* searching
+* set
+* sorting
+* statistical
+* utility
+
+In addition to these, we also add the following categories,
+used for additional functions in Ivy that are not in the `Array API Standard`_:
+
+* activations
+* compilation
+* device
+* general
+* gradients
+* image
+* layers
+* losses
+* meta
+* nest
+* norms
+* random
+
+Some functions that you're considering adding might overlap several of these categorizations,
+and in such cases you should look at the other functions included in each file,
+and use your best judgement for which categorization is most suitable.
+
+We can always suggest a more suitable location when reviewing your pull request if needed 🙂
+
 Submodule Design
 ----------------
 
@@ -106,42 +145,3 @@ All arrays also now have the same type hint :code:`torch.Tensor`,
 rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
-
-Categorization
---------------
-
-Ivy uses the following categories taken from the `Array API Standard`_:
-
-* constants
-* creation
-* data_type
-* elementwise
-* linear_algebra
-* manipulation
-* searching
-* set
-* sorting
-* statistical
-* utility
-
-In addition to these, we also add the following categories,
-used for additional functions in Ivy that are not in the `Array API Standard`_:
-
-* activations
-* compilation
-* device
-* general
-* gradients
-* image
-* layers
-* losses
-* meta
-* nest
-* norms
-* random
-
-Some functions that you're considering adding might overlap several of these categorizations,
-and in such cases you should look at the other functions included in each file,
-and use your best judgement for which categorization is most suitable.
-
-We can always suggest a more suitable location when reviewing your pull request if needed 🙂
