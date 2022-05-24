@@ -123,10 +123,10 @@ def test_randint(low, high, shape, dtype, tensor_fn, device, call):
 
 
 # seed
-@pytest.mark.parametrize("seed_val", [1, 2, 0])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_seed(seed_val, dtype, tensor_fn, device, call):
+@given(
+    seed_val=st.integers(min_value=0, max_value=2147483647)
+)
+def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_val)
 
