@@ -1249,7 +1249,7 @@ class ContainerBase(dict, abc.ABC):
     # Private Methods #
     # ----------------#
 
-    def _call_static_method(
+    def _call_static_method_with_flexible_args(
         self,
         static_method,
         *args,
