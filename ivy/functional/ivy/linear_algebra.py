@@ -252,6 +252,7 @@ def svd(
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
     ivy.array(0)
+    
     >>> print((reconstructed_x - x < -1e-3).sum())
     ivy.array(0)
 
@@ -497,10 +498,10 @@ def slodget(
 
 
 def tensordot(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.Container]:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
@@ -519,6 +520,75 @@ def tensordot(
     -------
     ret
         The tensor contraction of x1 and x2 over the specified axes.
+    
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+    
+    1. Axes = 0 : tensor product 
+
+    >>> x = ivy.array([[1., 2.], [2., 3.]])
+    >>> y = ivy.array([[3., 4.], [4., 5.]])
+    >>> res = ivy.tensordot(x, y, axes =0)
+    >>> print(res)
+    ivy.array([[[[ 3.,  4.],
+                  [ 4.,  5.]],
+
+                 [[ 6.,  8.],
+                  [ 8., 10.]]],
+
+                [[[ 6.,  8.],
+                  [ 8., 10.]],
+
+                 [[ 9., 12.],
+                  [12., 15.]]]])
+
+
+    
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    2. Axes = 1 : tensor dot product
+
+    >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
+    >>> y = ivy.native_array([[1.], [2.], [3.]])
+    >>> res = ivy.tensordot(x, y, axes = 1)
+    >>> print(res)
+    ivy.array([[ 4.],
+                [26.],
+                [20.]])
+
+    
+    With :code:`ivy.Container` input:
+
+    3. Axes = 2: (default) tensor double contraction 
+
+    >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),
+                          b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
+    >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),
+                          b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))
+    >>> res = ivy.tensordot(x, y) 
+    >>> print(res)
+    {
+        a: ivy.array(89.)
+        b: ivy.array(76.)
+    }
+    
+
+
+
+    Instance Method Examples
+    ------------------------    
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[1., 0., 2.]])
+    >>> y = ivy.native_array([[7., 8., 0.]])
+    >>> res = x.matrix_transpose.tensordot(y, dims = 1)
+    >>> print(res)
+    >>> ivy.array([[ 7.,  8.,  0.],
+                   [ 0.,  0.,  0.],
+                   [14., 16.,  0.]])    
 
     """
     return _cur_framework(x1, x2).tensordot(x1, x2, axes)
@@ -659,7 +729,10 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).det(x)
 
 
-def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.Array:
+def cholesky(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    upper: bool = False
+ )-> Union[ivy.Array, ivy.Container]:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -674,11 +747,52 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
 
     Returns
     -------
+    ret 
         an array containing the Cholesky factors for each square matrix. If upper is
         False, the returned array must contain lower-triangular matrices; otherwise, the
         returned array must contain upper-triangular matrices. The returned array must
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
+    
+    Functional Examples
+     -------------------
+     With :code:`ivy.Array` input:
+      
+     1. Returns a lower-triangular Cholesky factor L
+
+     >>> x = ivy.array([[1., -2.], [2., 5.]])  
+     >>> l = ivy.cholesky(x)
+     >>> print(l)
+     ivy.array([[ 1., 0.], [ 2., 1.]])
+
+
+     With :code:`ivy.NativeArray` input:
+
+     2. Returns an upper-triangular cholesky factor U
+
+     >>> x = ivy.array([[1., -2.], [2., 5.]])  
+     >>> u = ivy.cholesky(x, upper = True)
+     >>> print(u)
+     ivy.array([[ 1., -2.], [ 0.,  1.]])
+
+
+
+     Instance Method Examples
+     ------------------------
+
+     With :code:`ivy.Container` input:
+
+     3. Returns a lower-triangular Cholesky factor
+
+     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),
+                           b = ivy.array([[2., 1.], [1., 1.]]))
+     >>> y = x.cholesky()
+     >>> print(y)
+     >>>
+     {
+         a: ivy.array([[1.73, 0.], [-0.57,  1.63]])
+         b: ivy.array([[1.41, 0.], [0.70, 0.70]])
+     }
 
     """
     return _cur_framework(x).cholesky(x, upper)
@@ -726,15 +840,15 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
+    ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Inverses of several matrices can be computed at once:
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])
-
+    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
+     
     """
     return _cur_framework(x).inv(x)
 

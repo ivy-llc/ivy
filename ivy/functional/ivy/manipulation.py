@@ -15,6 +15,7 @@ def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
@@ -67,16 +68,18 @@ def roll(
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    >>> x = ivy.array([[0., 1., 2.],\
-                        [3., 4., 5.]])
+    >>> x = ivy.array([[0., 1., 2.], \
+                    [3., 4., 5.]])
+
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
-               [4., 5., 3.]])
+                [4., 5., 3.]])
 
-    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],\
-                        [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                   [[3., 9.], [4., 12.], [5., 15.]]])
+
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -95,8 +98,9 @@ def roll(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                            b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -120,8 +124,8 @@ def roll(
     >>> y = x.roll(1)
     >>> print(y)
     {
-        a: ivy.array([2., 0., 1.], dtype=float32),
-        b: ivy.array([5., 3., 4.], dtype=float32)
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
     }
 
     """
@@ -157,6 +161,7 @@ def squeeze(
     >>> x = ivy.array([[[0, 1], [2, 3]]])
     >>> print(x.shape)
     (1, 2, 2)
+
     >>> print(ivy.squeeze(x, axis=0).shape)
     (2, 2)
 
@@ -227,6 +232,7 @@ def expand_dims(
     >>> print(y)
     ivy.array([[[0, 1],
                 [1, 0]]])
+                
     >>> print(x.shape, y.shape)
     (2, 2) (1, 2, 2)
 

@@ -45,6 +45,7 @@ def bitwise_left_shift(
 def add(
     x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -160,11 +161,11 @@ def add(
     ivy.array([5, 7, 9])
 
     With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                            b=ivy.array([2, 3, 4]))
+    
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                        b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+                        b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -176,7 +177,7 @@ def add(
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                            b=ivy.array([[5.], [6.], [7.]]))
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -202,9 +203,10 @@ def add(
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                            b=ivy.array([2, 3, 4]))
+                         b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                            b=ivy.array([5, 6, 7]))
+                         b=ivy.array([5, 6, 7]))
+
     >>> z = x.add(y)
     >>> print(z)
     {
@@ -226,8 +228,8 @@ def add(
     With :code:`ivy.Container` instances:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                            b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                         b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
                             b=ivy.array([5, 6, 7]))
     >>> z = x + y
     >>> print(z)
@@ -240,7 +242,7 @@ def add(
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                            b=ivy.array([[5.], [6.], [7.]]))
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x + y
     >>> print(z)
     {
@@ -325,7 +327,7 @@ def exp(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.exp(x)
     >>> print(y)
-    ivy.array([2.71828183, 7.3890561 , 20.08553692])
+    ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
     return _cur_framework(x).exp(x, out)
@@ -473,8 +475,7 @@ def ceil(
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    ivy.array([1.0, 0.0, -0.0])
-
+    ivy.array([1., 0., -0.])
     """
     return _cur_framework(x).ceil(x, out)
 
@@ -1131,7 +1132,7 @@ def cos(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([1., 0.54030231, -0.41614684])
+    ivy.array([1., 0.54, -0.416])
 
     """
     return _cur_framework(x).cos(x, out)
@@ -1651,7 +1652,7 @@ def trunc(
 def abs(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
@@ -1689,6 +1690,7 @@ def abs(
 
 def tan(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates an implementation-dependent approximation to the tangent, having
@@ -1737,27 +1739,27 @@ def tan(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tan(x, out=y)
     >>> print(y)
-    ivy.array([0.5463025, -0.8422884, -0.91601413])
+    ivy.array([0.546, -0.842, -0.916])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],\
                         [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
-               [-3.0963247,  0.9955841, -0.3278579]])
+    ivy.array([[1.96, -1.37, 0.16], 
+        [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
@@ -1765,8 +1767,8 @@ def tan(
     >>> y = ivy.tan(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+        a: ivy.array([0., 1.56, -2.19]),
+        b: ivy.array([-0.143, 1.16, -3.38])
     }
 
     Instance Method Examples
@@ -1777,7 +1779,7 @@ def tan(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.tan()
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     Using :code:`ivy.Container` instance method:
 
@@ -1785,9 +1787,8 @@ def tan(
     >>> y = x.tan()
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
-    }
+        a:ivy.array([0., 1.56, -2.19]),
+        b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
     return _cur_framework(x).tan(x, out)
@@ -1959,7 +1960,7 @@ def atanh(
     --------
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
-    ivy.array([ 0., -0.54930614])
+    ivy.array([0., -0.549])
 
     """
     return _cur_framework(x).atanh(x, out)

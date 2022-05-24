@@ -115,7 +115,7 @@ def test_match_kwargs(allow_duplicates):
 
 
 # copy array
-@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_copy_array(dtype_and_x, device, call, fw):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
@@ -140,7 +140,7 @@ def test_copy_array(dtype_and_x, device, call, fw):
 
 
 # array_equal
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs, n_arrays=2))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes, n_arrays=2))
 def test_array_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
@@ -169,7 +169,7 @@ def test_array_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # arrays_equal
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs, n_arrays=3))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes, n_arrays=3))
 def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
@@ -207,7 +207,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # to_numpy
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -236,7 +236,7 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
 # to_scalar
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
 )
 def test_to_scalar(object_in, dtype, device, call, fw):
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -262,7 +262,7 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 
 
 # to_list
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -297,7 +297,7 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
 
 # shape
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -334,7 +334,7 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 # get_num_dims
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -429,7 +429,7 @@ def test_clip_vector_norm(
 
 # floormod
 # @given(
-#     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+#     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
 #     num_positional_args=st.integers(1, 2),

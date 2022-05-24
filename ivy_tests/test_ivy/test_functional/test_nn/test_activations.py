@@ -14,13 +14,13 @@ import ivy.functional.backends.numpy as ivy_np
 # relu
 @given(
     x=st.lists(st.floats()),
-    dtype=st.sampled_from(ivy.float_dtype_strs),
+    dtype=st.sampled_from(ivy.float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
 )
 def test_relu(x, dtype, as_variable, with_out, native_array, fw):
-    if dtype in ivy.invalid_dtype_strs:
+    if dtype in ivy.invalid_dtypes:
         return  # invalid dtype
     if dtype == "float16" and fw == "torch":
         return  # torch does not support float16 for relu

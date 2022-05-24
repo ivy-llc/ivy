@@ -1,63 +1,23 @@
-Adding Functions
-================
+Function Types
+==============
 
-.. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`_wrap_method`: https://github.com/unifyai/ivy/blob/bf30016998fb54ff7b8d8d58005ef4b7e0c6a7fe/ivy/func_wrapper.py#L135
-.. _`framework setting`: https://github.com/unifyai/ivy/blob/bf30016998fb54ff7b8d8d58005ef4b7e0c6a7fe/ivy/framework_handler.py#L124
+.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137
+.. _`framework setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
 .. _`at import time`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
 .. _`add_ivy_array_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
 .. _`add_ivy_container_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
 .. _`from being added`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L78
+.. _`_function_w_arrays_n_out_handled`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166
+.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 
-
-Categorization
---------------
-
-The first thing to decide when adding a function is which file this should be added to!
-
-Ivy uses the following categories taken from the `Array API Standard`_:
-
-* constants
-* creation
-* data_type
-* elementwise
-* linear_algebra
-* manipulation
-* searching
-* set
-* sorting
-* statistical
-* utility
-
-In addition to these, we also add the following categorise,
-used for additional functions in Ivy that are not in the `Array API Standard`_:
-
-* activations
-* compilation
-* device
-* general
-* gradients
-* image
-* layers
-* losses
-* meta
-* nest
-* norms
-* random
-
-Some functions that you're considering adding might overlap several of these categorizations,
-and in such cases you should look at the other functions included in each file,
-and use your best judgement for which categorization is most suitable.
-
-We can always suggest a more suitable location when reviewing your pull request if needed 🙂
 
 Primary Functions
 -----------------
 
 *Primary* functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
-framework-specific implementation for each backend specified in
+backend-specific implementation for each backend specified in
 :code:`ivy/functional/backends/backend_name/category_name.py`. These are generally implemented as light wrapping
-around an existing framework-specific function, which serves a near-identical purpose.
+around an existing backend-specific function, which serves a near-identical purpose.
 
 Primary functions must both be specified in :code:`ivy/functional/ivy/category_name.py` and also in each of
 the backend files :code:`ivy/functional/backends/backend_name/category_name.py`
@@ -68,29 +28,30 @@ The function in :code:`ivy/functional/ivy/category_name.py` includes the type hi
 Instead, in :code:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific
 implementation.
 
-For example, the implementation of :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwise.py`
+For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwise.py`
 (with docstrings removed) is given below:
 
 .. code-block:: python
 
     def tan(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.Container]:
-        return _cur_framework(x).tan(x, out)
+        x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return _cur_framework(x).tan(x, out=out)
 
-The framework-specific implementation of :code:`ivy.tan`  for PyTorch in
+The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
 
 .. code-block:: python
 
-    def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-        return torch.tanh(x, out=out)
+    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return torch.tan(x, out=out)
 
 Compositional Functions
 -----------------------
 
-*Compositional* functions on the other hand **do not** have framework-specific implementations. They are implemented as
+*Compositional* functions on the other hand **do not** have backend-specific implementations. They are implemented as
 a *composition* of other Ivy methods, which themselves can be either compositional or primary.
 
 Therefore, compositional functions are only implemented in :code:`ivy/functional/ivy/category_name.py`, and there are no
@@ -106,6 +67,8 @@ For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/funct
         pred: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
@@ -115,21 +78,21 @@ For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/funct
 Partial Primary Functions
 -------------------------
 
-*Partial primary* functions have some framework-specific implementations in
+*Partial primary* functions have some backend-specific implementations in
 :code:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends.
-To support backends that do not have a framework-specific implementation,
+To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
 
 When using ivy without a framework set explicitly (for example :code:`ivy.set_framework()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`_cur_framework(x).func_name(...)`
-will call the framework-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
+will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
 directly. However, as just explained, *partial primary* functions implement a compositional approach in
 :code:`ivy/functional/ivy/category_name.py`, without deferring to the backend.
 Therefore, without any explicit framework setting, then the compositional implementation is always used,
-even for backends that have a more efficient framework-specific implementation.
+even for backends that have a more efficient backend-specific implementation.
 Typically the framework should always be set explicitly (using :code:`ivy.set_framework()` for example),
-and in this case the efficient framework-specific implementation will always be used if it exists.
+and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Flexible Functions
 ------------------
@@ -145,12 +108,13 @@ Additionally, all *flexible* functions are also implemented as instance methods 
 Every function which receives at least one array argument in the input and also returns at least one array
 is implemented as a *flexible* function by default.
 
-This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_method`_
-is applied to every function in the :code:`ivy` namespace during `framework setting`_.
+This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
+is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
+in the :code:`ivy` namespace during `framework setting`_.
 
-`_wrap_method`_ also ensures that :code:`ivy.Array` instances in the input are converted to :code:`ivy.NativeArray`
-instances before passing to the backend implementation, and are then converted back to :code:`ivy.Array` instances
-before returning.
+As part of this wrapping, `_function_w_arrays_n_out_handled`_ also ensures that :code:`ivy.Array` instances in the input
+are converted to :code:`ivy.NativeArray` instances before passing to the backend implementation,
+and are then converted back to :code:`ivy.Array` instances before returning.
 
 Additionally, the :code:`ivy.Array` and :code:`ivy.Container` instance methods are also all added programmatically
 `at import time`_ when `add_ivy_array_instance_methods`_ and `add_ivy_container_instance_methods`_
@@ -164,7 +128,7 @@ For example, the implementation of :code:`ivy.Array.tan` is as follows:
 
 .. code-block:: python
 
-    def tan(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.tan(self, out=out)
 
 Likewise, the implementation of :code:`ivy.Container.tan` is as follows:
@@ -177,6 +141,7 @@ Likewise, the implementation of :code:`ivy.Container.tan` is as follows:
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -199,15 +164,3 @@ the arguments which are not supported in the source code implementation.
 
 The purpose of the programmatic instance method setting is then simply as a backup for better robustness,
 adding any instance methods which have not yet been added in source code, or were just forgotten.
-
-Inplace Updates
----------------
-
-All Ivy functions which return a single array should support inplace updates, with the inclusion of an :code:`out`
-argument with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
-and :code:`Optional[ivy.Array]` otherwise.
-
-When this argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
-:code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
-:code:`out` argument provided. This can for example be the same as the input to the function,
-resulting in a simple inplace update.

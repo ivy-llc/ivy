@@ -45,16 +45,16 @@ class ArrayWithStatistical(abc.ABC):
     def prod(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.prod(self, axis, dtype, keepdims, out=out)
+        return ivy.prod(self, axis, keepdims, dtype=dtype, out=out)
 
     def sum(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

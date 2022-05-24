@@ -218,9 +218,10 @@ def mean(
 
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product of input array x elements.
@@ -231,6 +232,11 @@ def prod(
         axis or axes along which products must be computed. By default, the product must
         be computed over the entire array. If a tuple of integers, products must be
         computed over multiple axes. Default: None.
+    keepdims
+        bool, if True, the reduced axes (dimensions) must be included in the result as
+        singleton dimensions, and, accordingly, the result must be compatible with the
+        input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
     dtype
         data type of the returned array. If None,
         if the default data type corresponding to the data type “kind” (integer or
@@ -246,11 +252,6 @@ def prod(
         array must have a uint32 data type). If the data type (either specified or
         resolved) differs from the data type of x, the input array should be cast to the
         specified data type before computing the product. Default: None.
-    keepdims
-        bool, if True, the reduced axes (dimensions) must be included in the result as
-        singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
 
@@ -263,13 +264,13 @@ def prod(
         parameter above.
 
     """
-    return _cur_framework.prod(x, axis, dtype, keepdims, out=out)
+    return _cur_framework.prod(x, axis, keepdims, dtype=dtype, out=out)
 
 
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -402,7 +403,7 @@ def std(
     >>> y = ivy.std(x)
     >>> print(y)
     ivy.array(0.8164966)
-
+    
     """
     return _cur_framework(x).std(x, axis, correction, keepdims, out=out)
 
@@ -414,7 +415,7 @@ def std(
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.

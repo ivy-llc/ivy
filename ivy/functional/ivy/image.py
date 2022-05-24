@@ -39,15 +39,14 @@ def stack_images(
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
     >>> print(stacked)
-    [[[1., 1., 1.],
+    ivy.array([[[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
-
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
-            [0., 0., 0.]]]
+            [0., 0., 0.]]])
 
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
@@ -98,10 +97,12 @@ def gradient_image(x):
     ivy.array([[0., 1., 2.],
                [3., 4., 5.],
                [6., 7., 8.]])
+
     >>> print(dy[0, :,:,0])
      ivy.array([[3., 3., 3.],
                [3., 3., 3.],
                [0., 0., 0.]])
+               
     >>> print(dx[0, :,:,0])
      ivy.array([[1., 1., 0.],
                [1., 1., 0.],
@@ -126,7 +127,7 @@ def float_img_to_uint8_img(x):
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
-    x_np = ivy.to_numpy(x).astype('float32')
+    x_np = ivy.to_numpy(x).astype("float32")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
@@ -147,7 +148,7 @@ def uint8_img_to_float_img(x):
         The new float image *[batch_shape,h,w]*
 
     """
-    x_np = ivy.to_numpy(x).astype('uint8')
+    x_np = ivy.to_numpy(x).astype("uint8")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)

@@ -307,7 +307,8 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    array([-1, 0, 1])
+    [-1 0 1]
+
     >>> print(type(y))
     <class 'numpy.ndarray'>
 
@@ -334,6 +335,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     -1
+
+
     >>> print(ivy.is_int_dtype(y))
     True
 
@@ -360,6 +363,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
+
     >>> print(isinstance(y, list))
     True
 
@@ -1247,7 +1251,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -1287,7 +1291,7 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -1326,7 +1330,7 @@ def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
@@ -1359,7 +1363,7 @@ def gather(
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
@@ -1383,7 +1387,7 @@ def gather_nd(
 
 
 def multiprocessing(context: str = None):
-    """Return framework-specific multiprocessing module.
+    """Return backend-specific multiprocessing module.
 
     Parameters
     ----------
@@ -1421,7 +1425,9 @@ def indices_where(
 
 # noinspection PyShadowingNames
 def one_hot(
-    indices: Union[ivy.Array, ivy.NativeArray], depth: int, device: ivy.Device = None
+    indices: Union[ivy.Array, ivy.NativeArray],
+    depth: int,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array.
 
@@ -1469,9 +1475,10 @@ def shape(
     >>> y_tensor = ivy.shape(x, as_tensor = True)
     >>> print(y_tuple)
     (2, 3)
+
     >>> print(y_tensor)
     ivy.array([2, 3])
-    
+
     """
     return _cur_framework(x).shape(x, as_array)
 

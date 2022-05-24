@@ -7,11 +7,13 @@ import pytest
 import time
 import numpy as np
 from numbers import Number
+from hypothesis import strategies as st, given, extra
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # Tests #
@@ -20,62 +22,74 @@ import ivy_tests.test_ivy.helpers as helpers
 # Device Queries #
 
 # dev
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_dev(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.dev(x, as_str=True)
+
+@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_dev(array_shape, dtype, as_variable, fw, device):
+
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    ret = ivy.dev(x)
     # type test
     assert isinstance(ret, str)
     # value test
     assert ret == device
 
 
-# dev_to_str
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_dev_to_str(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
+# as_ivy_dev
+@given(array_shape=helpers.lists(st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
+
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    if ((isinstance(x, Number) or x.size == 0)
+        and as_variable
+        and fw == "mxnet"):
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
+        return
+
     device = ivy.dev(x)
-    ret = ivy.dev_to_str(device)
+    ret = ivy.as_ivy_dev(device)
     # type test
     assert isinstance(ret, str)
 
 
-# dev_from_str
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_dev_from_str(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
+# as_native_dev
+@given(array_shape=helpers.lists(st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans())
+def test_as_native_dev(array_shape, dtype, as_variable, device, fw, call):
+    if fw == "torch" and "int" in dtype:
+        return
+
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    if ((isinstance(x, Number) or x.size == 0)
+        and as_variable
+        and fw == "mxnet"):
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
-    device = ivy.dev_from_str(device)
-    ret = ivy.dev_from_str(ivy.dev(x, as_str=True))
+        return
+
+    device = ivy.as_native_dev(device)
+    ret = ivy.as_native_dev(ivy.dev(x))
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
@@ -135,27 +149,30 @@ def test_default_device(device, call):
 
 
 # to_dev
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-@pytest.mark.parametrize("with_out", [False, True])
-def test_to_dev(x, dtype, tensor_fn, with_out, device, call):
-    # smoke test
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
+@given(array_shape=helpers.lists(st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+       dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
+       as_variable = st.booleans(),
+       with_out=st.booleans())
+def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
+    if fw == "torch" and "int" in dtype:
+        return
 
-    x = tensor_fn(x, dtype, device)
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
+
+    if ((isinstance(x, Number) or x.size == 0)
+            and as_variable
+            and fw == "mxnet"):
+        # mxnet does not support 0-dimensional variables
+        return
 
     # create a dummy array for out that is broadcastable to x
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, device, out=out)
+    x_on_dev = ivy.to_dev(x, device=device, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
@@ -163,7 +180,7 @@ def test_to_dev(x, dtype, tensor_fn, with_out, device, call):
         assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
 
         # should be the same device
-        assert ivy.dev(x_on_dev) == ivy.dev(out)
+        assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
         if ivy.current_framework_str() in ["tensorflow", "jax"]:
@@ -178,7 +195,7 @@ def test_to_dev(x, dtype, tensor_fn, with_out, device, call):
             device[1:].split(":")[-2:]
         )
     elif call is helpers.torch_call:
-        assert dev_from_new_x.type == device.type
+        assert type(dev_from_new_x) == type(device)
     else:
         assert dev_from_new_x == device
 
@@ -285,7 +302,7 @@ def test_dist_array(x, axis, tensor_fn, devs_as_dict, device, call):
     assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devices))
 
     # value test
-    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize("x", [[0, 1, 2, 3, 4]])
@@ -312,7 +329,7 @@ def test_clone_array(x, axis, tensor_fn, device, call):
     assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devices))
 
     # value test
-    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize("xs", [([0, 1, 2], [3, 4])])
@@ -341,7 +358,7 @@ def test_unify_array(xs, axis, tensor_fn, device, call):
     assert x_unified.shape[axis] == expected_size
 
     # value test
-    assert ivy.dev(x_unified, as_str=True) == dev0
+    assert ivy.dev(x_unified) == dev0
 
 
 @pytest.mark.parametrize("args", [[[0, 1, 2, 3, 4], "some_str", ([1, 2])]])
@@ -374,13 +391,13 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert min(
         [
-            ivy.dev(dist_args_ds[0], as_str=True) == ds
+            ivy.dev(dist_args_ds[0]) == ds
             for ds, dist_args_ds in dist_args.at_devs().items()
         ]
     )
     assert min(
         [
-            ivy.dev(dist_kwargs_ds["a"], as_str=True) == ds
+            ivy.dev(dist_kwargs_ds["a"]) == ds
             for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()
         ]
     )
@@ -416,13 +433,13 @@ def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # value test
     assert min(
         [
-            ivy.dev(dist_args_ds[0], as_str=True) == ds
+            ivy.dev(dist_args_ds[0]) == ds
             for ds, dist_args_ds in cloned_args.at_devs().items()
         ]
     )
     assert min(
         [
-            ivy.dev(dist_kwargs_ds["a"], as_str=True) == ds
+            ivy.dev(dist_kwargs_ds["a"]) == ds
             for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()
         ]
     )
@@ -468,8 +485,8 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     assert kwargs_uni["a"].shape[axis] == expected_size_kwarg
 
     # value test
-    assert ivy.dev(args_uni[0], as_str=True) == dev0
-    assert ivy.dev(kwargs_uni["a"], as_str=True) == dev0
+    assert ivy.dev(args_uni[0]) == dev0
+    assert ivy.dev(kwargs_uni["a"]) == dev0
 
 
 # profiler

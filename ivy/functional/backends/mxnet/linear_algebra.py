@@ -15,7 +15,7 @@ DET_THRESHOLD = 1e-12
 # -------------------#
 
 
-def eigh(x: mx.ndarray) -> mx.ndarray:
+def eigh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigh(x)
 
 
@@ -110,7 +110,7 @@ def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
         )
 
 
-def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+def eigvalsh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
