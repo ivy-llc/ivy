@@ -44,7 +44,7 @@ def test_relu(x, dtype, as_variable, with_out, native_array, fw):
         if not native_array:
             assert ret is out
         if fw in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+            # these backends do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
     # value test

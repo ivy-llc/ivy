@@ -43,8 +43,8 @@ def test_all(x, axis, kd, dtype, with_out, tensor_fn, device, call):
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
             # value test
@@ -86,8 +86,8 @@ def test_any(x, axis, kd, dtype, with_out, tensor_fn, device, call):
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
             # value test

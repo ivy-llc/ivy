@@ -25,7 +25,7 @@ register_pytree_node(
 )
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences
 JaxArray = Union[

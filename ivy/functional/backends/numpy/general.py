@@ -296,5 +296,5 @@ get_num_dims = (
 )
 
 
-current_framework_str = lambda: "numpy"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "numpy"
+current_backend_str.__name__ = "current_backend_str"

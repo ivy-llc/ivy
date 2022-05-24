@@ -1,7 +1,7 @@
 Inplace Updates
 ===============
 
-.. _`framework setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
 .. _`_function_w_arrays_n_out_handled`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
@@ -29,7 +29,7 @@ In the case of :code:`ivy.Array` return types, the :code:`out` argument is predo
 is also responsible for converting :code:`ivy.Array` instances to :code:`ivy.NativeArray`
 instances before calling the backend function, and then back to :code:`ivy.Array` instances again for returning.
 As explained above, this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
-dynamically during `framework setting`_.
+dynamically during `backend setting`_.
 
 However, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
 argument directly, such as `torch.tan`_ and `numpy.tan`_.
