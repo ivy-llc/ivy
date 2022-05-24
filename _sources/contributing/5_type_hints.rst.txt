@@ -137,8 +137,11 @@ Flexible Functions
 ------------------
 
 Most functions in the Ivy API can also consume and return :code:`ivy.Container` instances in place of the **any** of
-the function arguments. Because of this, we refer to these functions as as *flexible* functions.
-These functions can also accept arbitrary combinations of :code:`ivy.Container` instances and non-containers,
-broadcasting the other non-container arguments to the leaves of the containers.
-All *flexible* functions are also implemented as instance methods on the :code:`ivy.Container` class,
-with the first argument replaced with :code:`self` in general, with a few exceptions.
+the function arguments. if an :code:`ivy.Container` is passed, then the function is mapped across all of the leaves of
+this container. Because of this feature, we refer to these functions as as *flexible* functions.
+However, because so many functions in the Ivy API are indeed *flexible* functions,
+and because this flexibility applies to **every** argument,
+every type hint for these functions should technically be extended like so: :code:`Union[original_type, ivy.Container]`.
+However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
+Therefore, we simply omit these :code:`ivy.Container` type hints from *flexible* functions,
+and instead mention in the docstring whether the function is *flexible* or not.
