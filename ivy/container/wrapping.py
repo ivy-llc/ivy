@@ -16,7 +16,7 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
     function_name
         the name of the function e.g. "abs", "mean" etc.
     static
-
+        whether the function being wrapped will be added as a static method.
 
     Returns
     -------
@@ -91,7 +91,7 @@ def add_ivy_container_instance_methods(
     modules
         the modules to loop over: activations, general etc.
     static
-
+        whether the function should be added as a static method.
     to_ignore
         any functions we don't want to add an instance method for.
 
