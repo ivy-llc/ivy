@@ -286,10 +286,10 @@ def test_permute_dims(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(),
     native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    container=helpers.container(),
+    instance_method=helpers.instance_method(),
 )
 def test_roll(
     array_shape,

@@ -282,12 +282,7 @@ def _wrap_function(fn):
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            if args and ivy.is_ivy_container(args[0]):
-                f = getattr(ivy.Container, fn_name)
-            else:
-                f = getattr(ivy.StaticContainer, fn_name)
-            if "out" in f.__code__.co_varnames:
-                return f(*args, **kwargs)
+            f = getattr(ivy.Container, "static_" + fn_name)
             return f(*args, **kwargs)
 
         """
