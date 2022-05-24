@@ -345,7 +345,7 @@ The implementation in :code:`ivy/functional/ivy/statistical.py` has the followin
 
     def prod(
         x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -361,7 +361,7 @@ Jax:
 
     def prod(
         x: JaxArray,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: jnp.dtype,
@@ -374,7 +374,7 @@ MXNet:
 
     def prod(
         x: mx.ndarray,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: type,
@@ -387,7 +387,7 @@ NumPy:
 
     def prod(
         x: np.ndarray,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: np.dtype,
@@ -400,7 +400,7 @@ TensorFlow:
 
     def prod(
         x: Tensor,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         *,
         dtype: tf.DType,
@@ -440,7 +440,7 @@ The PyTorch-specific implementation is as follows:
 .. code-block:: python
 
     def full(
-        shape: Union[int, Tuple[int, ...]],
+        shape: Union[int, Tuple[int]],
         fill_value: Union[int, float],
         *,
         dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
@@ -507,7 +507,7 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -521,7 +521,7 @@ Jax:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
@@ -532,7 +532,7 @@ MXNet:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: type,
         device: mx.context.Context,
@@ -543,7 +543,7 @@ NumPy:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: np.dtype,
         device: str,
@@ -554,7 +554,7 @@ TensorFlow:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: tf.DType,
         device: str,
@@ -565,7 +565,7 @@ PyTorch:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int, ...], List[int, ...]],
+        shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: torch.dtype,
         device: torch.device,
