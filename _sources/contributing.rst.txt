@@ -29,19 +29,28 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (c) :ref:`Navigating the Code`
 | A quick tour through the codebase 🔍
 |
-| (d) :ref:`Adding Functions`
-| How to add functions 🧮
+| (d) :ref:`Function Types`
+| Primary, compositional, mixed and flexible functions  🧮
 |
-| (e) :ref:`Adding Tests`
+| (e) :ref:`Inplace Updates`
+| Using the out argument to specify the target for the output  🎯
+|
+| (f) :ref:`Handling Data Types`
+| How functions infer the correct data type  💾
+|
+| (g) :ref:`Handling Devices`
+| How functions infer the correct device  💽
+|
+| (h) :ref:`Adding Tests`
 | How to add tests for these ❓
 |
-| (f) :ref:`Type Hints`
+| (i) :ref:`Type Hints`
 | How to add the correct type hints 📑
 |
-| (g) :ref:`Docstrings`
+| (j) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (h) :ref:`Docstring Examples`
+| (k) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 |
 
@@ -54,9 +63,11 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
    contributing/2_navigating_the_code.rst
-   contributing/3_adding_functions.rst
-   contributing/4_adding_tests.rst
-   contributing/5_type_hints.rst
-   contributing/6_docstrings.rst
-   contributing/7_docstring_examples.rst
-
+   contributing/3_function_types.rst
+   contributing/4_inplace_updates.rst
+   contributing/5_handling_data_types.rst
+   contributing/6_handling_devices.rst
+   contributing/7_adding_tests.rst
+   contributing/8_type_hints.rst
+   contributing/9_docstrings.rst
+   contributing/10_docstring_examples.rst
