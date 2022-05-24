@@ -133,15 +133,15 @@ already been correctly inferred. As for the :code:`out` argument, the inplace up
 wrapper code if no :code:`out` argument is detected in the backend signature, which is why we should only add it if the
 wrapped backend function itself supports the :code:`out` argument, which will result in a more efficient inplace update.
 
-Flexible Functions
+Nestable Functions
 ------------------
 
 Most functions in the Ivy API can also consume and return :code:`ivy.Container` instances in place of the **any** of
 the function arguments. if an :code:`ivy.Container` is passed, then the function is mapped across all of the leaves of
-this container. Because of this feature, we refer to these functions as as *flexible* functions.
-However, because so many functions in the Ivy API are indeed *flexible* functions,
+this container. Because of this feature, we refer to these functions as as *nestable* functions.
+However, because so many functions in the Ivy API are indeed *nestable* functions,
 and because this flexibility applies to **every** argument,
 every type hint for these functions should technically be extended like so: :code:`Union[original_type, ivy.Container]`.
 However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
-Therefore, we simply omit these :code:`ivy.Container` type hints from *flexible* functions,
-and instead mention in the docstring whether the function is *flexible* or not.
+Therefore, we simply omit these :code:`ivy.Container` type hints from *nestable* functions,
+and instead mention in the docstring whether the function is *nestable* or not.
