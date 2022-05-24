@@ -237,8 +237,6 @@ float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 bool = "bool"
-nan = float("nan")
-inf = float("inf")
 
 # native data types
 native_int8 = IntDtype("int8")
