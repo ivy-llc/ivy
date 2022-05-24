@@ -38,9 +38,9 @@ Overall, the data type is inferred as follows:
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the data type,
 these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
-before the framework-specific implementation is even enterred into. Therefore, whereas the :code:`dtype` argument is
+before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`dtype` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
-the argument is listed as required in the framework-specific implementations at
+the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
 Let's take a look at the function :code:`ivy.prod` as an example.
@@ -58,7 +58,7 @@ The implementation in :code:`ivy/functional/ivy/statistical.py` has the followin
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
 
-Whereas the framework-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
+Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
 all list :code:`dtype` as required.
 
 Jax:
@@ -126,17 +126,17 @@ PyTorch:
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
 
-This makes it clear that these framework-specific functions are only enterred into once the correct :code:`dtype`
+This makes it clear that these backend-specific functions are only enterred into once the correct :code:`dtype`
 has been determined.
 
 However, the :code:`dtype` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_
 are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
-and so these defaults must be handled by the framework-specific implementations themselves.
+and so these defaults must be handled by the backend-specific implementations themselves.
 
 One reason for adding a function to `NON_DTYPE_WRAPPED_FUNCTIONS`_ is because it includes *relevant* scalar arguments
 for inferring the data type from. `_function_w_arrays_dtype_n_dev_handled`_ is not able to correctly handle such cases,
 and so such functions are added to `NON_DTYPE_WRAPPED_FUNCTIONS`_ and the dtype handling is delegated to the
-framework-specific implementations.
+backend-specific implementations.
 
 For example :code:`ivy.full` is listed in `NON_DTYPE_WRAPPED_FUNCTIONS`_ because of the *relevant* :code:`fill_value`
 which cannot be correctly handled by `_function_w_arrays_dtype_n_dev_handled`_.
@@ -161,4 +161,4 @@ The PyTorch-specific implementation is as follows:
 
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
-framework-specific implementation.
+backend-specific implementation.
