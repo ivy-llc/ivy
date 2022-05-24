@@ -131,10 +131,11 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    def roll(
-        self: ivy.Container,
-        shift: Union[int, Tuple[int, ...]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    @staticmethod
+    def static_roll(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shift: Union[int, Tuple[int, ...], ivy.Container],
+        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -142,16 +143,39 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.roll(x_, shift=shift, axis=axis)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return ContainerBase.multi_map_in_static_method(
+            "roll",
+            x,
+            shift,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def roll(
+        self: ivy.Container,
+        *,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        shift: Union[int, Tuple[int, ...], ivy.Container] = None,
+        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self._call_static_method(
+            {"x": x, "shift": shift, "axis": axis},
+            ("x", "shift"),
+            {},
+            self.static_roll,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
         )
 
