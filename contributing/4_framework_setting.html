@@ -18,9 +18,7 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Function Wrapping" href="5_function_wrapping.html" />
-    <link rel="prev" title="Function Types" href="3_function_types.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,30 +37,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Framework Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_type_hints.html">Type Hints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_docstring_examples.html">Docstring Examples</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
@@ -130,7 +110,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
       <li>Framework Setting</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/contributing/4_framework_setting.rst.txt" rel="nofollow"> View page source</a>
@@ -143,16 +122,17 @@
              
   <section id="framework-setting">
 <h1>Framework Setting<a class="headerlink" href="#framework-setting" title="Permalink to this headline"></a></h1>
-<p># ToDo: write</p>
+<p>The backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>. When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/framework_handler.py#L153">this function</a>,
+we go through the following steps:</p>
+<ol class="arabic simple">
+<li><p>store a global copy of the original <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> with no backend set.</p></li>
+</ol>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="3_function_types.html" class="btn btn-neutral float-left" title="Function Types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="5_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

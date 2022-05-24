@@ -49,7 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_framework_setting.html">Framework Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
@@ -159,7 +158,7 @@ appearing in <a class="reference external" href="https://github.com/unifyai/ivy/
 This is similar to how <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is handled,
 with the exception that functions are omitted if they’re in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104">NON_DEV_WRAPPED_FUNCTIONS</a> in this case rather than
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>. As discussed above,
-this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">framework setting</a>.</p>
+this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>Overall, the device is inferred as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is provided, use this directly</p></li>

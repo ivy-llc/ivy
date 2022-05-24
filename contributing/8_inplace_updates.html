@@ -49,7 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_framework_setting.html">Framework Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
@@ -155,7 +154,7 @@ resulting in a simple inplace update of the input.</p>
 is also responsible for converting <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
 instances before calling the backend function, and then back to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances again for returning.
 As explained above, this wrapping is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
-dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">framework setting</a>.</p>
+dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>However, <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166">_function_w_arrays_n_out_handled</a> does not handle backend-specific functions which support an <code class="code docutils literal notranslate"><span class="pre">out</span></code>
 argument directly, such as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html">torch.tan</a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a>.
 When implementing backend-specific functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should only be added to functions which wrap a

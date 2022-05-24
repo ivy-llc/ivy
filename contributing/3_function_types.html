@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Framework Setting" href="4_framework_setting.html" />
+    <link rel="next" title="Function Wrapping" href="5_function_wrapping.html" />
     <link rel="prev" title="Navigating the Code" href="2_navigating_the_code.html" /> 
 </head>
 
@@ -55,7 +55,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="4_framework_setting.html">Framework Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
@@ -168,7 +167,7 @@ implementation.</p>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The backend-specific implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>  for PyTorch in
@@ -216,16 +215,16 @@ To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are refered to as <em>mixed</em>.</p>
-<p>When using ivy without a framework set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> has not been called),
+<p>When using ivy without a backend set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> has not been called),
 then the function called is always the one implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
-For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">ivy.current_framework(array_arg).func_name(...)</span></code>
+For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend(array_arg).func_name(...)</span></code>
 will call the backend-specific implementation in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>
 directly. However, as just explained, <em>mixed</em> functions implement a compositional approach in
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, without deferring to the backend.
-Therefore, when no framework is explicitly set,
+Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for <em>mixed</em> functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the framework should always be set explicitly though (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> for example),
+Typically the backend should always be set explicitly though (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.</p>
 </section>
 <section id="nestable-functions">
@@ -242,7 +241,7 @@ to be processed concurrently. Another example is when the same operation must be
 This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases.</p>
 <p>This added support for handling <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137">_wrap_function</a>
 is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
-in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">framework setting</a>.
+in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.
 This function wrapping process is covered in more detail in the <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>Under the hood, the static <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods are called when <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed in
 the input. This is explained in more detail in the <a class="reference internal" href="6_method_types.html#method-types"><span class="std std-ref">Method Types</span></a> section.</p>
@@ -254,7 +253,7 @@ the input. This is explained in more detail in the <a class="reference internal"
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="2_navigating_the_code.html" class="btn btn-neutral float-left" title="Navigating the Code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="4_framework_setting.html" class="btn btn-neutral float-right" title="Framework Setting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="5_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
