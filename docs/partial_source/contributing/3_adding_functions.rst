@@ -25,48 +25,6 @@ Adding Functions
 .. _`NON_DEV_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104
 
 
-
-Categorization
---------------
-
-The first thing to decide when adding a function is which file this should be added to!
-
-Ivy uses the following categories taken from the `Array API Standard`_:
-
-* constants
-* creation
-* data_type
-* elementwise
-* linear_algebra
-* manipulation
-* searching
-* set
-* sorting
-* statistical
-* utility
-
-In addition to these, we also add the following categorise,
-used for additional functions in Ivy that are not in the `Array API Standard`_:
-
-* activations
-* compilation
-* device
-* general
-* gradients
-* image
-* layers
-* losses
-* meta
-* nest
-* norms
-* random
-
-Some functions that you're considering adding might overlap several of these categorizations,
-and in such cases you should look at the other functions included in each file,
-and use your best judgement for which categorization is most suitable.
-
-We can always suggest a more suitable location when reviewing your pull request if needed 🙂
-
 Primary Functions
 -----------------
 
@@ -84,17 +42,17 @@ The function in :code:`ivy/functional/ivy/category_name.py` includes the type hi
 Instead, in :code:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific
 implementation.
 
-For example, the implementation of :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwise.py`
+For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwise.py`
 (with docstrings removed) is given below:
 
 .. code-block:: python
 
     def tan(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.Container]:
-        return _cur_framework(x).tan(x, out)
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return _cur_framework(x).tan(x, out=out)
 
 The framework-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
