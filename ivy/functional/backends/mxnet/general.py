@@ -264,5 +264,5 @@ def indices_where(x):
     return res
 
 
-current_framework_str = lambda: "mxnet"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "mxnet"
+current_backend_str.__name__ = "current_backend_str"
