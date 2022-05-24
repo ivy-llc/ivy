@@ -1,6 +1,11 @@
 """Collection of helpers for ivy unit tests."""
 
 # global
+from contextlib import redirect_stdout
+from io import StringIO
+import sys
+import re
+
 import numpy as np
 import math
 from numpy import array_api as xp
@@ -208,24 +213,116 @@ def assert_compilable(fn):
         raise e
 
 
+# function that trims white spaces from docstrings
+def trim(docstring):
+    """Trim function from PEP-257"""
+    if not docstring:
+        return ""
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxsize
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxsize:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+
+    # Current code/unittests expects a line return at
+    # end of multiline docstrings
+    # workaround expected behavior from unittests
+    if "\n" in docstring:
+        trimmed.append("")
+
+    # Return a single string:
+    return "\n".join(trimmed)
+
+
 def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
     if fn_name not in ivy.framework_handler.ivy_original_dict:
         return True
+
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+
     if docstring is None:
         return True
+
+    # removing extra new lines and trailing white spaces from the docstrings
+    trimmed_docstring = trim(docstring)
+    trimmed_docstring = trimmed_docstring.split("\n")
+
+    # end_index: -1, if print statement is not found in the docstring
+    end_index = -1
+
+    # parsed_output is set as an empty string to manage functions with multiple inputs
+    parsed_output = ""
+
+    # parsing through the docstrings to find lines with print statement
+    # following which is our parsed output
+    sub = ">>> print("
+    for index, line in enumerate(trimmed_docstring):
+        if sub in line:
+            end_index = trimmed_docstring.index("", index)
+            p_output = trimmed_docstring[index + 1 : end_index]
+            p_output = ("").join(p_output).replace(" ", "")
+            parsed_output += p_output
+
+    if end_index == -1:
+        return True
+
     executable_lines = [
         line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
     ]
-    for line in executable_lines:
-        # noinspection PyBroadException
-        try:
-            exec(line)
-        except Exception:
-            return False
+
+    # noinspection PyBroadException
+    f = StringIO()
+    with redirect_stdout(f):
+        for line in executable_lines:
+            try:
+                exec(line)
+            except RuntimeError:
+                raise Exception("ERROR EXECUTING FUNCTION IN DOCSTRING")
+
+    output = f.getvalue()
+    output = output.rstrip()
+    output = output.replace(" ", "").replace("\n", "")
+
+    # handling cases when the stdout contains ANSI colour codes
+    # 7-bit C1 ANSI sequences
+    ansi_escape = re.compile(
+        r"""
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+    """,
+        re.VERBOSE,
+    )
+
+    output = ansi_escape.sub("", output)
+
+    print("Output: ", output)
+    print("Putput: ", parsed_output)
+
+    assert output == parsed_output, "Output is unequal to the docstrings output."
     return True
 
 
@@ -463,6 +560,27 @@ def test_array_function(
 
 # Hypothesis #
 # -----------#
+
+
+@st.composite
+def container(draw):
+    return draw(st.shared(st.booleans(), key="container"))
+
+
+@st.composite
+def instance_method(draw):
+    return draw(st.shared(st.booleans(), key="instance_method"))
+
+
+@st.composite
+def num_positional_args(draw):
+    cont = st.shared(st.booleans(), key="container")
+    ins_method = st.shared(st.booleans(), key="instance_method")
+    if cont and ins_method:
+        return 0
+    # ToDo: make this dependent on the number of args in the function,
+    #  2 is an arbitrary number
+    return draw(st.integers(0, 2))
 
 
 @st.composite

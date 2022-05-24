@@ -88,6 +88,7 @@ def asarray(
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -118,7 +119,7 @@ def zeros(
                [0., 0., 0., 0., 0.]])
 
     """
-    return _cur_framework().zeros(shape, dtype, device)
+    return _cur_framework().zeros(shape, dtype=dtype, device=device)
 
 
 def ones(
@@ -567,8 +568,8 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10, 10],
-               [10, 10]])
+    ivy.array([[10., 10.],
+               [10., 10.]])
 
     """
     return _cur_framework().full(shape, fill_value, dtype, device)

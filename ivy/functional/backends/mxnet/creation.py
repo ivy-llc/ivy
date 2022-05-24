@@ -43,11 +43,12 @@ def asarray(
 
 
 def zeros(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    shape: Union[int, Tuple[int], List[int]],
+    *,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.ndarray.ndarray.NDArray:
-    cont = _mxnet_init_context(default_device(device))
+    cont = _mxnet_init_context(device)
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.zeros((1,), ctx=cont).astype(dtype))
     return mx.nd.zeros(shape, ctx=cont).astype(dtype)

@@ -522,24 +522,14 @@ def conv3d(
     >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
     >>> result = ivy.conv3d( x, filters, 1, 'VALID',"NDHWC", 1)
     >>> print(result)
-    ivy.array([[[[[1.],
-              [2.]],
-
-             [[1.],
-              [2.]],
-
-             [[1.],
-              [2.]]],
-
-
-            [[[3.],
-              [4.]],
-
-             [[3.],
-              [4.]],
-
-             [[3.],
-              [4.]]]]])
+    ivy.array([[
+        [
+            [[1.]],[[1.]],[[1.]]
+        ],
+        [
+            [[3.]],[[3.]],[[3.]]
+        ]
+            ]])
 
     """
     return _cur_framework(x).conv3d(

@@ -35,7 +35,6 @@ NON_WRAPPED_FUNCTIONS = [
     "compile",
     "compile_graph",
     "dev",
-    "dev",
     "as_ivy_dev",
     "as_native_dev",
     "memory_on_dev",
@@ -59,9 +58,11 @@ NON_WRAPPED_FUNCTIONS = [
     "map_nest_at_indices",
     "nested_indices_where",
     "map",
+    "set_default_device",
     "unset_default_device",
     "closest_valid_dtype",
     "default_dtype",
+    "default_device",
     "as_native_dtype",
     "is_ivy_array",
     "is_ivy_container",
@@ -151,7 +152,10 @@ def _wrap_function(fn):
         The wrapped version of the function with all the necessary attributes updated.
     """
     # determine whether the function has an out argument
-    has_out = "out" in inspect.signature(fn).parameters.keys()
+    keys = inspect.signature(fn).parameters.keys()
+    handle_out_with_backend = "out" in keys
+    handle_dtype = "dtype" in keys
+    handle_dev = "device" in keys
 
     # do nothing if the function is private or in the non wrapped functions list
     if hasattr(fn, "__name__") and (
@@ -193,7 +197,7 @@ def _wrap_function(fn):
         if ivy.exists(out):
             # extract underlying native array for out
             native_out = ivy.to_native(out)
-            if has_out:
+            if handle_out_with_backend:
                 # compute return, with backend inplace update handled by
                 # the backend function
                 ret = fn(*native_args, out=native_out, **native_kwargs)
@@ -229,19 +233,19 @@ def _wrap_function(fn):
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
         return arr
 
-    def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        handle_dtype = "dtype" in kwargs
-        handle_dev = "device" in kwargs
+    def _function_w_arrays_dtype_n_dev_handled(
+        *args, dtype=None, device=None, **kwargs
+    ):
         if handle_dtype or handle_dev:
             arr = _get_first_array(*args, **kwargs)
-            if handle_dtype and fn.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
-                kwargs["dtype"] = ivy.default_dtype(
-                    kwargs["dtype"], item=arr, as_native=True
-                )
-            if handle_dev and fn.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
-                kwargs["device"] = ivy.default_device(
-                    kwargs["device"], item=arr, as_native=True
-                )
+            if handle_dtype:
+                if fn.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
+                    dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+                kwargs["dtype"] = dtype
+            if handle_dev:
+                if fn.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
+                    device = ivy.default_device(device, item=arr, as_native=True)
+                kwargs["device"] = device
         return _function_w_arrays_n_out_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
@@ -278,12 +282,7 @@ def _wrap_function(fn):
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            if args and ivy.is_ivy_container(args[0]):
-                f = getattr(ivy.Container, fn_name)
-            else:
-                f = getattr(ivy.StaticContainer, fn_name)
-            if "out" in f.__code__.co_varnames:
-                return f(*args, **kwargs)
+            f = getattr(ivy.Container, "static_" + fn_name)
             return f(*args, **kwargs)
 
         """

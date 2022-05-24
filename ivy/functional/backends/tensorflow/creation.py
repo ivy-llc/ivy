@@ -70,13 +70,13 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 
 def zeros(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    shape: Union[int, Tuple[int], List[int]],
+    *,
+    dtype: tf.DType,
+    device: str,
 ) -> Tensor:
-    device = default_device(device)
-    with tf.device(as_native_dev(device)):
-        return tf.zeros(shape, as_native_dtype(default_dtype(dtype)))
+    with tf.device(device):
+        return tf.zeros(shape, dtype)
 
 
 def ones(
