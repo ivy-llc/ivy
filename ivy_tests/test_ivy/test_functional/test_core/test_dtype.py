@@ -21,7 +21,7 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.int32)
     assert ivy.exists(ivy.int64)
     assert ivy.exists(ivy.uint8)
-    if ivy.current_framework_str() != "torch":
+    if ivy.current_backend_str() != "torch":
         assert ivy.exists(ivy.uint16)
         assert ivy.exists(ivy.uint32)
         assert ivy.exists(ivy.uint64)
