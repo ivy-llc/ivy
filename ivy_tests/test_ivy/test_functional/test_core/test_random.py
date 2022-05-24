@@ -91,6 +91,7 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
         assert ret.shape == shape
     # value test
     ret_np = call(ivy.random_normal, **kwargs, device=device)
+    print('REACHED HERE')
     assert (
         np.min(
             (ret_np > (ivy.default(mean, 0.0) - 3 * ivy.default(std, 1.0))).astype(
