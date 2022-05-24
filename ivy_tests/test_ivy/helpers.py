@@ -563,27 +563,6 @@ def test_array_function(
 
 
 @st.composite
-def container(draw):
-    return draw(st.shared(st.booleans(), key="container"))
-
-
-@st.composite
-def instance_method(draw):
-    return draw(st.shared(st.booleans(), key="instance_method"))
-
-
-@st.composite
-def num_positional_args(draw):
-    cont = st.shared(st.booleans(), key="container")
-    ins_method = st.shared(st.booleans(), key="instance_method")
-    if cont and ins_method:
-        return 0
-    # ToDo: make this dependent on the number of args in the function,
-    #  2 is an arbitrary number
-    return draw(st.integers(0, 2))
-
-
-@st.composite
 def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(
