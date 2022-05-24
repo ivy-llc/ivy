@@ -49,7 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Adding Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#categorization">Categorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#primary-functions">Primary Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositional-functions">Compositional Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#partial-primary-functions">Partial Primary Functions</a></li>
@@ -145,44 +144,6 @@
              
   <section id="adding-functions">
 <h1>Adding Functions<a class="headerlink" href="#adding-functions" title="Permalink to this headline"></a></h1>
-<section id="categorization">
-<h2>Categorization<a class="headerlink" href="#categorization" title="Permalink to this headline"></a></h2>
-<p>The first thing to decide when adding a function is which file this should be added to!</p>
-<p>Ivy uses the following categories taken from the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
-<ul class="simple">
-<li><p>constants</p></li>
-<li><p>creation</p></li>
-<li><p>data_type</p></li>
-<li><p>elementwise</p></li>
-<li><p>linear_algebra</p></li>
-<li><p>manipulation</p></li>
-<li><p>searching</p></li>
-<li><p>set</p></li>
-<li><p>sorting</p></li>
-<li><p>statistical</p></li>
-<li><p>utility</p></li>
-</ul>
-<p>In addition to these, we also add the following categorise,
-used for additional functions in Ivy that are not in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>:</p>
-<ul class="simple">
-<li><p>activations</p></li>
-<li><p>compilation</p></li>
-<li><p>device</p></li>
-<li><p>general</p></li>
-<li><p>gradients</p></li>
-<li><p>image</p></li>
-<li><p>layers</p></li>
-<li><p>losses</p></li>
-<li><p>meta</p></li>
-<li><p>nest</p></li>
-<li><p>norms</p></li>
-<li><p>random</p></li>
-</ul>
-<p>Some functions that you’re considering adding might overlap several of these categorizations,
-and in such cases you should look at the other functions included in each file,
-and use your best judgement for which categorization is most suitable.</p>
-<p>We can always suggest a more suitable location when reviewing your pull request if needed 🙂</p>
-</section>
 <section id="primary-functions">
 <h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this headline"></a></h2>
 <p><em>Primary</em> functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
@@ -195,14 +156,14 @@ the backend files <code class="code docutils literal notranslate"><span class="p
 (explained in more detail in subsequent sections), but does not include an actual implementation.</p>
 <p>Instead, in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, primary functions simply defer to the backend-specific
 implementation.</p>
-<p>For example, the implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/elementwise.py</span></code>
+<p>For example, the code for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/elementwise.py</span></code>
 (with docstrings removed) is given below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The framework-specific implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>  for PyTorch in
