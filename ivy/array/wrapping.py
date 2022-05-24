@@ -1,8 +1,12 @@
 # local
 import ivy
 
+# global
+from typing import Callable, Type, List, Iterable
+from types import ModuleType
 
-def _wrap_function(function_name):
+
+def _wrap_function(function_name: str) -> Callable:
     """Wraps the function called `function_name`.
 
     Parameters
@@ -17,7 +21,7 @@ def _wrap_function(function_name):
 
     Examples
     --------
-    >>> ivy.set_framework('torch')
+    >>> ivy.set_framework("torch")
     >>> from ivy.array.wrapping import _wrap_function
     >>> absolute = _wrap_function("abs")
     >>> x = ivy.array([-1])
@@ -51,7 +55,9 @@ def _wrap_function(function_name):
     return new_function
 
 
-def add_ivy_array_instance_methods(cls, modules, to_ignore=()):
+def add_ivy_array_instance_methods(
+    cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Iterable = ()
+):
     """Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy arrays as instance methods using _wrap_function.
 
