@@ -308,7 +308,7 @@ def stack(
            ``intxx`` and ``floatxx``) unspecified.
 
     Examples
-    -------
+    --------
     The function joins arrays along first dimension by default:
 
     >>> x_1 = ivy.array([1, 2, 3])
