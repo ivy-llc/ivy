@@ -28,7 +28,7 @@ def random_uniform(
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
         _jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high),
-        default_device(device),
+        device=default_device(device),
     )
 
 
@@ -43,7 +43,7 @@ def random_normal(
     return (
         to_dev(
             _jax.random.normal(rng_input, shape if shape else ()),
-            default_device(device),
+            device=default_device(device),
         )
         * std
         + mean
