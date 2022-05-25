@@ -29,7 +29,7 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
-    return torch.iinfo(ivy.dtype_from_str(type))
+    return torch.iinfo(ivy.as_native_dtype(type))
 
 
 class Finfo:
@@ -59,7 +59,7 @@ class Finfo:
 
 # noinspection PyShadowingBuiltins
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
-    return Finfo(torch.finfo(ivy.dtype_from_str(type)))
+    return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
@@ -85,7 +85,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
 
 def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True) -> torch.Tensor:
     if isinstance(dtype, str):
-        dtype = ivy.dtype_from_str(dtype)
+        dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = x.clone().detach()
@@ -100,7 +100,7 @@ def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True) -> torch.Tens
 
 
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -112,14 +112,13 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
+def dtype(x, as_native=False):
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
     return ivy.Dtype(
@@ -138,7 +137,7 @@ def dtype_to_str(dtype_in):
     )
 
 
-def dtype_from_str(dtype_in: str) -> torch.dtype:
+def as_native_dtype(dtype_in: str) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     return {

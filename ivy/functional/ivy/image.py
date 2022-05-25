@@ -5,7 +5,7 @@ import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 from typing import Union, List, Tuple
 
 
@@ -39,18 +39,17 @@ def stack_images(
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
     >>> print(stacked)
-    [[[1., 1., 1.],
+    ivy.array([[[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
-
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
-            [0., 0., 0.]]]
+            [0., 0., 0.]]])
 
     """
-    return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
+    return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp):
@@ -69,7 +68,7 @@ def bilinear_resample(x, warp):
         Image after bilinear re-sampling.
 
     """
-    return _cur_framework(x).bilinear_resample(x, warp)
+    return _cur_backend(x).bilinear_resample(x, warp)
 
 
 def gradient_image(x):
@@ -98,17 +97,19 @@ def gradient_image(x):
     ivy.array([[0., 1., 2.],
                [3., 4., 5.],
                [6., 7., 8.]])
+
     >>> print(dy[0, :,:,0])
      ivy.array([[3., 3., 3.],
                [3., 3., 3.],
                [0., 0., 0.]])
+
     >>> print(dx[0, :,:,0])
      ivy.array([[1., 1., 0.],
                [1., 1., 0.],
                [1., 1., 0.]])
 
     """
-    return _cur_framework(x).gradient_image(x)
+    return _cur_backend(x).gradient_image(x)
 
 
 def float_img_to_uint8_img(x):
@@ -126,7 +127,7 @@ def float_img_to_uint8_img(x):
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
-    x_np = ivy.to_numpy(x).astype('float32')
+    x_np = ivy.to_numpy(x).astype("float32")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
@@ -147,7 +148,7 @@ def uint8_img_to_float_img(x):
         The new float image *[batch_shape,h,w]*
 
     """
-    x_np = ivy.to_numpy(x).astype('uint8')
+    x_np = ivy.to_numpy(x).astype("uint8")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)
@@ -227,4 +228,4 @@ def linear_resample(
         The array after the linear resampling.
 
     """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
+    return _cur_backend(x).linear_resample(x, num_samples, axis)

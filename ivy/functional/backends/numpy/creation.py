@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
-from .data_type import dtype_from_str
+from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 
 # noinspection PyProtectedMember
@@ -41,10 +41,11 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: np.dtype,
+    device: str,
 ) -> np.ndarray:
-    return _to_dev(np.zeros(shape, dtype_from_str(default_dtype(dtype))), device)
+    return _to_dev(np.zeros(shape, dtype), device)
 
 
 def ones(
@@ -52,7 +53,7 @@ def ones(
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     return _to_dev(np.ones(shape, dtype), device)
 
 
@@ -109,7 +110,7 @@ def empty(
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
-    return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
+    return _to_dev(np.empty(shape, as_native_dtype(default_dtype(dtype))), device)
 
 
 def empty_like(
@@ -155,14 +156,14 @@ def eye(
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
-    dtype = dtype_from_str(default_dtype(dtype))
+    dtype = as_native_dtype(default_dtype(dtype))
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
 
 
 # noinspection PyShadowingNames
 def arange(start, stop=None, step=1, dtype=None, device=None):
     if dtype:
-        dtype = dtype_from_str(dtype)
+        dtype = as_native_dtype(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device)
     if not dtype:
         if res.dtype == np.float64:
@@ -179,7 +180,7 @@ def full(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     return _to_dev(
-        np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+        np.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
         device,
     )
 

@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -44,7 +44,7 @@ def argmax(
         the default array index data type.
 
     """
-    return _cur_framework(x).argmax(x, axis, keepdims, out)
+    return _cur_backend(x).argmax(x, axis, keepdims, out)
 
 
 def argmin(
@@ -80,7 +80,7 @@ def argmin(
         Array containing the indices of the minimum values across the specified axis.
 
     """
-    return _cur_framework(x).argmin(x, axis, keepdims)
+    return _cur_backend(x).argmin(x, axis, keepdims)
 
 
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
@@ -102,7 +102,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
         data type.
 
     """
-    return _cur_framework(x).nonzero(x)
+    return _cur_backend(x).nonzero(x)
 
 
 def where(
@@ -128,7 +128,7 @@ def where(
         elsewhere.
 
     """
-    return _cur_framework(x1).where(condition, x1, x2)
+    return _cur_backend(x1).where(condition, x1, x2)
 
 
 # Extra #

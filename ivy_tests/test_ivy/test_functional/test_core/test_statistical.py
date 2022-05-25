@@ -11,7 +11,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 @st.composite
 def statistical_dtype_values(draw, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtype_strs))
+    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
     size = draw(st.integers(1, 10))
     if dtype == "float16":
         max_value = 2048
@@ -43,7 +43,7 @@ def statistical_dtype_values(draw, function):
 
 # min
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -79,7 +79,7 @@ def test_min(
 
 # max
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -305,7 +305,7 @@ def test_std(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -332,7 +332,7 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # out test
     if with_out:
         assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             return
         assert ret.data is out.data
