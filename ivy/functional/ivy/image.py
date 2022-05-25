@@ -155,7 +155,7 @@ def uint8_img_to_float_img(x):
     return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
 
 
-def random_crop(x, crop_size, batch_shape=None, image_dims=None):
+def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     """Randomly crops the input images.
 
     Parameters
@@ -182,6 +182,8 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
     flat_batch_size = _reduce(_mul, batch_shape, 1)
+    crop_size[0] = min(crop_size[-2], x_shape[-3])
+    crop_size[1] = min(crop_size[-1], x_shape[-2])
 
     # shapes as list
     batch_shape = list(batch_shape)
@@ -192,8 +194,9 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
-    x_offsets = _np.random.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
-    y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
+    rng = _np.random.default_rng(seed)
+    x_offsets = rng.integers(0, margins[0] + 1, flat_batch_size).tolist()
+    y_offsets = rng.integers(0, margins[1] + 1, flat_batch_size).tolist()
 
     # list of 1 x NH x NW x F
     cropped_list = [
