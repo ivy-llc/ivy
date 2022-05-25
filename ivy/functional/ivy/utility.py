@@ -66,22 +66,20 @@ def all(
     >>> print(y)
     ivy.array(True)
 
-    >>> x = np.array([1, 2, 3])
+    >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.zeros(1,dtype='bool')
     >>> a = ivy.all(x,out = y,keepdims=True)
     >>> print(a)
     ivy.array([ True])
 
 
-    >>> x=np.array(False)
+    >>> x=ivy.array(False)
     >>> y=ivy.all([-1, 4, 5], out=x)
     >>> print(y)
     ivy.array(True)
 
-
-
-
     With :code:`ivy.NativeArray` input:
+    
     >>> x = ivy.native_array([1, 2, 3])
     >>> y = ivy.all(x)
     >>> print(y)
@@ -106,8 +104,6 @@ def all(
     >>> y = x.all()
     >>> print(y)
     ivy.array(True)
-
-
 
     Using :code:`ivy.Container` instance method:
 
