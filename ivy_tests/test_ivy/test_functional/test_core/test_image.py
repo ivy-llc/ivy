@@ -89,44 +89,48 @@ def test_linear_resample(
     )
 
 
-# # bilinear_resample
-# @given(
-#     shape=st.lists(st.integers(min_value=1, max_value=8),
-#                    min_size=4, max_size=8),
-#     n_samples=st.integers(min_value=1, max_value=8),
-#     dtype=st.sampled_from(ivy.valid_float_dtypes),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-# )
-# def test_bilinear_resample(
-#     shape,
-#     n_samples,
-#     dtype,
-#     as_variable,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     fw,
-# ):
-#     if fw == "torch" and dtype == "float16":
-#         return
-#     x = ivy.random_normal(shape=shape)
-#     warp = ivy.random_uniform(shape=shape[:-3] + [n_samples, 2])
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         False,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         False,
-#         fw,
-#         "bilinear_resample",
-#         x=x,
-#         warp=warp
-#     )
+# bilinear_resample
+@given(
+    batch_shape=st.lists(st.integers(min_value=1, max_value=8),
+                         min_size=1, max_size=4),
+    h_w=helpers.list_of_length(st.integers(min_value=2, max_value=8), 2),
+    n_dims=st.integers(min_value=1, max_value=8),
+    n_samples=st.integers(min_value=1, max_value=8),
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(0, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+)
+def test_bilinear_resample(
+    batch_shape,
+    h_w,
+    n_dims,
+    n_samples,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    if fw == "torch" and dtype == "float16":
+        return
+    x = ivy.random_normal(shape=batch_shape+h_w+[n_dims])
+    warp = ivy.random_uniform(shape=batch_shape+[n_samples, 2])
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "bilinear_resample",
+        x=x,
+        warp=warp
+    )
 
 
 # gradient_image
