@@ -33,7 +33,7 @@ def test_dtype_instances(device, call):
 
 # astype
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(2, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -71,7 +71,7 @@ def test_astype(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -111,7 +111,7 @@ def test_broadcast_to(
 
 # can_cast
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(2, 2),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -146,7 +146,7 @@ def test_can_cast(
 
 # dtype_bits
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(1, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -181,7 +181,7 @@ def test_dtype_bits(
 
 # dtype_from_str
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(1, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -216,7 +216,7 @@ def test_dtype_from_str(
 
 # dtype_to_str
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(1, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -251,7 +251,7 @@ def test_dtype_to_str(
 
 # finfo
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(1, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -286,7 +286,7 @@ def test_finfo(
 
 # iinfo
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_int_dtype_strs, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_int_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=st.integers(1, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -324,7 +324,7 @@ def test_iinfo(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -366,7 +366,7 @@ def test_is_float_dtype(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
