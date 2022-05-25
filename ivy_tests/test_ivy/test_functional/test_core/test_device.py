@@ -251,23 +251,33 @@ def test_split_func_call(array_shape, dtype, as_variable, chunk_size, axis, fw, 
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
-@pytest.mark.parametrize(
-    "x0", [[[0, 1, 2], [3, 4, 5], [6, 7, 8]], [[9, 8, 7], [6, 5, 4], [3, 2, 1]]]
-)
-@pytest.mark.parametrize(
-    "x1",
-    [[[2, 4, 6], [8, 10, 12], [14, 16, 18]], [[18, 16, 14], [12, 10, 8], [6, 4, 2]]],
-)
-@pytest.mark.parametrize("chunk_size", [1, 3])
-@pytest.mark.parametrize("axis", [0, 1])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    chunk_size = st.integers(1, 3),
+    axis = st.integers(0, 1))
 def test_split_func_call_with_cont_input(
-    x0, x1, chunk_size, axis, tensor_fn, device, call
+    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
+    #Skipping some dtype for certain frameworks
+    if (fw == "torch" and "int" in dtype)\
+        or (fw == "numpy" and "float16" in dtype)\
+        or (fw == 'tensorflow' and 'u' in dtype):
+        return
 
+    x1 = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x2 = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x1 = ivy.asarray(x1, device=device)
+    x2 = ivy.asarray(x2, device=device)
     # inputs
-    in0 = ivy.Container(cont_key=tensor_fn(x0, "float32", device))
-    in1 = ivy.Container(cont_key=tensor_fn(x1, "float32", device))
+
+    if as_variable:
+        in0 = ivy.Container(cont_key=ivy.variable(x1))
+        in1 = ivy.Container(cont_key=ivy.variable(x2))
+    else:
+        in0 = ivy.Container(cont_key=x1)
+        in1 = ivy.Container(cont_key=x2)
 
     # function
     def func(t0, t1):
