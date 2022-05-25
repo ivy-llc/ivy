@@ -7,10 +7,10 @@ import numpy as np
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
-NativeArray = mx.ndarray.ndarray.NDArray
-NativeVariable = mx.ndarray.ndarray.NDArray
+NativeArray = mx.nd.NDArray
+NativeVariable = mx.nd.NDArray
 NativeDevice = mx.context.Context
 NativeDtype = type
 
