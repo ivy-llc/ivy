@@ -11,7 +11,6 @@ import psutil
 import inspect
 import logging
 import nvidia_smi
-
 from typing import Optional
 
 # noinspection PyUnresolvedReferences
@@ -23,7 +22,7 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 default_device_stack = list()
 dev_handles = dict()
@@ -117,7 +116,7 @@ def print_all_arrays_on_dev(device):
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, str]:
     """
     Get the native device handle for input array x.
@@ -127,8 +126,8 @@ def dev(
     x
           array for which to get the device handle.
 
-    as_str
-          Whether or not to return the dev in string format. Default is False.
+    as_native
+          Whether or not to return the dev in native format. Default is False.
 
     Returns
     -------
@@ -137,18 +136,18 @@ def dev(
 
     Examples
     --------
-          >>> x = ivy.array([1,0,2])
-          >>> y = ivy.dev(x)
-          >>> print(y)
-          "cpu"
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> print(y)
+    cpu
     """
-    return _cur_framework(x).dev(x, as_str)
+    return _cur_backend(x).dev(x, as_native)
 
 
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -162,11 +161,11 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_framework().dev_to_str(device)
+    return _cur_backend().as_ivy_dev(device)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
+def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
     Parameters
@@ -180,13 +179,13 @@ def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
         Native device handle.
 
     """
-    return _cur_framework().dev_from_str(device)
+    return _cur_backend().as_native_dev(device)
 
 
 # Memory
 
 # noinspection PyShadowingNames
-def clear_mem_on_dev(device: ivy.Device) -> None:
+def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
     Parameters
@@ -195,11 +194,11 @@ def clear_mem_on_dev(device: ivy.Device) -> None:
         The device string to conver to native device handle.
 
     """
-    return _cur_framework(None).clear_mem_on_dev(device)
+    return _cur_backend(None).clear_mem_on_dev(device)
 
 
 # noinspection PyShadowingNames
-def total_mem_on_dev(device: ivy.Device) -> float:
+def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
 
@@ -228,7 +227,9 @@ def total_mem_on_dev(device: ivy.Device) -> float:
 
 
 # noinspection PyShadowingNames
-def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
 
@@ -266,7 +267,9 @@ def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
 
 
 # noinspection PyShadowingNames
-def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def percent_used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
 
@@ -306,7 +309,7 @@ def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float
 # Utilization
 
 # noinspection PyShadowingNames
-def dev_util(device: ivy.Device) -> float:
+def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
     Parameters
@@ -346,10 +349,9 @@ def gpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.gpu_is_available())
-    True
-
+    False
     """
-    return _cur_framework().gpu_is_available()
+    return _cur_backend().gpu_is_available()
 
 
 def num_cpu_cores() -> int:
@@ -383,7 +385,7 @@ def num_gpus() -> int:
     1
 
     """
-    return _cur_framework().num_gpus()
+    return _cur_backend().num_gpus()
 
 
 def tpu_is_available() -> bool:
@@ -397,29 +399,24 @@ def tpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.tpu_is_available())
-    True
-
+    False
     """
-    return _cur_framework().tpu_is_available()
+    return _cur_backend().tpu_is_available()
 
 
 # Default Device #
 
 # noinspection PyShadowingNames
-def _assert_dev_correct_formatting(device):
-    assert device[0:3] in ["gpu", "tpu", "cpu"]
-    if device != "cpu":
-        assert device[3] == ":"
-        assert device[4:].isnumeric()
-
-
-# noinspection PyShadowingNames
-def default_device(device=None):
+def default_device(device=None, item=None, as_native: bool = None):
     """Summary.
 
     Parameters
     ----------
     device
+         (Default value = None)
+    item
+         (Default value = None)
+    as_native
          (Default value = None)
 
     Returns
@@ -428,14 +425,25 @@ def default_device(device=None):
 
     """
     if ivy.exists(device):
-        _assert_dev_correct_formatting(ivy.dev_to_str(device))
+        if as_native is True:
+            return ivy.as_native_dev(device)
+        elif as_native is False:
+            return ivy.as_ivy_dev(device)
         return device
+    as_native = ivy.default(as_native, False)
+    if ivy.exists(item):
+        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+            pass
+        elif ivy.is_array(item):
+            return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
         ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
     else:
         ret = default_device_stack[-1]
-    return ivy.dev_from_str(ret)
+    if as_native:
+        return ivy.as_native_dev(ret)
+    return ivy.as_ivy_dev(ret)
 
 
 # noinspection PyShadowingNames
@@ -447,7 +455,6 @@ def set_default_device(device):
     device
 
     """
-    _assert_dev_correct_formatting(device)
     global default_device_stack
     default_device_stack.append(device)
 
@@ -464,7 +471,7 @@ def unset_default_device():
 # noinspection PyShadowingNames
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
@@ -490,7 +497,7 @@ def to_dev(
     >>> x = ivy.to_dev(x, 'cpu')
 
     """
-    return _cur_framework(x).to_dev(x, device, out)
+    return _cur_backend(x).to_dev(x, device, out)
 
 
 # Function Splitting #
@@ -839,7 +846,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, ds)
+            ds: ivy.to_dev(x_sub, device = ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
@@ -977,7 +984,7 @@ def dev_clone_array(x, devices):
         array cloned to each of the target devices
 
     """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in devices})
+    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, device = ds)) for ds in devices})
 
 
 def dev_clone(x, devices):
@@ -1283,7 +1290,7 @@ class DevMapper(abc.ABC):
                     output_queue,
                     devices[i],
                     worker_kwargs,
-                    ivy.current_framework_str(),
+                    ivy.current_backend_str(),
                 ),
             )
             worker.start()
@@ -1300,7 +1307,7 @@ class DevMapper(abc.ABC):
 
     # noinspection PyShadowingNames
     def _worker_fn(self, input_queue, output_queue, device, kwargs, framework_str):
-        ivy.set_framework(framework_str)
+        ivy.set_backend(framework_str)
         ivy.set_default_device(device)
         for k, v in kwargs.items():
             if isinstance(v, ivy.Module) and not v.built:

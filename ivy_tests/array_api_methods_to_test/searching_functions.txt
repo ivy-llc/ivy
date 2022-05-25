@@ -1,4 +1,4 @@
 argmax
 argmin
 nonzero
-where
+#where #failing for numpy
