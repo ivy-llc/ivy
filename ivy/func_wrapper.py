@@ -8,11 +8,12 @@ from types import ModuleType
 wrapped_modules_n_classes = []
 NON_WRAPPED_FUNCTIONS = [
     "copy_nest",
-    "current_framework",
-    "current_framework_str",
-    "set_framework",
-    "get_framework",
-    "unset_framework",
+    "current_backend",
+    "current_backend_str",
+    "set_backend",
+    "get_backend",
+    "unset_backend",
+    "get_referrers_recursive",
     "set_debug_mode",
     "set_breakpoint_debug_mode",
     "set_exception_debug_mode",
@@ -282,12 +283,7 @@ def _wrap_function(fn):
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            if args and ivy.is_ivy_container(args[0]):
-                f = getattr(ivy.Container, fn_name)
-            else:
-                f = getattr(ivy.StaticContainer, fn_name)
-            if "out" in f.__code__.co_varnames:
-                return f(*args, **kwargs)
+            f = getattr(ivy.Container, "static_" + fn_name)
             return f(*args, **kwargs)
 
         """
@@ -331,7 +327,7 @@ def _unwrap_function(function_wrapped):
 
 def _invalid_fn(fn, fs=None):
     if fs is None:
-        fs = ivy.current_framework_str()
+        fs = ivy.current_backend_str()
     if isinstance(fn, np.ufunc):
         return False
     if not hasattr(fn, "__module__") or not fn.__module__:
@@ -348,9 +344,9 @@ def _wrap_or_unwrap_functions(
 ):
     classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
     if fs is None:
-        fs = ivy.current_framework_str()
+        fs = ivy.current_backend_str()
     if val is None:
-        val = importlib.import_module(ivy.current_framework_str()) if native else ivy
+        val = importlib.import_module(ivy.current_backend_str()) if native else ivy
     str_to_check = fs if native else "ivy"
     is_class = inspect.isclass(val)
     if isinstance(val, ModuleType) or (val in classes_to_wrap):
