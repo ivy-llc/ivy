@@ -213,22 +213,25 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
 
 # Function Splitting #
 
-
-@pytest.mark.parametrize(
-    "x0", [[[0, 1, 2], [3, 4, 5], [6, 7, 8]], [[9, 8, 7], [6, 5, 4], [3, 2, 1]]]
-)
-@pytest.mark.parametrize(
-    "x1",
-    [[[2, 4, 6], [8, 10, 12], [14, 16, 18]], [[18, 16, 14], [12, 10, 8], [6, 4, 2]]],
-)
-@pytest.mark.parametrize("chunk_size", [1, 3])
-@pytest.mark.parametrize("axis", [0, 1])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_split_func_call(x0, x1, chunk_size, axis, tensor_fn, device, call):
+@given(array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    chunk_size = st.integers(1, 3),
+    axis = st.integers(0, 1))
+def test_split_func_call(array_shape, dtype, as_variable, chunk_size, axis, fw, device, call):
+    if fw == "torch" and "int" in dtype:
+        return
 
     # inputs
-    in0 = tensor_fn(x0, "float32", device)
-    in1 = tensor_fn(x1, "float32", device)
+
+    x1 = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x2 = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
+    if as_variable:
+        x1 = ivy.variable(x1)
+        x1 = ivy.variable(x2)
 
     # function
     def func(t0, t1):
@@ -236,11 +239,11 @@ def test_split_func_call(x0, x1, chunk_size, axis, tensor_fn, device, call):
 
     # predictions
     a, b, c = ivy.split_func_call(
-        func, [in0, in1], "concat", chunk_size=chunk_size, input_axes=axis
+        func, [x1, x2], "concat", chunk_size=chunk_size, input_axes=axis
     )
 
     # true
-    a_true, b_true, c_true = func(in0, in1)
+    a_true, b_true, c_true = func(x1, x2)
 
     # value test
     assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
