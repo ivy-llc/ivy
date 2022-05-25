@@ -430,5 +430,5 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
-def current_framework_str():
+def current_backend_str():
     return "torch"

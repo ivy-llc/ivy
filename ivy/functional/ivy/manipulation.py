@@ -4,7 +4,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -129,7 +129,7 @@ def roll(
     }
 
     """
-    return _cur_framework(x).roll(x, shift, axis, out)
+    return _cur_backend(x).roll(x, shift, axis, out)
 
 
 def squeeze(
@@ -166,7 +166,7 @@ def squeeze(
     (2, 2)
 
     """
-    return _cur_framework(x).squeeze(x, axis, out)
+    return _cur_backend(x).squeeze(x, axis, out)
 
 
 def flip(
@@ -197,7 +197,7 @@ def flip(
         relative to ``x``, are reordered.
 
     """
-    return _cur_framework(x).flip(x, axis, out)
+    return _cur_backend(x).flip(x, axis, out)
 
 
 def expand_dims(
@@ -232,12 +232,12 @@ def expand_dims(
     >>> print(y)
     ivy.array([[[0, 1],
                 [1, 0]]])
-                
+
     >>> print(x.shape, y.shape)
     (2, 2) (1, 2, 2)
 
     """
-    return _cur_framework(x).expand_dims(x, axis, out)
+    return _cur_backend(x).expand_dims(x, axis, out)
 
 
 def permute_dims(
@@ -265,7 +265,7 @@ def permute_dims(
         data type as x.
 
     """
-    return _cur_framework(x).permute_dims(x, axes, out)
+    return _cur_backend(x).permute_dims(x, axes, out)
 
 
 def stack(
@@ -308,7 +308,7 @@ def stack(
            ``intxx`` and ``floatxx``) unspecified.
 
     """
-    return _cur_framework(arrays).stack(arrays, axis, out)
+    return _cur_backend(arrays).stack(arrays, axis, out)
 
 
 def reshape(
@@ -343,7 +343,7 @@ def reshape(
                [5, 6]])
 
     """
-    return _cur_framework(x).reshape(x, shape, copy, out)
+    return _cur_backend(x).reshape(x, shape, copy, out)
 
 
 def concat(
@@ -378,7 +378,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return _cur_framework(xs[0]).concat(xs, axis, out)
+    return _cur_backend(xs[0]).concat(xs, axis, out)
 
 
 # Extra #
@@ -413,7 +413,7 @@ def split(
         A list of sub-arrays.
 
     """
-    return _cur_framework(x).split(x, num_or_size_splits, axis, with_remainder)
+    return _cur_backend(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
 def repeat(
@@ -441,7 +441,7 @@ def repeat(
         The repeated output array.
 
     """
-    return _cur_framework(x).repeat(x, repeats, axis, out)
+    return _cur_backend(x).repeat(x, repeats, axis, out)
 
 
 def tile(
@@ -464,7 +464,7 @@ def tile(
         The tiled output array.
 
     """
-    return _cur_framework(x).tile(x, reps, out)
+    return _cur_backend(x).tile(x, reps, out)
 
 
 def constant_pad(
@@ -492,7 +492,7 @@ def constant_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_framework(x).constant_pad(x, pad_width, value, out)
+    return _cur_backend(x).constant_pad(x, pad_width, value, out)
 
 
 def zero_pad(
@@ -516,7 +516,7 @@ def zero_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_framework(x).zero_pad(x, pad_width, out)
+    return _cur_backend(x).zero_pad(x, pad_width, out)
 
 
 def swapaxes(
@@ -542,7 +542,7 @@ def swapaxes(
         x with its axes permuted.
 
     """
-    return _cur_framework(x).swapaxes(x, axis0, axis1, out)
+    return _cur_backend(x).swapaxes(x, axis0, axis1, out)
 
 
 def clip(
@@ -573,4 +573,4 @@ def clip(
         x_min, and those > x_max with x_max.
 
     """
-    return _cur_framework(x).clip(x, x_min, x_max, out)
+    return _cur_backend(x).clip(x, x_min, x_max, out)

@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple, List
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -58,7 +58,7 @@ def all(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return _cur_framework(x).all(x, axis, keepdims, out=out)
+    return _cur_backend(x).all(x, axis, keepdims, out=out)
 
 
 # noinspection PyShadowingBuiltins
@@ -110,7 +110,7 @@ def any(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return _cur_framework(x).any(x, axis, keepdims, out=out)
+    return _cur_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #
