@@ -68,9 +68,10 @@ def all(
 
     >>> x = np.array([1, 2, 3])
     >>> y = ivy.zeros(1,dtype='bool')
-    >>> a = np.all(x,out = y,keepdims=True)
+    >>> a = ivy.all(x,out = y,keepdims=True)
     >>> print(a)
-    [ True]
+    ivy.array([ True])
+
 
     >>> x=np.array(False)
     >>> y=ivy.all([-1, 4, 5], out=x)
