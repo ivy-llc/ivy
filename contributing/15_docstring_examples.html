@@ -262,8 +262,8 @@ ivy.array([0., 1.5574077, -2.1850398])
 &gt;&gt;&gt; print(y)
 ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-&gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],
-&gt;&gt;&gt;                [-4.4, -5.5, -6.6]])
+&gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], \
+                   [-4.4, -5.5, -6.6]])
 &gt;&gt;&gt; ivy.tan(x, out=x)
 &gt;&gt;&gt; print(x)
 ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
@@ -351,16 +351,16 @@ With :code:`ivy.Array` input:
 &gt;&gt;&gt; print(y)
 ivy.array([2., 0., 1.])
 
-&gt;&gt;&gt; x = ivy.array([[0., 1., 2.],
-&gt;&gt;&gt;                [3., 4., 5.]])
+&gt;&gt;&gt; x = ivy.array([[0., 1., 2.], \
+                   [3., 4., 5.]])
 &gt;&gt;&gt; y = ivy.zeros((2, 3))
 &gt;&gt;&gt; ivy.roll(x, 2, -1, out=y)
 &gt;&gt;&gt; print(y)
 ivy.array([[1., 2., 0.],
            [4., 5., 3.]])
 
-&gt;&gt;&gt; x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
-&gt;&gt;&gt;                [[3., 9.], [4., 12.], [5., 15.]]])
+&gt;&gt;&gt; x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                   [[3., 9.], [4., 12.], [5., 15.]]])
 &gt;&gt;&gt; ivy.roll(x, (1, -1), (0, 2), out=x)
 &gt;&gt;&gt; print(x)
 ivy.array([[[ 9., 3.],
@@ -400,8 +400,8 @@ Point 9 is not relevant as there is again only one array input
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
-&gt;&gt;&gt;                   b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = ivy.roll(x, 1)
 &gt;&gt;&gt; print(y)
 {
@@ -510,10 +510,10 @@ ivy.array([5, 7, 9])
 <p>We then also add an example with <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
-&gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
-&gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                      b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = ivy.add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -528,8 +528,8 @@ We also add an example with a mix of <code class="code docutils literal notransl
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-&gt;&gt;&gt;                   b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                      b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; z = ivy.add(x, y)
 &gt;&gt;&gt; print(z)
 {
@@ -556,10 +556,10 @@ ivy.array([5, 7, 9])
 
 Using :code:`ivy.Container` instance method:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
-&gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
-&gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                      b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = x.add(y)
 &gt;&gt;&gt; print(z)
 {
@@ -584,10 +584,10 @@ ivy.array([5, 7, 9])
 
 With :code:`ivy.Container` instances:
 
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
-&gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),
-&gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                      b=ivy.array([5, 6, 7]))
 &gt;&gt;&gt; z = x + y
 &gt;&gt;&gt; print(z)
 {
@@ -598,8 +598,8 @@ With :code:`ivy.Container` instances:
 With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-&gt;&gt;&gt;                   b=ivy.array([[5.], [6.], [7.]]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                      b=ivy.array([[5.], [6.], [7.]]))
 &gt;&gt;&gt; z = x + y
 &gt;&gt;&gt; print(z)
 {
