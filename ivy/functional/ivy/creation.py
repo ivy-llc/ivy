@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -57,7 +57,7 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_framework().arange(start, stop, step, dtype, device)
+    return _cur_backend().arange(start, stop, step, dtype, device)
 
 
 def asarray(
@@ -83,8 +83,7 @@ def asarray(
         An array interpretation of x.
 
     """
-    return _cur_framework(x).asarray(x, dtype=dtype, device=device)
-
+    return _cur_backend().asarray(x, dtype=dtype, device=device)
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
@@ -119,7 +118,7 @@ def zeros(
                [0., 0., 0., 0., 0.]])
 
     """
-    return _cur_framework().zeros(shape, dtype=dtype, device=device)
+    return _cur_backend().zeros(shape, dtype=dtype, device=device)
 
 
 def ones(
@@ -153,7 +152,7 @@ def ones(
                [1.,  1.]])
 
     """
-    return _cur_framework().ones(shape, dtype, device)
+    return _cur_backend().ones(shape, dtype, device)
 
 
 def full_like(
@@ -193,7 +192,7 @@ def full_like(
     ivy.array([1, 1, 1, 1, 1, 1])
 
     """
-    return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
+    return _cur_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
 
 
 def ones_like(
@@ -228,7 +227,7 @@ def ones_like(
     ivy.array([[1, 1, 1],[1, 1, 1]])
 
     """
-    return _cur_framework(x).ones_like(x, dtype, device)
+    return _cur_backend(x).ones_like(x, dtype, device)
 
 
 def zeros_like(
@@ -264,7 +263,7 @@ def zeros_like(
                [0, 0, 0]])
 
     """
-    return _cur_framework(x).zeros_like(x, dtype, device)
+    return _cur_backend(x).zeros_like(x, dtype, device)
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
@@ -288,7 +287,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_framework(x).tril(x, k)
+    return _cur_backend(x).tril(x, k)
 
 
 def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
@@ -312,7 +311,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_framework(x).triu(x, k)
+    return _cur_backend(x).triu(x, k)
 
 
 def empty(
@@ -338,7 +337,7 @@ def empty(
         an uninitialized array having a specified shape
 
     """
-    return _cur_framework().empty(shape, dtype, device)
+    return _cur_backend().empty(shape, dtype, device)
 
 
 def empty_like(
@@ -365,7 +364,7 @@ def empty_like(
         an array having the same shape as x and containing uninitialized data.
 
     """
-    return _cur_framework(x).empty_like(x, dtype, device)
+    return _cur_backend(x).empty_like(x, dtype, device)
 
 
 def eye(
@@ -399,7 +398,7 @@ def eye(
         device on which to place the created array. Default: None.
 
     """
-    return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
+    return _cur_backend().eye(n_rows, n_cols, k, dtype, device)
 
 
 # noinspection PyShadowingNames
@@ -437,9 +436,7 @@ def linspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).linspace(
-        start, stop, num, axis, device, dtype, endpoint
-    )
+    return _cur_backend(start).linspace(start, stop, num, axis, device, dtype, endpoint)
 
 
 def meshgrid(
@@ -530,7 +527,7 @@ def meshgrid(
                    [4, 4]])
 
     """
-    return _cur_framework().meshgrid(*arrays, indexing=indexing)
+    return _cur_backend().meshgrid(*arrays, indexing=indexing)
 
 
 def full(
@@ -572,7 +569,7 @@ def full(
                [10., 10.]])
 
     """
-    return _cur_framework().full(shape, fill_value, dtype, device)
+    return _cur_backend().full(shape, fill_value, dtype, device)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -596,7 +593,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            :ref:`data-interchange` for details.
 
     """
-    return _cur_framework(x).from_dlpack(x)
+    return _cur_backend(x).from_dlpack(x)
 
 
 # Extra #
@@ -670,4 +667,4 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).logspace(start, stop, num, base, axis, device)
+    return _cur_backend(start).logspace(start, stop, num, base, axis, device)

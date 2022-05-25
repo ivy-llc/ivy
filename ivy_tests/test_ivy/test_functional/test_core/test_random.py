@@ -71,8 +71,6 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
         assert ret.shape == ()
     else:
         assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.random_normal, **kwargs, device=device)
 
 
 # multinomial
