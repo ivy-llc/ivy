@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -103,7 +103,7 @@ def unique_all(
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
     """
-    return _cur_framework(x).unique_all(x)
+    return _cur_backend(x).unique_all(x)
 
 
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
@@ -121,7 +121,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         tuple of two arrays (values, inverse_indices)
 
     """
-    return _cur_framework(x).unique_inverse(x)
+    return _cur_backend(x).unique_inverse(x)
 
 
 def unique_values(
@@ -168,7 +168,7 @@ def unique_values(
            implementations.
 
     """
-    return _cur_framework(x).unique_values(x, out)
+    return _cur_backend(x).unique_values(x, out)
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
@@ -193,4 +193,4 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
           have same shape as values and must have the default array index data type.
 
     """
-    return _cur_framework(x).unique_counts(x)
+    return _cur_backend(x).unique_counts(x)
