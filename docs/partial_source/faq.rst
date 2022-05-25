@@ -162,14 +162,3 @@ gradients explicitly as function inputs and outputs. This is not actually requir
 still return the values such that JAX is also supported. Ivy will remain fully functional in design, and we therefore
 assume behavior similar to JAX. Our simple example on the `README`_ trains correctly for all back-ends, which passes
 everything explicitly in a functional manner.
-
-Transpiler
------
-
-**Q: ** Does the authors need to code with Ivy to convert between different frameworks or can it convert let's say
-PyTorch to Jax code directly?
-
-**A:** The code conversion is a little more nuanced than that. Say if you have a pre-written pure PyTorch code, you can
-replace each PyTorch function with its equivalent function in Ivy using Ivy's PyTorch frontend and run this PyTorch code using
-JAX. Once the transpiler interface is implemented, it will be possible to convert between frameworks without any knowledge
-of Ivy whatsoever.
