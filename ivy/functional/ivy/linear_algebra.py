@@ -632,7 +632,9 @@ def vecdot(
     return _cur_framework(x1).vecdot(x1, x2, axis)
 
 
-def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def det(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+) -> Union[ivy.Array, ivy.Container]:
     """Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
 
     Parameters
@@ -649,12 +651,66 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         for each square matrix. The returned array must have the same data type as
         ``x``.
 
-    Examples
-    --------
-    >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
-    >>> out = ivy.det(x)
-    >>> print(out)
-    ivy.array([-2., -3.])
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[2.,4.],[6.,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    -10.000000000000002
+
+    >>> x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    293.4700000000006
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    293.4700000000006
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> y = ivy.det(x)
+    >>> print(y)
+    {
+        a: 8.000000000000002,
+        b: 1.0
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[2.,4.],[6.,7.]])
+    >>> y = x.det()
+    >>> print(y)
+    -10.000000000000002
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> y = x.det()
+    >>> print(y)
+    {
+        a: 8.000000000000002,
+        b: 1.0
+    }
 
     """
     return _cur_framework(x).det(x)
