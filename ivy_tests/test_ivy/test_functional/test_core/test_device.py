@@ -216,8 +216,15 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
     axis=st.integers(0, 1))
-def test_split_func_call(array_shape, dtype, as_variable, chunk_size, axis, fw, device, call):
-    if fw=="torch" and "int" in dtype:
+def test_split_func_call(array_shape,
+                         dtype,
+                         as_variable,
+                         chunk_size,
+                         axis,
+                         fw,
+                         device,
+                         call):
+    if fw == "torch" and "int" in dtype:
         return
 
     # inputs
@@ -417,7 +424,10 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
         devices.append(dev1)
 
     # output
-    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), device=dev0, mode="concat", axis=axis)
+    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x),
+                                    device=dev0,
+                                    mode="concat",
+                                    axis=axis)
 
     # shape test
     expected_size = 0
