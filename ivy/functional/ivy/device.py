@@ -1068,7 +1068,7 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, device, axis):
-    return ivy.concat([ivy.to_dev(x_sub, device) for x_sub in xs.values()], axis)
+    return ivy.concat([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], axis)
 
 
 # noinspection PyShadowingNames
