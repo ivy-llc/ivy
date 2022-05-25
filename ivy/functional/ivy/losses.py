@@ -23,11 +23,11 @@ def cross_entropy(
     pred
         input array containing the predicted labels.
     axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``, the
-        cross-entropy will be computed along the last dimension. Default: ``-1``.
+        the axis along which to compute the cross-entropy. If axis is ``-1``,
+        the cross-entropy will be computed along the last dimension. Default: ``-1``.
     epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
 
     Returns
     -------
@@ -92,14 +92,14 @@ def binary_cross_entropy(
     ivy.array([0.9163, 1.6094, 1.2040, 0.3567])
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([0, 1, 0, 1])
     >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
     >>> print(ivy.binary_cross_entropy(x, y))
     ivy.array([0.2231, 0.3567, 0.2231, 0.5108])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.array([0, 0, 1, 1])
     >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
     >>> print(ivy.binary_cross_entropy(x, y))
