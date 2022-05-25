@@ -6,7 +6,7 @@ import torch as torch
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
