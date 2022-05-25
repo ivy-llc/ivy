@@ -303,10 +303,7 @@ def test_split_func_call_with_cont_input(
     as_variable=st.booleans(),
     axis = st.integers(0, 1),
     devs_as_dict = st.booleans())
-# @pytest.mark.parametrize("x", [[0, 1, 2, 3, 4, 5]])
-# @pytest.mark.parametrize("axis", [0])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-# @pytest.mark.parametrize("devs_as_dict", [True, False])
+
 def test_dist_array(array_shape, dtype, as_variable, axis, devs_as_dict, fw, device, call):
 
     if (fw == "torch" and "int" in dtype):
@@ -341,13 +338,20 @@ def test_dist_array(array_shape, dtype, as_variable, axis, devs_as_dict, fw, dev
     assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
-@pytest.mark.parametrize("x", [[0, 1, 2, 3, 4]])
-@pytest.mark.parametrize("axis", [0])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_clone_array(x, axis, tensor_fn, device, call):
+@given(array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    axis = st.integers(0,1))
+def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
 
+    if (fw == "torch" and "int" in dtype):
+        return
     # inputs
-    x = tensor_fn(x, "float32", device)
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
 
     # devices
     devices = list()
@@ -358,11 +362,12 @@ def test_clone_array(x, axis, tensor_fn, device, call):
         dev1 = device[:-1] + str(idx)
         devices.append(dev1)
 
+    print(f"Devices list is : {devices}")
     # return
     x_split = ivy.dev_clone_array(x, devices)
-
+    print(f"x_split is : {x_split}")
     # shape test
-    assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devices))
+    assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devices))
 
     # value test
     assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
