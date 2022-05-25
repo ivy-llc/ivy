@@ -13,6 +13,7 @@ NON_WRAPPED_FUNCTIONS = [
     "set_backend",
     "get_backend",
     "unset_backend",
+    "get_referrers_recursive",
     "set_debug_mode",
     "set_breakpoint_debug_mode",
     "set_exception_debug_mode",

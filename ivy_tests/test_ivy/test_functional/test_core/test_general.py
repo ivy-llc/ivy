@@ -88,30 +88,29 @@ def test_match_kwargs(allow_duplicates):
         assert kwca == {"f": 5, "g": 6}
 
 
-# def test_get_referrers_recursive(device, call):
-#
-#     class SomeClass:
-#         def __init__(self):
-#             self.x = [1, 2]
-#             self.y = [self.x]
-#
-#     some_obj = SomeClass()
-#     refs = ivy.get_referrers_recursive(some_obj.x)
-#     ref_keys = refs.keys()
-#     assert len(ref_keys) == 3
-#     assert 'repr' in ref_keys
-#     assert refs['repr'] == '[1,2]'
-#     y_id = str(id(some_obj.y))
-#     y_refs = refs[y_id]
-#     assert y_refs['repr'] == '[[1,2]]'
-#     some_obj_dict_id = str(id(some_obj.__dict__))
-#     assert y_refs[some_obj_dict_id] == 'tracked'
-#     dict_refs = refs[some_obj_dict_id]
-#     assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
-#     some_obj_id = str(id(some_obj))
-#     some_obj_refs = dict_refs[some_obj_id]
-#     assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
-#     assert len(some_obj_refs) == 1
+def test_get_referrers_recursive(device, call):
+    class SomeClass:
+        def __init__(self):
+            self.x = [1, 2]
+            self.y = [self.x]
+
+    some_obj = SomeClass()
+    refs = ivy.get_referrers_recursive(some_obj.x)
+    ref_keys = refs.keys()
+    assert len(ref_keys) == 3
+    assert 'repr' in ref_keys
+    assert refs['repr'] == '[1,2]'
+    y_id = str(id(some_obj.y))
+    y_refs = refs[y_id]
+    assert y_refs['repr'] == '[[1,2]]'
+    some_obj_dict_id = str(id(some_obj.__dict__))
+    assert y_refs[some_obj_dict_id] == 'tracked'
+    dict_refs = refs[some_obj_dict_id]
+    assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
+    some_obj_id = str(id(some_obj))
+    some_obj_refs = dict_refs[some_obj_id]
+    assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
+    assert len(some_obj_refs) == 1
 
 
 # copy array
