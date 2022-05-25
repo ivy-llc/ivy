@@ -557,6 +557,148 @@ def test_array_function(
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
+def test_array_class(
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    class_method,
+    fw,
+    fn_name,
+    rtol=1e-03,
+    atol=1e-06,
+    **all_as_kwargs_np
+):
+
+    if dtype in ivy.invalid_dtypes:
+        return  # invalid dtype
+    if dtype == "float16" and fw == "torch":
+        return  # torch does not support float16 for geglu
+    if dtype == "bfloat16":
+        return  # bfloat16 is not supported by numpy
+    # convert single values to length 1 lists
+    dtype, as_variable, native_array, container = as_lists(
+        dtype, as_variable, native_array, container
+    )
+
+    # update variable flags to be compatible with float dtype and with_out args
+    as_variable = [
+        v if ivy.is_float_dtype(d) and not with_out else False
+        for v, d in zip(as_variable, dtype)
+    ]
+
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
+
+    # change all data types so that they are supported by this framework
+    dtype = ["float32" if d in ivy.invalid_dtypes else d for d in dtype]
+
+    # create args
+    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    num_arg_vals = len(arg_np_vals)
+    arg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, dtype[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(arg_array_vals, as_variable[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(arg_array_vals, native_array[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        as_cont(x) if c else x for x, c in zip(arg_array_vals, container[:num_arg_vals])
+    ]
+    args = ivy.copy_nest(args_np, to_mutable=True)
+    ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
+
+    # create kwargs
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+    kwarg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, dtype[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(kwarg_array_vals, as_variable[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(kwarg_array_vals, native_array[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        as_cont(x) if c else x
+        for x, c in zip(kwarg_array_vals, container[num_arg_vals:])
+    ]
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
+
+    # create numpy args
+    args_np = ivy.nested_map(
+        args,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
+    kwargs_np = ivy.nested_map(
+        kwargs,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
+
+    # run either as an instance method or from the API directly
+    instance = None
+    ret = ivy.__dict__[fn_name](*args, **kwargs)
+    # assert idx of return if the idx of the out array provided
+    out = ret
+    if with_out:
+        assert not isinstance(ret, tuple)
+        if max(container):
+            assert ivy.is_ivy_container(ret)
+        else:
+            assert ivy.is_array(ret)
+
+        if max(container):
+            assert ret is out
+
+        if max(container) or fw in ["tensorflow", "jax", "numpy"]:
+            # these frameworks do not always support native inplace updates
+            pass
+        else:
+            assert ret.data is out.data
+
+    # function instance in class
+    #if not isinstance(fn_name, class_method):
+    #    ret = (ret,)
+    # class test
+    if not isinstance(class_method, classmethod):
+    #if str(class_method)[1:6] !== "class":
+        ret = (ret,)
+    if not class_method:
+        ret = (ret,)
+    # value test
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+    if dtype == "bfloat16":
+        return  # bfloat16 is not supported by numpy
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+    ivy.set_framework("numpy")
+    ret_from_np = ivy.to_native(
+        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
+    )
+    ivy.unset_framework()
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
+    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
 
 # Hypothesis #
 # -----------#
