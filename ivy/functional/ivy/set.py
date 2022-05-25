@@ -83,7 +83,7 @@ def unique_all(
                [-1.2119, -0.3519, -0.6252,  0.4033],
                [ 0.7443,  0.2577, -0.3707, -0.0545],
                [-0.3238,  0.5944,  0.0775, -0.4327]])
-    >>> x[range(4), range(4)] = ivy.constants.nan #Introduce NaN values
+    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
     >>> print(x)
     ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
                [-1.2119,     nan, -0.6252,  0.4033],
