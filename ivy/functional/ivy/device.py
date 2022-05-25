@@ -846,7 +846,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, ds)
+            ds: ivy.to_dev(x_sub, device = ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
