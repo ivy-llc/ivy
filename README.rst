@@ -186,7 +186,7 @@ You should then see output like the following:
    ivy.flip(                              ivy.randint(                              ivy.verbosity
    ivy.floor(                             ivy.random                                ivy.where(
    ivy.floormod(                          ivy.random_uniform(                       ivy.zero_pad(
-   ivy.backend_handler                    qqivy.reduce_max(                           ivy.zeros(
+   ivy.backend_handler                    ivy.reduce_max(                           ivy.zeros(
    ivy.gather_nd(                         ivy.reduce_mean(                          ivy.zeros_like(
 
 Background
