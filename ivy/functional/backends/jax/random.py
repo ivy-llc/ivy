@@ -43,7 +43,7 @@ def random_normal(
     return (
         to_dev(
             _jax.random.normal(rng_input, shape if shape else ()),
-            default_device(device),
+            device=default_device(device),
         )
         * std
         + mean
