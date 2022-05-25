@@ -152,7 +152,7 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
 These examples cover points 1, 2, 3, 4 and 5.
 
 Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
-to be seperated by a '\' so that they can be parsed by the script that tests the examples in the docstrings. 
+to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings. 
 
 Point 1 is simple to satisfy. Ignoring the union over :code:`ivy.Array` and :code:`ivy.NativeArray` which is covered by
 points 6 and 7, and ignoring :code:`ivy.Container` which is covered by points 8 and 9,
