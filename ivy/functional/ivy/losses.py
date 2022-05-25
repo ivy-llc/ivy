@@ -54,10 +54,10 @@ def cross_entropy(
 
 # noinspection PyUnresolvedReferences
 def binary_cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
+    true: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    pred: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     epsilon: Optional[float] = 1e-7,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.Container]:
     """Computes the binary cross entropy loss.
 
     Parameters
@@ -77,8 +77,11 @@ def binary_cross_entropy(
 
     """
     """
-    Examples
+    Functional Examples
     --------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0, 1, 0, 0])
     >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
     >>> print(ivy.binary_cross_entropy(x, y))
@@ -87,6 +90,30 @@ def binary_cross_entropy(
     >>> z = ivy.array([0.6, 0.2, 0.7, 0.3])
     >>> print(ivy.binary_cross_entropy(x, z))
     ivy.array([0.9163, 1.6094, 1.2040, 0.3567])
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0, 1, 0, 1])
+    >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
+    >>> print(ivy.binary_cross_entropy(x, y))
+    ivy.array([0.2231, 0.3567, 0.2231, 0.5108])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.array([0, 0, 1, 1])
+    >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
+    >>> print(ivy.binary_cross_entropy(x, y))
+    ivy.array([0.1054, 0.2231, 0.2231, 0.5108])
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 0, 0, 0])
+    >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
+    >>> print(ivy.binary_cross_entropy(x, y))
+    ivy.array([0.2231, 0.2231, 0.2231, 0.2231]))
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
