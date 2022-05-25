@@ -35,8 +35,8 @@ def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
         # match the values of res and out
         assert np.allclose(ivy.to_numpy(res), ivy.to_numpy(out))
 
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             return
 
         # native arrays should be the same object

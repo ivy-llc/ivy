@@ -18,7 +18,7 @@ from ivy.functional.backends.mxnet import (
 
 
 def is_native_array(x, exclusive=False):
-    if isinstance(x, mx.ndarray.ndarray.NDArray):
+    if isinstance(x, mx.nd.NDArray):
         if exclusive and x.grad is not None:
             return False
         return True
@@ -60,10 +60,10 @@ def to_list(x: mx.nd.NDArray) -> list:
 
 @_handle_flat_arrays_in_out
 def floormod(
-    x: mx.ndarray.ndarray.NDArray,
-    y: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x: mx.nd.NDArray,
+    y: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = x % y
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -116,10 +116,10 @@ def inplace_increment(x, val):
 
 
 def cumsum(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: int = 0,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(
             out, mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
@@ -129,11 +129,11 @@ def cumsum(
 
 
 def cumprod(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
     if exclusive:
         array_stack = [mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
@@ -191,12 +191,12 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: mx.ndarray.ndarray.NDArray,
-    indices: mx.ndarray.ndarray.NDArray,
+    params: mx.nd.NDArray,
+    indices: mx.nd.NDArray,
     axis: Optional[int] = -1,
     device: Optional[str] = None,
-    out: mx.ndarray.ndarray.NDArray = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: mx.nd.NDArray = None,
+) -> mx.nd.NDArray:
     if device is None:
         device = _callable_dev(params)
     index_slices = unstack(indices, -1)
@@ -234,9 +234,7 @@ multiprocessing = (
 one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
 
 
-def shape(
-    x: mx.ndarray.NDArray, as_tensor: bool = False
-) -> Union[mx.ndarray.NDArray, List[int]]:
+def shape(x: mx.nd.NDArray, as_tensor: bool = False) -> Union[mx.nd.NDArray, List[int]]:
     if as_tensor:
         return mx.nd.shape_array(x)
     else:
@@ -266,5 +264,5 @@ def indices_where(x):
     return res
 
 
-current_framework_str = lambda: "mxnet"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "mxnet"
+current_backend_str.__name__ = "current_backend_str"

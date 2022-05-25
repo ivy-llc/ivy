@@ -3525,7 +3525,7 @@ def test_container_pickle(device, call):
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
     # noinspection PyUnresolvedReferences
-    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
+    assert cont_again._local_ivy.current_framework_str() is ivy.current_backend_str()
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 

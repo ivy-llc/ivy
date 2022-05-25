@@ -26,7 +26,7 @@ def ones(
 
 
 def zeros(
-    shape: Union[int, Tuple[int, ...], List[int, ...]],
+    shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
