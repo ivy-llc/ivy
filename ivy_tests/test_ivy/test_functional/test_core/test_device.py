@@ -297,19 +297,31 @@ def test_split_func_call_with_cont_input(
     assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
 
 
-@pytest.mark.parametrize("x", [[0, 1, 2, 3, 4, 5]])
-@pytest.mark.parametrize("axis", [0])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-@pytest.mark.parametrize("devs_as_dict", [True, False])
-def test_dist_array(x, axis, tensor_fn, devs_as_dict, device, call):
+@given(array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    axis = st.integers(0, 1),
+    devs_as_dict = st.booleans())
+# @pytest.mark.parametrize("x", [[0, 1, 2, 3, 4, 5]])
+# @pytest.mark.parametrize("axis", [0])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+# @pytest.mark.parametrize("devs_as_dict", [True, False])
+def test_dist_array(array_shape, dtype, as_variable, axis, devs_as_dict, fw, device, call):
 
+    if (fw == "torch" and "int" in dtype):
+        return
     # inputs
-    x = tensor_fn(x, "float32", device)
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
 
     # devices
     devices = list()
     dev0 = device
     devices.append(dev0)
+
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
