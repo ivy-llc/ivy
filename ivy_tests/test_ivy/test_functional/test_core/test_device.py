@@ -362,10 +362,9 @@ def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
         dev1 = device[:-1] + str(idx)
         devices.append(dev1)
 
-    print(f"Devices list is : {devices}")
     # return
     x_split = ivy.dev_clone_array(x, devices)
-    print(f"x_split is : {x_split}")
+
     # shape test
     assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devices))
 
@@ -373,24 +372,38 @@ def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
     assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
-@pytest.mark.parametrize("xs", [([0, 1, 2], [3, 4])])
-@pytest.mark.parametrize("axis", [0])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_unify_array(xs, axis, tensor_fn, device, call):
+@given(array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans())
+def test_unify_array(array_shape, dtype, as_variable,  fw, device, call):
+
+    axis = 0
+    # TODO: generalise axis
+    if (fw == "torch" and "int" in dtype):
+        return
+    # inputs
+    xs = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     # devices and inputs
     devices = list()
     dev0 = device
-    x = {dev0: tensor_fn(xs[0], "float32", dev0)}
+    if as_variable:
+        x = {dev0: ivy.variable(ivy.asarray(xs[0], device = dev0))}
+    else:
+        x = {dev0: ivy.asarray(xs[0], device=dev0)}
     devices.append(dev0)
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
-        x[dev1] = tensor_fn(xs[1], "float32", dev1)
+        if as_variable:
+            x[dev1] = {dev0: ivy.variable(ivy.asarray(xs[1], device=dev0))}
+        else:
+            x[dev1] = {dev0: ivy.asarray(xs[1], device=dev0)}
         devices.append(dev1)
 
     # output
-    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), dev0, "concat", axis)
+    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), device=dev0, mode="concat", axis=axis)
 
     # shape test
     expected_size = 0
