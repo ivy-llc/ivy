@@ -327,5 +327,5 @@ def inplace_increment(x, val):
     return x
 
 
-current_framework_str = lambda: "jax"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "jax"
+current_backend_str.__name__ = "current_backend_str"

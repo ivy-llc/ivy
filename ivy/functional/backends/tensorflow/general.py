@@ -329,8 +329,8 @@ def one_hot(indices, depth, device=None):
     return tf.one_hot(indices, depth)
 
 
-current_framework_str = lambda: "tensorflow"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "tensorflow"
+current_backend_str.__name__ = "current_backend_str"
 
 multiprocessing = (
     lambda context=None: _multiprocessing
