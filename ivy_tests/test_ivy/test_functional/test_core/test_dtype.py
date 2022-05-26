@@ -403,6 +403,86 @@ def test_is_int_dtype(
     )
 
 
+# # broadcast_arrays
+# @given(
+#     array_shape=helpers.lists(
+#         st.integers(2, 2), min_size="num_dims",
+#         max_size="num_dims", size_bounds=[2, 3]
+#     ),
+#     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+#     data=st.data(),
+#     as_variable=st.booleans(),
+#     num_positional_args=st.integers(1),
+#     native_array=st.booleans(),
+#     container=st.booleans(),
+#     instance_method=st.booleans(),
+# )
+# def test_broadcast_arrays(
+#     array_shape,
+#     dtype,
+#     data,
+#     as_variable,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     fw,
+# ):
+#     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+#     helpers.test_array_function(
+#         dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         instance_method,
+#         fw,
+#         "broadcast_arrays",
+#         arrays=x,
+#     )
+#
+#
+# @given(
+#     shapes=st.integers(1, 5).flatmap(helpers.nph.broadcastable_shapes), data=st.data()
+# )
+# def test_broadcast_array(x, data):
+#     arrays = []
+#     for c, shape in enumerate(shapes, 1):
+#         x = data.draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
+#         arrays.append(x)
+#
+#     out = xp.broadcast_arrays(*arrays)
+#
+#     out_shape = sh.broadcast_shapes(*shapes)
+#     for i, x in enumerate(arrays):
+#         ph.assert_dtype(
+#             "broadcast_arrays", x.dtype, out[i].dtype, repr_name=f"out[{i}].dtype"
+#         )
+#         ph.assert_result_shape(
+#             "broadcast_arrays",
+#             shapes,
+#             out[i].shape,
+#             out_shape,
+#             repr_name=f"out[{i}].shape",
+#         )
+#
+#     shape = data.draw(
+#         helpers.nph.broadcastable_shapes(
+#             shape=x.shape, min_dims=len(x.shape), max_dims=len(x.shape)
+#         )
+#         .map(lambda S: S[0])
+#         .filter(lambda s: sh.broadcast_shapes(x.shape, s) == s),
+#         label="shape",
+#     )
+#
+#     out = xp.broadcast_to(x, shape)
+#
+#     ph.assert_dtype("broadcast_to", x.dtype, out.dtype)
+#     ph.assert_shape("broadcast_to", out.shape, shape)
+#     # TODO: test values
+
+
 # Still to Add #
 # ---------------#
 
