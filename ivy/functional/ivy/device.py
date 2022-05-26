@@ -846,7 +846,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, device = ds)
+            ds: ivy.to_dev(x_sub, device=ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
@@ -984,7 +984,8 @@ def dev_clone_array(x, devices):
         array cloned to each of the target devices
 
     """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, device = ds)) for ds in devices})
+    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x,
+                                                           device=ds)) for ds in devices})
 
 
 def dev_clone(x, devices):
@@ -1068,7 +1069,7 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, device, axis):
-    return ivy.concat([ivy.to_dev(x_sub, device) for x_sub in xs.values()], axis)
+    return ivy.concat([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], axis)
 
 
 # noinspection PyShadowingNames
