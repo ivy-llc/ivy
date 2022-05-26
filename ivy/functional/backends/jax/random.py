@@ -83,7 +83,7 @@ def multinomial(
     samples_flat = _jnp.stack(samples_stack)
     return to_dev(
         _jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
-        default_device(device),
+        device=default_device(device),
     )
 
 

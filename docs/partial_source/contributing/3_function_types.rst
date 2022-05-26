@@ -119,7 +119,8 @@ In this case, the function will return an :code:`ivy.Container` in the output.
 This property makes it very easy to write a single piece of code that can deal either with individual arrays or
 arbitrary batches of nested arrays. This is very useful in machine learning, where batches of different data often need
 to be processed concurrently. Another example is when the same operation must be performed on each weight in a network.
-This *nestable* property of Ivy functions means that the same function can be used for any of these use cases.
+This *nestable* property of Ivy functions means that the same function can be used for any of these use cases
+without modification.
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
 is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
@@ -127,4 +128,4 @@ in the :code:`ivy` module during `backend setting`_.
 This function wrapping process is covered in more detail in the :ref:`Function Wrapping` section.
 
 Under the hood, the static :code:`ivy.Container` methods are called when :code:`ivy.Container` instances are passed in
-the input. This is explained in more detail in the :ref:`Method Types` section.
+as inputs to functions in the functional API. This is explained in more detail in the :ref:`Method Types` section.
