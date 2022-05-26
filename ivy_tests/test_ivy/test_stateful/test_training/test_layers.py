@@ -1,7 +1,6 @@
 """Collection of tests for training unified neural network layers."""
 
 # global
-import pytest
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -24,9 +23,9 @@ import ivy.functional.backends.numpy as ivy_np
         ),
     ]
 ),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       with_v=st.booleans(),
-       as_variable=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    with_v=st.booleans(),
+    as_variable=st.booleans(),
 )
 def test_linear_layer_training(
     bs_ic_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -118,9 +117,9 @@ def test_linear_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv1d_layer_training(
     x_n_fs_n_pad_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -214,9 +213,9 @@ def test_conv1d_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv1d_transpose_layer_training(
     x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -342,9 +341,9 @@ def test_conv1d_transpose_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv2d_layer_training(
     x_n_fs_n_pad_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -441,9 +440,9 @@ def test_conv2d_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv2d_transpose_layer_training(
     x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -544,9 +543,9 @@ def test_conv2d_transpose_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_depthwise_conv2d_layer_training(
     x_n_fs_n_pad, with_v, dtype, as_variable, device, compile_graph, call
@@ -693,9 +692,9 @@ def test_depthwise_conv2d_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv3d_layer_training(
     x_n_fs_n_pad_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -847,9 +846,9 @@ def test_conv3d_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_conv3d_transpose_layer_training(
     x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, as_variable, device, compile_graph, call
@@ -944,9 +943,9 @@ def test_conv3d_transpose_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_lstm_layer_training(
     b_t_ic_hc_otf_sctv, with_v, dtype, as_variable, device, compile_graph, call
@@ -1036,10 +1035,10 @@ def test_lstm_layer_training(
         ),
     ],
 ),
-       with_v=st.booleans(),
-       seq_v=st.booleans(),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-       as_variable=st.booleans(),
+    with_v=st.booleans(),
+    seq_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
 def test_sequential_layer_training(
     bs_c, with_v, seq_v, dtype, as_variable, device, compile_graph, call
