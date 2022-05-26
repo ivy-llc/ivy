@@ -81,26 +81,16 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, device, call):
     population_size = 2
-    print('\n---------------------------------------------------------------------------------------------------------')
-    print('probs', probs)
-    print('num_samples', num_samples)
-    print('replace', replace)
-    print('dtype', dtype)
-    print('tensor_fn', tensor_fn)
-    print('population_size', population_size)
     if (
-        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-        and not replace
+            call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
+            and not replace
     ):
         # mxnet and tenosorflow do not support multinomial without replacement
         pytest.skip()
     # smoke test
-    if tensor_fn == helpers.var_fn:
-        probs = tensor_fn(probs, dtype=dtype) if probs is not None else probs
-    else:
-        probs = tensor_fn(probs, dtype=dtype, device=device) if probs is not None else probs
+    probs = tensor_fn(probs, dtype, device) if probs is not None else probs
     batch_size = probs.shape[0] if probs is not None else 2
-    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace, device=device)
+    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test

@@ -699,7 +699,15 @@ def array_values(draw, dtype, size, allow_inf=None):
 
 @st.composite
 def get_shape(draw):
-    shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8), min_size=0, max_size=8))
+    shape = draw(st.none() |
+                 st.lists(
+                     st.integers(
+                         min_value=1,
+                         max_value=8
+                     ),
+                     min_size=0,
+                     max_size=8
+                 ))
     if shape is None:
         return shape
     return tuple(shape)
