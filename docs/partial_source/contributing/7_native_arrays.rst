@@ -1,4 +1,0 @@
-Native Arrays
-=============
-
-# ToDo: write
