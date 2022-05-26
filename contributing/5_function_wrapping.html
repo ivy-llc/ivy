@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Method Types" href="6_method_types.html" />
+    <link rel="next" title="Arrays" href="6_arrays.html" />
     <link rel="prev" title="Backend Setting" href="4_backend_setting.html" /> 
 </head>
 
@@ -51,16 +51,16 @@
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_type_hints.html">Type Hints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -152,11 +152,11 @@ with the returned function replacing the original function.</p>
 <p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> (<code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>)
 is a replacement of the original function with extra code added to support requirements common to many functions
 in the API. This is the main purpose of the wrapping, to avoid code duplication by re-writing identical logic in every
-single function independenly. Depending on the function being wrapped, the new function <code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>
-might handle <a class="reference internal" href="7_native_arrays.html#native-arrays"><span class="std std-ref">Native Arrays</span></a>, <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>, <a class="reference internal" href="9_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="10_devices.html#devices"><span class="std std-ref">Devices</span></a>.
-Handling all of these cases once in the function wrapper logic removes a lot of potential code duplication.</p>
-<p>Each of these topics and each reason for the wrapping are covered in more detail in the following sections.
-For now, suffice it to say that <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L138">does a lot</a></p>
+single function independenly.</p>
+<p>Depending on the function being wrapped, the new function <code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>
+might handle <span class="xref std std-ref">Native Arrays</span>, <a class="reference internal" href="10_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>, <a class="reference internal" href="8_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and/or <a class="reference internal" href="9_devices.html#devices"><span class="std std-ref">Devices</span></a>.</p>
+<p>Each of these topics and each reason for the wrapping are covered in more detail in the next sections.
+For now, suffice it to say that <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L138">does a quite lot</a></p>
 </section>
 
 
@@ -164,7 +164,7 @@ For now, suffice it to say that <code class="code docutils literal notranslate">
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="4_backend_setting.html" class="btn btn-neutral float-left" title="Backend Setting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="6_method_types.html" class="btn btn-neutral float-right" title="Method Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="6_arrays.html" class="btn btn-neutral float-right" title="Arrays" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

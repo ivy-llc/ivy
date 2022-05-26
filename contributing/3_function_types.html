@@ -57,16 +57,16 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_method_types.html">Method Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_native_arrays.html">Native Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_type_hints.html">Type Hints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -182,9 +182,9 @@ implementation.</p>
 </pre></div>
 </div>
 <p>The reason that the Ivy implementation has type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> but PyTorch
-implementation has <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <a class="reference internal" href="7_native_arrays.html#native-arrays"><span class="std std-ref">Native Arrays</span></a> section.
+implementation has <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <span class="xref std std-ref">Native Arrays</span> section.
 Likewise, the reason that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the Ivy implementation has array type hint <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
-whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <a class="reference internal" href="7_native_arrays.html#native-arrays"><span class="std std-ref">Native Arrays</span></a> section.</p>
+whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <span class="xref std std-ref">Native Arrays</span> section.</p>
 </section>
 <section id="compositional-functions">
 <h2>Compositional Functions<a class="headerlink" href="#compositional-functions" title="Permalink to this headline"></a></h2>
@@ -239,13 +239,14 @@ In this case, the function will return an <code class="code docutils literal not
 <p>This property makes it very easy to write a single piece of code that can deal either with individual arrays or
 arbitrary batches of nested arrays. This is very useful in machine learning, where batches of different data often need
 to be processed concurrently. Another example is when the same operation must be performed on each weight in a network.
-This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases.</p>
+This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases
+without modification.</p>
 <p>This added support for handling <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137">_wrap_function</a>
 is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
 in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.
 This function wrapping process is covered in more detail in the <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>Under the hood, the static <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods are called when <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed in
-the input. This is explained in more detail in the <a class="reference internal" href="6_method_types.html#method-types"><span class="std std-ref">Method Types</span></a> section.</p>
+as inputs to functions in the functional API. This is explained in more detail in the <span class="xref std std-ref">Method Types</span> section.</p>
 </section>
 </section>
 

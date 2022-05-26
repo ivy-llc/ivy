@@ -51,16 +51,16 @@
 <li class="toctree-l2"><a class="reference internal" href="contributing/3_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing/4_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing/5_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/6_method_types.html">Method Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/7_native_arrays.html">Native Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/9_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/10_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/11_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/12_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/13_type_hints.html">Type Hints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/14_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing/15_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/6_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/7_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/8_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/9_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/10_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/15_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -170,35 +170,35 @@ but you can also dive in at any stage! We’re excited for you to get involved! 
 <div class="line">(f) <a class="reference internal" href="contributing/5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a></div>
 <div class="line">How functions are dynamically wrapped at runtime  🎁</div>
 <div class="line"><br /></div>
-<div class="line">(g) <a class="reference internal" href="contributing/6_method_types.html#method-types"><span class="std std-ref">Method Types</span></a></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> methods 🗜️️</div>
+<div class="line">(g) <a class="reference internal" href="contributing/6_arrays.html#arrays"><span class="std std-ref">Arrays</span></a></div>
+<div class="line">Different types of arrays, and how they’re handled 🔢</div>
 <div class="line"><br /></div>
-<div class="line">(h) <a class="reference internal" href="contributing/7_native_arrays.html#native-arrays"><span class="std std-ref">Native Arrays</span></a></div>
-<div class="line">How each function converts arrays to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and back  🔙</div>
+<div class="line">(h) <a class="reference internal" href="contributing/7_containers.html#containers"><span class="std std-ref">Containers</span></a></div>
+<div class="line">What the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> does  🗂️</div>
 <div class="line"><br /></div>
-<div class="line">(i) <a class="reference internal" href="contributing/8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a></div>
-<div class="line">How the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is used to specify the output target  🎯</div>
-<div class="line"><br /></div>
-<div class="line">(j) <a class="reference internal" href="contributing/9_data_types.html#data-types"><span class="std std-ref">Data Types</span></a></div>
+<div class="line">(i) <a class="reference internal" href="contributing/8_data_types.html#data-types"><span class="std std-ref">Data Types</span></a></div>
 <div class="line">How functions infer the correct data type  💾</div>
 <div class="line"><br /></div>
-<div class="line">(k) <a class="reference internal" href="contributing/10_devices.html#devices"><span class="std std-ref">Devices</span></a></div>
+<div class="line">(j) <a class="reference internal" href="contributing/9_devices.html#devices"><span class="std std-ref">Devices</span></a></div>
 <div class="line">How functions infer the correct device  💽</div>
 <div class="line"><br /></div>
-<div class="line">(l) <a class="reference internal" href="contributing/11_array_api_tests.html#array-api-tests"><span class="std std-ref">Array API Tests</span></a></div>
-<div class="line">How we’re borrowing the test suite from the Array API Standard 🤝</div>
+<div class="line">(k) <a class="reference internal" href="contributing/10_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a></div>
+<div class="line">How the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is used to specify the output target  🎯</div>
 <div class="line"><br /></div>
-<div class="line">(m) <a class="reference internal" href="contributing/12_ivy_tests.html#ivy-tests"><span class="std std-ref">Ivy Tests</span></a></div>
-<div class="line">How to add new Ivy tests for each function ❓</div>
-<div class="line"><br /></div>
-<div class="line">(n) <a class="reference internal" href="contributing/13_type_hints.html#type-hints"><span class="std std-ref">Type Hints</span></a></div>
+<div class="line">(l) <a class="reference internal" href="contributing/11_type_hints.html#type-hints"><span class="std std-ref">Type Hints</span></a></div>
 <div class="line">How to add the correct type hints 📑</div>
 <div class="line"><br /></div>
-<div class="line">(o) <a class="reference internal" href="contributing/14_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a></div>
+<div class="line">(m) <a class="reference internal" href="contributing/12_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a></div>
 <div class="line">How to properly write docstrings 📄</div>
 <div class="line"><br /></div>
-<div class="line">(p) <a class="reference internal" href="contributing/15_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a></div>
+<div class="line">(n) <a class="reference internal" href="contributing/13_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a></div>
 <div class="line">How to add useful examples to the docstrings 💯</div>
+<div class="line"><br /></div>
+<div class="line">(o) <a class="reference internal" href="contributing/14_array_api_tests.html#array-api-tests"><span class="std std-ref">Array API Tests</span></a></div>
+<div class="line">How we’re borrowing the test suite from the Array API Standard 🤝</div>
+<div class="line"><br /></div>
+<div class="line">(p) <a class="reference internal" href="contributing/15_ivy_tests.html#ivy-tests"><span class="std std-ref">Ivy Tests</span></a></div>
+<div class="line">How to add new Ivy tests for each function ❓</div>
 <div class="line"><br /></div>
 </div>
 <div class="toctree-wrapper compound">

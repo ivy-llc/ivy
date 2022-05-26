@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Array API Tests" href="10_array_api_tests.html" />
+    <link rel="next" title="Inplace Updates" href="10_inplace_updates.html" />
     <link rel="prev" title="Data Types" href="8_data_types.html" /> 
 </head>
 
@@ -48,18 +48,19 @@
 <li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_method_types.html">Method Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_native_arrays.html">Native Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_containers.html">Containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_type_hints.html">Type Hints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -158,7 +159,7 @@ appearing in <a class="reference external" href="https://github.com/unifyai/ivy/
 This is similar to how <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is handled,
 with the exception that functions are omitted if they’re in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104">NON_DEV_WRAPPED_FUNCTIONS</a> in this case rather than
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>. As discussed above,
-this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">framework setting</a>.</p>
+this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>Overall, the device is inferred as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is provided, use this directly</p></li>
@@ -242,7 +243,7 @@ by calling <code class="code docutils literal notranslate"><span class="pre">ivy
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="8_data_types.html" class="btn btn-neutral float-left" title="Data Types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="10_array_api_tests.html" class="btn btn-neutral float-right" title="Array API Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="10_inplace_updates.html" class="btn btn-neutral float-right" title="Inplace Updates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
