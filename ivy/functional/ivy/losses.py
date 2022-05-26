@@ -113,7 +113,7 @@ def binary_cross_entropy(
     >>> x = ivy.array([1, 0, 0, 0])
     >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
     >>> print(ivy.binary_cross_entropy(x, y))
-    ivy.array([0.2231, 0.2231, 0.2231, 0.2231]))
+    ivy.array([0.2231, 0.2231, 0.2231, 0.2231])
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
