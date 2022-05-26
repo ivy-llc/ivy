@@ -3,7 +3,7 @@
 # global
 import os
 import jax
-from typing import Union
+from typing import Union, Optional
 import jaxlib.xla_extension
 
 # local
@@ -46,7 +46,7 @@ def dev(
 _callable_dev = dev
 
 
-def to_dev(x, *, device=None, out=None):
+def to_dev(x: JaxArray, device=None, out: Optional[JaxArray] = None) -> JaxArray:
     if device is not None:
         cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
