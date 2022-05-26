@@ -171,7 +171,7 @@ def multinomial(
 
     """
     return _cur_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device
+        population_size, num_samples, batch_size, probs, replace, device=device
     )
 
 

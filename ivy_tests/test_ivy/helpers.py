@@ -326,7 +326,7 @@ def docstring_examples_run(fn):
     return True
 
 
-def var_fn(a, b=None, c=None):
+def var_fn(a, b=None, c=None, dtype=None):
     return ivy.variable(ivy.array(a, b, c))
 
 
@@ -707,11 +707,20 @@ def get_shape(draw):
 
 def none_or_list_of_floats(dtype, size):
     if dtype == "float16":
-        values = list_of_length(st.none() | st.floats(width=16, allow_subnormal=False, allow_infinity=False, allow_nan=False), size)
+        values = list_of_length(st.none() | st.floats(width=16,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
     elif dtype == "float32":
-        values = list_of_length(st.none() | st.floats(width=32, allow_subnormal=False, allow_infinity=False, allow_nan=False), size)
+        values = list_of_length(st.none() | st.floats(width=32,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
     elif dtype == "float64":
-        values = list_of_length(st.none() | st.floats(width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False), size)
+        values = list_of_length(st.none() | st.floats(width=64,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
     return values
 
 
@@ -726,7 +735,7 @@ def get_mean_std(draw, dtype):
 def get_bounds(draw, dtype):
     values = draw(none_or_list_of_floats(dtype, 2))
     if values[0] is not None and values[1] is not None:
-        low, high =  min(values), max(values)
+        low, high = min(values), max(values)
     else:
         low, high = values[0], values[1]
     if ivy.default(low, 0.0) >= ivy.default(high, 1.0):

@@ -85,6 +85,7 @@ def asarray(
     """
     return _cur_backend().asarray(x, dtype=dtype, device=device)
 
+
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
     *,
