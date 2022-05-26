@@ -1363,7 +1363,6 @@ def gather(
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
@@ -1383,7 +1382,7 @@ def gather_nd(
         New array of given shape, with the values gathered at the indices.
 
     """
-    return _cur_backend(params).gather_nd(params, indices, device)
+    return _cur_backend(params).gather_nd(params, indices)
 
 
 def multiprocessing(context: str = None):

@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
+from ivy.functional.backends.numpy.device import _to_dev
 
 # Helpers #
 # --------#
@@ -132,15 +132,11 @@ def cumprod(
         return np.cumprod(x, axis)
 
 
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = _dev_callable(updates)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -169,17 +165,15 @@ def scatter_flat(
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_dev(target)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = _dev_callable(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -211,28 +205,23 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_dev(target)
 
 
 def gather(
     params: np.ndarray,
     indices: np.ndarray,
     axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if device is None:
-        device = _dev_callable(params)
-    ret = _to_dev(np.take_along_axis(params, indices, axis), device)
+    ret = _to_dev(np.take_along_axis(params, indices, axis))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     else:
         return ret
 
 
-def gather_nd(params, indices, device=None):
-    if device is None:
-        device = _dev_callable(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -257,7 +246,7 @@ def gather_nd(params, indices, device=None):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_dev(res, device)
+    return _to_dev(res)
 
 
 multiprocessing = (

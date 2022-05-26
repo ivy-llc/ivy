@@ -363,18 +363,14 @@ def gather(
 
 
 # noinspection PyShadowingNames
-def gather_nd(
-    params, indices, device: Optional[Union[ivy.Device, torch.device]] = None
-):
-    if device is None:
-        device = _callable_dev(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
         _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(as_native_dev(device))
+    result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = torch.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
@@ -382,9 +378,9 @@ def gather_nd(
     indices_for_flat_tiled = torch.reshape(
         torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
     ).repeat(*[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(
-        torch.arange(implicit_indices_factor).to(as_native_dev(device)), 0
-    ).repeat(*[indices_for_flat_tiled.shape[0], 1])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1]
+    )
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)

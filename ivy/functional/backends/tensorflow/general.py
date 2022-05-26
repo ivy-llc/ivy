@@ -314,11 +314,8 @@ def gather(
             return ret
 
 
-def gather_nd(params, indices, device=None):
-    if device is None:
-        device = _dev_callable(params)
-    with tf.device(as_native_dev(device)):
-        return tf.gather_nd(params, indices)
+def gather_nd(params, indices):
+    return tf.gather_nd(params, indices)
 
 
 def one_hot(indices, depth, device=None):

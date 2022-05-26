@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
+from ivy.functional.backends.jax.device import to_dev, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -141,15 +141,11 @@ def cumprod(
         return jnp.cumprod(x, axis)
 
 
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = callable_dev(updates)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -176,11 +172,11 @@ def scatter_flat(
                 reduction
             )
         )
-    return to_dev(target, device)
+    return to_dev(target)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
 
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
@@ -210,8 +206,6 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = callable_dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     if reduction == "sum":
         if not target_given:
@@ -239,29 +233,24 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    return to_dev(target, device)
+    return to_dev(target)
 
 
 def gather(
     params: JaxArray,
     indices: JaxArray,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if device is None:
-        device = callable_dev(params)
     if ivy.exists(out):
         return ivy.inplace_update(
-            out, to_dev(jnp.take_along_axis(params, indices, axis), device)
+            out, to_dev(jnp.take_along_axis(params, indices, axis))
         )
     else:
-        return to_dev(jnp.take_along_axis(params, indices, axis), device)
+        return to_dev(jnp.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices, device=None):
-    if device is None:
-        device = callable_dev(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -286,7 +275,7 @@ def gather_nd(params, indices, device=None):
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
-    return to_dev(ret, device)
+    return to_dev(ret)
 
 
 multiprocessing = (

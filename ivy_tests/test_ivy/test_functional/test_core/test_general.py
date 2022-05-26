@@ -98,18 +98,18 @@ def test_get_referrers_recursive(device, call):
     refs = ivy.get_referrers_recursive(some_obj.x)
     ref_keys = refs.keys()
     assert len(ref_keys) == 3
-    assert 'repr' in ref_keys
-    assert refs['repr'] == '[1,2]'
+    assert "repr" in ref_keys
+    assert refs["repr"] == "[1,2]"
     y_id = str(id(some_obj.y))
     y_refs = refs[y_id]
-    assert y_refs['repr'] == '[[1,2]]'
+    assert y_refs["repr"] == "[[1,2]]"
     some_obj_dict_id = str(id(some_obj.__dict__))
-    assert y_refs[some_obj_dict_id] == 'tracked'
+    assert y_refs[some_obj_dict_id] == "tracked"
     dict_refs = refs[some_obj_dict_id]
-    assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
+    assert dict_refs["repr"] == "{'x':[1,2],'y':[[1,2]]}"
     some_obj_id = str(id(some_obj))
     some_obj_refs = dict_refs[some_obj_id]
-    assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
+    assert some_obj_refs["repr"] == str(some_obj).replace(" ", "")
     assert len(some_obj_refs) == 1
 
 
@@ -977,19 +977,19 @@ def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, device, call):
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather_nd(prms_n_inds, dtype, tensor_fn, device, call):
+def test_gather_nd(prms_n_inds, dtype, tensor_fn, call):
     # smoke test
     prms, inds = prms_n_inds
-    prms = tensor_fn(prms, dtype, device)
-    inds = ivy.array(inds, "int32", device)
-    ret = ivy.gather_nd(prms, inds, device)
+    prms = tensor_fn(prms, dtype)
+    inds = ivy.array(inds, "int32")
+    ret = ivy.gather_nd(prms, inds)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
     # value test
     assert np.allclose(
-        call(ivy.gather_nd, prms, inds, device),
+        call(ivy.gather_nd, prms, inds),
         np.asarray(
             ivy.functional.backends.numpy.gather_nd(
                 ivy.to_numpy(prms), ivy.to_numpy(inds)
