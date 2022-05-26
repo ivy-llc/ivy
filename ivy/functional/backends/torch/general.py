@@ -347,15 +347,10 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
-    if device is None:
-        device = _callable_dev(params)
-    ret = torch.gather(params, axis, indices.type(torch.int64)).to(
-        as_native_dev(device)
-    )
+    ret = torch.gather(params, axis, indices.type(torch.int64))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     else:

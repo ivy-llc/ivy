@@ -1330,7 +1330,6 @@ def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
@@ -1356,7 +1355,8 @@ def gather(
         axis.
 
     """
-    return _cur_backend(params).gather(params, indices, axis, device, out=out)
+
+    return _cur_backend(params).gather(params, indices, axis, out=out)
 
 
 # noinspection PyShadowingNames

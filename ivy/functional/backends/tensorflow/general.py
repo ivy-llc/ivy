@@ -300,18 +300,15 @@ def gather(
     params: tf.Tensor,
     indices: tf.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)
-    if device is None:
-        device = _dev_callable(params)
-    with tf.device(as_native_dev(device)):
-        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        else:
-            return ret
+
+    ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def gather_nd(params, indices):
