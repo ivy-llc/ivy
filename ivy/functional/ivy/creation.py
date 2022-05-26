@@ -409,7 +409,7 @@ def linspace(
     num: int,
     axis: int = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    dtype=None,
+    dtype = None,
     endpoint: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
@@ -437,7 +437,7 @@ def linspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_backend(start).linspace(start, stop, num, axis, device, dtype, endpoint)
+    return _cur_backend(start).linspace(start, stop, num, axis, device=device, dtype=dtype, endpoint=endpoint)
 
 
 def meshgrid(
