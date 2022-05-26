@@ -89,21 +89,21 @@ from .container import (
     MultiDevContainer,
     add_ivy_container_instance_methods,
 )
-from .framework_handler import (
-    current_framework,
-    get_framework,
-    set_framework,
-    unset_framework,
-    framework_stack,
-    choose_random_framework,
+from .backend_handler import (
+    current_backend,
+    get_backend,
+    set_backend,
+    unset_backend,
+    backend_stack,
+    choose_random_backend,
     try_import_ivy_jax,
     try_import_ivy_tf,
     try_import_ivy_torch,
     try_import_ivy_mxnet,
     try_import_ivy_numpy,
-    clear_framework_stack,
+    clear_backend_stack,
 )
-from . import framework_handler, func_wrapper
+from . import backend_handler, func_wrapper
 from .debugger import (
     set_debug_mode,
     set_breakpoint_debug_mode,
@@ -196,12 +196,8 @@ add_ivy_container_instance_methods(
 )
 
 
-class StaticContainer(ContainerBase):
-    pass
-
-
 add_ivy_container_instance_methods(
-    StaticContainer,
+    Container,
     [
         activations,
         creation,
@@ -223,6 +219,7 @@ add_ivy_container_instance_methods(
         statistical,
         utility,
     ],
+    static=True,
 )
 
 # data types
@@ -240,8 +237,6 @@ float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 bool = "bool"
-nan = float("nan")
-inf = float("inf")
 
 # native data types
 native_int8 = IntDtype("int8")
@@ -258,8 +253,6 @@ native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
 native_bool = "bool"
-native_nan = float("nan")
-native_inf = float("inf")
 
 valid_dtypes = (
     int8,
@@ -413,7 +406,7 @@ promotion_table = {
 backend = "none"
 
 if "IVY_BACKEND" in os.environ:
-    ivy.set_framework(os.environ["IVY_BACKEND"])
+    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 

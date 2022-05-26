@@ -55,7 +55,7 @@ native_dtype_dict = {
 
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> np.iinfo:
+def iinfo(type: Union[type, str, mx.nd.NDArray]) -> np.iinfo:
     return np.iinfo(ivy.as_native_dtype(type))
 
 
@@ -85,7 +85,7 @@ class Finfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> Finfo:
+def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
