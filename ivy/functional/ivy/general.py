@@ -1251,7 +1251,6 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -1279,9 +1278,8 @@ def scatter_flat(
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction, device
-    )
+
+    return _cur_backend(indices).scatter_flat(indices, updates, size, tensor, reduction)
 
 
 # noinspection PyShadowingNames

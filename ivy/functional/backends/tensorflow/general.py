@@ -15,7 +15,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_dev
+from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -141,15 +141,11 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = _dev_callable(updates)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -184,8 +180,7 @@ def scatter_flat(
                 reduction
             )
         )
-    with tf.device(as_native_dev(device)):
-        return res
+    return res
 
 
 def _parse_ellipsis(so, ndims):
