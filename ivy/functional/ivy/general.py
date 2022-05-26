@@ -1291,7 +1291,6 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -1320,9 +1319,8 @@ def scatter_nd(
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction, device
-    )
+
+    return _cur_backend(indices).scatter_nd(indices, updates, shape, tensor, reduction)
 
 
 # noinspection PyShadowingNames

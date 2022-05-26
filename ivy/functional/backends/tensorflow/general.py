@@ -207,7 +207,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -261,8 +261,6 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = _dev_callable(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -292,8 +290,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    with tf.device(as_native_dev(device)):
-        return res
+    return res
 
 
 def gather(
