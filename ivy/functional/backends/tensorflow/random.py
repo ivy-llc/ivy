@@ -61,7 +61,12 @@ def multinomial(
         return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
-def randint(low, high, shape, device=None):
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, str]] = None,
+) -> Tensor:
     device = default_device(device)
     with tf.device("/" + device.upper()):
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int32)

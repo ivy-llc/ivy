@@ -35,7 +35,7 @@ Type and Shape Checking
 **Q:** What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic
 sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of `dex`_.
 
-**A:**  The checks performed during graph compilation will remain framework-specific. The function :code:`ivy.compile`
+**A:**  The checks performed during graph compilation will remain backend-specific. The function :code:`ivy.compile`
 wraps the backend compilation methods, for example :code:`jax.jit`, :code:`tf.function`, :code:`torch.jit.script` and
 :code:`torch.jit.trace`. For some backends, shape-checking will be performed during the compilation phase and for others
 it will not.
@@ -124,11 +124,11 @@ Alternative Data Structures
 
 **Q:** Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.
 
-**A:** We will of course support these structures in pure python code, but we will not support framework-specific
+**A:** We will of course support these structures in pure python code, but we will not support backend-specific
 alternative compilable data structures. While Ivy will not provide an interface to these data structures directly,
 Ivy code can easily supplement JAX code which does contain these data structures,
 and both can be compiled together without issue. Ivy can act as a supplementary framework if/when some of the more
-unique framework-specific data structures are required.
+unique backend-specific data structures are required.
 
 Custom Operations
 -----------------
@@ -137,7 +137,7 @@ Custom Operations
 mechanism. Will Ivy support this ability also?
 
 **A:** We will not attempt to provide a unified back-door for all possible backend kernel customizations,
-but of course users can still use the framework-specific backdoors which already exist when using Ivy.
+but of course users can still use the backend-specific backdoors which already exist when using Ivy.
 
 The Pipeline
 ------------

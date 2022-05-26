@@ -59,8 +59,7 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, device, call):
     non_compiled_return = _fn_1(x)
     x = tensor_fn(x, dtype, device)
     compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return),
-                       ivy.to_numpy(compiled_return))
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     # function 2
     comp_fn = ivy.compile(_fn_2)
@@ -71,7 +70,6 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, device, call):
     non_compiled_return = _fn_2(x)
     x = tensor_fn(x, dtype, device)
     compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return),
-                       ivy.to_numpy(compiled_return))
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     _wrap_functions()

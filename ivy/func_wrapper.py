@@ -8,11 +8,12 @@ from types import ModuleType
 wrapped_modules_n_classes = []
 NON_WRAPPED_FUNCTIONS = [
     "copy_nest",
-    "current_framework",
-    "current_framework_str",
-    "set_framework",
-    "get_framework",
-    "unset_framework",
+    "current_backend",
+    "current_backend_str",
+    "set_backend",
+    "get_backend",
+    "unset_backend",
+    "get_referrers_recursive",
     "set_debug_mode",
     "set_breakpoint_debug_mode",
     "set_exception_debug_mode",
@@ -34,7 +35,6 @@ NON_WRAPPED_FUNCTIONS = [
     "split_func_call",
     "compile",
     "compile_graph",
-    "dev",
     "dev",
     "as_ivy_dev",
     "as_native_dev",
@@ -59,9 +59,11 @@ NON_WRAPPED_FUNCTIONS = [
     "map_nest_at_indices",
     "nested_indices_where",
     "map",
+    "set_default_device",
     "unset_default_device",
     "closest_valid_dtype",
     "default_dtype",
+    "default_device",
     "as_native_dtype",
     "is_ivy_array",
     "is_ivy_container",
@@ -100,6 +102,8 @@ ARRAYLESS_RET_FUNCTIONS = [
     "is_variable",
 ]
 NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
+NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
+NON_DEV_WRAPPED_FUNCTIONS = []
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -148,9 +152,15 @@ def _wrap_function(fn):
     -------
         The wrapped version of the function with all the necessary attributes updated.
     """
+    # determine whether the function has an out argument
+    keys = inspect.signature(fn).parameters.keys()
+    handle_out_with_backend = "out" in keys
+    handle_dtype = "dtype" in keys
+    handle_dev = "device" in keys
+
     # do nothing if the function is private or in the non wrapped functions list
     if hasattr(fn, "__name__") and (
-            fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
+        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
     ):
         return fn
 
@@ -158,41 +168,54 @@ def _wrap_function(fn):
     if hasattr(fn, "wrapped") and fn.wrapped:
         return fn
 
-    def _function_w_arrays_handled(*args, out=None, **kwargs):
-        native_args, native_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
-        )
-
+    def _function_w_arrays_n_out_handled(*args, out=None, **kwargs):
         """
-        computes the result of the function fn, returning the result as an ivy array or
-        a native framework array.
+        Converts all :code:`ivy.Array` instances in both the positional and
+        keyword arguments into :code:`ivy.NativeArray` instances, calls the internal
+        function :code:`fn`, and then converts all :code:`ivy.NativeArray` instances
+        in the return back to :code:`ivy.Array` instances. Also handles :code:`out`
+        argument correctly, enabling an inplace update.
 
         Parameters
         ----------
         args
             The arguments to be passed to the function.
-        
+
         out
             optional output array, for writing the result to.
 
         kwargs
             The key word arguments to be passed  to the function.
-        
+
         Returns
         -------
             The result of computing the function fn as an ivy array or a native array.
         """
+        # convert all arrays in the inputs to ivy.NativeArray instances
+        native_args, native_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
         if ivy.exists(out):
+            # extract underlying native array for out
             native_out = ivy.to_native(out)
-            native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
+            if handle_out_with_backend:
+                # compute return, with backend inplace update handled by
+                # the backend function
+                ret = fn(*native_args, out=native_out, **native_kwargs)
+            else:
+                # compute return, with backend inplace update handled explicitly
+                ret = fn(*native_args, **native_kwargs)
+                ret = ivy.inplace_update(native_out, ivy.to_native(ret))
         else:
-            native_or_ivy_ret = fn(*native_args, **native_kwargs)
+            ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
-            return native_or_ivy_ret
-        elif ivy.exists(out) and ivy.is_ivy_array(out):
-            out.data = ivy.to_native(native_or_ivy_ret)
+            return ret
+        elif ivy.exists(out):
+            # handle ivy.Array inplace update as well
+            out.data = ivy.to_native(ret)
             return out
-        return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
+        # convert all returned arrays to ivy.Array instances
+        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
 
     def _get_first_array(*args, **kwargs):
         # ToDo: make this more efficient, with function ivy.nested_nth_index_where
@@ -211,16 +234,20 @@ def _wrap_function(fn):
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
         return arr
 
-    def _function_w_arrays_dtype_n_dev_handled(*args, **kwargs):
-        handle_dtype = 'dtype' in kwargs
-        handle_dev = 'device' in kwargs
+    def _function_w_arrays_dtype_n_dev_handled(
+        *args, dtype=None, device=None, **kwargs
+    ):
         if handle_dtype or handle_dev:
             arr = _get_first_array(*args, **kwargs)
             if handle_dtype:
-                kwargs['dtype'] = ivy.default_dtype(kwargs['dtype'], item=arr, as_native=True)
+                if fn.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
+                    dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+                kwargs["dtype"] = dtype
             if handle_dev:
-                kwargs['dev'] = ivy.default_device(kwargs['device'], item=arr, as_native=True)
-        return _function_w_arrays_handled(*args, **kwargs)
+                if fn.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
+                    device = ivy.default_device(device, item=arr, as_native=True)
+                kwargs["device"] = device
+        return _function_w_arrays_n_out_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
         """
@@ -256,12 +283,7 @@ def _wrap_function(fn):
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            if args and ivy.is_ivy_container(args[0]):
-                f = getattr(ivy.Container, fn_name)
-            else:
-                f = getattr(ivy.StaticContainer, fn_name)
-            if "out" in f.__code__.co_varnames:
-                return f(*args, **kwargs)
+            f = getattr(ivy.Container, "static_" + fn_name)
             return f(*args, **kwargs)
 
         """
@@ -294,8 +316,9 @@ def _unwrap_function(function_wrapped):
     Returns
     -------
     The unwrapped version of the function which is the same as the passed function
-    for unwrapped functions and the inner_fn if the function is wrapped. The newly unwrapped
-    function accepts inputs and returns outputs as native arrays instead of ivy arrays.
+    for unwrapped functions and the inner_fn if the function is wrapped.
+    The newly unwrapped function accepts inputs and returns outputs as native arrays
+    instead of ivy arrays.
     """
     if not hasattr(function_wrapped, "wrapped") or not function_wrapped.wrapped:
         return function_wrapped
@@ -304,7 +327,7 @@ def _unwrap_function(function_wrapped):
 
 def _invalid_fn(fn, fs=None):
     if fs is None:
-        fs = ivy.current_framework_str()
+        fs = ivy.current_backend_str()
     if isinstance(fn, np.ufunc):
         return False
     if not hasattr(fn, "__module__") or not fn.__module__:
@@ -321,9 +344,9 @@ def _wrap_or_unwrap_functions(
 ):
     classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
     if fs is None:
-        fs = ivy.current_framework_str()
+        fs = ivy.current_backend_str()
     if val is None:
-        val = importlib.import_module(ivy.current_framework_str()) if native else ivy
+        val = importlib.import_module(ivy.current_backend_str()) if native else ivy
     str_to_check = fs if native else "ivy"
     is_class = inspect.isclass(val)
     if isinstance(val, ModuleType) or (val in classes_to_wrap):

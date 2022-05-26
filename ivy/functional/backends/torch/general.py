@@ -223,7 +223,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         [updates] if isinstance(updates, (float, int, bool)) else updates,
         dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
-        else ivy.default_dtype(item=updates),
+        else ivy.default_dtype(item=updates, as_native=True),
     )
 
     # hanle non-tensor indices
@@ -430,5 +430,5 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
-def current_framework_str():
+def current_backend_str():
     return "torch"

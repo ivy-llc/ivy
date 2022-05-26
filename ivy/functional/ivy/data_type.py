@@ -7,7 +7,7 @@ from typing import Union, Tuple, List, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 # Array API Standard #
 # -------------------#
@@ -40,7 +40,7 @@ def can_cast(
         otherwise, ``False``.
 
     """
-    return _cur_framework(from_).can_cast(from_, to)
+    return _cur_backend(from_).can_cast(from_, to)
 
 
 # noinspection PyShadowingBuiltins
@@ -64,7 +64,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
           smallest representable number.
 
     """
-    return _cur_framework(None).iinfo(type)
+    return _cur_backend(None).iinfo(type)
 
 
 # noinspection PyShadowingBuiltins
@@ -93,7 +93,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
           smallest positive floating-point number with full precision.
 
     """
-    return _cur_framework(None).finfo(type)
+    return _cur_backend(None).finfo(type)
 
 
 def broadcast_to(
@@ -116,7 +116,7 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-    return _cur_framework(x).broadcast_to(x, shape)
+    return _cur_backend(x).broadcast_to(x, shape)
 
 
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
@@ -134,7 +134,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
         corresponding input array.
 
     """
-    return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
+    return _cur_backend(arrays[0]).broadcast_arrays(*arrays)
 
 
 def dtype(
@@ -155,7 +155,7 @@ def dtype(
         Data type of the array
 
     """
-    return _cur_framework(x).dtype(x, as_native)
+    return _cur_backend(x).dtype(x, as_native)
 
 
 # noinspection PyShadowingNames
@@ -204,10 +204,9 @@ def astype(
     >>> dtype = ivy.float64
     >>> y = ivy.astype(x, dtype)
     >>> print(y)
-    [1., 2.]
-
+    ivy.array([1., 2.])
     """
-    return _cur_framework(x).astype(x, dtype, copy)
+    return _cur_backend(x).astype(x, dtype, copy)
 
 
 # Extra #
@@ -280,7 +279,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
         The number of bits used to represent the data type.
 
     """
-    return _cur_framework(dtype_in).dtype_bits(dtype_in)
+    return _cur_backend(dtype_in).dtype_bits(dtype_in)
 
 
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
@@ -297,7 +296,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
         data type string 'float32'
 
     """
-    return _cur_framework(None).as_ivy_dtype(dtype_in)
+    return _cur_backend(None).as_ivy_dtype(dtype_in)
 
 
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDtype:
@@ -314,7 +313,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
         data type e.g. ivy.float32.
 
     """
-    return _cur_framework(None).as_native_dtype(dtype_in)
+    return _cur_backend(None).as_native_dtype(dtype_in)
 
 
 # noinspection PyShadowingNames,PyShadowingBuiltins
@@ -611,7 +610,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
         The closest valid data type as a native ivy.Dtype
 
     """
-    return _cur_framework(type).closest_valid_dtype(type)
+    return _cur_backend(type).closest_valid_dtype(type)
 
 
 def is_int_dtype(
@@ -706,7 +705,7 @@ def result_type(
         the dtype resulting from an operation involving the input arrays and dtypes.
 
     """
-    return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return _cur_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
 
 def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
@@ -725,7 +724,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """
     if dtype_in is None:
         return True
-    return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtype_strs
+    return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
@@ -745,7 +744,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """
     if dtype_in is None:
         return False
-    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtype_strs
+    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:

@@ -162,10 +162,9 @@ def dtype_bits(dtype_in):
 
 
 def dtype(x, as_native=False):
-    dt = x.dtype
     if as_native:
-        return dt
-    return as_ivy_dtype(dt)
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
 
 
 def as_ivy_dtype(dtype_in):

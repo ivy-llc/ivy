@@ -100,7 +100,7 @@ class Array(
         else:
             self._post_repr = ")"
 
-        self.framework_str = ivy.current_framework_str()
+        self.framework_str = ivy.current_backend_str()
 
     # Properties #
     # -----------#
@@ -210,7 +210,7 @@ class Array(
             return (
                 self._pre_repr
                 + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
-                + self._post_repr.format(ivy.current_framework_str())
+                + self._post_repr.format(ivy.current_backend_str())
             )
 
     @_native_wrapper
@@ -263,15 +263,14 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_framework(state["framework_str"])
+        backend = ivy.get_backend(state["framework_str"])
         ivy_array = backend.array(state["data"])
-
-        # TODO: what about placement of the array on the right device ?
-        device = backend.as_native_dev(state["device_str"])
 
         self.__dict__ = ivy_array.__dict__
 
-        backend.to_dev(self, device)
+        # TODO: what about placement of the array on the right device ?
+        # device = backend.as_native_dev(state["device_str"])
+        # backend.to_dev(self, device)
 
     @_native_wrapper
     def __pos__(self):
@@ -500,7 +499,7 @@ class Array(
         except AttributeError:
             # ToDo: try and find more elegant solution to jax inability to
             #  deepcopy device arrays
-            if ivy.current_framework_str() == "jax":
+            if ivy.current_backend_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
