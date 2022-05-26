@@ -920,6 +920,33 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
+         
+    Examples
+    --------
+    >>> x = ivy.array([1., 0., 0.])
+    >>> y = ivy.array([0., 1., 0.])
+    >>> z = ivy.cross(x, y)
+    >>> print(z)
+    ivy.array([0., 0., 1.])
+
+    Multiple vector cross-products
+    >>> x = ivy.array([[[0., 1., 2.],\
+                        [3., 4., 5.]])
+    >>> y = ivy.array([1., 6., 7.])
+    >>> z = ivy.cross(x,y)
+    >>> print(z)
+    ivy.array([-5., 2. -1.],
+              [-2., -16., 14.])
+
+    When axis is zero
+    >>> x = ivy.array([[[0., 1., 2.],\
+                        [3., 4., 5.]])
+    >>> y = ivy.array([1., 6., 7.])
+    >>> z = ivy.cross(x,y, axis = 0)
+    >>> print(z)
+    ivy.array([21., 28. 35.],
+              [0., -7., -14.],
+              [-3., 2., 7.])
 
     """
     return _cur_backend(x1).cross(x1, x2, axis)
