@@ -3,11 +3,11 @@
 # global
 import pytest
 import numpy as np
-
+from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+import ivy.functional.backends.numpy as ivy_np
 
 # Linear #
 # -------#
@@ -58,12 +58,23 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
 # --------#
 
 # dropout
-@pytest.mark.parametrize("x", [([[1.0, 2.0, 3.0]]), ([[[1.0, 2.0, 3.0]]])])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_dropout(x, dtype, tensor_fn, device, call):
+# @pytest.mark.parametrize("x", [([[1.0, 2.0, 3.0]]), ([[[1.0, 2.0, 3.0]]])])
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans()
+)
+def test_dropout(array_shape, dtype, as_variable, fw, device, call):
+    if (fw == 'tensorflow' or fw == 'torch') and 'int' in dtype:
+        return
+    x = np.random.uniform(size=tuple(array_shape))
+    x = ivy.asarray(x)
+    if as_variable:
+        x = ivy.variable(x)
     # smoke test
-    x = tensor_fn(x, dtype, device)
     ret = ivy.dropout(x, 0.9)
     # type test
     assert ivy.is_ivy_array(ret)
