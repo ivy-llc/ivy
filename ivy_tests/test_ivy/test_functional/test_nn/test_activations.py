@@ -26,6 +26,8 @@ import ivy.functional.backends.numpy as ivy_np
 )
 def test_relu(dtype_and_x, as_variable, with_out, native_array,num_positional_args,container,instance_method,fw):
         dtype, x = dtype_and_x
+        if fw == "torch" and dtype == "float16":
+            return
         helpers.test_array_function(
             dtype,
             as_variable,
