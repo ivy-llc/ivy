@@ -26,7 +26,7 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
 )
 def test_layer_norm_layer(
-        x_n_ns_n_target, with_v, dtype, as_variable, device, call
+        x_n_ns_n_target, with_v, dtype, as_variable, device, compile_graph, call
 ):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
