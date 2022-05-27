@@ -74,21 +74,25 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
 
 
 # multinomial
-@pytest.mark.parametrize("probs", [[[1.0, 2.0]], [[1.0, 0.5], [0.2, 0.3]], None])
-@pytest.mark.parametrize("num_samples", [1, 2])
-@pytest.mark.parametrize("replace", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, device, call):
-    population_size = 2
+@given(
+    data=st.data(),
+    num_samples=st.integers(1, 2),
+    replace=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    tensor_fn=st.sampled_from([ivy.array]),
+)
+def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
+    if dtype == 'float64':
+        return
+    probs, population_size = data.draw(helpers.get_probs(dtype))
     if (
             call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
             and not replace
     ):
         # mxnet and tenosorflow do not support multinomial without replacement
-        pytest.skip()
+        return
     # smoke test
-    probs = tensor_fn(probs, dtype, device) if probs is not None else probs
+    probs = tensor_fn(probs, dtype=dtype, device=device) if probs is not None else probs
     batch_size = probs.shape[0] if probs is not None else 2
     ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
