@@ -2,7 +2,7 @@
 import ivy
 
 # global
-from typing import Callable, Type, List, Iterable
+from typing import Callable, Type, List, Iterable, Optional
 from types import ModuleType
 
 TO_IGNORE = ["is_variable", "is_ivy_array", "is_native_array", "is_array"]
@@ -78,8 +78,8 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
 def add_ivy_container_instance_methods(
     cls: Type[ivy.Container],
     modules: List[ModuleType],
-    static: bool = False,
-    to_ignore: Iterable = (),
+    static: Optional[bool] = False,
+    to_ignore: Optional[Iterable] = (),
 ):
     """Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy container as instance methods using _wrap_function.
