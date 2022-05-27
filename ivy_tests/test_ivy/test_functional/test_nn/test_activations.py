@@ -6,7 +6,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-from torch import half
+
 
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
