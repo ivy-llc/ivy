@@ -1,41 +1,42 @@
 """Collection of tests for normalization layers."""
 
 # global
-import pytest
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-
+import ivy.functional.backends.numpy as ivy_np
 
 # layer norm
-@pytest.mark.parametrize(
-    "x_n_ns_n_target",
-    [
-        (
-            [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
-            [3],
-            [[-1.2247356, 0.0, 1.2247356], [-1.2247356, 0.0, 1.2247356]],
-        ),
-    ],
+@given(
+    x_n_ns_n_target=st.sampled_from(
+        [
+            (
+                    [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+                    [3],
+                    [[-1.2247356, 0.0, 1.2247356], [-1.2247356, 0.0, 1.2247356]],
+            ),
+        ],
+    ),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layer_norm_layer(
-    x_n_ns_n_target, with_v, dtype, tensor_fn, device, compile_graph, call
+        x_n_ns_n_target, with_v, dtype, as_variable, device, call
 ):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
-    x = tensor_fn(x, dtype, device)
-    target = tensor_fn(target, dtype, device)
+    x = ivy.asarray(x, dtype="float32", device=device)
+    target = ivy.asarray(target, dtype="float32", device=device)
     if with_v:
         v = Container(
             {
                 "scale": ivy.variable(ivy.ones(normalized_shape)),
-                "offset": ivy.variable(ivy.zeros(normalized_shape)),
+                "offset": ivy.variable(ivy.zeros(normalized_shape))
             }
         )
     else:
@@ -54,3 +55,4 @@ def test_layer_norm_layer(
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         return
+
