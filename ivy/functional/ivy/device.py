@@ -998,8 +998,9 @@ def dev_clone_array(x, devices):
         array cloned to each of the target devices
 
     """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x,
-                                                           device=ds)) for ds in devices})
+    return DevClonedItem(
+        {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
+    )
 
 
 def dev_clone(x, devices):
