@@ -1,12 +1,13 @@
 """Collection of tests for unified dtype functions."""
 
 # global
-import pytest
-from numbers import Number
-import ivy_tests.test_ivy.helpers as helpers
+from hypothesis import given, strategies as st
+
 
 # local
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
@@ -21,7 +22,7 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.int32)
     assert ivy.exists(ivy.int64)
     assert ivy.exists(ivy.uint8)
-    if ivy.current_framework_str() != "torch":
+    if ivy.current_backend_str() != "torch":
         assert ivy.exists(ivy.uint16)
         assert ivy.exists(ivy.uint32)
         assert ivy.exists(ivy.uint64)
@@ -30,146 +31,380 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.bool)
 
 
-# is_int_dtype
-@pytest.mark.parametrize(
-    "in_n_asarray_n_res",
-    [
-        ([1, 2], True, True),
-        ([1.3, 4.2], True, False),  # array
-        (2, False, True),
-        (2.6, False, False),  # number
-        ([[1, 2], [3, 4]], False, True),
-        ([[1.1, 2.7], [3.3, 4.5]], False, False),  # list
-        ([1, 2, 3, 4], False, True),
-        ([1.1, 2.7, 3.3, 4.5], False, False),  # tuple
-        ({"a": [1, 2], "b": [3, 4]}, False, True),  # dict
-        ({"a": [1.1, 2.7], "b": [3.3, 4.5]}, False, False),
-        ("int32", False, True),
-        ("float32", False, False),  # dtype str
-    ],
+# astype
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(2, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
 )
-def test_is_int_dtype(device, call, in_n_asarray_n_res):
-    x, asarray, res = in_n_asarray_n_res
-    if asarray:
-        x = ivy.array(x)
-    assert ivy.is_int_dtype(x) is res
+def test_astype(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "astype",
+        x=x,
+    )
+
+
+# broadcast_to
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_broadcast_to(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke this for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "broadcast_to",
+        x=x,
+        shape=array_shape,
+    )
+
+
+# can_cast
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(2, 2),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_can_cast(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "can_cast",
+        x=x,
+    )
+
+
+# dtype_bits
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(1, 1),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_dtype_bits(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_bits",
+        x=x,
+    )
+
+
+# dtype_from_str
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(1, 1),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_dtype_from_str(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_from_str",
+        x=x,
+    )
+
+
+# dtype_to_str
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(1, 1),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_dtype_to_str(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_to_str",
+        x=x,
+    )
+
+
+# finfo
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(1, 1),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_finfo(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "finfo",
+        x=x,
+    )
+
+
+# iinfo
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy.valid_int_dtypes, 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(1, 1),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_iinfo(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if (v == [] for v in x):
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "iinfo",
+        x=x,
+    )
 
 
 # is_float_dtype
-@pytest.mark.parametrize(
-    "in_n_asarray_n_res",
-    [
-        ([1, 2], True, False),
-        ([1.3, 4.2], True, True),  # array
-        (2, False, False),
-        (2.6, False, True),  # number
-        ([[1, 2], [3, 4]], False, False),
-        ([[1.1, 2.7], [3.3, 4.5]], False, True),  # list
-        ([1, 2, 3, 4], False, False),
-        ([1.1, 2.7, 3.3, 4.5], False, True),  # tuple
-        ({"a": [1, 2], "b": [3, 4]}, False, False),  # dict
-        ({"a": [1.1, 2.7], "b": [3.3, 4.5]}, False, True),
-        ("int32", False, False),
-        ("float32", False, True),  # dtype str
-    ],
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-def test_is_float_dtype(device, call, in_n_asarray_n_res):
-    x, asarray, res = in_n_asarray_n_res
-    if asarray:
-        x = ivy.array(x)
-    assert ivy.is_float_dtype(x) is res
+def test_is_float_dtype(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke this for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_float_dtype",
+        dtype_in=x,
+    )
 
 
-# dtype bits
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ivy.all_dtypes)
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_dtype_bits(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if ivy.invalid_dtype(dtype):
-        pytest.skip()
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.dtype_bits(ivy.dtype(x))
-    # type test
-    assert isinstance(ret, int)
-    assert ret in [1, 8, 16, 32, 64]
-
-
-# as_ivy_dtype
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize(
-    "dtype",
-    ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
+# is_int_dtype
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_as_ivy_dtype(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if call is helpers.mx_call and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if call is helpers.jnp_call and dtype in ["int64", "float64"]:
-        # jax does not support int64 or float64 arrays
-        pytest.skip()
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
-    dtype_as_str = ivy.dtype(x)
-    as_ivy_dtype = ivy.as_ivy_dtype(ivy.dtype(x))
-    # type test
-    assert isinstance(dtype_as_str, str)
-    assert isinstance(as_ivy_dtype, str)
-    # value test
-    assert as_ivy_dtype == dtype_as_str
-
-
-# as_native_dtype
-@pytest.mark.parametrize("x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize(
-    "dtype",
-    ["float16", "float32", "float64", "int8", "int16", "int32", "int64", "bool"],
-)
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_as_native_dtype(x, dtype, tensor_fn, device, call):
-    # smoke test
-    if call is helpers.mx_call and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if call is helpers.jnp_call and dtype in ["int64", "float64"]:
-        # jax does not support int64 or float64 arrays
-        pytest.skip()
-    if (
-        (isinstance(x, Number) or len(x) == 0)
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, device)
-    dt0 = ivy.as_native_dtype(ivy.dtype(x))
-    dt1 = ivy.dtype(x, as_native=True)
-    # value test
-    assert dt0 is dt1
+def test_is_int_dtype(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke this for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_int_dtype",
+        dtype_in=x,
+    )
 
 
 # Still to Add #
 # ---------------#
 
-# astype
 # broadcast_arrays
-# broadcast_to
-# can_cast
-# finfo
-# iinfo
 # result_type

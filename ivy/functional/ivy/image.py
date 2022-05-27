@@ -5,7 +5,7 @@ import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 from typing import Union, List, Tuple
 
 
@@ -49,7 +49,7 @@ def stack_images(
             [0., 0., 0.]]])
 
     """
-    return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
+    return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp):
@@ -68,7 +68,7 @@ def bilinear_resample(x, warp):
         Image after bilinear re-sampling.
 
     """
-    return _cur_framework(x).bilinear_resample(x, warp)
+    return _cur_backend(x).bilinear_resample(x, warp)
 
 
 def gradient_image(x):
@@ -102,14 +102,14 @@ def gradient_image(x):
      ivy.array([[3., 3., 3.],
                [3., 3., 3.],
                [0., 0., 0.]])
-               
+
     >>> print(dx[0, :,:,0])
      ivy.array([[1., 1., 0.],
                [1., 1., 0.],
                [1., 1., 0.]])
 
     """
-    return _cur_framework(x).gradient_image(x)
+    return _cur_backend(x).gradient_image(x)
 
 
 def float_img_to_uint8_img(x):
@@ -155,7 +155,7 @@ def uint8_img_to_float_img(x):
     return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
 
 
-def random_crop(x, crop_size, batch_shape=None, image_dims=None):
+def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     """Randomly crops the input images.
 
     Parameters
@@ -182,6 +182,8 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
     flat_batch_size = _reduce(_mul, batch_shape, 1)
+    crop_size[0] = min(crop_size[-2], x_shape[-3])
+    crop_size[1] = min(crop_size[-1], x_shape[-2])
 
     # shapes as list
     batch_shape = list(batch_shape)
@@ -192,8 +194,9 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
-    x_offsets = _np.random.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
-    y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
+    rng = _np.random.default_rng(seed)
+    x_offsets = rng.integers(0, margins[0] + 1, flat_batch_size).tolist()
+    y_offsets = rng.integers(0, margins[1] + 1, flat_batch_size).tolist()
 
     # list of 1 x NH x NW x F
     cropped_list = [
@@ -228,4 +231,4 @@ def linear_resample(
         The array after the linear resampling.
 
     """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
+    return _cur_backend(x).linear_resample(x, num_samples, axis)

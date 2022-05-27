@@ -20,8 +20,8 @@ The contributor guide is split into the sections below, it's best to go from sta
 but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
 
-| (a) :ref:`Setting up`
-| Build the right environment 🏛️
+| (a) :ref:`Setting Up`
+| Building the right environment 🏛️
 |
 | (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
@@ -30,28 +30,43 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | A quick tour through the codebase 🔍
 |
 | (d) :ref:`Function Types`
-| Primary, compositional, mixed and flexible functions  🧮
+| Primary, compositional, mixed and nestable functions  🧮
 |
-| (e) :ref:`Inplace Updates`
-| Using the out argument to specify the target for the output  🎯
+| (e) :ref:`Backend Setting`
+| How the backend is set, and what this means for each function type ⚙️
 |
-| (f) :ref:`Handling Data Types`
+| (f) :ref:`Function Wrapping`
+| How functions are dynamically wrapped at runtime  🎁
+|
+| (g) :ref:`Arrays`
+| Different types of arrays, and how they're handled 🔢
+|
+| (h) :ref:`Containers`
+| What the :code:`ivy.Container` does  🗂️
+|
+| (i) :ref:`Data Types`
 | How functions infer the correct data type  💾
 |
-| (g) :ref:`Handling Devices`
+| (j) :ref:`Devices`
 | How functions infer the correct device  💽
 |
-| (h) :ref:`Adding Tests`
-| How to add tests for these ❓
+| (k) :ref:`Inplace Updates`
+| How the :code:`out` argument is used to specify the output target  🎯
 |
-| (i) :ref:`Type Hints`
+| (l) :ref:`Type Hints`
 | How to add the correct type hints 📑
 |
-| (j) :ref:`Docstrings`
+| (m) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (k) :ref:`Docstring Examples`
+| (n) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
+|
+| (o) :ref:`Array API Tests`
+| How we're borrowing the test suite from the Array API Standard 🤝
+|
+| (p) :ref:`Ivy Tests`
+| How to add new Ivy tests for each function ❓
 |
 
 .. toctree::
@@ -59,15 +74,19 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    :maxdepth: -1
    :caption: Contributing
 
-
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
    contributing/2_navigating_the_code.rst
    contributing/3_function_types.rst
-   contributing/4_inplace_updates.rst
-   contributing/5_handling_data_types.rst
-   contributing/6_handling_devices.rst
-   contributing/7_adding_tests.rst
-   contributing/8_type_hints.rst
-   contributing/9_docstrings.rst
-   contributing/10_docstring_examples.rst
+   contributing/4_backend_setting.rst
+   contributing/5_function_wrapping.rst
+   contributing/6_arrays.rst
+   contributing/7_containers.rst
+   contributing/8_data_types.rst
+   contributing/9_devices.rst
+   contributing/10_inplace_updates.rst
+   contributing/11_type_hints.rst
+   contributing/12_docstrings.rst
+   contributing/13_docstring_examples.rst
+   contributing/14_array_api_tests.rst
+   contributing/15_ivy_tests.rst

@@ -139,7 +139,6 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         ans.shape[0] >= 1
         and (not isinstance(start, numpy.ndarray))
         and (not isinstance(stop, numpy.ndarray))
-        and ans[0] != start
     ):
         ans[0] = start
     return _to_dev(ans, device)

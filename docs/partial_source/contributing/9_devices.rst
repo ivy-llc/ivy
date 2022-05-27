@@ -1,7 +1,7 @@
-Handling Devices
-================
+Devices
+=======
 
-.. _`framework setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
 .. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
@@ -25,7 +25,7 @@ appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_.
 This is similar to how :code:`dtype` is handled,
 with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUNCTIONS`_ in this case rather than
 `NON_DTYPE_WRAPPED_FUNCTIONS`_. As discussed above,
-this is applied to all applicable function dynamically during `framework setting`_.
+this is applied to all applicable function dynamically during `backend setting`_.
 
 Overall, the device is inferred as follows:
 

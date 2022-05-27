@@ -252,10 +252,10 @@ def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
-    if fn_name not in ivy.framework_handler.ivy_original_dict:
+    if fn_name not in ivy.backend_handler.ivy_original_dict:
         return True
 
-    docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+    docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
 
     if docstring is None:
         return True
@@ -326,7 +326,7 @@ def docstring_examples_run(fn):
     return True
 
 
-def var_fn(a, b=None, c=None):
+def var_fn(a, b=None, c=None, dtype=None):
     return ivy.variable(ivy.array(a, b, c))
 
 
@@ -533,7 +533,7 @@ def test_array_function(
             assert ret is out
 
         if max(container) or fw in ["tensorflow", "jax", "numpy"]:
-            # these frameworks do not always support native inplace updates
+            # these backends do not always support native inplace updates
             pass
         else:
             assert ret.data is out.data
@@ -546,11 +546,11 @@ def test_array_function(
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ivy.set_framework("numpy")
+    ivy.set_backend("numpy")
     ret_from_np = ivy.to_native(
         ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
     )
-    ivy.unset_framework()
+    ivy.unset_backend()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
@@ -652,7 +652,7 @@ def subsets(draw, elements):
 
 
 @st.composite
-def array_values(draw, dtype, size, allow_inf):
+def array_values(draw, dtype, size, allow_inf=None):
     if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
     elif dtype == "int16":
@@ -695,3 +695,61 @@ def array_values(draw, dtype, size, allow_inf):
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values
+
+
+@st.composite
+def get_shape(draw):
+    shape = draw(
+        st.none()
+        | st.lists(st.integers(min_value=1, max_value=8), min_size=0, max_size=8)
+    )
+    if shape is None:
+        return shape
+    return tuple(shape)
+
+
+def none_or_list_of_floats(dtype, size):
+    if dtype == "float16":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=16, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    elif dtype == "float32":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=32, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    elif dtype == "float64":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    return values
+
+
+@st.composite
+def get_mean_std(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    values[1] = abs(values[1]) if values[1] else None
+    return values[0], values[1]
+
+
+@st.composite
+def get_bounds(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    if values[0] is not None and values[1] is not None:
+        low, high = min(values), max(values)
+    else:
+        low, high = values[0], values[1]
+    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+        return draw(get_bounds(dtype))
+    return low, high
