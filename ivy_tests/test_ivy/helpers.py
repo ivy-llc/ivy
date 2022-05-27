@@ -326,7 +326,7 @@ def docstring_examples_run(fn):
     return True
 
 
-def var_fn(a, b=None, c=None):
+def var_fn(a, b=None, c=None, dtype=None):
     return ivy.variable(ivy.array(a, b, c))
 
 
@@ -652,7 +652,7 @@ def subsets(draw, elements):
 
 
 @st.composite
-def array_values(draw, dtype, size, allow_inf):
+def array_values(draw, dtype, size, allow_inf=None):
     if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
     elif dtype == "int16":
@@ -695,3 +695,51 @@ def array_values(draw, dtype, size, allow_inf):
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values
+
+
+@st.composite
+def get_shape(draw):
+    shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
+                                      min_size=0,
+                                      max_size=8))
+    if shape is None:
+        return shape
+    return tuple(shape)
+
+
+def none_or_list_of_floats(dtype, size):
+    if dtype == "float16":
+        values = list_of_length(st.none() | st.floats(width=16,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
+    elif dtype == "float32":
+        values = list_of_length(st.none() | st.floats(width=32,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
+    elif dtype == "float64":
+        values = list_of_length(st.none() | st.floats(width=64,
+                                                      allow_subnormal=False,
+                                                      allow_infinity=False,
+                                                      allow_nan=False), size)
+    return values
+
+
+@st.composite
+def get_mean_std(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    values[1] = abs(values[1]) if values[1] else None
+    return values[0], values[1]
+
+
+@st.composite
+def get_bounds(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    if values[0] is not None and values[1] is not None:
+        low, high = min(values), max(values)
+    else:
+        low, high = values[0], values[1]
+    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+        return draw(get_bounds(dtype))
+    return low, high

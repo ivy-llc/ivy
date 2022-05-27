@@ -49,7 +49,7 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    return _cur_backend().random_uniform(low, high, shape, device)
+    return _cur_backend().random_uniform(low, high, shape, device=device)
 
 
 def random_normal(
@@ -85,7 +85,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return _cur_backend().random_normal(mean, std, shape, device)
+    return _cur_backend().random_normal(mean, std, shape, device=device)
 
 
 def multinomial(
@@ -171,7 +171,7 @@ def multinomial(
 
     """
     return _cur_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device
+        population_size, num_samples, batch_size, probs, replace, device=device
     )
 
 
