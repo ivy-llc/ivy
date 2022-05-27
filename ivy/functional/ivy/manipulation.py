@@ -596,7 +596,7 @@ def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
     x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    out: Optional[Union[ivy.Array, ivy.Container]] = None
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Clips (limits) the values in an array.
 
