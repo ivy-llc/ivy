@@ -239,7 +239,12 @@ def swapaxes(x, axis0, axis1, out: Optional[Tensor] = None):
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[Tensor] = None):
+def clip(
+    x: Tensor,
+    x_min: Union[Number, Tensor],
+    x_max: Union[Number, Tensor],
+    out: Optional[Tensor] = None,
+) -> Tensor:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
