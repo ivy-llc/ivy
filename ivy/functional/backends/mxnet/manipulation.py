@@ -15,10 +15,10 @@ import ivy
 
 
 def flip(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     num_dims = len(x.shape)
     if not num_dims:
         if ivy.exists(out):
@@ -40,10 +40,10 @@ def flip(
 
 
 def expand_dims(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if x.shape == ():
         ret = _flat_array_to_1_dim_array(x)
     else:
@@ -54,17 +54,17 @@ def expand_dims(
 
 
 def stack(
-    x: Union[Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
+    x: Union[Tuple[mx.nd.NDArray], List[mx.nd.NDArray]],
     axis: Optional[int] = 0,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.stack(x, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def squeeze(x, axis=None, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def squeeze(x, axis=None, out: Optional[mx.nd.NDArray] = None):
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):
@@ -85,7 +85,7 @@ reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
 @_handle_flat_arrays_in_out
-def concat(xs, axis=-1, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def concat(xs, axis=-1, out: Optional[mx.nd.NDArray] = None):
     ret = mx.nd.concat(*xs, dim=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -139,14 +139,14 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 
 @_handle_flat_arrays_in_out
-def repeat(x, repeats, axis=None, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def repeat(x, repeats, axis=None, out: Optional[mx.nd.NDArray] = None):
     ret = mx.nd.repeat(x, repeats, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def tile(x, reps, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def tile(x, reps, out: Optional[mx.nd.NDArray] = None):
     if isinstance(reps, mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()
     ret = mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
@@ -156,10 +156,8 @@ def tile(x, reps, out: Optional[mx.ndarray.ndarray.NDArray] = None):
 
 
 @_handle_flat_arrays_in
-def constant_pad(
-    x, pad_width, value=0, out: Optional[mx.ndarray.ndarray.NDArray] = None
-):
-    if isinstance(pad_width, mx.ndarray.ndarray.NDArray):
+def constant_pad(x, pad_width, value=0, out: Optional[mx.nd.NDArray] = None):
+    if isinstance(pad_width, mx.nd.NDArray):
         pad_width = pad_width.asnumpy().tolist()
     x_shape = list(x.shape)
     num_dims = len(x_shape)
@@ -190,7 +188,7 @@ def constant_pad(
     return ret
 
 
-def zero_pad(x, pad_width, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def zero_pad(x, pad_width, out: Optional[mx.nd.NDArray] = None):
     ret = constant_pad(x, pad_width, 0)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -201,12 +199,14 @@ swapaxes = mx.nd.swapaxes
 
 
 @_handle_flat_arrays_in_out
+
 def clip(
     x: mx.ndarray.ndarray.NDArray,
     x_min: float,
     x_max: float,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
+
     ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

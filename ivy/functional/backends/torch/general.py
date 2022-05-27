@@ -10,7 +10,7 @@ from typing import List, Optional, Union
 from numbers import Number
 
 # local
-from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
+from ivy.functional.backends.torch.device import as_native_dev, _callable_dev
 
 torch_scatter = None
 
@@ -148,7 +148,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
 ):
     target = tensor
     target_given = ivy.exists(target)
@@ -158,11 +158,11 @@ def scatter_flat(
         device = _callable_dev(updates)
     dtype = updates.dtype
     if reduction in ["sum", "replace"]:
-        initial_val = torch.tensor(0).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(0).type(dtype).to(as_native_dev(device))
     elif reduction == "min":
-        initial_val = torch.tensor(1e12).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(1e12).type(dtype).to(as_native_dev(device))
     elif reduction == "max":
-        initial_val = torch.tensor(-1e12).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(-1e12).type(dtype).to(as_native_dev(device))
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -172,7 +172,7 @@ def scatter_flat(
     if target_given:
         output = tensor
     else:
-        output = torch.ones([size], dtype=dtype).to(dev_from_str(device)) * initial_val
+        output = torch.ones([size], dtype=dtype).to(as_native_dev(device)) * initial_val
     global torch_scatter
     if torch_scatter is None:
         try:
@@ -191,7 +191,7 @@ def scatter_flat(
     if not target_given:
         return torch.where(
             res == initial_val,
-            torch.zeros([size], dtype=updates.dtype).to(dev_from_str(device)),
+            torch.zeros([size], dtype=updates.dtype).to(as_native_dev(device)),
             res,
         )
     return res
@@ -221,9 +221,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     # handle numeric updates
     updates = torch.tensor(
         [updates] if isinstance(updates, (float, int, bool)) else updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
-        else ivy.default_dtype(item=updates),
+        else ivy.default_dtype(item=updates, as_native=True),
     )
 
     # hanle non-tensor indices
@@ -278,15 +278,15 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     result_dim_sizes_list = [
         _reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
     ] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(device))
+    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(as_native_dev(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = _reduce(mul, shape, 1)
     if reduction in ["sum", "replace"]:
-        initial_val = torch.tensor(0).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(0).type(dtype).to(as_native_dev(device))
     elif reduction == "min":
-        initial_val = torch.tensor(1e12).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(1e12).type(dtype).to(as_native_dev(device))
     elif reduction == "max":
-        initial_val = torch.tensor(-1e12).type(dtype).to(dev_from_str(device))
+        initial_val = torch.tensor(-1e12).type(dtype).to(as_native_dev(device))
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -297,7 +297,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         flat_output = torch.reshape(tensor, (flat_result_size,))
     else:
         flat_output = (
-            torch.ones(flat_result_size, dtype=dtype).to(dev_from_str(device))
+            torch.ones(flat_result_size, dtype=dtype).to(as_native_dev(device))
             * initial_val
         )
     flat_updates = torch.reshape(updates, (-1,))
@@ -307,7 +307,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
     ).repeat(*[1, implicit_indices_factor])
     implicit_indices = torch.unsqueeze(
-        torch.arange(implicit_indices_factor).to(dev_from_str(device)), 0
+        torch.arange(implicit_indices_factor).to(as_native_dev(device)), 0
     ).repeat(*[indices_for_flat_tiled.shape[0], 1])
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
@@ -333,7 +333,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         # noinspection PyTypeChecker
         flat_scatter = torch.where(
             flat_scatter == initial_val,
-            torch.zeros(flat_result_size, dtype=updates.dtype).to(dev_from_str(device)),
+            torch.zeros(flat_result_size, dtype=updates.dtype).to(
+                as_native_dev(device)
+            ),
             flat_scatter,
         )
     res = torch.reshape(flat_scatter, list(shape))
@@ -345,13 +347,15 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
     if device is None:
         device = _callable_dev(params)
-    ret = torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(device))
+    ret = torch.gather(params, axis, indices.type(torch.int64)).to(
+        as_native_dev(device)
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     else:
@@ -359,7 +363,9 @@ def gather(
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices, device: Optional[str] = None):
+def gather_nd(
+    params, indices, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(params)
     indices_shape = indices.shape
@@ -368,7 +374,7 @@ def gather_nd(params, indices, device: Optional[str] = None):
     result_dim_sizes_list = [
         _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(device))
+    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(as_native_dev(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = torch.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
@@ -377,7 +383,7 @@ def gather_nd(params, indices, device: Optional[str] = None):
         torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
     ).repeat(*[1, implicit_indices_factor])
     implicit_indices = torch.unsqueeze(
-        torch.arange(implicit_indices_factor).to(dev_from_str(device)), 0
+        torch.arange(implicit_indices_factor).to(as_native_dev(device)), 0
     ).repeat(*[indices_for_flat_tiled.shape[0], 1])
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
@@ -403,11 +409,13 @@ def indices_where(x):
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, device: Optional[str] = None):
+def one_hot(
+    indices, depth: int, device: Optional[Union[ivy.Device, torch.device]] = None
+):
     if device is None:
         device = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
-        dev_from_str(device)
+        as_native_dev(device)
     )
 
 
@@ -422,5 +430,5 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
-def current_framework_str():
+def current_backend_str():
     return "torch"

@@ -3,24 +3,28 @@
 # global
 import pytest
 import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 
 
 # random_uniform
-@pytest.mark.parametrize("low", [None, -1.0, 0.2])
-@pytest.mark.parametrize("high", [None, 0.5, 2.0])
-@pytest.mark.parametrize("shape", [None, (), (1, 2, 3)])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_random_uniform(low, high, shape, dtype, tensor_fn, device, call):
+@given(
+    data=st.data(),
+    shape=helpers.get_shape(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    tensor_fn=st.sampled_from([ivy.array]),
+)
+def test_random_uniform(data, shape, dtype, tensor_fn, device, call):
+    low, high = data.draw(helpers.get_bounds(dtype))
+    ivy.seed(0)
     # smoke test
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
+        return
     kwargs = {
         k: tensor_fn(v) for k, v in zip(["low", "high"], [low, high]) if v is not None
     }
@@ -37,21 +41,23 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, device, call):
     # value test
     ret_np = call(ivy.random_uniform, **kwargs, device=device)
     assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
-    assert np.min((ret_np > (low if low else 0.0)).astype(np.int32)) == 1
+    assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
 
 
 # random_normal
-@pytest.mark.parametrize("mean", [None, -1.0, 0.2])
-@pytest.mark.parametrize("std", [None, 0.5, 2.0])
-@pytest.mark.parametrize("shape", [None, (), (1, 2, 3)])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_random_normal(mean, std, shape, dtype, tensor_fn, device, call):
-    # smoke test
+@given(
+    data=st.data(),
+    shape=helpers.get_shape(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    tensor_fn=st.sampled_from([ivy.array]),
+)
+def test_random_normal(data, shape, dtype, tensor_fn, device, call):
+    mean, std = data.draw(helpers.get_mean_std(dtype))
     ivy.seed(0)
+    # smoke test
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
+        return
     kwargs = {
         k: tensor_fn(v) for k, v in zip(["mean", "std"], [mean, std]) if v is not None
     }
@@ -65,24 +71,6 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, device, call):
         assert ret.shape == ()
     else:
         assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.random_normal, **kwargs, device=device)
-    assert (
-        np.min(
-            (ret_np > (ivy.default(mean, 0.0) - 3 * ivy.default(std, 1.0))).astype(
-                np.int32
-            )
-        )
-        == 1
-    )
-    assert (
-        np.min(
-            (ret_np < (ivy.default(mean, 0.0) + 3 * ivy.default(std, 1.0))).astype(
-                np.int32
-            )
-        )
-        == 1
-    )
 
 
 # multinomial
@@ -94,8 +82,8 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, device, call):
 def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, device, call):
     population_size = 2
     if (
-        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-        and not replace
+            call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
+            and not replace
     ):
         # mxnet and tenosorflow do not support multinomial without replacement
         pytest.skip()
@@ -133,10 +121,10 @@ def test_randint(low, high, shape, dtype, tensor_fn, device, call):
 
 
 # seed
-@pytest.mark.parametrize("seed_val", [1, 2, 0])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_seed(seed_val, dtype, tensor_fn, device, call):
+@given(
+    seed_val=st.integers(min_value=0, max_value=2147483647)
+)
+def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_val)
 

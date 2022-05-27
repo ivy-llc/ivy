@@ -13,6 +13,8 @@ def cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
+    *,
+    out: Optional[Union[ivy.Array, ivy.Container]] = None
 ) -> ivy.Array:
     """Computes cross-entropy between predicted and true discrete distributions.
 
@@ -28,6 +30,9 @@ def cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -39,7 +44,7 @@ def cross_entropy(
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.cross_entropy(x, y))
-    ivy.array(1.38629436)
+    ivy.array(1.3862944)
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.cross_entropy(x, z))
@@ -49,7 +54,7 @@ def cross_entropy(
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
     # noinspection PyUnresolvedReferences
-    return -ivy.sum(log_pred * true, axis)
+    return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
 
 
 # noinspection PyUnresolvedReferences
