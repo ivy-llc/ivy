@@ -207,7 +207,7 @@ Design
 | Ivy can fulfill two distinct purposes:
 |
 | 1. Serve as a transpiler between frameworks 🚧
-| 2. Serve as a new ML framework with multi-framework support ✅
+| 2. Serve as a new ML framework with multi-framework support 🚧
 |
 | The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:
 
