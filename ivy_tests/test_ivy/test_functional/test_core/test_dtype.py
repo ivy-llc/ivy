@@ -403,46 +403,45 @@ def test_is_int_dtype(
     )
 
 
-# # broadcast_arrays
-# @given(
-#     array_shape=helpers.lists(
-#         st.integers(2, 2), min_size="num_dims",
-#         max_size="num_dims", size_bounds=[2, 3]
-#     ),
-#     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-#     data=st.data(),
-#     as_variable=st.booleans(),
-#     num_positional_args=st.integers(1),
-#     native_array=st.booleans(),
-#     container=st.booleans(),
-#     instance_method=st.booleans(),
-# )
-# def test_broadcast_arrays(
-#     array_shape,
-#     dtype,
-#     data,
-#     as_variable,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         False,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "broadcast_arrays",
-#         arrays=x,
-#     )
-#
-#
+# broadcast_arrays
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 2), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_broadcast_arrays(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "broadcast_arrays",
+        arrays=x,
+    )
+
+
 # @given(
 #     shapes=st.integers(1, 5).flatmap(helpers.nph.broadcastable_shapes), data=st.data()
 # )
@@ -480,7 +479,6 @@ def test_is_int_dtype(
 #
 #     ph.assert_dtype("broadcast_to", x.dtype, out.dtype)
 #     ph.assert_shape("broadcast_to", out.shape, shape)
-#     # TODO: test values
 
 
 # Still to Add #
