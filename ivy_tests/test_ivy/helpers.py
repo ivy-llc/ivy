@@ -699,9 +699,10 @@ def array_values(draw, dtype, size, allow_inf=None):
 
 @st.composite
 def get_shape(draw):
-    shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
-                                      min_size=0,
-                                      max_size=8))
+    shape = draw(
+        st.none()
+        | st.lists(st.integers(min_value=1, max_value=8), min_size=0, max_size=8)
+    )
     if shape is None:
         return shape
     return tuple(shape)
@@ -709,20 +710,29 @@ def get_shape(draw):
 
 def none_or_list_of_floats(dtype, size):
     if dtype == "float16":
-        values = list_of_length(st.none() | st.floats(width=16,
-                                                      allow_subnormal=False,
-                                                      allow_infinity=False,
-                                                      allow_nan=False), size)
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=16, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
     elif dtype == "float32":
-        values = list_of_length(st.none() | st.floats(width=32,
-                                                      allow_subnormal=False,
-                                                      allow_infinity=False,
-                                                      allow_nan=False), size)
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=32, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
     elif dtype == "float64":
-        values = list_of_length(st.none() | st.floats(width=64,
-                                                      allow_subnormal=False,
-                                                      allow_infinity=False,
-                                                      allow_nan=False), size)
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
     return values
 
 
