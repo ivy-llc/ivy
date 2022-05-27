@@ -134,7 +134,7 @@ def float_img_to_uint8_img(x):
     return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
-def uint8_img_to_float_img(x):
+def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
     Parameters
@@ -146,6 +146,18 @@ def uint8_img_to_float_img(x):
     -------
     ret
         The new float image *[batch_shape,h,w]*
+
+    Examples
+    --------
+    >>> batch_shape = 1
+    >>> h = 2
+    >>> w = 2
+    >>> d = 4
+    >>> x = ivy.arange(h * w * d)
+    >>> image = ivy.reshape(x,(batch_size, h, w, d))
+    >>> y = ivy.uint8_img_to_float_img(image)
+    >>> print(y)
+    ivy.array([[[3.820471434542632e-37, 1.0082513512365273e-34], [2.658462758989161e-32, 7.003653270560797e-30]]])
 
     """
     x_np = ivy.to_numpy(x).astype("uint8")
