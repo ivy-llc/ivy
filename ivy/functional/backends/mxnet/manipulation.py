@@ -199,7 +199,6 @@ swapaxes = mx.nd.swapaxes
 
 
 @_handle_flat_arrays_in_out
-
 def clip(
     x: mx.ndarray.ndarray.NDArray,
     x_min: float,
