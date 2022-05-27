@@ -160,8 +160,8 @@ When a framework is set, this is <a class="reference external" href="https://git
 <h2>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> is a simple wrapper class, which wraps around the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>,
 storing it in <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89">self._data</a>.</p>
-<p>All functions in the Ivy API which accept <em>at least one array argument</em> in the input are implemented as instance methods
-in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
+<p>All functions in the Ivy functional API which accept <em>at least one array argument</em> in the input are implemented
+as instance methods in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
 <p>The organization of these instance methods follows the same organizational structure as the
 files in the functional API.
 The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class inherits from many category-specific array classes, such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L12">ArrayWithElementwise</a>,
@@ -171,10 +171,55 @@ but passes in <code class="code docutils literal notranslate"><span class="pre">
 <p>Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
 This serves as a helpful backup in cases where some functions are accidentally missed out.</p>
+<p>The benefit of the source code implementations is that this makes the code much more readable,
+without important methods being entirely absent.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
 </section>
 <section id="array-handling">
 <h2>Array Handling<a class="headerlink" href="#array-handling" title="Permalink to this headline"></a></h2>
-<p># ToDo: write</p>
+<p>When calling wrapped backend methods, we must pass in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
+For example, <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code> will throw an error if we try to pass in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance.
+It must be provided with a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and this is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219">backend type hints</a>.</p>
+<p>However, all Ivy functions must return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, which is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342">Ivy type hints</a>.
+The reason we always return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances from Ivy functions is to ensure that any subsequent Ivy code is
+fully framework-agnostic, with all operators performed on the returned array now handled by the special methods of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, and not the special methods of the backend array class (<code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>).</p>
+<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
+(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__div__</span></code> etc.) being called on the array class.</p>
+<p>For most special methods, this is not be a problem and each backend is generally quite consistent,
+but for some functions such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>,
+there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
+<p>Given that all Ivy functions return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances,
+all Ivy functions must also support <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input,
+otherwise it would be impossible to chain functions together!</p>
+<p>Therefore, every function must adopt the following pipeline:</p>
+<ol class="arabic simple">
+<li><p>convert all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input arguments to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
+<li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
+<li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
+<li><p>return these</p></li>
+</ol>
+<p>Given the repeating nature of this piece of logic, this is all entirely handling in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L138">function wrapping</a>,
+as explained in the <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<p>All Ivy functions also accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
+Firstly, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,
+and so supporting them in the input is not a problem.
+Secondly, this makes it easier to combine backend-specific code with Ivy code,
+without needing to explicitly wrap any arrays before calling sections of Ivy code.</p>
+<p>Therefore, all input arrays to Ivy functions have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>,
+whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="11_type_hints.html#type-hints"><span class="std std-ref">Type Hints</span></a> section.</p>
+<p>However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
+which is used in most functions.
+This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
+serves the same purpose as the function return when no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is specified.
+This is further explained in the <a class="reference internal" href="10_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+<p>As a final point, extra attention is required for <em>compositional</em> functions,
+as these do not directly defer to a backend implementation.
+If the first line of code in a compositional function performs operations on the input array,
+then this would be a problem as they will be performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instance
+and not on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
+<p>Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+instances are converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before entering into the compositional function.</p>
 </section>
 </section>
 
