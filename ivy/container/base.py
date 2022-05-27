@@ -2090,10 +2090,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(
             lambda x, kc: self._ivy.random_uniform(
-                low,
-                high,
-                x.shape,
-                device=self._ivy.dev(x)
+                low, high, x.shape, device=self._ivy.dev(x)
             )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
