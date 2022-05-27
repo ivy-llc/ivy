@@ -635,26 +635,28 @@ def vecdot(
 def det(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
 ) -> Union[ivy.Array, ivy.Container]:
-    """Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
+    """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
     x
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions form
-        square matrices. Should have a floating-point data type.
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions 
+        form square matrices. Should have a floating-point data type.
 
     Returns
     -------
     ret
         if ``x`` is a two-dimensional array, a zero-dimensional array containing the
-        determinant; otherwise, a non-zero dimensional array containing the determinant
+        determinant; otherwise,a non-zero dimensional array containing the determinant
         for each square matrix. The returned array must have the same data type as
         ``x``.
 
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
+    `docstring \
+    <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg \
+    .det.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -668,23 +670,24 @@ def det(
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    -10.000000000000002
+    ivy.array([-10.0])
 
     >>> x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    293.4700000000006
+    ivy.array([293.47])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    293.4700000000006
+    ivy.array([293.47])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
+                                 b = ivy.array([[2., 1.], [1., 1.]]))
     >>> y = ivy.det(x)
     >>> print(y)
     {
@@ -700,16 +703,17 @@ def det(
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = x.det()
     >>> print(y)
-    -10.000000000000002
+    ivy.array([-10.0])
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
+                                    b = ivy.array([[2., 1.], [1., 1.]]))
     >>> y = x.det()
     >>> print(y)
     {
-        a: 8.000000000000002,
-        b: 1.0
+        a: ivy.array([8.0]),
+        b: ivy.array([1.0])
     }
 
     """
