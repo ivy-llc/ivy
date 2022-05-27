@@ -3,6 +3,7 @@ import inspect
 import importlib
 import numpy as np
 from types import ModuleType
+from typing import Callable
 
 
 wrapped_modules_n_classes = []
@@ -136,45 +137,61 @@ NATIVE_KEYS_TO_SKIP = {
 # Functions #
 
 
-def _wrap_function(fn):
+def _wrap_function(function: Callable) -> Callable:
     """
     Creates a wrapped ivy version of the function if it is not a private function and
     not in the non wrapped functions list. This allows the new function to accept as
-    inputs an ivy array before performing the required o  peration and then returning
+    inputs an ivy array before performing the required operation and then returning
     an ivy array.
 
     Parameters
     ----------
-    fn
+    function
         native function to be wrapped
 
     Returns
     -------
         The wrapped version of the function with all the necessary attributes updated.
+
+    Examples
+    --------
+    This gives us the original `abs` implementation:
+
+    >>> from ivy.functional.backends.jax import abs as ivy_jax_abs
+    >>> print(ivy_jax_abs)
+    <function abs at 0x7fef19ddf040>
+
+    whereas the following gives us the wrapped version of `abs`:
+
+    >>> from ivy.functional.backends.jax import abs as ivy_jax_abs
+    >>> from ivy.func_wrapper import _wrap_function
+    >>> abs_wrapped = _wrap_function(ivy_jax_abs)
+    >>> print(abs_wrapped)
+    <function _wrap_function.<locals>._function_wrapped at 0x7fef1852a0d0>
+
     """
     # determine whether the function has an out argument
-    keys = inspect.signature(fn).parameters.keys()
+    keys = inspect.signature(function).parameters.keys()
     handle_out_with_backend = "out" in keys
     handle_dtype = "dtype" in keys
     handle_dev = "device" in keys
 
     # do nothing if the function is private or in the non wrapped functions list
-    if hasattr(fn, "__name__") and (
-        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
+    if hasattr(function, "__name__") and (
+        function.__name__[0] == "_" or function.__name__ in NON_WRAPPED_FUNCTIONS
     ):
-        return fn
+        return function
 
     # do nothing if the function is already wrapped
-    if hasattr(fn, "wrapped") and fn.wrapped:
-        return fn
+    if hasattr(function, "wrapped") and function.wrapped:
+        return function
 
     def _function_w_arrays_n_out_handled(*args, out=None, **kwargs):
         """
-        Converts all :code:`ivy.Array` instances in both the positional and
-        keyword arguments into :code:`ivy.NativeArray` instances, calls the internal
-        function :code:`fn`, and then converts all :code:`ivy.NativeArray` instances
-        in the return back to :code:`ivy.Array` instances. Also handles :code:`out`
-        argument correctly, enabling an inplace update.
+        Converts all `ivy.Array` instances in both the positional and keyword arguments
+        into `ivy.NativeArray` instances, calls the internal function `function`, and
+        then converts all `ivy.NativeArray` instances in the return back to `ivy.Array`
+        instances. Also handles `out` argument correctly, enabling an inplace update.
 
         Parameters
         ----------
@@ -201,14 +218,14 @@ def _wrap_function(fn):
             if handle_out_with_backend:
                 # compute return, with backend inplace update handled by
                 # the backend function
-                ret = fn(*native_args, out=native_out, **native_kwargs)
+                ret = function(*native_args, out=native_out, **native_kwargs)
             else:
                 # compute return, with backend inplace update handled explicitly
-                ret = fn(*native_args, **native_kwargs)
+                ret = function(*native_args, **native_kwargs)
                 ret = ivy.inplace_update(native_out, ivy.to_native(ret))
         else:
-            ret = fn(*native_args, **native_kwargs)
-        if fn.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
+            ret = function(*native_args, **native_kwargs)
+        if function.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
             return ret
         elif ivy.exists(out):
             # handle ivy.Array inplace update as well
@@ -240,18 +257,18 @@ def _wrap_function(fn):
         if handle_dtype or handle_dev:
             arr = _get_first_array(*args, **kwargs)
             if handle_dtype:
-                if fn.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
+                if function.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
                     dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
                 kwargs["dtype"] = dtype
             if handle_dev:
-                if fn.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
+                if function.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
                     device = ivy.default_device(device, item=arr, as_native=True)
                 kwargs["device"] = device
         return _function_w_arrays_n_out_handled(*args, **kwargs)
 
     def _function_wrapped(*args, **kwargs):
         """
-        Computes the result of the function fn, returning the result as an ivy array,
+        Computes the result of `function`, returning the result as an ivy array,
         a native framework array, or an ivy container.
 
         Parameters
@@ -267,44 +284,38 @@ def _wrap_function(fn):
             The result of computing the function fn as an ivy array, a native array,
             or an ivy container.
         """
-        fn_name = fn.__name__
-        """ 
-        if the function is not implemented for containers or the function 
-        has built-in container support, call the function using the passed 
-        arguments directly, returning an ivy or a native array.
-        """
+        fn_name = function.__name__
+        # if the function is not implemented for containers or the function has built-in
+        # container support, call the function using the passed arguments directly,
+        # returning an ivy or a native array.
         if not hasattr(ivy.Container, fn_name) or fn_name in FUNCTIONS_W_CONT_SUPPORT:
             return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
-        """
-        if any of the arguments or keyword arguments passed to the function contains a 
-        a container, get the container's version of the function and call it using
-        the passed arguments.
-        """
+        # if any of the arguments or keyword arguments passed to the function contains a
+        # a container, get the container's version of the function and call it using
+        # the passed arguments.
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
             f = getattr(ivy.Container, "static_" + fn_name)
             return f(*args, **kwargs)
 
-        """
-        if the passed arguments does not contain a container, the function using 
-        the passed arguments, returning an ivy or a native array.
-        """
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
         return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
 
-    if hasattr(fn, "__name__"):
-        _function_wrapped.__name__ = fn.__name__
+    if hasattr(function, "__name__"):
+        _function_wrapped.__name__ = function.__name__
     _function_wrapped.wrapped = True
-    _function_wrapped.inner_fn = fn
-    if hasattr(fn, "array_spec"):
-        _function_wrapped.array_spec = fn.array_spec
-    if hasattr(fn, "reduce"):
-        _function_wrapped.reduce = fn.reduce
+    _function_wrapped.inner_fn = function
+    if hasattr(function, "array_spec"):
+        _function_wrapped.array_spec = function.array_spec
+    if hasattr(function, "reduce"):
+        _function_wrapped.reduce = function.reduce
 
     return _function_wrapped
 
 
-def _unwrap_function(function_wrapped):
+def _unwrap_function(function_wrapped: Callable) -> Callable:
     """
     Unwraps the function in function_wrapped.
 
