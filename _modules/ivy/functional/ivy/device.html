@@ -1106,8 +1106,9 @@
 <span class="sd">        array cloned to each of the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">({</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                                                           <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">})</span></div>
+    <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">(</span>
+        <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">}</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
