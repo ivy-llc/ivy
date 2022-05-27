@@ -58,9 +58,6 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
 # --------#
 
 # dropout
-# @pytest.mark.parametrize("x", [([[1.0, 2.0, 3.0]]), ([[[1.0, 2.0, 3.0]]])])
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @given(
     array_shape=helpers.lists(
         st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
@@ -70,7 +67,7 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
 def test_dropout(array_shape, dtype, as_variable, fw, device, call):
     if (fw == 'tensorflow' or fw == 'torch') and 'int' in dtype:
         return
-    x = np.random.uniform(size=tuple(array_shape))
+    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
     if as_variable:
         x = ivy.variable(x)

@@ -38,35 +38,35 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (f) :ref:`Function Wrapping`
 | How functions are dynamically wrapped at runtime  🎁
 |
-| (g) :ref:`Method Types`
-| :code:`ivy.Container` and :code:`ivy.Array` methods 🗜️️
+| (g) :ref:`Arrays`
+| Different types of arrays, and how they're handled 🔢
 |
-| (h) :ref:`Native Arrays`
-| How each function converts arrays to :code:`ivy.NativeArray` and back  🔙
+| (h) :ref:`Containers`
+| What the :code:`ivy.Container` does  🗂️
 |
-| (i) :ref:`Inplace Updates`
-| How the :code:`out` argument is used to specify the output target  🎯
-|
-| (j) :ref:`Data Types`
+| (i) :ref:`Data Types`
 | How functions infer the correct data type  💾
 |
-| (k) :ref:`Devices`
+| (j) :ref:`Devices`
 | How functions infer the correct device  💽
 |
-| (l) :ref:`Array API Tests`
-| How we're borrowing the test suite from the Array API Standard 🤝
+| (k) :ref:`Inplace Updates`
+| How the :code:`out` argument is used to specify the output target  🎯
 |
-| (m) :ref:`Ivy Tests`
-| How to add new Ivy tests for each function ❓
-|
-| (n) :ref:`Type Hints`
+| (l) :ref:`Type Hints`
 | How to add the correct type hints 📑
 |
-| (o) :ref:`Docstrings`
+| (m) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (p) :ref:`Docstring Examples`
+| (n) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
+|
+| (o) :ref:`Array API Tests`
+| How we're borrowing the test suite from the Array API Standard 🤝
+|
+| (p) :ref:`Ivy Tests`
+| How to add new Ivy tests for each function ❓
 |
 
 .. toctree::
@@ -80,13 +80,13 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/3_function_types.rst
    contributing/4_backend_setting.rst
    contributing/5_function_wrapping.rst
-   contributing/6_method_types.rst
-   contributing/7_native_arrays.rst
-   contributing/8_inplace_updates.rst
-   contributing/9_data_types.rst
-   contributing/10_devices.rst
-   contributing/11_array_api_tests.rst
-   contributing/12_ivy_tests.rst
-   contributing/13_type_hints.rst
-   contributing/14_docstrings.rst
-   contributing/15_docstring_examples.rst
+   contributing/6_arrays.rst
+   contributing/7_containers.rst
+   contributing/8_data_types.rst
+   contributing/9_devices.rst
+   contributing/10_inplace_updates.rst
+   contributing/11_type_hints.rst
+   contributing/12_docstrings.rst
+   contributing/13_docstring_examples.rst
+   contributing/14_array_api_tests.rst
+   contributing/15_ivy_tests.rst
