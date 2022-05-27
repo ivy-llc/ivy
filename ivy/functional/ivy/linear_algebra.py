@@ -86,6 +86,38 @@ def pinv(
         ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
         two dimensions must be transposed).
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[ 1.5, -2.3], [ 0.5, 1.3], [ 1.7, 0.2]])
+    >>> y = 1e-5
+    >>> l = ivy.pinv(x, y) 
+    >>> print(l)
+    ivy.array([[ 0.153,  0.211,  0.391],
+            [-0.274,  0.259,  0.165]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[ 1., -2.], [ 0.,  1.]])
+    >>> l = ivy.pinv(x)
+    >>> print(l)
+    ivy.array([[ 1.00e+00,  2.00e+00],
+        [-8.61e-18,  1.00e+00]])  
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.random_normal(shape = (2, 1))
+    >>> x = ivy.Container(a=x)
+    >>> y = x.pinv()
+    >>> print(y)
+    {
+        a: ivy.array([[-0.177, -0.713]])
+    }
+
     """
     return _cur_backend(x).pinv(x, rtol)
 
