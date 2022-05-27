@@ -6,147 +6,201 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+from torch import half
+
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
+
 # relu
 @given(
-    x=st.lists(st.floats()),
-    dtype=st.sampled_from(ivy.float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-def test_relu(x, dtype, as_variable, with_out, native_array, fw):
-    if dtype in ivy.invalid_dtypes:
-        return  # invalid dtype
-    if dtype == "float16" and fw == "torch":
-        return  # torch does not support float16 for relu
-    x = ivy.array(x, dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            return  # only floating point variables are supported
-        if with_out:
-            return  # variables do not support out argument
-        x = ivy.variable(x)
-    if native_array:
-        x = x.data
-    ret = ivy.relu(x)
-    out = ret
-    if with_out:
-        if as_variable:
-            out = ivy.variable(out)
-        if native_array:
-            out = out.data
-        ret = ivy.relu(x, out=out)
-        if not native_array:
-            assert ret is out
-        if fw in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
-    # value test
-    if dtype == "bfloat16":
-        return  # bfloat16 is not supported by numpy
-    assert np.allclose(
-        np.nan_to_num(ivy.to_numpy(ret)), np.nan_to_num(ivy_np.relu(ivy.to_numpy(x)))
-    )
+def test_relu(dtype_and_x, as_variable, with_out, native_array,num_positional_args,container,instance_method,fw):
+        dtype, x = dtype_and_x
+        helpers.test_array_function(
+            dtype,
+            as_variable,
+            with_out,
+            native_array,
+            fw,
+            num_positional_args,
+            container,
+            instance_method,
+            "relu",
+            x=np.asarray(x, dtype=dtype),
+        )
 
 
 # leaky_relu
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_leaky_relu(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.leaky_relu(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.leaky_relu, x), ivy_np.leaky_relu(ivy.to_numpy(x)))
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+    alpha = st.floats(),
+)
+
+def test_leaky_relu(dtype_and_x, alpha,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype,x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "leaky_relu",
+        x=np.asarray(x, dtype=dtype),
+        alpha= alpha,
+    )
 
 
 # gelu
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("approx", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gelu(x, approx, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.gelu(x, approx)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.gelu, x, approx), ivy_np.gelu(ivy.to_numpy(x), approx))
-
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    approximate = st.booleans(),
+)
+def test_gelu(dtype_and_x, approximate,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype,x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "gelu",
+        x=np.asarray(x, dtype=dtype),
+        approximate= approximate,
+    )
 
 # tanh
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_tanh(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.tanh(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.tanh, x), ivy_np.tanh(ivy.to_numpy(x)))
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_tanh(dtype_and_x,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "tanh",
+        x=np.asarray(x, dtype=dtype),
+    )
 
 
 # sigmoid
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_sigmoid(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.sigmoid(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.sigmoid, x), ivy_np.sigmoid(ivy.to_numpy(x)))
-
-
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "sigmoid",
+        x=np.asarray(x, dtype=dtype),
+    )
 # softmax
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_softmax(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.softmax(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.softmax, x), ivy_np.softmax(ivy.to_numpy(x)))
-
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    axis = st.integers(-1,0),
+)
+def test_softmax(dtype_and_x,axis,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "softmax",
+        x=np.asarray(x, dtype=dtype),
+        axis = axis,
+    )
 
 # softplus
-@pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_softplus(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype, device)
-    ret = ivy.softplus(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.softplus, x), ivy_np.softplus(ivy.to_numpy(x)))
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_softplus(dtype_and_x,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "softplus",
+        x=np.asarray(x, dtype=dtype),
+)
