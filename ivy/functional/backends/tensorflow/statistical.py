@@ -50,9 +50,10 @@ def sum(
 
 def prod(
     x: Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: tf.DType,
     out: Optional[Tensor] = None,
 ) -> Tensor:
     if dtype is None:

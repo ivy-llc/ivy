@@ -59,14 +59,15 @@ def asarray(
 
 
 def zeros(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    shape: Union[int, Tuple[int], List[int]],
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
 ) -> Tensor:
     return torch.zeros(
         shape,
-        dtype=as_native_dtype(default_dtype(dtype)),
-        device=as_native_dev(default_device(device)),
+        dtype=dtype,
+        device=device,
     )
 
 
@@ -256,9 +257,11 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device, dtype=dtype)[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
+            :-1
+        ]
     else:
-        ans = linspace_helper(start, stop, num, axis, device, dtype=dtype)
+        ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if dtype is None:
         dtype = torch.float32
     ans = ans.type(dtype)
@@ -344,14 +347,15 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
+    *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    device: torch.device,
 ) -> Tensor:
     return torch.full(
         shape_to_tuple(shape),
         fill_value,
-        dtype=as_native_dtype(default_dtype(dtype, fill_value)),
-        device=default_device(device),
+        dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+        device=device,
     )
 
 

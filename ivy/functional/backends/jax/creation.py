@@ -22,19 +22,18 @@ def ones(
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
-    return to_dev(
-        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
-    )
+    return to_dev(jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device)
 
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     return to_dev(
-        jnp.zeros(shape, default_dtype(dtype, as_native=True)),
-        default_device(device, as_native=True),
+        jnp.zeros(shape, dtype),
+        device=device,
     )
 
 
@@ -53,7 +52,7 @@ def full_like(
         jnp.full_like(
             x, fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
         ),
-        default_device(device),
+        device=device,
     )
 
 
@@ -67,7 +66,7 @@ def ones_like(
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
-    return to_dev(jnp.ones_like(x, dtype=dtype), default_device(device))
+    return to_dev(jnp.ones_like(x, dtype=dtype), device=device)
 
 
 def zeros_like(
@@ -77,7 +76,7 @@ def zeros_like(
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
-    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(device))
+    return to_dev(jnp.zeros_like(x, dtype=dtype), device=device)
 
 
 def tril(x: JaxArray, k: int = 0) -> JaxArray:
@@ -94,7 +93,7 @@ def empty(
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
     return to_dev(
-        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), default_device(device)
+        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
     )
 
 
@@ -109,7 +108,7 @@ def empty_like(
     else:
         dtype = x.dtype
 
-    return to_dev(jnp.empty_like(x, dtype=dtype), default_device(device))
+    return to_dev(jnp.empty_like(x, dtype=dtype), device=device)
 
 
 def asarray(
@@ -128,15 +127,15 @@ def asarray(
         # Temporary fix on type
         # Because default_type() didn't return correct type for normal python array
         if copy is True:
-            return to_dev(jnp.array(object_in, copy=True), device)
+            return to_dev(jnp.array(object_in, copy=True), device=device)
         else:
-            return to_dev(jnp.asarray(object_in), device)
+            return to_dev(jnp.asarray(object_in), device=device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
-        return to_dev(jnp.array(object_in, dtype=dtype, copy=True), device)
+        return to_dev(jnp.array(object_in, dtype=dtype, copy=True), device=device)
     else:
-        return to_dev(jnp.asarray(object_in, dtype=dtype), device)
+        return to_dev(jnp.asarray(object_in, dtype=dtype), device=device)
 
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
@@ -145,7 +144,7 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
     if dtype is None:
         ans = jnp.float32(ans)
-    return to_dev(ans, device)
+    return to_dev(ans, device=device)
 
 
 def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
@@ -161,14 +160,14 @@ def eye(
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
-    return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device)
+    return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device=device)
 
 
 # noinspection PyShadowingNames
 def arange(start, stop=None, step=1, dtype=None, device=None):
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), device)
+    res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
             return res.astype(jnp.float32)
@@ -185,7 +184,7 @@ def full(
 ) -> JaxArray:
     return to_dev(
         jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
-        default_device(device),
+        device=device,
     )
 
 
@@ -202,6 +201,4 @@ array = asarray
 def logspace(start, stop, num, base=10.0, axis=None, device=None):
     if axis is None:
         axis = -1
-    return to_dev(
-        jnp.logspace(start, stop, num, base=base, axis=axis), default_device(device)
-    )
+    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), device=device)

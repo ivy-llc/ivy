@@ -6,7 +6,7 @@ import numpy as np
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray

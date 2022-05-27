@@ -71,7 +71,7 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize container object from input dict representation.
 
@@ -162,6 +162,56 @@ class ContainerBase(dict, abc.ABC):
 
     # Class Methods #
     # --------------#
+
+    @staticmethod
+    def multi_map_in_static_method(
+        fn_name,
+        *args,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=None,
+        out=None,
+        **kwargs,
+    ) -> ivy.Container:
+        arg_cont_idxs = ivy.nested_indices_where(
+            args, ivy.is_ivy_container, to_ignore=ivy.Container
+        )
+        kwarg_cont_idxs = ivy.nested_indices_where(
+            kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
+        )
+        # retrieve all the containers in args and kwargs
+        arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
+        num_arg_conts = len(arg_conts)
+        kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
+        # Combine the retrieved containers from args and kwargs into a single list
+        conts = arg_conts + kwarg_conts
+        if not conts:
+            raise Exception("no containers found in arguments")
+        cont0 = conts[0]
+        # Get the function with the name fn_name, enabling containers to specify
+        # their backends irrespective of global ivy's backend
+        fn = cont0.ivy.__dict__[fn_name]
+
+        def map_fn(vals, _):
+            arg_vals = vals[:num_arg_conts]
+            a = ivy.copy_nest(args, to_mutable=True)
+            ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
+            kwarg_vals = vals[num_arg_conts:]
+            kw = ivy.copy_nest(kwargs, to_mutable=True)
+            ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
+            return fn(*a, **kw)
+
+        # Replace each container in arg and kwarg with the arrays at the leaf
+        # levels of that container using map_fn and call fn using those arrays
+        # as inputs
+        ret = ivy.Container.multi_map(
+            map_fn, conts, key_chains, to_apply, prune_unapplied
+        )
+        if ivy.exists(out):
+            out.inplace_update(ret)
+            ret = out
+        return ret
 
     @staticmethod
     def handle_inplace(ret, out):
@@ -338,7 +388,7 @@ class ContainerBase(dict, abc.ABC):
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.combine(
                 *[cont[key] for cont, kp in zip(containers, keys_present) if kp],
-                config=config
+                config=config,
             )
         return ivy.Container(return_dict, **config)
 
@@ -350,7 +400,7 @@ class ContainerBase(dict, abc.ABC):
         detect_key_diffs=True,
         detect_value_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and values in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -404,7 +454,7 @@ class ContainerBase(dict, abc.ABC):
             if detect_shape_diffs:
                 shape_equal_mat = ivy.all_equal(
                     *[c.shape if ivy.is_array(c) else None for c in containers],
-                    equality_matrix=True
+                    equality_matrix=True,
                 )
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
@@ -461,7 +511,7 @@ class ContainerBase(dict, abc.ABC):
                     detect_key_diffs=detect_key_diffs,
                     detect_value_diffs=detect_value_diffs,
                     detect_shape_diffs=detect_shape_diffs,
-                    config=config
+                    config=config,
                 )
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
@@ -496,7 +546,7 @@ class ContainerBase(dict, abc.ABC):
         diff_keys="diff",
         detect_key_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and shapes in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -536,7 +586,7 @@ class ContainerBase(dict, abc.ABC):
             detect_key_diffs=detect_key_diffs,
             detect_value_diffs=False,
             detect_shape_diffs=detect_shape_diffs,
-            config=config
+            config=config,
         )
 
     @staticmethod
@@ -1198,6 +1248,70 @@ class ContainerBase(dict, abc.ABC):
 
     # Private Methods #
     # ----------------#
+
+    def _call_static_method_with_flexible_args(
+        self,
+        static_method,
+        *args,
+        kw,
+        required,
+        defaults,
+        self_idx=0,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=None,
+        out=None,
+    ) -> ivy.Container:
+        if args:
+            num_args = len(args)
+            kw = {
+                k: defaults[k] if k in defaults else v
+                for i, (k, v) in enumerate(kw.items())
+                if i > num_args
+            }
+            args = list(args)
+            if self_idx > num_args:
+                k = list(kw.keys())[self_idx - num_args - 1]
+                kw[k] = self
+            else:
+                args.insert(self_idx, self)
+            return static_method(
+                *args,
+                **kw,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            )
+        self_set = False
+        # set to leftmost non-specified required arg, if present
+        for k in required:
+            if kw[k] is None:
+                kw[k] = self
+                self_set = True
+                break
+        # go through each key and value of the keyword arguments
+        for k, v in kw.items():
+            if v is None:
+                if self_set:
+                    if k in defaults:
+                        # if self is set and a default value exists, set it
+                        kw[k] = defaults[k]
+                else:
+                    # otherwise set self to this argument
+                    kw[k] = self
+                    self_set = True
+        # call the static method
+        return static_method(
+            **kw,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     def _get_shape(self):
 
@@ -1975,7 +2089,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.random_uniform(low, high, x.shape, self._ivy.dev(x))
+            lambda x, kc: self._ivy.random_uniform(
+                low, high, x.shape, device=self._ivy.dev(x)
+            )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2132,7 +2248,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.MultiDevContainer(
             self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
             devices,
-            **self._config
+            **self._config,
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):
@@ -2317,7 +2433,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops rearrange operation on each sub array in the container.
 
@@ -2363,7 +2479,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops reduce operation on each sub array in the container.
 
@@ -2410,7 +2526,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops repeat operation on each sub array in the container.
 
@@ -2685,7 +2801,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
         if update_backend:
-            ret.set_ivy_backend(ivy.get_framework("numpy"))
+            ret.set_ivy_backend(ivy.get_backend("numpy"))
         return ret
 
     def from_numpy(
@@ -3890,7 +4006,7 @@ class ContainerBase(dict, abc.ABC):
                 ): v
                 for kc, v in self.to_iterator(include_empty=include_empty)
             },
-            **self._config
+            **self._config,
         )
 
     def copy(self):
@@ -4608,7 +4724,7 @@ class ContainerBase(dict, abc.ABC):
                 [_add_newline(s) for s in json_dumped_str.split('":')]
             )
             # improve tf formatting
-            if ivy.framework_stack and ivy.current_framework_str() == "tensorflow":
+            if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
                 json_dumped_str_split = json_dumped_str.split("'Variable:")
                 json_dumped_str = (
                     json_dumped_str_split[0]
@@ -4920,35 +5036,33 @@ class ContainerBase(dict, abc.ABC):
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
         state_dict["_local_ivy"] = ivy.try_else_none(
-            lambda: state_dict["_local_ivy"].current_framework_str()
+            lambda: state_dict["_local_ivy"].current_backend_str()
         )
         config_in = copy.copy(state_dict["_config_in"])
         config_in["ivyh"] = ivy.try_else_none(
-            lambda: config_in["ivyh"].current_framework_str()
+            lambda: config_in["ivyh"].current_backend_str()
         )
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
-        config["ivyh"] = ivy.try_else_none(
-            lambda: config["ivyh"].current_framework_str()
-        )
+        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
         state_dict["_config"] = config
         return state_dict
 
     def __setstate__(self, state_dict):
         if "_local_ivy" in state_dict:
             if ivy.exists(state_dict["_local_ivy"]):
-                state_dict["_local_ivy"] = ivy.get_framework(state_dict["_local_ivy"])
+                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
-                    config_in["ivyh"] = ivy.get_framework(config_in["ivyh"])
+                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
-                    config["ivyh"] = ivy.get_framework(config["ivyh"])
+                    config["ivyh"] = ivy.get_backend(config["ivyh"])
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
 
