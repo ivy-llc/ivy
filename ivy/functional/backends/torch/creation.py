@@ -257,7 +257,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
+            :-1
+        ]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if dtype is None:

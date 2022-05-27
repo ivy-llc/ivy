@@ -91,8 +91,7 @@ def test_linear_resample(
 
 # bilinear_resample
 @given(
-    batch_shape=st.lists(st.integers(min_value=1, max_value=8),
-                         min_size=1, max_size=4),
+    batch_shape=st.lists(st.integers(min_value=1, max_value=8), min_size=1, max_size=4),
     h_w=helpers.list_of_length(st.integers(min_value=2, max_value=8), 2),
     n_dims=st.integers(min_value=1, max_value=8),
     n_samples=st.integers(min_value=1, max_value=8),
@@ -129,7 +128,7 @@ def test_bilinear_resample(
         fw,
         "bilinear_resample",
         x=x,
-        warp=warp
+        warp=warp,
     )
 
 
@@ -234,8 +233,7 @@ def test_uint8_img_to_float_img(
 
 # random_crop
 @given(
-    shape=st.lists(st.integers(min_value=2, max_value=8),
-                   min_size=3, max_size=3),
+    shape=st.lists(st.integers(min_value=2, max_value=8), min_size=3, max_size=3),
     seed=st.integers(min_value=1, max_value=8),
     dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
@@ -256,8 +254,7 @@ def test_random_crop(
     if fw == "torch" and dtype == "float16":
         return
     x = ivy.random_normal(shape=[3] + shape)
-    crop_size = [random.randint(1, shape[-3] * 2),
-                 random.randint(1, shape[-2] * 2)]
+    crop_size = [random.randint(1, shape[-3] * 2), random.randint(1, shape[-2] * 2)]
     helpers.test_array_function(
         dtype,
         as_variable,
