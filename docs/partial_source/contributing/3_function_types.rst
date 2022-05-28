@@ -26,6 +26,12 @@ Function Types
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71
 
+Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
+These four function categorizations are all **mutually exclusive**. As outlined in the simple Venn diagram below.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true
+   :align: center
+   :width: 50%
 
 Primary Functions
 -----------------
@@ -150,10 +156,17 @@ provided that the containers share an identical nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :code:`ivy.Container` in the output.
+*Primary*, *compositional*, *mixed*, and *standalone* functions can all *also* be nestable.
+This categorization is **not** mutually exclusive, as outlined below.
 
-This property makes it very easy to write a single piece of code that can deal either with individual arrays or
-arbitrary batches of nested arrays. This is very useful in machine learning, where batches of different data often need
-to be processed concurrently. Another example is when the same operation must be performed on each weight in a network.
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true
+   :align: center
+   :width: 50%
+
+The *nestable* property makes it very easy to write a single piece of code that can deal either with individual
+arguments or arbitrary batches of nested arguments. This is very useful in machine learning,
+where batches of different data often need to be processed concurrently.
+Another example is when the same operation must be performed on each weight in a network.
 This *nestable* property of Ivy functions means that the same function can be used for any of these use cases
 without modification.
 
@@ -171,8 +184,12 @@ Convenience Functions
 A final group of functions are the *convenience* functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
+Convenience functions can be *primary*, *compositional* or *standalone* functions. Many are also *nestable*.
+This is another categorization which is **not** mutually exclusive, as outlined below:
 
-Convenience functions can be *primary*, *compositional* or *standalone* functions.
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true
+   :align: center
+   :width: 50%
 
 Primary convenience functions include:
 `ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules,
