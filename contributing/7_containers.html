@@ -55,9 +55,9 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#container-instance-methods">Container Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#container-static-methods">Container Static Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-static-methods">API Static Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api-instance-methods">API Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api-special-methods">API Special Methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#api-static-methods">API Static Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
@@ -189,16 +189,33 @@ which is used for mapping a function to all leaves of <em>multiple</em> containe
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663">ivy.Container.common_key_chains</a> which returns the nested structure that is common to all containers.</p>
 <p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
+<section id="api-static-methods">
+<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this headline"></a></h2>
+<p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements all functions in the functional API as
+<em>static</em> methods. The main reason for this is to support the <em>nestable</em> property of all functions in the API,
+which is explained in detail in the <a class="reference internal" href="3_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+<p>To recap, what this means is that every function can arbitrarily accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
+of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
+When multiple containers are passed, this mapping is only applied to their shared nested structure,
+with the mapping applied to each of these leaves.</p>
+<p>In such cases, the function in the functional API defers to the <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
+Under the hood, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> enables us to pass in arbitrary combinations of containers
+and non-containers, and perform the correct mapping across the leaves.
+Internally, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.multi_map_in_static_method</span></code> calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>.</p>
+<p>A few examples are <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135">ivy.Container.static_roll</a></p>
+</section>
 <section id="api-instance-methods">
 <h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write</p>
+<p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
+They enable functions in Ivy’s functional API to be called as instance methods.
+The difference is that with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
+the API function is applied recursively to all the leaves of the container.</p>
+<p>Under the hood, either <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030">ivy.Container.map</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a> is used.
+For example, X makes use of the former, while Y makes use of the latter.</p>
+<p>As is the case for <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, [inheritance explanation].</p>
 </section>
 <section id="api-special-methods">
 <h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write</p>
-</section>
-<section id="api-static-methods">
-<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this headline"></a></h2>
 <p>ToDo: write</p>
 </section>
 </section>
