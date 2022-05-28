@@ -691,8 +691,8 @@ def det(
     >>> y = ivy.det(x)
     >>> print(y)
     {
-        a: 8.000000000000002,
-        b: 1.0
+        a: ivy.array([8.0]),
+        b: ivy.array([1.0])
     }
 
     Instance Method Examples
