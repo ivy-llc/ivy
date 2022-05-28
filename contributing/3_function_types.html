@@ -254,6 +254,10 @@ as inputs to functions in the functional API. This is explained in more detail i
 <p>A final group of functions are the <em>convenience</em> functions.
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.</p>
+<p>Convenience functions do not defer to backend implementations in any way.
+This sets them apart from <em>compositional</em> functions,
+which are still ultimately composed of <em>primary</em> functions under the hood.
+Convenience functions are <strong>not</strong> composed of primary functions under the hood.</p>
 <p>A few examples are:
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L153">ivy.set_backend</a> which sets the global backend framework,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211">ivy.get_backend</a> which returns a local Ivy module with the associated backend framework,
