@@ -9,6 +9,13 @@ Function Types
 .. _`from being added`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L78
 .. _`_function_w_arrays_n_out_handled`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
+.. _`ivy.set_backend`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L153
+.. _`ivy.get_backend`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211
+.. _`ivy.nested_map`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L333
+.. _`ivy.index_nest`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L15
+.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
+.. _`ivy.set_default_device`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/device.py#L464
+.. _`submodules`: https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy
 
 
 Primary Functions
@@ -129,3 +136,21 @@ This function wrapping process is covered in more detail in the :ref:`Function W
 
 Under the hood, the static :code:`ivy.Container` methods are called when :code:`ivy.Container` instances are passed in
 as inputs to functions in the functional API. This is explained in more detail in the :ref:`Method Types` section.
+
+Convenience Functions
+---------------------
+
+A final group of functions are the *convenience* functions.
+Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
+However, they can be used to organize and improve the code for other functions which do modify the arrays.
+
+A few examples are:
+`ivy.set_backend`_ which sets the global backend framework,
+`ivy.get_backend`_ which returns a local Ivy module with the associated backend framework,
+`ivy.nested_map`_ which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
+`ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed,
+`ivy.set_default_dtype`_ which sets the global default data type,
+and `ivy.set_default_device`_ which sets the global default device.
+
+There are many other examples. The convenience functions are not grouped in any particular way.
+Feel free to have a look through all of the `submodules`_, you should be able to spot quite a few!
