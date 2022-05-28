@@ -247,7 +247,7 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18d
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this headline"></a></h2>
-<p><em>Nestable</em> functions are functions (compositional or primary) which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
+<p><em>Nestable</em> functions are functions which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
 provided that the containers share an identical nested structure.
 If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
@@ -267,20 +267,23 @@ as inputs to functions in the functional API. This is explained in more detail i
 </section>
 <section id="convenience-functions">
 <h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline"></a></h2>
-<p>A final group of functions are the <em>convenience</em> functions.
+<p>A final group of functions are the <em>convenience</em> functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.</p>
-<p>Convenience functions do not defer to backend implementations in any way.
-This sets them apart from <em>compositional</em> functions,
-which are still ultimately composed of <em>primary</em> functions under the hood.
-Convenience functions are <strong>not</strong> composed of primary functions under the hood.</p>
-<p>A few examples are:
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L153">ivy.set_backend</a> which sets the global backend framework,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211">ivy.get_backend</a> which returns a local Ivy module with the associated backend framework,
+<p>Convenience functions can be <em>primary</em>, <em>compositional</em> or <em>standalone</em> functions.</p>
+<p>Primary convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22">ivy.can_cast</a> which determines if one data type can be cast to another data type according to type-promotion rules,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L140">ivy.dtype</a> which gets the data type for the input array,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132">ivy.dev</a> which gets the device for the input array.</p>
+<p>Compositional convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536">ivy.set_default_dtype</a> which sets the global default data dtype,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> which returns the correct data type to use,
+considering both the inputs and also the globally set default,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71">ivy.get_all_arrays_on_dev</a> which gets all arrays which are currently on the specified device.</p>
+<p>Standalone convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211">ivy.get_backend</a> which returns a local Ivy module with the associated backend framework.
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L333">ivy.nested_map</a> which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L15">ivy.index_nest</a> which enables an arbitrary nest to be recursively indexed,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536">ivy.set_default_dtype</a> which sets the global default data type,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/device.py#L464">ivy.set_default_device</a> which sets the global default device.</p>
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L15">ivy.index_nest</a> which enables an arbitrary nest to be recursively indexed.</p>
 <p>There are many other examples. The convenience functions are not grouped in any particular way.
 Feel free to have a look through all of the <a class="reference external" href="https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy">submodules</a>, you should be able to spot quite a few!</p>
 </section>
