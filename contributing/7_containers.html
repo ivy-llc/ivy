@@ -179,7 +179,15 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 </section>
 <section id="container-static-methods">
 <h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write (multi_map)</p>
+<p>Container static methods are also methods which are specific to containers,
+but which generally operate across <em>multiple</em> containers rather than a single container.
+This underpins the decision to not bind these method to a single container instance,
+and instead implement them as <em>static</em> methods.</p>
+<p>A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>
+which is used for mapping a function to all leaves of <em>multiple</em> containers with the same nested structure,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396">ivy.Container.diff</a> which displays the difference in nested structure between multiple containers,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663">ivy.Container.common_key_chains</a> which returns the nested structure that is common to all containers.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
 <section id="api-instance-methods">
 <h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this headline"></a></h2>
