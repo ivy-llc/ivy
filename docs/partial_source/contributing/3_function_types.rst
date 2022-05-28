@@ -144,6 +144,11 @@ A final group of functions are the *convenience* functions.
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
 
+Convenience functions do not defer to backend implementations in any way.
+This sets them apart from *compositional* functions,
+which are still ultimately composed of *primary* functions under the hood.
+Convenience functions are **not** composed of primary functions under the hood.
+
 A few examples are:
 `ivy.set_backend`_ which sets the global backend framework,
 `ivy.get_backend`_ which returns a local Ivy module with the associated backend framework,
