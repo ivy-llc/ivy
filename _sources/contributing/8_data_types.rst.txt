@@ -19,6 +19,10 @@ Data Types
 .. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
 .. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
 .. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
+.. _`data_type.py`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py
+.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
+.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
+.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
 
 
 The data types supported by Ivy are as follows:
@@ -74,7 +78,25 @@ This is `handled`_ in :code:`ivy.set_backend`.
 Data Type Module
 ----------------
 
-# ToDo: write
+The `data_type.py`_ module provides a variety of functions for working with data types.
+A few examples include
+:code:`astype` which copies an array to a specified data type,
+:code:`broadcast_to` which broadcasts an array to a specified shape,
+and :code:`result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
+
+Many functions are *convenience* functions, which means that they do not directly modify arrays,
+as explained in the :ref:`Function Types` section.
+
+For example,
+`ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules,
+`ivy.dtype`_ which gets the data type for the input array,
+`ivy.set_default_dtype`_ which sets the global default data dtype,
+and `ivy.default_dtype`_ which returns the correct data type to use,
+are all convenience functions.
+
+`ivy.default_dtype`_ is arguably the most important function.
+Any function in the functional API that receives a :code:`dtype` argument will make use of this,
+as explained below.
 
 Arguments in other Functions
 ----------------------------
@@ -88,16 +110,18 @@ array, which could result in overflows, and so an explicit :code:`dtype` argumen
 
 The :code:`dtype` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
 appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_.
-As discussed above, this is applied to all applicable function dynamically during `backend setting`_.
+This function calls `ivy.default_dtype`_ in order to determine the correct data type.
+As discussed in the :ref:`Function Wrapping` section,
+this is applied to all applicable function dynamically during `backend setting`_.
 
-Overall, the data type is inferred as follows:
+Overall, `ivy.default_dtype`_ infers the data type as follows:
 
 #. if the :code:`dtype` argument is provided, use this directly
 #. otherwise, if an array is present in the arguments, set :code:`arr` to this array. \
    This will then be used to infer the data type by calling :code:`ivy.dtype` on the array
 #. otherwise, if a *relevant* scalar is present in the arguments, set :code:`arr` to this scalar \
-   and derive the data type from this by calling either :code:`ivy.default_int_dtype` or :code:`ivy.default_int_dtype` \
-   depending on whether the scalar is an :code:`int` or :code:`float`. \
+   and derive the data type from this by calling either :code:`ivy.default_int_dtype` or \
+   :code:`ivy.default_float_dtype` depending on whether the scalar is an :code:`int` or :code:`float`. \
    This will either return the globally set default :code:`int` or globally set default :code:`float` \
    (settable via :code:`ivy.set_default_int_dtype` and :code:`ivy.set_default_float_dtype` respectively). \
    An example of a *relevant* scalar is :code:`start` in the function :code:`ivy.arange`, \
