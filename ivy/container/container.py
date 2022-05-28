@@ -6,11 +6,9 @@ from operator import eq as _eq
 from operator import ne as _ne
 from operator import gt as _gt
 from operator import ge as _ge
-from operator import mul as _mul
 from operator import pow as _pow
 from operator import not_ as _not
 from functools import reduce as _reduce
-from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
 # local
@@ -115,36 +113,28 @@ class Container(
         return self.map(lambda x, kc: power**x)
 
     def __add__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], sum)
-        return self.map(lambda x, kc: x + other)
+        return self.static_add(self, other)
 
     def __radd__(self, other):
-        return self + other
+        return self.static_add(other, self)
 
     def __sub__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, -other], sum)
-        return self.map(lambda x, kc: x - other)
+        return self.static_sub(self, other)
 
     def __rsub__(self, other):
-        return -self + other
+        return self.static_sub(other, self)
 
     def __mul__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_mul, x))
-        return self.map(lambda x, kc: x * other)
+        return self.static_mul(self, other)
 
     def __rmul__(self, other):
-        return self * other
+        return self.static_mul(other, self)
 
     def __truediv__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_truediv, x))
-        return self.map(lambda x, kc: x / other)
+        return self.static_divide(self, other)
 
     def __rtruediv__(self, other):
-        return self.map(lambda x, kc: other / x)
+        return self.static_divide(other, self)
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
