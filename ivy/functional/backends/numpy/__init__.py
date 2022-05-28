@@ -13,7 +13,7 @@ NativeVariable = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
 
-# data types
+# data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
 int16 = ivy.IntDtype("int16")
 int32 = ivy.IntDtype("int32")
