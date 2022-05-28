@@ -210,12 +210,26 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_arrays_on_dev.html#ivy.functional.ivy.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_arrays_on_dev.html#ivy.functional.ivy.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the number of arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
+<span class="sd">        The device handle from which to count the arrays</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Number of arrays on the specified device</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1,0,5.2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.dev(x)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.num_arrays_on_dev(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    2</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
