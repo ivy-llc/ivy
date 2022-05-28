@@ -11,6 +11,10 @@ Containers
 .. _`ivy.Container.multi_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593
 .. _`ivy.Container.diff`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396
 .. _`ivy.Container.common_key_chains`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663
+.. _`ivy.Container.multi_map_in_static_method`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167
+.. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
+.. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
+.. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
@@ -58,17 +62,39 @@ and `ivy.Container.common_key_chains`_ which returns the nested structure that i
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
+API Static Methods
+------------------
+
+Unlike the :code:`ivy.Array` class, the :code:`ivy.Container` also implements all functions in the functional API as
+*static* methods. The main reason for this is to support the *nestable* property of all functions in the API,
+which is explained in detail in the :ref:`Function Types` section.
+
+To recap, what this means is that every function can arbitrarily accept :code:`ivy.Container` instances for **any**
+of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
+When multiple containers are passed, this mapping is only applied to their shared nested structure,
+with the mapping applied to each of these leaves.
+
+In such cases, the function in the functional API defers to the *static* :code:`ivy.Container` implementation.
+Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers
+and non-containers, and perform the correct mapping across the leaves.
+Internally, :code:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
+
+A few examples are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_
+
 API Instance Methods
 --------------------
 
-ToDo: write
+The *API* instance methods serve a similar purpose to the instance methods of the :code:`ivy.Array` class.
+They enable functions in Ivy's functional API to be called as instance methods.
+The difference is that with the :code:`ivy.Container`,
+the API function is applied recursively to all the leaves of the container.
+
+Under the hood, either `ivy.Container.map`_ or `ivy.Container.multi_map`_ is used.
+For example, X makes use of the former, while Y makes use of the latter.
+
+As is the case for :code:`ivy.Array`, [inheritance explanation].
 
 API Special Methods
 --------------------
-
-ToDo: write
-
-API Static Methods
-------------------
 
 ToDo: write
