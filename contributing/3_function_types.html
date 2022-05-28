@@ -151,6 +151,9 @@
              
   <section id="function-types">
 <h1>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline"></a></h1>
+<p>Firstly, we explain the difference between <em>primary</em>, <em>compositional</em>, <em>mixed</em> and <em>standalone</em> functions.
+These four function categorizations are all <strong>mutually exclusive</strong>. As outlined in the simple Venn diagram below.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" style="width: 50%;" /></a>
 <section id="primary-functions">
 <h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this headline"></a></h2>
 <p><em>Primary</em> functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
@@ -252,10 +255,14 @@ of <strong>any</strong> of the arguments. Multiple containers can also be passed
 provided that the containers share an identical nested structure.
 If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
-In this case, the function will return an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.</p>
-<p>This property makes it very easy to write a single piece of code that can deal either with individual arrays or
-arbitrary batches of nested arrays. This is very useful in machine learning, where batches of different data often need
-to be processed concurrently. Another example is when the same operation must be performed on each weight in a network.
+In this case, the function will return an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.
+<em>Primary</em>, <em>compositional</em>, <em>mixed</em>, and <em>standalone</em> functions can all <em>also</em> be nestable.
+This categorization is <strong>not</strong> mutually exclusive, as outlined below.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true" style="width: 50%;" /></a>
+<p>The <em>nestable</em> property makes it very easy to write a single piece of code that can deal either with individual
+arguments or arbitrary batches of nested arguments. This is very useful in machine learning,
+where batches of different data often need to be processed concurrently.
+Another example is when the same operation must be performed on each weight in a network.
 This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases
 without modification.</p>
 <p>This added support for handling <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137">_wrap_function</a>
@@ -269,8 +276,10 @@ as inputs to functions in the functional API. This is explained in more detail i
 <h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline"></a></h2>
 <p>A final group of functions are the <em>convenience</em> functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
-However, they can be used to organize and improve the code for other functions which do modify the arrays.</p>
-<p>Convenience functions can be <em>primary</em>, <em>compositional</em> or <em>standalone</em> functions.</p>
+However, they can be used to organize and improve the code for other functions which do modify the arrays.
+Convenience functions can be <em>primary</em>, <em>compositional</em> or <em>standalone</em> functions. Many are also <em>nestable</em>.
+This is another categorization which is <strong>not</strong> mutually exclusive, as outlined below:</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" style="width: 50%;" /></a>
 <p>Primary convenience functions include:
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22">ivy.can_cast</a> which determines if one data type can be cast to another data type according to type-promotion rules,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L140">ivy.dtype</a> which gets the data type for the input array,
