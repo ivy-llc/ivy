@@ -25,11 +25,11 @@ def asarray(object_in, dtype=None, device=None, copy=None):
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in,as_native=True)        
+        dtype = default_dtype(item=object_in, as_native=True)        
         if copy is True:
-            return _to_dev(np.copy(np.asarray(object_in,dtype=dtype)), device)
+            return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device)
         else:
-            return _to_dev(np.asarray(object_in,dtype=dtype), device)
+            return _to_dev(np.asarray(object_in, dtype=dtype), device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
