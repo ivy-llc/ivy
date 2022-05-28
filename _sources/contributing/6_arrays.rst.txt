@@ -58,7 +58,7 @@ Special methods are a bit little different. Most of these simply wrap a correspo
 as `is the case`_ in the Array API Standard.
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
 :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide` respectively.
-However, for some functions such as `__setitem__`_,
+However, for some special methods such as `__setitem__`_,
 there are substantial differences which must be addressed in the :code:`ivy.Array` implementation.
 
 Array Handling

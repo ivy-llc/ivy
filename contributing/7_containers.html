@@ -155,8 +155,7 @@ For example, the container is equally suitable for storing batches of training d
 or for storing the weights of a network.</p>
 <p>The methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
 All methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods,
-and almost all of them directly wrap a function in the functional API.
-There are a few exceptions, which wrap instance methods on the backend <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>, such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>.</p>
+and almost all of them directly wrap a function in the functional API.</p>
 <p>For the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
 for performing nested operations on the leaves of the container for example.
 In addition, there are also static methods, which are not present in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
@@ -240,7 +239,24 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.</p
 </section>
 <section id="api-special-methods">
 <h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write</p>
+<p>As is the case for the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+most special methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> simply wrap a corresponding function in the functional API.</p>
+<p>The special methods which <strong>do not</strong> wrap functions in the functional API are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a>,
+which is the base abstract class for all containers.
+These special methods include
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4588">__repr__</a> which controls how the container is printed in the terminal,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782">__getattr__</a> that enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4790">__setattr__</a> that enables attribute setting to update the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4842">__getitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried via a chain of keys,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
+<p>As for the special methods which <strong>do</strong> simply wrap corresponding functions in the functional API,
+these are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.</p>
+<p>These special methods all directly wrap the corresponding API <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> method.</p>
+<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which directly call
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_subtract</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_divide</span></code> respectively.</p>
 </section>
 </section>
 
