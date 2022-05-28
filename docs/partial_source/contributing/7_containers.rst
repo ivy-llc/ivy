@@ -3,7 +3,6 @@ Containers
 
 .. _`ivy.Container`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25
 .. _`dict`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56
-.. _`__setitem__`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234
 .. _`ivy.Container.map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030
 .. _`ivy.Container.all_true`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490
 .. _`ivy.Container.to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
@@ -22,6 +21,19 @@ Containers
 .. _`instance method is added`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L173
 .. _`inherits`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/container.py#L25
 .. _`ContainerWithElementwise`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/elementwise.py#L12
+.. _`__repr__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4588
+.. _`__getattr__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782
+.. _`__setattr__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4790
+.. _`__getitem__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4842
+.. _`__setitem__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884
+.. _`__contains__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904
+.. _`__getstate__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912
+.. _`__setstate__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927
+.. _`implemented`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98
+.. _`__add__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115
+.. _`__sub__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121
+.. _`__mul__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127
+.. _`__truediv__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -31,7 +43,6 @@ or for storing the weights of a network.
 The methods of the :code:`ivy.Container` class are more varied than those of the :code:`ivy.Array`.
 All methods of the :code:`ivy.Array` are instance methods,
 and almost all of them directly wrap a function in the functional API.
-There are a few exceptions, which wrap instance methods on the backend :code:`ivy.NativeArray`, such as `__setitem__`_.
 
 For the :code:`ivy.Container`, there are also methods which are specific to the container itself,
 for performing nested operations on the leaves of the container for example.
@@ -133,4 +144,25 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.
 API Special Methods
 --------------------
 
-ToDo: write
+As is the case for the :code:`ivy.Array`,
+most special methods of the :code:`ivy.Container` simply wrap a corresponding function in the functional API.
+
+The special methods which **do not** wrap functions in the functional API are implemented in `ContainerBase`_,
+which is the base abstract class for all containers.
+These special methods include
+`__repr__`_ which controls how the container is printed in the terminal,
+`__getattr__`_ that enables keys in the underlying :code:`dict` to be queried as attributes,
+`__setattr__`_ that enables attribute setting to update the underlying :code:`dict`,
+`__getitem__`_ that enables the underlying :code:`dict` to be queried via a chain of keys,
+`__setitem__`_ that enables the underlying :code:`dict` to be set via a chain of keys,
+`__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
+and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
+
+As for the special methods which **do** simply wrap corresponding functions in the functional API,
+these are `implemented`_ in the main :code:`ivy.Container` class.
+
+These special methods all directly wrap the corresponding API *static* :code:`ivy.Container` method.
+
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
+:code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
+:code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
