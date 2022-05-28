@@ -4,6 +4,12 @@ Containers
 .. _`ivy.Container`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25
 .. _`dict`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56
 .. _`__setitem__`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234
+.. _`ivy.Container.map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030
+.. _`ivy.Container.all_true`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490
+.. _`ivy.Container.to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
+.. _`ContainerBase`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56
+
+
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
@@ -29,12 +35,17 @@ Each of these are explained in the following sub-sections.
 Container Instance Methods
 --------------------------
 
-ToDo: write
+Container instance methods are methods which are specific to the container itself.
+A few examples include `ivy.Container.map`_ which is used for mapping a function to all leaves of the container,
+`ivy.Container.all_true`_ which determines if all container leaves evaluate to boolean `True`,
+and `ivy.Container.to_iterator`_ returns an iterator for traversing the leaves of the container.
+
+There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
 Container Static Methods
 ------------------------
 
-ToDo: write
+ToDo: write (multi_map)
 
 API Instance Methods
 --------------------
