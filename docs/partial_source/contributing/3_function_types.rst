@@ -20,6 +20,11 @@ Function Types
 .. _`ivy.default`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
 .. _`ivy.cache_fn`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
 .. _`ivy.stable_divide`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928
+.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
+.. _`ivy.dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L140
+.. _`ivy.dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132
+.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
+.. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71
 
 
 Primary Functions
@@ -139,7 +144,7 @@ and `ivy.stable_divide`_ which simply adds a small constant to the denominator o
 Nestable Functions
 ------------------
 
-*Nestable* functions are functions (compositional or primary) which can accept :code:`ivy.Container` instances in place
+*Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
 provided that the containers share an identical nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
@@ -163,22 +168,27 @@ as inputs to functions in the functional API. This is explained in more detail i
 Convenience Functions
 ---------------------
 
-A final group of functions are the *convenience* functions.
+A final group of functions are the *convenience* functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
 
-Convenience functions do not defer to backend implementations in any way.
-This sets them apart from *compositional* functions,
-which are still ultimately composed of *primary* functions under the hood.
-Convenience functions are **not** composed of primary functions under the hood.
+Convenience functions can be *primary*, *compositional* or *standalone* functions.
 
-A few examples are:
-`ivy.set_backend`_ which sets the global backend framework,
-`ivy.get_backend`_ which returns a local Ivy module with the associated backend framework,
+Primary convenience functions include:
+`ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules,
+`ivy.dtype`_ which gets the data type for the input array,
+and `ivy.dev`_ which gets the device for the input array.
+
+Compositional convenience functions include:
+`ivy.set_default_dtype`_ which sets the global default data dtype,
+`ivy.default_dtype`_ which returns the correct data type to use,
+considering both the inputs and also the globally set default,
+and `ivy.get_all_arrays_on_dev`_ which gets all arrays which are currently on the specified device.
+
+Standalone convenience functions include:
+`ivy.get_backend`_ which returns a local Ivy module with the associated backend framework.
 `ivy.nested_map`_ which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
-`ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed,
-`ivy.set_default_dtype`_ which sets the global default data type,
-and `ivy.set_default_device`_ which sets the global default device.
+and `ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed.
 
 There are many other examples. The convenience functions are not grouped in any particular way.
 Feel free to have a look through all of the `submodules`_, you should be able to spot quite a few!
