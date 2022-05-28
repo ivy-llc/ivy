@@ -171,11 +171,15 @@ Each of these are explained in the following sub-sections.</p>
 </ol>
 <section id="container-instance-methods">
 <h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write</p>
+<p>Container instance methods are methods which are specific to the container itself.
+A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030">ivy.Container.map</a> which is used for mapping a function to all leaves of the container,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490">ivy.Container.all_true</a> which determines if all container leaves evaluate to boolean <cite>True</cite>,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019">ivy.Container.to_iterator</a> returns an iterator for traversing the leaves of the container.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
 <section id="container-static-methods">
 <h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this headline"></a></h2>
-<p>ToDo: write</p>
+<p>ToDo: write (multi_map)</p>
 </section>
 <section id="api-instance-methods">
 <h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this headline"></a></h2>
