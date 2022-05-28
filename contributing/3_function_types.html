@@ -52,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#primary-functions">Primary Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositional-functions">Compositional Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mixed-functions">Mixed Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-functions">Standalone Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convenience-functions">Convenience Functions</a></li>
 </ul>
@@ -228,6 +229,21 @@ then the compositional implementation is always used for <em>mixed</em> function
 even for backends that have a more efficient backend-specific implementation.
 Typically the backend should always be set explicitly though (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.</p>
+</section>
+<section id="standalone-functions">
+<h2>Standalone Functions<a class="headerlink" href="#standalone-functions" title="Permalink to this headline"></a></h2>
+<p><em>Standalone</em> functions are functions which do not reference any other <em>primary</em>,
+<em>compositional</em> or <em>mixed</em> functions whatsoever.</p>
+<p>By definition, standalone functions can only reference themselves or other standlone functions.
+Most commonly, these functions are <em>convenience</em> functions (see below).</p>
+<p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
+All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
+or (c) reference other standalone functions.</p>
+<p>A few other examples outside of the <code class="code docutils literal notranslate"><span class="pre">nest.py</span></code> module are:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622">ivy.default</a> which simply returns <code class="code docutils literal notranslate"><span class="pre">x</span></code> if it exists else the default value,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622">ivy.cache_fn</a> which wraps a function such that when <code class="code docutils literal notranslate"><span class="pre">cache=True</span></code> is passed,
+then a previously cached output is returned,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928">ivy.stable_divide</a> which simply adds a small constant to the denominator of the division.</p>
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this headline"></a></h2>

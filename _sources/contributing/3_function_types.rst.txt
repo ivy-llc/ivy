@@ -16,6 +16,10 @@ Function Types
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
 .. _`ivy.set_default_device`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/device.py#L464
 .. _`submodules`: https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy
+.. _`nest.py`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/nest.py
+.. _`ivy.default`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
+.. _`ivy.cache_fn`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
+.. _`ivy.stable_divide`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928
 
 
 Primary Functions
@@ -112,6 +116,25 @@ then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
 Typically the backend should always be set explicitly though (using :code:`ivy.set_framework()` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
+
+Standalone Functions
+---------------------
+
+*Standalone* functions are functions which do not reference any other *primary*,
+*compositional* or *mixed* functions whatsoever.
+
+By definition, standalone functions can only reference themselves or other standlone functions.
+Most commonly, these functions are *convenience* functions (see below).
+
+As a first example, every function in the `nest.py`_ module is a standalone function.
+All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
+or (c) reference other standalone functions.
+
+A few other examples outside of the :code:`nest.py` module are:
+`ivy.default`_ which simply returns :code:`x` if it exists else the default value,
+`ivy.cache_fn`_ which wraps a function such that when :code:`cache=True` is passed,
+then a previously cached output is returned,
+and `ivy.stable_divide`_ which simply adds a small constant to the denominator of the division.
 
 Nestable Functions
 ------------------
