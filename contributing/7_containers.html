@@ -52,7 +52,14 @@
 <li class="toctree-l2"><a class="reference internal" href="4_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_arrays.html">Arrays</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#container-instance-methods">Container Instance Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#container-static-methods">Container Static Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-instance-methods">API Instance Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-special-methods">API Special Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-static-methods">API Static Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
@@ -143,7 +150,45 @@
              
   <section id="containers">
 <h1>Containers<a class="headerlink" href="#containers" title="Permalink to this headline"></a></h1>
-<p># ToDo: write</p>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56">dict</a>, and is useful for storing nested data.
+For example, the container is equally suitable for storing batches of training data,
+or for storing the weights of a network.</p>
+<p>The methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+All methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods,
+and almost all of them directly wrap a function in the functional API.
+There are a few exceptions, which wrap instance methods on the backend <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>, such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>.</p>
+<p>For the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
+for performing nested operations on the leaves of the container for example.
+In addition, there are also static methods, which are not present in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+Overall, this results in the following five mutually exclusive groups of methods.
+Each of these are explained in the following sub-sections.</p>
+<ol class="arabic simple">
+<li><p>Container instance methods</p></li>
+<li><p>Container static methods</p></li>
+<li><p>API instance methods</p></li>
+<li><p>API special methods</p></li>
+<li><p>API static methods</p></li>
+</ol>
+<section id="container-instance-methods">
+<h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this headline"></a></h2>
+<p>ToDo: write</p>
+</section>
+<section id="container-static-methods">
+<h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this headline"></a></h2>
+<p>ToDo: write</p>
+</section>
+<section id="api-instance-methods">
+<h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this headline"></a></h2>
+<p>ToDo: write</p>
+</section>
+<section id="api-special-methods">
+<h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this headline"></a></h2>
+<p>ToDo: write</p>
+</section>
+<section id="api-static-methods">
+<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this headline"></a></h2>
+<p>ToDo: write</p>
+</section>
 </section>
 
 
