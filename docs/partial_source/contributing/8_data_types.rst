@@ -5,6 +5,79 @@ Data Types
 .. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
+.. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
+.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51
+.. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
+.. _`also specified`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
+.. _`tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
+.. _`valid tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L303
+.. _`invalid tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L309
+.. _`data type class`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L14
+.. _`true native data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
+.. _`valid data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L29
+.. _`invalid data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L56
+.. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
+.. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
+.. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
+
+
+The data types supported by Ivy are as follows:
+
+* int8
+* int16
+* int32
+* int64
+* uint8
+* uint16
+* uint32
+* uint64
+* bfloat16
+* float16
+* float32
+* float64
+* bool
+
+These are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
+All data types can be queried as attributes of the :code:`ivy` namespace, such as :code:`ivy.float32` etc.
+
+In addition, *native* data types are `also specified`_ at import time.
+Likewise, these are all initially set as `ivy.Dtype`_ instances.
+
+There is also an :code:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
+
+The following `tuples`_ are also defined: :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes`,
+:code:`all_float_dtypes`. These each contain all possible data types which fall into the corresponding category.
+Each of these tuples is also replicated in a new set of four `valid tuples`_
+and a set of four `invalid tuples`_.
+When no backend is set, all data types are assumed to be valid, and so the :code:`invalid` tuples are all empty,
+and the :code:`valid` tuples are set as equal to the original four tuples.
+
+However, when a backend is set, then some of these are updated.
+Firstly, the :code:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
+Secondly, each of the native data types are replaced with the `true native data types`_.
+Thirdly, the `valid data types`_ are updated.
+Finally, the `invalid data types`_ are updated.
+
+This leaves each of the data types unmodified,
+for example :code:`ivy.float32` will still reference the  `original definition`_ in :code:`ivy/ivy/__init__.py`,
+whereas :code:`ivy.native_float32` will now reference the `new definition`_ in
+:code:`/ivy/functional/backends/backend/__init__.py`.
+
+The tuples :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes` and :code:`all_float_dtypes`
+are also left unmodified.
+Importantly, we must ensure that unsupported data types are removed from the :code:`ivy` namespace.
+For example, torch supports :code:`uint8`, but does not support :code:`uint16`, :code:`uint32` or :code:`uint64`.
+Therefore, after setting a torch backend via :code:`ivy.set_backend('torch')`,
+we should not longer be able to access :code:`ivy.uint16`.
+This is `handled`_ in :code:`ivy.set_backend`.
+
+Data Type Module
+----------------
+
+# ToDo: write
+
+Arguments in other Functions
+----------------------------
 
 All :code:`dtype` arguments are keyword-only.
 All creation functions include the :code:`dtype` argument, for specifying the data type of the created array.
