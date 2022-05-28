@@ -26,15 +26,15 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 return tf.identity(object_in)
             if dtype is None and not isinstance(object_in, tf.Tensor):
                 try:
-                    return tf.identity(tf.convert_to_tensor(object_in))
+                    dtype = default_dtype(item=object_in, as_native=True)
+                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-                    return tf.identity(
-                        tf.convert_to_tensor(
-                            ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
-                            dtype=dtype,
-                        )
+                    dtype = default_dtype(dtype, object_in, True)
+                    tensor = tf.convert_to_tensor(
+                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        dtype=dtype,
                     )
+                return tf.identity(tf.cast(tensor, dtype))
             else:
                 dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                 try:
