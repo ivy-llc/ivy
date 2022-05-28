@@ -912,7 +912,7 @@ def cross(
         type.
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
-        the cross product.vIf set to -1, the function computes the cross product for
+        the cross product. If set to -1, the function computes the cross product for
         vectors defined by the last axis (dimension). Default: -1.
 
     Returns
@@ -920,33 +920,52 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
-         
-    Examples
+
+    Functional Examples
     --------
+
+    With :code:`ivy.Array` inputs:
+
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
     >>> z = ivy.cross(x, y)
     >>> print(z)
     ivy.array([0., 0., 1.])
 
-    Multiple vector cross-products
-    >>> x = ivy.array([[[0., 1., 2.],\
-                        [3., 4., 5.]])
-    >>> y = ivy.array([1., 6., 7.])
-    >>> z = ivy.cross(x,y)
-    >>> print(z)
-    ivy.array([-5., 2. -1.],
-              [-2., -16., 14.])
+    With :code:`ivy.NativeArray` inputs:
 
-    When axis is zero
-    >>> x = ivy.array([[[0., 1., 2.],\
-                        [3., 4., 5.]])
-    >>> y = ivy.array([1., 6., 7.])
-    >>> z = ivy.cross(x,y, axis = 0)
+    >>> x = ivy.native_array([1., 3., 5.])
+    >>> y = ivy.native_array([2., 4., 6.])
+    >>> z = ivy.cross(x, y)
     >>> print(z)
-    ivy.array([21., 28. 35.],
-              [0., -7., -14.],
-              [-3., 2., 7.])
+    ivy.array([-2., 4., -2.])
+
+    With a combination of :code:`ivy.NativeArray`
+    and :code:`ivy.Array` inputs:
+
+    >>> x = ivy.native_array([[1., 2., 3.], \
+                              [4., 5., 6.], \
+                              [7., 8., 9.]])
+    >>> y = ivy.array([[1., 0., 0.],\
+                       [0., 1., 0.],\
+                       [0., 0., 1.]])
+    >>> z = ivy.cross(x,y, axis = -1)
+    >>> print(z)
+    ivy.array([[ 0.,  3., -2.],
+               [-6.,  0.,  4.],
+               [ 8., -7.,  0.]])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance inputs:
+
+    >>> x = ivy.array([1., 0., 0.])
+    >>> y = ivy.array([0., 1., 0.])
+    >>> z = x.cross(y)
+    >>> print(z)
+    ivy.array([0., 0., 1.])
+
 
     """
     return _cur_backend(x1).cross(x1, x2, axis)
