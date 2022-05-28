@@ -48,7 +48,7 @@ but passes in :code:`self` as the first array argument. `ivy.Array.add`_ is a go
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
-This serves as a helpful backup in cases where some functions are accidentally missed out.
+This serves as a helpful backup in cases where some methods are accidentally missed out.
 
 The benefit of the source code implementations is that this makes the code much more readable,
 without important methods being entirely absent.
