@@ -10,7 +10,8 @@ Arrays
 .. _`backend type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219
 .. _`Ivy type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342
 .. _`__setitem__`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234
-.. _`function wrapping`: https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L138
+.. _`function wrapping`: https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170
+.. _`inherits`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/array/__init__.py#L44
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -34,7 +35,7 @@ as instance methods in the :code:`ivy.Array` class.
 
 The organization of these instance methods follows the same organizational structure as the
 files in the functional API.
-The :code:`ivy.Array` class inherits from many category-specific array classes, such as `ArrayWithElementwise`_,
+The :code:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_,
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
@@ -58,7 +59,7 @@ It must be provided with a :code:`torch.Tensor`, and this is reflected in the `b
 However, all Ivy functions must return :code:`ivy.Array` instances, which is reflected in the `Ivy type hints`_.
 The reason we always return :code:`ivy.Array` instances from Ivy functions is to ensure that any subsequent Ivy code is
 fully framework-agnostic, with all operators performed on the returned array now handled by the special methods of the
-:code:`ivy.Array` class, and not the special methods of the backend array class (:code:`ivy.NativeArray`).
+:code:`ivy.Array` class, and not the special methods of the backend :code:`ivy.NativeArray` class.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__div__` etc.) being called on the array class.
@@ -76,13 +77,13 @@ Therefore, every function must adopt the following pipeline:
 #. convert all :code:`ivy.Array` instances in the input arguments to :code:`ivy.NativeArray` instances
 #. call the backend-specific function, passing in these :code:`ivy.NativeArray` instances
 #. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
-   :code:`ivy.Array` instances
-#. return these
+   :code:`ivy.Array` instances, and return
 
-Given the repeating nature of this piece of logic, this is all entirely handling in the `function wrapping`_,
+Given the repeating nature of these steps, this is all entirely handling in the `function wrapping`_,
 as explained in the :ref:`Function Wrapping` section.
 
-All Ivy functions also accept :code:`ivy.NativeArray` instances in the input.
+All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
+This is for a couple of reasons.
 Firstly, :code:`ivy.Array` instances must be converted to :code:`ivy.NativeArray` instances anyway,
 and so supporting them in the input is not a problem.
 Secondly, this makes it easier to combine backend-specific code with Ivy code,
@@ -94,13 +95,12 @@ whereas the output arrays have type :code:`ivy.Array`. This is further explained
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
 This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
-serves the same purpose as the function return when no :code:`out` argument is specified.
-This is further explained in the :ref:`Inplace Updates` section.
+serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
 
 As a final point, extra attention is required for *compositional* functions,
 as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array,
-then this would be a problem as they will be performed on the :code:`ivy.NativeArray` instance
+then this would be a problem as they will call the special methods on an :code:`ivy.NativeArray`
 and not on an :code:`ivy.Array`.
 
 Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
