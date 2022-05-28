@@ -5,6 +5,7 @@ import functools
 from operator import mul
 
 # local
+import numpy as np
 from . import conversions
 from .conversions import *
 
@@ -92,14 +93,14 @@ class Array(
         )
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
-        self._dev_str = ivy.dev_to_str(self._device)
+        self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy."
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
 
-        self.framework_str = ivy.current_framework_str()
+        self.framework_str = ivy.current_backend_str()
 
     # Properties #
     # -----------#
@@ -198,14 +199,19 @@ class Array(
 
     @_native_wrapper
     def __repr__(self):
-        return (
-            self._pre_repr
-            + ivy.to_numpy(self._data)
-            .__repr__()[:-1]
-            .partition(", dtype")[0]
-            .partition(", dev")[0]
-            + self._post_repr.format(ivy.current_framework_str())
+        sig_fig = ivy.array_significant_figures()
+        dec_vals = ivy.array_decimal_values()
+        rep = (
+            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
+            if self._size > 0
+            else ivy.to_numpy(self._data)
         )
+        with np.printoptions(precision=dec_vals):
+            return (
+                self._pre_repr
+                + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+                + self._post_repr.format(ivy.current_backend_str())
+            )
 
     @_native_wrapper
     def __dir__(self):
@@ -247,7 +253,7 @@ class Array(
 
         # also store the local ivy framework that created this array
         data_dict["framework_str"] = self.framework_str
-        data_dict["device_str"] = ivy.dev_to_str(self.device)
+        data_dict["device_str"] = ivy.as_ivy_dev(self.device)
 
         return data_dict
 
@@ -257,15 +263,14 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_framework(state["framework_str"])
+        backend = ivy.get_backend(state["framework_str"])
         ivy_array = backend.array(state["data"])
-
-        # TODO: what about placement of the array on the right device ?
-        device = backend.dev_from_str(state["device_str"])
 
         self.__dict__ = ivy_array.__dict__
 
-        backend.to_dev(self, device)
+        # TODO: what about placement of the array on the right device ?
+        # device = backend.as_native_dev(state["device_str"])
+        # backend.to_dev(self, device)
 
     @_native_wrapper
     def __pos__(self):
@@ -358,7 +363,7 @@ class Array(
 
     @_native_wrapper
     def __abs__(self):
-        if "uint" in ivy.dtype(self._data, as_str=True):
+        if "uint" in ivy.dtype(self._data):
             return self
         res = self._data.__abs__()
         if res is NotImplemented:
@@ -494,7 +499,7 @@ class Array(
         except AttributeError:
             # ToDo: try and find more elegant solution to jax inability to
             #  deepcopy device arrays
-            if ivy.current_framework_str() == "jax":
+            if ivy.current_backend_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)

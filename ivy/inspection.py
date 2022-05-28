@@ -92,9 +92,15 @@ def fn_array_spec(fn):
     """Return a specification of the function, indicating all arguments which include
     arrays, and the indexes of these.
 
-    :param fn: function to inspect
-    :type fn: callable
-    :return: specification
+    Parameters
+    ----------
+    fn
+        function to inspect
+
+    Returns
+    -------
+    ret
+        specification
 
     """
     type_hints = get_type_hints(fn)

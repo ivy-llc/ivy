@@ -7,7 +7,7 @@ import pytest
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
-# from ivy_tests.test_ivy.test_stateful.test_converters import NATIVE_MODULES
+from ivy_tests.test_ivy.test_stateful.test_converters import NATIVE_MODULES
 
 
 class TrainableModule(ivy.Module):
@@ -286,124 +286,124 @@ def test_distributed_multiprocess_training(bs_ic_oc, device, call):
 
 
 # to_ivy_module_distributed
-# @pytest.mark.parametrize("bs_ic_oc", [([2, 1], 4, 5)])
-# @pytest.mark.parametrize("from_class_and_args", [True, False])
-# @pytest.mark.parametrize("inplace_update", [True, False])
-# def test_to_ivy_module_distributed(
-#     bs_ic_oc, from_class_and_args, inplace_update, device, call
-# ):
-#     # smoke test
-#     if call is not helpers.torch_call:
-#         # Currently only implemented for PyTorch
-#         pytest.skip()
-#
-#     # devices and inputs
-#     devices = list()
-#     xs = dict()
-#
-#     # first device
-#     dev0 = device
-#     devices.append(dev0)
-#
-#     # first input
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
-#     xs[dev0] = ivy.astype(
-#         ivy.linspace(
-#             ivy.zeros(dev_batch_shape),
-#             ivy.ones(dev_batch_shape),
-#             input_channels,
-#             device=dev0,
-#         ),
-#         "float32",
-#     )
-#
-#     # second device
-#     if "gpu" in device and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = device[:-1] + str(idx)
-#         devices.append(dev1)
-#
-#         # second input
-#         xs[dev1] = ivy.astype(
-#             ivy.linspace(
-#                 ivy.zeros(dev_batch_shape),
-#                 ivy.ones(dev_batch_shape),
-#                 input_channels,
-#                 device=dev1,
-#             ),
-#             "float32",
-#         )
-#
-#     # combined inputs
-#     x = ivy.DevDistItem(xs)
-#
-#     # ivy module
-#     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
-#     if from_class_and_args:
-#         ivy_module = ivy.to_ivy_module(
-#             native_module_class=natvie_module_class,
-#             args=[input_channels, output_channels],
-#             devices=devices,
-#             inplace_update=inplace_update,
-#         )
-#     else:
-#         native_module = natvie_module_class(input_channels, output_channels)
-#         ivy_module = ivy.to_ivy_module(
-#             native_module, devices=devices, inplace_update=inplace_update
-#         )
-#
-#     # optimizer
-#     optim = ivy.SGD(1e-4)
-#
-#     # return fn
-#     ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
-#
-#     # test loss_fn
-#     ret_val = ivy.map(
-#         loss_fn,
-#         constant={"module": ivy_module},
-#         unique={"x_": x.values(), "v_": ivy_module.v.dev_clone(devices).values()},
-#     )[0]
-#     assert ivy.is_array(ret_val)
-#
-#     if inplace_update:
-#         # inplace_update mode does not support gradient propagation
-#         return
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss_n_grads = ivy.MultiDevIter(
-#             ivy.map(
-#                 map_fn,
-#                 constant={"module": ivy_module},
-#                 unique={
-#                     "device": devices,
-#                     "xn": x.values(),
-#                     "vc": ivy_module.v.dev_clone(devices).values(),
-#                 },
-#             ),
-#             len(devices),
-#         )
-#         loss, grads = ret_fn(loss_n_grads)
-#         ivy_module.v = optim.step(ivy_module.v, grads)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).max() > 0).all_true()
+@pytest.mark.parametrize("bs_ic_oc", [([2, 1], 4, 5)])
+@pytest.mark.parametrize("from_class_and_args", [True, False])
+@pytest.mark.parametrize("inplace_update", [True, False])
+def test_to_ivy_module_distributed(
+    bs_ic_oc, from_class_and_args, inplace_update, device, call
+):
+    # smoke test
+    if call is not helpers.torch_call:
+        # Currently only implemented for PyTorch
+        pytest.skip()
+
+    # devices and inputs
+    devices = list()
+    xs = dict()
+
+    # first device
+    dev0 = device
+    devices.append(dev0)
+
+    # first input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
+    xs[dev0] = ivy.astype(
+        ivy.linspace(
+            ivy.zeros(dev_batch_shape),
+            ivy.ones(dev_batch_shape),
+            input_channels,
+            device=dev0,
+        ),
+        "float32",
+    )
+
+    # second device
+    if "gpu" in device and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = device[:-1] + str(idx)
+        devices.append(dev1)
+
+        # second input
+        xs[dev1] = ivy.astype(
+            ivy.linspace(
+                ivy.zeros(dev_batch_shape),
+                ivy.ones(dev_batch_shape),
+                input_channels,
+                device=dev1,
+            ),
+            "float32",
+        )
+
+    # combined inputs
+    x = ivy.DevDistItem(xs)
+
+    # ivy module
+    natvie_module_class = NATIVE_MODULES[ivy.current_backend_str()]
+    if from_class_and_args:
+        ivy_module = ivy.to_ivy_module(
+            native_module_class=natvie_module_class,
+            args=[input_channels, output_channels],
+            devices=devices,
+            inplace_update=inplace_update,
+        )
+    else:
+        native_module = natvie_module_class(input_channels, output_channels)
+        ivy_module = ivy.to_ivy_module(
+            native_module, devices=devices, inplace_update=inplace_update
+        )
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # return fn
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev0, "mean", transpose=True)
+
+    # test loss_fn
+    ret_val = ivy.map(
+        loss_fn,
+        constant={"module": ivy_module},
+        unique={"x_": x.values(), "v_": ivy_module.v.dev_clone(devices).values()},
+    )[0]
+    assert ivy.is_array(ret_val)
+
+    if inplace_update:
+        # inplace_update mode does not support gradient propagation
+        return
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss_n_grads = ivy.MultiDevIter(
+            ivy.map(
+                map_fn,
+                constant={"module": ivy_module},
+                unique={
+                    "device": devices,
+                    "xn": x.values(),
+                    "vc": ivy_module.v.dev_clone(devices).values(),
+                },
+            ),
+            len(devices),
+        )
+        loss, grads = ret_fn(loss_n_grads)
+        ivy_module.v = optim.step(ivy_module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
 
 
 # to_ivy_module_distributed

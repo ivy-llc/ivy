@@ -1,7 +1,18 @@
 """Collection of helpers for ivy unit tests."""
 
 # global
+from contextlib import redirect_stdout
+from io import StringIO
+import sys
+import re
+
 import numpy as np
+import math
+from numpy import array_api as xp
+from hypothesis.extra.array_api import make_strategies_namespace
+
+xps = make_strategies_namespace(xp)
+
 
 try:
     import jax.numpy as _jnp
@@ -33,7 +44,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
 import hypothesis.extra.numpy as nph
 
 # local
@@ -202,28 +213,120 @@ def assert_compilable(fn):
         raise e
 
 
+# function that trims white spaces from docstrings
+def trim(docstring):
+    """Trim function from PEP-257"""
+    if not docstring:
+        return ""
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxsize
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxsize:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+
+    # Current code/unittests expects a line return at
+    # end of multiline docstrings
+    # workaround expected behavior from unittests
+    if "\n" in docstring:
+        trimmed.append("")
+
+    # Return a single string:
+    return "\n".join(trimmed)
+
+
 def docstring_examples_run(fn):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
-    if fn_name not in ivy.framework_handler.ivy_original_dict:
+    if fn_name not in ivy.backend_handler.ivy_original_dict:
         return True
-    docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+
+    docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
+
     if docstring is None:
         return True
+
+    # removing extra new lines and trailing white spaces from the docstrings
+    trimmed_docstring = trim(docstring)
+    trimmed_docstring = trimmed_docstring.split("\n")
+
+    # end_index: -1, if print statement is not found in the docstring
+    end_index = -1
+
+    # parsed_output is set as an empty string to manage functions with multiple inputs
+    parsed_output = ""
+
+    # parsing through the docstrings to find lines with print statement
+    # following which is our parsed output
+    sub = ">>> print("
+    for index, line in enumerate(trimmed_docstring):
+        if sub in line:
+            end_index = trimmed_docstring.index("", index)
+            p_output = trimmed_docstring[index + 1 : end_index]
+            p_output = ("").join(p_output).replace(" ", "")
+            parsed_output += p_output
+
+    if end_index == -1:
+        return True
+
     executable_lines = [
         line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
     ]
-    for line in executable_lines:
-        # noinspection PyBroadException
-        try:
-            exec(line)
-        except Exception:
-            return False
+
+    # noinspection PyBroadException
+    f = StringIO()
+    with redirect_stdout(f):
+        for line in executable_lines:
+            try:
+                exec(line)
+            except RuntimeError:
+                raise Exception("ERROR EXECUTING FUNCTION IN DOCSTRING")
+
+    output = f.getvalue()
+    output = output.rstrip()
+    output = output.replace(" ", "").replace("\n", "")
+
+    # handling cases when the stdout contains ANSI colour codes
+    # 7-bit C1 ANSI sequences
+    ansi_escape = re.compile(
+        r"""
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+    """,
+        re.VERBOSE,
+    )
+
+    output = ansi_escape.sub("", output)
+
+    print("Output: ", output)
+    print("Putput: ", parsed_output)
+
+    assert output == parsed_output, "Output is unequal to the docstrings output."
     return True
 
 
-def var_fn(a, b=None, c=None):
+def var_fn(a, b=None, c=None, dtype=None):
     return ivy.variable(ivy.array(a, b, c))
 
 
@@ -306,7 +409,7 @@ def test_array_function(
     fw,
     fn_name,
     rtol=1e-03,
-    atol=1e-08,
+    atol=1e-06,
     **all_as_kwargs_np
 ):
 
@@ -329,7 +432,7 @@ def test_array_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
-    dtype = ["float32" if d in ivy.invalid_dtype_strs else d for d in dtype]
+    dtype = ["float32" if d in ivy.invalid_dtypes else d for d in dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
@@ -421,21 +524,19 @@ def test_array_function(
             assert ivy.is_ivy_container(ret)
         else:
             assert ivy.is_array(ret)
-            if max(native_array):
-                out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
 
-        if max(container) or not max(native_array):
+        if max(container):
             assert ret is out
 
         if max(container) or fw in ["tensorflow", "jax", "numpy"]:
-            # these frameworks do not always support native inplace updates
+            # these backends do not always support native inplace updates
             pass
         else:
-            assert ret.data is (out if max(native_array) else out.data)
+            assert ret.data is out.data
 
     # value test
     if not isinstance(ret, tuple):
@@ -445,11 +546,11 @@ def test_array_function(
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ivy.set_framework("numpy")
+    ivy.set_backend("numpy")
     ret_from_np = ivy.to_native(
         ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
     )
-    ivy.unset_framework()
+    ivy.unset_backend()
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
@@ -466,7 +567,7 @@ def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(
         st.lists(
-            st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size
+            st.sampled_from(ivy_np.valid_float_dtypes), min_size=size, max_size=size
         )
     )
 
@@ -508,9 +609,19 @@ def integers(draw, min_value=None, max_value=None):
 
 @st.composite
 def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
-    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
-    if n_arrays == 2:
-        assume((dtype[0], dtype[1]) in ivy.promotion_table)
+    if n_arrays == 1:
+        types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+        dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
+    else:
+        unwanted_types = set(ivy.invalid_dtypes).union(
+            set(ivy.all_dtypes).difference(set(available_dtypes))
+        )
+        pairs = ivy.promotion_table.keys()
+        types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtype = list(draw(st.sampled_from(types)))
+    if n_arrays == 3:
+        dtype.append(dtype[0])
+
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):
@@ -521,8 +632,27 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     return dtype, values
 
 
+# taken from
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
-def array_values(draw, dtype, size, allow_inf):
+def reshape_shapes(draw, shape):
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
+    # assume(all(side <= MAX_SIDE for side in rshape))
+    if len(rshape) != 0 and size > 0 and draw(st.booleans()):
+        index = draw(st.integers(0, len(rshape) - 1))
+        rshape[index] = -1
+    return tuple(rshape)
+
+
+# taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
+@st.composite
+def subsets(draw, elements):
+    return tuple(e for e in elements if draw(st.booleans()))
+
+
+@st.composite
+def array_values(draw, dtype, size, allow_inf=None):
     if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
     elif dtype == "int16":
@@ -565,3 +695,61 @@ def array_values(draw, dtype, size, allow_inf):
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values
+
+
+@st.composite
+def get_shape(draw):
+    shape = draw(
+        st.none()
+        | st.lists(st.integers(min_value=1, max_value=8), min_size=0, max_size=8)
+    )
+    if shape is None:
+        return shape
+    return tuple(shape)
+
+
+def none_or_list_of_floats(dtype, size):
+    if dtype == "float16":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=16, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    elif dtype == "float32":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=32, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    elif dtype == "float64":
+        values = list_of_length(
+            st.none()
+            | st.floats(
+                width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False
+            ),
+            size,
+        )
+    return values
+
+
+@st.composite
+def get_mean_std(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    values[1] = abs(values[1]) if values[1] else None
+    return values[0], values[1]
+
+
+@st.composite
+def get_bounds(draw, dtype):
+    values = draw(none_or_list_of_floats(dtype, 2))
+    if values[0] is not None and values[1] is not None:
+        low, high = min(values), max(values)
+    else:
+        low, high = values[0], values[1]
+    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+        return draw(get_bounds(dtype))
+    return low, high

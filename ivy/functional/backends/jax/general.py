@@ -67,9 +67,7 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(
-    x: JaxArray, as_tensor: bool = False
-) -> Union[JaxArray, List[int]]:
+def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
     if as_tensor:
         return jnp.asarray(jnp.shape(x))
     else:
@@ -195,7 +193,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     updates = [updates] if isinstance(updates, Number) else updates
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
     )
@@ -329,11 +327,5 @@ def inplace_increment(x, val):
     return x
 
 
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    return jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
-
-
-current_framework_str = lambda: "jax"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "jax"
+current_backend_str.__name__ = "current_backend_str"

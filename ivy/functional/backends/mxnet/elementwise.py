@@ -13,21 +13,17 @@ from ivy.functional.backends.mxnet import (
 
 @_handle_flat_arrays_in_out
 def add(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
-    ret = mx.nd.add(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+) -> mx.nd.NDArray:
+    return mx.nd.add(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def bitwise_and(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.ndarray.NDArray:
     ret = mx.numpy.bitwise_and(x1, x2)
     if ivy.exists(out):
@@ -36,9 +32,7 @@ def bitwise_and(
 
 
 @_handle_flat_arrays_in_out
-def ceil(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def ceil(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.ceil(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -46,9 +40,7 @@ def ceil(
 
 
 @_handle_flat_arrays_in_out
-def floor(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def floor(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.floor(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -57,10 +49,10 @@ def floor(
 
 @_handle_flat_arrays_in_out
 def divide(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.divide(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -69,10 +61,10 @@ def divide(
 
 @_handle_flat_arrays_in_out
 def greater(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.greater(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -81,10 +73,10 @@ def greater(
 
 @_handle_flat_arrays_in_out
 def greater_equal(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.greater_equal(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -92,9 +84,7 @@ def greater_equal(
 
 
 @_handle_flat_arrays_in_out
-def isfinite(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def isfinite(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly.
     #  Currently 0 returns 0 for these types.
     ret = mx.nd.contrib.isfinite(x.astype("float32")).astype("bool")
@@ -104,18 +94,14 @@ def isfinite(
 
 
 @_handle_flat_arrays_in_out
-def isinf(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def isinf(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.contrib.isinf(x.astype("float32")).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def sqrt(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def sqrt(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.sqrt(x)
     else:
@@ -126,9 +112,7 @@ def sqrt(
 
 
 @_handle_flat_arrays_in_out
-def isnan(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def isnan(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.contrib.isnan(x).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -137,10 +121,10 @@ def isnan(
 
 @_handle_flat_arrays_in_out
 def less(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.lesser(x1, x2).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -149,11 +133,11 @@ def less(
 
 @_handle_flat_arrays_in_out
 def logical_xor(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
     dtype: ["bool"],
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.logical_xor(x1, x2, dtype).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -161,9 +145,7 @@ def logical_xor(
 
 
 @_handle_flat_arrays_in_out
-def logical_not(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def logical_not(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.logical_not(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -171,9 +153,7 @@ def logical_not(
 
 
 @_handle_flat_arrays_in_out
-def acos(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def acos(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.acos(x)
     else:
@@ -185,11 +165,11 @@ def acos(
 
 @_handle_flat_arrays_in_out
 def logical_and(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
     dtype: ["bool"],
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.logical_and(x1, x2, dtype).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -198,11 +178,11 @@ def logical_and(
 
 @_handle_flat_arrays_in_out
 def logical_or(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
     dtype: ["bool"],
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.logical_or(x1, x2, dtype).astype("bool")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -211,10 +191,10 @@ def logical_or(
 
 @_handle_flat_arrays_in_out
 def multiply(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.multiply(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -222,9 +202,7 @@ def multiply(
 
 
 @_handle_flat_arrays_in_out
-def acosh(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def acosh(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.acosh(x)
     else:
@@ -235,9 +213,7 @@ def acosh(
 
 
 @_handle_flat_arrays_in_out
-def sin(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def sin(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.sin(x)
     else:
@@ -248,9 +224,7 @@ def sin(
 
 
 @_handle_flat_arrays_in_out
-def negative(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def negative(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.np.negative(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -258,9 +232,7 @@ def negative(
 
 
 @_handle_flat_arrays_in_out
-def tanh(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def tanh(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.tanh(x)
     else:
@@ -272,9 +244,9 @@ def tanh(
 
 @_handle_flat_arrays_in_out
 def bitwise_or(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.ndarray.NDArray:
     ret = mx.numpy.bitwise_or(x1, x2)
     if ivy.exists(out):
@@ -283,9 +255,7 @@ def bitwise_or(
 
 
 @_handle_flat_arrays_in_out
-def sinh(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def sinh(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.sinh(x)
     else:
@@ -296,9 +266,7 @@ def sinh(
 
 
 @_handle_flat_arrays_in_out
-def square(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def square(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.square(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -306,9 +274,7 @@ def square(
 
 
 @_handle_flat_arrays_in_out
-def round(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def round(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     ret = mx.nd.round(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -317,7 +283,7 @@ def round(
 
 @_handle_flat_arrays_in_out
 def trunc(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
+    x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None
 ) -> mx.nd.ndarray.NDArray:
     ret = mx.np.trunc(x)
     if ivy.exists(out):
@@ -327,10 +293,10 @@ def trunc(
 
 @_handle_flat_arrays_in_out
 def subtract(
-    x1: mx.ndarray.ndarray.NDArray,
-    x2: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x1: mx.nd.NDArray,
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = mx.nd.subtract(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -339,18 +305,14 @@ def subtract(
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
-def abs(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.nd.ndarray.NDArray:
+def abs(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.ndarray.NDArray:
     ret = mx.nd.abs(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def cos(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def cos(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.cos(x)
     else:
@@ -360,9 +322,7 @@ def cos(
     return ret
 
 
-def exp(
-    x: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None
-) -> mx.ndarray.ndarray.NDArray:
+def exp(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.exp(x)
     else:

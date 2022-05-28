@@ -13,6 +13,8 @@ def squeeze(
     axis: Union[int, Tuple[int], List[int]],
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):
@@ -120,12 +122,8 @@ def roll(
     x: np.ndarray,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return np.roll(x, shift, axis)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -201,7 +199,12 @@ def swapaxes(
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[np.ndarray] = None):
+def clip(
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

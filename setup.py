@@ -31,7 +31,7 @@ def _replace_logos_html(txt):
     backends_chunk = chunks[2]
     bc = backends_chunk.split("\n\n")
     img_str = (
-        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n" # noqa
+        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
         "   :width: 100%"
     )
     backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
@@ -76,8 +76,10 @@ setup(
     version="1.1.9",
     author="Ivy Team",
     author_email="ivydl.team@gmail.com",
-    description=("The unified machine learning framework, enabling framework-agnostic "
-                 "functions, layers and libraries."),
+    description=(
+        "The unified machine learning framework, enabling framework-agnostic "
+        "functions, layers and libraries."
+    ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://lets-unify.ai/ivy",

@@ -3,11 +3,12 @@
 # global
 import os
 import jax
-import ivy
-from ivy.functional.backends.jax import JaxArray
-
+from typing import Union
+import jaxlib.xla_extension
 
 # local
+import ivy
+from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -27,7 +28,9 @@ def _to_array(x):
 # ----#
 
 
-def dev(x: JaxArray, as_str: bool = False) -> str:
+def dev(
+    x: JaxArray, as_native: bool = False
+) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
     try:
@@ -35,39 +38,39 @@ def dev(x: JaxArray, as_str: bool = False) -> str:
         dv = dv()
     except Exception:
         dv = jax.devices()[0]
-    if as_str:
-        return dev_to_str(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
 _callable_dev = dev
 
 
-def to_dev(x, device=None, out=None):
+def to_dev(x, *, device=None, out=None):
     if device is not None:
-        cur_dev = dev_to_str(_callable_dev(x))
+        cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
-            x = jax.device_put(x, dev_from_str(device))
+            x = jax.device_put(x, as_native_dev(device))
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     if device is None:
         return None
     p, dev_id = (device.platform, device.id)
     if p == "cpu":
-        return p
-    return p + ":" + str(dev_id)
+        return ivy.Device(p)
+    return ivy.Device(p + ":" + str(dev_id))
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if not isinstance(device, str):
         return device
-    dev_split = device.split(":")
+    dev_split = ivy.Device(device).split(":")
     device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
@@ -76,7 +79,7 @@ def dev_from_str(device):
     return jax.devices(device)[idx]
 
 
-clear_mem_on_dev = lambda dev: None
+clear_mem_on_dev = lambda device: None
 
 
 def _dev_is_available(base_dev):
