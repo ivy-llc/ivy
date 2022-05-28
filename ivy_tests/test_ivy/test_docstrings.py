@@ -9,8 +9,8 @@ import ivy_tests.test_ivy.helpers as helpers
 def test_docstrings():
     failures = list()
     success = True
-    
-    ''' 
+
+    """ 
         Functions that are skipped due to precision problem include:
             add, cross_entropy, std
 
@@ -25,16 +25,33 @@ def test_docstrings():
 
         Functions skipped as their output dependent on outside factors:
             random_normal, random_uniform, shuffle, num_gpus
-    '''
+    """
     skip_functions = [
-        'random_normal', 'random_uniform', 'shuffle',
-        'num_gpus', 'add', 'dev', 
-        'softmax', 'softplus', 'exp',
-        'tan', 'roll', 'array_equal',
-        'cross_entropy', 'conv3d', 'std',
-        'trace', 'full_like', 'ones_like',  
-        'zeros_like', 'bitwise_invert', 'copy_array',
-        'expand_dims', 'reshape', 'einsum', 'shape'
+        "random_normal",
+        "random_uniform",
+        "shuffle",
+        "num_gpus",
+        "add",
+        "dev",
+        "softmax",
+        "softplus",
+        "exp",
+        "tan",
+        "roll",
+        "array_equal",
+        "cross_entropy",
+        "conv3d",
+        "std",
+        "trace",
+        "full_like",
+        "ones_like",
+        "zeros_like",
+        "bitwise_invert",
+        "copy_array",
+        "expand_dims",
+        "reshape",
+        "einsum",
+        "shape",
     ]
 
     for k, v in ivy.__dict__.items():
