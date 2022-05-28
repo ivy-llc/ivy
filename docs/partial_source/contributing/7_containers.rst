@@ -15,6 +15,14 @@ Containers
 .. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
 .. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
 .. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
+.. _`ivy.Container.add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92
+.. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259
+.. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158
+.. _`static method is added`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199
+.. _`instance method is added`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L173
+.. _`inherits`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/container.py#L25
+.. _`ContainerWithElementwise`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/elementwise.py#L12
+
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
@@ -78,21 +86,49 @@ In such cases, the function in the functional API defers to the *static* :code:`
 Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers
 and non-containers, and perform the correct mapping across the leaves.
 Internally, :code:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
+In cases where there are no containers passed,
+`ivy.Container.multi_map_in_static_method`_ will simply call the function once on the arguments provided.
 
-A few examples are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_
+A few examples are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
+
+As with :code:`ivy.Array`,
+given the simple set of rules which underpin how these static methods should all be implemented,
+if a source-code implementation is not found,
+then this `static method is added`_ programmatically.
+This serves as a helpful backup in cases where some static methods are accidentally missed out.
+
+The benefit of the source code implementations is that this makes the code much more readable,
+without important methods being entirely absent.
+It also enables other helpful perks, such as auto-completions in the IDE etc.
 
 API Instance Methods
 --------------------
 
 The *API* instance methods serve a similar purpose to the instance methods of the :code:`ivy.Array` class.
-They enable functions in Ivy's functional API to be called as instance methods.
+They enable functions in Ivy's functional API to be called as instance methods on the :code:`ivy.Container` class.
 The difference is that with the :code:`ivy.Container`,
 the API function is applied recursively to all the leaves of the container.
 
-Under the hood, either `ivy.Container.map`_ or `ivy.Container.multi_map`_ is used.
-For example, X makes use of the former, while Y makes use of the latter.
+Under the hood, every *instance* method calls the corresponding *static* method.
+For example, `ivy.Container.add`_ calls :code:`ivy.Container.static_add`,
+`ivy.Container.tan`_ calls :code:`ivy.Container.static_tan`,
+and `ivy.Container.roll`_ calls :code:`ivy.Container.static_roll`.
 
-As is the case for :code:`ivy.Array`, [inheritance explanation].
+As is the case for :code:`ivy.Array`,
+the organization of these instance methods follows the same organizational structure as the
+files in the functional API.
+The :code:`ivy.Container` class `inherits`_ from many category-specific array classes,
+such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
+
+Again, as with :code:`ivy.Array`,
+given the simple set of rules which underpin how these instance methods should all be implemented,
+if a source-code implementation is not found,
+then this `instance method is added`_ programmatically.
+Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.
+
+Again, the benefit of the source code implementations is that this makes the code much more readable,
+without important methods being entirely absent.
+It also enables other helpful perks, such as auto-completions in the IDE etc.
 
 API Special Methods
 --------------------
