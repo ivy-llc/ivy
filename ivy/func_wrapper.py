@@ -212,26 +212,6 @@ def _wrap_function(function: Callable) -> Callable:
         native_args, native_kwargs = ivy.args_to_native(
             *args, **kwargs, include_derived={tuple: True}
         )
-                
-        """
-        computes the result of the function fn, returning the result as an ivy array or
-        a native framework array.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-        
-        out
-            optional output array, for writing the result to.
-
-        kwargs
-            The key word arguments to be passed  to the function.
-        
-        Returns
-        -------
-            The result of computing the function fn as an ivy array or a native array.
-        """
         if ivy.exists(out):
             # extract underlying native array for out
             native_out = ivy.to_native(out)
