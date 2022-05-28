@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -14,10 +14,10 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def arange(
     start: Number,
-    stop: Number = None,
+    stop: Optional[Number] = None,
     step: Number = 1,
-    dtype: ivy.Dtype = None,
-    device: ivy.Device = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
     specified.
@@ -57,13 +57,13 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_framework().arange(start, stop, step, dtype, device)
+    return _cur_backend().arange(start, stop, step, dtype, device)
 
 
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
@@ -83,13 +83,14 @@ def asarray(
         An array interpretation of x.
 
     """
-    return _cur_framework(x).asarray(x, dtype, device)
+    return _cur_backend().asarray(x, dtype=dtype, device=device)
 
 
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with zeros.
 
@@ -118,13 +119,13 @@ def zeros(
                [0., 0., 0., 0., 0.]])
 
     """
-    return _cur_framework().zeros(shape, dtype, device)
+    return _cur_backend().zeros(shape, dtype=dtype, device=device)
 
 
 def ones(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ones.
 
@@ -152,14 +153,14 @@ def ones(
                [1.,  1.]])
 
     """
-    return _cur_framework().ones(shape, dtype, device)
+    return _cur_backend().ones(shape, dtype, device)
 
 
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x``.
@@ -192,13 +193,13 @@ def full_like(
     ivy.array([1, 1, 1, 1, 1, 1])
 
     """
-    return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
+    return _cur_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
 
 
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ones and having the same shape as an input array
     ``x``.
@@ -227,13 +228,13 @@ def ones_like(
     ivy.array([[1, 1, 1],[1, 1, 1]])
 
     """
-    return _cur_framework(x).ones_like(x, dtype, device)
+    return _cur_backend(x).ones_like(x, dtype, device)
 
 
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
@@ -263,7 +264,7 @@ def zeros_like(
                [0, 0, 0]])
 
     """
-    return _cur_framework(x).zeros_like(x, dtype, device)
+    return _cur_backend(x).zeros_like(x, dtype, device)
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
@@ -287,7 +288,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_framework(x).tril(x, k)
+    return _cur_backend(x).tril(x, k)
 
 
 def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
@@ -311,13 +312,13 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_framework(x).triu(x, k)
+    return _cur_backend(x).triu(x, k)
 
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Return a new array of given shape and type, filled with zeros.
 
@@ -337,13 +338,13 @@ def empty(
         an uninitialized array having a specified shape
 
     """
-    return _cur_framework().empty(shape, dtype, device)
+    return _cur_backend().empty(shape, dtype, device)
 
 
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
 
@@ -364,15 +365,15 @@ def empty_like(
         an array having the same shape as x and containing uninitialized data.
 
     """
-    return _cur_framework(x).empty_like(x, dtype, device)
+    return _cur_backend(x).empty_like(x, dtype, device)
 
 
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
@@ -398,7 +399,7 @@ def eye(
         device on which to place the created array. Default: None.
 
     """
-    return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
+    return _cur_backend().eye(n_rows, n_cols, k, dtype, device)
 
 
 # noinspection PyShadowingNames
@@ -407,7 +408,7 @@ def linspace(
     stop: Union[ivy.Array, ivy.NativeArray, int],
     num: int,
     axis: int = None,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     dtype=None,
     endpoint: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -436,8 +437,8 @@ def linspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).linspace(
-        start, stop, num, axis, device, dtype, endpoint
+    return _cur_backend(start).linspace(
+        start, stop, num, axis, device=device, dtype=dtype, endpoint=endpoint
     )
 
 
@@ -481,15 +482,62 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
+
+        This method conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        in the standard. The descriptions above assume an array input for simplicity,
+        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
+        instances, as shown in the type hints and also the examples below.
+
+        Functional Examples
+        -------------------
+
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
+        >>> x = ivy.array([1, 2, 5])
+        >>> y = ivy.array([4, 1])
+        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+        >>> print(xv)
+        ivy.array([[1, 1],
+                   [2, 2],
+                   [5, 5]])
+        >>> print(yv)
+        ivy.array([[4, 1],
+                   [4, 1],
+                   [4, 1]])
+
+        With :code:`ivy.NativeArray` input:
+
+        >>> x = ivy.native_array([1, 2])
+        >>> y = ivy.native_array([3, 4])
+        >>> xv, yv = ivy.meshgrid(x, y)
+        >>> print(xv)
+        ivy.array([[1, 2],
+                   [1, 2]])
+        >>> print(yv)
+        ivy.array([[3, 3],
+                   [4, 4]])
+
     """
-    return _cur_framework().meshgrid(*arrays, indexing=indexing)
+    return _cur_backend().meshgrid(*arrays, indexing=indexing)
 
 
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[ivy.Dtype] = None,
-    device: Optional[ivy.Device] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
 
@@ -520,11 +568,11 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10, 10],
-               [10, 10]])
+    ivy.array([[10., 10.],
+               [10., 10.]])
 
     """
-    return _cur_framework().full(shape, fill_value, dtype, device)
+    return _cur_backend().full(shape, fill_value, dtype, device)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -548,7 +596,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            :ref:`data-interchange` for details.
 
     """
-    return _cur_framework(x).from_dlpack(x)
+    return _cur_backend(x).from_dlpack(x)
 
 
 # Extra #
@@ -559,8 +607,8 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    dtype: Optional[Union[ivy.Dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
     """Converts the input to a native array.
 
@@ -593,7 +641,7 @@ def logspace(
     num: int,
     base: float = 10.0,
     axis: int = None,
-    device: ivy.Device = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
@@ -622,4 +670,4 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).logspace(start, stop, num, base, axis, device)
+    return _cur_backend(start).logspace(start, stop, num, base, axis, device)

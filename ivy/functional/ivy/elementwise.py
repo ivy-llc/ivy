@@ -4,7 +4,7 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -39,12 +39,13 @@ def bitwise_left_shift(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out)
 
 
 def add(
     x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -160,11 +161,11 @@ def add(
     ivy.array([5, 7, 9])
 
     With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                        b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                        b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -175,8 +176,8 @@ def add(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -201,10 +202,11 @@ def add(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                         b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                         b=ivy.array([5, 6, 7]))
+
     >>> z = x.add(y)
     >>> print(z)
     {
@@ -225,10 +227,10 @@ def add(
 
     With :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                         b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                            b=ivy.array([5, 6, 7]))
     >>> z = x + y
     >>> print(z)
     {
@@ -239,8 +241,8 @@ def add(
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x + y
     >>> print(z)
     {
@@ -253,7 +255,7 @@ def add(
     }
 
     """
-    return _cur_framework(x1, x2).add(x1, x2, out)
+    return _cur_backend(x1, x2).add(x1, x2, out)
 
 
 def bitwise_xor(
@@ -283,7 +285,7 @@ def bitwise_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_xor(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out)
 
 
 def exp(
@@ -325,10 +327,10 @@ def exp(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.exp(x)
     >>> print(y)
-    ivy.array([2.71828183, 7.3890561 , 20.08553692])
+    ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
-    return _cur_framework(x).exp(x, out)
+    return _cur_backend(x).exp(x, out)
 
 
 def expm1(
@@ -371,7 +373,7 @@ def expm1(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).expm1(x, out)
+    return _cur_backend(x).expm1(x, out)
 
 
 def bitwise_invert(
@@ -402,7 +404,7 @@ def bitwise_invert(
     ivy.array([-2, -7, -10])
 
     """
-    return _cur_framework(x).bitwise_invert(x, out)
+    return _cur_backend(x).bitwise_invert(x, out)
 
 
 def bitwise_and(
@@ -432,7 +434,7 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_and(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_and(x1, x2, out)
 
 
 def ceil(
@@ -473,10 +475,9 @@ def ceil(
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    ivy.array([1.0, 0.0, -0.0])
-
+    ivy.array([1., 0., -0.])
     """
-    return _cur_framework(x).ceil(x, out)
+    return _cur_backend(x).ceil(x, out)
 
 
 def floor(
@@ -513,7 +514,7 @@ def floor(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).floor(x, out)
+    return _cur_backend(x).floor(x, out)
 
 
 def isfinite(
@@ -539,7 +540,7 @@ def isfinite(
         ``bool``.
 
     """
-    return _cur_framework(x).isfinite(x, out)
+    return _cur_backend(x).isfinite(x, out)
 
 
 def asin(
@@ -576,7 +577,7 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).asin(x, out)
+    return _cur_backend(x).asin(x, out)
 
 
 def isinf(
@@ -602,7 +603,7 @@ def isinf(
         a data type of bool.
 
     """
-    return _cur_framework(x).isinf(x, out)
+    return _cur_backend(x).isinf(x, out)
 
 
 def greater(
@@ -635,7 +636,7 @@ def greater(
     ivy.array([False, False,  True])
 
     """
-    return _cur_framework(x1, x2).greater(x1, x2, out)
+    return _cur_backend(x1, x2).greater(x1, x2, out)
 
 
 def greater_equal(
@@ -661,7 +662,7 @@ def greater_equal(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).greater_equal(x1, x2, out)
+    return _cur_backend(x1, x2).greater_equal(x1, x2, out)
 
 
 def less_equal(
@@ -687,7 +688,7 @@ def less_equal(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).less_equal(x1, x2, out)
+    return _cur_backend(x1, x2).less_equal(x1, x2, out)
 
 
 def multiply(
@@ -751,7 +752,7 @@ def multiply(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_framework(x1, x2).multiply(x1, x2, out)
+    return _cur_backend(x1, x2).multiply(x1, x2, out)
 
 
 def asinh(
@@ -789,7 +790,7 @@ def asinh(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).asinh(x, out)
+    return _cur_backend(x).asinh(x, out)
 
 
 def sign(
@@ -820,7 +821,7 @@ def sign(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).sign(x, out)
+    return _cur_backend(x).sign(x, out)
 
 
 def sqrt(
@@ -857,7 +858,7 @@ def sqrt(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sqrt(x, out)
+    return _cur_backend(x).sqrt(x, out)
 
 
 def cosh(
@@ -894,7 +895,7 @@ def cosh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).cosh(x, out)
+    return _cur_backend(x).cosh(x, out)
 
 
 def log(
@@ -931,7 +932,7 @@ def log(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log(x, out)
+    return _cur_backend(x).log(x, out)
 
 
 def log2(
@@ -968,7 +969,7 @@ def log2(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log2(x, out)
+    return _cur_backend(x).log2(x, out)
 
 
 def log10(
@@ -1005,7 +1006,7 @@ def log10(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log10(x, out)
+    return _cur_backend(x).log10(x, out)
 
 
 def log1p(
@@ -1029,7 +1030,7 @@ def log1p(
         a new array containing the evaluated result for each element in x.
 
     """
-    return _cur_framework(x).log1p(x, out)
+    return _cur_backend(x).log1p(x, out)
 
 
 def isnan(
@@ -1055,7 +1056,7 @@ def isnan(
         ``bool``.
 
     """
-    return _cur_framework(x).isnan(x, out)
+    return _cur_backend(x).isnan(x, out)
 
 
 def less(
@@ -1090,7 +1091,7 @@ def less(
     ivy.array([True, False, False])
 
     """
-    return _cur_framework(x1).less(x1, x2, out)
+    return _cur_backend(x1).less(x1, x2, out)
 
 
 def cos(
@@ -1131,10 +1132,10 @@ def cos(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([1., 0.54030231, -0.41614684])
+    ivy.array([1., 0.54, -0.416])
 
     """
-    return _cur_framework(x).cos(x, out)
+    return _cur_backend(x).cos(x, out)
 
 
 def acos(
@@ -1169,7 +1170,7 @@ def acos(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).acos(x, out)
+    return _cur_backend(x).acos(x, out)
 
 
 def logical_not(
@@ -1200,7 +1201,7 @@ def logical_not(
         data type of ``bool``.
 
     """
-    return _cur_framework(x).logical_not(x, out)
+    return _cur_backend(x).logical_not(x, out)
 
 
 def logical_xor(
@@ -1230,7 +1231,7 @@ def logical_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).logical_xor(x1, x2, out)
+    return _cur_backend(x1, x2).logical_xor(x1, x2, out)
 
 
 def logical_or(
@@ -1266,7 +1267,7 @@ def logical_or(
         data type of ``bool``.
 
     """
-    return _cur_framework(x1, x2).logical_or(x1, x2, out)
+    return _cur_backend(x1, x2).logical_or(x1, x2, out)
 
 
 def logical_and(
@@ -1295,7 +1296,7 @@ def logical_and(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).logical_and(x1, x2, out)
+    return _cur_backend(x1, x2).logical_and(x1, x2, out)
 
 
 def acosh(
@@ -1332,7 +1333,7 @@ def acosh(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).acosh(x, out)
+    return _cur_backend(x).acosh(x, out)
 
 
 def sin(
@@ -1368,7 +1369,7 @@ def sin(
         have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sin(x, out)
+    return _cur_backend(x).sin(x, out)
 
 
 def negative(
@@ -1388,7 +1389,7 @@ def negative(
         an array containing the evaluated result for each element in x
 
     """
-    return _cur_framework(x).negative(x, out)
+    return _cur_backend(x).negative(x, out)
 
 
 def not_equal(
@@ -1417,7 +1418,7 @@ def not_equal(
         data type of ``bool``.
 
     """
-    return _cur_framework(x1, x2).not_equal(x1, x2, out)
+    return _cur_backend(x1, x2).not_equal(x1, x2, out)
 
 
 def floor_divide(
@@ -1444,7 +1445,7 @@ def floor_divide(
         numeric data type.
 
     """
-    return _cur_framework(x1, x2).floor_divide(x1, x2, out)
+    return _cur_backend(x1, x2).floor_divide(x1, x2, out)
 
 
 def bitwise_or(
@@ -1474,7 +1475,7 @@ def bitwise_or(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_or(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_or(x1, x2, out)
 
 
 def sinh(
@@ -1511,7 +1512,7 @@ def sinh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sinh(x, out)
+    return _cur_backend(x).sinh(x, out)
 
 
 def positive(
@@ -1531,7 +1532,7 @@ def positive(
         A new array with the positive value of each element in ``x``.
 
     """
-    return _cur_framework(x).positive(x, out)
+    return _cur_backend(x).positive(x, out)
 
 
 def square(
@@ -1551,7 +1552,7 @@ def square(
         an array containing the evaluated result for each element in ``x``.
 
     """
-    return _cur_framework(x).square(x, out)
+    return _cur_backend(x).square(x, out)
 
 
 def logaddexp(
@@ -1591,7 +1592,7 @@ def logaddexp(
         floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).logaddexp(x1, x2, out)
+    return _cur_backend(x1, x2).logaddexp(x1, x2, out)
 
 
 def round(
@@ -1611,7 +1612,7 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
     """
-    return _cur_framework(x).round(x, out)
+    return _cur_backend(x).round(x, out)
 
 
 def trunc(
@@ -1645,13 +1646,13 @@ def trunc(
         The returned array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).trunc(x, out)
+    return _cur_backend(x).trunc(x, out)
 
 
 def abs(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
@@ -1684,11 +1685,12 @@ def abs(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).abs(x, out)
+    return _cur_backend(x).abs(x, out)
 
 
 def tan(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates an implementation-dependent approximation to the tangent, having
@@ -1734,30 +1736,30 @@ def tan(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tan(x, out=y)
     >>> print(y)
-    ivy.array([0.5463025, -0.8422884, -0.91601413])
+    ivy.array([0.546, -0.842, -0.916])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    >>>                [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                        [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
-               [-3.0963247,  0.9955841, -0.3278579]])
+    ivy.array([[1.96, -1.37, 0.16], 
+        [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0, 1, 2])
+    >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
@@ -1765,8 +1767,8 @@ def tan(
     >>> y = ivy.tan(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+        a: ivy.array([0., 1.56, -2.19]),
+        b: ivy.array([-0.143, 1.16, -3.38])
     }
 
     Instance Method Examples
@@ -1777,7 +1779,7 @@ def tan(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.tan()
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     Using :code:`ivy.Container` instance method:
 
@@ -1785,12 +1787,11 @@ def tan(
     >>> y = x.tan()
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
-    }
+        a:ivy.array([0., 1.56, -2.19]),
+        b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
-    return _cur_framework(x).tan(x, out)
+    return ivy.current_backend(x).tan(x, out)
 
 
 def atan(
@@ -1829,7 +1830,7 @@ def atan(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).atan(x, out)
+    return _cur_backend(x).atan(x, out)
 
 
 def atan2(
@@ -1913,7 +1914,7 @@ def atan2(
         array must have a floating-point data type.
 
     """
-    return _cur_framework(x1).atan2(x1, x2, out)
+    return _cur_backend(x1).atan2(x1, x2, out)
 
 
 def tanh(
@@ -1933,7 +1934,7 @@ def tanh(
         A new array with the hyperbolic tangent of the elements of x.
 
     """
-    return _cur_framework(x).tanh(x, out)
+    return _cur_backend(x).tanh(x, out)
 
 
 def atanh(
@@ -1959,10 +1960,10 @@ def atanh(
     --------
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
-    ivy.array([ 0., -0.54930614])
+    ivy.array([0., -0.549])
 
     """
-    return _cur_framework(x).atanh(x, out)
+    return _cur_backend(x).atanh(x, out)
 
 
 def subtract(
@@ -1990,7 +1991,7 @@ def subtract(
         an array containing the element-wise differences.
 
     """
-    return _cur_framework(x1).subtract(x1, x2, out)
+    return _cur_backend(x1).subtract(x1, x2, out)
 
 
 def divide(
@@ -2016,7 +2017,7 @@ def divide(
         floating-point data type determined by Type Promotion Rules.
 
     """
-    return _cur_framework(x1, x2).divide(x1, x2, out)
+    return _cur_backend(x1, x2).divide(x1, x2, out)
 
 
 def pow(
@@ -2101,7 +2102,7 @@ def pow(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).pow(x1, x2, out)
+    return _cur_backend(x1, x2).pow(x1, x2, out)
 
 
 def remainder(
@@ -2179,7 +2180,7 @@ def remainder(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_framework(x1, x2).remainder(x1, x2, out)
+    return _cur_backend(x1, x2).remainder(x1, x2, out)
 
 
 def bitwise_right_shift(
@@ -2220,7 +2221,7 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 0, 0, 0])
     """
-    return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out)
 
 
 def equal(
@@ -2246,7 +2247,7 @@ def equal(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).equal(x1, x2, out)
+    return _cur_backend(x1, x2).equal(x1, x2, out)
 
 
 # Extra #
@@ -2270,7 +2271,7 @@ def erf(
         The Gauss error function of x.
 
     """
-    return _cur_framework(x).erf(x, out)
+    return _cur_backend(x).erf(x, out)
 
 
 def minimum(
@@ -2293,7 +2294,7 @@ def minimum(
         An array with the elements of x, but clipped to not exceed the y values.
 
     """
-    return _cur_framework(x1).minimum(x1, x2, out)
+    return _cur_backend(x1).minimum(x1, x2, out)
 
 
 def maximum(
@@ -2316,4 +2317,4 @@ def maximum(
         An array with the elements of x, but clipped to not be lower than the y values.
 
     """
-    return _cur_framework(x1).maximum(x1, x2, out)
+    return _cur_backend(x1).maximum(x1, x2, out)
