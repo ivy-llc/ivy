@@ -12,6 +12,11 @@ Arrays
 .. _`__setitem__`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234
 .. _`function wrapping`: https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170
 .. _`inherits`: https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/array/__init__.py#L44
+.. _`is the case`: https://data-apis.org/array-api/latest/API_specification/array_object.html
+.. _`__add__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L291
+.. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
+.. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
+.. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -49,6 +54,13 @@ The benefit of the source code implementations is that this makes the code much 
 without important methods being entirely absent.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
 
+Special methods are a bit little different. Most of these simply wrap a corresponding function in the functional API,
+as `is the case`_ in the Array API Standard.
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
+:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide` respectively.
+However, for some functions such as `__setitem__`_,
+there are substantial differences which must be addressed in the :code:`ivy.Array` implementation.
+
 Array Handling
 --------------
 
@@ -62,10 +74,10 @@ fully framework-agnostic, with all operators performed on the returned array now
 :code:`ivy.Array` class, and not the special methods of the backend :code:`ivy.NativeArray` class.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
-(:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__div__` etc.) being called on the array class.
+(:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
 
 For most special methods, this is not be a problem and each backend is generally quite consistent,
-but for some functions such as `__setitem__`_,
+but as explained above, for some functions such as `__setitem__`_
 there are substantial differences which must be addressed in the :code:`ivy.Array` implementation.
 
 Given that all Ivy functions return :code:`ivy.Array` instances,
