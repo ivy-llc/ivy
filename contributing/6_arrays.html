@@ -170,7 +170,7 @@ each of which implement the category-specific instance methods.</p>
 but passes in <code class="code docutils literal notranslate"><span class="pre">self</span></code> as the first array argument. <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
 <p>Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
-This serves as a helpful backup in cases where some functions are accidentally missed out.</p>
+This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
 <p>The benefit of the source code implementations is that this makes the code much more readable,
 without important methods being entirely absent.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
