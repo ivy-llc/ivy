@@ -813,4 +813,5 @@ def get_probs(draw, dtype):
     probs = []
     for i in range(shape[0]):
         probs.append(draw(none_or_list_of_floats(dtype, shape[1], min_value=0, exclude_min=True, no_none=True)))
+    print('probs', probs)
     return probs, shape[1]

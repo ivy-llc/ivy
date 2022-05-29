@@ -162,7 +162,12 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[JaxArray] = None):
+def clip(
+    x: JaxArray,
+    x_min: Union[Number, JaxArray],
+    x_max: Union[Number, JaxArray],
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
