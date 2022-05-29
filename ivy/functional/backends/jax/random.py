@@ -97,7 +97,7 @@ def randint(
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
         _jax.random.randint(rng_input, shape, low, high),
-        defalt = default_device(device)
+        device=default_device(device)
     )
 
 
