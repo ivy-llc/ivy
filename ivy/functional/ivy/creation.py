@@ -16,6 +16,7 @@ def arange(
     start: Number,
     stop: Optional[Number] = None,
     step: Number = 1,
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -57,7 +58,7 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_backend().arange(start, stop, step, dtype, device)
+    return _cur_backend().arange(start, stop, step, dtype=dtype, device=device)
 
 
 def asarray(

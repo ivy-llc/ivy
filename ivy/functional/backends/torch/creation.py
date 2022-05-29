@@ -37,9 +37,12 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return torch.as_tensor(
-                object_in, dtype=dtype
-            ).clone().detach().to(as_native_dev(device))
+            return (
+                torch.as_tensor(object_in, dtype=dtype)
+                .clone()
+                .detach()
+                .to(as_native_dev(device))
+            )
         else:
             return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
 
@@ -315,7 +318,7 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: torch.dtype, device: torch.device):
 
     if stop is None:
         stop = start
