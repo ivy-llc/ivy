@@ -4,3 +4,4 @@ psutil
 termcolor
 colorama
 nvidia-ml-py3 # mod_name=pynvml
+gputil
