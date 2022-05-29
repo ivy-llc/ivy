@@ -88,12 +88,26 @@ def get_all_arrays_on_dev(device):
 
 
 # noinspection PyShadowingNames
-def num_arrays_on_dev(device):
+def num_arrays_on_dev(device: ivy.Device) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to count the arrays
+
+    Returns
+    -------
+    ret
+        Number of arrays on the specified device
+
+    Examples
+    --------
+    >>> x = ivy.array([-1,0,5.2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.num_arrays_on_dev(y)
+    >>> print(z)
+    2
 
     """
     return len(get_all_arrays_on_dev(device))
@@ -984,8 +998,9 @@ def dev_clone_array(x, devices):
         array cloned to each of the target devices
 
     """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x,
-                                                           device=ds)) for ds in devices})
+    return DevClonedItem(
+        {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
+    )
 
 
 def dev_clone(x, devices):

@@ -346,7 +346,7 @@ def test_atanh(
 
 # bitwise_and
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes + ("bool",), 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes + ("bool",), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -382,7 +382,7 @@ def test_bitwise_and(
 
 # bitwise_left_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -422,7 +422,7 @@ def test_bitwise_left_shift(
 
 # bitwise_invert
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes + ("bool",)),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes + ("bool",)),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -457,7 +457,7 @@ def test_bitwise_invert(
 
 # bitwise_or
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes + ("bool",), 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes + ("bool",), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -493,7 +493,7 @@ def test_bitwise_or(
 
 # bitwise_right_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -533,7 +533,7 @@ def test_bitwise_right_shift(
 
 # bitwise_xor
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.int_dtypes + ("bool",), 2),
+    dtype_and_x=helpers.dtype_and_values(ivy.all_int_dtypes + ("bool",), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
