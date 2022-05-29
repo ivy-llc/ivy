@@ -13,6 +13,7 @@ import logging
 import nvidia_smi
 from typing import Optional
 
+import GPUtil
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
@@ -365,8 +366,10 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    return _cur_backend().gpu_is_available()
-
+    if len(GPUtil.getGPUs())!=0:
+        return True
+    else:
+        return False
 
 def num_cpu_cores() -> int:
     """Determine the number of cores available in the cpu.
