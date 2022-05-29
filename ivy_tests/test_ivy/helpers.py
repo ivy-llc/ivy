@@ -698,10 +698,15 @@ def array_values(draw, dtype, size, allow_inf=None):
 
 
 @st.composite
-def get_shape(draw):
-    shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
-                                      min_size=0,
-                                      max_size=8))
+def get_shape(draw, allow_none=True):
+    if allow_none:
+        shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
+                                          min_size=0,
+                                          max_size=8))
+    else:
+        shape = draw(st.lists(st.integers(min_value=1, max_value=8),
+                              min_size=0,
+                              max_size=8))
     if shape is None:
         return shape
     return tuple(shape)
@@ -783,14 +788,20 @@ def get_mean_std(draw, dtype):
 
 
 @st.composite
-def get_bounds(draw, dtype):
-    values = draw(none_or_list_of_floats(dtype, 2))
-    if values[0] is not None and values[1] is not None:
+def get_bounds(draw, dtype=None):
+    if dtype is None:
+        values = draw(st.lists(st.integers(0, 2147483647), min_size=2, max_size=2))
         low, high = min(values), max(values)
+        if low >= high:
+            return draw(get_bounds())
     else:
-        low, high = values[0], values[1]
-    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-        return draw(get_bounds(dtype))
+        values = draw(none_or_list_of_floats(dtype, 2))
+        if values[0] is not None and values[1] is not None:
+            low, high = min(values), max(values)
+        else:
+            low, high = values[0], values[1]
+        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+            return draw(get_bounds(dtype))
     return low, high
 
 

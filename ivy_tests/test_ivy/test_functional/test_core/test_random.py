@@ -102,24 +102,40 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 
 
 # randint
-@pytest.mark.parametrize("low", [-1, 2])
-@pytest.mark.parametrize("high", [5, 10])
-@pytest.mark.parametrize("shape", [(), (1, 2, 3)])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_randint(low, high, shape, dtype, tensor_fn, device, call):
+# @pytest.mark.parametrize("low", [-1, 2])
+# @pytest.mark.parametrize("high", [5, 10])
+# @pytest.mark.parametrize("shape", [(), (1, 2, 3)])
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
+@given(
+    data=st.data(),
+    shape=helpers.get_shape(allow_none=False),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans()
+)
+def test_randint(data, shape, dtype, as_variable, device, call):
     # smoke test
-    if call in [helpers.mx_call, helpers.torch_call] and tensor_fn is helpers.var_fn:
+    low, high = data.draw(helpers.get_bounds())
+    if call in [helpers.mx_call, helpers.torch_call] and as_variable:
         # PyTorch and MXNet do not support non-float variables
-        pytest.skip()
-    low_tnsr, high_tnsr = tensor_fn(low), tensor_fn(high)
-    ret = ivy.randint(low_tnsr, high_tnsr, shape, device=device)
+        return
+
+    low_tnsr = ivy.asarray(low, dtype=dtype, device=device)
+    high_tnsr = ivy.asarray(high, dtype=dtype, device=device)
+    if as_variable:
+        low_tnsr, high_tnsr = ivy.variable(low), ivy.variable(high)
+    kwargs = {
+        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
+    }
+    kwargs['shape'] = shape
+
+    ret = ivy.randint(**kwargs, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, low_tnsr, high_tnsr, shape, device=device)
+    ret_np = call(ivy.randint, **kwargs, device=device)
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
 
