@@ -103,7 +103,7 @@ class WeConFC(ivy.Module):
 # WeConFC
 @given(
     batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_weight_conditioned_network_training(batch_shape, dtype, device, call):
 
