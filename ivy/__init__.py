@@ -236,7 +236,7 @@ float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
-bool = "bool"
+bool = Dtype("bool")
 
 # native data types
 native_int8 = IntDtype("int8")
@@ -251,10 +251,10 @@ native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
-# noinspection PyShadowingBuiltins
-native_bool = "bool"
+native_bool = Dtype("bool")
 
-valid_dtypes = (
+# all
+all_dtypes = (
     int8,
     int16,
     int32,
@@ -269,7 +269,7 @@ valid_dtypes = (
     float64,
     bool,
 )
-valid_numeric_dtypes = (
+all_numeric_dtypes = (
     int8,
     int16,
     int32,
@@ -283,57 +283,36 @@ valid_numeric_dtypes = (
     float32,
     float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
+all_int_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+)
+all_float_dtypes = (
+    bfloat16,
+    float16,
+    float32,
+    float64,
+)
 
-# all
-all_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
-)
-numeric_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-)
-int_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-float_dtypes = ("bfloat16", "float16", "float32", "float64")
+# valid data types
+valid_dtypes = all_dtypes
+valid_numeric_dtypes = all_numeric_dtypes
+valid_int_dtypes = all_int_dtypes
+valid_float_dtypes = all_float_dtypes
 
-# invalid
+# invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 
+# data type promotion
 promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,

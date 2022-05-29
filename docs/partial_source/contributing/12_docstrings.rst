@@ -2,13 +2,13 @@ Docstrings
 ==========
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 
 As we did when explaining :ref:`Type Hints`, we will again use the functions :code:`ivy.tan`, :code:`ivy.roll` and
 :code:`ivy.add` as exemplars.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
-template. These docstrings can be found under `spec/API_specification/signatures`_.
+template. These docstrings can be found under `spec/API_specification/array_api`_.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 

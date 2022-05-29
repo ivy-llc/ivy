@@ -26,15 +26,17 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 return tf.identity(object_in)
             if dtype is None and not isinstance(object_in, tf.Tensor):
                 try:
-                    return tf.identity(tf.convert_to_tensor(object_in))
+                    dtype = default_dtype(item=object_in, as_native=True)
+                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype, object_in, True))
                     return tf.identity(
                         tf.convert_to_tensor(
                             ivy.nested_map(object_in, lambda x: tf.convert_to_tensor(x, dtype)),
                             dtype=dtype,
                         )
                     )
+                return tf.identity(tf.cast(tensor, dtype))
             else:
                 dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                 try:
@@ -199,7 +201,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: tf.DType, device: str):
 
     if stop is None:
         stop = start
