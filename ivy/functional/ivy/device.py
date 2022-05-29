@@ -367,7 +367,7 @@ def gpu_is_available() -> bool:
     False
     """
     device_cnt = nvidia_smi.nvmlDeviceGetCount()
-    if device_cnt!=0:
+    if device_cnt != 0:
         return True
     else:
         return False
