@@ -1,27 +1,42 @@
 # global
 import numpy as np
 import pytest
+from hypothesis import strategies as st, given
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # unique_values
-@pytest.mark.parametrize(
-    "arr_uniqarr", [([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 5.0], [1.0, 2.0, 3.0, 4.0, 5.0])]
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-@pytest.mark.parametrize("with_out", [False, True])
-def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
+@given(array_shape=helpers.lists(
+    st.integers(2, 3),
+    min_size="num_dims",
+    max_size="num_dims",
+    size_bounds=[1, 3]),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    as_variable=st.booleans(),
+    repeats=st.integers(2,5),
+    with_out=st.booleans())
+def test_unique_values(array_shape,
+                       dtype,
+                       as_variable,
+                       repeats,
+                       with_out,
+                       fw,
+                       device):
+    if fw == "torch" and ("int" in dtype or "16" in dtype):
+        return
 
-    if dtype in ivy.invalid_dtypes:
-        pytest.skip("invalid dtype")
+    shape = tuple(array_shape)
+    arr = np.random.uniform(size=shape).astype(dtype).flatten()
+    arr = ivy.asarray(np.repeat(arr, repeats=repeats))
 
-    arr, gt = arr_uniqarr
-    arr = tensor_fn(arr, dtype, device)
-    gt = tensor_fn(gt, dtype, device)
+    if as_variable:
+        arr = ivy.variable(arr)
+
+    gt = ivy.unique_values(arr)
 
     # create dummy out so that it is broadcastable to gt
     out = ivy.zeros(ivy.shape(gt)) if with_out else None
@@ -41,7 +56,6 @@ def test_unique_values(arr_uniqarr, dtype, tensor_fn, with_out, device):
 
         # native arrays should be the same object
         assert res.data is out.data
-
 
 # Still to Add #
 # ---------------#
