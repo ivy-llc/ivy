@@ -25,12 +25,11 @@ def asarray(object_in, dtype=None, device=None, copy=None):
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = default_dtype(item=object_in, as_native=True)        
         if copy is True:
-            return _to_dev(np.copy(np.asarray(object_in)), device)
+            return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device)
         else:
-            return _to_dev(np.asarray(object_in), device)
+            return _to_dev(np.asarray(object_in, dtype=dtype), device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
@@ -139,7 +138,6 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         ans.shape[0] >= 1
         and (not isinstance(start, numpy.ndarray))
         and (not isinstance(stop, numpy.ndarray))
-        and ans[0] != start
     ):
         ans[0] = start
     return _to_dev(ans, device)
