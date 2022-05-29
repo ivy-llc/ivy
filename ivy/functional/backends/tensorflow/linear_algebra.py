@@ -199,7 +199,7 @@ def outer(
     x2: Tensor, 
     out: Optional[Tensor] = None
 ) -> Tensor:
-    ret = tf.experimental.numpy.outer(x1, x2)
+    ret = tf.experimental.numpy.outer(x1, x2, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

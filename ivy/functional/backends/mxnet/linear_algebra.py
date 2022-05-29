@@ -74,7 +74,7 @@ def outer(
     x2: mx.nd.NDArray,
     out: Optional[mx.nd.NDArray] = None
 ) -> mx.nd.NDArray:
-    ret = mx.np.outer(x1, x2, out)
+    ret = mx.nd.linalg.outer(x1, x2, out=out)
     if _ivy.exists(out):
         return _ivy.inplace_update(out, ret)
     return ret

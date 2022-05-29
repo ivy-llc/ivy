@@ -106,7 +106,7 @@ def outer(
     x2: np.ndarray,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.outer(x1, x2, out)
+    ret = np.outer(x1, x2, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
