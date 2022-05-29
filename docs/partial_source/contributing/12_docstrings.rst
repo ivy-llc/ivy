@@ -2,7 +2,7 @@ Docstrings
 ==========
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 
 As we did when explaining :ref:`Type Hints`, we will again use the functions :code:`ivy.tan`, :code:`ivy.roll` and
 :code:`ivy.add` as exemplars.
