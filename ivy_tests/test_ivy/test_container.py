@@ -147,34 +147,6 @@ def test_container_concat(device, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
-# def test_container_stack(device, call):
-#     container_0 = Container(
-#         {
-#             "a": ivy.array([1], device=device),
-#             "b": {
-#                 "c": ivy.array([2], device=device),
-#                 "d": ivy.array([3], device=device),
-#             },
-#         }
-#     )
-#     container_1 = Container(
-#         {
-#             "a": ivy.array([4], device=device),
-#             "b": {
-#                 "c": ivy.array([5], device=device),
-#                 "d": ivy.array([6], device=device),
-#             },
-#         }
-#     )
-#     container_stacked = ivy.Container.stack([container_0, container_1], 0)
-#     assert np.allclose(ivy.to_numpy(container_stacked["a"]), np.array([[1], [4]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked["b"]["c"]), np.array([[2],[5]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked["b"]["d"]), np.array([[3],[6]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
-
-
 def test_container_combine(device, call):
     container_0 = Container(
         {
