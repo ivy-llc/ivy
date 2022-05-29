@@ -199,6 +199,7 @@ def flip(
     """
     return _cur_backend(x).flip(x, axis, out)
 
+
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     axis: int = 0,
@@ -224,7 +225,13 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given ``axis``.
 
-    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ in the standard. The descriptions above assume an array input for simplicity, but the method also accepts :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints and also the examples below.
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
 
     Functional Examples
     -------------------
@@ -310,7 +317,8 @@ def expand_dims(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), b=ivy.array([[4., 5.], [6., 7.]]))
+    >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \
+                            b=ivy.array([[4., 5.], [6., 7.]]))
     >>> print(x)
     {
         a: ivy.array([[0., 1.],
