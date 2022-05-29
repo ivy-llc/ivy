@@ -93,9 +93,14 @@ def svd(
 
 
 def outer(
-    x1: torch.Tensor, x2: torch.Tensor, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, 
+    x2: torch.Tensor, 
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.outer(x1, x2, out=out)
+    ret = torch.outer(x1, x2, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def diagonal(

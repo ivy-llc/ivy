@@ -194,7 +194,11 @@ def svd(
     return ret
 
 
-def outer(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def outer(
+    x1: Tensor, 
+    x2: Tensor, 
+    out: Optional[Tensor] = None
+) -> Tensor:
     ret = tf.experimental.numpy.outer(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
