@@ -13,7 +13,6 @@ def roll(
     x: Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[Tensor] = None,
 ) -> Tensor:
     if axis is None:
         originalShape = x.shape
@@ -25,8 +24,6 @@ def roll(
         if isinstance(shift, int) and (type(axis) in [list, tuple]):
             shift = [shift for _ in range(len(axis))]
         ret = tf.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -242,7 +239,12 @@ def swapaxes(x, axis0, axis1, out: Optional[Tensor] = None):
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[Tensor] = None):
+def clip(
+    x: Tensor,
+    x_min: Union[Number, Tensor],
+    x_max: Union[Number, Tensor],
+    out: Optional[Tensor] = None,
+) -> Tensor:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

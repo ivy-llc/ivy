@@ -25,7 +25,7 @@ import ivy.functional.backends.numpy as ivy_np
     ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_sgd_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -104,7 +104,7 @@ def test_sgd_optimizer(
     ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_lars_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -185,7 +185,7 @@ def test_lars_optimizer(
     ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_adam_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
@@ -264,7 +264,7 @@ def test_adam_optimizer(
     ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_lamb_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call

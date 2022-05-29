@@ -4,7 +4,6 @@ signature.
 
 # global
 from typing import List, Optional, Union
-import ivy
 
 _round = round
 import numpy as _np
@@ -14,8 +13,9 @@ from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
+from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -184,7 +184,7 @@ def scatter_flat(
                 reduction
             )
         )
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return res
 
 
@@ -218,7 +218,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     # handle numeric updates
     updates = tf.constant(
         [updates] if isinstance(updates, Number) else updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
     )
@@ -292,7 +292,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return res
 
 
@@ -300,13 +300,13 @@ def gather(
     params: tf.Tensor,
     indices: tf.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[str] = None,
+    device: Optional[Union[ivy.Device, str]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)
     if device is None:
         device = _dev_callable(params)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
@@ -317,20 +317,20 @@ def gather(
 def gather_nd(params, indices, device=None):
     if device is None:
         device = _dev_callable(params)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.gather_nd(params, indices)
 
 
 def one_hot(indices, depth, device=None):
     device = default_device(device)
     if device is not None:
-        with tf.device(dev_from_str(device)):
+        with tf.device(as_native_dev(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
 
 
-current_framework_str = lambda: "tensorflow"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "tensorflow"
+current_backend_str.__name__ = "current_backend_str"
 
 multiprocessing = (
     lambda context=None: _multiprocessing

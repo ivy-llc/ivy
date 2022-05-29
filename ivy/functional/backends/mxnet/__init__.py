@@ -7,70 +7,65 @@ import numpy as np
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
-NativeArray = mx.ndarray.ndarray.NDArray
-NativeVariable = mx.ndarray.ndarray.NDArray
-Device = mx.context.Context
-Dtype = type
+NativeArray = mx.nd.NDArray
+NativeVariable = mx.nd.NDArray
+NativeDevice = mx.context.Context
+NativeDtype = type
 
-# data types
-int8 = np.int8
-int32 = np.int32
-int64 = np.int64
-uint8 = np.uint8
-float16 = np.float16
-float32 = np.float32
-float64 = np.float64
+# native data types
+native_int8 = np.int8
+native_int32 = np.int32
+native_int64 = np.int64
+native_uint8 = np.uint8
+native_float16 = np.float16
+native_float32 = np.float32
+native_float64 = np.float64
 # noinspection PyShadowingBuiltins
-bool = np.bool
+native_bool = np.bool
 
-valid_dtypes = (int8, int32, int64, uint8, float16, float32, float64, bool)
-valid_numeric_dtypes = (int8, int32, int64, uint8, float16, float32, float64)
-valid_int_dtypes = (int8, int32, int64, uint8)
-valid_float_dtypes = (float16, float32, float64)
-
-# valid
-valid_dtype_strs = (
-    "int8",
-    "int32",
-    "int64",
-    "uint8",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
+# valid data types
+valid_dtypes = (
+    ivy.int8,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.bool,
 )
-valid_numeric_dtype_strs = (
-    "int8",
-    "int32",
-    "int64",
-    "uint8",
-    "float16",
-    "float32",
-    "float64",
+valid_numeric_dtypes = (
+    ivy.int8,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
 )
-valid_int_dtype_strs = ("int8", "int32", "int64", "uint8")
-valid_float_dtype_strs = ("float16", "float32", "float64")
+valid_int_dtypes = (ivy.int8, ivy.int32, ivy.int64, ivy.uint8)
+valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
 
-# invalid
-invalid_dtype_strs = ("int16", "uint16", "uint32", "uint64", "bfloat16")
-invalid_numeric_dtype_strs = ("int16", "uint16", "uint32", "uint64", "bfloat16")
-invalid_int_dtype_strs = ("int16", "uint16", "uint32", "uint64")
-invalid_float_dtype_strs = ("bfloat16",)
+# invalid data types
+invalid_dtypes = (ivy.int16, ivy.uint16, ivy.uint32, ivy.uint64, ivy.bfloat16)
+invalid_numeric_dtypes = (ivy.int16, ivy.uint16, ivy.uint32, ivy.uint64, ivy.bfloat16)
+invalid_int_dtypes = (ivy.int16, ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_float_dtypes = (ivy.bfloat16,)
 
 
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
-    if type_str in invalid_dtype_strs:
+    type_str = ivy.as_ivy_dtype(type)
+    if type_str in invalid_dtypes:
         return {
-            "int16": int32,
-            "uint16": uint8,
-            "uint32": uint8,
-            "uint64": uint8,
-            "bfloat16": float16,
+            "int16": ivy.int32,
+            "uint16": ivy.uint8,
+            "uint32": ivy.uint8,
+            "uint64": ivy.uint8,
+            "bfloat16": ivy.float16,
         }[type_str]
     return type
 
@@ -86,7 +81,7 @@ def _raise(ex):
 
 
 def _mxnet_init_context(device):  # noqa
-    device = ivy.dev_to_str(device)
+    device = ivy.as_ivy_dev(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:

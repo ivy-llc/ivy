@@ -4,18 +4,18 @@ import pytest
 from typing import Dict
 from hypothesis import settings
 
-settings.register_profile("default", max_examples=100, deadline=None)
+settings.register_profile("default", max_examples=10, deadline=None)
 settings.load_profile("default")
 
 # local
 from ivy_tests.test_ivy import helpers
-from ivy import clear_framework_stack, DefaultDevice
+from ivy import clear_backend_stack, DefaultDevice
 
 
 FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
 
 
-TEST_FRAMEWORKS: Dict[str, callable] = {
+TEST_BACKENDS: Dict[str, callable] = {
     "numpy": lambda: helpers.get_ivy_numpy(),
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
@@ -39,7 +39,7 @@ def run_around_tests(device, f, compile_graph, implicit, call, fw):
     if "gpu" in device and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
-    clear_framework_stack()
+    clear_backend_stack()
     with f.use:
         with DefaultDevice(device):
             yield
@@ -55,11 +55,11 @@ def pytest_generate_tests(metafunc):
         devices = raw_value.split(",")
 
     # framework
-    raw_value = metafunc.config.getoption("--framework")
+    raw_value = metafunc.config.getoption("--backend")
     if raw_value == "all":
-        f_strs = TEST_FRAMEWORKS.keys()
+        backend_strs = TEST_BACKENDS.keys()
     else:
-        f_strs = raw_value.split(",")
+        backend_strs = raw_value.split(",")
 
     # compile_graph
     raw_value = metafunc.config.getoption("--compile_graph")
@@ -79,18 +79,18 @@ def pytest_generate_tests(metafunc):
 
     # create test configs
     configs = list()
-    for f_str in f_strs:
+    for backend_str in backend_strs:
         for device in devices:
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     configs.append(
                         (
                             device,
-                            TEST_FRAMEWORKS[f_str](),
+                            TEST_BACKENDS[backend_str](),
                             compile_graph,
                             implicit,
-                            TEST_CALL_METHODS[f_str],
-                            f_str,
+                            TEST_CALL_METHODS[backend_str],
+                            backend_str,
                         )
                     )
     metafunc.parametrize("device,f,compile_graph,implicit,call,fw", configs)
@@ -98,8 +98,6 @@ def pytest_generate_tests(metafunc):
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption(
-        "--framework", action="store", default="jax,numpy,tensorflow,torch"
-    )
+    parser.addoption("--backend", action="store", default="jax,numpy,tensorflow,torch")
     parser.addoption("--compile_graph", action="store", default="true")
     parser.addoption("--with_implicit", action="store", default="false")

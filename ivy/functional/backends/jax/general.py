@@ -193,7 +193,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     updates = [updates] if isinstance(updates, Number) else updates
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
     )
@@ -327,5 +327,5 @@ def inplace_increment(x, val):
     return x
 
 
-current_framework_str = lambda: "jax"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "jax"
+current_backend_str.__name__ = "current_backend_str"

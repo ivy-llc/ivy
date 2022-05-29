@@ -6,92 +6,68 @@ import torch as torch
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
-Device = torch.device
-Dtype = torch.dtype
+NativeDevice = torch.device
+NativeDtype = torch.dtype
 
-# data types
-int8 = torch.int8
-int16 = torch.int16
-int32 = torch.int32
-int64 = torch.int64
-uint8 = torch.uint8
-bfloat16 = torch.bfloat16
-float16 = torch.float16
-float32 = torch.float32
-float64 = torch.float64
+# native data types
+native_int8 = torch.int8
+native_int16 = torch.int16
+native_int32 = torch.int32
+native_int64 = torch.int64
+native_uint8 = torch.uint8
+native_bfloat16 = torch.bfloat16
+native_float16 = torch.float16
+native_float32 = torch.float32
+native_float64 = torch.float64
 # noinspection PyShadowingBuiltins
-bool = torch.bool
+native_bool = torch.bool
 
+# valid data types
 valid_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    bfloat16,
-    float16,
-    float32,
-    float64,
-    bool,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.bool,
 )
 valid_numeric_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    bfloat16,
-    float16,
-    float32,
-    float64,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
+valid_int_dtypes = (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
+valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 
-# valid
-valid_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
-)
-valid_numeric_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-)
-valid_int_dtype_strs = ("int8", "int16", "int32", "int64", "uint8")
-valid_float_dtype_strs = ("bfloat16", "float16", "float32", "float64")
-
-# invalid
-invalid_dtype_strs = ("uint16", "uint32", "uint64")
-invalid_num_dtype_strs = ("uint16", "uint32", "uint64")
-invalid_int_dtype_strs = ("uint16", "uint32", "uint64")
-invalid_float_dtype_strs = ()
+# invalid data types
+invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_float_dtypes = ()
 
 
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.dtype_to_str(type)
-    if type_str in invalid_dtype_strs:
-        return {"uint16": uint8, "uint32": uint8, "uint64": uint8}[type_str]
+    type_str = ivy.as_ivy_dtype(type)
+    if type_str in invalid_dtypes:
+        return {"uint16": native_uint8, "uint32": native_uint8, "uint64": native_uint8}[
+            type_str
+        ]
     return type
 
 

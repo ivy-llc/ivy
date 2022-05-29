@@ -44,8 +44,8 @@ def _get_shape_of_list(lst, shape=()):
 # set_framework
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
 def test_set_framework(fw_str, device, call):
-    ivy.set_framework(fw_str)
-    ivy.unset_framework()
+    ivy.set_backend(fw_str)
+    ivy.unset_backend()
 
 
 # use_framework
@@ -88,34 +88,33 @@ def test_match_kwargs(allow_duplicates):
         assert kwca == {"f": 5, "g": 6}
 
 
-# def test_get_referrers_recursive(device, call):
-#
-#     class SomeClass:
-#         def __init__(self):
-#             self.x = [1, 2]
-#             self.y = [self.x]
-#
-#     some_obj = SomeClass()
-#     refs = ivy.get_referrers_recursive(some_obj.x)
-#     ref_keys = refs.keys()
-#     assert len(ref_keys) == 3
-#     assert 'repr' in ref_keys
-#     assert refs['repr'] == '[1,2]'
-#     y_id = str(id(some_obj.y))
-#     y_refs = refs[y_id]
-#     assert y_refs['repr'] == '[[1,2]]'
-#     some_obj_dict_id = str(id(some_obj.__dict__))
-#     assert y_refs[some_obj_dict_id] == 'tracked'
-#     dict_refs = refs[some_obj_dict_id]
-#     assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
-#     some_obj_id = str(id(some_obj))
-#     some_obj_refs = dict_refs[some_obj_id]
-#     assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
-#     assert len(some_obj_refs) == 1
+def test_get_referrers_recursive(device, call):
+    class SomeClass:
+        def __init__(self):
+            self.x = [1, 2]
+            self.y = [self.x]
+
+    some_obj = SomeClass()
+    refs = ivy.get_referrers_recursive(some_obj.x)
+    ref_keys = refs.keys()
+    assert len(ref_keys) == 3
+    assert "repr" in ref_keys
+    assert refs["repr"] == "[1,2]"
+    y_id = str(id(some_obj.y))
+    y_refs = refs[y_id]
+    assert y_refs["repr"] == "[[1,2]]"
+    some_obj_dict_id = str(id(some_obj.__dict__))
+    assert y_refs[some_obj_dict_id] == "tracked"
+    dict_refs = refs[some_obj_dict_id]
+    assert dict_refs["repr"] == "{'x':[1,2],'y':[[1,2]]}"
+    some_obj_id = str(id(some_obj))
+    some_obj_refs = dict_refs[some_obj_id]
+    assert some_obj_refs["repr"] == str(some_obj).replace(" ", "")
+    assert len(some_obj_refs) == 1
 
 
 # copy array
-@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_copy_array(dtype_and_x, device, call, fw):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
@@ -140,7 +139,7 @@ def test_copy_array(dtype_and_x, device, call, fw):
 
 
 # array_equal
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs, n_arrays=2))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes, n_arrays=2))
 def test_array_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
@@ -169,7 +168,7 @@ def test_array_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # arrays_equal
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs, n_arrays=3))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes, n_arrays=3))
 def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
@@ -207,7 +206,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # to_numpy
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -236,7 +235,7 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
 # to_scalar
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=st.sampled_from(ivy_np.valid_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
 )
 def test_to_scalar(object_in, dtype, device, call, fw):
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -262,7 +261,7 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 
 
 # to_list
-@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs))
+@given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
@@ -297,7 +296,7 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
 
 # shape
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -334,7 +333,7 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 # get_num_dims
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -417,8 +416,8 @@ def test_clip_vector_norm(
         call(ivy.clip_vector_norm, x, max_norm, p_val), np.array(clipped)
     )
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
     # compilation test
@@ -429,7 +428,7 @@ def test_clip_vector_norm(
 
 # floormod
 # @given(
-#     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, n_arrays=2),
+#     xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
 #     num_positional_args=st.integers(1, 2),
@@ -736,8 +735,8 @@ def test_cumsum(x_n_axis, dtype, with_out, tensor_fn, device, call):
     )
     # out test
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
 
@@ -781,8 +780,8 @@ def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, device, call):
     )
     # out test
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
 
@@ -816,7 +815,7 @@ def test_scatter_flat(
         # pytorch variables do not support in-place updates
         tensor = (
             ivy.array(tensor, dtype, device)
-            if ivy.current_framework_str() == "torch"
+            if ivy.current_backend_str() == "torch"
             else tensor_fn(tensor, dtype, device)
         )
     ret = ivy.scatter_flat(inds, upd, size, tensor, red, device)
@@ -894,7 +893,7 @@ def test_scatter_nd(
         # pytorch variables do not support in-place updates
         tensor = (
             ivy.array(tensor, dtype, device)
-            if ivy.current_framework_str() == "torch"
+            if ivy.current_backend_str() == "torch"
             else tensor_fn(tensor, dtype, device)
         )
     ret = ivy.scatter_nd(inds, upd, shape, tensor, red, device)
@@ -958,8 +957,8 @@ def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, device, call):
     )
     # out test
     if with_out:
-        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
 
@@ -1128,7 +1127,7 @@ def test_framework_setting_with_multiprocessing(device, call):
         pytest.skip()
 
     def worker_fn(out_queue):
-        ivy.set_framework("numpy")
+        ivy.set_backend("numpy")
         x_ = np.array([0.0, 1.0, 2.0])
         for _ in range(1000):
             try:
@@ -1136,11 +1135,11 @@ def test_framework_setting_with_multiprocessing(device, call):
             except TypeError:
                 out_queue.put(False)
                 return
-        ivy.unset_framework()
+        ivy.unset_backend()
         out_queue.put(True)
 
     # get original framework string and array
-    fws = ivy.current_framework_str()
+    fws = ivy.current_backend_str()
     x = ivy.array([0.0, 1.0, 2.0])
 
     # start numpy loop thread
@@ -1149,10 +1148,10 @@ def test_framework_setting_with_multiprocessing(device, call):
     worker.start()
 
     # start local original framework loop
-    ivy.set_framework(fws)
+    ivy.set_backend(fws)
     for _ in range(1000):
         ivy.mean(x)
-    ivy.unset_framework()
+    ivy.unset_backend()
 
     worker.join()
     assert output_queue.get_nowait()
@@ -1165,12 +1164,12 @@ def test_explicit_ivy_framework_handles(device, call):
         pytest.skip()
 
     # store original framework string and unset
-    fw_str = ivy.current_framework_str()
-    ivy.unset_framework()
+    fw_str = ivy.current_backend_str()
+    ivy.unset_backend()
 
     # set with explicit handle caught
-    ivy_exp = ivy.get_framework(fw_str)
-    assert ivy_exp.current_framework_str() == fw_str
+    ivy_exp = ivy.get_backend(fw_str)
+    assert ivy_exp.current_backend_str() == fw_str
 
     # assert backend implemented function is accessible
     assert "array" in ivy_exp.__dict__
@@ -1181,14 +1180,14 @@ def test_explicit_ivy_framework_handles(device, call):
     assert callable(ivy_exp.cache_fn)
 
     # set global ivy to numpy
-    ivy.set_framework("numpy")
+    ivy.set_backend("numpy")
 
     # assert the explicit handle is still unchanged
-    assert ivy.current_framework_str() == "numpy"
-    assert ivy_exp.current_framework_str() == fw_str
+    assert ivy.current_backend_str() == "numpy"
+    assert ivy_exp.current_backend_str() == fw_str
 
     # unset global ivy from numpy
-    ivy.unset_framework()
+    ivy.unset_backend()
 
 
 def test_class_ivy_handles(device, call):
@@ -1205,7 +1204,7 @@ def test_class_ivy_handles(device, call):
             return self._ivy.array([0.0, 1.0, 2.0])
 
     # create instance
-    ag = ArrayGen(ivy.get_framework())
+    ag = ArrayGen(ivy.get_backend())
 
     # create array from array generator
     x = ag.get_array()
@@ -1214,7 +1213,7 @@ def test_class_ivy_handles(device, call):
     assert not isinstance(x, np.ndarray)
 
     # change global framework to numpy
-    ivy.set_framework("numpy")
+    ivy.set_backend("numpy")
 
     # create another array from array generator
     x = ag.get_array()
@@ -1303,7 +1302,7 @@ def test_container_types(device, call):
 
 
 def test_inplace_arrays_supported(device, call):
-    cur_fw = ivy.current_framework_str()
+    cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch"]:
         assert ivy.inplace_arrays_supported()
     elif cur_fw in ["jax", "tensorflow"]:
@@ -1313,7 +1312,7 @@ def test_inplace_arrays_supported(device, call):
 
 
 def test_inplace_variables_supported(device, call):
-    cur_fw = ivy.current_framework_str()
+    cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
     elif cur_fw in ["jax"]:

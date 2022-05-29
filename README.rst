@@ -186,7 +186,7 @@ You should then see output like the following:
    ivy.flip(                              ivy.randint(                              ivy.verbosity
    ivy.floor(                             ivy.random                                ivy.where(
    ivy.floormod(                          ivy.random_uniform(                       ivy.zero_pad(
-   ivy.framework_handler                  ivy.reduce_max(                           ivy.zeros(
+   ivy.backend_handler                    ivy.reduce_max(                           ivy.zeros(
    ivy.gather_nd(                         ivy.reduce_mean(                          ivy.zeros_like(
 
 Background
@@ -247,7 +247,7 @@ Roadmap
 | Align Ivy with the `Consortium for Python Data API Standards <https://data-apis.org>`_
 |
 | (b) **Front-Ends [page coming soon!]** 🚧
-| Create framework-specific front-ends for each supported ML framework
+| Create backend-specific front-ends for each supported ML framework
 |
 | (c) **Transpiler [page coming soon!]** 🚧
 | Verify code conversions work for each back-end and front-end combo
