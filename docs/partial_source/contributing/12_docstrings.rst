@@ -8,7 +8,7 @@ As we did when explaining :ref:`Type Hints`, we will again use the functions :co
 :code:`ivy.add` as exemplars.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
-template. These docstrings can be found under `spec/API_specification/signatures`_.
+template. These docstrings can be found under `spec/API_specification/array_api`_.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
