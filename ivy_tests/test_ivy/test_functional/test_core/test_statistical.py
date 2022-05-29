@@ -332,7 +332,7 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # out test
     if with_out:
         assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+        if ivy.current_backend_str() in ["tensorflow", "jax"]:
+            # these backends do not support native inplace updates
             return
         assert ret.data is out.data

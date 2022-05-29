@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -56,7 +56,7 @@ def min(
         as x.
 
     """
-    return _cur_framework.min(x, axis, keepdims, out)
+    return _cur_backend.min(x, axis, keepdims, out)
 
 
 # noinspection PyShadowingBuiltins
@@ -108,7 +108,7 @@ def max(
         as ``x``.
 
     """
-    return _cur_framework.max(x, axis, keepdims, out=out)
+    return _cur_backend.max(x, axis, keepdims, out=out)
 
 
 def var(
@@ -163,7 +163,7 @@ def var(
         variances. The returned array must have the same data type as x.
 
     """
-    return _cur_framework(x).var(x, axis, correction, keepdims, out=out)
+    return _cur_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 def mean(
@@ -213,7 +213,7 @@ def mean(
            floating-point data type.
 
     """
-    return _cur_framework(x).mean(x, axis, keepdims, out=out)
+    return _cur_backend(x).mean(x, axis, keepdims, out=out)
 
 
 def prod(
@@ -264,7 +264,7 @@ def prod(
         parameter above.
 
     """
-    return _cur_framework.prod(x, axis, keepdims, dtype=dtype, out=out)
+    return _cur_backend.prod(x, axis, keepdims, dtype=dtype, out=out)
 
 
 def sum(
@@ -338,7 +338,7 @@ def sum(
     ivy.array(1.3)
 
     """
-    return _cur_framework(x).sum(x, axis, dtype, keepdims, out=out)
+    return _cur_backend(x).sum(x, axis, dtype, keepdims, out=out)
 
 
 def std(
@@ -405,7 +405,7 @@ def std(
     ivy.array(0.8164966)
 
     """
-    return _cur_framework(x).std(x, axis, correction, keepdims, out=out)
+    return _cur_backend(x).std(x, axis, correction, keepdims, out=out)
 
 
 # Extra #
@@ -451,4 +451,4 @@ def einsum(
     ivy.array([9, 12, 15])
 
     """
-    return _cur_framework(operands[0]).einsum(equation, *operands, out=out)
+    return _cur_backend(operands[0]).einsum(equation, *operands, out=out)
