@@ -13,7 +13,7 @@ import logging
 import nvidia_smi
 from typing import Optional
 
-import GPUtil
+
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
@@ -366,7 +366,8 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    if len(GPUtil.getGPUs())!=0:
+    device_cnt = nvidia_smi.nvmlDeviceGetCount()
+    if device_cnt!=0:
         return True
     else:
         return False
