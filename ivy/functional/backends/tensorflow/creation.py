@@ -31,7 +31,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                     dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                     return tf.identity(
                         tf.convert_to_tensor(
-                            ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                            ivy.nested_map(object_in, lambda x: tf.convert_to_tensor(x, dtype)),
                             dtype=dtype,
                         )
                     )
@@ -41,10 +41,10 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(object_in, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
-                return tf.identity(tf.cast(tensor, dtype))
+                return tf.identity(tf.convert_to_tensor(tensor, dtype))
         else:
             if dtype is None and isinstance(object_in, tf.Tensor):
                 return object_in
@@ -54,7 +54,7 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 except (TypeError, ValueError):
                     dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                     return tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(object_in, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
             else:
@@ -63,10 +63,10 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(object_in, lambda x: tf.convert_to_tensor(x, dtype)),
                         dtype=dtype,
                     )
-                return tf.cast(tensor, dtype)
+                return tf.convert_to_tensor(tensor, dtype)
 
 
 def zeros(

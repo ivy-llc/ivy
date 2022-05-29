@@ -28,7 +28,7 @@ def test_array(dtype_and_x, from_numpy, device, call, fw):
     if from_numpy:
         object_in = np.array(object_in)
     # smoke test
-    ret = ivy.array(object_in, dtype, device)
+    ret = ivy.array(object_in, dtype=dtype, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test

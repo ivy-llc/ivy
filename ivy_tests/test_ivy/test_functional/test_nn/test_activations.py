@@ -55,6 +55,8 @@ def test_relu(dtype_and_x, as_variable, with_out, native_array,num_positional_ar
 
 def test_leaky_relu(dtype_and_x, alpha,as_variable, num_positional_args,container,instance_method,native_array, fw):
     dtype,x = dtype_and_x
+    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
+        return
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_array_function(

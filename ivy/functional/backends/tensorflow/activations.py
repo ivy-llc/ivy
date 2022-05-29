@@ -20,9 +20,10 @@ def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:
-    alpha_dtype = ivy.default_dtype(item=alpha)
-    promoted_dtype = tf.experimental.numpy.promote_types(x.dtype,alpha_dtype)
-    x = tf.cast(x,dtype=promoted_dtype)
+    if tf.reduce_any(alpha>x):
+        alpha_dtype = ivy.default_dtype(item=alpha)
+        promoted_dtype = tf.experimental.numpy.promote_types(x.dtype,alpha_dtype)
+        x = tf.cast(x,dtype=promoted_dtype)
     return tf.nn.leaky_relu(x, alpha)
 
 
