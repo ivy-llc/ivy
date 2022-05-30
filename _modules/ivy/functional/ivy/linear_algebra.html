@@ -823,29 +823,89 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">vecdot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/det.html#ivy.functional.ivy.linear_algebra.det">[docs]</a><span class="k">def</span> <span class="nf">det</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices) ``x``.</span>
+<div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/det.html#ivy.functional.ivy.linear_algebra.det">[docs]</a><span class="k">def</span> <span class="nf">det</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices)``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
-<span class="sd">        square matrices. Should have a floating-point data type.</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions </span>
+<span class="sd">        form square matrices. Should have a floating-point data type.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        if ``x`` is a two-dimensional array, a zero-dimensional array containing the</span>
-<span class="sd">        determinant; otherwise, a non-zero dimensional array containing the determinant</span>
+<span class="sd">        determinant; otherwise,a non-zero dimensional array containing the determinant</span>
 <span class="sd">        for each square matrix. The returned array must have the same data type as</span>
 <span class="sd">        ``x``.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])</span>
-<span class="sd">    &gt;&gt;&gt; out = ivy.det(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(out)</span>
-<span class="sd">    ivy.array([-2., -3.])</span>
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring \</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg \</span>
+<span class="sd">    .det.html&gt;`_ </span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
+<span class="sd">    the method also accepts :code:`ivy.Container` instances in place of</span>
+<span class="sd">    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints</span>
+<span class="sd">    and also the examples below.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2.,4.],[6.,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-10.0])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([293.47])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([293.47])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \</span>
+<span class="sd">                                 b = ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([8.0]),</span>
+<span class="sd">        b: ivy.array([1.0])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2.,4.],[6.,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.det()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-10.0])</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \</span>
+<span class="sd">                                    b = ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.det()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([8.0]),</span>
+<span class="sd">        b: ivy.array([1.0])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
