@@ -22,6 +22,8 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
+    low = tf.cast(low, 'float32')
+    high = tf.cast(high, 'float32')
     with tf.device(default_device(device)):
         return tf.random.uniform(shape if shape else (), low, high)
 
@@ -32,6 +34,8 @@ def random_normal(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
+    mean = tf.cast(mean, 'float32')
+    std = tf.cast(std, 'float32')
     with tf.device(default_device(device)):
         return tf.random.normal(shape if shape else (), mean, std)
 
@@ -68,8 +72,10 @@ def randint(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> Tensor:
     device = default_device(device)
+    low = tf.cast(low, 'int64')
+    high = tf.cast(high, 'int64')
     with tf.device("/" + device.upper()):
-        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int32)
+        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
 
 
 seed = lambda seed_value=0: tf.random.set_seed(seed_value)
