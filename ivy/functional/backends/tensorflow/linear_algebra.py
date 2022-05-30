@@ -323,7 +323,10 @@ def trace(x: tf.Tensor, offset: int = 0, out: Optional[Tensor] = None) -> tf.Ten
     return ret
 
 
-def det(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def det(
+        x: Tensor,
+        out: Optional[Tensor] = None
+) -> Tensor:
     ret = tf.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
