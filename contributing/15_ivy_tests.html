@@ -60,7 +60,12 @@
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Tests</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Hypothesis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-generation">Data Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">test_array_function</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -143,15 +148,59 @@
              
   <section id="ivy-tests">
 <h1>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this headline"></a></h1>
-<p>On top of the tests which we have taken directly from the test suite for the Array API Standard,
-we also add our own tests.</p>
-<p>This is for two reasons:</p>
+<p>On top of the Array API test suite which is included as a submodule mapped to folder <code class="code docutils literal notranslate"><span class="pre">test_array_api</span></code>,
+There is also a collection of Ivy tests, located in subfolder <a class="reference external" href="https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy">test_ivy</a>.</p>
+<p>These tests serve two purposes:</p>
 <ol class="arabic simple">
-<li><p>Many functions in Ivy are not present in the standard, and they need to be tested somewhere</p></li>
-<li><p>The standard only mandates a subset of required behaviour. Almost all Ivy functions which are in the standard have additional required behaviour, which must also be tested</p></li>
+<li><p>Test functions and classes which are <em>not</em> part of the standard</p></li>
+<li><p>Test additional required behaviour for functions which <em>are</em> in the standard. The standard only mandates a subset of required behaviour, which the Ivy functions generally extend upon.</p></li>
 </ol>
-<p>As is the case for the <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>, we also make use of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> for performing property based testing.</p>
-<p># ToDo: complete this section</p>
+<p>As done in the <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>, we also make use of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> for performing property based testing.</p>
+<section id="id1">
+<h2>Hypothesis<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<p>Using pytest fixtures (such as the ones removed in this <a class="reference external" href="https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f">commit</a>) cause a grid search to be performed for all
+combinations of parameters. This is great when we want the test to be very thorough,
+but can make the entire test suite very time consuming.
+Before the changes in this commit, there were 300+ separate tests being run in total,
+just for this <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code> function.
+If we take this approach for every function, we might hit the runtime limit permitted by GitHub actions.</p>
+<p>A more elegant and efficient solution is to use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> module,
+which intelligently samples from all of the possible combinations within user-specified ranges,
+rather than grid searching all of them every single time.
+The intelligent sampling is possible because hypothesis enables the results of previous test runs to be cached,
+and then the new samples on subsequent runs are selected intelligently,
+avoiding samples which previously passed the tests, and sampling for unexplored combinations.
+combinations which are known to have failed on previous runs are also repeatedly tested for.
+With the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L30">uploading</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L14">downloading</a> of the <code class="code docutils literal notranslate"><span class="pre">.hypothesis</span></code> cache as an artifact,
+these useful properties are also true in Ivy’s GitHub Action <a class="reference external" href="https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows">continuous integration</a> (CI) tests.</p>
+<p>Rather than making use of <code class="code docutils literal notranslate"><span class="pre">pytest.mark.parametrize</span></code>, the Ivy tests make use of hypothesis <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html">search strategies</a>.
+This reference <a class="reference external" href="https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f">commit</a> outlines the difference between using pytest parametrizations and hypothesis,
+for <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code>.
+All <code class="code docutils literal notranslate"><span class="pre">pytest.skip()</span></code> calls must also be replaced with return statements,
+as pytest skipping does not play nicely with hypothesis testing.</p>
+</section>
+<section id="data-generation">
+<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this headline"></a></h2>
+<p># ToDo: write guide on best practices for generating data thoroughly, with clear examples of helper functions etc.</p>
+</section>
+<section id="id2">
+<h2>test_array_function<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<p>Aside from testing variable inputs, the out argument, and value tests,
+the helper <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401">test_array_function</a> tests that the function:</p>
+<ol class="arabic simple">
+<li><p>can be called as an instance method of the ivy.Array class</p></li>
+<li><p>can accept ivy.Container instances in place of any array arguments, and then apply the function to the leaves of the container, and return the resultant container</p></li>
+<li><p>can be called as an instance method on the ivy.Container</p></li>
+</ol>
+<p><code class="code docutils literal notranslate"><span class="pre">array</span></code> in the name <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> simply refers to the fact that the function in question consumes
+arrays in the arguments. As can be seen from points 1, 2, and 3.
+It does not mean the test is exclusively for <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance methods or something like this.</p>
+<p>So when should <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> be used?</p>
+<p>The rule is simple, if the test should not pass any arrays in the input,
+then we should not use the helper <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code>.
+For example, <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> does not receive any arrays in the input,
+and so we should not make us of <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test implementation.</p>
+</section>
 </section>
 
 
