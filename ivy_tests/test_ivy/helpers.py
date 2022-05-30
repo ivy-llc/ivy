@@ -758,7 +758,8 @@ def none_or_list_of_floats(
                                                           allow_infinity=False,
                                                           allow_nan=False,
                                                           exclude_min=exclude_min,
-                                                          exclude_max=exclude_max), size)
+                                                          exclude_max=exclude_max),
+                                    size)
         elif dtype == "float32":
             values = list_of_length(st.none() | st.floats(min_value=min_value,
                                                           max_value=max_value,
@@ -767,7 +768,8 @@ def none_or_list_of_floats(
                                                           allow_infinity=False,
                                                           allow_nan=False,
                                                           exclude_min=exclude_min,
-                                                          exclude_max=exclude_max), size)
+                                                          exclude_max=exclude_max),
+                                    size)
         elif dtype == "float64":
             values = list_of_length(st.none() | st.floats(min_value=min_value,
                                                           max_value=max_value,
@@ -776,7 +778,8 @@ def none_or_list_of_floats(
                                                           allow_infinity=False,
                                                           allow_nan=False,
                                                           exclude_min=exclude_min,
-                                                          exclude_max=exclude_max), size)
+                                                          exclude_max=exclude_max),
+                                    size)
     return values
 
 
@@ -809,11 +812,17 @@ def get_bounds(draw, dtype):
 @st.composite
 def get_probs(draw, dtype):
     shape = draw(st.lists(st.integers(min_value=2, max_value=8),
-                                min_size=2,
-                                max_size=2))
+                          min_size=2,
+                          max_size=2))
     probs = []
     for i in range(shape[0]):
-        probs.append(draw(none_or_list_of_floats(dtype, shape[1], min_value=0, exclude_min=True, no_none=True)))
+        probs.append(draw(none_or_list_of_floats(
+            dtype,
+            shape[1],
+            min_value=0,
+            exclude_min=True,
+            no_none=True
+        )))
     return probs, shape[1]
 
 

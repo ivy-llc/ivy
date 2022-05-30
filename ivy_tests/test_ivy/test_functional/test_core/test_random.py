@@ -1,7 +1,6 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-import pytest
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -125,9 +124,9 @@ def test_randint(data, shape, dtype, as_variable, device, call):
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype))
     if (
-            call in [helpers.mx_call, helpers.torch_call] and as_variable or
-            dtype == 'uint64' or
-            call == helpers.torch_call and dtype[0] == 'u'
+            call in [helpers.mx_call, helpers.torch_call] and as_variable
+            or dtype == 'uint64'
+            or call == helpers.torch_call and dtype[0] == 'u'
     ):
         # PyTorch and MXNet do not support non-float variables
         return
