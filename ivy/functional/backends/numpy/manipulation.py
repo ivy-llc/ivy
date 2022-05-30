@@ -199,7 +199,12 @@ def swapaxes(
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[np.ndarray] = None):
+def clip(
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

@@ -143,7 +143,7 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.call_static_multi_map_method(
+        return ContainerBase.multi_map_in_static_method(
             "roll",
             x,
             shift,
@@ -233,7 +233,7 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    def repeats(
+    def repeat(
         self: ivy.Container,
         repeats: Union[int, Iterable[int]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,

@@ -23,12 +23,12 @@ class ContainerWithRandom(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.call_static_multi_map_method(
+        return ContainerBase.multi_map_in_static_method(
             "random_uniform",
             low,
             high,
             shape,
-            device,
+            device=device,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

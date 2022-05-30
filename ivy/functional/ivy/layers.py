@@ -2,11 +2,11 @@
 
 # global
 import numpy as np
-from typing import Union
+from typing import Optional, Tuple, Union, List
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Extra #
@@ -285,9 +285,7 @@ def conv1d(
     ivy.array([[[0.], [3.], [0.]]])
 
     """
-    return _cur_framework(x).conv1d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv1d_transpose(
@@ -319,7 +317,7 @@ def conv1d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv1d_transpose(
+    return _cur_backend(x).conv1d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -349,9 +347,7 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
         The result of the convolution operation.
 
     """
-    return _cur_framework(x).conv2d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv2d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv2d_transpose(
@@ -383,13 +379,21 @@ def conv2d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv2d_transpose(
+    return _cur_backend(x).conv2d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
-    """Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
+def depthwise_conv2d(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: Union[str, List[int]],
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+) -> Union[ivy.Array, ivy.Container]:
+    """
+    Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
 
     Parameters
     ----------
@@ -400,10 +404,10 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        NHWC" or "NCHW". Defaults to "NHWC".
+        "NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
 
@@ -412,8 +416,65 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
     ret
         The result of the convolution operation.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=2, padding='VALID')
+    >>> print(y.shape)
+    (1, 13, 13, 3)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64]))
+    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64]))
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='SAME')
+    >>> print(y.shape)
+    (1, 7, 7, 64)
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
+    >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
+    >>> filters = ivy.Container(a = a, b = b)
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=1, padding='VALID', dilations=2)
+    >>> print(y)
+    {
+        a: ivy.array([[[[-6.],
+                        [0.]],
+                       [[0.],
+                        [-6.]]]]),
+        b: ivy.array([[[[0.333],
+                        [0.]],
+                       [[0.],
+                        [0.333]]]])
+    }
+
+    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray` 
+    and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
+    >>> inp = ivy.Container(x = x, y = y)
+    >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
+    >>> y = ivy.depthwise_conv2d(inp, filter, strides=1, padding='VALID', dilations=2)
+    >>> print(y)
+    {
+        x: ivy.array([[[[-6.],
+                        [0.]],
+                       [[0.],
+                        [-6.]]]]),
+        y: ivy.array([[[[0.],
+                        [-6.]],
+                       [[2.],
+                        [0.]]]])
+    }
+
     """
-    return _cur_framework(x).depthwise_conv2d(
+    return _cur_backend(x).depthwise_conv2d(
         x, filters, strides, padding, data_format, dilations
     )
 
@@ -468,9 +529,7 @@ def conv3d(
             ]])
 
     """
-    return _cur_framework(x).conv3d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv3d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv3d_transpose(
@@ -502,7 +561,7 @@ def conv3d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv3d_transpose(
+    return _cur_backend(x).conv3d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 

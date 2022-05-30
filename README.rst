@@ -86,6 +86,9 @@ We use 🚧 to indicate that the feature being discussed is in development. We u
 
 Check out the docs_ for more info, and check out our Google Colabs_ for some interactive demos!
 
+🚨 Ivy is still at a relatively early stage of development.
+Expect breaking changes and sharp edges until we release version 2.0 in the next few weeks!
+
 Quick Start
 -----------
 
@@ -186,7 +189,7 @@ You should then see output like the following:
    ivy.flip(                              ivy.randint(                              ivy.verbosity
    ivy.floor(                             ivy.random                                ivy.where(
    ivy.floormod(                          ivy.random_uniform(                       ivy.zero_pad(
-   ivy.framework_handler                  ivy.reduce_max(                           ivy.zeros(
+   ivy.backend_handler                    ivy.reduce_max(                           ivy.zeros(
    ivy.gather_nd(                         ivy.reduce_mean(                          ivy.zeros_like(
 
 Background
@@ -247,7 +250,7 @@ Roadmap
 | Align Ivy with the `Consortium for Python Data API Standards <https://data-apis.org>`_
 |
 | (b) **Front-Ends [page coming soon!]** 🚧
-| Create framework-specific front-ends for each supported ML framework
+| Create backend-specific front-ends for each supported ML framework
 |
 | (c) **Transpiler [page coming soon!]** 🚧
 | Verify code conversions work for each back-end and front-end combo
