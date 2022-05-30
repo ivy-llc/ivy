@@ -25,7 +25,7 @@ register_pytree_node(
 )
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences
 JaxArray = Union[
@@ -43,24 +43,6 @@ NativeVariable = jax.interpreters.xla._DeviceArray
 NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 
-# data types
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.IntDtype("uint8")
-uint16 = ivy.IntDtype("uint16")
-uint32 = ivy.IntDtype("uint32")
-uint64 = ivy.IntDtype("uint64")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-# noinspection PyShadowingBuiltins
-bool = "bool"
-nan = float("nan")
-inf = float("inf")
-
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")
@@ -77,39 +59,49 @@ native_float64 = jnp.dtype("float64")
 # noinspection PyShadowingBuiltins
 native_bool = jnp.dtype("bool")
 
+# valid data types
 valid_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    bfloat16,
-    float16,
-    float32,
-    float64,
-    bool,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.bool,
 )
 valid_numeric_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    bfloat16,
-    float16,
-    float32,
-    float64,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
+valid_int_dtypes = (
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+)
+valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 
-# invalid
+# invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
@@ -121,7 +113,9 @@ def closest_valid_dtype(type):
         return ivy.default_dtype()
     type_str = as_ivy_dtype(type)  # noqa
     if type_str in invalid_dtypes:
-        return {"int64": int32, "uint64": uint32, "float64": float32}[type_str]
+        return {"int64": ivy.int32, "uint64": ivy.uint32, "float64": ivy.float32}[
+            type_str
+        ]
     return type
 
 

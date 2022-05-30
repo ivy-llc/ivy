@@ -6,7 +6,7 @@ from typing import Optional, Tuple, Union, List
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Extra #
@@ -285,9 +285,7 @@ def conv1d(
     ivy.array([[[0.], [3.], [0.]]])
 
     """
-    return _cur_framework(x).conv1d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv1d_transpose(
@@ -319,7 +317,7 @@ def conv1d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv1d_transpose(
+    return _cur_backend(x).conv1d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -349,9 +347,7 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
         The result of the convolution operation.
 
     """
-    return _cur_framework(x).conv2d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv2d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv2d_transpose(
@@ -383,7 +379,7 @@ def conv2d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv2d_transpose(
+    return _cur_backend(x).conv2d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -477,7 +473,7 @@ def depthwise_conv2d(
     }
 
     """
-    return _cur_framework(x).depthwise_conv2d(
+    return _cur_backend(x).depthwise_conv2d(
         x, filters, strides, padding, data_format, dilations
     )
 
@@ -532,9 +528,7 @@ def conv3d(
             ]])
 
     """
-    return _cur_framework(x).conv3d(
-        x, filters, strides, padding, data_format, dilations
-    )
+    return _cur_backend(x).conv3d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv3d_transpose(
@@ -566,7 +560,7 @@ def conv3d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_framework(x).conv3d_transpose(
+    return _cur_backend(x).conv3d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 

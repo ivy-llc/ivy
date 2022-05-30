@@ -100,12 +100,12 @@ class Module(abc.ABC):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self.expected_submod_rets = None
         self.submod_dict = dict()
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._sub_mods = set()
         if build_mode != "on_init":
@@ -586,7 +586,7 @@ class Module(abc.ABC):
             else:
                 max_key = key + "_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+                    alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -615,7 +615,7 @@ class Module(abc.ABC):
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+                alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
             )
 
     def __call__(
@@ -635,10 +635,10 @@ class Module(abc.ABC):
     ):
         with_grads = ivy.with_grads(with_grads)
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._set_submod_flags(
             track_submod_rets,

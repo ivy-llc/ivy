@@ -147,34 +147,6 @@ def test_container_concat(device, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
-# def test_container_stack(device, call):
-#     container_0 = Container(
-#         {
-#             "a": ivy.array([1], device=device),
-#             "b": {
-#                 "c": ivy.array([2], device=device),
-#                 "d": ivy.array([3], device=device),
-#             },
-#         }
-#     )
-#     container_1 = Container(
-#         {
-#             "a": ivy.array([4], device=device),
-#             "b": {
-#                 "c": ivy.array([5], device=device),
-#                 "d": ivy.array([6], device=device),
-#             },
-#         }
-#     )
-#     container_stacked = ivy.Container.stack([container_0, container_1], 0)
-#     assert np.allclose(ivy.to_numpy(container_stacked["a"]), np.array([[1], [4]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked["b"]["c"]), np.array([[2],[5]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked["b"]["d"]), np.array([[3],[6]]))
-#     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
-
-
 def test_container_combine(device, call):
     container_0 = Container(
         {
@@ -3525,7 +3497,7 @@ def test_container_pickle(device, call):
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
     # noinspection PyUnresolvedReferences
-    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
+    assert cont_again._local_ivy.current_framework_str() is ivy.current_backend_str()
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 

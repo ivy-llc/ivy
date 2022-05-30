@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import math
 from numbers import Number
-from hypothesis import given, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 
 
 # local
@@ -224,57 +224,56 @@ def test_permute_dims(
 
 
 # reshape
-# @given(
-#     array_shape=helpers.lists(
-#         st.integers(1, 5), min_size="num_dims", max_size="num_dims",size_bounds=[1, 5]
-#     ),
-#     dtype=st.sampled_from(ivy_np.valid_dtypes),
-#     data=st.data(),
-#     as_variable=st.booleans(),
-#     with_out=st.booleans(),
-#     num_positional_args=st.integers(0, 2),
-#     native_array=st.booleans(),
-#     container=st.booleans(),
-#     instance_method=st.booleans(),
-#     seed=st.integers(0, 2**32 - 1),
-# )
-# def test_reshape(
-#     array_shape,
-#     dtype,
-#     data,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-#     seed,
-# ):
-#     np.random.seed(seed)
-#
-#     # smoke for torch
-#     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-#         return
-#
-#     x = np.random.uniform(size=array_shape).astype(dtype)
-#
-#     # draw a valid reshape shape
-#     shape = data.draw(helpers.reshape_shapes(x.shape))
-#
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         with_out,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "reshape",
-#         x=x,
-#         shape=shape,
-#     )
+@settings(
+    suppress_health_check=(HealthCheck.filter_too_much,)
+)  # cant figure this out ;-;
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 10), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_reshape(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+
+    # draw a valid reshape shape
+    shape = data.draw(helpers.reshape_shapes(x.shape))
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "reshape",
+        x=x,
+        shape=shape,
+    )
 
 
 # roll
@@ -286,10 +285,10 @@ def test_permute_dims(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(),
+    num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
-    container=helpers.container(),
-    instance_method=helpers.instance_method(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
 def test_roll(
     array_shape,

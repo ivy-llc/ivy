@@ -15,19 +15,9 @@ except ModuleNotFoundError:
     _h5py = None
 import pickle as _pickle
 import random as _random
-from operator import lt as _lt
-from operator import le as _le
-from operator import eq as _eq
-from operator import ne as _ne
-from operator import gt as _gt
-from operator import ge as _ge
 from operator import mul as _mul
-from operator import pow as _pow
-from operator import not_ as _not
 from functools import reduce as _reduce
 from typing import Union, Iterable, Dict
-from operator import truediv as _truediv
-from operator import floordiv as _floordiv
 from builtins import set as _set
 
 # local
@@ -71,7 +61,7 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize container object from input dict representation.
 
@@ -172,7 +162,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=None,
         out=None,
-        **kwargs
+        **kwargs,
     ) -> ivy.Container:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
@@ -400,7 +390,7 @@ class ContainerBase(dict, abc.ABC):
         detect_key_diffs=True,
         detect_value_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and values in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -546,7 +536,7 @@ class ContainerBase(dict, abc.ABC):
         diff_keys="diff",
         detect_key_diffs=True,
         detect_shape_diffs=True,
-        config=None
+        config=None,
     ):
         """Compare keys and shapes in a sequence of containers, returning the single
         shared values where they are the same, and new nested sub-dicts with all values
@@ -1249,18 +1239,42 @@ class ContainerBase(dict, abc.ABC):
     # Private Methods #
     # ----------------#
 
-    def _call_static_method(
+    def _call_static_method_with_flexible_args(
         self,
+        static_method,
+        *args,
         kw,
         required,
         defaults,
-        static_method,
+        self_idx=0,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
         map_sequences=None,
         out=None,
     ) -> ivy.Container:
+        if args:
+            num_args = len(args)
+            kw = {
+                k: defaults[k] if k in defaults else v
+                for i, (k, v) in enumerate(kw.items())
+                if i > num_args
+            }
+            args = list(args)
+            if self_idx > num_args:
+                k = list(kw.keys())[self_idx - num_args - 1]
+                kw[k] = self
+            else:
+                args.insert(self_idx, self)
+            return static_method(
+                *args,
+                **kw,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            )
         self_set = False
         # set to leftmost non-specified required arg, if present
         for k in required:
@@ -2065,7 +2079,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.random_uniform(low, high, x.shape, self._ivy.dev(x))
+            lambda x, kc: self._ivy.random_uniform(
+                low, high, x.shape, device=self._ivy.dev(x)
+            )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2407,7 +2423,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops rearrange operation on each sub array in the container.
 
@@ -2453,7 +2469,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops reduce operation on each sub array in the container.
 
@@ -2500,7 +2516,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        **axes_lengths
+        **axes_lengths,
     ):
         """Perform einops repeat operation on each sub array in the container.
 
@@ -2775,7 +2791,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
         if update_backend:
-            ret.set_ivy_backend(ivy.get_framework("numpy"))
+            ret.set_ivy_backend(ivy.get_backend("numpy"))
         return ret
 
     def from_numpy(
@@ -4698,7 +4714,7 @@ class ContainerBase(dict, abc.ABC):
                 [_add_newline(s) for s in json_dumped_str.split('":')]
             )
             # improve tf formatting
-            if ivy.framework_stack and ivy.current_framework_str() == "tensorflow":
+            if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
                 json_dumped_str_split = json_dumped_str.split("'Variable:")
                 json_dumped_str = (
                     json_dumped_str_split[0]
@@ -4893,152 +4909,36 @@ class ContainerBase(dict, abc.ABC):
         else:
             return dict.__contains__(self, key)
 
-    def __pos__(self):
-        return self
-
-    def __neg__(self):
-        return self.map(lambda x, kc: -x)
-
-    def __pow__(self, power):
-        if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda x: _reduce(_pow, x))
-        return self.map(lambda x, kc: x**power)
-
-    def __rpow__(self, power):
-        return self.map(lambda x, kc: power**x)
-
-    def __add__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], sum)
-        return self.map(lambda x, kc: x + other)
-
-    def __radd__(self, other):
-        return self + other
-
-    def __sub__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, -other], sum)
-        return self.map(lambda x, kc: x - other)
-
-    def __rsub__(self, other):
-        return -self + other
-
-    def __mul__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_mul, x))
-        return self.map(lambda x, kc: x * other)
-
-    def __rmul__(self, other):
-        return self * other
-
-    def __truediv__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_truediv, x))
-        return self.map(lambda x, kc: x / other)
-
-    def __rtruediv__(self, other):
-        return self.map(lambda x, kc: other / x)
-
-    def __floordiv__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
-        return self.map(lambda x, kc: x // other)
-
-    def __rfloordiv__(self, other):
-        return self.map(lambda x, kc: other // x)
-
-    def __abs__(self):
-        return self.map(lambda x, kc: self._ivy.abs(x))
-
-    def __lt__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_lt, x))
-        return self.map(lambda x, kc: x < other)
-
-    def __le__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_le, x))
-        return self.map(lambda x, kc: x <= other)
-
-    def __eq__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_eq, x))
-        return self.map(lambda x, kc: x == other)
-
-    def __ne__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ne, x))
-        return self.map(lambda x, kc: x != other)
-
-    def __gt__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_gt, x))
-        return self.map(lambda x, kc: x > other)
-
-    def __ge__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ge, x))
-        return self.map(lambda x, kc: x >= other)
-
-    def __and__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] and x[1])
-        return self.map(lambda x, kc: x and other)
-
-    def __rand__(self, other):
-        return self.map(lambda x, kc: other and x)
-
-    def __or__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] or x[1])
-        return self.map(lambda x, kc: x or other)
-
-    def __ror__(self, other):
-        return self.map(lambda x, kc: other or x)
-
-    def __invert__(self):
-        return self.map(lambda x, kc: _not(x))
-
-    def __xor__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] != x[1])
-        return self.map(lambda x, kc: x != other)
-
-    def __rxor__(self, other):
-        return self.map(lambda x, kc: other != x)
-
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
         state_dict["_local_ivy"] = ivy.try_else_none(
-            lambda: state_dict["_local_ivy"].current_framework_str()
+            lambda: state_dict["_local_ivy"].current_backend_str()
         )
         config_in = copy.copy(state_dict["_config_in"])
         config_in["ivyh"] = ivy.try_else_none(
-            lambda: config_in["ivyh"].current_framework_str()
+            lambda: config_in["ivyh"].current_backend_str()
         )
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
-        config["ivyh"] = ivy.try_else_none(
-            lambda: config["ivyh"].current_framework_str()
-        )
+        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
         state_dict["_config"] = config
         return state_dict
 
     def __setstate__(self, state_dict):
         if "_local_ivy" in state_dict:
             if ivy.exists(state_dict["_local_ivy"]):
-                state_dict["_local_ivy"] = ivy.get_framework(state_dict["_local_ivy"])
+                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
-                    config_in["ivyh"] = ivy.get_framework(config_in["ivyh"])
+                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
-                    config["ivyh"] = ivy.get_framework(config["ivyh"])
+                    config["ivyh"] = ivy.get_backend(config["ivyh"])
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
 

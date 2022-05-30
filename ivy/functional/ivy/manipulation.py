@@ -4,7 +4,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Array API Standard #
@@ -129,7 +129,7 @@ def roll(
     }
 
     """
-    return _cur_framework(x).roll(x, shift, axis, out)
+    return _cur_backend(x).roll(x, shift, axis, out)
 
 
 def squeeze(
@@ -166,7 +166,7 @@ def squeeze(
     (2, 2)
 
     """
-    return _cur_framework(x).squeeze(x, axis, out)
+    return _cur_backend(x).squeeze(x, axis, out)
 
 
 def flip(
@@ -197,7 +197,7 @@ def flip(
         relative to ``x``, are reordered.
 
     """
-    return _cur_framework(x).flip(x, axis, out)
+    return _cur_backend(x).flip(x, axis, out)
 
 
 def expand_dims(
@@ -232,12 +232,12 @@ def expand_dims(
     >>> print(y)
     ivy.array([[[0, 1],
                 [1, 0]]])
-                
+
     >>> print(x.shape, y.shape)
     (2, 2) (1, 2, 2)
 
     """
-    return _cur_framework(x).expand_dims(x, axis, out)
+    return _cur_backend(x).expand_dims(x, axis, out)
 
 
 def permute_dims(
@@ -265,7 +265,7 @@ def permute_dims(
         data type as x.
 
     """
-    return _cur_framework(x).permute_dims(x, axes, out)
+    return _cur_backend(x).permute_dims(x, axes, out)
 
 
 def stack(
@@ -308,7 +308,7 @@ def stack(
            ``intxx`` and ``floatxx``) unspecified.
 
     """
-    return _cur_framework(arrays).stack(arrays, axis, out)
+    return _cur_backend(arrays).stack(arrays, axis, out)
 
 
 def reshape(
@@ -343,7 +343,7 @@ def reshape(
                [5, 6]])
 
     """
-    return _cur_framework(x).reshape(x, shape, copy, out)
+    return _cur_backend(x).reshape(x, shape, copy, out)
 
 
 def concat(
@@ -378,7 +378,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return _cur_framework(xs[0]).concat(xs, axis, out)
+    return _cur_backend(xs[0]).concat(xs, axis, out)
 
 
 # Extra #
@@ -386,11 +386,11 @@ def concat(
 
 
 def split(
-    x: Union[ivy.Array, ivy.NativeArray],
-    num_or_size_splits: Union[int, Iterable[int]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> Union[ivy.Array, ivy.Container]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -412,8 +412,55 @@ def split(
     ret
         A list of sub-arrays.
 
+    Functional Examples
+    -------------------
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.split(x)
+    >>> print(y)
+    ivy.array([[1], [2], [3]])
+
+    >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
+    >>> y = ivy.split(x, 2, 1, False)
+    >>> print(y)
+    ivy.array([[3, 4], [2, 5], [1, 6]])
+
+    >>> x = ivy.array([4, 6, 5, 3])
+    >>> y = ivy.split(x, [1, 2], 0, True)
+    >>> print(y)
+    ivy.array([[4], [6, 5, 3]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 8, 9])
+    >>> y = ivy.split(x)
+    >>> print(y)
+    ivy.array([[7], [8], [9]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
+    >>> y = ivy.split(x)
+    >>> print(y)
+    {
+        a: ivy.array([[10], [45], [2]])
+    }
+
+    Instance Method Examples
+    ------------------------
+    >>> x = ivy.array([4, 6, 5, 3])
+    >>> y = x.split()
+    >>> print(y)
+    ivy.array([[4], [6], [5], [3]])
+
+    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
+    >>> y = x.split()
+    >>> print(y)
+    {
+        a: ivy.array([[2], [5], [9]])
+    }
     """
-    return _cur_framework(x).split(x, num_or_size_splits, axis, with_remainder)
+    return _cur_backend(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
 def repeat(
@@ -441,7 +488,7 @@ def repeat(
         The repeated output array.
 
     """
-    return _cur_framework(x).repeat(x, repeats, axis, out)
+    return _cur_backend(x).repeat(x, repeats, axis, out)
 
 
 def tile(
@@ -464,7 +511,7 @@ def tile(
         The tiled output array.
 
     """
-    return _cur_framework(x).tile(x, reps, out)
+    return _cur_backend(x).tile(x, reps, out)
 
 
 def constant_pad(
@@ -492,7 +539,7 @@ def constant_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_framework(x).constant_pad(x, pad_width, value, out)
+    return _cur_backend(x).constant_pad(x, pad_width, value, out)
 
 
 def zero_pad(
@@ -516,7 +563,7 @@ def zero_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_framework(x).zero_pad(x, pad_width, out)
+    return _cur_backend(x).zero_pad(x, pad_width, out)
 
 
 def swapaxes(
@@ -542,20 +589,21 @@ def swapaxes(
         x with its axes permuted.
 
     """
-    return _cur_framework(x).swapaxes(x, axis0, axis1, out)
+    return _cur_backend(x).swapaxes(x, axis0, axis1, out)
 
 
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
     x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
     (element-wise). For example, if an interval of [0, 1] is specified, values smaller
-    than 0 become 0, and values larger than 1 become 1.
+    than 0 become 0, and values larger than 1 become 1. Minimum value needs to smaller
+    or equal to maximum value to return correct results.
 
     Parameters
     ----------
@@ -566,11 +614,55 @@ def clip(
     x_max
         Maximum value.
 
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
     Returns
     -------
     ret
         An array with the elements of x, but where values < x_min are replaced with
         x_min, and those > x_max with x_max.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.clip(x, 1., 5.)
+    >>> print(y)
+    ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.zeros_like(x)
+    >>> ivy.clip(x, 2., 7., out=y)
+    >>> print(y)
+    ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, x_min, x_max)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, x_min, x_max)
+    >>> print(y)
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = x.clip(1., 5.)
+    >>> print(y)
+    ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
     """
-    return _cur_framework(x).clip(x, x_min, x_max, out)
+    return _cur_backend(x).clip(x, x_min, x_max, out)

@@ -5,13 +5,14 @@ import importlib
 import collections
 import numpy as np
 from ivy import verbosity
+from typing import Optional
 
 # local
 # noinspection PyProtectedMember
 from ivy.func_wrapper import _wrap_functions, _unwrap_functions
 
 
-framework_stack = []
+backend_stack = []
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
 
@@ -21,40 +22,40 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        set_framework(self.module)
+        set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        unset_framework()
+        unset_backend()
 
 
 _array_types = dict()
 _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
-_array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.backend.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
-_framework_dict = dict()
-_framework_dict["numpy"] = "ivy.functional.backends.numpy"
-_framework_dict["jax"] = "ivy.functional.backends.jax"
-_framework_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
-_framework_dict["torch"] = "ivy.functional.backends.torch"
-_framework_dict["mxnet"] = "ivy.functional.backends.mxnet"
+_backend_dict = dict()
+_backend_dict["numpy"] = "ivy.functional.backends.numpy"
+_backend_dict["jax"] = "ivy.functional.backends.jax"
+_backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
+_backend_dict["torch"] = "ivy.functional.backends.torch"
+_backend_dict["mxnet"] = "ivy.functional.backends.mxnet"
 
-_framework_reverse_dict = dict()
-_framework_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
-_framework_reverse_dict["ivy.functional.backends.jax"] = "jax"
-_framework_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
-_framework_reverse_dict["ivy.functional.backends.torch"] = "torch"
-_framework_reverse_dict["ivy.functional.backends.mxnet"] = "mxnet"
-
-
-# Framework Getting/Setting #
-# --------------------------#
+_backend_reverse_dict = dict()
+_backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
+_backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
+_backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
+_backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+_backend_reverse_dict["ivy.functional.backends.mxnet"] = "mxnet"
 
 
-def _determine_framework_from_args(args):
+# Backend Getting/Setting #
+# ------------------------#
+
+
+def _determine_backend_from_args(args):
     """Return the appropriate Ivy backend, given some arguments.
 
     Parameters
@@ -71,10 +72,10 @@ def _determine_framework_from_args(args):
     --------
     If `args` is a jax.numpy array, then Ivy's jax backend will be returned:
 
-    >>> from ivy.framework_handler import _determine_framework_from_args
+    >>> from ivy.backend_handler import _determine_backend_from_args
     >>> import jax.numpy as jnp
     >>> x = jnp.array([1])
-    >>> print(_determine_framework_from_args(x))
+    >>> print(_determine_backend_from_args(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
 
     """
@@ -82,12 +83,12 @@ def _determine_framework_from_args(args):
         arg_type = type(arg)
         # function is called recursively if arg is a list/tuple
         if arg_type in [list, tuple]:
-            lib = _determine_framework_from_args(arg)
+            lib = _determine_backend_from_args(arg)
             if lib:
                 return lib
         # function is called recursively if arg is a dict
         elif arg_type is dict:
-            lib = _determine_framework_from_args(list(arg.values()))
+            lib = _determine_backend_from_args(list(arg.values()))
             if lib:
                 return lib
         else:
@@ -98,73 +99,73 @@ def _determine_framework_from_args(args):
                 return importlib.import_module(module_name)
 
 
-def current_framework(*args, **kwargs):
-    """Returns the current backend framework. Priorities:
-    global_framework > argument's framework.
+def current_backend(*args, **kwargs):
+    """Returns the current backend backend. Priorities:
+    global_backend > argument's backend.
 
     Parameters
     ----------
     *args/**kwargs
-        the arguments from which to try to infer the backend framework, when there is
-        no globally set framework.
+        the arguments from which to try to infer the backend backend, when there is
+        no globally set backend.
 
     Returns
     -------
     ret
-        Ivy's current backend framework.
+        Ivy's current backend backend.
 
     Examples
     --------
-    If no global framework is set, then the framework is inferred from the arguments:
+    If no global backend is set, then the backend is inferred from the arguments:
     >>> import numpy as np
     >>> x = np.array([2.0])
-    >>> print(ivy.current_framework(x))
+    >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
 
-    The global framework set in set_framework has priority over any arguments
-    passed to current_framework:
+    The global backend set in set_backend has priority over any arguments
+    passed to current_backend:
     >>> import numpy as np
-    >>> ivy.set_framework('jax')
+    >>> ivy.set_backend("jax")
     >>> x = np.array([2.0])
-    >>> print(ivy.current_framework(x))
+    >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
 
     """
-    # if a global framework has been set with set_framework then this will be returned
-    if framework_stack:
-        f = framework_stack[-1]
+    # if a global backend has been set with set_backend then this will be returned
+    if backend_stack:
+        f = backend_stack[-1]
         if verbosity.level > 0:
-            verbosity.cprint("Using framework from stack: {}".format(f))
+            verbosity.cprint("Using backend from stack: {}".format(f))
         return f
 
-    # if no global framework exists, we try to infer the framework from the arguments
-    f = _determine_framework_from_args(list(args) + list(kwargs.values()))
+    # if no global backend exists, we try to infer the backend from the arguments
+    f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(
-            "get_framework failed to find a valid library from the inputs: "
+            "get_backend failed to find a valid library from the inputs: "
             "{} {}".format(args, kwargs)
         )
     if verbosity.level > 0:
-        verbosity.cprint("Using framework from type: {}".format(f))
+        verbosity.cprint("Using backend from type: {}".format(f))
     return f
 
 
-def set_framework(framework):
-    """Sets `framework` to be the global framework.
+def set_backend(backend: str):
+    """Sets `backend` to be the global backend.
 
     Examples
     --------
-    If we set the global framework to be numpy, then subsequent calls to ivy functions
+    If we set the global backend to be numpy, then subsequent calls to ivy functions
     will be called from Ivy's numpy backend:
 
-    >>> ivy.set_framework('numpy')
+    >>> ivy.set_backend("numpy")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'numpy.ndarray'>
 
-    Or with jax as the global framework:
+    Or with jax as the global backend:
 
-    >>> ivy.set_framework('jax')
+    >>> ivy.set_backend("jax")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
@@ -172,28 +173,28 @@ def set_framework(framework):
     """
     global ivy_original_dict
     global ivy_original_fn_dict
-    if not framework_stack:
+    if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
-    if isinstance(framework, str):
+    if isinstance(backend, str):
         temp_stack = list()
-        while framework_stack:
-            temp_stack.append(unset_framework())
-        framework = importlib.import_module(_framework_dict[framework])
+        while backend_stack:
+            temp_stack.append(unset_backend())
+        backend = importlib.import_module(_backend_dict[backend])
         for fw in reversed(temp_stack):
-            framework_stack.append(fw)
-    if framework.current_framework_str() == "numpy":
+            backend_stack.append(fw)
+    if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
-    framework_stack.append(framework)
+    backend_stack.append(backend)
     ivy_original_fn_dict.clear()
     # loop through items in ivy dict and replace ivy's implementations `v` with the
-    # appropriate backend implementation (backend specified by `framework`)
+    # appropriate backend implementation (backend specified by `backend`)
     for k, v in ivy_original_dict.items():
-        if k not in framework.__dict__:
-            if k in ivy.valid_dtypes:
+        if k not in backend.__dict__:
+            if k in backend.invalid_dtypes:
                 del ivy.__dict__[k]
                 continue
-            framework.__dict__[k] = v
-        specific_v = framework.__dict__[k]
+            backend.__dict__[k] = v
+        specific_v = backend.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
         ivy.__dict__[k] = specific_v
@@ -204,119 +205,119 @@ def set_framework(framework):
                 pass
     _wrap_functions()
     if verbosity.level > 0:
-        verbosity.cprint("framework stack: {}".format(framework_stack))
+        verbosity.cprint("backend stack: {}".format(backend_stack))
 
 
-def get_framework(framework=None):
-    """Returns Ivy's backend for `framework` if specified, or if it isn't specified it
-    returns the Ivy backend associated with the current globally set framework.
+def get_backend(backend: Optional[str] = None):
+    """Returns Ivy's backend for `backend` if specified, or if it isn't specified it
+    returns the Ivy backend associated with the current globally set backend.
 
     Parameters
     ----------
-    framework
-        The framework for which we want to retrieve Ivy's backend i.e. one of 'jax',
+    backend
+        The backend for which we want to retrieve Ivy's backend i.e. one of 'jax',
         'torch', 'tensorflow', 'numpy', 'mxnet'.
 
     Returns
     -------
     ret
-        Ivy's backend for either `framework` or for the current global framework.
+        Ivy's backend for either `backend` or for the current global backend.
 
     Examples
     --------
-    Global framework doesn't matter, if `framework` argument has been specified:
+    Global backend doesn't matter, if `backend` argument has been specified:
 
-    >>> ivy.set_framework('jax')
-    >>> ivy_np = ivy.get_framework('numpy')
+    >>> ivy.set_backend("jax")
+    >>> ivy_np = ivy.get_backend("numpy")
     >>> print(ivy_np)
     <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
 
-    If framework isn't specified, the global framework is used:
+    If backend isn't specified, the global backend is used:
 
-    >>> ivy.set_framework('jax')
-    >>> ivy_jax = ivy.get_framework()
+    >>> ivy.set_backend("jax")
+    >>> ivy_jax = ivy.get_backend()
     >>> print(ivy_jax)
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
 
     """
     # ToDo: change this so that it doesn't depend at all on the global ivy. Currently
-    #  all framework-agnostic implementations returned in this module will still
+    #  all backend-agnostic implementations returned in this module will still
     #  use the global ivy backend.
     global ivy_original_dict
-    if not framework_stack:
+    if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
-    # current global framework is retrieved if framework isn't specified,
-    # otherwise `framework` argument will be used
-    if framework is None:
-        framework = ivy.current_framework()
-    elif isinstance(framework, str):
-        framework = importlib.import_module(_framework_dict[framework])
+    # current global backend is retrieved if backend isn't specified,
+    # otherwise `backend` argument will be used
+    if backend is None:
+        backend = ivy.current_backend()
+    elif isinstance(backend, str):
+        backend = importlib.import_module(_backend_dict[backend])
     for k, v in ivy_original_dict.items():
-        if k not in framework.__dict__:
-            framework.__dict__[k] = v
-    return framework
+        if k not in backend.__dict__:
+            backend.__dict__[k] = v
+    return backend
 
 
-def unset_framework():
-    """Unsets the current global framework, and adjusts the ivy dict such that either
-    a previously set global framework is then used as the backend, otherwise we return
+def unset_backend():
+    """Unsets the current global backend, and adjusts the ivy dict such that either
+    a previously set global backend is then used as the backend, otherwise we return
     to Ivy's implementations.
 
     Returns
     -------
     ret
-        the framework that was unset, or None if there was no set global framework.
+        the backend that was unset, or None if there was no set global backend.
 
     Examples
     --------
-    Torch is the last set framework hence is the backend framework used here:
+    Torch is the last set backend hence is the backend backend used here:
 
-    >>> ivy.set_framework('tensorflow')
-    >>> ivy.set_framework('torch')
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.set_backend("torch")
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class 'torch.Tensor'>
 
-    However if `unset_framework` is called before `ivy.native_array` then tensorflow
-    will become the current framework and any torch backend implementations in the
+    However if `unset_backend` is called before `ivy.native_array` then tensorflow
+    will become the current backend and any torch backend implementations in the
     Ivy dict will be swapped with the tensorflow implementation:
 
-    >>> ivy.set_framework('tensorflow')
-    >>> ivy.set_framework('torch')
-    >>> ivy.unset_framework()
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.set_backend("torch")
+    >>> ivy.unset_backend()
     >>> x = ivy.native_array([1])
     >>> print(type(x))
-    <class 'tensorflow.python.framework.ops.EagerTensor'>
+    <class 'tensorflow.python.backend.ops.EagerTensor'>
 
     """
-    framework = None
-    # if the framework stack is empty, nothing is done and we just return `None`
-    if framework_stack:
+    backend = None
+    # if the backend stack is empty, nothing is done and we just return `None`
+    if backend_stack:
         _unwrap_functions()
-        framework = framework_stack.pop(-1)  # remove last framework from the stack
-        if framework.current_framework_str() == "numpy":
+        backend = backend_stack.pop(-1)  # remove last backend from the stack
+        if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()
-        # the new framework is the framework that was set before the one we just removed
-        # from the stack, or Ivy if there was no previously set framework
-        new_framework_dict = (
-            framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        # the new backend is the backend that was set before the one we just removed
+        # from the stack, or Ivy if there was no previously set backend
+        new_backend_dict = (
+            backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )
-        for k, v in new_framework_dict.items():
+        for k, v in new_backend_dict.items():
             ivy.__dict__[k] = v
     if verbosity.level > 0:
-        verbosity.cprint("framework stack: {}".format(framework_stack))
-    if framework_stack:
+        verbosity.cprint("backend stack: {}".format(backend_stack))
+    if backend_stack:
         _wrap_functions()
-    return framework
+    return backend
 
 
-def clear_framework_stack():
-    while framework_stack:
-        unset_framework()
+def clear_backend_stack():
+    while backend_stack:
+        unset_backend()
 
 
-# Framework Getters #
-# ------------------#
+# Backend Getters #
+# ----------------#
 
 
 def try_import_ivy_jax(warn=False):
@@ -399,12 +400,12 @@ FW_DICT = {
 }
 
 
-def choose_random_framework(excluded=None):
+def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
         if len(excluded) == 5:
             raise Exception(
-                "Unable to select framework, all backends are either excluded "
+                "Unable to select backend, all backends are either excluded "
                 "or not installed."
             )
         f = np.random.choice(
@@ -414,5 +415,5 @@ def choose_random_framework(excluded=None):
             excluded.append(f)
             continue
         else:
-            print("\nselected framework: {}\n".format(f))
+            print("\nselected backend: {}\n".format(f))
             return f
