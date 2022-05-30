@@ -416,8 +416,8 @@ def depthwise_conv2d(
     ret
         The result of the convolution operation.
 
-    Examples:
-
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
