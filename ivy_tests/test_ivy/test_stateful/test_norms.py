@@ -55,4 +55,3 @@ def test_layer_norm_layer(
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         return
-
