@@ -44,7 +44,7 @@ def gpu_is_available() -> bool:
     return False
 
 
-def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.ndarray:
+def _to_dev(x: np.ndarray, *, device) -> np.ndarray:
     if device is not None:
         if "gpu" in device:
             raise Exception(
@@ -58,8 +58,6 @@ def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
     return x
 
 

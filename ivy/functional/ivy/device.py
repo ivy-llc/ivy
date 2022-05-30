@@ -485,8 +485,9 @@ def unset_default_device():
 # noinspection PyShadowingNames
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    device: Union[ivy.Device, ivy.NativeDevice],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -511,7 +512,7 @@ def to_dev(
     >>> x = ivy.to_dev(x, 'cpu')
 
     """
-    return _cur_backend(x).to_dev(x, device, out)
+    return _cur_backend(x).to_dev(x, device=device, out=out)
 
 
 # Function Splitting #
