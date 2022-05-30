@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="7_containers.html">Containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#device-module">Device Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
 </ul>
 </li>
@@ -158,6 +159,25 @@ with <code class="code docutils literal notranslate"><span class="pre">ivy.Nativ
 The <code class="code docutils literal notranslate"><span class="pre">ivy.Device</span></code> class derives from <code class="code docutils literal notranslate"><span class="pre">str</span></code>,
 and has simple logic in the constructor to verify that the string formatting is correct.
 When a backend is set, the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> is replaced with the backend-specific <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13">device class</a>.</p>
+<section id="device-module">
+<h2>Device Module<a class="headerlink" href="#device-module" title="Permalink to this headline"></a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py">device.py</a> module provides a variety of functions for working with devices.
+A few examples include
+<code class="code docutils literal notranslate"><span class="pre">ivy.get_all_arrays_on_dev</span></code> which gets all arrays which are currently alive on the specified device,
+<code class="code docutils literal notranslate"><span class="pre">ivy.dev</span></code> which gets the device for input array,
+and <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> which determines the number of available GPUs for use with the backend framework.</p>
+<p>Many functions are <em>convenience</em> functions, which means that they do not directly modify arrays,
+as explained in the <a class="reference internal" href="3_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+<p>For example,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L215">ivy.total_mem_on_dev</a> which gets the total amount of memory for a given device,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L326">ivy.dev_util</a> which gets the current utilization (%) for a given device,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L371">ivy.num_cpu_cores</a> which determines the number of cores available in the CPU,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> which returns the correct device to use,
+are all convenience functions.</p>
+<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> is arguably the most important function.
+Any function in the functional API that receives a <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument will make use of this function,
+as explained below.</p>
+</section>
 <section id="arguments-in-other-functions">
 <h2>Arguments in other Functions<a class="headerlink" href="#arguments-in-other-functions" title="Permalink to this headline"></a></h2>
 <p>Like with <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, all <code class="code docutils literal notranslate"><span class="pre">device</span></code> arguments are also keyword-only.
