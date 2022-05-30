@@ -498,10 +498,10 @@ def slodget(
 
 
 def tensordot(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
@@ -730,8 +730,8 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 
 def cholesky(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container], upper: bool = False
-) -> Union[ivy.Array, ivy.Container]:
+    x: Union[ivy.Array, ivy.NativeArray], upper: bool = False
+) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
