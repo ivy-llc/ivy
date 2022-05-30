@@ -190,7 +190,7 @@ def set_backend(backend: str):
     # appropriate backend implementation (backend specified by `backend`)
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
-            if k in ivy.valid_dtypes:
+            if k in backend.invalid_dtypes:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v

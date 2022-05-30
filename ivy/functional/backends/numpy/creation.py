@@ -25,12 +25,11 @@ def asarray(object_in, dtype=None, device=None, copy=None):
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_dev(np.copy(np.asarray(object_in)), device)
+            return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device)
         else:
-            return _to_dev(np.asarray(object_in), device)
+            return _to_dev(np.asarray(object_in, dtype=dtype), device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
@@ -160,7 +159,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: np.dtype, device: str):
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device)

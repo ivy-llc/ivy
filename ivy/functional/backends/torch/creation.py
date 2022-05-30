@@ -35,12 +35,16 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(as_native_dev(device))
+            return (
+                torch.as_tensor(object_in, dtype=dtype)
+                .clone()
+                .detach()
+                .to(as_native_dev(device))
+            )
         else:
-            return torch.as_tensor(object_in).to(as_native_dev(device))
+            return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(np_as_ivy_dtype(object_in.dtype))
@@ -314,7 +318,7 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: torch.dtype, device: torch.device):
 
     if stop is None:
         stop = start

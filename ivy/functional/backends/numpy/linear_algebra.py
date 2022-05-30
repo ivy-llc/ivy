@@ -185,7 +185,10 @@ def vecdot(
     return ret
 
 
-def det(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+def det(
+        x: np.ndarray,
+        out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
