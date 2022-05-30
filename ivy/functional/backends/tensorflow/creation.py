@@ -199,7 +199,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: tf.DType, device: str):
 
     if stop is None:
         stop = start
