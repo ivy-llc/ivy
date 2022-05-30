@@ -82,9 +82,9 @@ Data Type Module
 
 The `data_type.py`_ module provides a variety of functions for working with data types.
 A few examples include
-:code:`astype` which copies an array to a specified data type,
-:code:`broadcast_to` which broadcasts an array to a specified shape,
-and :code:`result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
+:code:`ivy.astype` which copies an array to a specified data type,
+:code:`ivy.broadcast_to` which broadcasts an array to a specified shape,
+and :code:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
 Many functions are *convenience* functions, which means that they do not directly modify arrays,
 as explained in the :ref:`Function Types` section.
@@ -97,7 +97,7 @@ and `ivy.default_dtype`_ which returns the correct data type to use,
 are all convenience functions.
 
 `ivy.default_dtype`_ is arguably the most important function.
-Any function in the functional API that receives a :code:`dtype` argument will make use of this,
+Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
 as explained below.
 
 Arguments in other Functions
