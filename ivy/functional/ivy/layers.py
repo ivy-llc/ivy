@@ -471,9 +471,9 @@ def conv3d_transpose(
     x:Union[ivy.Array, ivy.NativeArray], 
     filters: Union[ivy.Array, ivy.NativeArray], 
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] , 
-    padding: str, 
+    padding: Union[str, List[int]], 
     output_shape: Union[ivy.Array, ivy.NativeArray] = None, 
-    data_format="NDHWC", 
+    data_format: str="NDHWC", 
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -487,12 +487,12 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
-        NDHWC" or "NCDHW". Defaults to "NDHWC".
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
 
@@ -500,6 +500,48 @@ def conv3d_transpose(
     -------
     ret
         The result of the transpose convolution operation.
+
+    Examples:
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, strides=2, padding='SAME')
+    >>> print(y.shape)
+    (1, 5, 55, 55, 6)  
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 256, 256, 64]))
+    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 64, 32]))
+    >>> y = ivy.conv3d_transpose(x, filters, strides=[1, 1, 1], padding='VALID')
+    >>> print(y.shape)
+    (1, 9, 258, 258, 32)
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
+    >>> a =  ivy.random_normal(0, 1, [3, 3, 3, 1, 16])
+    >>> b =  ivy.random_normal(0, 1, [3, 3, 3, 1, 32])
+    >>> filters = ivy.Container(a = a, b = b)
+    >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
+    >>> print(y['a'].shape)
+    (1, 10, 10, 10, 16)
+    >>> print(y['b'].shape)
+    (1, 10, 10, 10, 32)
+
+    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
+    >>> a =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 64]))
+    >>> b =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 128]))
+    >>> filters = ivy.Container(a = a, b = b)
+    >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
+    >>> print(y['a'].shape)
+    (1, 10, 10, 10, 64)
+    >>> print(y['b'].shape)
+    (1, 10, 10, 10, 128)
 
     """
     return _cur_backend(x).conv3d_transpose(
