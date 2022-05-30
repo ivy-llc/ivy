@@ -16,6 +16,7 @@ def arange(
     start: Number,
     stop: Optional[Number] = None,
     step: Number = 1,
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -57,7 +58,7 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_backend().arange(start, stop, step, dtype, device)
+    return _cur_backend().arange(start, stop, step, dtype=dtype, device=device)
 
 
 def asarray(
@@ -409,7 +410,7 @@ def linspace(
     num: int,
     axis: int = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    dtype = None,
+    dtype=None,
     endpoint: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
@@ -437,7 +438,9 @@ def linspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_backend(start).linspace(start, stop, num, axis, device=device, dtype=dtype, endpoint=endpoint)
+    return _cur_backend(start).linspace(
+        start, stop, num, axis, device=device, dtype=dtype, endpoint=endpoint
+    )
 
 
 def meshgrid(

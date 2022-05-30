@@ -3,7 +3,7 @@ import inspect
 import importlib
 import numpy as np
 from types import ModuleType
-from typing import Callable
+from typing import Callable, Optional, List, Union
 
 
 wrapped_modules_n_classes = []
@@ -317,7 +317,7 @@ def _wrap_function(function: Callable) -> Callable:
 
 def _unwrap_function(function_wrapped: Callable) -> Callable:
     """
-    Unwraps the function in function_wrapped.
+    Unwraps the function `function_wrapped`.
 
     Parameters
     ----------
@@ -336,29 +336,33 @@ def _unwrap_function(function_wrapped: Callable) -> Callable:
     return function_wrapped.inner_fn
 
 
-def _invalid_fn(fn, fs=None):
-    if fs is None:
-        fs = ivy.current_backend_str()
-    if isinstance(fn, np.ufunc):
+def _invalid_function(function: Callable, framework: Optional[str] = None) -> bool:
+    if framework is None:
+        framework = ivy.current_backend_str()
+    if isinstance(function, np.ufunc):
         return False
-    if not hasattr(fn, "__module__") or not fn.__module__:
+    if not hasattr(function, "__module__") or not function.__module__:
         return True
-    fw_fn_keywords = ["ivy", fs] + FW_FN_KEYWORDS[fs]
+    fw_fn_keywords = ["ivy", framework] + FW_FN_KEYWORDS[framework]
     for kw in fw_fn_keywords:
-        if kw in fn.__module__:
+        if kw in function.__module__:
             return False
     return True
 
 
 def _wrap_or_unwrap_functions(
-    wrap_or_unwrap_fn, val=None, fs=None, classes_to_wrap=None, native=False, depth=0
-):
-    classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
-    if fs is None:
-        fs = ivy.current_backend_str()
+    wrap_or_unwrap_function: Callable,
+    val: Optional[Union[ModuleType, Callable]] = None,
+    framework: Optional[str] = None,
+    classes_to_wrap: Optional[List] = [],
+    native: Optional[bool] = False,
+    depth: Optional[int] = 0,
+) -> Union[Callable, ModuleType]:
+    if framework is None:
+        framework = ivy.current_backend_str()
     if val is None:
         val = importlib.import_module(ivy.current_backend_str()) if native else ivy
-    str_to_check = fs if native else "ivy"
+    str_to_check = framework if native else "ivy"
     is_class = inspect.isclass(val)
     if isinstance(val, ModuleType) or (val in classes_to_wrap):
         if val in wrapped_modules_n_classes or (
@@ -371,9 +375,11 @@ def _wrap_or_unwrap_functions(
         ):
             return val
         wrapped_modules_n_classes.append(val)
+        # if `val` is a class we recursively call `_wrap_or_unwrap_functions`
+        # on every member of the class
         if is_class:
             for k in dir(val):
-                if native and (k in NATIVE_KEYS_TO_SKIP[fs]):
+                if native and (k in NATIVE_KEYS_TO_SKIP[framework]):
                     continue
                 v = getattr(val, k)
                 if v is not None:
@@ -383,9 +389,9 @@ def _wrap_or_unwrap_functions(
                             val,
                             k,
                             _wrap_or_unwrap_functions(
-                                wrap_or_unwrap_fn,
+                                wrap_or_unwrap_function,
                                 v,
-                                fs,
+                                framework,
                                 classes_to_wrap,
                                 native,
                                 depth + 1,
@@ -393,9 +399,11 @@ def _wrap_or_unwrap_functions(
                         )
                     except Exception:
                         pass
+        # or if `val` is a module, we recursively call
+        # `_wrap_or_unwrap_functions` on each value of its dict
         else:
             for k, v in val.__dict__.items():
-                if native and (k in NATIVE_KEYS_TO_SKIP[fs] or k[0] == "_"):
+                if native and (k in NATIVE_KEYS_TO_SKIP[framework] or k[0] == "_"):
                     continue
                 if v is None:
                     val.__dict__[k] = v
@@ -403,21 +411,29 @@ def _wrap_or_unwrap_functions(
                     # noinspection PyBroadException
                     try:
                         val.__dict__[k] = _wrap_or_unwrap_functions(
-                            wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1
+                            wrap_or_unwrap_function,
+                            v,
+                            framework,
+                            classes_to_wrap,
+                            native,
+                            depth + 1,
                         )
                     except Exception:
                         pass
         if depth == 0:
             wrapped_modules_n_classes.clear()
         return val
+    # if `val` is a function/method we wrap it and return it (unless
+    # there are issues with it being an invalid function)
     elif callable(val) and not is_class:
         if depth == 0:
             wrapped_modules_n_classes.clear()
         if (
-            hasattr(val, "inner_fn") and (_invalid_fn(val.inner_fn) and not native)
-        ) or (_invalid_fn(val) and not native):
+            hasattr(val, "inner_fn")
+            and (_invalid_function(val.inner_fn) and not native)
+        ) or (_invalid_function(val) and not native):
             return val
-        return wrap_or_unwrap_fn(val)
+        return wrap_or_unwrap_function(val)
     if depth == 0:
         wrapped_modules_n_classes.clear()
     return val

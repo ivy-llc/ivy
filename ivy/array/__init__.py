@@ -2,13 +2,12 @@
 # global
 import copy
 import functools
+import numpy as np
 from operator import mul
 
 # local
-import numpy as np
 from . import conversions
 from .conversions import *
-
 from .activations import ArrayWithActivations
 from .creation import ArrayWithCreation
 from .data_types import ArrayWithDataTypes
@@ -274,14 +273,11 @@ class Array(
 
     @_native_wrapper
     def __pos__(self):
-        return self
+        return ivy.positive(self._data)
 
     @_native_wrapper
     def __neg__(self):
-        res = self._data.__neg__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.negative(self._data)
 
     @_native_wrapper
     def __pow__(self, power):
@@ -293,45 +289,27 @@ class Array(
 
     @_native_wrapper
     def __add__(self, other):
-        other = to_native(other)
         return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
-        other = to_native(other)
-        res = self._data.__radd__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.add(other, self._data)
 
     @_native_wrapper
     def __sub__(self, other):
-        other = to_native(other)
         return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __rsub__(self, other):
-        other = to_native(other)
-        res = -ivy.subtract(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.subtract(other, self._data)
 
     @_native_wrapper
     def __mul__(self, other):
-        other = to_native(other)
-        res = ivy.multiply(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.multiply(self._data, other)
 
     @_native_wrapper
     def __rmul__(self, other):
-        other = to_native(other)
-        res = self._data.__rmul__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.multiply(other, self._data)
 
     @_native_wrapper
     def __mod__(self, other):
@@ -343,11 +321,7 @@ class Array(
 
     @_native_wrapper
     def __rtruediv__(self, other):
-        other = to_native(other)
-        res = self._data.__rtruediv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.divide(other, self._data)
 
     @_native_wrapper
     def __floordiv__(self, other):
@@ -355,20 +329,11 @@ class Array(
 
     @_native_wrapper
     def __rfloordiv__(self, other):
-        other = to_native(other)
-        res = self._data.__rfloordiv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.floor_divide(other, self._data)
 
     @_native_wrapper
     def __abs__(self):
-        if "uint" in ivy.dtype(self._data):
-            return self
-        res = self._data.__abs__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.abs(self._data)
 
     @_native_wrapper
     def __float__(self):
@@ -394,11 +359,7 @@ class Array(
 
     @_native_wrapper
     def __lt__(self, other):
-        other = to_native(other)
-        res = ivy.less(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.less(self._data, other)
 
     @_native_wrapper
     def __le__(self, other):
@@ -406,11 +367,7 @@ class Array(
 
     @_native_wrapper
     def __eq__(self, other):
-        other = to_native(other)
-        res = ivy.equal(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.equal(self._data, other)
 
     @_native_wrapper
     def __ne__(self, other):
@@ -430,7 +387,7 @@ class Array(
 
     @_native_wrapper
     def __rand__(self, other):
-        return ivy.bitwise_and(self._data, other)
+        return ivy.bitwise_and(other, self._data)
 
     @_native_wrapper
     def __or__(self, other):
@@ -438,34 +395,19 @@ class Array(
 
     @_native_wrapper
     def __ror__(self, other):
-        other = to_native(other)
-        res = self._data.__ror__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_or(other, self._data)
 
     @_native_wrapper
     def __invert__(self):
-        res = self._data.__invert__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_invert(self._data)
 
     @_native_wrapper
     def __xor__(self, other):
-        other = to_native(other)
-        res = ivy.bitwise_xor(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_xor(self._data, other)
 
     @_native_wrapper
     def __rxor__(self, other):
-        other = to_native(other)
-        res = self._data.__rxor__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_xor(other, self._data)
 
     @_native_wrapper
     def __lshift__(self, other):
@@ -473,11 +415,7 @@ class Array(
 
     @_native_wrapper
     def __rlshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rlshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_left_shift(other, self._data)
 
     @_native_wrapper
     def __rshift__(self, other):
@@ -485,11 +423,7 @@ class Array(
 
     @_native_wrapper
     def __rrshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rrshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_right_shift(other, self._data)
 
     # noinspection PyDefaultArgument
     @_native_wrapper
