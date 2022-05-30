@@ -358,7 +358,7 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../functional/ivy/random/seed.html#ivy.functional.ivy.random.seed">[docs]</a><span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../functional/ivy/random/seed.html#ivy.functional.ivy.random.seed">[docs]</a><span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Sets the seed for random number generation.</span>
 
 <span class="sd">    Parameters</span>
@@ -366,6 +366,10 @@
 <span class="sd">    seed_value</span>
 <span class="sd">        Seed for random number generation, must be a positive integer.</span>
 <span class="sd">        (Default value = 0)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.seed(42)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span></div>
