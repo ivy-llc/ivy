@@ -240,8 +240,11 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     ret
         Boolean, whether or not all of the input arrays are equal across all elements.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> i = ivy.array([1, 2])
     >>> j = ivy.arrays_equal([i])
     >>> print(j)
@@ -267,6 +270,9 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     >>> w = ivy.arrays_equal([x, y, z])
     >>> print(w)
     False
+
+
+    With :code:`ivy.NativeArray` input:
     
     >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
     >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
@@ -285,6 +291,9 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     >>> c = ivy.arrays_equal([a,b])
     >>> print(c)
     False
+
+
+    With :code:`ivy.Container` input:
 
     >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
