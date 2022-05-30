@@ -53,7 +53,7 @@ def depthwise_conv2d(
     filters: Tensor,
     strides: int,
     padding: Union[str, List[int]],
-    data_format: str ="NHWC",
+    data_format: str = "NHWC",
     dilations: int = 1
 ) -> Tensor:
     filters = tf.expand_dims(filters, -1)
