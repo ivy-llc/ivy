@@ -36,9 +36,9 @@ def min(
     x
         Input array containing elements to min.
     axis
-        axis or axes along which minimum values must be computed. By default, the
-        minimum value must be computed over the entire array. If a tuple of integers,
-        minimum values must be computed over multiple axes. Default: None.
+         axis or axes along which minimum values must be computed. By default, the
+         minimum value must be computed over the entire array. If a tuple of integers,
+         minimum values must be computed over multiple axes. Default: None.
     keepdims
         optional boolean, if True, the reduced axes (dimensions) must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
@@ -69,12 +69,12 @@ def max(
     """Calculates the maximum value of the input array ``x``.
 
     .. note::
-        When the number of elements over which to compute the maximum value is zero, the
-        maximum value is implementation-defined. Specification-compliant libraries may
-        choose to raise an error, return a sentinel value (e.g., if ``x`` is a
-        floating-point input array, return ``NaN``), or return the minimum possible value
-        for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
-        return ``-infinity``).
+       When the number of elements over which to compute the maximum value is zero, the
+       maximum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the minimum possible 
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point 
+       array, return ``-infinity``).
 
     **Special Cases**
 
@@ -205,12 +205,12 @@ def mean(
         non-zero-dimensional array containing the arithmetic means. The returned array
         must have the same data type as ``x``.
         .. note::
-            While this specification recommends that this function only accept input
-            arrays having a floating-point data type, specification-compliant array
-            libraries may choose to accept input arrays having an integer data type.
-            While mixed data type promotion is implementation-defined, if the input array
-            ``x`` has an integer data type, the returned array must have the default
-            floating-point data type.
+           While this specification recommends that this function only accept input
+           arrays having a floating-point data type, specification-compliant array
+           libraries may choose to accept input arrays having an integer data type.
+           While mixed data type promotion is implementation-defined, if the input 
+           array ``x`` has an integer data type, the returned array must have the 
+           default floating-point data type.
 
     """
     return _cur_framework(x).mean(x, axis, keepdims, out=out)
