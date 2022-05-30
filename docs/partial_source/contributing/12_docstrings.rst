@@ -1,16 +1,16 @@
 Docstrings
 ==========
 
-.. _`Array API`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 
 As we did when explaining :ref:`Type Hints`, we will again use the functions :code:`ivy.tan`, :code:`ivy.roll` and
 :code:`ivy.add` as exemplars.
 
-Firstly, if the function exists in the `Array API`_ Standard, the we start with the corresponding docstring as a
-template. These docstrings can be found under `spec/API_specification/signatures`_.
+Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
+template. These docstrings can be found under `spec/API_specification/array_api`_.
 
-The `Array API`_ docstring for :code:`tan` is as follows:
+The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
 .. code-block:: python
 
@@ -46,7 +46,7 @@ docstring like so:
     -out: array
     +out
 
-The `Array API`_ standard defines a subset of behaviour that each function must adhere to.
+The `Array API Standard`_ defines a subset of behaviour that each function must adhere to.
 Ivy extends many of these functions with additional behaviour and arguments.
 In the case of :code:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
 like so:
@@ -58,7 +58,7 @@ like so:
     +    broadcast to.
 
 Because of this :code:`out` argument in the input, we also need to rename the :code:`out` argument in the return, which
-is the default name used in the `Array API`_ standard. We change this to :code:`ret`:
+is the default name used in the `Array API Standard`_. We change this to :code:`ret`:
 
 .. code-block:: diff
 
@@ -66,11 +66,11 @@ is the default name used in the `Array API`_ standard. We change this to :code:`
     +ret
 
 Finally, we add a section in the docstring which explains that it has been modified from the version available in the
-`Array API`_ standard:
+`Array API Standard`_:
 
 .. code-block:: diff
 
-    +This method conforms to the `Array API`_ Standard
+    +This method conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
     +in the standard. The descriptions above assume an array input for simplicity, but
@@ -78,7 +78,7 @@ Finally, we add a section in the docstring which explains that it has been modif
     +:code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     +and also the examples below.
 
-Following these changes, the new doctrsing is as follows:
+Following these changes, the new docstring is as follows:
 
 .. code-block:: python
 

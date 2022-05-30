@@ -16,6 +16,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -24,9 +25,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             kw["x2"] = x2
         else:
             conts["x2"] = x2
+        cont_keys = conts.keys()
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
-                lambda xs, _: ivy.matmul(**dict(zip(conts.keys(), xs)), **kw)
+                lambda xs, _: ivy.matmul(**dict(zip(cont_keys, xs)), **kw)
                 if ivy.is_array(xs[0])
                 else xs,
                 list(conts.values()),

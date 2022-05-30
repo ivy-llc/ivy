@@ -76,10 +76,10 @@ def bilinear_resample(x, warp):
     height, width = input_image_dims
     max_x = width - 1
     max_y = height - 1
-    idx_size = _reduce(_mul, warp.shape[-3:-1], 1)
+    idx_size = warp.shape[-2]
     batch_shape_flat = _reduce(_mul, batch_shape, 1)
     # B
-    batch_offsets = jnp.arange(batch_shape_flat) * idx_size
+    batch_offsets = jnp.arange(batch_shape_flat) * height * width
     # B x (HxW)
     base_grid = jnp.tile(jnp.expand_dims(batch_offsets, 1), [1, idx_size])
     # (BxHxW)

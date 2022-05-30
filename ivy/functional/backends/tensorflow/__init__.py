@@ -8,108 +8,76 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 
 # noinspection PyUnresolvedReferences
-use = ivy.framework_handler.ContextManager(sys.modules[__name__])
+use = ivy.backend_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = Tensor
 NativeVariable = Tensor
-Device = str
-Dtype = DType
+NativeDevice = str
+NativeDtype = DType
 
-# data types
-int8 = tf.int8
-int16 = tf.int16
-int32 = tf.int32
-int64 = tf.int64
-uint8 = tf.uint8
-uint16 = tf.uint16
-uint32 = tf.uint32
-uint64 = tf.uint64
-bfloat16 = tf.bfloat16
-float16 = tf.float16
-float32 = tf.float32
-float64 = tf.float64
+# native data types
+native_int8 = tf.int8
+native_int16 = tf.int16
+native_int32 = tf.int32
+native_int64 = tf.int64
+native_uint8 = tf.uint8
+native_uint16 = tf.uint16
+native_uint32 = tf.uint32
+native_uint64 = tf.uint64
+native_bfloat16 = tf.bfloat16
+native_float16 = tf.float16
+native_float32 = tf.float32
+native_float64 = tf.float64
 # noinspection PyShadowingBuiltins
-bool = tf.bool
+native_bool = tf.bool
 
+# valid data types
 valid_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    bfloat16,
-    float16,
-    float32,
-    float64,
-    bool,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.bool,
 )
 valid_numeirc_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    bfloat16,
-    float16,
-    float32,
-    float64,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
+valid_int_dtypes = (
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+)
+valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 
-# valid
-valid_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
-)
-valid_numeric_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-)
-valid_int_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-valid_float_dtype_strs = ("bfloat16", "float16", "float32", "float64")
-
-# invalid
-invalid_dtype_strs = ()
-invalid_numeric_dtype_strs = ()
-invalid_int_dtype_strs = ()
-invalid_float_dtype_strs = ()
+# invalid data types
+invalid_dtypes = ()
+invalid_numeric_dtypes = ()
+invalid_int_dtypes = ()
+invalid_float_dtypes = ()
 
 
 def closest_valid_dtype(type):
@@ -122,37 +90,39 @@ backend = "tensorflow"
 
 
 # local sub-modules
-from . import activations  # noqa
-from .activations import *  # noqa
-from . import creation  # noqa
-from .creation import *  # noqa
-from . import data_type  # noqa
-from .data_type import *  # noqa
-from . import device  # noqa
-from .device import *  # noqa
-from . import elementwise  # noqa
-from .elementwise import *  # noqa
-from . import general  # noqa
-from .general import *  # noqa
-from . import gradients  # noqa
-from .gradients import *  # noqa
-from . import image  # noqa
-from .image import *  # noqa
-from . import layers  # noqa
-from .layers import *  # noqa
-from . import linear_algebra as linalg  # noqa
-from .linear_algebra import *  # noqa
-from . import manipulation  # noqa
-from .manipulation import *  # noqa
-from . import random  # noqa
-from .random import *  # noqa
-from . import searching  # noqa
-from .searching import *  # noqa
-from . import set  # noqa
-from .set import *  # noqa
-from . import sorting  # noqa
-from .sorting import *  # noqa
-from . import statistical  # noqa
-from .statistical import *  # noqa
-from . import utility  # noqa
-from .utility import *  # noqa
+from . import activations
+from .activations import *
+from . import compilation
+from .compilation import *
+from . import creation
+from .creation import *
+from . import data_type
+from .data_type import *
+from . import device
+from .device import *
+from . import elementwise
+from .elementwise import *
+from . import general
+from .general import *
+from . import gradients
+from .gradients import *
+from . import image
+from .image import *
+from . import layers
+from .layers import *
+from . import linear_algebra as linalg
+from .linear_algebra import *
+from . import manipulation
+from .manipulation import *
+from . import random
+from .random import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *

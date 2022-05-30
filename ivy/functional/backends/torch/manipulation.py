@@ -11,12 +11,13 @@ def roll(
     x: torch.Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.roll(x, shift, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+
+    # manually cover the case when shift is int, and axis is a tuple/list
+    if isinstance(shift, int) and (type(axis) in [list, tuple]):
+        shift = [shift for _ in range(len(axis))]
+
+    return torch.roll(x, shift, axis)
 
 
 def squeeze(
@@ -243,5 +244,19 @@ def swapaxes(
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[torch.Tensor] = None):
-    return torch.clamp(x, x_min, x_max, out=out)
+def clip(
+    x: torch.Tensor,
+    x_min: Union[Number, torch.Tensor],
+    x_max: Union[Number, torch.Tensor],
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if hasattr(x_min, "dtype"):
+        promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
+        promoted_type = torch.promote_types(promoted_type, x.dtype)
+        x_min = x_min.to(promoted_type)
+        x_max = x_max.to(promoted_type)
+        x = x.to(promoted_type)
+    ret = torch.clamp(x, x_min, x_max, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret

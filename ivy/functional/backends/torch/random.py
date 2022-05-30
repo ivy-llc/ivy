@@ -17,7 +17,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
@@ -29,8 +29,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
-    device: ivy.Device = None,
-):
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
@@ -43,11 +43,11 @@ def random_normal(
 def multinomial(
     population_size: int,
     num_samples: int,
-    batch_size: int,
+    batch_size: int = 1,
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
-    device: ivy.Device = None,
-):
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> torch.Tensor:
     if probs is None:
         probs = (
             torch.ones(
@@ -58,10 +58,17 @@ def multinomial(
             )
             / population_size
         )
-    return torch.multinomial(probs, num_samples, replace).to(default_device(device))
+    return torch.multinomial(probs.float(),
+                             num_samples,
+                             replace).to(default_device(device))
 
 
-def randint(low: int, high: int, shape: List[int], device: ivy.Device = None):
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 
 
@@ -71,6 +78,6 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x):
+def shuffle(x: torch.Tensor) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size))

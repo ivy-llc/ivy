@@ -4,7 +4,7 @@
 import os
 import importlib
 import torch
-from typing import Optional
+from typing import Optional, Union
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
@@ -18,18 +18,19 @@ torch_scatter = None
 # ----#
 
 
-def dev(x: torch.Tensor, as_str: bool = False)\
-        -> str:
+def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
-    if as_str:
-        return dev_to_str(dv)
-    return dv
+    if as_native:
+        return torch.device(dv)
+    return as_ivy_dev(dv)
 
 
 def to_dev(
-    x, device: Optional[str] = None, out: Optional[torch.Tensor] = None
+    x,
+    device: Optional[Union[ivy.Device, torch.device]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = x.to(dev_from_str(device))
+    ret = x.to(as_native_dev(device))
     if isinstance(x, torch.nn.Parameter):
         if ivy.exists(out):
             return ivy.inplace_update(out, torch.nn.Parameter(ret))
@@ -40,21 +41,24 @@ def to_dev(
     return ret
 
 
-def dev_to_str(device: torch.device):
+def as_ivy_dev(device: torch.device):
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     dev_type, dev_idx = (device.type, device.index)
     if dev_type == "cpu":
-        return dev_type
-    return dev_type.replace("cuda", "gpu") + (
-        ":" + (str(dev_idx) if dev_idx is not None else "0")
+        return ivy.Device(dev_type)
+    return ivy.Device(
+        dev_type.replace("cuda", "gpu")
+        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
     )
 
 
-def dev_from_str(device: Optional[str] = None) -> Optional[torch.device]:
+def as_native_dev(
+    device: Optional[Union[ivy.Device, torch.device]] = None
+) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    return torch.device(device.replace("gpu", "cuda"))
+    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
 def clear_mem_on_dev(device):

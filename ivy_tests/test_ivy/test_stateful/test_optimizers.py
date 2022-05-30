@@ -1,32 +1,39 @@
 """Collection of tests for Ivy optimizers."""
 
 # global
-import pytest
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # sgd
-@pytest.mark.parametrize(
-    "bs_ic_oc_target",
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ],
+@given(
+    bs_ic_oc_target=st.sampled_from(
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
+    with_v=st.booleans(),
+    inplace=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("inplace", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
 def test_sgd_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -84,22 +91,28 @@ def test_sgd_optimizer(
 
 
 # lars
-@pytest.mark.parametrize(
-    "bs_ic_oc_target",
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ],
+@given(
+    bs_ic_oc_target=st.sampled_from(
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
+    with_v=st.booleans(),
+    inplace=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("inplace", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
 def test_lars_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -159,22 +172,28 @@ def test_lars_optimizer(
 
 
 # adam
-@pytest.mark.parametrize(
-    "bs_ic_oc_target",
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ],
+@given(
+    bs_ic_oc_target=st.sampled_from(
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
+    with_v=st.booleans(),
+    inplace=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("inplace", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
 def test_adam_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -232,22 +251,28 @@ def test_adam_optimizer(
 
 
 # lamb
-@pytest.mark.parametrize(
-    "bs_ic_oc_target",
-    [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ],
+@given(
+    bs_ic_oc_target=st.sampled_from(
+        [
+            (
+                [1, 2],
+                4,
+                5,
+                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
+            ),
+        ]
+    ),
+    with_v=st.booleans(),
+    inplace=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("inplace", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
 def test_lamb_optimizer(
     bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),

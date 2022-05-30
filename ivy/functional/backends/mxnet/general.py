@@ -1,9 +1,8 @@
 # global
-from typing import Optional
+from typing import List, Optional, Union
 import ivy
 
 _round = round
-import logging
 import mxnet as mx
 import numpy as _np
 from numbers import Number
@@ -19,7 +18,7 @@ from ivy.functional.backends.mxnet import (
 
 
 def is_native_array(x, exclusive=False):
-    if isinstance(x, mx.ndarray.ndarray.NDArray):
+    if isinstance(x, mx.nd.NDArray):
         if exclusive and x.grad is not None:
             return False
         return True
@@ -31,9 +30,9 @@ def copy_array(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
-    if ivy.dtype(x0, as_str=True) == "bool":
+    if ivy.dtype(x0) == "bool":
         x0 = x0.astype("int32")
-    if ivy.dtype(x1, as_str=True) == "bool":
+    if ivy.dtype(x1) == "bool":
         x1 = x1.astype("int32")
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
@@ -61,10 +60,10 @@ def to_list(x: mx.nd.NDArray) -> list:
 
 @_handle_flat_arrays_in_out
 def floormod(
-    x: mx.ndarray.ndarray.NDArray,
-    y: mx.ndarray.ndarray.NDArray,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    x: mx.nd.NDArray,
+    y: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     ret = x % y
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -117,10 +116,10 @@ def inplace_increment(x, val):
 
 
 def cumsum(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: int = 0,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(
             out, mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
@@ -130,11 +129,11 @@ def cumsum(
 
 
 def cumprod(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
     if exclusive:
         array_stack = [mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
@@ -192,12 +191,12 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: mx.ndarray.ndarray.NDArray,
-    indices: mx.ndarray.ndarray.NDArray,
+    params: mx.nd.NDArray,
+    indices: mx.nd.NDArray,
     axis: Optional[int] = -1,
     device: Optional[str] = None,
-    out: mx.ndarray.ndarray.NDArray = None,
-) -> mx.ndarray.ndarray.NDArray:
+    out: mx.nd.NDArray = None,
+) -> mx.nd.NDArray:
     if device is None:
         device = _callable_dev(params)
     index_slices = unstack(indices, -1)
@@ -233,8 +232,15 @@ multiprocessing = (
 )
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
-shape = lambda x, as_tensor=False: mx.nd.shape_array(x) if as_tensor else x.shape
-shape.__name__ = "shape"
+
+
+def shape(x: mx.nd.NDArray, as_tensor: bool = False) -> Union[mx.nd.NDArray, List[int]]:
+    if as_tensor:
+        return mx.nd.shape_array(x)
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: mx.nd.shape_array(mx.nd.shape_array(x)).reshape([])
     if as_tensor
@@ -258,17 +264,5 @@ def indices_where(x):
     return res
 
 
-# noinspection PyUnusedLocal
-def compile(
-    func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    logging.warning(
-        "MXnet does not support compiling arbitrary functions, consider writing a "
-        "function using MXNet Symbolic backend instead for compiling.\n"
-        "Now returning the unmodified function."
-    )
-    return func
-
-
-current_framework_str = lambda: "mxnet"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "mxnet"
+current_backend_str.__name__ = "current_backend_str"

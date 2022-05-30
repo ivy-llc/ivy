@@ -15,4 +15,4 @@ jobs:
         python -m pip install flake8
     - name: Analysing the code with Flake8
       run: |
-        flake8 --ignore E203,E402,E731,W503 --max-line-length 88 $(git ls-files '*.py')
+        flake8 $(git ls-files '*.py')

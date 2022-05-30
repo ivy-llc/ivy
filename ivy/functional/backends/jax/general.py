@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional
+from typing import List, Iterable, Optional, Union
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -67,8 +67,13 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
-shape.__name__ = "shape"
+def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
+    if as_tensor:
+        return jnp.asarray(jnp.shape(x))
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x)))
     if as_tensor
@@ -188,7 +193,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
     updates = [updates] if isinstance(updates, Number) else updates
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
     )
@@ -322,11 +327,5 @@ def inplace_increment(x, val):
     return x
 
 
-def compile(
-    fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    return jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
-
-
-current_framework_str = lambda: "jax"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "jax"
+current_backend_str.__name__ = "current_backend_str"

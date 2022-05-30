@@ -1,7 +1,7 @@
-"""Converters from Native Modules to Ivy Modules."""
+"""Converters from Native Modules to Ivy Modules"""
 
 # local
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 def to_ivy_module(
@@ -13,33 +13,38 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """Convert an instance of a trainable module from a native framework into a
+    """
+    Convert an instance of a trainable module from a native framework into a
     trainable ivy.Module instance.
 
-    :param native_module: The module in the native framework to convert, required if
-        native_module_class is not given. Default is None.
-    :type native_module: native module instance, optional
-    :param native_module_class: The class of the native module, required if
-        native_module is not given. Default is None.
-    :type native_module_class: class, optional
-    :param args: Positional arguments to pass to the native module class.
+    Parameters
+    ----------
+    native_module
+        The module in the native framework to convert, required if native_module_class
+        is not given.
         Default is None.
-    :type args: list of any
-    :param kwargs: Key-word arguments to pass to the native module class.
+    native_module_class
+        The class of the native module, required if native_module is not given.
         Default is None.
-    :type kwargs: dict of any
-    :param device: The device on which to create module variables.
-        Default is None.
-    :type device: ivy.Device, optional
-    :param devices: The devices on which to create module variables. Default is None.
-    :type devices: sequence of str, optional
-    :param inplace_update: For backends with dedicated variable classes, whether
-        to update these inplace. Default is False.
-    :type inplace_update: bool, optional
-    :return: The new trainable ivy.Module instance.
+    args
+        Positional arguments to pass to the native module class. Default is None.
+    kwargs
+        Key-word arguments to pass to the native module class. Default is None.
+    device
+        The device on which to create module variables. Default is None.
+    devices
+        The devices on which to create module variables. Default is None.
+    inplace_update
+        For backends with dedicated variable classes, whether to update these inplace.
+        Default is False.
+
+    Returns
+    -------
+    ret
+        The new trainable ivy.Module instance.
 
     """
-    return _cur_framework().to_ivy_module(
+    return _cur_backend().to_ivy_module(
         native_module,
         native_module_class,
         args,
