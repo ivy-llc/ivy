@@ -77,8 +77,9 @@ def randint(
     with tf.device("/" + device.upper()):
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
 
-
-seed = lambda seed_value=0: tf.random.set_seed(seed_value)
+      
+def seed(seed_value: int = 0) -> None:
+    tf.random.set_seed(seed_value)
 
 
 def shuffle(x: Tensor) -> Tensor:
