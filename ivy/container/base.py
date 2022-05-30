@@ -2169,7 +2169,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self._ivy.DevClonedItem(
-            {device: self.to_dev(device) for device in devices}
+            {device: self.to_dev(device=device) for device in devices}
         )
 
     def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -2569,7 +2569,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device))
+            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device=device))
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,

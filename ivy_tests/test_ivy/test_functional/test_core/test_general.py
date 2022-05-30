@@ -10,6 +10,7 @@ from collections.abc import Sequence
 import torch.multiprocessing as multiprocessing
 
 # local
+import threading
 import ivy
 import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
@@ -1087,38 +1088,57 @@ def test_cache_fn_with_args(device, call):
     assert ret0 is not ret1
 
 
-# def test_framework_setting_with_threading(device, call):
-#
-#     if call is helpers.np_call:
-#         # Numpy is the conflicting framework being tested against
-#         pytest.skip()
-#
-#     def thread_fn():
-#         ivy.set_framework('numpy')
-#         x_ = np.array([0., 1., 2.])
-#         for _ in range(2000):
-#             try:
-#                 ivy.mean(x_)
-#             except TypeError:
-#                 return False
-#         ivy.unset_framework()
-#         return True
-#
-#     # get original framework string and array
-#     fws = ivy.current_framework_str()
-#     x = ivy.array([0., 1., 2.])
-#
-#     # start numpy loop thread
-#     thread = threading.Thread(target=thread_fn)
-#     thread.start()
-#
-#     # start local original framework loop
-#     ivy.set_framework(fws)
-#     for _ in range(2000):
-#         ivy.mean(x)
-#     ivy.unset_framework()
-#
-#     assert not thread.join()
+def test_framework_setting_with_threading(device, call):
+    # with open('biggestmainmain'+'.txt', 'w') as f:
+        # f.write('---------------BEGIN------------------')
+        if call is helpers.np_call:
+            # Numpy is the conflicting framework being tested against
+            pytest.skip()
+
+        def thread_fn(lock,lock2):
+            x_ = np.array([0., 1., 2.])
+            lock.acquire()
+            ivy.set_framework('numpy')
+            ivy_ = ivy.unset_framework()
+            lock.release()
+            for i in range(2000):
+                    try:
+                        if not lock.locked():
+                            # lock2.acquire()
+                            # f.write(str(ivy_dict['current_framework_str']())+str(i)+'  thread\n')
+                            # lock2.release()
+                            ivy_.mean(x_)
+                        else:
+                            i = i-1
+                    except TypeError:
+                        return False
+            return True
+
+        # get original framework string and array
+        fws = ivy.current_framework_str()
+        lock = threading.Lock()
+        lock2 = threading.Lock()
+        x = ivy.array([0., 1., 2.])
+
+        # start numpy loop thread
+        thread = threading.Thread(target=thread_fn,args=[lock,lock2])
+        thread.start()
+
+        # start local original framework loop
+        lock.acquire()
+        ivy.set_framework(fws)
+        lock.release()
+        for i in range(2000):
+                if not lock.locked():
+                # lock2.acquire()
+                # f.write(str(ivy.backend)+str(i)+'  main\n')
+                # lock2.release()
+                    ivy.mean(x)
+                else:
+                    i-=1
+        ivy.unset_framework()
+
+        assert not thread.join()
 
 
 def test_framework_setting_with_multiprocessing(device, call):
