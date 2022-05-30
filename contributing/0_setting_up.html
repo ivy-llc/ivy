@@ -47,6 +47,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macos">MacOS</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
@@ -170,6 +171,34 @@ Below are the instructions required to setup the docker container for:</p>
 </ol>
 <ul class="simple">
 <li><p>Going to settings&gt;project:…&gt;Python Interpreter)</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>DONE. You’re set.
+|
+If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/windows/release-notes/">Docker release note</a></p>
+</section>
+<section id="macos">
+<h2>MacOS<a class="headerlink" href="#macos" title="Permalink to this headline"></a></h2>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
+<li><p>Get the latest Docker Image for Ivy by:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Running Docker desktop.</p></li>
+<li><p>Opening terminal, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-it</span> <span class="pre">--rm</span> <span class="pre">unifyai/ivy:latest</span> <span class="pre">python3</span></code></p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
+<li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p></li>
+</ol>
+<ul class="simple">
+<li><p>Going to PyCharm &gt; Preferences &gt; Project:… &gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
 </ul>
