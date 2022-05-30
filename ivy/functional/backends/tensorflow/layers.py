@@ -2,7 +2,7 @@
 
 # global
 import tensorflow as tf
-
+from typing import Optional, Tuple, Union, List
 from tensorflow.python.types.core import Tensor
 
 
@@ -62,8 +62,14 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 
 
 def conv3d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
-):
+    x: Tensor, 
+    filters: Tensor, 
+    strides: Union[int, List[int, int, int], List[int, int, int, int, int]]
+    padding: str, 
+    output_shape: Optional[Tensor] = None, 
+    data_format: str = "NDHWC", 
+    dilations: int = 1
+) -> Tensor:
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )

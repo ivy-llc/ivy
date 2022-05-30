@@ -3,7 +3,7 @@
 # global
 import math as _math
 import torch
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 
 # noinspection PyUnresolvedReferences
@@ -177,14 +177,14 @@ def conv3d(
 
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     output_shape: Optional[List[int]] = None,
     data_format: str = "NDHWC",
-    dilations: int = 1,
-):
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+) -> torch.Tensor: 
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(3, 4, 0, 1, 2)
     if data_format == "NDHWC":

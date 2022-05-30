@@ -468,8 +468,14 @@ def conv3d(
 
 
 def conv3d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
-):
+    x:Union[ivy.Array, ivy.NativeArray], 
+    filters: Union[ivy.Array, ivy.NativeArray], 
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] , 
+    padding: str, 
+    output_shape: Union[ivy.Array, ivy.NativeArray] = None, 
+    data_format="NDHWC", 
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1
+) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
 
     Parameters
