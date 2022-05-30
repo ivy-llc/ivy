@@ -82,8 +82,8 @@ def test_random_normal(data, shape, dtype, tensor_fn, device, call):
 def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, device, call):
     population_size = 2
     if (
-            call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-            and not replace
+        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
+        and not replace
     ):
         # mxnet and tenosorflow do not support multinomial without replacement
         pytest.skip()
@@ -121,9 +121,7 @@ def test_randint(low, high, shape, dtype, tensor_fn, device, call):
 
 
 # seed
-@given(
-    seed_val=st.integers(min_value=0, max_value=2147483647)
-)
+@given(seed_val=st.integers(min_value=0, max_value=2147483647))
 def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_val)

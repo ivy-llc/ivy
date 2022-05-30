@@ -13,7 +13,7 @@ NativeVariable = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
 
-# data types
+# data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
 int16 = ivy.IntDtype("int16")
 int32 = ivy.IntDtype("int32")
@@ -27,9 +27,7 @@ float16 = ivy.FloatDtype("float16")
 float32 = ivy.FloatDtype("float32")
 float64 = ivy.FloatDtype("float64")
 # noinspection PyShadowingBuiltins
-bool = "bool"
-nan = float("nan")
-inf = float("inf")
+bool = ivy.Dtype("bool")
 
 # native data types
 native_int8 = np.dtype("int8")
@@ -46,6 +44,7 @@ native_float64 = np.dtype("float64")
 # noinspection PyShadowingBuiltins
 native_bool = np.dtype("bool")
 
+# valid data types
 valid_dtypes = (
     int8,
     int16,
@@ -76,7 +75,7 @@ valid_numeric_dtypes = (
 valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (float16, float32, float64)
 
-# invalid
+# invalid data types
 invalid_dtypes = (bfloat16,)
 invalid_numeric_dtypes = (bfloat16,)
 invalid_int_dtypes = ()

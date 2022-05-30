@@ -98,18 +98,18 @@ def test_get_referrers_recursive(device, call):
     refs = ivy.get_referrers_recursive(some_obj.x)
     ref_keys = refs.keys()
     assert len(ref_keys) == 3
-    assert 'repr' in ref_keys
-    assert refs['repr'] == '[1,2]'
+    assert "repr" in ref_keys
+    assert refs["repr"] == "[1,2]"
     y_id = str(id(some_obj.y))
     y_refs = refs[y_id]
-    assert y_refs['repr'] == '[[1,2]]'
+    assert y_refs["repr"] == "[[1,2]]"
     some_obj_dict_id = str(id(some_obj.__dict__))
-    assert y_refs[some_obj_dict_id] == 'tracked'
+    assert y_refs[some_obj_dict_id] == "tracked"
     dict_refs = refs[some_obj_dict_id]
-    assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
+    assert dict_refs["repr"] == "{'x':[1,2],'y':[[1,2]]}"
     some_obj_id = str(id(some_obj))
     some_obj_refs = dict_refs[some_obj_id]
-    assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
+    assert some_obj_refs["repr"] == str(some_obj).replace(" ", "")
     assert len(some_obj_refs) == 1
 
 

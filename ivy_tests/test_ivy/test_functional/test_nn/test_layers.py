@@ -4,6 +4,7 @@
 import pytest
 import numpy as np
 from hypothesis import given, strategies as st
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -11,6 +12,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 # Linear #
 # -------#
+
 
 # linear
 @pytest.mark.parametrize(
@@ -60,12 +62,13 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
 # dropout
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans()
+    as_variable=st.booleans(),
 )
 def test_dropout(array_shape, dtype, as_variable, fw, device, call):
-    if (fw == 'tensorflow' or fw == 'torch') and 'int' in dtype:
+    if (fw == "tensorflow" or fw == "torch") and "int" in dtype:
         return
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
