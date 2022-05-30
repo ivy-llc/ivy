@@ -453,7 +453,8 @@ def depthwise_conv2d(
                         [0.333]]]])
     }
 
-    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray` 
+    and :code:`ivy.Container` inputs:
 
     >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
     >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
