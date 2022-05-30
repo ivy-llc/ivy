@@ -955,10 +955,10 @@ def matrix_rank(
 
 
 def cross(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     axis: int = -1,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
@@ -985,6 +985,8 @@ def cross(
     --------
 
     With :code:`ivy.Array` inputs:
+    
+    1. Axis = -1: (default) vector cross product
 
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
@@ -999,21 +1001,46 @@ def cross(
     >>> z = ivy.cross(x, y)
     >>> print(z)
     ivy.array([-2., 4., -2.])
+    
+    With :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> z = ivy.cross(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([0., 0., 35.]),
+    b: ivy.array([0., 6., 0.])
+    }
+    
+    With a combination of :code:`ivy.Array`
+    and :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.array([9., 0., 3.])
+    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+    >>> z = ivy.cross(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([-3., 3., 9.]),
+    b: ivy.array([0., -6., 0.])
+    }
 
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
+    
+    2. Axis = 0: changing vector definition
 
-    >>> x = ivy.native_array([[1., 2., 3.], \
-                              [4., 5., 6.], \
-                              [7., 8., 9.]])
-    >>> y = ivy.array([[1., 0., 0.],\
-                       [0., 1., 0.],\
-                       [0., 0., 1.]])
-    >>> z = ivy.cross(x,y, axis = -1)
+    >>> x = ivy.native_array([[1., 2.], \
+                              [4., 5.], \
+                              [7., 8.]])
+    >>> y = ivy.array([[1.],\
+                       [0.],\
+                       [0.]])
+    >>> z = ivy.cross(x,y, axis = 0)
     >>> print(z)
-    ivy.array([[ 0.,  3., -2.],
-               [-6.,  0.,  4.],
-               [ 8., -7.,  0.]])
+    ivy.array([[ 0.,  0.],
+               [7.,  8.],
+               [ -4., -5.]])
 
     Instance Method Examples
     ------------------------
@@ -1025,7 +1052,18 @@ def cross(
     >>> z = x.cross(y)
     >>> print(z)
     ivy.array([0., 0., 1.])
-
+    
+    With :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> z = x.cross(y)
+    >>> print(z)
+    {
+    a: ivy.array([0., 0., 35.]),
+    b: ivy.array([0., 6., 0.])
+    }
+    
     """
     return _cur_backend(x1).cross(x1, x2, axis)
 
