@@ -164,6 +164,8 @@
 <li><p>bool</p></li>
 </ul>
 <p>These are all defined at <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225">import time</a>, with each of these set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51">ivy.Dtype</a> instance.
+The <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> class derives from <code class="code docutils literal notranslate"><span class="pre">str</span></code>,
+and has simple logic in the constructor to verify that the string formatting is correct.
 All data types can be queried as attributes of the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="code docutils literal notranslate"><span class="pre">ivy.float32</span></code> etc.</p>
 <p>In addition, <em>native</em> data types are <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241">also specified</a> at import time.
 Likewise, these are all initially set as <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51">ivy.Dtype</a> instances.</p>
