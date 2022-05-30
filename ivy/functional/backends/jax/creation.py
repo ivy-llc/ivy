@@ -124,7 +124,7 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native_dtype=True)
+        dtype = default_dtype(item=object_in)
         if copy is True:
             return to_dev(jnp.array(object_in, dtype=dtype, copy=True), device=device)
         else:

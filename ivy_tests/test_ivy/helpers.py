@@ -698,14 +698,14 @@ def array_values(draw, dtype, size, allow_inf=None):
 
 
 @st.composite
-def get_shape(draw, allow_none=True):
+def get_shape(draw, allow_none=True, min_size=0):
     if allow_none:
         shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
-                                          min_size=0,
+                                          min_size=min_size,
                                           max_size=8))
     else:
         shape = draw(st.lists(st.integers(min_value=1, max_value=8),
-                              min_size=0,
+                              min_size=min_size,
                               max_size=8))
     if shape is None:
         return shape
@@ -788,12 +788,13 @@ def get_mean_std(draw, dtype):
 
 
 @st.composite
-def get_bounds(draw, dtype=None):
-    if dtype is None:
-        values = draw(st.lists(st.integers(0, 2147483647), min_size=2, max_size=2))
+def get_bounds(draw, dtype):
+    if 'int' in dtype:
+        values = draw(array_values(dtype, 2))
+        values[0], values[1] = abs(values[0]), abs(values[1])
         low, high = min(values), max(values)
-        if low >= high:
-            return draw(get_bounds())
+        if low == high:
+            return draw(get_bounds(dtype))
     else:
         values = draw(none_or_list_of_floats(dtype, 2))
         if values[0] is not None and values[1] is not None:
@@ -813,5 +814,13 @@ def get_probs(draw, dtype):
     probs = []
     for i in range(shape[0]):
         probs.append(draw(none_or_list_of_floats(dtype, shape[1], min_value=0, exclude_min=True, no_none=True)))
-    print('probs', probs)
     return probs, shape[1]
+
+
+@st.composite
+def get_float_array(draw, dtype, allow_nan=False):
+    shape = draw(get_shape(allow_none=False, min_size=1))
+    res = np.asarray(draw(xps.arrays(dtype, shape)))
+    if not allow_nan:
+        res[np.isnan(res)] = 0
+    return res.tolist()
