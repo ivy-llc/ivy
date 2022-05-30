@@ -698,41 +698,88 @@ def array_values(draw, dtype, size, allow_inf=None):
 
 
 @st.composite
-def get_shape(draw):
-    shape = draw(
-        st.none()
-        | st.lists(st.integers(min_value=1, max_value=8), min_size=0, max_size=8)
-    )
+def get_shape(draw, allow_none=True, min_size=0):
+    if allow_none:
+        shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
+                                          min_size=min_size,
+                                          max_size=8))
+    else:
+        shape = draw(st.lists(st.integers(min_value=1, max_value=8),
+                              min_size=min_size,
+                              max_size=8))
     if shape is None:
         return shape
     return tuple(shape)
 
 
-def none_or_list_of_floats(dtype, size):
-    if dtype == "float16":
-        values = list_of_length(
-            st.none()
-            | st.floats(
-                width=16, allow_subnormal=False, allow_infinity=False, allow_nan=False
-            ),
-            size,
-        )
-    elif dtype == "float32":
-        values = list_of_length(
-            st.none()
-            | st.floats(
-                width=32, allow_subnormal=False, allow_infinity=False, allow_nan=False
-            ),
-            size,
-        )
-    elif dtype == "float64":
-        values = list_of_length(
-            st.none()
-            | st.floats(
-                width=64, allow_subnormal=False, allow_infinity=False, allow_nan=False
-            ),
-            size,
-        )
+def none_or_list_of_floats(
+        dtype,
+        size,
+        min_value=None,
+        max_value=None,
+        exclude_min=False,
+        exclude_max=False,
+        no_none=False
+):
+    if no_none:
+        if dtype == "float16":
+            values = list_of_length(st.floats(min_value=min_value,
+                                              max_value=max_value,
+                                              width=16,
+                                              allow_subnormal=False,
+                                              allow_infinity=False,
+                                              allow_nan=False,
+                                              exclude_min=exclude_min,
+                                              exclude_max=exclude_max), size)
+        elif dtype == "float32":
+            values = list_of_length(st.floats(min_value=min_value,
+                                              max_value=max_value,
+                                              width=32,
+                                              allow_subnormal=False,
+                                              allow_infinity=False,
+                                              allow_nan=False,
+                                              exclude_min=exclude_min,
+                                              exclude_max=exclude_max), size)
+        elif dtype == "float64":
+            values = list_of_length(st.floats(min_value=min_value,
+                                              max_value=max_value,
+                                              width=64,
+                                              allow_subnormal=False,
+                                              allow_infinity=False,
+                                              allow_nan=False,
+                                              exclude_min=exclude_min,
+                                              exclude_max=exclude_max), size)
+    else:
+        if dtype == "float16":
+            values = list_of_length(st.none() | st.floats(min_value=min_value,
+                                                          max_value=max_value,
+                                                          width=16,
+                                                          allow_subnormal=False,
+                                                          allow_infinity=False,
+                                                          allow_nan=False,
+                                                          exclude_min=exclude_min,
+                                                          exclude_max=exclude_max),
+                                    size)
+        elif dtype == "float32":
+            values = list_of_length(st.none() | st.floats(min_value=min_value,
+                                                          max_value=max_value,
+                                                          width=32,
+                                                          allow_subnormal=False,
+                                                          allow_infinity=False,
+                                                          allow_nan=False,
+                                                          exclude_min=exclude_min,
+                                                          exclude_max=exclude_max),
+                                    size)
+        elif dtype == "float64":
+            values = list_of_length(st.none() | st.floats(min_value=min_value,
+                                                          max_value=max_value,
+                                                          width=64,
+                                                          allow_subnormal=False,
+                                                          allow_infinity=False,
+                                                          allow_nan=False,
+                                                          exclude_min=exclude_min,
+                                                          exclude_max=exclude_max),
+                                    size)
     return values
 
 
@@ -745,11 +792,44 @@ def get_mean_std(draw, dtype):
 
 @st.composite
 def get_bounds(draw, dtype):
-    values = draw(none_or_list_of_floats(dtype, 2))
-    if values[0] is not None and values[1] is not None:
+    if 'int' in dtype:
+        values = draw(array_values(dtype, 2))
+        values[0], values[1] = abs(values[0]), abs(values[1])
         low, high = min(values), max(values)
+        if low == high:
+            return draw(get_bounds(dtype))
     else:
-        low, high = values[0], values[1]
-    if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-        return draw(get_bounds(dtype))
+        values = draw(none_or_list_of_floats(dtype, 2))
+        if values[0] is not None and values[1] is not None:
+            low, high = min(values), max(values)
+        else:
+            low, high = values[0], values[1]
+        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+            return draw(get_bounds(dtype))
     return low, high
+
+
+@st.composite
+def get_probs(draw, dtype):
+    shape = draw(st.lists(st.integers(min_value=2, max_value=8),
+                          min_size=2,
+                          max_size=2))
+    probs = []
+    for i in range(shape[0]):
+        probs.append(draw(none_or_list_of_floats(
+            dtype,
+            shape[1],
+            min_value=0,
+            exclude_min=True,
+            no_none=True
+        )))
+    return probs, shape[1]
+
+
+@st.composite
+def get_float_array(draw, dtype, allow_nan=False):
+    shape = draw(get_shape(allow_none=False, min_size=1))
+    res = np.asarray(draw(xps.arrays(dtype, shape)))
+    if not allow_nan:
+        res[np.isnan(res)] = 0
+    return res.tolist()
