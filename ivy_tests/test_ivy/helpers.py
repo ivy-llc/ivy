@@ -827,9 +827,11 @@ def get_probs(draw, dtype):
 
 
 @st.composite
-def get_float_array(draw, dtype, allow_nan=False):
+def get_float_array(draw, dtype, allow_nan=False, allow_negative=True):
     shape = draw(get_shape(allow_none=False, min_size=1))
     res = np.asarray(draw(xps.arrays(dtype, shape)))
     if not allow_nan:
         res[np.isnan(res)] = 0
+    if not allow_negative:
+        res = np.abs(res)
     return res.tolist()
