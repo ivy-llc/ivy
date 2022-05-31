@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Function Types</a><ul>
@@ -69,10 +70,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -150,12 +151,12 @@
            <div itemprop="articleBody">
              
   <section id="function-types">
-<h1>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline"></a></h1>
+<h1>Function Types<a class="headerlink" href="#function-types" title="Permalink to this heading"></a></h1>
 <p>Firstly, we explain the difference between <em>primary</em>, <em>compositional</em>, <em>mixed</em> and <em>standalone</em> functions.
 These four function categorizations are all <strong>mutually exclusive</strong>. As outlined in the simple Venn diagram below.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" style="width: 50%;" /></a>
 <section id="primary-functions">
-<h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this headline"></a></h2>
+<h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this heading"></a></h2>
 <p><em>Primary</em> functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
 backend-specific implementation for each backend specified in
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>. These are generally implemented as light wrapping
@@ -192,7 +193,7 @@ Likewise, the reason that the <code class="code docutils literal notranslate"><s
 whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <span class="xref std std-ref">Native Arrays</span> section.</p>
 </section>
 <section id="compositional-functions">
-<h2>Compositional Functions<a class="headerlink" href="#compositional-functions" title="Permalink to this headline"></a></h2>
+<h2>Compositional Functions<a class="headerlink" href="#compositional-functions" title="Permalink to this heading"></a></h2>
 <p><em>Compositional</em> functions on the other hand <strong>do not</strong> have backend-specific implementations. They are implemented as
 a <em>composition</em> of other Ivy functions, which themselves can be either compositional or primary.</p>
 <p>Therefore, compositional functions are only implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and there are no
@@ -214,7 +215,7 @@ implementations in any of the backend files <code class="code docutils literal n
 </div>
 </section>
 <section id="mixed-functions">
-<h2>Mixed Functions<a class="headerlink" href="#mixed-functions" title="Permalink to this headline"></a></h2>
+<h2>Mixed Functions<a class="headerlink" href="#mixed-functions" title="Permalink to this heading"></a></h2>
 <p>Some functions have some backend-specific implementations in
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>, but not for all backends.
 To support backends that do not have a backend-specific implementation,
@@ -234,7 +235,7 @@ Typically the backend should always be set explicitly though (using <code class=
 and in this case the efficient backend-specific implementation will always be used if it exists.</p>
 </section>
 <section id="standalone-functions">
-<h2>Standalone Functions<a class="headerlink" href="#standalone-functions" title="Permalink to this headline"></a></h2>
+<h2>Standalone Functions<a class="headerlink" href="#standalone-functions" title="Permalink to this heading"></a></h2>
 <p><em>Standalone</em> functions are functions which do not reference any other <em>primary</em>,
 <em>compositional</em> or <em>mixed</em> functions whatsoever.</p>
 <p>By definition, standalone functions can only reference themselves or other standlone functions.
@@ -249,7 +250,7 @@ then a previously cached output is returned,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928">ivy.stable_divide</a> which simply adds a small constant to the denominator of the division.</p>
 </section>
 <section id="nestable-functions">
-<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this headline"></a></h2>
+<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
 <p><em>Nestable</em> functions are functions which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
 provided that the containers share an identical nested structure.
@@ -273,7 +274,7 @@ This function wrapping process is covered in more detail in the <a class="refere
 as inputs to functions in the functional API. This is explained in more detail in the <span class="xref std std-ref">Method Types</span> section.</p>
 </section>
 <section id="convenience-functions">
-<h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline"></a></h2>
+<h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading"></a></h2>
 <p>A final group of functions are the <em>convenience</em> functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.

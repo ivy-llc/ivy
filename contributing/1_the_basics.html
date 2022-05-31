@@ -15,12 +15,13 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Navigating the Code" href="2_navigating_the_code.html" />
-    <link rel="prev" title="Setting up" href="0_setting_up.html" /> 
+    <link rel="prev" title="Setting Up" href="0_setting_up.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">The Basics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
@@ -67,10 +68,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -148,9 +149,9 @@
            <div itemprop="articleBody">
              
   <section id="the-basics">
-<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline"></a></h1>
+<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this heading"></a></h1>
 <section id="managing-your-fork">
-<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline"></a></h2>
+<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this heading"></a></h2>
 <p>When contributing to Ivy, the first step is create a fork of the repository.
 Then, it’s best practice to create a separate branch for each new pull request you create.
 The master branch then simply has the role of being kept up to date with upstream.
@@ -160,7 +161,7 @@ To update your fork’s branch to the upstream master branch, simply run <code c
 To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
 </section>
 <section id="todo-list-issues">
-<h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this headline"></a></h2>
+<h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this heading"></a></h2>
 <p>We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
 <p>We have a clear process for contributors to engage with such ToDo lists:</p>
 <p>&lt;a&gt; Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.</p>
@@ -196,7 +197,7 @@ if your issue or PR gets closed because of these time limits.</p>
 investigate!</p>
 </section>
 <section id="creating-pull-requests">
-<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this headline"></a></h2>
+<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this heading"></a></h2>
 <p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
 and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
@@ -212,7 +213,7 @@ lower right corner of the PR. This will enable us to quickly fix conflicts, merg
 much more quickly without us needing to request very simple fixes from yourself.</p>
 </section>
 <section id="small-commits-often">
-<h2>Small Commits Often<a class="headerlink" href="#small-commits-often" title="Permalink to this headline"></a></h2>
+<h2>Small Commits Often<a class="headerlink" href="#small-commits-often" title="Permalink to this heading"></a></h2>
 <p>Sometimes, you might want to try any make substantial improvements that span many files,
 with the intention of then creating one very large PR at the end in order to merge all of your changes.</p>
 <p>While this is generally an acceptable approach, we discourage this approach for contributions to Ivy.</p>
@@ -253,7 +254,7 @@ so don’t stress about this too much 🙂</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="0_setting_up.html" class="btn btn-neutral float-left" title="Setting up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="0_setting_up.html" class="btn btn-neutral float-left" title="Setting Up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="2_navigating_the_code.html" class="btn btn-neutral float-right" title="Navigating the Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

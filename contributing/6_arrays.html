@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -66,10 +67,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -147,17 +148,17 @@
            <div itemprop="articleBody">
              
   <section id="arrays">
-<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline"></a></h1>
+<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h1>
 <p>There are two types of array in Ivy, there is the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and also the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
 <section id="native-array">
-<h2>Native Array<a class="headerlink" href="#native-array" title="Permalink to this headline"></a></h2>
+<h2>Native Array<a class="headerlink" href="#native-array" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> is simply a placeholder class for a backend-specific array class,
 such as <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
 <p>When no framework is set, this is an <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L8">empty class</a>.
 When a framework is set, this is <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/functional/backends/torch/__init__.py#L11">overwritten</a> with the backend-specific array class.</p>
 </section>
 <section id="ivy-array">
-<h2>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline"></a></h2>
+<h2>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> is a simple wrapper class, which wraps around the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>,
 storing it in <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89">self._data</a>.</p>
 <p>All functions in the Ivy functional API which accept <em>at least one array argument</em> in the input are implemented
@@ -182,7 +183,7 @@ However, for some special methods such as <a class="reference external" href="ht
 there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
 </section>
 <section id="array-handling">
-<h2>Array Handling<a class="headerlink" href="#array-handling" title="Permalink to this headline"></a></h2>
+<h2>Array Handling<a class="headerlink" href="#array-handling" title="Permalink to this heading"></a></h2>
 <p>When calling wrapped backend methods, we must pass in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
 For example, <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code> will throw an error if we try to pass in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance.
 It must be provided with a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and this is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219">backend type hints</a>.</p>

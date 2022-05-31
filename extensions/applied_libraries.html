@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -56,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -134,11 +134,11 @@
            <div itemprop="articleBody">
              
   <section id="applied-libraries">
-<h1>Applied Libraries<a class="headerlink" href="#applied-libraries" title="Permalink to this headline"></a></h1>
+<h1>Applied Libraries<a class="headerlink" href="#applied-libraries" title="Permalink to this heading"></a></h1>
 <p>In other parts of the overview, we have focused on the the Ivy framework itself. Here, we explore how Ivy has been used to create a suite of libraries in various fields related to ML. Aside from being useful tools for ML developers in any framework, these libraries are a perfect showcase of what is possible using Ivy!</p>
 <p>Currently there are Ivy libraries for: Mechanics, 3D Vision, Robotics, Gym Environments and Differentiable Memory. We run through some demos from these library now, and encourage you to pip install the libraries and run the demos yourself if you like what you see!</p>
 <section id="ivy-mechanics">
-<h2>Ivy Mechanics<a class="headerlink" href="#ivy-mechanics" title="Permalink to this headline"></a></h2>
+<h2>Ivy Mechanics<a class="headerlink" href="#ivy-mechanics" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/unifyai/mech">Ivy Mechanics</a> provides functions for conversions of orientation, pose, and positional representations, as well as transformations, and some other more applied functions. The orientation module is the largest, with conversions to and from all Euler conventions, quaternions, rotation matrices, rotation vectors, and axis-angle representations.</p>
 <p>For example, this demo shows the use of <code class="code docutils literal notranslate"><span class="pre">ivy_mech.target_facing_rotation_matrix</span></code>:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_a.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_a.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_a.gif?raw=true" style="width: 100%;" /></a>
@@ -146,7 +146,7 @@
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_b.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_b.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_mech/demo_b.gif?raw=true" style="width: 100%;" /></a>
 </section>
 <section id="ivy-vision">
-<h2>Ivy Vision<a class="headerlink" href="#ivy-vision" title="Permalink to this headline"></a></h2>
+<h2>Ivy Vision<a class="headerlink" href="#ivy-vision" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/unifyai/vision">Ivy Vision</a> focuses predominantly on 3D vision, with functions for image projections, co-ordinate frame transformation, forward warping, inverse warping, optical flow, depth generation, voxel grids, point clouds, and others.</p>
 <p>For example, this demo shows the use of <code class="code docutils literal notranslate"><span class="pre">ivy_vision.coords_to_voxel_grid</span></code>:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/voxel_grid_demo.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/voxel_grid_demo.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/voxel_grid_demo.gif?raw=true" style="width: 100%;" /></a>
@@ -156,7 +156,7 @@
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/nerf_demo.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/nerf_demo.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_vision/nerf_demo.gif?raw=true" style="width: 100%;" /></a>
 </section>
 <section id="ivy-robot">
-<h2>Ivy Robot<a class="headerlink" href="#ivy-robot" title="Permalink to this headline"></a></h2>
+<h2>Ivy Robot<a class="headerlink" href="#ivy-robot" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/unifyai/robot">Ivy Robot</a> provides functions and classes for gradient-based trajectory optimization and motion planning. Classes are provided both for mobile robots and robot manipulators.</p>
 <p>For example, this demo shows the use of <code class="code docutils literal notranslate"><span class="pre">ivy_robot.sample_spline_path</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy_robot.RigidMobile.sample_body</span></code> for gradient-based motion planning of a drone.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_a.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_a.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_a.gif?raw=true" style="width: 100%;" /></a>
@@ -164,7 +164,7 @@
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true" style="width: 100%;" /></a>
 </section>
 <section id="ivy-gym">
-<h2>Ivy Gym<a class="headerlink" href="#ivy-gym" title="Permalink to this headline"></a></h2>
+<h2>Ivy Gym<a class="headerlink" href="#ivy-gym" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/unifyai/gym">Ivy Gym</a> provides differentiable implementations of the control environments provided by OpenAI Gym, as well as new “Swimmer” task which illustrates the simplicity of creating new tasks. The differentiable nature of the environments means that the cumulative reward can be directly optimized in a supervised manner, without need for reinforcement learning. Ivy Gym opens the door for intersectional research between supervised learning, trajectory optimization, and reinforcement learning.</p>
 <p>For example, we show demos of each of the environments <code class="code docutils literal notranslate"><span class="pre">cartpole</span></code>, <code class="code docutils literal notranslate"><span class="pre">mountain_car</span></code>, <code class="code docutils literal notranslate"><span class="pre">pendulum</span></code>, <code class="code docutils literal notranslate"><span class="pre">reacher</span></code>, and <code class="code docutils literal notranslate"><span class="pre">swimmer</span></code> solved using direct trajectory optimization below. We optimize for a specific starting state of the environment:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_a.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_a.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_a.gif?raw=true" style="width: 100%;" /></a>
@@ -172,7 +172,7 @@
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_b.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_b.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_gym/demo_b.gif?raw=true" style="width: 100%;" /></a>
 </section>
 <section id="ivy-memory">
-<h2>Ivy Memory<a class="headerlink" href="#ivy-memory" title="Permalink to this headline"></a></h2>
+<h2>Ivy Memory<a class="headerlink" href="#ivy-memory" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/unifyai/memory">Ivy Memory</a> provides differentiable memory modules, including learnt modules such as Neural Turing Machines (NTM), but also parameter-free modules such as End-to-End Egospheric Spatial Memory (ESM).</p>
 <p>For example, in this demo we learn to copy a sequence using <code class="code docutils literal notranslate"><span class="pre">ivy_memory.NTM</span></code>:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_memory/demo_a.gif?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_memory/demo_a.gif?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_memory/demo_a.gif?raw=true" style="width: 100%;" /></a>

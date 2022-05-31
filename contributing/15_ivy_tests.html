@@ -15,11 +15,12 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="FAQ" href="../faq.html" />
+    <link rel="next" title="Building the Docs" href="building_the_docs.html" />
     <link rel="prev" title="Array API Tests" href="14_array_api_tests.html" /> 
 </head>
 
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -66,10 +67,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">test_array_function</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -147,7 +148,7 @@
            <div itemprop="articleBody">
              
   <section id="ivy-tests">
-<h1>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this headline"></a></h1>
+<h1>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this heading"></a></h1>
 <p>On top of the Array API test suite which is included as a submodule mapped to folder <code class="code docutils literal notranslate"><span class="pre">test_array_api</span></code>,
 There is also a collection of Ivy tests, located in subfolder <a class="reference external" href="https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy">test_ivy</a>.</p>
 <p>These tests serve two purposes:</p>
@@ -157,7 +158,7 @@ There is also a collection of Ivy tests, located in subfolder <a class="referenc
 </ol>
 <p>As done in the <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>, we also make use of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> for performing property based testing.</p>
 <section id="id1">
-<h2>Hypothesis<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2>Hypothesis<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>Using pytest fixtures (such as the ones removed in this <a class="reference external" href="https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f">commit</a>) cause a grid search to be performed for all
 combinations of parameters. This is great when we want the test to be very thorough,
 but can make the entire test suite very time consuming.
@@ -180,11 +181,11 @@ All <code class="code docutils literal notranslate"><span class="pre">pytest.ski
 as pytest skipping does not play nicely with hypothesis testing.</p>
 </section>
 <section id="data-generation">
-<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this headline"></a></h2>
+<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this heading"></a></h2>
 <p># ToDo: write guide on best practices for generating data thoroughly, with clear examples of helper functions etc.</p>
 </section>
 <section id="id2">
-<h2>test_array_function<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>test_array_function<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <p>Aside from testing variable inputs, the out argument, and value tests,
 the helper <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401">test_array_function</a> tests that the function:</p>
 <ol class="arabic simple">
@@ -208,7 +209,7 @@ and so we should not make us of <code class="code docutils literal notranslate">
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="14_array_api_tests.html" class="btn btn-neutral float-left" title="Array API Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="building_the_docs.html" class="btn btn-neutral float-right" title="Building the Docs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

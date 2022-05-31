@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -65,10 +66,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -146,9 +147,9 @@
            <div itemprop="articleBody">
              
   <section id="inplace-updates">
-<h1>Inplace Updates<a class="headerlink" href="#inplace-updates" title="Permalink to this headline"></a></h1>
+<h1>Inplace Updates<a class="headerlink" href="#inplace-updates" title="Permalink to this heading"></a></h1>
 <section id="out-argument">
-<span id="wrapping"></span><h2>out argument<a class="headerlink" href="#out-argument" title="Permalink to this headline"></a></h2>
+<span id="wrapping"></span><h2>out argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>
 <p>All Ivy functions which return a single array should support inplace updates, with the inclusion of a keyword-only
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, with type hint <code class="code docutils literal notranslate"><span class="pre">Optional[Union[ivy.Array,</span> <span class="pre">ivy.Container]]</span></code> for <em>flexible</em> functions
 and <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code> otherwise.</p>
@@ -205,7 +206,7 @@ which is how <code class="code docutils literal notranslate"><span class="pre">o
 the container wrapping module.</p>
 </section>
 <section id="copy-argument">
-<h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this headline"></a></h2>
+<h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this heading"></a></h2>
 <p>As well as the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, a few functions also support the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument.
 The functions with support for the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument are all in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>,
 and the standard mandates the inclusion of <code class="code docutils literal notranslate"><span class="pre">copy</span></code> in each case.

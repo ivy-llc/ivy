@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting up &mdash; Ivy 1.0 documentation</title>
+  <title>Setting Up &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#clone-ivy">Clone Ivy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pycharm">PyCharm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#docker-interpreter-with-pycharm">Docker Interpreter with PyCharm</a><ul>
@@ -72,10 +73,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -142,7 +143,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
-      <li>Setting up</li>
+      <li>Setting Up</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/contributing/0_setting_up.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -153,11 +154,11 @@
            <div itemprop="articleBody">
              
   <section id="setting-up">
-<h1>Setting up<a class="headerlink" href="#setting-up" title="Permalink to this headline"></a></h1>
+<h1>Setting Up<a class="headerlink" href="#setting-up" title="Permalink to this heading"></a></h1>
 <p>We’re really happy you’d like to learn how to contribute towards Ivy 🙂</p>
 <p>This page explains the main steps to get started!</p>
 <section id="clone-ivy">
-<h2>Clone Ivy<a class="headerlink" href="#clone-ivy" title="Permalink to this headline"></a></h2>
+<h2>Clone Ivy<a class="headerlink" href="#clone-ivy" title="Permalink to this heading"></a></h2>
 <p>The first step is simple, clone Ivy!</p>
 <p>Depending on your preferred mode of cloning, any of the below should work:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:unifyai/ivy.git
@@ -171,7 +172,7 @@
 </div>
 </section>
 <section id="pycharm">
-<h2>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this headline"></a></h2>
+<h2>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a> is the main IDE of choice for our development team.
 However, you are of course welcome to use whatever Integrated Development Environment (IDE) you’re most familiar with.
 If you do decide to use PyCharm,
@@ -181,78 +182,70 @@ Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!</p>
 </section>
 <section id="docker-interpreter-with-pycharm">
-<h2>Docker Interpreter with PyCharm<a class="headerlink" href="#docker-interpreter-with-pycharm" title="Permalink to this headline"></a></h2>
+<h2>Docker Interpreter with PyCharm<a class="headerlink" href="#docker-interpreter-with-pycharm" title="Permalink to this heading"></a></h2>
 <p>Here we show how to set up a specific python environment, which will make contributing much easier.</p>
 <p>Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
 using the same packages, and helps to mitigate any potential version conflicts etc.</p>
 <p>In addition, it makes it possible to use modules not yet available for a particular operating system,
-such as jaxlib on a Windows machine.</p>
+such as <code class="code docutils literal notranslate"><span class="pre">jaxlib</span></code> on a Windows machine.</p>
 <p>Below we provide instructions for setting up a docker interpreter for <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a>,
-which is the main IDE of choice for our development team:</p>
+which, as mentioned above, is the main IDE of choice for our development team:</p>
 <section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h3>
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
 <li><p>Install <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL 2</a>. For most, it will only require running the command <code class="code docutils literal notranslate"><span class="pre">wsl</span> <span class="pre">--install</span></code> in powershell admin mode. Visit the link if it doesn’t.</p></li>
-<li><p>Get the latest Docker Image for Ivy by:</p></li>
-</ol>
-<blockquote>
-<div><ul class="simple">
+<li><p>Get the latest Docker Image for Ivy by:</p>
+<ol class="loweralpha simple">
 <li><p>Running Docker desktop.</p></li>
 <li><p>Opening cmd, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="4">
-<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
-<li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p></li>
 </ol>
-<ul class="simple">
-<li><p>Going to settings&gt;project:…&gt;Python Interpreter)</p></li>
+</li>
+<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
+<li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
-</ul>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>DONE. You’re set.
-|
-If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/windows/release-notes/">Docker release note</a></p>
+</ol>
+</li>
+</ol>
+<p>Once these steps are finished, your interpreter should be set up correctly!
+If Docker’s latest version causes error,
+try using an earlier version by visiting
+<a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.</p>
 </section>
 <section id="macos">
-<h3>MacOS<a class="headerlink" href="#macos" title="Permalink to this headline"></a></h3>
+<h3>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
-<li><p>Get the latest Docker Image for Ivy by:</p></li>
-</ol>
-<blockquote>
-<div><ul class="simple">
+<li><p>Get the latest Docker Image for Ivy by:</p>
+<ol class="loweralpha simple">
 <li><p>Running Docker desktop.</p></li>
 <li><p>Opening terminal, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="4">
-<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
-<li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p></li>
 </ol>
-<ul class="simple">
-<li><p>Going to PyCharm &gt; Preferences &gt; Project:… &gt; Python Interpreter</p></li>
+</li>
+<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
+<li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
-</ul>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>DONE. You’re set.
-|
-If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/windows/release-notes/">Docker release note</a></p>
+</ol>
+</li>
+</ol>
+<p>Once these steps are finished, your interpreter should be set up correctly!
+If Docker’s latest version causes error,
+try using an earlier version by visiting
+<a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.</p>
 </section>
 <section id="ubuntu">
-<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this headline"></a></h3>
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this heading"></a></h3>
 <p>ToDo: write this section</p>
 </section>
 </section>
 <section id="pre-commit">
-<h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this headline"></a></h2>
+<h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading"></a></h2>
 <p>In addition to the docker interpreter,
 our development team also make use of the <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> PyPI <a class="reference external" href="https://pypi.org/project/pre-commit/">package</a>.</p>
 <p>Check out their <a class="reference external" href="https://pre-commit.com/">page</a> for more details.</p>

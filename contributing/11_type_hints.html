@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -68,10 +69,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -149,12 +150,12 @@
            <div itemprop="articleBody">
              
   <section id="type-hints">
-<h1>Type Hints<a class="headerlink" href="#type-hints" title="Permalink to this headline"></a></h1>
+<h1>Type Hints<a class="headerlink" href="#type-hints" title="Permalink to this heading"></a></h1>
 <p>The most basic three rules are (a) all arguments should use full and thorough type hints,
 and (b) all arguments should be added on a new line, and (c) the return type hint should also be added on a new line.</p>
 <p>For diving deeper into other requirements for the type-hints, it’s useful to look at some examples.</p>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <p>For the purposes of explanation, we will use four functions as examples:
 <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>.</p>
 <p>We present both the Ivy API signature and also a backend-specific signature for each function:</p>
@@ -225,7 +226,7 @@ and (b) all arguments should be added on a new line, and (c) the return type hin
 </div>
 </section>
 <section id="arrays">
-<h2>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline"></a></h2>
+<h2>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
 <p>In each example, we can see that the input arrays have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>
 whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is the case for all functions in the Ivy API.
 We always return an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
@@ -244,7 +245,7 @@ which do not defer to any backend function,
 the native array inputs can simply be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before executing the Ivy implementation.</p>
 </section>
 <section id="integer-sequences">
-<h2>Integer Sequences<a class="headerlink" href="#integer-sequences" title="Permalink to this headline"></a></h2>
+<h2>Integer Sequences<a class="headerlink" href="#integer-sequences" title="Permalink to this heading"></a></h2>
 <p>For sequences of integers, generally the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> dictates that these should be of type <code class="code docutils literal notranslate"><span class="pre">Tuple[int]</span></code>,
 and not <code class="code docutils literal notranslate"><span class="pre">List[int]</span></code>. However, in order to make Ivy code less brittle,
 we accept arbitrary integer sequences <code class="code docutils literal notranslate"><span class="pre">Sequence[int]</span></code> for such arguments
@@ -255,7 +256,7 @@ Good examples of this are the <code class="code docutils literal notranslate"><s
 and the <code class="code docutils literal notranslate"><span class="pre">shape</span></code> argument of <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>, as shown above.</p>
 </section>
 <section id="keyword-only-arguments">
-<h2>Keyword-Only Arguments<a class="headerlink" href="#keyword-only-arguments" title="Permalink to this headline"></a></h2>
+<h2>Keyword-Only Arguments<a class="headerlink" href="#keyword-only-arguments" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments should always be provided as keyword-only arguments.
 Additionally, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should <strong>only</strong> be added if the wrapped backend function directly supports
 supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument itself. Otherwise, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should be omitted.
@@ -267,7 +268,7 @@ wrapper code if no <code class="code docutils literal notranslate"><span class="
 wrapped backend function itself supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, which will result in a more efficient inplace update.</p>
 </section>
 <section id="nestable-functions">
-<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this headline"></a></h2>
+<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
 <p>Most functions in the Ivy API can also consume and return <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of the <strong>any</strong> of
 the function arguments. if an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is mapped across all of the leaves of
 this container. Because of this feature, we refer to these functions as as <em>nestable</em> functions.

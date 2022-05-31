@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -55,7 +56,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -133,13 +133,13 @@
            <div itemprop="articleBody">
              
   <section id="why-unify">
-<h1>Why Unify?<a class="headerlink" href="#why-unify" title="Permalink to this headline"></a></h1>
+<h1>Why Unify?<a class="headerlink" href="#why-unify" title="Permalink to this heading"></a></h1>
 <p>“What is the point of unifying all ML frameworks?” you may ask.</p>
 <p>You may be perfectly happy with the framework you currently use, and that’s great! We live in a time where great ML tools are in abundance, and that’s a wonderful thing!</p>
 <p>Ivy just makes a wonderful thing <strong>even better</strong>…</p>
 <p>We’ll give two clear examples of how Ivy can streamline your ML workflow and save you <strong>weeks</strong> of development time.</p>
 <section id="no-more-re-implementations">
-<h2>No More Re-implementations 🚧<a class="headerlink" href="#no-more-re-implementations" title="Permalink to this headline"></a></h2>
+<h2>No More Re-implementations 🚧<a class="headerlink" href="#no-more-re-implementations" title="Permalink to this heading"></a></h2>
 <p>Let’s say <a class="reference external" href="https://deepmind.com">DeepMind</a> release an awesome paper in JAX, and you’d love to try it out using your own framework of choice. Let’s use <a class="reference external" href="https://deepmind.com/research/open-source/perceiver-IO">PerceiverIO</a> as an example. What happens currently is:</p>
 <ol class="arabic simple">
 <li><p>A slew of open-source developers rush to re-implement the code in all ML frameworks, leading to many different versions (<a class="reference external" href="https://github.com/lucidrains/perceiver-pytorch">a</a>, <a class="reference external" href="https://github.com/krasserm/perceiver-io">b</a>, <a class="reference external" href="https://github.com/Rishit-dagli/Perceiver">c</a>, <a class="reference external" href="https://github.com/esceptico/perceiver-io">d</a>, <a class="reference external" href="https://github.com/huggingface/transformers/tree/v4.16.1/src/transformers/models/perceiver">e</a>, <a class="reference external" href="https://github.com/keras-team/keras-io/blob/master/examples/vision/perceiver_image_classification.py">f</a>, <a class="reference external" href="https://github.com/deepmind/deepmind-research/tree/21084c8489c34defe7d4e20be89715bba914945c/perceiver">g</a>).</p></li>
@@ -156,7 +156,7 @@
 <p>Taking things further, we can use this automatic conversion tool to open up <strong>all</strong> ML tools to <strong>everyone</strong> regardless of their framework.</p>
 </section>
 <section id="infinite-shelf-life">
-<h2>“Infinite” Shelf-Life ✅<a class="headerlink" href="#infinite-shelf-life" title="Permalink to this headline"></a></h2>
+<h2>“Infinite” Shelf-Life ✅<a class="headerlink" href="#infinite-shelf-life" title="Permalink to this heading"></a></h2>
 <p>Wouldn’t it be nice if we could write some code once and know that it won’t become quickly obsolete among the frantic rush of framework development?</p>
 <p>A lot of developers have spent a lot of time porting TensorFlow code to PyTorch in the last few years, with examples being <a class="reference external" href="https://github.com/greentfrapp/lucent">Lucid</a>, <a class="reference external" href="https://github.com/castorini/honk">Honk</a> and <a class="reference external" href="https://github.com/huggingface/pytorch-openai-transformer-lm">Improving Language Understanding</a>.</p>
 <p>The pattern hasn’t changed, developers are now spending many hours porting code to JAX. For example: <a class="reference external" href="https://github.com/rolandgvc/flaxvision">TorchVision</a>, <a class="reference external" href="https://github.com/deepmind/jraph">TensorFlow Graph Nets library</a>, <a class="reference external" href="https://github.com/deepmind/distrax">TensorFlow Probability</a>, <a class="reference external" href="https://github.com/deepmind/dm-haiku">TensorFlow Sonnet</a>.</p>

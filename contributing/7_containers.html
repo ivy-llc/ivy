@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -68,10 +69,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -149,7 +150,7 @@
            <div itemprop="articleBody">
              
   <section id="containers">
-<h1>Containers<a class="headerlink" href="#containers" title="Permalink to this headline"></a></h1>
+<h1>Containers<a class="headerlink" href="#containers" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56">dict</a>, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
 or for storing the weights of a network.</p>
@@ -169,7 +170,7 @@ Each of these are explained in the following sub-sections.</p>
 <li><p>API static methods</p></li>
 </ol>
 <section id="container-instance-methods">
-<h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this headline"></a></h2>
+<h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this heading"></a></h2>
 <p>Container instance methods are methods which are specific to the container itself.
 A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030">ivy.Container.map</a> which is used for mapping a function to all leaves of the container,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490">ivy.Container.all_true</a> which determines if all container leaves evaluate to boolean <cite>True</cite>,
@@ -177,7 +178,7 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 <p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
 <section id="container-static-methods">
-<h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this headline"></a></h2>
+<h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this heading"></a></h2>
 <p>Container static methods are also methods which are specific to containers,
 but which generally operate across <em>multiple</em> containers rather than a single container.
 This underpins the decision to not bind these method to a single container instance,
@@ -189,7 +190,7 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 <p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
 <section id="api-static-methods">
-<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this headline"></a></h2>
+<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this heading"></a></h2>
 <p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements all functions in the functional API as
 <em>static</em> methods. The main reason for this is to support the <em>nestable</em> property of all functions in the API,
 which is explained in detail in the <a class="reference internal" href="3_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
@@ -214,7 +215,7 @@ without important methods being entirely absent.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
 </section>
 <section id="api-instance-methods">
-<h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this headline"></a></h2>
+<h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this heading"></a></h2>
 <p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
 They enable functions in Ivy’s functional API to be called as instance methods on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
 The difference is that with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
@@ -238,7 +239,7 @@ without important methods being entirely absent.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
 </section>
 <section id="api-special-methods">
-<h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this headline"></a></h2>
+<h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this heading"></a></h2>
 <p>As is the case for the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 most special methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> simply wrap a corresponding function in the functional API.</p>
 <p>The special methods which <strong>do not</strong> wrap functions in the functional API are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a>,

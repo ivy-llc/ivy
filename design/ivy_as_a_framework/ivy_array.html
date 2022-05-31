@@ -15,6 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +63,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -141,11 +141,11 @@
            <div itemprop="articleBody">
              
   <section id="ivy-array">
-<h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline"></a></h1>
+<h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this heading"></a></h1>
 <p>Here, we explain the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which is the class used to represent all arrays in Ivy. Every Ivy method
 returns <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances for all returned arrays.</p>
 <section id="the-array-class">
-<h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this headline"></a></h2>
+<h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this heading"></a></h2>
 <p>Let’s dive straight in and check out what the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> constructor looks like.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/__init__.py</span>
 <span class="k">class</span> <span class="nc">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithDevice</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithGeneral</span><span class="p">,</span>
@@ -217,7 +217,7 @@ Perhaps the most important motivation for having a dedicated <code class="code d
 which we discuss next!</p>
 </section>
 <section id="unifying-operators">
-<h2>Unifying Operators<a class="headerlink" href="#unifying-operators" title="Permalink to this headline"></a></h2>
+<h2>Unifying Operators<a class="headerlink" href="#unifying-operators" title="Permalink to this heading"></a></h2>
 <p>Let’s assume that there is no such thing as the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class,
 and we are just returning native arrays from all Ivy methods.</p>
 <p>Consider the code below:</p>
@@ -278,7 +278,7 @@ For example, maybe one framework makes the strange decision to return rounded in
 <p>Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
 </section>
 <section id="api-monkey-patching">
-<h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this headline"></a></h2>
+<h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this heading"></a></h2>
 <p>If you’ve looked through the code at all, you may notice that the Ivy methods do not return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at all.</p>
 <p>This is true, as far as the code appears, the methods actually return <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.</p>
 <p>For example, let’s take a look at the <code class="code docutils literal notranslate"><span class="pre">ivy.inv</span></code> method with a PyTorch backend.</p>
@@ -345,7 +345,7 @@ but the returned arrays are always enforced to be <code class="code docutils lit
 <p>This is called whenever a framework is unset, and each method is unwrapped back to the original version.</p>
 </section>
 <section id="instance-methods">
-<h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this headline"></a></h2>
+<h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
 <p>Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.</p>
 <p>All methods in the Ivy functional API are implemented as public instance methods in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class via inheritance. For example, a few functions in <code class="code docutils literal notranslate"><span class="pre">ivy.ArrayWithGeneral</span></code> are shown below.</p>

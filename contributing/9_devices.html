@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -65,10 +66,10 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -146,7 +147,7 @@
            <div itemprop="articleBody">
              
   <section id="devices">
-<h1>Devices<a class="headerlink" href="#devices" title="Permalink to this headline"></a></h1>
+<h1>Devices<a class="headerlink" href="#devices" title="Permalink to this heading"></a></h1>
 <p>The devices currently supported by Ivy are as follows:</p>
 <ul class="simple">
 <li><p>cpu</p></li>
@@ -160,7 +161,7 @@ The <code class="code docutils literal notranslate"><span class="pre">ivy.Device
 and has simple logic in the constructor to verify that the string formatting is correct.
 When a backend is set, the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> is replaced with the backend-specific <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13">device class</a>.</p>
 <section id="device-module">
-<h2>Device Module<a class="headerlink" href="#device-module" title="Permalink to this headline"></a></h2>
+<h2>Device Module<a class="headerlink" href="#device-module" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py">device.py</a> module provides a variety of functions for working with devices.
 A few examples include
 <code class="code docutils literal notranslate"><span class="pre">ivy.get_all_arrays_on_dev</span></code> which gets all arrays which are currently alive on the specified device,
@@ -179,7 +180,7 @@ Any function in the functional API that receives a <code class="code docutils li
 as explained below.</p>
 </section>
 <section id="arguments-in-other-functions">
-<h2>Arguments in other Functions<a class="headerlink" href="#arguments-in-other-functions" title="Permalink to this headline"></a></h2>
+<h2>Arguments in other Functions<a class="headerlink" href="#arguments-in-other-functions" title="Permalink to this heading"></a></h2>
 <p>Like with <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, all <code class="code docutils literal notranslate"><span class="pre">device</span></code> arguments are also keyword-only.
 All creation functions include the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument,
 for specifying the device on which to place the created array.

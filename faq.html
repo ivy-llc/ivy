@@ -15,12 +15,13 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Building the Docs" href="building_the_docs.html" />
-    <link rel="prev" title="Ivy Tests" href="contributing/15_ivy_tests.html" /> 
+    <link rel="next" title="&lt;no title&gt;" href="functional/ivy.html" />
+    <link rel="prev" title="Building the Docs" href="contributing/building_the_docs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,7 +59,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#state">State</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -124,8 +124,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>FAQ</li>
-      <li class="wy-breadcrumbs-aside">
+            <li class="wy-breadcrumbs-aside">
             <a href="_sources/faq.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
@@ -135,7 +134,7 @@
            <div itemprop="articleBody">
              
   <section id="faq">
-<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline"></a></h1>
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this heading"></a></h1>
 <p>These are some of the most common technical questions that continue to arise when we’re discussing Ivy with developers
 in the community.</p>
 <p>As Ivy becomes more mature and we continue these discussions,
@@ -143,7 +142,7 @@ then many more questions and answers will no doubt be added!</p>
 <p>We are all incredibly grateful to everyone in the community who has put in the time and effort to ask so many important
 and probing questions! We hope these Q&amp;As are a useful reference!</p>
 <section id="dynamic-sizes">
-<h2>Dynamic Sizes<a class="headerlink" href="#dynamic-sizes" title="Permalink to this headline"></a></h2>
+<h2>Dynamic Sizes<a class="headerlink" href="#dynamic-sizes" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Assuming a static computation graph, can tensors have sizes that dynamically change?
 XLA does not support dynamic sizes, because it JIT-compiles the graph, and pre-allocates all buffers in memory before
 the graph runs. TensorFlow and PyTorch do allow dynamic sizes, but only on certain backends.
@@ -154,7 +153,7 @@ with dynamic shapes enabled, but the backend does not support dynamic shapes in 
 For now, fully framework-agnostic compiled graphs are only possible for static graphs.</p>
 </section>
 <section id="type-and-shape-checking">
-<h2>Type and Shape Checking<a class="headerlink" href="#type-and-shape-checking" title="Permalink to this headline"></a></h2>
+<h2>Type and Shape Checking<a class="headerlink" href="#type-and-shape-checking" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic
 sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of <a class="reference external" href="https://github.com/dexidp/dex">dex</a>.</p>
 <p><strong>A:</strong>  The checks performed during graph compilation will remain backend-specific. The function <code class="code docutils literal notranslate"><span class="pre">ivy.compile</span></code>
@@ -163,7 +162,7 @@ wraps the backend compilation methods, for example <code class="code docutils li
 it will not.</p>
 </section>
 <section id="dynamic-control-flow">
-<h2>Dynamic Control Flow<a class="headerlink" href="#dynamic-control-flow" title="Permalink to this headline"></a></h2>
+<h2>Dynamic Control Flow<a class="headerlink" href="#dynamic-control-flow" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Tensorflow has dynamic control-flow primitives (loops, branches) even within a static computation graph.
 Jax also has dynamic control-flow (<code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>, <code class="code docutils literal notranslate"><span class="pre">lax.while</span></code>), but support is limited; only <code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>
 is differentiable in reverse mode.</p>
@@ -187,7 +186,7 @@ This does mean that for example TensorFlow (with loops + branches) → PyTorch (
 but the reverse mode will not preserve the loops and branches PyTorch (with for, while + if statements) → TensorFlow (static, no loops or branches).</p>
 </section>
 <section id="auto-differentiation">
-<h2>Auto-Differentiation<a class="headerlink" href="#auto-differentiation" title="Permalink to this headline"></a></h2>
+<h2>Auto-Differentiation<a class="headerlink" href="#auto-differentiation" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> How do you handle reverse mode, forward mode, and Jacobians?  How about stop gradients, and gradient
 checkpointing, and custom gradients? What about autodiff for control-flow operators like <code class="code docutils literal notranslate"><span class="pre">lax.scan</span></code>?
 This is where JAX really shines, and unless you are implementing your own autodiff framework, you are at the mercy of
@@ -200,7 +199,7 @@ error will be thrown. This means Ivy code is not 100% framework-agnostic, and is
 autograd package supports in these cases.</p>
 </section>
 <section id="replicas-and-data-vs-model-parallelism">
-<h2>Replicas, and Data vs Model Parallelism<a class="headerlink" href="#replicas-and-data-vs-model-parallelism" title="Permalink to this headline"></a></h2>
+<h2>Replicas, and Data vs Model Parallelism<a class="headerlink" href="#replicas-and-data-vs-model-parallelism" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Big models don’t run on just one device, and the major frameworks have <em>very</em> different ways of splitting a model
 up so that it runs on a cluster. There are multiple competing paradigms for parallelisation – e.g. SPMD vs mixture of
 experts. JAX and Tensorflow are very sophisticated in this department, and routinely run models on hundreds or
@@ -214,7 +213,7 @@ Ivy to copy over a PyTorch model into their TF pipeline.</p>
 Projects can use 1% Ivy code or 100%. We’re very happy in either case!</p>
 </section>
 <section id="support-for-functions">
-<h2>Support for Functions<a class="headerlink" href="#support-for-functions" title="Permalink to this headline"></a></h2>
+<h2>Support for Functions<a class="headerlink" href="#support-for-functions" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Is it possible to compile tensor code into a reusable and differentiable function?  If you can’t, then it will
 be difficult to apply any fancy kernel fusion algorithms, and you can expect to lose a lot of performance.
 What about higher-order operations, like <code class="code docutils literal notranslate"><span class="pre">jax.vmap</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax.pmap</span></code>?</p>
@@ -228,7 +227,7 @@ compositions in other frameworks, until they are supported in these frameworks. 
 frameworks such as PyTorch are seeing the benefit in these functions, and will eventually <a class="reference external" href="https://pytorch.org/tutorials/prototype/vmap_recipe.html">fully support these</a>.</p>
 </section>
 <section id="alternative-data-structures">
-<h2>Alternative Data Structures<a class="headerlink" href="#alternative-data-structures" title="Permalink to this headline"></a></h2>
+<h2>Alternative Data Structures<a class="headerlink" href="#alternative-data-structures" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.</p>
 <p><strong>A:</strong> We will of course support these structures in pure python code, but we will not support backend-specific
 alternative compilable data structures. While Ivy will not provide an interface to these data structures directly,
@@ -237,14 +236,14 @@ and both can be compiled together without issue. Ivy can act as a supplementary 
 unique backend-specific data structures are required.</p>
 </section>
 <section id="custom-operations">
-<h2>Custom Operations<a class="headerlink" href="#custom-operations" title="Permalink to this headline"></a></h2>
+<h2>Custom Operations<a class="headerlink" href="#custom-operations" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Most frameworks have a backdoor for user-defined ops, implemented in C++/CUDA, or some kind of host callback
 mechanism. Will Ivy support this ability also?</p>
 <p><strong>A:</strong> We will not attempt to provide a unified back-door for all possible backend kernel customizations,
 but of course users can still use the backend-specific backdoors which already exist when using Ivy.</p>
 </section>
 <section id="the-pipeline">
-<h2>The Pipeline<a class="headerlink" href="#the-pipeline" title="Permalink to this headline"></a></h2>
+<h2>The Pipeline<a class="headerlink" href="#the-pipeline" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> How will Ivy manage the training loop and input pipeline?  What about loading and saving models, recording of
 scalar metrics, visualization, etc.? These are often also somewhat framework-dependent.</p>
 <p><strong>A:</strong> We are not advocating to replace all code with Ivy. We would encourage users to continue using
@@ -254,7 +253,7 @@ which includes framework-agnostic abstract data loaders, trainers, and other hig
 training pipelines.</p>
 </section>
 <section id="state">
-<h2>State<a class="headerlink" href="#state" title="Permalink to this headline"></a></h2>
+<h2>State<a class="headerlink" href="#state" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Tensorflow handles state as part of the static graph. JAX is purely functional and so outsources it to one of
 several third-party libraries, like Flax. How will Ivy handle state?</p>
 <p><strong>A:</strong> Ivy has a fully functional backend. When using a TensorFlow or PyTorch backend, we pass all of the variables and
@@ -269,8 +268,8 @@ everything explicitly in a functional manner.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="contributing/15_ivy_tests.html" class="btn btn-neutral float-left" title="Ivy Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="building_the_docs.html" class="btn btn-neutral float-right" title="Building the Docs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="contributing/building_the_docs.html" class="btn btn-neutral float-left" title="Building the Docs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="functional/ivy.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

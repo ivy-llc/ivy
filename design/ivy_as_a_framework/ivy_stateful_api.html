@@ -15,6 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,7 +62,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -140,11 +140,11 @@
            <div itemprop="articleBody">
              
   <section id="ivy-stateful-api">
-<h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this headline"></a></h1>
+<h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this heading"></a></h1>
 <p>Here we explain how Ivy’s stateful API builds on the functional API and the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
 <p>So, without further ado, let’s walk through what the stateful API has to offer!</p>
 <section id="modules">
-<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline"></a></h2>
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading"></a></h2>
 <p>The most helpful stateful Ivy class is perhaps the <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code>. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> method. For example, we can create a linear layer by deriving from <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
@@ -428,7 +428,7 @@
 </div>
 </section>
 <section id="initializers">
-<h2>Initializers<a class="headerlink" href="#initializers" title="Permalink to this headline"></a></h2>
+<h2>Initializers<a class="headerlink" href="#initializers" title="Permalink to this heading"></a></h2>
 <p>In the examples above, we defined how the trainable weights should be initialized directly in the <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the <code class="code docutils literal notranslate"><span class="pre">ivy.Initializer</span></code> class comes in. The actual implementation for the <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> layer exposed in the Ivy stateful API is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/layers.py</span>
 <span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -479,7 +479,7 @@
 <p>The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances, they still belong in the stateful API.</p>
 </section>
 <section id="optimizers">
-<h2>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline"></a></h2>
+<h2>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this heading"></a></h2>
 <p>Recapping the example given above, we saw that <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances can be trained like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>

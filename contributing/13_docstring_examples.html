@@ -15,6 +15,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_function_types.html">Function Types</a></li>
@@ -66,10 +67,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building_the_docs.html">Building the Docs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -147,7 +148,7 @@
            <div itemprop="articleBody">
              
   <section id="docstring-examples">
-<h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this headline"></a></h1>
+<h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this heading"></a></h1>
 <p>The final step is to add helpful examples to the docstring.</p>
 <p>There are two types of examples. There are <em>functional</em> examples, which show the function being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code></p>
@@ -236,7 +237,7 @@ argument, but this doesn’t need to be the case if you think other combinations
 examples that should be included in the docstring!</p>
 <p>We’ll next go through some examples to make these 12 points more clear.</p>
 <section id="ivy-tan">
-<h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this headline"></a></h2>
+<h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -331,7 +332,7 @@ Using :code:`ivy.Container` instance method:
 <p>Points 12-14 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-roll">
-<h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this headline"></a></h2>
+<h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -437,7 +438,7 @@ Using :code:`ivy.Container` instance method:
 <p>Points 12-14 are not relevant, as <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-add">
-<h2>ivy.add<a class="headerlink" href="#ivy-add" title="Permalink to this headline"></a></h2>
+<h2>ivy.add<a class="headerlink" href="#ivy-add" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
