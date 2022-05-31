@@ -86,3 +86,49 @@ lower right corner of the PR. This will enable us to quickly fix conflicts, merg
 much more quickly without us needing to request very simple fixes from yourself.
 
 
+Small Commits Often
+-------------------
+
+Sometimes, you might want to try any make substantial improvements that span many files,
+with the intention of then creating one very large PR at the end in order to merge all of your changes.
+
+While this is generally an acceptable approach, we discourage this approach for contributions to Ivy.
+
+We adopt a philosophy where small, incremental, frequent commits are **much** more valuable to us and the entire
+Ivy developer community, than infrequent and very large commits.
+
+This is for a few reasons:
+
+#. It keeps everyone up to date and on the same page as early as possible.
+#. It avoids the case where multiple people waste time fixing the same problem!
+#. It enables others to spot mistakes or conflicts in proposed changes much earlier.
+#. It also means you avoid having a mountain of conflicts to resolve when you do get around to merging.
+
+This is one of the reaons why we advocate using on pull-request per issue in the ToDo list issues.
+This keeps each of the commits very contained and incremental, which is the style we're going for.
+
+Sometimes, you've already dived very deep into some substantial changes in your fork,
+and it might be that only some of the problems you were trying to fix are currently fixed.
+
+In this hypothetical situation, you should aim to get the working parts merged into master **as soon as possible**.
+Adding subsections of your local changes to git is easy. You can add individual files using:
+
+.. code-block:: none
+
+    git add filepath
+
+You can also enter an interactive session for adding individual lines of code:
+
+.. code-block:: none
+
+    git add -p filepath  # choose lines to add from the file
+    get add -p           # choose lines to add from all changes
+
+When in the interactive session, you can split code blocks into smaller code blocks using :code:`s`.
+You can also manually edit the exact lines added if further splitting is not possible, using :code:`e`.
+Check the `git documentation <https://git-scm.com/doc>`_ for more details.
+
+As a final note, a beautiful commit hisotry is not something we particularly care about.
+We're much more concerned that the code is good, and things are updated as quickly as possible.
+If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
+so don't stress about this too much 🙂
