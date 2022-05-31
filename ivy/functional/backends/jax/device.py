@@ -46,13 +46,11 @@ def dev(
 _callable_dev = dev
 
 
-def to_dev(x, *, device=None, out=None):
+def to_dev(x, *, device):
     if device is not None:
         cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
             x = jax.device_put(x, as_native_dev(device))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
     return x
 
 

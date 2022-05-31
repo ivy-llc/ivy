@@ -115,9 +115,10 @@ def empty_like(
 
 def asarray(
     object_in,
-    dtype: Optional[str] = None,
-    device: Optional[str] = None,
     copy: Optional[bool] = None,
+    *,
+    dtype: jnp.dtype, 
+    device: jaxlib.xla_extension.Device
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
@@ -126,7 +127,7 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in)
+        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
             return _to_dev(jnp.array(object_in, dtype=dtype, copy=True), device=device)
         else:
