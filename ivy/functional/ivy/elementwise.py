@@ -2279,19 +2279,72 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
+    """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
     x1
         Input array containing elements to minimum threshold.
     x2
-        Tensor containing minimum values, must be broadcastable to x.
+        Tensor containing minimum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not exceed the y values.
+        An array with the elements of x1, but clipped to not exceed the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 5, 9])
+    >>> y = ivy.array([2, 6, 8])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([1, 5, 8])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.minimum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([1])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([2, 3, 9])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.array([2, 3, 5])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 7, 3])
+    >>> y = ivy.array([3, 3, 2])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([3, 3, 2])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 4, 8])
+    >>> z = ivy.zeros(5)
+    >>> x.minimum(3, out=z)
+    >>> print(z)
+    ivy.array([1, 4, 5])
 
     """
     return _cur_backend(x1).minimum(x1, x2, out)
