@@ -2385,7 +2385,7 @@ def maximum(
 
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
-    >>> z = ivy.maximum(x,y)
+    >>> z = ivy.maximum(x, y)
     >>> print(z)
     ivy.array([9, 9, 5])
 
@@ -2398,7 +2398,7 @@ def maximum(
 
     With a mix of :code:`ivy.Array` and :code:`Number` inputs:
 
-    >>> x = ivy.array([1,7,3])
+    >>> x = ivy.array([1, 7, 3])
     >>> z = ivy.maximum(x, 5)
     >>> print(z)
     ivy.array([5, 7, 5])
