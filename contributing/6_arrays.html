@@ -153,7 +153,7 @@
 <section id="native-array">
 <h2>Native Array<a class="headerlink" href="#native-array" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> is simply a placeholder class for a backend-specific array class,
-such as <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
+such as <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code> or <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
 <p>When no framework is set, this is an <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L8">empty class</a>.
 When a framework is set, this is <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/functional/backends/torch/__init__.py#L11">overwritten</a> with the backend-specific array class.</p>
 </section>
@@ -173,33 +173,36 @@ but passes in <code class="code docutils literal notranslate"><span class="pre">
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
 This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
 <p>The benefit of the source code implementations is that this makes the code much more readable,
-without important methods being entirely absent.
+with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
-<p>Special methods are a bit little different. Most of these simply wrap a corresponding function in the functional API,
+<p>Special methods are a little bit different. Most of these simply wrap a corresponding function in the functional API,
 as <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">is the case</a> in the Array API Standard.
 Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L291">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319">__truediv__</a> which directly call
 <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> respectively.
 However, for some special methods such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>,
-there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
+there are substantial differences between the backend frameworks
+which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
 </section>
 <section id="array-handling">
 <h2>Array Handling<a class="headerlink" href="#array-handling" title="Permalink to this heading"></a></h2>
-<p>When calling wrapped backend methods, we must pass in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
+<p>When calling backend-specific functions such as <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code>, we must pass in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
 For example, <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code> will throw an error if we try to pass in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance.
 It must be provided with a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and this is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219">backend type hints</a>.</p>
 <p>However, all Ivy functions must return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, which is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342">Ivy type hints</a>.
 The reason we always return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances from Ivy functions is to ensure that any subsequent Ivy code is
-fully framework-agnostic, with all operators performed on the returned array now handled by the special methods of the
+fully framework-agnostic, with all operators performed on the returned array being handled by the special methods of the
 <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, and not the special methods of the backend <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> class.</p>
 <p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
 (<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
-<p>For most special methods, this is not be a problem and each backend is generally quite consistent,
+<p>For most special methods, calling them on the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> would not be a problem
+because all backends are generally quite consistent,
 but as explained above, for some functions such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>
-there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
+there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation
+in order to guarantee unified behaviour.</p>
 <p>Given that all Ivy functions return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances,
 all Ivy functions must also support <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input,
 otherwise it would be impossible to chain functions together!</p>
-<p>Therefore, every function must adopt the following pipeline:</p>
+<p>Therefore, most functions in Ivy must adopt the following pipeline:</p>
 <ol class="arabic simple">
 <li><p>convert all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input arguments to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
 <li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
@@ -222,8 +225,8 @@ serves the same purpose as the function return. This is further explained in the
 <p>As a final point, extra attention is required for <em>compositional</em> functions,
 as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array,
-then this would be a problem as they will call the special methods on an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
-and not on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
+then this will call the special methods on an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and not on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+For the reasons explained above, this would be a problem.</p>
 <p>Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
 instances are converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before entering into the compositional function.</p>
 </section>
