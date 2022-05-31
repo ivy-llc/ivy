@@ -37,15 +37,15 @@ A few examples include
 :code:`ivy.dev` which gets the device for input array,
 and :code:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
 
-Many functions are *convenience* functions, which means that they do not directly modify arrays,
+Many functions in the :code:`device.py` module are *convenience* functions,
+which means that they do not directly modify arrays,
 as explained in the :ref:`Function Types` section.
 
-For example,
-`ivy.total_mem_on_dev`_ which gets the total amount of memory for a given device,
-`ivy.dev_util`_ which gets the current utilization (%) for a given device,
-`ivy.num_cpu_cores`_ which determines the number of cores available in the CPU,
-and `ivy.default_device`_ which returns the correct device to use,
-are all convenience functions.
+For example, the following are all convenience functions:
+`ivy.total_mem_on_dev`_, which gets the total amount of memory for a given device,
+`ivy.dev_util`_, which gets the current utilization (%) for a given device,
+`ivy.num_cpu_cores`_, which determines the number of cores available in the CPU,
+and `ivy.default_device`_, which returns the correct device to use.
 
 `ivy.default_device`_ is arguably the most important function.
 Any function in the functional API that receives a :code:`device` argument will make use of this function,
@@ -65,24 +65,26 @@ despite not being being located in :code:`creation.py`.
 
 The :code:`device` argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
-the input arrays. In cases where the input arrays are located on different devices, an error will be thrown.
+the input arrays. In cases where the input arrays are located on different devices, an error will generally be thrown,
+unless the function is specific to distributed training.
 
 The :code:`device` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
 appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_.
 This is similar to how :code:`dtype` is handled,
 with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUNCTIONS`_ in this case rather than
-`NON_DTYPE_WRAPPED_FUNCTIONS`_. As discussed above,
+`NON_DTYPE_WRAPPED_FUNCTIONS`_.
+This function calls `ivy.default_device`_ in order to determine the correct data type.
+As discussed in the :ref:`Function Wrapping` section,
 this is applied to all applicable function dynamically during `backend setting`_.
 
-Overall, the device is inferred as follows:
+Overall, `ivy.default_device`_ infers the device as follows:
 
 #. if the :code:`device` argument is provided, use this directly
-#. otherwise, if an array is present in the arguments (very rare if :code:`device` is present), \
+#. otherwise, if an array is present in the arguments (very rare if the :code:`device` argument is present), \
    set :code:`arr` to this array. This will then be used to infer the device by calling :code:`ivy.dev` on the array
-#. otherwise, if no arrays are present in the arguments (by far the most common case if :code:`device` is present), \
+#. otherwise, if no arrays are present in the arguments (by far the most common case if the :code:`device` argument is present), \
    then use the global default device, \
-   which currently can either be :code:`cpu` or :code:`gpu:idx`, \
-   but more device types and multi-node configurations are in the pipeline. \
+   which currently can either be :code:`cpu`, :code:`gpu:idx` or :code:`tpu:idx`. \
    The default device is settable via :code:`ivy.set_default_device`.
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the device,
@@ -92,7 +94,7 @@ listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
-This is exactly the same as with the :code:`dtype` argument, which is explained above.
+This is exactly the same as with the :code:`dtype` argument, as explained in the :ref:`Data Types` section.
 
 Let's take a look at the function :code:`ivy.zeros` as an example.
 
