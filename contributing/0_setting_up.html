@@ -46,8 +46,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#macos">MacOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clone-ivy">Clone Ivy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-interpreter-with-pycharm">Docker Interpreter with PyCharm</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos">MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
@@ -147,13 +153,34 @@
              
   <section id="setting-up">
 <h1>Setting up<a class="headerlink" href="#setting-up" title="Permalink to this headline"></a></h1>
-<p>This page provides the instructions to set up a specific python environment to contribute towards Ivy.
-Setting up and using the same remote python interpreter provided as a docker container helps the community to share the
-same packages and mitigate any version conflicts.
-In addition, it makes it possible to use modules not yet provided for an operating system, such as jaxlib for windows.
-Below are the instructions required to setup the docker container for:</p>
+<p>We’re really happy you’d like to learn how to contribute towards Ivy 🙂</p>
+<p>This page explains the main steps to get started!</p>
+<section id="clone-ivy">
+<h2>Clone Ivy<a class="headerlink" href="#clone-ivy" title="Permalink to this headline"></a></h2>
+<p>The first step is simple, clone Ivy!</p>
+<p>Depending on your preferred mode of cloning, any of the below should work:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:unifyai/ivy.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/ivy.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gh repo clone unifyai/ivy your_folder
+</pre></div>
+</div>
+</section>
+<section id="docker-interpreter-with-pycharm">
+<h2>Docker Interpreter with PyCharm<a class="headerlink" href="#docker-interpreter-with-pycharm" title="Permalink to this headline"></a></h2>
+<p>Here we show how to set up a specific python environment, which will make contributing much easier.</p>
+<p>Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
+using the same packages, and helps to mitigate any potential version conflicts etc.</p>
+<p>In addition, it makes it possible to use modules not yet available for a particular operating system,
+such as jaxlib on a Windows machine.</p>
+<p>You are of course welcome to use whatever Integrated Development Environment (IDE) you’re most familiar with.
+Below we provide instructions for setting up a docker interpreter for <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a>,
+which is the main IDE of choice for our development team:</p>
 <section id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h2>
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
 <li><p>Install <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL 2</a>. For most, it will only require running the command <code class="code docutils literal notranslate"><span class="pre">wsl</span> <span class="pre">--install</span></code> in powershell admin mode. Visit the link if it doesn’t.</p></li>
@@ -162,7 +189,7 @@ Below are the instructions required to setup the docker container for:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Running Docker desktop.</p></li>
-<li><p>Opening cmd, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-it</span> <span class="pre">--rm</span> <span class="pre">unifyai/ivy:latest</span> <span class="pre">python3</span></code></p></li>
+<li><p>Opening cmd, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
@@ -182,7 +209,7 @@ Below are the instructions required to setup the docker container for:</p>
 If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/windows/release-notes/">Docker release note</a></p>
 </section>
 <section id="macos">
-<h2>MacOS<a class="headerlink" href="#macos" title="Permalink to this headline"></a></h2>
+<h3>MacOS<a class="headerlink" href="#macos" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
 <li><p>Get the latest Docker Image for Ivy by:</p></li>
@@ -190,7 +217,7 @@ If Docker’s latest version causes error, try using an earlier version by visit
 <blockquote>
 <div><ul class="simple">
 <li><p>Running Docker desktop.</p></li>
-<li><p>Opening terminal, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-it</span> <span class="pre">--rm</span> <span class="pre">unifyai/ivy:latest</span> <span class="pre">python3</span></code></p></li>
+<li><p>Opening terminal, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
@@ -208,6 +235,30 @@ If Docker’s latest version causes error, try using an earlier version by visit
 <p>DONE. You’re set.
 |
 If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/windows/release-notes/">Docker release note</a></p>
+</section>
+<section id="ubuntu">
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this headline"></a></h3>
+<p>ToDo: write this section</p>
+</section>
+</section>
+<section id="pre-commit">
+<h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this headline"></a></h2>
+<p>In addition to the docker interpreter,
+our development team also make use of the <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> PyPI <a class="reference external" href="https://pypi.org/project/pre-commit/">package</a>.</p>
+<p>Check out their <a class="reference external" href="https://pre-commit.com/">page</a> for more details.</p>
+<p>In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted,
+and then also (in most cases) automatically make the necessary fixes.
+If the lint tests fail when a commit is attempted, then the commit will not succeed,
+and the problematic lines are printed to the terminal. Fixes are then applied automatically where possible.
+To proceed with the commit, the modified files must be re-added using git,
+and the commit will then succeed on the next attempt.</p>
+<p>In order to install and properly set up pre-commit, these steps should be followed:</p>
+<ol class="arabic simple">
+<li><p>Run <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pre-commit</span></code></p></li>
+<li><p>Enter enter into your cloned ivy folder, for example <code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/ivy</span></code></p></li>
+<li><p>Run <code class="code docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code></p></li>
+</ol>
+<p>That’s it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.</p>
 </section>
 </section>
 
