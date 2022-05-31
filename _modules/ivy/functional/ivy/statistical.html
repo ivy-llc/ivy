@@ -194,9 +194,9 @@
 <span class="sd">       When the number of elements over which to compute the maximum value is zero, the</span>
 <span class="sd">       maximum value is implementation-defined. Specification-compliant libraries may</span>
 <span class="sd">       choose to raise an error, return a sentinel value (e.g., if ``x`` is a</span>
-<span class="sd">       floating-point input array, return ``NaN``), or return the minimum possible value</span>
-<span class="sd">       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,</span>
-<span class="sd">       return ``-infinity``).</span>
+<span class="sd">       floating-point input array, return ``NaN``), or return the minimum possible </span>
+<span class="sd">       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point </span>
+<span class="sd">       array, return ``-infinity``).</span>
 
 <span class="sd">    **Special Cases**</span>
 
@@ -330,9 +330,9 @@
 <span class="sd">           While this specification recommends that this function only accept input</span>
 <span class="sd">           arrays having a floating-point data type, specification-compliant array</span>
 <span class="sd">           libraries may choose to accept input arrays having an integer data type.</span>
-<span class="sd">           While mixed data type promotion is implementation-defined, if the input array</span>
-<span class="sd">           ``x`` has an integer data type, the returned array must have the default</span>
-<span class="sd">           floating-point data type.</span>
+<span class="sd">           While mixed data type promotion is implementation-defined, if the input </span>
+<span class="sd">           array ``x`` has an integer data type, the returned array must have the </span>
+<span class="sd">           default floating-point data type.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -571,6 +571,68 @@
 <span class="sd">    &gt;&gt;&gt; z = ivy.einsum(&#39;ij -&gt; j&#39;, x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([9, 12, 15])</span>
+<span class="sd">    </span>
+<span class="sd">    Imagine that we have two multi-dimensional arrays, A and B. </span>
+<span class="sd">    Now let&#39;s suppose we want to...</span>
+<span class="sd">    - multiply A with B in a particular way to create new array </span>
+<span class="sd">    of products; and then maybe</span>
+<span class="sd">    - sum this new array along particular axes; and then maybe</span>
+<span class="sd">    - transpose the axes of the new array in a particular order.</span>
+<span class="sd">    </span>
+<span class="sd">    There&#39;s a good chance that einsum will help us do this faster </span>
+<span class="sd">    and more memory-efficiently than combinations of the NumPy </span>
+<span class="sd">    functions like multiply, sum and transpose will allow.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; A = ivy.array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.array([[ 0,  1,  2,  3],\</span>
+<span class="sd">    ...               [ 4,  5,  6,  7],\</span>
+<span class="sd">    ...               [ 8,  9, 10, 11]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;i,ij-&gt;i&#39;, A, B)</span>
+<span class="sd">    ivy.array([ 0, 22, 76])</span>
+<span class="sd">    </span>
+<span class="sd">    Now lets see a slightly bigger example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; A = ivy.array([[1, 1, 1],\</span>
+<span class="sd">    ...                [2, 2, 2],\</span>
+<span class="sd">    ...                [5, 5, 5]])</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.array([[0, 1, 0],\</span>
+<span class="sd">    ...                [1, 1, 0],\</span>
+<span class="sd">    ...                [1, 1, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;ij,jk-&gt;ik&#39;, A, B)</span>
+<span class="sd">    ivy.array([[ 2,  3,  1],</span>
+<span class="sd">                [ 4,  6,  2],</span>
+<span class="sd">                [10, 15,  5]])</span>
+<span class="sd">                </span>
+<span class="sd">    </span>
+<span class="sd">    Let A and B be two 1D arrays with the same length. For example, </span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; A = ivy.arange(10)</span>
+<span class="sd">    &gt;&gt;&gt; B = ivy.arange(5, 15)</span>
+<span class="sd">    </span>
+<span class="sd">    The sum of A can be written:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;i-&gt;&#39;, A)</span>
+<span class="sd">    ivy.array(45, dtype=int32)</span>
+<span class="sd">    </span>
+<span class="sd">    Element-wise multiplication, A * B, can be written:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;i,i-&gt;i&#39;, A, B)</span>
+<span class="sd">    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126], dtype=int32)</span>
+<span class="sd">    </span>
+<span class="sd">    The inner product or dot product can be written:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;i,i-&gt;&#39;, A, B) # or just use &#39;i,i&#39;</span>
+<span class="sd">    ivy.array(510, dtype=int32)</span>
+<span class="sd">    </span>
+<span class="sd">    The outer product can be written:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.einsum(&#39;i,j-&gt;ij&#39;, A, B)</span>
+<span class="sd">    ivy.array([[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0],</span>
+<span class="sd">                [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],</span>
+<span class="sd">                [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],</span>
+<span class="sd">                [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],</span>
+<span class="sd">                [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],</span>
+<span class="sd">                [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],</span>
+<span class="sd">                [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],</span>
+<span class="sd">                [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],</span>
+<span class="sd">                [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],</span>
+<span class="sd">                [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
