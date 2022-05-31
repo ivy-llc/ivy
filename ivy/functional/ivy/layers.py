@@ -501,8 +501,8 @@ def conv3d_transpose(
     ret
         The result of the transpose convolution operation.
 
-    Examples:
-
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])
