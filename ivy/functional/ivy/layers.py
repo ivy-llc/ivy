@@ -533,13 +533,13 @@ def conv3d(
 
 
 def conv3d_transpose(
-    x:Union[ivy.Array, ivy.NativeArray], 
+    x: Union[ivy.Array, ivy.NativeArray], 
     filters: Union[ivy.Array, ivy.NativeArray], 
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] , 
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]], 
     padding: Union[str, List[int]], 
     output_shape: Union[ivy.Array, ivy.NativeArray] = None, 
-    data_format: str="NDHWC", 
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1
+    data_format: str = "NDHWC", 
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
 
@@ -596,7 +596,8 @@ def conv3d_transpose(
     >>> print(y['b'].shape)
     (1, 10, 10, 10, 32)
 
-    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray` \
+    and :code:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
     >>> a =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 64]))
