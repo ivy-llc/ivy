@@ -42,6 +42,8 @@ The data types supported by Ivy are as follows:
 * bool
 
 These are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
+The :code:`ivy.Dtype` class derives from :code:`str`,
+and has simple logic in the constructor to verify that the string formatting is correct.
 All data types can be queried as attributes of the :code:`ivy` namespace, such as :code:`ivy.float32` etc.
 
 In addition, *native* data types are `also specified`_ at import time.
@@ -80,9 +82,9 @@ Data Type Module
 
 The `data_type.py`_ module provides a variety of functions for working with data types.
 A few examples include
-:code:`astype` which copies an array to a specified data type,
-:code:`broadcast_to` which broadcasts an array to a specified shape,
-and :code:`result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
+:code:`ivy.astype` which copies an array to a specified data type,
+:code:`ivy.broadcast_to` which broadcasts an array to a specified shape,
+and :code:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
 Many functions are *convenience* functions, which means that they do not directly modify arrays,
 as explained in the :ref:`Function Types` section.
@@ -95,7 +97,7 @@ and `ivy.default_dtype`_ which returns the correct data type to use,
 are all convenience functions.
 
 `ivy.default_dtype`_ is arguably the most important function.
-Any function in the functional API that receives a :code:`dtype` argument will make use of this,
+Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
 as explained below.
 
 Arguments in other Functions

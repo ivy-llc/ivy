@@ -97,7 +97,8 @@ def randint(
     return mx.nd.random.randint(low, high, shape, ctx=ctx)
 
 
-seed = lambda seed_value=0: mx.random.seed(seed_value)
+def seed(seed_value: int = 0) -> None:
+    mx.random.seed(seed_value)
 
 
 def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
