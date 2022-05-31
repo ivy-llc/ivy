@@ -1,4 +1,4 @@
-Setting up
+Setting Up
 ==========
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
@@ -44,62 +44,57 @@ Setting up and using the same remote python interpreter provided as a docker con
 using the same packages, and helps to mitigate any potential version conflicts etc.
 
 In addition, it makes it possible to use modules not yet available for a particular operating system,
-such as jaxlib on a Windows machine.
+such as :code:`jaxlib` on a Windows machine.
 
 Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
-which is the main IDE of choice for our development team:
+which, as mentioned above, is the main IDE of choice for our development team:
 
 
 Windows
 ****
 
 
-1. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most, it will only require running the command :code:`wsl --install` in powershell admin mode. Visit the link if it doesn't.
+#. Get the latest Docker Image for Ivy by:
 
-2. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_. For most, it will only require running the command :code:`wsl --install` in powershell admin mode. Visit the link if it doesn't.
+   a. Running Docker desktop.
+   b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-3. Get the latest Docker Image for Ivy by: 
-  * Running Docker desktop.
-  * Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
+#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-4. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
-5. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+   a. Going to settings -> project -> Python Interpreter
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   c. Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-* Going to settings>project:...>Python Interpreter)
-
-* Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-
-* Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
-
-|
-DONE. You're set.
-|
-If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/windows/release-notes/>`_
+Once these steps are finished, your interpreter should be set up correctly!
+If Docker's latest version causes error,
+try using an earlier version by visiting
+`Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
 
 MacOS
 ****
 
 
-1. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+#. Get the latest Docker Image for Ivy by:
 
-2. Get the latest Docker Image for Ivy by: 
-  * Running Docker desktop.
-  * Opening terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
+   a. Running Docker desktop.
+   b. Opening terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
 
-4. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
-5. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+#. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
+#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-* Going to PyCharm > Preferences > Project:... > Python Interpreter
+   a. Going to settings -> project -> Python Interpreter
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   c. Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
-* Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-
-* Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
-
-|
-DONE. You're set.
-|
-If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/windows/release-notes/>`_
+Once these steps are finished, your interpreter should be set up correctly!
+If Docker's latest version causes error,
+try using an earlier version by visiting
+`Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
 Ubuntu
 ****
