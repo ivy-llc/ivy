@@ -46,7 +46,7 @@ def gpu_is_available() -> bool:
 
 # private version of to_dev to be used in backend implementations
 def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
-    """private version of `to_dev` to be used in backend implementations"""
+    """Private version of `to_dev` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
             raise Exception(
