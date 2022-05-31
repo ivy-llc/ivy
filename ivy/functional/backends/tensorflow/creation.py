@@ -18,7 +18,7 @@ from ivy import (
 # -------------------#
 
 
-def asarray(object_in, dtype=None, device=None, copy=None):
+def asarray(object_in, copy=None, *, dtype: tf.DType, device: str):
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         if copy:
