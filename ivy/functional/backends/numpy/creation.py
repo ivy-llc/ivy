@@ -109,7 +109,9 @@ def empty(
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
-    return _to_dev(np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device)
+    return _to_dev(
+        np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
+    )
 
 
 def empty_like(
