@@ -55,7 +55,11 @@
 <li class="toctree-l2"><a class="reference internal" href="7_containers.html">Containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Inplace Updates</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Inplace Updates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#out-argument">out argument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#copy-argument">copy argument</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
@@ -143,6 +147,8 @@
              
   <section id="inplace-updates">
 <h1>Inplace Updates<a class="headerlink" href="#inplace-updates" title="Permalink to this headline"></a></h1>
+<section id="out-argument">
+<span id="wrapping"></span><h2>out argument<a class="headerlink" href="#out-argument" title="Permalink to this headline"></a></h2>
 <p>All Ivy functions which return a single array should support inplace updates, with the inclusion of a keyword-only
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, with type hint <code class="code docutils literal notranslate"><span class="pre">Optional[Union[ivy.Array,</span> <span class="pre">ivy.Container]]</span></code> for <em>flexible</em> functions
 and <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code> otherwise.</p>
@@ -190,13 +196,32 @@ and so the <code class="code docutils literal notranslate"><span class="pre">out
 </div>
 <p>It’s very important to remove the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument from backend implementations that do not actually handle it,
 as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L154">presence of this argument</a> dictates whether the argument should be handled
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L199">by the backend function</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L203">by the wrapper</a>.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L199">by the backend function</a> or <a href="#id4"><span class="problematic" id="id5">`by the wrapper`_</span></a>.</p>
 <p>This distinction only concerns how the inplace update is applied to the native array,
 which is operated upon directly by the backend.
 If <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, an inplace update is always <strong>also</strong> performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself,
 which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function. This inplace update is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L210">handled by the wrapper</a>.</p>
 <p>Alternatively, if <code class="code docutils literal notranslate"><span class="pre">out</span></code> is an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, then the inplace update is always handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69">_wrap_fn</a> in
 the container wrapping module.</p>
+</section>
+<section id="copy-argument">
+<h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this headline"></a></h2>
+<p>As well as the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, a few functions also support the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument.
+The functions with support for the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument are all in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>,
+and the standard mandates the inclusion of <code class="code docutils literal notranslate"><span class="pre">copy</span></code> in each case.
+These functions are:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418">ivy.reshape</a> (<a class="reference external" href="https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/manipulation_functions.py#L106">in the standard</a>),
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/data_type.py#L164">ivy.astype</a> (<a class="reference external" href="https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/data_type_functions.py#L3">in the standard</a>)
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64">ivy.asarray</a> (<a class="reference external" href="https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/creation_functions.py#L31">in the standard</a>).</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument dictates whether a new copy should be created,
+or whether the input array should be updated inplace.
+When <code class="code docutils literal notranslate"><span class="pre">copy</span></code> is not specified explicitly, then an inplace update is performed
+with the same behaviour as <code class="code docutils literal notranslate"><span class="pre">copy=False</span></code>.
+Setting <code class="code docutils literal notranslate"><span class="pre">copy=False</span></code> is equivalent to passing <code class="code docutils literal notranslate"><span class="pre">out=input_array</span></code>.
+If only one of <code class="code docutils literal notranslate"><span class="pre">copy</span></code> or <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then this specified argument is given priority.
+If both are specified, then priority is given to the more general <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
+As with the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument is also handled <a class="reference external" href="insert_link">by the wrapper</a></p>
+</section>
 </section>
 
 
