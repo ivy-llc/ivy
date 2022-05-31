@@ -4,7 +4,7 @@
 from typing import Callable, Any, Union, Tuple, Iterable
 
 # local
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Extra #
@@ -42,6 +42,6 @@ def compile(
     -------
         The handle to the newly compiled function.
     """
-    return _cur_framework(example_inputs).compile(
+    return _cur_backend(example_inputs).compile(
         func, dynamic, example_inputs, static_argnums, static_argnames
     )

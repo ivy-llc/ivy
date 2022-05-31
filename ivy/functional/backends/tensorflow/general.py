@@ -217,7 +217,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         )
     # handle numeric updates
     updates = tf.constant(
-        [updates] if isinstance(updates, Number) else updates,
+        # keep below commented out, asarray API tests working without it
+        # [updates] if isinstance(updates, Number) else
+        updates,
         dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
@@ -329,8 +331,8 @@ def one_hot(indices, depth, device=None):
     return tf.one_hot(indices, depth)
 
 
-current_framework_str = lambda: "tensorflow"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "tensorflow"
+current_backend_str.__name__ = "current_backend_str"
 
 multiprocessing = (
     lambda context=None: _multiprocessing

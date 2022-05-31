@@ -244,11 +244,19 @@ def swapaxes(
     return ret
 
 
-def clip(x, x_min, x_max, out: Optional[torch.Tensor] = None):
+def clip(
+    x: torch.Tensor,
+    x_min: Union[Number, torch.Tensor],
+    x_max: Union[Number, torch.Tensor],
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
         x = x.to(promoted_type)
-    return torch.clamp(x, x_min, x_max, out=out)
+    ret = torch.clamp(x, x_min, x_max, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret

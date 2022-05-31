@@ -25,19 +25,10 @@ def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.dev
     return as_ivy_dev(dv)
 
 
-def to_dev(
-    x,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def to_dev(x, *, device: torch.device) -> torch.Tensor:
     ret = x.to(as_native_dev(device))
     if isinstance(x, torch.nn.Parameter):
-        if ivy.exists(out):
-            return ivy.inplace_update(out, torch.nn.Parameter(ret))
         return torch.nn.Parameter(ret)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 

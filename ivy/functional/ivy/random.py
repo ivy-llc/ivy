@@ -4,7 +4,7 @@
 from typing import Optional, Union, Tuple
 
 # local
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 import ivy
 
 
@@ -47,9 +47,9 @@ def random_uniform(
     >>> y = ivy.random_uniform(0.0, 2.0)
     >>> print(y)
     ivy.array(1.89150229)
-            
+
     """
-    return _cur_framework().random_uniform(low, high, shape, device)
+    return _cur_backend().random_uniform(low, high, shape, device=device)
 
 
 def random_normal(
@@ -85,7 +85,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return _cur_framework().random_normal(mean, std, shape, device)
+    return _cur_backend().random_normal(mean, std, shape, device=device)
 
 
 def multinomial(
@@ -170,8 +170,8 @@ def multinomial(
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
-    return _cur_framework().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device
+    return _cur_backend().multinomial(
+        population_size, num_samples, batch_size, probs, replace, device=device
     )
 
 
@@ -233,10 +233,10 @@ def randint(
        [ 8, 11,  3]])
 
     """
-    return _cur_framework().randint(low, high, shape, device)
+    return _cur_backend().randint(low, high, shape, device)
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -245,8 +245,12 @@ def seed(seed_value=0):
         Seed for random number generation, must be a positive integer.
         (Default value = 0)
 
+    Examples
+    --------
+    >>> ivy.seed(42)
+
     """
-    return _cur_framework().seed(seed_value)
+    return _cur_backend().seed(seed_value)
 
 
 def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -270,4 +274,4 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return _cur_framework(x).shuffle(x)
+    return _cur_backend(x).shuffle(x)

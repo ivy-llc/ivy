@@ -23,9 +23,10 @@ from ivy.functional.backends.numpy.data_type import as_ivy_dtype as np_as_ivy_dt
 
 def asarray(
     object_in,
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
     copy: Optional[bool] = None,
+    *,
+    dtype: torch.dtype,
+    device: torch.device
 ):
     device = default_device(device)
     if isinstance(object_in, torch.Tensor) and dtype is None:
@@ -35,12 +36,16 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(as_native_dev(device))
+            return (
+                torch.as_tensor(object_in, dtype=dtype)
+                .clone()
+                .detach()
+                .to(as_native_dev(device))
+            )
         else:
-            return torch.as_tensor(object_in).to(as_native_dev(device))
+            return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(np_as_ivy_dtype(object_in.dtype))
@@ -257,7 +262,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
+            :-1
+        ]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if dtype is None:
@@ -312,7 +319,7 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: torch.dtype, device: torch.device):
 
     if stop is None:
         stop = start

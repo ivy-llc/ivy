@@ -15,7 +15,7 @@ DET_THRESHOLD = 1e-12
 # -------------------#
 
 
-def eigh(x: mx.ndarray) -> mx.ndarray:
+def eigh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigh(x)
 
 
@@ -95,8 +95,14 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
-def det(x: NDArray) -> NDArray:
-    return mx.linalg.det(x)
+def det(
+        x: NDArray,
+        out: Optional[NDArray] = None
+) -> NDArray:
+    ret = mx.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
@@ -110,7 +116,7 @@ def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
         )
 
 
-def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+def eigvalsh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
