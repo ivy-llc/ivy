@@ -24,6 +24,16 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone unifyai/ivy your_folder
 
+PyCharm
+-------
+
+`Pycharm <https://www.jetbrains.com/pycharm/>`_ is the main IDE of choice for our development team.
+However, you are of course welcome to use whatever Integrated Development Environment (IDE) you're most familiar with.
+If you do decide to use PyCharm,
+you should make sure to check whether you are eligible for a
+`free student licence <https://www.jetbrains.com/community/education/#students>`_.
+Many people seem to miss this option,
+so we thought we would add an explicit reminder here in the setting up guide!
 
 Docker Interpreter with PyCharm
 -------------------------------
@@ -36,7 +46,6 @@ using the same packages, and helps to mitigate any potential version conflicts e
 In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as jaxlib on a Windows machine.
 
-You are of course welcome to use whatever Integrated Development Environment (IDE) you're most familiar with.
 Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
 which is the main IDE of choice for our development team:
 
