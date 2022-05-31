@@ -145,15 +145,15 @@
   <section id="backend-setting">
 <h1>Backend Setting<a class="headerlink" href="#backend-setting" title="Permalink to this heading"></a></h1>
 <p>The backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>. When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L153">this function</a>,
-we go through the following steps:</p>
+the following steps are performed:</p>
 <ol class="arabic simple">
 <li><p>store a global copy of the original <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> to <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>, if this is not already stored.</p></li>
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L182">import the backend module</a>, for example <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code>, if the backend has been passed in as a string. All functions in this unmodified backend module are <em>primary</em> functions, because only primary functions are stored in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.backend_name</span></code>. This backend module does not include any <em>compositional</em> functions.</p></li>
 <li><p>loop through the original <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code> (which has all functions, including compositional),
-and for each function, (a) add the primary function from the backend if it exists, (b) else add the compositional
+for each function, and (a) add the primary function from the backend if it exists, (b) else add the compositional
 function from <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>, writing the function to <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L200">in either case</a>.</p></li>
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L206">wrap the functions</a>, extending each of them with shared repeated functionality, which is solved via wrapping in
-order to avoid excessive code duplication in every function implementation. This is explained in more detail in the next section: <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
+order to avoid excessive code duplication in every backend function implementation. This is explained in more detail in the next section: <a class="reference internal" href="5_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
 </ol>
 </section>
 
