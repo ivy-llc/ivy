@@ -2356,15 +2356,16 @@ def maximum(
     With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
 
     >>> x = ivy.array([4, 8, 3])
-    >>> z = x.maximum([9, 3, 2])
+    >>> y = ivy.array([9, 3, 2])
+    >>> z = x.maximum(y)
     >>> print(z)
     ivy.array([9, 8, 3])
 
     With :code:`ivy.Array` instance method using :code:`Number` input:
 
-    >>> x = ivy.array([1, 7, 3])
+    >>> x = ivy.array([1, 7, 8])
     >>> z = ivy.zeros(3)
-    >>> x.maximum([3, 5, 8], out=z)
+    >>> x.maximum(3, out=z)
     >>> print(z)
     ivy.array([3, 7, 8])
 
