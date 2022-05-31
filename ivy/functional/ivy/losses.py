@@ -90,11 +90,11 @@ def binary_cross_entropy(
     >>> print(z)
     ivy.array([0.2231, 0.2231, 0.3567, 1.6094])
 
-    >>> x = ivy.array([0, 1, 0, 0])
-    >>> y = ivy.array([0.6, 0.2, 0.7, 0.3])
-    >>> z = ivy.binary_cross_entropy(x, y)
+    >>> x = ivy.array([[0, 1, 0, 0]])
+    >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
+    >>> z = ivy.binary_cross_entropy(x, y, epsilon=1e-3)
     >>> print(z)
-    ivy.array([0.9163, 1.6094, 1.2040, 0.3567])
+    ivy.array([[0.9163, 1.6094, 1.2040, 0.3567]])
 
     With :code:`ivy.NativeArray` input:
 
