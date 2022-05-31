@@ -14,6 +14,14 @@ Inplace Updates
 .. _`handled by the wrapper`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L210
 .. _`_wrap_fn`: https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`ivy.reshape`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
+.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/data_type.py#L164
+.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
+.. _`wrapping`:
+
+out argument
+------------
 
 All Ivy functions which return a single array should support inplace updates, with the inclusion of a keyword-only
 :code:`out` argument, with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
@@ -87,3 +95,23 @@ which is how :code:`out` is provided to the function. This inplace update is alw
 
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
+
+copy argument
+-------------
+
+As well as the :code:`out` argument, a few functions also support the :code:`copy` argument.
+The functions with support for the :code:`copy` argument are all in the `Array API Standard`_,
+and the standard mandates the inclusion of :code:`copy` in each case.
+These functions are:
+`ivy.reshape`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/manipulation_functions.py#L106>`_),
+`ivy.astype`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/data_type_functions.py#L3>`_)
+and `ivy.asarray`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/creation_functions.py#L31>`_).
+
+The :code:`copy` argument dictates whether a new copy should be created,
+or whether the input array should be updated inplace.
+When :code:`copy` is not specified explicitly, then an inplace update is performed
+with the same behaviour as :code:`copy=False`.
+Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
+If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
+If both are specified, then priority is given to the more general :code:`out` argument.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_

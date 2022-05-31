@@ -6,6 +6,53 @@ Devices
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
 .. _`NON_DEV_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104
+.. _`ivy.Device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L42
+.. _`empty class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L34
+.. _`device class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13
+.. _`device.py`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py
+.. _`ivy.total_mem_on_dev`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L215
+.. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L326
+.. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L371
+.. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424
+
+The devices currently supported by Ivy are as follows:
+
+* cpu
+* gpu:idx
+* tpu:idx
+
+In a similar manner to the :code:`ivy.Dtype` and :code:`ivy.NativeDtype` classes (see :ref:`Data Types`),
+there is both an `ivy.Device`_ class and an :code:`ivy.NativeDevice` class,
+with :code:`ivy.NativeDevice` initially set as an `empty class`_.
+The :code:`ivy.Device` class derives from :code:`str`,
+and has simple logic in the constructor to verify that the string formatting is correct.
+When a backend is set, the :code:`ivy.NativeDtype` is replaced with the backend-specific `device class`_.
+
+Device Module
+-------------
+
+The `device.py`_ module provides a variety of functions for working with devices.
+A few examples include
+:code:`ivy.get_all_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
+:code:`ivy.dev` which gets the device for input array,
+and :code:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
+
+Many functions are *convenience* functions, which means that they do not directly modify arrays,
+as explained in the :ref:`Function Types` section.
+
+For example,
+`ivy.total_mem_on_dev`_ which gets the total amount of memory for a given device,
+`ivy.dev_util`_ which gets the current utilization (%) for a given device,
+`ivy.num_cpu_cores`_ which determines the number of cores available in the CPU,
+and `ivy.default_device`_ which returns the correct device to use,
+are all convenience functions.
+
+`ivy.default_device`_ is arguably the most important function.
+Any function in the functional API that receives a :code:`device` argument will make use of this function,
+as explained below.
+
+Arguments in other Functions
+----------------------------
 
 Like with :code:`dtype`, all :code:`device` arguments are also keyword-only.
 All creation functions include the :code:`device` argument,
