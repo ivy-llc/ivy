@@ -19,7 +19,7 @@ in the API. This is the main purpose of the wrapping, to avoid code duplication 
 single function independenly.
 
 Depending on the function being wrapped, the new function :code:`_function_wrapped`
-might handle :ref:`Native Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
+might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
 Each of these topics and each reason for the wrapping are covered in more detail in the next sections.
 For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_
