@@ -151,7 +151,7 @@ def depthwise_conv2d(
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> mx.nd.NDArray:
     num_filters = filters.shape[-1]
     num_channels = num_filters
@@ -224,10 +224,10 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 def conv3d_transpose(
     x: mx.nd.NDArray,
     filters: mx.nd.NDArray,
-    strides: Union[int, Tuple[int], Tuple[int,int], Tuple[int,int,int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str = None,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int], Tuple[int,int], Tuple[int,int,int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
 ) -> mx.nd.NDArray:
     if data_format == "NDHWC":
         x = mx.nd.transpose(x, (0, 4, 1, 2, 3))

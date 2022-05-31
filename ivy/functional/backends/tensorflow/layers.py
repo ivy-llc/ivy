@@ -2,7 +2,7 @@
 
 # global
 import tensorflow as tf
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Union, List
 from tensorflow.python.types.core import Tensor
 
 
