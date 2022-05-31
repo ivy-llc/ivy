@@ -2302,19 +2302,71 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
+    """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
-    x
+    x1
         Input array containing elements to maximum threshold.
-    y
-        Tensor containing maximum values, must be broadcastable to x.
+    x2
+        Tensor containing maximum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not be lower than the y values.
+        An array with the elements of x1, but clipped to not be lower than the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([7, 9, 5])
+    >>> y = ivy.array([9, 3, 2])
+    >>> z = ivy.maximum(x,y)
+    >>> print(z)
+    ivy.array([9, 9, 5])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.maximum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([5])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([1,7,3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.array([5, 7, 5])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 8, 3])
+    >>> z = x.maximum([9, 3, 2])
+    >>> print(z)
+    ivy.array([9, 8, 3])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 7, 3])
+    >>> z = ivy.zeros(3)
+    >>> x.maximum([3, 5, 8], out=z)
+    >>> print(z)
+    ivy.array([3, 7, 8])
 
     """
     return _cur_backend(x1).maximum(x1, x2, out)
