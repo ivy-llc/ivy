@@ -153,31 +153,38 @@
 <section id="managing-your-fork">
 <h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this heading"></a></h2>
 <p>When contributing to Ivy, the first step is create a fork of the repository.
-Then, it’s best practice to create a separate branch for each new pull request you create.
+Then, it’s best practice to create a separate branch for each new pull request (PR) you create.
 The master branch then simply has the role of being kept up to date with upstream.
-You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.</p>
-<p>For keeping any branch on your fork up to date, there is a script in the root folder of the repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>.
-To update your fork’s branch to the upstream master branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
+You <em>can</em> create PRs based on the master branch of your fork,
+but this will make things more complicated if you would then like to create additional PRs in future.</p>
+<p>For keeping any branch on your fork up to date,
+there is a script in the root folder of the repo
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh">merge_with_upstream.sh</a>.
+To update your fork’s branch to the upstream master branch,
+simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
 To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
 </section>
 <section id="todo-list-issues">
 <h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this heading"></a></h2>
-<p>We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
+<p>We make extensive use of <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>,
+which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
 <p>We have a clear process for contributors to engage with such ToDo lists:</p>
-<p>&lt;a&gt; Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.</p>
-<p>&lt;b&gt; Create a new issue with the title being just the name of the task you would like to work on.</p>
-<p>&lt;c&gt; comment on the ToDo list issue with a reference to this issue like so:</p>
-<ul class="simple">
-<li><p>[ ] #Issue_number</p></li>
-</ul>
+<ol class="loweralpha">
+<li><p>Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an
+issue created and (iii) is not mentioned in the comments.</p></li>
+<li><p>Create a new issue with the title being just the name of the task you would like to work on.</p></li>
+<li><p>comment on the ToDo list issue with a reference to this issue like so:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">-</span> <span class="pre">[</span> <span class="pre">]</span> <span class="pre">#Issue_number</span></code></p>
 <p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
 No need to wait for this to happen before progressing to stage.</p>
-<p>&lt;d&gt; Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
+</li>
+<li><p>Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
 reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
-the process of getting it working 🙂</p>
-<p>&lt;e&gt; Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
-respond to our requested changes you must re-request a review in order for us to re-engage with the PR.</p>
-<p>&lt;f&gt; Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p>
+the process of getting it working 🙂</p></li>
+<li><p>Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
+respond to our requested changes you must re-request a review in order for us to re-engage with the PR.</p></li>
+<li><p>Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p></li>
+</ol>
 <p>In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
 the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
 changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
@@ -191,8 +198,8 @@ on these instead.</p>
 these just so we can keep our communuty engaged with these tasks :)</p>
 <p>Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
 reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
-people, and sometimes there is not as much free time available as initially thought. Please don’t take it personally
-if your issue or PR gets closed because of these time limits.</p>
+people, and sometimes there is not as much free time available as initially thought. That’s totally fine.
+Please don’t take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.</p>
 <p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!</p>
 </section>
@@ -202,12 +209,13 @@ investigate!</p>
 and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
 We will then take another look, and either merge the PR or request further changes.
-This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.</p>
+This process then will repeat until either the PR is closed by us or yourself, or the PR is merged.</p>
 <p>If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
 This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
-attention is needed.</p>
+our attention is needed.</p>
 <p>Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
-receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!</p>
+receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!
+Your PR will never be closed until we have provided at least code review on it, even if more than 7 days go by.</p>
 <p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
 lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
 much more quickly without us needing to request very simple fixes from yourself.</p>
@@ -216,22 +224,23 @@ much more quickly without us needing to request very simple fixes from yourself.
 <h2>Small Commits Often<a class="headerlink" href="#small-commits-often" title="Permalink to this heading"></a></h2>
 <p>Sometimes, you might want to try any make substantial improvements that span many files,
 with the intention of then creating one very large PR at the end in order to merge all of your changes.</p>
-<p>While this is generally an acceptable approach, we discourage this approach for contributions to Ivy.</p>
+<p>While this is generally an acceptable approach when working on software projects,
+we discourage this approach for contributions to Ivy.</p>
 <p>We adopt a philosophy where small, incremental, frequent commits are <strong>much</strong> more valuable to us and the entire
-Ivy developer community, than infrequent and very large commits.</p>
+Ivy developer community, than infrequent large commits.</p>
 <p>This is for a few reasons:</p>
 <ol class="arabic simple">
 <li><p>It keeps everyone up to date and on the same page as early as possible.</p></li>
-<li><p>It avoids the case where multiple people waste time fixing the same problem!</p></li>
-<li><p>It enables others to spot mistakes or conflicts in proposed changes much earlier.</p></li>
-<li><p>It also means you avoid having a mountain of conflicts to resolve when you do get around to merging.</p></li>
+<li><p>It avoids the case where multiple people waste time fixing the same problem.</p></li>
+<li><p>It enables others to spot mistakes or conflicts in propsals much earlier.</p></li>
+<li><p>It means you avoid the mountain of conflicts to resolve when you do get around to merging.</p></li>
 </ol>
-<p>This is one of the reaons why we advocate using on pull-request per issue in the ToDo list issues.
-This keeps each of the commits very contained and incremental, which is the style we’re going for.</p>
+<p>This is also why we advocate using individual pull-requests per issue in the ToDo list issues.
+This keeps each of the commits on master very contained and incremental, which is the style we’re going for.</p>
 <p>Sometimes, you’ve already dived very deep into some substantial changes in your fork,
-and it might be that only some of the problems you were trying to fix are currently fixed.</p>
+and it might be that only some of the problems you were trying to fix are actually fixed by your local changes.</p>
 <p>In this hypothetical situation, you should aim to get the working parts merged into master <strong>as soon as possible</strong>.
-Adding subsections of your local changes to git is easy. You can add individual files using:</p>
+Adding subsections of your local changes with <code class="code docutils literal notranslate"><span class="pre">git</span></code> is easy. You can add individual files using:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git add filepath
 </pre></div>
 </div>
@@ -244,7 +253,8 @@ get add -p           # choose lines to add from all changes
 You can also manually edit the exact lines added if further splitting is not possible, using <code class="code docutils literal notranslate"><span class="pre">e</span></code>.
 Check the <a class="reference external" href="https://git-scm.com/doc">git documentation</a> for more details.</p>
 <p>As a final note, a beautiful commit hisotry is not something we particularly care about.
-We’re much more concerned that the code is good, and things are updated as quickly as possible.
+We’re much more concerned that the code itself is good, that things are updated as quickly as possible,
+and that all developers are able to work efficiently.
 If a mistake is commited into the history, it’s generally not too difficult to simply undo this in future commits,
 so don’t stress about this too much 🙂</p>
 </section>
