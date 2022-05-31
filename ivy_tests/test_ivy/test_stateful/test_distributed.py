@@ -479,13 +479,17 @@ def test_to_ivy_module_distributed_multiprocess(
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.dev_unify_iter(ret, device=dev0, mode="mean", transpose=True)
+    ret_fn = lambda ret: ivy.dev_unify_iter(
+        ret, device=dev0, mode="mean", transpose=True
+    )
 
     # test loss_fn
     ret_val = ivy.map(
         loss_fn,
         constant={"module": ivy_module},
-        unique={"x_": x.values(), "v_": ivy_module.v.dev_clone(devices=devices).values()},
+        unique={"x_": x.values(), "v_": ivy_module.v.dev_clone(
+            devices=devices
+        ).values()},
     )[0]
     assert ivy.is_array(ret_val)
 
@@ -522,18 +526,6 @@ def test_to_ivy_module_distributed_multiprocess(
     # delete dev mapper
     dev_mapper.__del__()
     del dev_mapper
-
-def thread_fn():
-        import numpy as np
-        ivy.set_framework('numpy')
-        x_ = np.array([0., 1., 2.])
-        for _ in range(2000):
-            try:
-                ivy.mean(x_)
-            except TypeError:
-                return False
-        ivy.unset_framework()
-        return True
 
 
 # device manager wrapped tuning
