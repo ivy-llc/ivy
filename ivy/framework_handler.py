@@ -170,6 +170,7 @@ def set_framework(framework):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+    ivy.locks['backend_setter'].acquire()
     global ivy_original_dict
     global ivy_original_fn_dict
     if not framework_stack:
@@ -205,6 +206,7 @@ def set_framework(framework):
     _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("framework stack: {}".format(framework_stack))
+    ivy.locks['backend_setter'].release()
 
 
 def get_framework(framework=None):

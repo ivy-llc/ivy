@@ -1,7 +1,9 @@
 """Collection of tests for unified general functions."""
 
 # global
+import time
 import einops
+import jax.numpy as jnp
 import pytest
 from hypothesis import given, strategies as st
 import numpy as np
@@ -1089,55 +1091,34 @@ def test_cache_fn_with_args(device, call):
 
 
 def test_framework_setting_with_threading(device, call):
-    # with open('biggestmainmain'+'.txt', 'w') as f:
-        # f.write('---------------BEGIN------------------')
-        if call is helpers.np_call:
+        if call is helpers.jnp_call:
             # Numpy is the conflicting framework being tested against
             pytest.skip()
 
-        def thread_fn(lock,lock2):
-            x_ = np.array([0., 1., 2.])
-            lock.acquire()
-            ivy.set_framework('numpy')
-            ivy_ = ivy.unset_framework()
-            lock.release()
-            for i in range(2000):
+        def thread_fn():
+            x_ = jnp.array([0., 1., 2.])
+            ivy.set_framework('jax')
+            for _ in range(2000):
                     try:
-                        if not lock.locked():
-                            # lock2.acquire()
-                            # f.write(str(ivy_dict['current_framework_str']())+str(i)+'  thread\n')
-                            # lock2.release()
-                            ivy_.mean(x_)
-                        else:
-                            i = i-1
+                        ivy.mean(x_)
                     except TypeError:
                         return False
+            ivy.unset_framework()
             return True
 
         # get original framework string and array
         fws = ivy.current_framework_str()
-        lock = threading.Lock()
-        lock2 = threading.Lock()
         x = ivy.array([0., 1., 2.])
 
-        # start numpy loop thread
-        thread = threading.Thread(target=thread_fn,args=[lock,lock2])
+        # start jax loop thread
+        thread = threading.Thread(target=thread_fn)
         thread.start()
-
+        time.sleep(0.01)
         # start local original framework loop
-        lock.acquire()
         ivy.set_framework(fws)
-        lock.release()
-        for i in range(2000):
-                if not lock.locked():
-                # lock2.acquire()
-                # f.write(str(ivy.backend)+str(i)+'  main\n')
-                # lock2.release()
+        for _ in range(2000):
                     ivy.mean(x)
-                else:
-                    i-=1
         ivy.unset_framework()
-
         assert not thread.join()
 
 
