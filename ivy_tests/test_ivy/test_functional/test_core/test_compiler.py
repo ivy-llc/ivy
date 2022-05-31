@@ -1,7 +1,6 @@
 """Collection of tests for unified general functions."""
 
 # global
-import pytest
 import numpy as np
 from numbers import Number
 from hypothesis import given, strategies as st
