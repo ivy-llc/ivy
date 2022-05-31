@@ -612,7 +612,44 @@ def svdvals(
         length ``K``, where K = min(M, N). The values are sorted in descending order by
         magnitude.
 
+    Examples
+    --------
+    1. x is 'ivy.Array'
+
+    >>> x = ivy.random_normal(shape = (8, 6))
+    >>> S = ivy.svd(x)
+    >>> print(S.shape)
+    (6,)
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> pring(SS.shape)
+    (6,)
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0.00e+00, 2.38e-07, 2.38e-07, 2.38e-07, 0.00e+00, 1.19e-07])
+
+    2. x is 'ivy.NativeArray'
+
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0],[2.0, 3.0, 4.0], [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> print(x.shape)
+    (4, 3)
+    >>> S = ivy.svdvals(x)
+    >>> print(S)
+    ivy.array([10.3  ,  1.16 ,  0.615])
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> print(SS)
+    ivy.array([10.3  ,  1.16 ,  0.615])
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+
     """
+
     return _cur_backend(x).svdvals(x)
 
 
