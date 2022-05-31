@@ -4,7 +4,7 @@
 import os
 import time
 import numpy as np
-from typing import Optional, Union
+from typing import Union
 
 # local
 import ivy
@@ -44,7 +44,9 @@ def gpu_is_available() -> bool:
     return False
 
 
-def _to_dev(x: np.ndarray, *, device) -> np.ndarray:
+# private version of to_dev to be used in backend implementations
+def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
+    """private version of `to_dev` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
             raise Exception(
@@ -61,10 +63,21 @@ def _to_dev(x: np.ndarray, *, device) -> np.ndarray:
     return x
 
 
-# bind to_dev to _to_dev
-# _to_dev is imported in creation, so to minimize
-# changes, we bind it to to_dev
-to_dev = _to_dev
+def to_dev(x: np.ndarray, *, device: str) -> np.ndarray:
+    if device is not None:
+        if "gpu" in device:
+            raise Exception(
+                "Native Numpy does not support GPU placement, "
+                "consider using Jax instead"
+            )
+        elif "cpu" in device:
+            pass
+        else:
+            raise Exception(
+                "Invalid device specified, must be in the form "
+                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+            )
+    return x
 
 
 class Profiler(BaseProfiler):
