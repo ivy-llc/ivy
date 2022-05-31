@@ -190,7 +190,10 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
             indices = jnp.expand_dims(indices, -1)
-    updates = [updates] if isinstance(updates, Number) else updates
+
+    # keep below commented out, array API tests are passing without this
+    # updates = [updates] if isinstance(updates, Number) else updates
+
     updates = jnp.array(
         updates,
         dtype=ivy.dtype(tensor, as_native=True)

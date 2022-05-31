@@ -211,7 +211,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_dev(target, device=device)
 
 
 def gather(
