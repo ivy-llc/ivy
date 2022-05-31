@@ -47,7 +47,7 @@ and has simple logic in the constructor to verify that the string formatting is 
 All data types can be queried as attributes of the :code:`ivy` namespace, such as :code:`ivy.float32` etc.
 
 In addition, *native* data types are `also specified`_ at import time.
-Likewise, these are all initially set as `ivy.Dtype`_ instances.
+Likewise, these are all *initially* set as `ivy.Dtype`_ instances.
 
 There is also an :code:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
 
@@ -56,7 +56,7 @@ The following `tuples`_ are also defined: :code:`all_dtypes`, :code:`all_numeric
 Each of these tuples is also replicated in a new set of four `valid tuples`_
 and a set of four `invalid tuples`_.
 When no backend is set, all data types are assumed to be valid, and so the :code:`invalid` tuples are all empty,
-and the :code:`valid` tuples are set as equal to the original four tuples.
+and the :code:`valid` tuples are set as equal to the original four *"all"* tuples.
 
 However, when a backend is set, then some of these are updated.
 Firstly, the :code:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
@@ -74,7 +74,7 @@ are also left unmodified.
 Importantly, we must ensure that unsupported data types are removed from the :code:`ivy` namespace.
 For example, torch supports :code:`uint8`, but does not support :code:`uint16`, :code:`uint32` or :code:`uint64`.
 Therefore, after setting a torch backend via :code:`ivy.set_backend('torch')`,
-we should not longer be able to access :code:`ivy.uint16`.
+we should no longer be able to access :code:`ivy.uint16`.
 This is `handled`_ in :code:`ivy.set_backend`.
 
 Data Type Module
@@ -86,15 +86,14 @@ A few examples include
 :code:`ivy.broadcast_to` which broadcasts an array to a specified shape,
 and :code:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
-Many functions are *convenience* functions, which means that they do not directly modify arrays,
-as explained in the :ref:`Function Types` section.
+Many functions in the :code:`data_type.py` module are *convenience* functions,
+which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
 
-For example,
-`ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules,
-`ivy.dtype`_ which gets the data type for the input array,
-`ivy.set_default_dtype`_ which sets the global default data dtype,
-and `ivy.default_dtype`_ which returns the correct data type to use,
-are all convenience functions.
+For example, the following are all convenience functions:
+`ivy.can_cast`_, which determines if one data type can be cast to another data type according to type-promotion rules,
+`ivy.dtype`_, which gets the data type for the input array,
+`ivy.set_default_dtype`_, which sets the global default data dtype,
+and `ivy.default_dtype`_, which returns the correct data type to use.
 
 `ivy.default_dtype`_ is arguably the most important function.
 Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
@@ -127,7 +126,7 @@ Overall, `ivy.default_dtype`_ infers the data type as follows:
    This will either return the globally set default :code:`int` or globally set default :code:`float` \
    (settable via :code:`ivy.set_default_int_dtype` and :code:`ivy.set_default_float_dtype` respectively). \
    An example of a *relevant* scalar is :code:`start` in the function :code:`ivy.arange`, \
-   which is used to set the starting value of the returned array.\
+   which is used to set the starting value of the returned array. \
    Examples of *irrelevant* scalars which should **not** be used for determining the data type are :code:`axis`, \
    :code:`axes`, :code:`dims` etc. which must be integers, and control other configurations of the function \
    being called, with no bearing at all on the data types used by that function.
