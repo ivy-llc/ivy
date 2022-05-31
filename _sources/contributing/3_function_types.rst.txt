@@ -177,8 +177,8 @@ is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_
 in the :code:`ivy` module during `backend setting`_.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
-Under the hood, the static :code:`ivy.Container` methods are called when :code:`ivy.Container` instances are passed in
-as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
+Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
+in as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
 
 Convenience Functions
 ---------------------

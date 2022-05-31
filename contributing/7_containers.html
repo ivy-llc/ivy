@@ -159,8 +159,8 @@ All methods of the <code class="code docutils literal notranslate"><span class="
 and almost all of them directly wrap a function in the functional API.</p>
 <p>For the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
 for performing nested operations on the leaves of the container for example.
-In addition, there are also static methods, which are not present in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
-Overall, this results in the following five mutually exclusive groups of methods.
+In addition, there are also static methods.
+Overall, this results in the following five mutually exclusive groups of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods.
 Each of these are explained in the following sub-sections.</p>
 <ol class="arabic simple">
 <li><p>Container instance methods</p></li>
@@ -174,7 +174,7 @@ Each of these are explained in the following sub-sections.</p>
 <p>Container instance methods are methods which are specific to the container itself.
 A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030">ivy.Container.map</a> which is used for mapping a function to all leaves of the container,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490">ivy.Container.all_true</a> which determines if all container leaves evaluate to boolean <cite>True</cite>,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019">ivy.Container.to_iterator</a> returns an iterator for traversing the leaves of the container.</p>
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019">ivy.Container.to_iterator</a> which returns an iterator for traversing the leaves of the container.</p>
 <p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
 </section>
 <section id="container-static-methods">
@@ -198,20 +198,21 @@ which is explained in detail in the <a class="reference internal" href="3_functi
 of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
 When multiple containers are passed, this mapping is only applied to their shared nested structure,
 with the mapping applied to each of these leaves.</p>
-<p>In such cases, the function in the functional API defers to the <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
+<p>In such cases, the function in the functional API defers to this <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
 Under the hood, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> enables us to pass in arbitrary combinations of containers
 and non-containers, and perform the correct mapping across the leaves.
 Internally, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.multi_map_in_static_method</span></code> calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>.
 In cases where there are no containers passed,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> will simply call the function once on the arguments provided.</p>
-<p>A few examples are <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135">ivy.Container.static_roll</a>.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> will simply call the function once on the non-container arguments provided.</p>
+<p>A few examples of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135">ivy.Container.static_roll</a>.</p>
 <p>As with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 given the simple set of rules which underpin how these static methods should all be implemented,
 if a source-code implementation is not found,
 then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199">static method is added</a> programmatically.
 This serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
 <p>The benefit of the source code implementations is that this makes the code much more readable,
-without important methods being entirely absent.
+with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
 </section>
 <section id="api-instance-methods">
@@ -235,7 +236,7 @@ if a source-code implementation is not found,
 then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L173">instance method is added</a> programmatically.
 Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
 <p>Again, the benefit of the source code implementations is that this makes the code much more readable,
-without important methods being entirely absent.
+with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
 </section>
 <section id="api-special-methods">
