@@ -14,27 +14,23 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # linear
-@given(bs_ic_oc=st.sampled_from(
-    [
-        (
-            [1, 2],
-            4,
-            5
-        ),
-    ]
-),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    with_v=st.booleans(),
-    as_variable=st.booleans(),
-)
+@given(batch_shape=helpers.lists(st.integers(1, 2),
+                                 min_size="num_dims",
+                                 max_size="num_dims",
+                                 size_bounds=[1, 2]),
+       input_channels=st.integers(2, 4),
+       output_channels=st.integers(2, 5),
+       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+       with_v=st.booleans(),
+       as_variable=st.booleans(),
+       )
 def test_linear_layer_training(
-    bs_ic_oc, with_v, dtype, as_variable, device, compile_graph, call
+    batch_shape, input_channels, output_channels, with_v, dtype, as_variable, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         return
-    batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(
             ivy.zeros(batch_shape, device=device),
