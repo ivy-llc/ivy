@@ -205,7 +205,7 @@ def unique_counts(
 
     With :code: 'ivy.Array' input:
 
-    >>> x = ivy.Array([1,2,1,3,4,1,3])
+    >>> x = ivy.array([1,2,1,3,4,1,3])
     >>> y = unique_counts(x)
     >>> print(y)
     Tuple([1,2,3,4],[3,1,2,1])
@@ -227,7 +227,7 @@ def unique_counts(
 
     Using :code:`ivy.Array` instance method:
     >>> x = ivy.Array([0., 1., 3. , 2. , 1. , 0.])
-    >>> y = unique_counts(x)
+    >>> y = x.unique_counts()
     >>> print(y)
     Tuple([0., 1., 2., 3.],[2,2,1,1])
     """

@@ -13,7 +13,7 @@ def unique_inverse(
 
 
 def unique_counts(
-    x: mx.nd.NDArray,
+     x: mx.nd.NDArray,
 ) -> Tuple[mx.nd.NDArray, mx.nd.NDArray]:
     uc = namedtuple("uc", ["values", "counts"])
     v, c = mx.unique(x, return_counts=True)
