@@ -295,7 +295,7 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _sum_unify(containers, device, _=None, _1=None):
-        return sum([cont.to_dev(device) for cont in containers.values()])
+        return sum([cont.to_dev(device) for cont in containers.values()],start=ivy.zeros([]))
 
     @staticmethod
     def _mean_unify(containers, device, _=None, _1=None):

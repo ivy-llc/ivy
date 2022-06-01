@@ -1090,7 +1090,7 @@ def _concat_unify_array(xs, device, axis):
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
-    return sum([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()])
+    return sum([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()],start=ivy.zeros([]))
 
 
 # noinspection PyShadowingNames

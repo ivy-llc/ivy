@@ -1096,17 +1096,17 @@ def test_framework_setting_with_threading(device, call):
 
         def thread_fn():
             x_ = jnp.array([0., 1., 2.])
-            ivy.set_framework('jax')
+            ivy.set_backend('jax')
             for _ in range(2000):
                     try:
                         ivy.mean(x_)
                     except TypeError:
                         return False
-            ivy.unset_framework()
+            ivy.unset_backend()
             return True
 
         # get original framework string and array
-        fws = ivy.current_framework_str()
+        fws = ivy.current_backend_str()
         x = ivy.array([0., 1., 2.])
 
         # start jax loop thread
@@ -1114,10 +1114,10 @@ def test_framework_setting_with_threading(device, call):
         thread.start()
         time.sleep(0.01)
         # start local original framework loop
-        ivy.set_framework(fws)
+        ivy.set_backend(fws)
         for _ in range(2000):
                     ivy.mean(x)
-        ivy.unset_framework()
+        ivy.unset_backend()
         assert not thread.join()
 
 

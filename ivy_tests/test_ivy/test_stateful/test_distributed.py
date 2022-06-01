@@ -461,7 +461,7 @@ def test_to_ivy_module_distributed_multiprocess(
     x = ivy.DevDistItem(xs)
 
     # ivy module
-    natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
+    natvie_module_class = NATIVE_MODULES[ivy.current_backend_str()]
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(
             native_module_class=natvie_module_class,
