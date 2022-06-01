@@ -41,7 +41,9 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
 
     # make both arrays contiguous if not already
