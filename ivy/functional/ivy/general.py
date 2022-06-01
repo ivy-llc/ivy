@@ -830,7 +830,7 @@ def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
-    **axes_lengths: Dict[str, int]
+    **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Perform einops reduce operation on input array x.
 
@@ -1253,6 +1253,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
@@ -1282,7 +1283,7 @@ def scatter_flat(
 
     """
     return _cur_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction, device
+        indices, updates, size, tensor, reduction, device=device
     )
 
 
@@ -1293,6 +1294,7 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
@@ -1323,7 +1325,7 @@ def scatter_nd(
 
     """
     return _cur_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction, device
+        indices, updates, shape, tensor, reduction, device=device
     )
 
 
@@ -1332,6 +1334,7 @@ def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1358,13 +1361,14 @@ def gather(
         axis.
 
     """
-    return _cur_backend(params).gather(params, indices, axis, device, out=out)
+    return _cur_backend(params).gather(params, indices, axis, device=device, out=out)
 
 
 # noinspection PyShadowingNames
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
@@ -1385,7 +1389,7 @@ def gather_nd(
         New array of given shape, with the values gathered at the indices.
 
     """
-    return _cur_backend(params).gather_nd(params, indices, device)
+    return _cur_backend(params).gather_nd(params, indices, device=device)
 
 
 def multiprocessing(context: str = None):
@@ -1429,6 +1433,7 @@ def indices_where(
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array.
@@ -1450,7 +1455,7 @@ def one_hot(
         overrides.
 
     """
-    return _cur_backend(indices).one_hot(indices, depth, device)
+    return _cur_backend(indices).one_hot(indices, depth, device=device)
 
 
 def shape(
