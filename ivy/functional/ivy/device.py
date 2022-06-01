@@ -1090,7 +1090,9 @@ def _concat_unify_array(xs, device, axis):
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
-    return sum([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()],start=ivy.zeros([]))
+    return sum(
+        [ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], start=ivy.zeros([])
+    )
 
 
 # noinspection PyShadowingNames
@@ -1235,10 +1237,14 @@ def dev_unify_nest(
     args = args._data if isinstance(args, MultiDevIter) else args
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(
-        args, lambda x: dev_unify(x, device=device, mode=mode, axis=axis), max_depth=max_depth
+        args,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     kwargs_uni = ivy.nested_map(
-        kwargs, lambda x: dev_unify(x, device=device, mode=mode, axis=axis), max_depth=max_depth
+        kwargs,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     return args_uni, kwargs_uni
 
