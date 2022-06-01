@@ -1373,21 +1373,63 @@ def sin(
 
 
 def negative(
-    x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Computes the numerical negative of each element.
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
+    """ Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the input array x.
 
     Parameters
     ----------
     x
         Input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         an array containing the evaluated result for each element in x
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0,1,1,2])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 0, -1, -1, -2])
+
+    >>> x = ivy.array([0,-1,-0.5,2,3])
+    >>> y = ivy.zeros(5)
+    >>> ivy.negative(x,out=y)
+    >>> print(y)
+    ivy.array([-0. ,  1. ,  0.5, -2. , -3. ], dtype=float32)
+
+    >>> x = ivy.array([[1.1,2.2,3.3], \
+                       [-4.4,-5.5,-6.6]])
+    >>> ivy.negative(x,out=x)
+    >>> print(x)
+    ivy.array([[-1.1, -2.2, -3.3],
+               [ 4.4,  5.5,  6.6]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([-1.1,-1,0,1,1.1])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -1. , -1.1], dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]), b=ivy.array([3.,4.,-5.]))
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0., -1., -2.], dtype=float32),
+        b: ivy.array([-3., -4., 5.], dtype=float32)
+    }
     """
     return _cur_backend(x).negative(x, out)
 
