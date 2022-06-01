@@ -101,7 +101,9 @@ def unstack(x, axis, keepdims=False):
     return [jnp.squeeze(item, axis) for item in x_split]
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data = val_native
