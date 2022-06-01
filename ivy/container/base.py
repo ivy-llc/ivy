@@ -1420,7 +1420,9 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(self, dict_in, **config):
+    def inplace_update(
+        self, dict_in: Union[ivy.Container, dict], **config
+    ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
         container.
 
