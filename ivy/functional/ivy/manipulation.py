@@ -12,12 +12,12 @@ from ivy.backend_handler import current_backend as _cur_backend
 
 
 def roll(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
     beyond the first position are re-introduced at the last position.
@@ -452,12 +452,12 @@ def reshape(
 
 def concat(
     xs: Union[
-        Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-        List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        List[Union[ivy.Array, ivy.NativeArray]],
     ],
     axis: Optional[int] = 0,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Casts an array to a specified type.
 
     Parameters
@@ -490,11 +490,11 @@ def concat(
 
 
 def split(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -700,8 +700,8 @@ def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
     x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
