@@ -873,12 +873,12 @@ def get_axis(draw, dtype):
     res = np.asarray(draw(array_values(
         dtype=dtype,
         shape=shape,
-        min_value=np.nextafter(0, 1)*1e50 if dtype == 'float64' else None
+        min_value=np.nextafter(0, 1) * 1e50 if dtype == 'float64' else None
     )))
     axes = len(shape)
     axis = draw(st.none()
-                | st.integers(-axes, axes-1)
-                | st.lists(st.integers(-axes, axes-1),
+                | st.integers(-axes, axes - 1)
+                | st.lists(st.integers(-axes, axes - 1),
                            min_size=1,
                            max_size=axes,
                            unique_by=lambda x: shape[x]))
