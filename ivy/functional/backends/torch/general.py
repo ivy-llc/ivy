@@ -150,7 +150,8 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    *,
+    device: torch.device
 ):
     target = tensor
     target_given = ivy.exists(target)
@@ -218,7 +219,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
 
     # handle numeric updates
     updates = torch.tensor(
@@ -349,25 +350,19 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
-    out: Optional[torch.Tensor] = None,
+    *,
+    device: torch.device
 ) -> torch.Tensor:
 
     if device is None:
         device = _callable_dev(params)
-    ret = torch.gather(params, axis, indices.type(torch.int64)).to(
+    return torch.gather(params, axis, indices.type(torch.int64)).to(
         as_native_dev(device)
     )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    else:
-        return ret
 
 
 # noinspection PyShadowingNames
-def gather_nd(
-    params, indices, device: Optional[Union[ivy.Device, torch.device]] = None
-):
+def gather_nd(params, indices, *, device: torch.device):
     if device is None:
         device = _callable_dev(params)
     indices_shape = indices.shape
@@ -411,9 +406,7 @@ def indices_where(x):
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(
-    indices, depth: int, device: Optional[Union[ivy.Device, torch.device]] = None
-):
+def one_hot(indices, depth: int, *, device: torch.device):
     if device is None:
         device = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
