@@ -585,11 +585,101 @@ def repeat(
     axis
         The axis along which to repeat values. By default, use the flattened input
         array, and return a flat output array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         The repeated output array.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. The descriptions above assume an array
+    input for simplicity, but the method also accepts :code:`ivy.Container` instances in
+    place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the
+    type hints and also the examples below.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> y = ivy.repeat(x, repeats=2)
+    >>> print(y)
+    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+
+    >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4]])
+    >>> y = ivy.repeat(x, repeats=2)
+    >>> print(y)
+    ivy.array([1.1, 1.1, 2.2, 2.2, 3.3, 3.3, 4.4, 4.4])
+    
+    >>> x = ivy.array([[-1, -2], [-3, -4]])
+    >>> y = ivy.zeros((4, 2))
+    >>> ivy.repeat(x, repeats=2, axis=0, out=y)
+    ivy.array([[-1, -2],
+           [-1, -2],
+           [-3, -4],
+           [-3, -4]])
+    >>> print(y)
+    ivy.array([[-1, -2],
+           [-1, -2],
+           [-3, -4],
+           [-3, -4]])
+
+    >>> x = ivy.array([[1.2, 2.5, 3.4], [4.6, 5.1, 6.4], \
+                        [-7, 0.8, 19], [10.5, 1.1, -12]])
+    >>> ivy.repeat(x, repeats=ivy.array([1,2,3]), axis=1, out=x)
+    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
+           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
+           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
+           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+    >>> print(x)
+    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
+           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
+           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
+           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+           
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([1, 2, 3, 4])
+    >>> y = ivy.repeat(x, repeats=2)
+    >>> print(y)
+    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.repeat(x, repeats=2)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 1., 2., 2.]),
+        b: ivy.array([3., 3., 4., 4., 5., 5.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[0., 1.],[ 2.,3.]])
+    >>> y = x.repeat(2,axis=1)
+    >>> print(y)
+    ivy.array([[0., 0., 1., 1.],
+           [2., 2., 3., 3.]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([10., 11., 12.]), \
+                          b=ivy.array([13., 14., 15.]))
+    >>> y = x.repeat(2)
+    >>> print(y)
+    {
+    a: ivy.array([10., 10., 11., 11., 12., 12.]),
+    b: ivy.array([13., 13., 14., 14., 15., 15.])
+    }
 
     """
     return _cur_backend(x).repeat(x, repeats, axis, out)
