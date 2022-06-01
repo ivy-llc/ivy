@@ -16,8 +16,7 @@ from typing import Optional
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
-except (nvidia_smi.NVMLError_LibraryNotFound,
-        nvidia_smi.NVMLError_DriverNotLoaded):
+except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
     pass
 from typing import Union, Type, Callable, Iterable, Dict, Any
 

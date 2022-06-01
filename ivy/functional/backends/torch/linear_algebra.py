@@ -183,10 +183,7 @@ def trace(
     return ret
 
 
-def det(
-        x: torch.Tensor,
-        out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def det(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
 
 
