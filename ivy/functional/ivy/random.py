@@ -16,6 +16,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
@@ -56,6 +57,7 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
@@ -94,6 +96,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
@@ -179,6 +182,7 @@ def randint(
     low: int,
     high: int,
     shape: Union[int, Tuple[int, ...]],
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Returns an array filled with random integers generated uniformly between
@@ -233,7 +237,7 @@ def randint(
        [ 8, 11,  3]])
 
     """
-    return _cur_backend().randint(low, high, shape, device)
+    return _cur_backend().randint(low, high, shape, device=device)
 
 
 def seed(seed_value: int = 0) -> None:
