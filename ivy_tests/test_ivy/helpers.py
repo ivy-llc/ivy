@@ -625,7 +625,7 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):
-        values.append(draw(array_values(dtype=dtype[i], shape=(size), allow_inf=allow_inf)))
+        values.append(draw(array_values(dtype=dtype[i], shape=size, allow_inf=allow_inf)))
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
@@ -663,8 +663,11 @@ def array_values(draw,
                  exclude_min=False,
                  exclude_max=False):
     size = 1
-    for dim in shape:
-        size *= dim
+    if type(shape) != tuple:
+        size = shape
+    else:
+        for dim in shape:
+            size *= dim
     if 'int' in dtype:
         if dtype == "int8":
             min_value = min_value if min_value else -128
@@ -720,7 +723,9 @@ def array_values(draw,
                                                exclude_max=exclude_max), size))
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
-    array = np.array(values).reshape(shape)
+    array = np.array(values)
+    if type(shape) == tuple:
+        array = array.reshape(shape)
     return array.tolist()
 
 
