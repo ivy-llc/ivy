@@ -63,8 +63,16 @@ def test_min(
 ):
     input_dtype, x = dtype_and_x
     assume(x)
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "min", x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "min",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # max
@@ -89,8 +97,16 @@ def test_max(
 ):
     input_dtype, x = dtype_and_x
     assume(x)
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "max", x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "max",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # mean
@@ -114,8 +130,17 @@ def test_mean(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "mean", rtol=1e-1, x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "mean",
+                                rtol=1e-1,
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # var
@@ -139,8 +164,16 @@ def test_var(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "var", x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "var",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # prod
@@ -166,8 +199,16 @@ def test_prod(
     input_dtype, x = dtype_and_x
     if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "prod", x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "prod",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # sum
@@ -193,8 +234,17 @@ def test_sum(
     input_dtype, x = dtype_and_x
     if fw == "torch" and ivy.is_int_dtype(input_dtype):
         return
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "sum", rtol=1e-2, x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "sum",
+                                rtol=1e-2,
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # std
@@ -218,8 +268,18 @@ def test_std(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(input_dtype, as_variable, with_out, num_positional_args, native_array, container,
-                                instance_method, fw, "std", rtol=1e-2, atol=1e-2, x=np.asarray(x, dtype=input_dtype))
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "std",
+                                rtol=1e-2,
+                                atol=1e-2,
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # einsum
