@@ -58,9 +58,9 @@ def multinomial(
             )
             / population_size
         )
-    return torch.multinomial(probs.float(),
-                             num_samples,
-                             replace).to(default_device(device))
+    return torch.multinomial(probs.float(), num_samples, replace).to(
+        default_device(device)
+    )
 
 
 def randint(

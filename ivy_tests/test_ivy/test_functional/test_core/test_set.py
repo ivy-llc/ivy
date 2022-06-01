@@ -8,28 +8,30 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # unique_values
-@given(array_shape=helpers.lists(
-    st.integers(1, 3),
-    min_size="num_dims",
-    max_size="num_dims",
-    size_bounds=[1, 3]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans())
-def test_unique_values(array_shape,
-                       dtype,
-                       as_variable,
-                       with_out,
-                       num_positional_args,
-                       native_array,
-                       container,
-                       instance_method,
-                       fw,
-                       device):
+    instance_method=st.booleans(),
+)
+def test_unique_values(
+    array_shape,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     if fw == "torch" and ("int" in dtype or "16" in dtype):
         return
 
@@ -46,29 +48,32 @@ def test_unique_values(array_shape,
         instance_method,
         fw,
         "unique_values",
-        x=x)
+        x=x,
+    )
 
 
-@given(array_shape=helpers.lists(
-    st.integers(1, 5),
-    min_size="num_dims",
-    max_size="num_dims",
-    size_bounds=[1, 5]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans())
-def test_unique_all(array_shape,
-                    dtype,
-                    as_variable,
-                    num_positional_args,
-                    native_array,
-                    container,
-                    instance_method,
-                    fw,
-                    device):
+    instance_method=st.booleans(),
+)
+def test_unique_all(
+    array_shape,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     if fw == "torch" and ("int" in dtype or "16" in dtype):
         return
 
@@ -85,36 +90,38 @@ def test_unique_all(array_shape,
         instance_method,
         fw,
         "unique_all",
-        x=x)
+        x=x,
+    )
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 5),
-    min_size="num_dims",
-    max_size="num_dims",
-    size_bounds=[2, 5]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans())
-def test_unique_counts(array_shape,
-                       dtype,
-                       data,
-                       as_variable,
-                       num_positional_args,
-                       native_array,
-                       container,
-                       instance_method,
-                       fw,
-                       device):
+    instance_method=st.booleans(),
+)
+def test_unique_counts(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     if fw == "torch" and ("int" in dtype or "16" in dtype):
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape,
-                                     dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
 
     helpers.test_array_function(
         dtype,
@@ -126,37 +133,39 @@ def test_unique_counts(array_shape,
         instance_method,
         fw,
         "unique_counts",
-        x=x)
+        x=x,
+    )
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 5),
-    min_size="num_dims",
-    max_size="num_dims",
-    size_bounds=[2, 5]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 2),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans())
-def test_unique_inverse(array_shape,
-                       dtype,
-                       data,
-                       as_variable,
-                       num_positional_args,
-                       native_array,
-                       container,
-                       instance_method,
-                       fw,
-                       device):
+    instance_method=st.booleans(),
+)
+def test_unique_inverse(
+    array_shape,
+    dtype,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
 
     if fw == "torch" and ("int" in dtype or "16" in dtype):
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape,
-                                     dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
 
     helpers.test_array_function(
         dtype,
@@ -168,4 +177,5 @@ def test_unique_inverse(array_shape,
         instance_method,
         fw,
         "unique_inverse",
-        x=x)
+        x=x,
+    )

@@ -66,7 +66,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 

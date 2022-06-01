@@ -702,7 +702,7 @@ def vecdot(
 
 
 def det(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
 ) -> Union[ivy.Array, ivy.Container]:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
