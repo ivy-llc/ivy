@@ -18,7 +18,7 @@ from ivy import (
 # -------------------#
 
 
-def asarray(object_in, dtype=None, device=None, copy=None):
+def asarray(object_in, *, copy=None, dtype: tf.DType, device: str):
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         if copy:
@@ -199,7 +199,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: tf.DType, device: str):
 
     if stop is None:
         stop = start

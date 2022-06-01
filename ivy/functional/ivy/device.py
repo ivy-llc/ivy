@@ -16,7 +16,8 @@ from typing import Optional
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
-except nvidia_smi.NVMLError_LibraryNotFound:
+except (nvidia_smi.NVMLError_LibraryNotFound,
+        nvidia_smi.NVMLError_DriverNotLoaded):
     pass
 from typing import Union, Type, Callable, Iterable, Dict, Any
 
@@ -185,7 +186,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     Returns
     -------
@@ -205,7 +206,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     """
     return _cur_backend(None).clear_mem_on_dev(device)
@@ -219,7 +220,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     Returns
     -------
@@ -250,7 +251,7 @@ def used_mem_on_dev(
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
     process_specific
         Whether the check the memory used by this python process alone. Default is
         False.
@@ -290,7 +291,7 @@ def percent_used_mem_on_dev(
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
     process_specific
         Whether the check the memory used by this python process alone. Default is
         False.
@@ -485,8 +486,9 @@ def unset_default_device():
 # noinspection PyShadowingNames
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    device: Union[ivy.Device, ivy.NativeDevice],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -511,7 +513,7 @@ def to_dev(
     >>> x = ivy.to_dev(x, 'cpu')
 
     """
-    return _cur_backend(x).to_dev(x, device, out)
+    return _cur_backend(x).to_dev(x, device=device, out=out)
 
 
 # Function Splitting #

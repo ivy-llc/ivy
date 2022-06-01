@@ -16,6 +16,7 @@ def arange(
     start: Number,
     stop: Optional[Number] = None,
     step: Number = 1,
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -57,13 +58,15 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_backend().arange(start, stop, step, dtype, device)
+    return _cur_backend().arange(start, stop, step, dtype=dtype, device=device)
 
 
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    *,
+    copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
 ) -> ivy.Array:
     """Converts the input to an array.
 
@@ -83,7 +86,7 @@ def asarray(
         An array interpretation of x.
 
     """
-    return _cur_backend().asarray(x, dtype=dtype, device=device)
+    return _cur_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
 def zeros(

@@ -236,7 +236,7 @@ def randint(
     return _cur_backend().randint(low, high, shape, device)
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -244,6 +244,10 @@ def seed(seed_value=0):
     seed_value
         Seed for random number generation, must be a positive integer.
         (Default value = 0)
+
+    Examples
+    --------
+    >>> ivy.seed(42)
 
     """
     return _cur_backend().seed(seed_value)
