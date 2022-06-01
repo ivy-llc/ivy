@@ -41,9 +41,8 @@ def _fn_2(x, with_non_compiled: bool = False):
     with_array_caching=st.booleans()
 )
 def test_compile(data, dtype, as_variable, with_array_caching, device, call):
-    if dtype == 'float16':
-        return
-    x = data.draw(helpers.get_float_array(dtype, allow_negative=False))
+    shape = data.draw(helpers.get_shape())
+    x = data.draw(helpers.array_values(dtype=dtype, shape=shape, allow_negative=False))
     # smoke test
     if (
         (isinstance(x, Number) or len(x) == 0)

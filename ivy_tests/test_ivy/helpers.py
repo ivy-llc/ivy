@@ -667,7 +667,8 @@ def array_values(draw,
                  allow_subnormal=False,
                  allow_inf=False,
                  exclude_min=False,
-                 exclude_max=False):
+                 exclude_max=False,
+                 allow_negative=True):
     size = 1
     if type(shape) != tuple:
         size = shape
@@ -730,6 +731,8 @@ def array_values(draw,
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     array = np.array(values)
+    if dtype != 'bool' and not allow_negative:
+        array = np.abs(array)
     if type(shape) == tuple:
         array = array.reshape(shape)
     return array.tolist()
