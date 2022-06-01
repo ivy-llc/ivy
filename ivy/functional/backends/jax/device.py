@@ -3,7 +3,7 @@
 # global
 import os
 import jax
-from typing import Union, Optional
+from typing import Union
 import jaxlib.xla_extension
 
 # local
