@@ -835,3 +835,31 @@ def get_float_array(draw, dtype, allow_nan=False, allow_negative=True):
     if not allow_negative:
         res = np.abs(res)
     return res.tolist()
+
+
+@st.composite
+def get_axis(draw, dtype):
+    shape = draw(get_shape(allow_none=False, min_size=1))
+    res = np.asarray(draw(
+        xps.arrays(dtype,
+                   shape,
+                   elements=xps.from_dtype(
+                       dtype,
+                       min_value=np.nextafter(0, 1)*1e50 if dtype == 'float64' else 0)
+                   )
+    ))
+    axes = len(shape)
+    axis = draw(st.none()
+                | st.integers(-axes, axes-1)
+                | st.lists(st.integers(-axes, axes-1),
+                           min_size=1,
+                           max_size=axes,
+                           unique_by=lambda x: shape[x]))
+    if type(axis) == list:
+        def sort_key(ele, max_len):
+            if ele < 0:
+                return ele + max_len - 1
+            return ele
+        axis.sort(key=(lambda ele: sort_key(ele, axes)))
+        axis = tuple(axis)
+    return res, axis
