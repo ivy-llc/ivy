@@ -115,8 +115,8 @@ def empty_like(
 
 def asarray(
     object_in,
-    copy: Optional[bool] = None,
     *,
+    copy: Optional[bool] = None,
     dtype: jnp.dtype, 
     device: jaxlib.xla_extension.Device
 ):
@@ -134,6 +134,7 @@ def asarray(
             return _to_dev(jnp.asarray(object_in, dtype=dtype), device=device)
     else:
         dtype = default_dtype(dtype, object_in)
+
     if copy is True:
         return _to_dev(jnp.array(object_in, dtype=dtype, copy=True), device=device)
     else:
