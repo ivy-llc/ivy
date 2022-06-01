@@ -120,8 +120,6 @@ def asarray(
     dtype: jnp.dtype, 
     device: jaxlib.xla_extension.Device
 ):
-    if copy is False:
-        raise ValueError
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
