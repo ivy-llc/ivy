@@ -210,14 +210,15 @@ def unique_counts(
     >>> print(y)
     Tuple([1,2,3,4],[3,1,2,1])
 
-    >>> x = ivy.Array([1,2,3,4],[2,3,4,5],[3,4,5,6])
+    >>> x = ivy.asarray([1,2,3,4],[2,3,4,5],[3,4,5,6])
     >>> y = unique_counts(x)
     >>> print(y)
     Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])
 
     With :code: 'ivy.NativeArray' input:
+
     >>> x = ivy.NativeArray([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
-    >>> y = unique_counts(x)
+    >>> y = ivy.unique_counts(x)
     >>> print(y)
     Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
 
