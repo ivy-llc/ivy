@@ -196,6 +196,110 @@ def flip(
         an output array having the same data type and shape as ``x`` and whose elements,
         relative to ``x``, are reordered.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.flip(x)
+    >>> print(y)
+    ivy.array([5, 4, 3])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, out=y)
+    ivy.array([[6, 5, 4],
+               [3, 2, 1]])
+    >>> print(y)
+    ivy.array([[6, 5, 4],
+               [3, 2, 1]])
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, axis=0, out=y)
+    ivy.array([[4, 5, 6],
+               [1, 2, 3]])
+    >>> print(y)
+    ivy.array([[4, 5, 6],
+               [1, 2, 3]])
+
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=[0, 1], out=x)
+    ivy.array([[[10, 11, 12],
+                [ 7,  8,  9]],
+
+               [[ 4,  5,  6],
+                [ 1,  2,  3]]])
+    >>> print(x)
+    ivy.array([[[10, 11, 12],
+                [ 7,  8,  9]],
+
+               [[ 4,  5,  6],
+                [ 1,  2,  3]]])
+
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=(2, 1), out=x)
+    ivy.array([[[ 6,  5,  4],
+                [ 3,  2,  1]],
+
+               [[12, 11, 10],
+                [ 9,  8,  7]]])
+    >>> print(x)
+    ivy.array([[[ 6,  5,  4],
+                [ 3,  2,  1]],
+
+               [[12, 11, 10],
+                [ 9,  8,  7]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.flip(x)
+    >>> print(y)
+    ivy.array([2., 1., 0.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+
+    >>> y = ivy.flip(x)
+    >>> print(y)
+    {
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.flip()
+    >>> print(y)
+    ivy.array([2., 1., 0.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.flip()
+    >>> print(y)
+    {
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
+    }
+
     """
     return _cur_backend(x).flip(x, axis, out)
 

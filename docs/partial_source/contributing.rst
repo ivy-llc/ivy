@@ -68,6 +68,8 @@ but you can also dive in at any stage! We're excited for you to get involved!  ğ
 | (p) :ref:`Ivy Tests`
 | How to add new Ivy tests for each function â“
 |
+| (q) :ref:`Building the Docs`
+| How to build the documentation locally ğŸ—ï¸
 
 .. toctree::
    :hidden:
@@ -90,3 +92,4 @@ but you can also dive in at any stage! We're excited for you to get involved!  ğ
    contributing/13_docstring_examples.rst
    contributing/14_array_api_tests.rst
    contributing/15_ivy_tests.rst
+   contributing/building_the_docs.rst
