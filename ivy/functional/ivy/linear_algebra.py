@@ -632,7 +632,8 @@ def svdvals(
 
     2. x is 'ivy.NativeArray'
 
-    >>> x = ivy.native_array([[1.0, 2.0, 3.0],[2.0, 3.0, 4.0], [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0],[2.0, 3.0, 4.0],\
+                              [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
     (4, 3)
     >>> S = ivy.svdvals(x)
@@ -649,7 +650,6 @@ def svdvals(
     ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
 
     """
-
     return _cur_backend(x).svdvals(x)
 
 
