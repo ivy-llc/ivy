@@ -43,11 +43,11 @@ def bitwise_left_shift(
 
 
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
@@ -1650,10 +1650,10 @@ def trunc(
 
 
 def abs(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
@@ -1689,10 +1689,10 @@ def abs(
 
 
 def tan(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
