@@ -461,12 +461,13 @@ def default_device(device=None, item=None, as_native: bool = None):
 
 
 # noinspection PyShadowingNames
-def set_default_device(device):
-    """Summary.
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
+    """Set the default device to `device
 
     Parameters
     ----------
     device
+        The device to set as the default device
 
     """
     global default_device_stack
