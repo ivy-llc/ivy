@@ -34,8 +34,17 @@ def test_stack_images(
     if fw == "torch" and input_dtype == "float16":
         return
     images = [img for img in ivy.random_normal(shape=shape)]
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "stack_images", images=images, desired_aspect_ratio=ratio)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "stack_images",
+                                images=images,
+                                desired_aspect_ratio=ratio)
 
 
 # linear_resample
@@ -62,8 +71,17 @@ def test_linear_resample(
         return
     x = ivy.random_normal(shape=shape)
     axis = random.randint(0, len(shape) - 1)
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "linear_resample", x=x, num_samples=num_samples, axis=axis)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "linear_resample",
+                                x=x,
+                                num_samples=num_samples, axis=axis)
 
 
 # bilinear_resample
@@ -94,8 +112,17 @@ def test_bilinear_resample(
         return
     x = ivy.random_normal(shape=batch_shape + h_w + [n_dims])
     warp = ivy.random_uniform(shape=batch_shape + [n_samples, 2])
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "bilinear_resample", x=x, warp=warp)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "bilinear_resample",
+                                x=x,
+                                warp=warp)
 
 
 # gradient_image
@@ -113,8 +140,16 @@ def test_gradient_image(
     if fw == "torch" and input_dtype == "float16":
         return
     x = ivy.random_normal(shape=shape)
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "gradient_image", x=x)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "gradient_image",
+                                x=x)
 
 
 # float_img_to_uint8_img
@@ -138,8 +173,16 @@ def test_float_img_to_uint8_img(
     if fw == "torch" and input_dtype == "float16":
         return
     x = ivy.random_normal(shape=shape)
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "float_img_to_uint8_img", x=x)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "float_img_to_uint8_img",
+                                x=x)
 
 
 # uint8_img_to_float_img
@@ -163,8 +206,16 @@ def test_uint8_img_to_float_img(
     if fw == "torch" and input_dtype == "float16":
         return
     x = ivy.randint(0, 256, shape=shape + [4])
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "uint8_img_to_float_img", x=x)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "uint8_img_to_float_img",
+                                x=x)
 
 
 # random_crop
@@ -191,5 +242,15 @@ def test_random_crop(
         return
     x = ivy.random_normal(shape=[3] + shape)
     crop_size = [random.randint(1, shape[-3] * 2), random.randint(1, shape[-2] * 2)]
-    helpers.test_array_function(input_dtype, as_variable, False, num_positional_args, native_array, container, False, fw,
-                                "random_crop", x=x, crop_size=crop_size, seed=seed)
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                False,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                False,
+                                fw,
+                                "random_crop",
+                                x=x,
+                                crop_size=crop_size,
+                                seed=seed)
