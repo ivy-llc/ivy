@@ -174,10 +174,7 @@ def trace(x: JaxArray, offset: int = 0, out: Optional[JaxArray] = None) -> JaxAr
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
-def det(
-        x: JaxArray,
-        out: Optional[JaxArray] = None
-) -> JaxArray:
+def det(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

@@ -56,7 +56,7 @@ def all(
         array must be a zero-dimensional array containing the test result; otherwise,
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
-        
+
     Functional Examples
     -------
     With :code:`ivy.Array` input:
@@ -79,7 +79,7 @@ def all(
     ivy.array(True)
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([1, 2, 3])
     >>> y = ivy.all(x)
     >>> print(y)
