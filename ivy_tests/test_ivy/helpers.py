@@ -750,8 +750,8 @@ def get_shape(draw,
     else:
         shape = draw(st.lists(st.integers(min_value=min_dim_size,
                                           max_value=max_dim_size),
-                                          min_size=min_num_dims,
-                                          max_size=max_num_dims))
+                              min_size=min_num_dims,
+                              max_size=max_num_dims))
     if shape is None:
         return shape
     return tuple(shape)
