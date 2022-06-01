@@ -8,33 +8,33 @@ Categorization
 
 Ivy uses the following categories taken from the `Array API Standard`_:
 
-* constants
-* creation
-* data_type
-* elementwise
-* linear_algebra
-* manipulation
-* searching
-* set
-* sorting
-* statistical
-* utility
+* `constants <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/constants.py>`_
+* `creation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/creation.py>`_
+* `data_type <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/data_type.py>`_
+* `elementwise <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/elementwise.py>`_
+* `linear_algebra <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/linear_algebra.py>`_
+* `manipulation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/manipulation.py>`_
+* `searching <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/searching.py>`_
+* `set <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/set.py>`_
+* `sorting <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/sorting.py>`_
+* `statistical <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/statistical.py>`_
+* `utility <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/utility.py>`_
 
 In addition to these, we also add the following categories,
 used for additional functions in Ivy that are not in the `Array API Standard`_:
 
-* activations
-* compilation
-* device
-* general
-* gradients
-* image
-* layers
-* losses
-* meta
-* nest
-* norms
-* random
+* `activations <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/activations.py>`_
+* `compilation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/compilation.py>`_
+* `device <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py>`_
+* `general <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py>`_
+* `gradients <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py>`_
+* `image <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/image.py>`_
+* `layers <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py>`_
+* `losses <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py>`_
+* `meta <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py>`_
+* `nest <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/nest.py>`_
+* `norms <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/norms.py>`_
+* `random <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/random.py>`_
 
 Some functions that you're considering adding might overlap several of these categorizations,
 and in such cases you should look at the other functions included in each file,
@@ -51,10 +51,17 @@ and not :code:`ivy.some_namespace.matmul`. Therefore, inside any of the folders 
 to different files or folders without breaking anything at all. This makes it very simple to refactor and re-organize
 parts of the code structure in an ongoing manner.
 
+The :code:`__init__.py` inside each of the subfolders are very similar,
+importing each function via :code:`from .file_name import *`
+and also importing each file as a submodule via :code:`from . import file_name`.
+For example, an extract from
+`ivy/ivy/functional/ivy/__init__.py <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/__init__.py>`_
+is given below:
+
 .. code-block:: python
 
-    from . import dtype
-    from .dtype import *
+    from . import elementwise
+    from .elementwise import *
     from . import general
     from .general import *
     # etc.
@@ -120,7 +127,7 @@ look something like the following, (explained in much more detail in the followi
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
-The reasons for these features are explained in the following sections.
+The reasons for each of these features are explained in the following sections.
 
 Backend API
 -----------
@@ -140,7 +147,7 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
         return torch.something_cool(x, dtype, device, out)
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
-but :code:`dtype` and :code:`device` and now required, rather than optional as they were in the Ivy API.
+but :code:`dtype` and :code:`device` and now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint :code:`torch.Tensor`,
 rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 The backend methods also should not add a docstring.

@@ -23,9 +23,10 @@ from ivy.functional.backends.numpy.data_type import as_ivy_dtype as np_as_ivy_dt
 
 def asarray(
     object_in,
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: Optional[Union[ivy.Device, torch.device]] = None,
+    *,
     copy: Optional[bool] = None,
+    dtype: torch.dtype,
+    device: torch.device
 ):
     device = default_device(device)
     if isinstance(object_in, torch.Tensor) and dtype is None:
