@@ -16,6 +16,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
@@ -49,13 +50,14 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    return _cur_backend().random_uniform(low, high, shape, device)
+    return _cur_backend().random_uniform(low, high, shape, device=device)
 
 
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
@@ -85,7 +87,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return _cur_backend().random_normal(mean, std, shape, device)
+    return _cur_backend().random_normal(mean, std, shape, device=device)
 
 
 def multinomial(
@@ -94,6 +96,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """
@@ -171,7 +174,7 @@ def multinomial(
 
     """
     return _cur_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device
+        population_size, num_samples, batch_size, probs, replace, device=device
     )
 
 
@@ -179,6 +182,7 @@ def randint(
     low: int,
     high: int,
     shape: Union[int, Tuple[int, ...]],
+    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.array:
     """Returns an array filled with random integers generated uniformly between
@@ -233,10 +237,10 @@ def randint(
        [ 8, 11,  3]])
 
     """
-    return _cur_backend().randint(low, high, shape, device)
+    return _cur_backend().randint(low, high, shape, device=device)
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -244,6 +248,10 @@ def seed(seed_value=0):
     seed_value
         Seed for random number generation, must be a positive integer.
         (Default value = 0)
+
+    Examples
+    --------
+    >>> ivy.seed(42)
 
     """
     return _cur_backend().seed(seed_value)

@@ -4,8 +4,7 @@
 import numpy as np
 from typing import Optional, Union, Tuple
 
-# local
-import ivy
+# localf 
 
 
 # Extra #
@@ -16,7 +15,8 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
@@ -25,7 +25,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
@@ -36,7 +37,8 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
     replace=True,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -51,7 +53,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = np.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True)
+    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True, dtype="float64")
     probs_stack = np.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         np.random.choice(num_classes, num_samples, replace, p=prob[0])
@@ -62,15 +64,13 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, str]] = None,
+    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
 
-seed = lambda seed_value=0: np.random.seed(seed_value)
+def seed(seed_value: int = 0) -> None:
+    np.random.seed(seed_value)
 
 
 def shuffle(x: np.ndarray) -> np.ndarray:

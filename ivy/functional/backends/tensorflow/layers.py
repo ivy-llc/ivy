@@ -2,6 +2,7 @@
 
 # global
 import tensorflow as tf
+from typing import Union, List
 
 from tensorflow.python.types.core import Tensor
 
@@ -47,7 +48,14 @@ def conv2d_transpose(
     )
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
+def depthwise_conv2d(
+    x: Tensor,
+    filters: Tensor,
+    strides: int,
+    padding: Union[str, List[int]],
+    data_format: str = "NHWC",
+    dilations: int = 1,
+) -> Tensor:
     filters = tf.expand_dims(filters, -1)
     strides = [1, strides, strides, 1]
     dilations = [dilations, dilations]

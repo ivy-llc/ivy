@@ -233,7 +233,7 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    def repeats(
+    def repeat(
         self: ivy.Container,
         repeats: Union[int, Iterable[int]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,

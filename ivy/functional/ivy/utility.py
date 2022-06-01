@@ -57,6 +57,64 @@ def all(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
 
+    Functional Examples
+    -------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.all(x)
+    >>> print(y)
+    ivy.array(True)
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.zeros(1,dtype='bool')
+    >>> a = ivy.all(x,out = y,keepdims=True)
+    >>> print(a)
+    ivy.array([ True])
+
+
+    >>> x=ivy.array(False)
+    >>> y=ivy.all([-1, 4, 5], out=x)
+    >>> print(y)
+    ivy.array(True)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3])
+    >>> y = ivy.all(x)
+    >>> print(y)
+    ivy.array(True)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.all(x)
+    >>> print(y)
+    {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.all()
+    >>> print(y)
+    ivy.array(True)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = x.all()
+    >>> print(y)
+     {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
+
     """
     return _cur_backend(x).all(x, axis, keepdims, out=out)
 
