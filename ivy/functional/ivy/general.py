@@ -1134,7 +1134,9 @@ def assert_supports_inplace(x):
     return True
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
     array classes in the backend, when the backend supports this.
