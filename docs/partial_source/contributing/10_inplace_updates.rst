@@ -19,24 +19,166 @@ Inplace Updates
 .. _`ivy.astype`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/data_type.py#L164
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
 .. _`wrapping`:
+.. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
+
+Inplace updates enable users to overwrite the contents of existing arrays with new data.
+This enables much more control over the memory-efficiency of the program,
+preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
+
+The function `ivy.inplace_update`_ enables explicit inplace updates.
+:code:`ivy.inplace_update` is a *primary* function,
+and the backend-specific implementations for each backend are presented below.
+We also explain the rational for why each implementation is the way it is,
+and the important differences.
+
+This is one particular area of the Ivy code where, technically speaking,
+the function :code:`ivy.inplace_update` will result in very subtly different behaviour for each backend.
+
+While :code:`ivy.Array` instances will always be inplace updated consistently,
+in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
+which :code:`ivy.Array` wraps, due to design choices made by each backend.
+
+**JAX**:
+
+.. code-block:: python
+
+    def inplace_update(
+        x: Union[ivy.Array, JaxArray],
+        val: Union[ivy.Array, JaxArray]
+    ) -> ivy.Array:
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+        return x
+
+JAX **does not** natively support inplace updates,
+and so there is no way of actually inplace updating the :code:`JaxArray` instance :code:`x_native`.
+Therefore, an inplace update is only performed on :code:`ivy.Array` instances provided in the input.
+
+**MXNet**:
+
+.. code-block:: python
+
+    def inplace_update(
+        x: Union[ivy.Array, mx.nd.NDArray],
+        val: Union[ivy.Array, mx.nd.NDArray]
+    ) -> ivy.Array:
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native[:] = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
+
+MXNet **does** natively support inplace updates,
+and so :code:`x_native` is updated inplace with :code:`val_native`.
+Following this, an inplace update is then also performed on the :code:`ivy.Array` instance, if provided in the input.
+
+**NumPy**:
+
+.. code-block:: python
+
+    def inplace_update(
+        x: Union[ivy.Array, np.ndarray],
+        val: Union[ivy.Array, np.ndarray]
+    ) -> ivy.Array:
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
+
+NumPy **does** natively support inplace updates,
+and so :code:`x_native` is updated inplace with :code:`val_native`.
+Following this, an inplace update is then also performed on the :code:`ivy.Array` instance,
+if provided in the input.
+
+**TensorFlow**:
+
+.. code-block:: python
+
+    def inplace_update(
+        x: Union[ivy.Array, tf.Tensor, tf.Variable],
+        val: Union[ivy.Array, tf.Tensor, tf.Variable]
+    ) -> ivy.Array:
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        else:
+            if ivy.is_ivy_array(x):
+                x.data = val_native
+            else:
+                x = ivy.Array(val_native)
+        return x
+
+TensorFlow **does not** natively support inplace updates for :code:`tf.Tensor` instances,
+and in such cases so there is no way of actually inplace updating the :code:`tf.Tensor` instance :code:`x_native`.
+However, TensorFlow **does** natively support inplace updates for :code:`tf.Variable` instances.
+Therefore, if :code:`x_native` is a :code:`tf.Variable`,
+then :code:`x_native` is updated inplace with :code:`val_native`.
+Irrespective of whether the native array is a :code:`tf.Tensor` or a :code:`tf.Variable`,
+an inplace update is then also performed on the :code:`ivy.Array` instance, if provided in the input.
+
+**PyTorch**:
+
+.. code-block:: python
+
+    def inplace_update(
+        x: Union[ivy.Array, torch.Tensor],
+        val: Union[ivy.Array, torch.Tensor]
+    ) -> ivy.Array:
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
+
+PyTorch **does** natively support inplace updates,
+and so :code:`x_native` is updated inplace with :code:`val_native`.
+Following this, an inplace update is then also performed on the :code:`ivy.Array` instance,
+if provided in the input.
+
+The function :code:`ivy.inplace_update` is also *nestable*,
+meaning it can accept :code:`ivy.Container` instances in the input.
+If an :code:`ivy.Container` instance is provided for the argument :code:`x`,
+then along with the arrays at all of the leaves,
+the container :code:`x` is **also** inplace updated,
+meaning that a new :code:`ivy.Container` instance is not created for the function return.
 
 out argument
 ------------
 
-All Ivy functions which return a single array should support inplace updates, with the inclusion of a keyword-only
-:code:`out` argument, with type hint :code:`Optional[Union[ivy.Array, ivy.Container]]` for *flexible* functions
-and :code:`Optional[ivy.Array]` otherwise.
+Most functions in Ivy support inplace updates via the inclusion of a keyword-only :code:`out` argument.
+This enables users to specify the array to which they would like the output of a function to be written.
+This could for example be the input array itself, but can also be any other array of choice.
 
-When this argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
+All Ivy functions which return a single array should support inplace updates.
+The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
+However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
+This is ommitted from the type hint, as explained in the :ref:`Type Hints` section.
+
+When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
 :code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
 :code:`out` argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.
 
 In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominatly handled in
-`_function_w_arrays_n_out_handled`_, which as discussed above,
+`_function_w_arrays_n_out_handled`_, which as discussed in the :ref:`Arrays` section,
 is also responsible for converting :code:`ivy.Array` instances to :code:`ivy.NativeArray`
 instances before calling the backend function, and then back to :code:`ivy.Array` instances again for returning.
-As explained above, this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
+As explained in the :ref:`Function Wrapping` section,
+this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
 dynamically during `backend setting`_.
 
 However, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
@@ -48,35 +190,35 @@ and so the :code:`out` argument should **not** be included in these backend-spec
 
 The implementations of :code:`ivy.tan` for each backend are as follows.
 
-Jax (no :code:`out` argument):
+**JAX** (no :code:`out` argument):
 
 .. code-block:: python
 
     def tan(x: JaxArray) -> JaxArray:
         return jnp.tan(x)
 
-MXNet (no :code:`out` argument):
+**MXNet** (no :code:`out` argument):
 
 .. code-block:: python
 
     def tan(x: mx.NDArray) -> mx.NDArray:
         return mx.nd.tan(x)
 
-NumPy (includes :code:`out` argument):
+**NumPy** (includes :code:`out` argument):
 
 .. code-block:: python
 
     def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
 
-TensorFlow (no :code:`out` argument):
+**TensorFlow** (no :code:`out` argument):
 
 .. code-block:: python
 
     def tan(x: Tensor) -> Tensor:
         return tf.tan(x)
 
-PyTorch (includes :code:`out` argument):
+**PyTorch** (includes :code:`out` argument):
 
 .. code-block:: python
 
