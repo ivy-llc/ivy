@@ -15,11 +15,11 @@ with the returned function replacing the original function.
 
 The new function returned by :code:`_wrap_function` (:code:`_function_wrapped`)
 is a replacement of the original function with extra code added to support requirements common to many functions
-in the API. This is the main purpose of the wrapping, to avoid code duplication by re-writing identical logic in every
-single function independenly.
+in the API. This is the main purpose of the wrapping, to avoid code duplication which would exist if we added
+identical logic in every single function independenly.
 
 Depending on the function being wrapped, the new function :code:`_function_wrapped`
-might handle :ref:`Native Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
+might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
-Each of these topics and each reason for the wrapping are covered in more detail in the next sections.
-For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_
+Each of these topics and each associated piece of logic added by :code:`_wrap_function` are covered in more detail
+in the next sections. For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_
