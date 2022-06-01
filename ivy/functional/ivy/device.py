@@ -372,7 +372,7 @@ def num_cpu_cores(logical=True) -> int:
     """Determine the number of cores available in the cpu.
 
     Parameters
-    -------
+    ----------
     logical
         Whether request is for number of physical or logical cores available in CPU
 
