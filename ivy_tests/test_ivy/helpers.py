@@ -625,7 +625,9 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):
-        values.append(draw(array_values(dtype=dtype[i], shape=size, allow_inf=allow_inf)))
+        values.append(draw(array_values(dtype=dtype[i],
+                                        shape=size,
+                                        allow_inf=allow_inf)))
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
