@@ -1031,12 +1031,13 @@ def svdvals(
         length ``K``, where K = min(M, N). The values are sorted in descending order by
         magnitude.
 
-    Examples
-    --------
-    1. x is 'ivy.Array'
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.random_normal(shape = (8, 6))
-    >>> S = ivy.svd(x)
+    >>> S = ivy.svdvals(x)
     >>> print(S.shape)
     (6,)
 
@@ -1045,27 +1046,82 @@ def svdvals(
     >>> _, SS, _ = ivy.svd(x)
     >>> pring(SS.shape)
     (6,)
+
     >>> error = (SS - S).abs()
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 2.38e-07, 2.38e-07, 0.00e+00, 1.19e-07])
 
-    2. x is 'ivy.NativeArray'
+    With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[1.0, 2.0, 3.0],[2.0, 3.0, 4.0], [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
+                              [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
     (4, 3)
+
     >>> S = ivy.svdvals(x)
     >>> print(S)
     ivy.array([10.3  ,  1.16 ,  0.615])
 
     Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
-
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS)
     ivy.array([10.3  ,  1.16 ,  0.615])
+
     >>> error = (SS - S).abs()
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],\
+                                       [1.0, 3.0], [3.0, 5.0]]),
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0],\
+                                       [2.0, 5.0, 3.0, 4.0],\
+                                       [2.0, 6.0, 1.0, 3.0],\
+                                       [3.0, 4.0, 5.0, 9.0]]))
+    >>> y = ivy.svdvals(x)
+    >>> print(y)
+    {
+        a: ivy.array([9.01, 0.866]),
+        b: ivy.array([15.8, 5.56, 4.17, 0.864])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
+                       [2.0, 1.0], [3.0, 4.0],\
+                       [4.0, 1.0], [5.0, 6.0]])
+    >>> y = x.svdvals()
+    >>> print(y)
+    ivy.array([13.4 ,  3.88])
+
+    Using :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.native_array([[8.0, 3.0, 8.0, 9.0], [2.0, 3.0, 1.0, 4.0],\
+                              [2.0, 1.0, 7.0, 2.0], [3.0, 4.0, 8.0, 3.0],\
+                              [4.0, 1.0, 1.0, 4.0], [5.0, 6.0, 2.0, 7.0],\
+                              [8.0, 9.0, 7.0, 4.0], [1.0, 9.0, 2.0, 3.0]])
+    >>> y = x.svdvals()
+    >>> print(y)
+    ivy.array([20.7  ,  7.97 ,  6.25 ,  0.913])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
+                                       [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],\
+                                       [2.0, 5.0, 3.0, 4.0, 10.0],\
+                                       [2.0, 11.0, 6.0, 1.0, 3.0],\
+                                       [8.0, 3.0, 4.0, 5.0, 9.0]]))
+    >>> y = x.svdvals()
+    >>> print(y)
+    {
+        a: ivy.array([13., 4.64, 2.55]),
+        b: ivy.array([23.2, 10.4, 4.31, 1.36])
+    }
 
     """
     return current_backend(x).svdvals(x, out=out)
