@@ -31,19 +31,17 @@ def test_abs(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "abs",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "abs",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # acosh
@@ -66,21 +64,19 @@ def test_acosh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "acosh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "acosh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # acos
@@ -103,21 +99,19 @@ def test_acos(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "acos",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "acos",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # add
@@ -140,22 +134,19 @@ def test_add(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if any([d == "float16" for d in dtype]):
+    input_dtype, x = dtype_and_x
+    if any([d == "float16" for d in input_dtype]):
         return  # numpy array api doesnt support float16
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "add",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "add", x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # asin
@@ -178,21 +169,19 @@ def test_asin(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "asin",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "asin",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # asinh
@@ -215,21 +204,19 @@ def test_asinh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "asinh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "asinh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # atan
@@ -252,21 +239,19 @@ def test_atan(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "atan",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "atan",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # atan2
@@ -289,22 +274,20 @@ def test_atan2(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and "float16" in dtype:
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and "float16" in input_dtype:
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "atan2",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "atan2",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # atanh
@@ -327,21 +310,19 @@ def test_atanh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "atanh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "atanh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # bitwise_and
@@ -364,20 +345,18 @@ def test_bitwise_and(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_and",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_and",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # bitwise_left_shift
@@ -400,24 +379,22 @@ def test_bitwise_left_shift(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(x)
-    x1 = np.asarray(x, dtype=dtype)
-    n_bits = ivy.dtype_bits(dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=dtype)
-    helpers.test_array_function(
-        [dtype, dtype],
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_left_shift",
-        x1=x1,
-        x2=x2,
-    )
+    x1 = np.asarray(x, dtype=input_dtype)
+    n_bits = ivy.dtype_bits(input_dtype)
+    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
+    helpers.test_array_function([input_dtype, input_dtype],
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_left_shift",
+                                x1=x1,
+                                x2=x2)
 
 
 # bitwise_invert
@@ -440,19 +417,17 @@ def test_bitwise_invert(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_invert",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_invert",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # bitwise_or
@@ -475,20 +450,18 @@ def test_bitwise_or(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_or",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_or",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # bitwise_right_shift
@@ -511,24 +484,22 @@ def test_bitwise_right_shift(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(x)
-    x1 = np.asarray(x, dtype=dtype)
-    n_bits = ivy.dtype_bits(dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=dtype)
-    helpers.test_array_function(
-        [dtype, dtype],
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_right_shift",
-        x1=x1,
-        x2=x2,
-    )
+    x1 = np.asarray(x, dtype=input_dtype)
+    n_bits = ivy.dtype_bits(input_dtype)
+    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
+    helpers.test_array_function([input_dtype, input_dtype],
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_right_shift",
+                                x1=x1,
+                                x2=x2)
 
 
 # bitwise_xor
@@ -551,20 +522,18 @@ def test_bitwise_xor(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "bitwise_xor",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "bitwise_xor",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # ceil
@@ -587,21 +556,19 @@ def test_ceil(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "ceil",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "ceil",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # cos
@@ -624,21 +591,19 @@ def test_cos(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "cos",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "cos",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # cosh
@@ -661,21 +626,19 @@ def test_cosh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "cosh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "cosh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # divide
@@ -698,7 +661,7 @@ def test_divide(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     if any(xi == 0 for xi in x[1]):
         return  # don't divide by 0
     if any(
@@ -706,19 +669,17 @@ def test_divide(
         for xi, yi in zip(x[0], x[1])
     ):
         return  # np.divide converts to signed int so values can't be too large
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "divide",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "divide",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # equal
@@ -741,20 +702,18 @@ def test_equal(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "equal",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "equal",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # exp
@@ -777,21 +736,19 @@ def test_exp(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "exp",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "exp",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # expm1
@@ -814,21 +771,19 @@ def test_expm1(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "expm1",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "expm1",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # floor
@@ -851,21 +806,19 @@ def test_floor(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "floor",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "floor",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # floor_divide - don't allow inf as array API spec allows varying behaviour
@@ -891,23 +844,21 @@ def test_floor_divide(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(0 not in x[1])
     if fw in ["tensorflow", "torch"]:
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "floor_divide",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "floor_divide",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # greater
@@ -930,20 +881,18 @@ def test_greater(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "greater",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "greater",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # greater_equal
@@ -966,20 +915,18 @@ def test_greater_equal(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "greater_equal",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "greater_equal",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # isfinite
@@ -1002,19 +949,17 @@ def test_isfinite(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "isfinite",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "isfinite",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # isinf
@@ -1037,19 +982,17 @@ def test_isinf(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "isinf",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "isinf",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # isnan
@@ -1072,19 +1015,17 @@ def test_isnan(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "isnan",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "isnan",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # less
@@ -1107,20 +1048,18 @@ def test_less(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "less",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "less",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # less_equal
@@ -1143,20 +1082,18 @@ def test_less_equal(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "less_equal",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "less_equal",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # log
@@ -1179,21 +1116,19 @@ def test_log(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "log",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "log",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # log1p
@@ -1216,21 +1151,19 @@ def test_log1p(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "log1p",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "log1p",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # log2
@@ -1253,21 +1186,19 @@ def test_log2(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "log2",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "log2",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # log10
@@ -1290,21 +1221,19 @@ def test_log10(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "log10",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "log10",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # logaddexp
@@ -1327,23 +1256,21 @@ def test_logaddexp(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and "float16" in dtype:
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and "float16" in input_dtype:
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "logaddexp",
-        rtol=1e-2,
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "logaddexp",
+                                rtol=1e-2,
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # logical_and
@@ -1366,20 +1293,18 @@ def test_logical_and(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "logical_and",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "logical_and",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # logical_not
@@ -1402,19 +1327,17 @@ def test_logical_not(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "logical_not",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "logical_not",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # logical_or
@@ -1437,20 +1360,18 @@ def test_logical_or(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "logical_or",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "logical_or",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # logical_xor
@@ -1473,20 +1394,18 @@ def test_logical_xor(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "logical_xor",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "logical_xor",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # multiply
@@ -1509,20 +1428,18 @@ def test_multiply(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "multiply",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "multiply",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # negative
@@ -1545,21 +1462,19 @@ def test_negative(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if "uint" in dtype:
+    input_dtype, x = dtype_and_x
+    if "uint" in input_dtype:
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "negative",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "negative",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # not_equal
@@ -1582,20 +1497,18 @@ def test_not_equal(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "not_equal",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "not_equal",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # positive
@@ -1618,19 +1531,17 @@ def test_positive(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "positive",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "positive",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # pow
@@ -1653,30 +1564,28 @@ def test_pow(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     if fw == "jax":
         return
-    if fw == "tensorflow" and any(["uint" in d for d in dtype]):
+    if fw == "tensorflow" and any(["uint" in d for d in input_dtype]):
         return
     if (
         any(xi < 0 for xi in x[1])
-        and ivy.is_int_dtype(dtype[1])
-        and ivy.is_int_dtype(dtype[0])
+        and ivy.is_int_dtype(input_dtype[1])
+        and ivy.is_int_dtype(input_dtype[0])
     ):
         return  # ints to negative int powers not allowed
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "pow",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "pow",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # remainder
@@ -1701,21 +1610,19 @@ def test_remainder(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(not any(xi == 0 for xi in x[1]))
-    helpers.test_array_function(
-        dtype,
-        [as_variable, False],  # torch remainder not differentiable wrt to x2
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "remainder",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                [as_variable, False],
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "remainder",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # round
@@ -1738,21 +1645,19 @@ def test_round(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "round",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "round",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # sign
@@ -1775,19 +1680,17 @@ def test_sign(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sign",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "sign",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # sin
@@ -1810,21 +1713,19 @@ def test_sin(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sin",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "sin",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # sinh
@@ -1847,21 +1748,19 @@ def test_sinh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sinh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "sinh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # square
@@ -1884,19 +1783,17 @@ def test_square(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "square",
-        x=np.asarray(x, dtype=dtype),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "square",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # sqrt
@@ -1919,21 +1816,19 @@ def test_sqrt(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sqrt",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "sqrt",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # subtract
@@ -1956,20 +1851,18 @@ def test_subtract(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "subtract",
-        x1=np.asarray(x[0], dtype=dtype[0]),
-        x2=np.asarray(x[1], dtype=dtype[1]),
-    )
+    input_dtype, x = dtype_and_x
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "subtract",
+                                x1=np.asarray(x[0], dtype=input_dtype[0]),
+                                x2=np.asarray(x[1], dtype=input_dtype[1]))
 
 
 # tan
@@ -1992,21 +1885,19 @@ def test_tan(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "tan",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "tan",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # tanh
@@ -2029,21 +1920,19 @@ def test_tanh(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "tanh",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "tanh",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # trunc
@@ -2066,21 +1955,19 @@ def test_trunc(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "trunc",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "trunc",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # Extra #
@@ -2107,21 +1994,19 @@ def test_erf(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and input_dtype == "float16":
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "erf",
-        x=np.asarray(x, dtype=dtype),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "erf",
+                                x=np.asarray(x, dtype=input_dtype))
 
 
 # minimum
@@ -2147,7 +2032,7 @@ def test_minimum(
     fw,
 ):
     # smoke test
-    dtype = xy[0]
+    input_dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
     if (
@@ -2157,19 +2042,17 @@ def test_minimum(
     ):
         # mxnet does not support 0-dimensional variables
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "minimum",
-        x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "minimum",
+                                x1=np.asarray(x, dtype=input_dtype[0]),
+                                x2=ivy.array(y, dtype=input_dtype[1]))
 
 
 # maximum
@@ -2195,7 +2078,7 @@ def test_maximum(
     fw,
 ):
     # smoke test
-    dtype = xy[0]
+    input_dtype = xy[0]
     x = xy[1][0]
     y = xy[1][1]
     if (
@@ -2205,16 +2088,14 @@ def test_maximum(
     ):
         # mxnet does not support 0-dimensional variables
         return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "maximum",
-        x1=np.asarray(x, dtype=dtype[0]),
-        x2=ivy.array(y, dtype=dtype[1]),
-    )
+    helpers.test_array_function(input_dtype,
+                                as_variable,
+                                with_out,
+                                num_positional_args,
+                                native_array,
+                                container,
+                                instance_method,
+                                fw,
+                                "maximum",
+                                x1=np.asarray(x, dtype=input_dtype[0]),
+                                x2=ivy.array(y, dtype=input_dtype[1]))
