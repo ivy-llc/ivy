@@ -608,7 +608,12 @@ def integers(draw, min_value=None, max_value=None):
 
 
 @st.composite
-def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
+def dtype_and_values(draw,
+                     available_dtypes,
+                     n_arrays=1,
+                     allow_inf=True,
+                     max_num_dims=5,
+                     max_dim_size=10):
     if n_arrays == 1:
         types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
@@ -621,12 +626,11 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
         dtype = list(draw(st.sampled_from(types)))
     if n_arrays == 3:
         dtype.append(dtype[0])
-
-    size = draw(st.integers(0, 10))
+    shape = draw(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size))
     values = []
     for i in range(n_arrays):
         values.append(draw(array_values(dtype=dtype[i],
-                                        shape=size,
+                                        shape=shape,
                                         allow_inf=allow_inf)))
     if n_arrays == 1:
         dtype = dtype[0]
@@ -732,15 +736,22 @@ def array_values(draw,
 
 
 @st.composite
-def get_shape(draw, allow_none=True, min_size=0):
+def get_shape(draw,
+              allow_none=False,
+              min_num_dims=0,
+              max_num_dims=5,
+              min_dim_size=1,
+              max_dim_size=10):
     if allow_none:
-        shape = draw(st.none() | st.lists(st.integers(min_value=1, max_value=8),
-                                          min_size=min_size,
-                                          max_size=8))
+        shape = draw(st.none() | st.lists(st.integers(min_value=min_dim_size,
+                                                      max_value=max_dim_size),
+                                          min_size=min_num_dims,
+                                          max_size=max_num_dims))
     else:
-        shape = draw(st.lists(st.integers(min_value=1, max_value=8),
-                              min_size=min_size,
-                              max_size=8))
+        shape = draw(st.lists(st.integers(min_value=min_dim_size,
+                                          max_value=max_dim_size),
+                                          min_size=min_num_dims,
+                                          max_size=max_num_dims))
     if shape is None:
         return shape
     return tuple(shape)
@@ -845,9 +856,10 @@ def get_bounds(draw, dtype):
 
 @st.composite
 def get_probs(draw, dtype):
-    shape = draw(st.lists(st.integers(min_value=2, max_value=8),
-                          min_size=2,
-                          max_size=2))
+    shape = draw(get_shape(min_num_dims=2,
+                           max_num_dims=5,
+                           min_dim_size=2,
+                           max_dim_size=10))
     probs = draw(array_values(dtype,
                               shape,
                               min_value=0,
