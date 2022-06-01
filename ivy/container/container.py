@@ -1,3 +1,16 @@
+# global
+import copy
+from operator import lt as _lt
+from operator import le as _le
+from operator import eq as _eq
+from operator import ne as _ne
+from operator import gt as _gt
+from operator import ge as _ge
+from operator import pow as _pow
+from operator import not_ as _not
+from functools import reduce as _reduce
+from operator import floordiv as _floordiv
+
 # local
 import ivy
 from .activations import ContainerWithActivations
@@ -81,6 +94,148 @@ class Container(
             alphabetical_keys,
             **kwargs
         )
+
+    # Built-ins #
+    # ----------#
+
+    def __pos__(self):
+        return self
+
+    def __neg__(self):
+        return self.map(lambda x, kc: -x)
+
+    def __pow__(self, power):
+        if isinstance(power, ivy.Container):
+            return self.reduce([self, power], lambda x: _reduce(_pow, x))
+        return self.map(lambda x, kc: x**power)
+
+    def __rpow__(self, power):
+        return self.map(lambda x, kc: power**x)
+
+    def __add__(self, other):
+        return self.static_add(self, other)
+
+    def __radd__(self, other):
+        return self.static_add(other, self)
+
+    def __sub__(self, other):
+        return self.static_sub(self, other)
+
+    def __rsub__(self, other):
+        return self.static_sub(other, self)
+
+    def __mul__(self, other):
+        return self.static_mul(self, other)
+
+    def __rmul__(self, other):
+        return self.static_mul(other, self)
+
+    def __truediv__(self, other):
+        return self.static_divide(self, other)
+
+    def __rtruediv__(self, other):
+        return self.static_divide(other, self)
+
+    def __floordiv__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+        return self.map(lambda x, kc: x // other)
+
+    def __rfloordiv__(self, other):
+        return self.map(lambda x, kc: other // x)
+
+    def __abs__(self):
+        return self.map(lambda x, kc: self._ivy.abs(x))
+
+    def __lt__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_lt, x))
+        return self.map(lambda x, kc: x < other)
+
+    def __le__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_le, x))
+        return self.map(lambda x, kc: x <= other)
+
+    def __eq__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_eq, x))
+        return self.map(lambda x, kc: x == other)
+
+    def __ne__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_ne, x))
+        return self.map(lambda x, kc: x != other)
+
+    def __gt__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_gt, x))
+        return self.map(lambda x, kc: x > other)
+
+    def __ge__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: _reduce(_ge, x))
+        return self.map(lambda x, kc: x >= other)
+
+    def __and__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: x[0] and x[1])
+        return self.map(lambda x, kc: x and other)
+
+    def __rand__(self, other):
+        return self.map(lambda x, kc: other and x)
+
+    def __or__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: x[0] or x[1])
+        return self.map(lambda x, kc: x or other)
+
+    def __ror__(self, other):
+        return self.map(lambda x, kc: other or x)
+
+    def __invert__(self):
+        return self.map(lambda x, kc: _not(x))
+
+    def __xor__(self, other):
+        if isinstance(other, ivy.Container):
+            return self.reduce([self, other], lambda x: x[0] != x[1])
+        return self.map(lambda x, kc: x != other)
+
+    def __rxor__(self, other):
+        return self.map(lambda x, kc: other != x)
+
+    def __getstate__(self):
+        state_dict = copy.copy(self.__dict__)
+        state_dict["_local_ivy"] = ivy.try_else_none(
+            lambda: state_dict["_local_ivy"].current_backend_str()
+        )
+        config_in = copy.copy(state_dict["_config_in"])
+        config_in["ivyh"] = ivy.try_else_none(
+            lambda: config_in["ivyh"].current_backend_str()
+        )
+        state_dict["_config_in"] = config_in
+        config = copy.copy(state_dict["_config"])
+        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
+        state_dict["_config"] = config
+        return state_dict
+
+    def __setstate__(self, state_dict):
+        if "_local_ivy" in state_dict:
+            if ivy.exists(state_dict["_local_ivy"]):
+                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+        if "_config_in" in state_dict:
+            config_in = copy.copy(state_dict["_config_in"])
+            if "ivyh" in config_in:
+                if ivy.exists(config_in["ivyh"]):
+                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+            state_dict["_config_in"] = config_in
+        if "_config" in state_dict:
+            config = copy.copy(state_dict["_config"])
+            if "ivyh" in config:
+                if ivy.exists(config["ivyh"]):
+                    config["ivyh"] = ivy.get_backend(config["ivyh"])
+            state_dict["_config"] = config
+        self.__dict__.update(state_dict)
 
 
 class MultiDevContainer(Container):

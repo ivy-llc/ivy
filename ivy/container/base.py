@@ -15,19 +15,9 @@ except ModuleNotFoundError:
     _h5py = None
 import pickle as _pickle
 import random as _random
-from operator import lt as _lt
-from operator import le as _le
-from operator import eq as _eq
-from operator import ne as _ne
-from operator import gt as _gt
-from operator import ge as _ge
 from operator import mul as _mul
-from operator import pow as _pow
-from operator import not_ as _not
 from functools import reduce as _reduce
 from typing import Union, Iterable, Dict
-from operator import truediv as _truediv
-from operator import floordiv as _floordiv
 from builtins import set as _set
 
 # local
@@ -2089,7 +2079,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.random_uniform(low, high, x.shape, self._ivy.dev(x))
+            lambda x, kc: self._ivy.random_uniform(
+                low, high, x.shape, device=self._ivy.dev(x)
+            )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -4916,120 +4908,6 @@ class ContainerBase(dict, abc.ABC):
             return self.contains_sub_container(key)
         else:
             return dict.__contains__(self, key)
-
-    def __pos__(self):
-        return self
-
-    def __neg__(self):
-        return self.map(lambda x, kc: -x)
-
-    def __pow__(self, power):
-        if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda x: _reduce(_pow, x))
-        return self.map(lambda x, kc: x**power)
-
-    def __rpow__(self, power):
-        return self.map(lambda x, kc: power**x)
-
-    def __add__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], sum)
-        return self.map(lambda x, kc: x + other)
-
-    def __radd__(self, other):
-        return self + other
-
-    def __sub__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, -other], sum)
-        return self.map(lambda x, kc: x - other)
-
-    def __rsub__(self, other):
-        return -self + other
-
-    def __mul__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_mul, x))
-        return self.map(lambda x, kc: x * other)
-
-    def __rmul__(self, other):
-        return self * other
-
-    def __truediv__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_truediv, x))
-        return self.map(lambda x, kc: x / other)
-
-    def __rtruediv__(self, other):
-        return self.map(lambda x, kc: other / x)
-
-    def __floordiv__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
-        return self.map(lambda x, kc: x // other)
-
-    def __rfloordiv__(self, other):
-        return self.map(lambda x, kc: other // x)
-
-    def __abs__(self):
-        return self.map(lambda x, kc: self._ivy.abs(x))
-
-    def __lt__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_lt, x))
-        return self.map(lambda x, kc: x < other)
-
-    def __le__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_le, x))
-        return self.map(lambda x, kc: x <= other)
-
-    def __eq__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_eq, x))
-        return self.map(lambda x, kc: x == other)
-
-    def __ne__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ne, x))
-        return self.map(lambda x, kc: x != other)
-
-    def __gt__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_gt, x))
-        return self.map(lambda x, kc: x > other)
-
-    def __ge__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ge, x))
-        return self.map(lambda x, kc: x >= other)
-
-    def __and__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] and x[1])
-        return self.map(lambda x, kc: x and other)
-
-    def __rand__(self, other):
-        return self.map(lambda x, kc: other and x)
-
-    def __or__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] or x[1])
-        return self.map(lambda x, kc: x or other)
-
-    def __ror__(self, other):
-        return self.map(lambda x, kc: other or x)
-
-    def __invert__(self):
-        return self.map(lambda x, kc: _not(x))
-
-    def __xor__(self, other):
-        if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] != x[1])
-        return self.map(lambda x, kc: x != other)
-
-    def __rxor__(self, other):
-        return self.map(lambda x, kc: other != x)
 
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)

@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_dev
 # -------------------#
 
 
-def asarray(object_in, dtype=None, device=None, copy=None):
+def asarray(object_in, *, copy=None, dtype: np.dtype, device: str):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
@@ -25,18 +25,17 @@ def asarray(object_in, dtype=None, device=None, copy=None):
         and len(object_in) != 0
         and dtype is None
     ):
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
+        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_dev(np.copy(np.asarray(object_in)), device)
+            return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
         else:
-            return _to_dev(np.asarray(object_in), device)
+            return _to_dev(np.asarray(object_in, dtype=dtype), device=device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
-        return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device)
+        return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
     else:
-        return _to_dev(np.asarray(object_in, dtype=dtype), device)
+        return _to_dev(np.asarray(object_in, dtype=dtype), device=device)
 
 
 def zeros(
@@ -45,7 +44,7 @@ def zeros(
     dtype: np.dtype,
     device: str,
 ) -> np.ndarray:
-    return _to_dev(np.zeros(shape, dtype), device)
+    return _to_dev(np.zeros(shape, dtype), device=device)
 
 
 def ones(
@@ -54,7 +53,7 @@ def ones(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
-    return _to_dev(np.ones(shape, dtype), device)
+    return _to_dev(np.ones(shape, dtype), device=device)
 
 
 def full_like(
@@ -67,7 +66,7 @@ def full_like(
         dtype = "bool_" if dtype == "bool" else dtype
     else:
         dtype = x.dtype
-    return _to_dev(np.full_like(x, fill_value, dtype=dtype), device)
+    return _to_dev(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
 def ones_like(
@@ -82,7 +81,7 @@ def ones_like(
     else:
         dtype = x.dtype
 
-    return _to_dev(np.ones_like(x, dtype=dtype), device)
+    return _to_dev(np.ones_like(x, dtype=dtype), device=device)
 
 
 def zeros_like(
@@ -94,7 +93,7 @@ def zeros_like(
         dtype = "bool_" if dtype == "bool" else dtype
     else:
         dtype = x.dtype
-    return _to_dev(np.zeros_like(x, dtype=dtype), device)
+    return _to_dev(np.zeros_like(x, dtype=dtype), device=device)
 
 
 def tril(x: np.ndarray, k: int = 0) -> np.ndarray:
@@ -110,7 +109,9 @@ def empty(
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
-    return _to_dev(np.empty(shape, as_native_dtype(default_dtype(dtype))), device)
+    return _to_dev(
+        np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
+    )
 
 
 def empty_like(
@@ -125,7 +126,7 @@ def empty_like(
     else:
         dtype = x.dtype
 
-    return _to_dev(np.empty_like(x, dtype=dtype), device)
+    return _to_dev(np.empty_like(x, dtype=dtype), device=device)
 
 
 def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
@@ -139,10 +140,9 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         ans.shape[0] >= 1
         and (not isinstance(start, numpy.ndarray))
         and (not isinstance(stop, numpy.ndarray))
-        and ans[0] != start
     ):
         ans[0] = start
-    return _to_dev(ans, device)
+    return _to_dev(ans, device=device)
 
 
 def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:
@@ -157,14 +157,14 @@ def eye(
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
-    return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
+    return _to_dev(np.eye(n_rows, n_cols, k, dtype), device=device)
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: np.dtype, device: str):
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device)
+    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)
@@ -181,7 +181,7 @@ def full(
 ) -> np.ndarray:
     return _to_dev(
         np.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
-        device,
+        device=device,
     )
 
 
@@ -198,4 +198,4 @@ array = asarray
 def logspace(start, stop, num, base=10.0, axis=None, device=None):
     if axis is None:
         axis = -1
-    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), device)
+    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), device=device)

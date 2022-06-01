@@ -13,24 +13,6 @@ NativeVariable = torch.Tensor
 NativeDevice = torch.device
 NativeDtype = torch.dtype
 
-# data types
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.IntDtype("uint8")
-_uint16 = ivy.IntDtype("uint16")
-_uint32 = ivy.IntDtype("uint32")
-_uint64 = ivy.IntDtype("uint64")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-# noinspection PyShadowingBuiltins
-bool = "bool"
-nan = float("nan")
-inf = float("inf")
-
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
@@ -44,36 +26,37 @@ native_float64 = torch.float64
 # noinspection PyShadowingBuiltins
 native_bool = torch.bool
 
+# valid data types
 valid_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    bfloat16,
-    float16,
-    float32,
-    float64,
-    bool,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.bool,
 )
 valid_numeric_dtypes = (
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    bfloat16,
-    float16,
-    float32,
-    float64,
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
+valid_int_dtypes = (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
+valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 
-# invalid
-invalid_dtypes = (_uint16, _uint32, _uint64)
-invalid_num_dtypes = (_uint16, _uint32, _uint64)
-invalid_int_dtypes = (_uint16, _uint32, _uint64)
+# invalid data types
+invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
 
 
