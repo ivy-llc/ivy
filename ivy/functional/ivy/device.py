@@ -371,6 +371,7 @@ def gpu_is_available() -> bool:
         return True
     else:
         return False
+        
 
 def num_cpu_cores() -> int:
     """Determine the number of cores available in the cpu.
