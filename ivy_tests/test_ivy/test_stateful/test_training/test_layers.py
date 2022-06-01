@@ -19,7 +19,7 @@ import ivy.functional.backends.numpy as ivy_np
                                  max_size="num_dims",
                                  size_bounds=[1, 2]),
        input_channels=st.integers(2, 4),
-       output_channels=st.integers(2, 5),
+       output_channels=st.integers(1, 5),
        dtype=st.sampled_from(ivy_np.valid_float_dtypes),
        with_v=st.booleans(),
        as_variable=st.booleans(),
