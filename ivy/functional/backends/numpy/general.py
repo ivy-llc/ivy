@@ -134,9 +134,7 @@ def cumprod(
         return np.cumprod(x, axis)
 
 
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -175,7 +173,7 @@ def scatter_flat(
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -217,22 +215,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: np.ndarray,
-    indices: np.ndarray,
-    axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, str]] = None,
-    out: Optional[np.ndarray] = None,
+    params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
 ) -> np.ndarray:
     if device is None:
         device = _dev_callable(params)
-    ret = _to_dev(np.take_along_axis(params, indices, axis), device)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    else:
-        return ret
+    return _to_dev(np.take_along_axis(params, indices, axis), device)
 
 
-def gather_nd(params, indices, device=None):
+def gather_nd(params, indices, *, device: str):
     if device is None:
         device = _dev_callable(params)
     indices_shape = indices.shape
@@ -278,7 +268,7 @@ def indices_where(x):
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
