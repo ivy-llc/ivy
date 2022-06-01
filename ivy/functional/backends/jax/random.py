@@ -74,7 +74,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _jnp.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / _jnp.sum(probs_flat, -1, keepdims=True, dtype='float64')
+    probs_flat = probs_flat / _jnp.sum(probs_flat, -1, keepdims=True, dtype="float64")
     probs_stack = _jnp.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         _jax.random.choice(rng_input, num_classes, (num_samples,), replace, p=prob[0])
@@ -96,8 +96,7 @@ def randint(
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
-        _jax.random.randint(rng_input, shape, low, high),
-        device=default_device(device)
+        _jax.random.randint(rng_input, shape, low, high), device=default_device(device)
     )
 
 

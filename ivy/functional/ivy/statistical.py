@@ -72,8 +72,8 @@ def max(
        When the number of elements over which to compute the maximum value is zero, the
        maximum value is implementation-defined. Specification-compliant libraries may
        choose to raise an error, return a sentinel value (e.g., if ``x`` is a
-       floating-point input array, return ``NaN``), or return the minimum possible 
-       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point 
+       floating-point input array, return ``NaN``), or return the minimum possible
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point
        array, return ``-infinity``).
 
     **Special Cases**
@@ -208,8 +208,8 @@ def mean(
            While this specification recommends that this function only accept input
            arrays having a floating-point data type, specification-compliant array
            libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input 
-           array ``x`` has an integer data type, the returned array must have the 
+           While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
     """

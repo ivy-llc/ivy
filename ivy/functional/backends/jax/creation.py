@@ -117,8 +117,8 @@ def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype, 
-    device: jaxlib.xla_extension.Device
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
