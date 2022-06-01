@@ -878,13 +878,13 @@ def get_axis(draw, dtype):
                    shape,
                    elements=xps.from_dtype(
                        dtype,
-                       min_value=np.nextafter(0, 1)*1e50 if dtype == 'float64' else 0)
+                       min_value=np.nextafter(0, 1) * 1e50 if dtype == 'float64' else 0)
                    )
     ))
     axes = len(shape)
     axis = draw(st.none()
-                | st.integers(-axes, axes-1)
-                | st.lists(st.integers(-axes, axes-1),
+                | st.integers(-axes, axes - 1)
+                | st.lists(st.integers(-axes, axes - 1),
                            min_size=1,
                            max_size=axes,
                            unique_by=lambda x: shape[x]))
