@@ -69,7 +69,9 @@ def unstack(x, axis, keepdims=False):
 container_types = lambda: []
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(val_native)

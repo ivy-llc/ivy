@@ -80,7 +80,9 @@ def container_types():
     return []
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, torch.Tensor], val: Union[ivy.Array, torch.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native.data = val_native
     if ivy.is_ivy_array(x):
