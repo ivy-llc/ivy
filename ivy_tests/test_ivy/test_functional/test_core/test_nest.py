@@ -230,14 +230,16 @@ def test_copy_nest(device, call):
     assert nest["b"]["c"][0] is nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
 
+
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
-    num_positional_args = st.integers(min_value=0, max_value=2),
+    num_positional_args=st.integers(min_value=0, max_value=2),
 )
-def test_nested_multi_map(x0_n_x1_n_res,num_positional_args,device, call,fw):
+def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     # without key_chains specification
     dtype = x0_n_x1_n_res[0]
-    nest0 = ivy.array(x0_n_x1_n_res[1],dtype=dtype)
+    ivy.array([1, 2, 3])
+    nest0 = ivy.array(x0_n_x1_n_res[1], dtype=dtype)
     nest1 = nest0 * 2
     helpers.test_array_function(
         dtype,
@@ -249,10 +251,9 @@ def test_nested_multi_map(x0_n_x1_n_res,num_positional_args,device, call,fw):
         False,
         fw,
         "nested_multi_map",
-        func=lambda x,_:x[0]+x[1],
-        nests=[nest0,nest1]
+        func=lambda x, _: x[0] + x[1],
+        nests=[nest0, nest1],
     )
-
 
 
 # Still to Add #

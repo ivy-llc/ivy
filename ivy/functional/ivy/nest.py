@@ -566,7 +566,7 @@ def nested_multi_map(
         Parameters
         ----------
         func
-            Function to apply to each container entry.
+            Function to apply to each nest entry.
         nest
             nests to map.
         key_chains
@@ -576,15 +576,15 @@ def nested_multi_map(
             be skipped. Default is True.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied,
-            otherwise the leftmost container value is used. Default is False.
+            otherwise the leftmost nest value is used. Default is False.
         key_chain
             Chain of keys for this dict entry (Default value = '')
         config
-            The configuration for the containers. Default is the same as container0.
+            The configuration for the nests. Default is the same as nest0.
 
         Returns
         -------
-            Container
+            nest containing the result of the funciton.
 
         """
         nest0 = nests[0]
@@ -612,8 +612,8 @@ def nested_multi_map(
                     ):
                         if prune_unapplied:
                             continue
-                        return_list.insert(index,value0)
+                        return_list.insert(index,ivy.to_list(value0))
                         continue
-                return_list.insert(index,func(values, this_key_chain)) 
+                return_list.insert(index,ivy.to_list(func(values, this_key_chain)))                     
         # noinspection PyProtectedMember
         return ivy.array(return_list)
