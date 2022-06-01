@@ -21,10 +21,10 @@ class ArrayWithElementwise(abc.ABC):
 
     def add(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.add(self, x2, out=out)
 
     def asin(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -38,9 +38,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def atan2(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.atan2(self, x2, out=out)
 
     def atanh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -48,16 +48,16 @@ class ArrayWithElementwise(abc.ABC):
 
     def bitwise_and(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.bitwise_and(self, x2, out=out)
 
     def bitwise_left_shift(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.bitwise_left_shift(self, x2, out=out)
 
     def bitwise_invert(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -65,23 +65,23 @@ class ArrayWithElementwise(abc.ABC):
 
     def bitwise_or(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.bitwise_or(self, x2, out=out)
 
     def bitwise_right_shift(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.bitwise_right_shift(self, x2, out=out)
 
     def bitwise_xor(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.bitwise_xor(self, x2, out=out)
 
     def ceil(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -95,16 +95,16 @@ class ArrayWithElementwise(abc.ABC):
 
     def divide(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.divide(self, x2, out=out)
 
     def equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.equal(self, x2, out=out)
 
     def exp(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -118,23 +118,23 @@ class ArrayWithElementwise(abc.ABC):
 
     def floor_divide(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.floor_divide(self, x2, out=out)
 
     def greater(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.greater(self, x2, out=out)
 
     def greater_equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.greater_equal(self, x2, out=out)
 
     def isfinite(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -148,16 +148,16 @@ class ArrayWithElementwise(abc.ABC):
 
     def less(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.less(self, x2, out=out)
 
     def less_equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.less_equal(self, x2, out=out)
 
     def log(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -174,16 +174,16 @@ class ArrayWithElementwise(abc.ABC):
 
     def logaddexp(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.logaddexp(self, x2, out=out)
 
     def logical_and(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.logical_and(self, x2, out=out)
 
     def logical_not(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -191,23 +191,23 @@ class ArrayWithElementwise(abc.ABC):
 
     def logical_or(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.logical_or(self, x2, out=out)
 
     def logical_xor(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.logical_xor(self, x2, out=out)
 
     def multiply(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.multiply(self, x2, out=out)
 
     def negative(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -215,9 +215,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def not_equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.not_equal(self, x2, out=out)
 
     def positive(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -225,16 +225,16 @@ class ArrayWithElementwise(abc.ABC):
 
     def pow(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.pow(self, x2, out=out)
 
     def remainder(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.remainder(self, x2, out=out)
 
     def round(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -257,9 +257,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def subtract(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.subtract(self, x2, out=out)
 
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
