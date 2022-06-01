@@ -43,9 +43,9 @@ a:visited {
 
 html.writer-html4 .rst-content dl:not(.docutils) > dt,
 html.writer-html5
-  .rst-content
-  dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)
-  > dt {
+.rst-content
+dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)
+> dt {
   background: #ebffe1;
   color: #006400;
   border-top: solid 3px #009600;
@@ -99,5 +99,29 @@ html.writer-html5
 }
 
 .highlight .gp{
-    color: #006400;
+  color: #006400;
+}
+
+@media only screen and (min-width: 500px) {
+  .logo{
+    padding: 0.8em;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .logo{
+    padding: 0.5em;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .logo{
+    padding: 0.2em;
+  }
+}
+
+.supported_frameworks{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
