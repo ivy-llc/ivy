@@ -25,8 +25,8 @@ import ivy.functional.backends.numpy as ivy_np
        as_variable=st.booleans(),
        )
 def test_linear_layer_training(
-    batch_shape, input_channels, output_channels, with_v, dtype, as_variable, device, compile_graph, call
-):
+    batch_shape, input_channels, output_channels, with_v, dtype,
+        as_variable, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -1045,7 +1045,10 @@ def test_sequential_layer_training(
         return
     batch_shape, channels = bs_c
     x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), dtype="float32"
+        ivy.linspace(ivy.zeros(batch_shape),
+                     ivy.ones(batch_shape),
+                     channels),
+        dtype="float32"
     )
     if with_v:
         np.random.seed(0)
