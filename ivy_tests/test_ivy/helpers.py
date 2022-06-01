@@ -410,6 +410,7 @@ def test_array_function(
     fn_name,
     rtol=1e-03,
     atol=1e-06,
+    test_values=True,
     **all_as_kwargs_np
 ):
 
@@ -537,6 +538,10 @@ def test_array_function(
             pass
         else:
             assert ret.data is out.data
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret
 
     # value test
     if not isinstance(ret, tuple):
