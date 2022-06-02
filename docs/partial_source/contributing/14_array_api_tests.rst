@@ -13,4 +13,8 @@ The test suite is included in the ivy repository as a submodule in the folder `t
 which we keep updated with the upstream test suite.
 
 The entire test suite is run independently `for each backend`_ on every push to the repo.
-Therefore, every method which exists in the standard is thoroughly tested for adherence standard on a continuous basis.
+Therefore, every function which exists in the standard is thoroughly tested for
+adherence to the standard on a continuous basis.
+
+You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
+functions which are part of the standard.
