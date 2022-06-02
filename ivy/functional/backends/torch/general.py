@@ -58,12 +58,8 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def floormod(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -116,31 +112,19 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
-    if ivy.exists(out):
-        return ivy.inplace_update(out, torch.cumsum(x, axis))
-    else:
-        return torch.cumsum(x, axis)
+def cumsum(x: torch.Tensor, axis: int = 0):
+    return torch.cumsum(x, axis)
 
 
 def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
+    x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, torch.transpose(res, axis, -1))
-        else:
-            return torch.transpose(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, torch.cumprod(x, axis))
-    else:
-        return torch.cumprod(x, axis)
+        return torch.transpose(res, axis, -1)
+    return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames

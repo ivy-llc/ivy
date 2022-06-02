@@ -375,6 +375,7 @@ def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -400,14 +401,8 @@ def clip_vector_norm(
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ratio * x)
-        else:
-            return ratio * x
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
-    else:
-        return ivy.copy_array(x)._data
+        return ratio * x
+    return ivy.copy_array(x)._data
 
 
 def clip_matrix_norm(
@@ -438,6 +433,7 @@ def clip_matrix_norm(
 def floormod(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns element-wise remainder of division.
@@ -458,7 +454,7 @@ def floormod(
         An array of the same shape and type as x, with the elements floor modded.
 
     """
-    return _cur_backend(x).floormod(x, y, out)
+    return _cur_backend(x).floormod(x, y, out=out)
 
 
 def unstack(
@@ -1198,6 +1194,7 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -1224,6 +1221,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative product of the elements along a given axis.
