@@ -672,7 +672,8 @@ def array_values(draw,
                  allow_subnormal=False,
                  allow_inf=False,
                  exclude_min=False,
-                 exclude_max=False):
+                 exclude_max=False,
+                 allow_negative=True):
     size = 1
     if type(shape) != tuple:
         size = shape
@@ -735,6 +736,8 @@ def array_values(draw,
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     array = np.array(values)
+    if dtype != 'bool' and not allow_negative:
+        array = np.abs(array)
     if type(shape) == tuple:
         array = array.reshape(shape)
     return array.tolist()
@@ -900,3 +903,31 @@ def get_probs(draw, dtype):
                               min_value=0,
                               exclude_min=True))
     return probs, shape[1]
+
+
+@st.composite
+def get_axis(draw, dtype):
+    shape = draw(get_shape(allow_none=False, min_size=1))
+    res = np.asarray(draw(
+        xps.arrays(dtype,
+                   shape,
+                   elements=xps.from_dtype(
+                       dtype,
+                       min_value=np.nextafter(0, 1) * 1e50 if dtype == 'float64' else 0)
+                   )
+    ))
+    axes = len(shape)
+    axis = draw(st.none()
+                | st.integers(-axes, axes - 1)
+                | st.lists(st.integers(-axes, axes - 1),
+                           min_size=1,
+                           max_size=axes,
+                           unique_by=lambda x: shape[x]))
+    if type(axis) == list:
+        def sort_key(ele, max_len):
+            if ele < 0:
+                return ele + max_len - 1
+            return ele
+        axis.sort(key=(lambda ele: sort_key(ele, axes)))
+        axis = tuple(axis)
+    return res, axis
