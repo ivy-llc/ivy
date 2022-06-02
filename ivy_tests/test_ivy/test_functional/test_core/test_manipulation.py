@@ -56,17 +56,19 @@ def test_concat(
         ).astype(dt)
         for ud, dt in zip(unique_dims, input_dtype)
     ]
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "concat",
-                                xs=xs,
-                                axis=unique_idx)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "concat",
+        xs=xs,
+        axis=unique_idx,
+    )
 
 
 # expand_dims
@@ -105,17 +107,19 @@ def test_expand_dims(
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "expand_dims",
-                                x=x,
-                                axis=unique_idx)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "expand_dims",
+        x=x,
+        axis=unique_idx,
+    )
 
 
 # flip
@@ -154,17 +158,19 @@ def test_flip(
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "flip",
-                                x=x,
-                                axis=axis)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "flip",
+        x=x,
+        axis=axis,
+    )
 
 
 # permute_dims
@@ -202,17 +208,19 @@ def test_permute_dims(
     x = np.random.uniform(size=array_shape).astype(input_dtype)
     axes = np.random.permutation(len(array_shape)).tolist()
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "permute_dims",
-                                x=x,
-                                axes=axes)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "permute_dims",
+        x=x,
+        axes=axes,
+    )
 
 
 # reshape
@@ -253,17 +261,19 @@ def test_reshape(
     # draw a valid reshape shape
     shape = data.draw(helpers.reshape_shapes(x.shape))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "reshape",
-                                x=x,
-                                shape=shape)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "reshape",
+        x=x,
+        shape=shape,
+    )
 
 
 # roll
@@ -322,18 +332,20 @@ def test_roll(
     # draw any valid axis
     axis = data.draw(valid_axis)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "roll",
-                                x=x,
-                                shift=shift,
-                                axis=axis)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "roll",
+        x=x,
+        shift=shift,
+        axis=axis,
+    )
 
 
 # squeeze
@@ -379,17 +391,19 @@ def test_squeeze(
         if len(axis) == 0:
             return
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "squeeze",
-                                x=x,
-                                axis=axis)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "squeeze",
+        x=x,
+        axis=axis,
+    )
 
 
 # stack
@@ -431,17 +445,19 @@ def test_stack(
     ndim = len(xs[0].shape)
     axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "stack",
-                                x=xs,
-                                axis=axis)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "stack",
+        x=xs,
+        axis=axis,
+    )
 
 
 # Extra #
@@ -479,7 +495,7 @@ def test_repeat(
     # smoke for tensorflow as well, since it was throwing an error
     # as unint16 not implemented in Tile or something
     if (fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]) or (
-            fw == "tensorflow" and input_dtype in ["uint16"]
+        fw == "tensorflow" and input_dtype in ["uint16"]
     ):
         return
 
@@ -491,18 +507,20 @@ def test_repeat(
 
     repeats = data.draw(st.integers(1, 3))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "repeat",
-                                x=x,
-                                repeats=repeats,
-                                axis=axis)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "repeat",
+        x=x,
+        repeats=repeats,
+        axis=axis,
+    )
 
 
 # tile
@@ -550,17 +568,19 @@ def test_tile(
             helpers.nph.broadcastable_shapes(shape=x.shape, min_dims=len(x.shape))
         )
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "tile",
-                                x=x,
-                                reps=reps)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "tile",
+        x=x,
+        reps=reps,
+    )
 
 
 # constant_pad
@@ -600,18 +620,20 @@ def test_constant_pad(
     ]
     constant = data.draw(st.integers(0, 10))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "constant_pad",
-                                x=x,
-                                pad_width=pads,
-                                value=constant)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "constant_pad",
+        x=x,
+        pad_width=pads,
+        value=constant,
+    )
 
 
 # zero_pad
@@ -650,17 +672,19 @@ def test_zero_pad(
         for _ in range(len(x.shape))
     ]
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "zero_pad",
-                                x=x,
-                                pad_width=pads)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "zero_pad",
+        x=x,
+        pad_width=pads,
+    )
 
 
 # swapaxes
@@ -698,18 +722,20 @@ def test_swapaxes(
     axis0 = data.draw(valid_axes)
     axis1 = data.draw(valid_axes)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "swapaxes",
-                                x=x,
-                                axis0=axis0,
-                                axis1=axis1)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "swapaxes",
+        x=x,
+        axis0=axis0,
+        axis1=axis1,
+    )
 
 
 # clip
@@ -765,17 +791,20 @@ def test_clip(
         # mxnet only supports numbers or 0 or 1 dimensional arrays for min
         # and max while performing clip
         return
-    helpers.test_array_function(dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "clip",
-                                x=np.asarray(x, dtype=dtype[0]), x_min=ivy.array(min_val),
-                                x_max=ivy.array(max_val))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "clip",
+        x=np.asarray(x, dtype=dtype[0]),
+        x_min=ivy.array(min_val),
+        x_max=ivy.array(max_val),
+    )
 
 
 # split
