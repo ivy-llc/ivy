@@ -907,15 +907,12 @@ def get_probs(draw, dtype):
 
 @st.composite
 def get_axis(draw, dtype):
-    shape = draw(get_shape(allow_none=False, min_size=1))
-    res = np.asarray(draw(
-        xps.arrays(dtype,
-                   shape,
-                   elements=xps.from_dtype(
-                       dtype,
-                       min_value=np.nextafter(0, 1) * 1e50 if dtype == 'float64' else 0)
-                   )
-    ))
+    shape = draw(get_shape(allow_none=False, min_num_dims=1))
+    res = np.asarray(draw(array_values(
+        dtype=dtype,
+        shape=shape,
+        min_value=np.nextafter(0, 1) * 1e50 if dtype == 'float64' else None
+    )))
     axes = len(shape)
     axis = draw(st.none()
                 | st.integers(-axes, axes - 1)
