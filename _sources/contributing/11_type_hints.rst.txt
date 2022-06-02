@@ -5,9 +5,8 @@ Type Hints
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
 All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
-In contrast, all backend implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py` should not have any type hints,
-on account that these are just different instantiations of the functions at :code:`ivy/functional/ivy/category_name.py`.
+Likewise, all backend implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py` should also have full and thorough type-hints.
 
 In order to understand the type-hint requirements, it's useful to look at some examples.
 
