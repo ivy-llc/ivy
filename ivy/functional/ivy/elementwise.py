@@ -1458,13 +1458,57 @@ def negative(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]), b=ivy.array([3.,4.,-5.]))
+    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),\
+                         b=ivy.array([3.,4.,-5.]))
     >>> y = ivy.negative(x)
     >>> print(y)
     {
         a: ivy.array([-0., -1., -2.], dtype=float32),
         b: ivy.array([-3., -4., 5.], dtype=float32)
     }
+
+    Instance Method Examples
+    -------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
+    >>> y = x.negative()
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -0. , -1. , -1.1], dtype=float32)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = x.negative()
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
+
+    Operator Examples
+    -----------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1,2,3])
+    >>> y = -x
+    >>> print(y)
+    ivy.array([-1, -2, -3])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = -x
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
+
     """
     return _cur_backend(x).negative(x, out=out)
 
