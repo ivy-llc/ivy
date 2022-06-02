@@ -69,7 +69,9 @@ def unstack(x, axis, keepdims=False):
 container_types = lambda: []
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(val_native)
@@ -141,9 +143,7 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -207,7 +207,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -299,31 +299,23 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: tf.Tensor,
-    indices: tf.Tensor,
-    axis: Optional[int] = -1,
-    device: Optional[Union[ivy.Device, str]] = None,
-    out: Optional[tf.Tensor] = None,
+    params: tf.Tensor, indices: tf.Tensor, axis: Optional[int] = -1, *, device: str
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)
     if device is None:
         device = _dev_callable(params)
     with tf.device(as_native_dev(device)):
-        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        else:
-            return ret
+        return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices, device=None):
+def gather_nd(params, indices, *, device: str):
     if device is None:
         device = _dev_callable(params)
     with tf.device(as_native_dev(device)):
         return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     device = default_device(device)
     if device is not None:
         with tf.device(as_native_dev(device)):
