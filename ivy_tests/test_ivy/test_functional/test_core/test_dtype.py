@@ -50,7 +50,7 @@ def test_astype(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -128,7 +128,7 @@ def test_can_cast(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -163,7 +163,7 @@ def test_dtype_bits(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -198,7 +198,7 @@ def test_dtype_from_str(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -233,7 +233,7 @@ def test_dtype_to_str(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -268,7 +268,7 @@ def test_finfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
@@ -303,7 +303,7 @@ def test_iinfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
         input_dtype,
