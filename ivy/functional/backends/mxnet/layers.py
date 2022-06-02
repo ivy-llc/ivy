@@ -151,7 +151,7 @@ def depthwise_conv2d(
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> mx.nd.NDArray:
     num_filters = filters.shape[-1]
     num_channels = num_filters

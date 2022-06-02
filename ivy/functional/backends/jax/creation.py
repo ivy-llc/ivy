@@ -42,8 +42,9 @@ def zeros(
 def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -59,9 +60,7 @@ def full_like(
 
 
 def ones_like(
-    x: JaxArray,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
 
     if dtype and str:
@@ -72,9 +71,7 @@ def ones_like(
 
 
 def zeros_like(
-    x: JaxArray,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
@@ -91,8 +88,9 @@ def triu(x: JaxArray, k: int = 0) -> JaxArray:
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     return _to_dev(
         jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -100,9 +98,7 @@ def empty(
 
 
 def empty_like(
-    x: JaxArray,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
 
     if dtype and str:
@@ -117,8 +113,8 @@ def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype, 
-    device: jaxlib.xla_extension.Device
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
@@ -141,7 +137,16 @@ def asarray(
         return _to_dev(jnp.asarray(object_in, dtype=dtype), device=device)
 
 
-def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
+def linspace(
+    start,
+    stop,
+    num,
+    axis=None,
+    endpoint=True,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+):
     if axis is None:
         axis = -1
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
@@ -158,8 +163,9 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
@@ -184,8 +190,9 @@ def arange(
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     return _to_dev(
         jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
@@ -203,7 +210,9 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, device=None):
+def logspace(
+    start, stop, num, base=10.0, axis=None, *, device: jaxlib.xla_extension.Device
+):
     if axis is None:
         axis = -1
     return _to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), device=device)

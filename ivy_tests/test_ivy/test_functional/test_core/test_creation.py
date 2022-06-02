@@ -159,12 +159,152 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
 # empty_like()
 # eye()
 # from_dlpack()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_from_dlpack(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "from_dlpack",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # full()
 # full_like()
 # meshgrid()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(min_value=1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_meshgrid(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "meshgrid",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # ones()
 # ones_like()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_ones_like(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "ones_like",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # tril()
 # triu()
 # zeros()
 # zeros_like()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_zeros_like(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "zeros_like",
+        x=np.asarray(x, dtype=dtype),
+    )

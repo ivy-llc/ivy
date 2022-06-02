@@ -390,7 +390,7 @@ def depthwise_conv2d(
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> Union[ivy.Array, ivy.Container]:
     """
     Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
@@ -453,7 +453,7 @@ def depthwise_conv2d(
                         [0.333]]]])
     }
 
-    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray` 
+    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
     >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
