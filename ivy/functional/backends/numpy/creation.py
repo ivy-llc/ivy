@@ -4,7 +4,6 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-import ivy
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 
