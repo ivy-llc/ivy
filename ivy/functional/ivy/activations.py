@@ -13,7 +13,8 @@ from ivy.backend_handler import current_backend as _cur_backend
 
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 

@@ -81,6 +81,9 @@ class Array(
         ArrayWithSorting.__init__(self)
         ArrayWithStatistical.__init__(self)
         ArrayWithUtility.__init__(self)
+        self._init(data)
+
+    def _init(self, data):
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
@@ -171,7 +174,7 @@ class Array(
     @data.setter
     def data(self, data):
         assert ivy.is_native_array(data)
-        self._data = data
+        self._init(data)
 
     # Built-ins #
     # ----------#
