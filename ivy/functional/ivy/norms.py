@@ -44,24 +44,37 @@ def layer_norm(
     -------
 
     >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
-    >>> arr = ivy.layer_norm(arr, [0, 1], new_std=2.0)
-    >>> print(arr)
-    [[-0.5  0.5  1.5]]
+    >>> norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)
+    >>> print(norm)
+    ivy.array([[0., 0., 0.],
+           [0., 0., 0.]], dtype=float32)
 
-    >>> arr = np.array([[1, 2, 3], [4, 5, 6]])
-    >>> arr = ivy.layer_norm(arr, [0, 1])
-    >>> print(arr)
-    [[-0.5  0.5  1.5]]
+    >>> arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])
+    >>> norm = ivy.layer_norm(arr, [0, 1])
+    >>> print(norm)
+    ivy.array([[-1.4638476 , -0.8783086 , -0.29276952],
+           [ 0.29276952,  0.8783086 ,  1.4638476 ]], dtype=float32)
 
-    >>> arr = np.array([[ 0.0976, -0.3452,  1.2740],
+    >>> arr = ivy.array([[ 0.0976, -0.3452,  1.2740],
         [ 0.1047,  0.5886,  1.2732],
         [ 0.7696, -1.7024, -2.2518]])
-    >>> arr = ivy.layer_norm(arr, [0, 1, 2])
-    >>> print(arr)
-    [[ 0.1017, -0.2772,  1.1086],
-        [ 0.1079,  0.5220,  1.1079],
-        [ 0.6769, -1.4388, -1.9089]]
+    >>> norm = ivy.layer_norm(arr, [0, 1, 2], epsilon=0.001, new_std=1.5, offset=0.5, scale=0.5)
+    >>> print(norm)
+    ivy.array([[ 0.57629204,  0.29217   ,  1.3311275 ],
+           [ 0.58084774,  0.89134157,  1.3306142 ],
+           [ 1.0074799 , -0.5786756 , -0.9311974 ]], dtype=float32)
 
+    >>> import tensorflow as tf # ivy.NativeArray
+    >>> ivy.set_backend('tensorflow')
+    >>> tensor = tf.constant([[3.,1.],[4.,12.]])
+    >>> norm = ivy.layer_norm(tensor, [0,1], new_std=1.25, offset=0.25, scale=0.3)
+    >>> print(norm)
+    ivy.array([[ 0.07071576, -0.10856849],
+           [ 0.16035788,  0.8774949 ]], dtype=float32)
+
+    >>> container = ivy.Container({'a': ivy.array([2.,3.,4.]), 'b': ivy.array([1.3, 2.11, 0.243])})
+    >>> norm = ivy.layer_norm(container, [0,1], new_std=1.25, offset=0.2)
+    >>> print(norm)
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
