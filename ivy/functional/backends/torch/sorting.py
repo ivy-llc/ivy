@@ -2,14 +2,9 @@
 import torch
 from typing import Optional
 
-import ivy
-
 
 def argsort(
-    x: torch.Tensor,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True
+    x: torch.Tensor, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> torch.Tensor:
     ret = torch.argsort(x, dim=axis, descending=descending)
     return ret

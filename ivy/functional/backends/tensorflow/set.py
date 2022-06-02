@@ -4,8 +4,6 @@ from tensorflow.python.types.core import Tensor
 from typing import Tuple
 from collections import namedtuple
 
-import ivy
-
 
 def unique_all(x: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
     UniqueAll = namedtuple(

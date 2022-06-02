@@ -1,16 +1,11 @@
 # global
 import numpy as np
-from typing import Optional
 
 # local
-import ivy
 
 
 def argsort(
-    x: np.ndarray,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True
+    x: np.ndarray, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> np.ndarray:
     if descending:
         ret = np.asarray(
@@ -22,10 +17,7 @@ def argsort(
 
 
 def sort(
-    x: np.ndarray,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True
+    x: np.ndarray, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> np.ndarray:
     kind = "stable" if stable else "quicksort"
     ret = np.asarray(np.sort(x, axis=axis, kind=kind))

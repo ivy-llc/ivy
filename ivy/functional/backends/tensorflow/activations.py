@@ -9,7 +9,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
 def relu(x: Tensor) -> Tensor:

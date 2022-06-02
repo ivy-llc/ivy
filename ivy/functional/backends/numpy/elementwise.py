@@ -18,7 +18,9 @@ def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
 
 
-def pow(x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def pow(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)
         x1, x2 = np.asarray(x1), np.asarray(x2)

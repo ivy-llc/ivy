@@ -17,10 +17,7 @@ def roll(
     return jnp.roll(x, shift, axis)
 
 
-def squeeze(
-    x: JaxArray,
-    axis: Union[int, Tuple[int], List[int]] = None
-) -> JaxArray:
+def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             ret = x
@@ -38,8 +35,7 @@ def _flat_array_to_1_dim_array(x):
 
 # noinspection PyShadowingBuiltins
 def flip(
-    x: JaxArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret
@@ -56,8 +52,7 @@ def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> J
 
 
 def stack(
-    x: Union[Tuple[JaxArray], List[JaxArray]],
-    axis: Optional[int] = None
+    x: Union[Tuple[JaxArray], List[JaxArray]], axis: Optional[int] = None
 ) -> JaxArray:
     if axis is None:
         axis = 0
@@ -73,9 +68,7 @@ def permute_dims(
 
 
 def reshape(
-    x: JaxArray,
-    shape: Tuple[int, ...],
-    copy: Optional[bool] = None
+    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret
@@ -127,11 +120,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return jnp.split(x, num_or_size_splits, axis)
 
 
-def repeat(
-    x: JaxArray,
-    repeats: Union[int, List[int]],
-    axis: int = None
-) -> JaxArray:
+def repeat(x: JaxArray, repeats: Union[int, List[int]], axis: int = None) -> JaxArray:
     ret = jnp.repeat(x, repeats, axis)
     return ret
 
@@ -142,9 +131,7 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def clip(
-    x: JaxArray,
-    x_min: Union[Number, JaxArray],
-    x_max: Union[Number, JaxArray]
+    x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
     if (
         hasattr(x_min, "dtype")
@@ -181,9 +168,7 @@ def clip(
 
 
 def constant_pad(
-    x: JaxArray,
-    pad_width: List[List[int]],
-    value: Number = 0.0
+    x: JaxArray, pad_width: List[List[int]], value: Number = 0.0
 ) -> JaxArray:
     ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
     return ret

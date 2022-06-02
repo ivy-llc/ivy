@@ -9,7 +9,6 @@ import numpy as np
 import torch
 
 # local
-import ivy
 
 
 def relu(x: torch.Tensor) -> torch.Tensor:

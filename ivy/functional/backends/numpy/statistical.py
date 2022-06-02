@@ -10,17 +10,13 @@ import ivy
 
 
 def min(
-    x: np.ndarray,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False
+    x: np.ndarray, axis: Union[int, Tuple[int]] = None, keepdims: bool = False
 ) -> np.ndarray:
     return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims))
 
 
 def max(
-    x: np.ndarray,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False
+    x: np.ndarray, axis: Union[int, Tuple[int]] = None, keepdims: bool = False
 ) -> np.ndarray:
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims))
 
@@ -29,7 +25,7 @@ def var(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
@@ -43,7 +39,7 @@ def sum(
     x: np.ndarray,
     axis: Union[int, Tuple[int]] = None,
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> np.ndarray:
 
     if dtype is None and np.issubdtype(x.dtype, np.integer):
@@ -97,7 +93,7 @@ def prod(
 def mean(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
@@ -111,7 +107,7 @@ def std(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> np.ndarray:
     return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims))
 
@@ -120,7 +116,5 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str, *operands: np.ndarray
-) -> np.ndarray:
+def einsum(equation: str, *operands: np.ndarray) -> np.ndarray:
     return np.asarray(np.einsum(equation, *operands))

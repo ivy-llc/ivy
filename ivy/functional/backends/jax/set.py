@@ -4,7 +4,6 @@ from typing import Tuple
 from collections import namedtuple
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 

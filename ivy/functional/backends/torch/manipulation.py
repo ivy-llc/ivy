@@ -4,8 +4,6 @@ import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List
 
-import ivy
-
 
 def roll(
     x: torch.Tensor,
@@ -21,8 +19,7 @@ def roll(
 
 
 def squeeze(
-    x: torch.Tensor,
-    axis: Union[int, Tuple[int], List[int]] = None
+    x: torch.Tensor, axis: Union[int, Tuple[int], List[int]] = None
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
@@ -32,8 +29,6 @@ def squeeze(
                 )
             )
         ret = torch.squeeze(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
         return ret
     elif isinstance(axis, tuple):
         axis = list(axis)
@@ -56,8 +51,7 @@ def squeeze(
 
 # noinspection PyShadowingBuiltins
 def flip(
-    x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: torch.Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
     if not num_dims:
@@ -75,16 +69,12 @@ def flip(
     return ret
 
 
-def expand_dims(
-    x: torch.Tensor, axis: int = 0
-) -> torch.Tensor:
+def expand_dims(x: torch.Tensor, axis: int = 0) -> torch.Tensor:
     ret = torch.unsqueeze(x, axis)
     return ret
 
 
-def permute_dims(
-    x: torch.Tensor, axes: Tuple[int, ...]
-) -> torch.Tensor:
+def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
     ret = torch.permute(x, axes)
     return ret
 
@@ -100,9 +90,7 @@ def stack(
 
 
 def reshape(
-    x: torch.Tensor,
-    shape: Tuple[int, ...],
-    copy: Optional[bool] = None
+    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
 ) -> torch.Tensor:
     ret = torch.reshape(x, shape)
     return ret
@@ -169,9 +157,7 @@ def split(
 
 
 def repeat(
-    x: torch.Tensor,
-    repeats: Union[int, List[int]],
-    axis: int = None
+    x: torch.Tensor, repeats: Union[int, List[int]], axis: int = None
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
@@ -188,9 +174,7 @@ def tile(x: torch.Tensor, reps) -> torch.Tensor:
 
 # noinspection PyUnresolvedReferences
 def constant_pad(
-    x: torch.Tensor,
-    pad_width: List[List[int]],
-    value: Number = 0.0
+    x: torch.Tensor, pad_width: List[List[int]], value: Number = 0.0
 ) -> torch.Tensor:
     if x.shape == ():
         x = x.unsqueeze(0)
@@ -211,9 +195,7 @@ def zero_pad(
     return constant_pad(x, pad_width, 0.0, out=out)
 
 
-def swapaxes(
-    x: torch.Tensor, axis0: int, axis1: int
-) -> torch.Tensor:
+def swapaxes(x: torch.Tensor, axis0: int, axis1: int) -> torch.Tensor:
     ret = torch.transpose(x, axis0, axis1)
     return ret
 

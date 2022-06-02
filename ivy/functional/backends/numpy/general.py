@@ -67,9 +67,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(
-    x: np.ndarray, y: np.ndarray
-) -> np.ndarray:
+def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
@@ -103,16 +101,12 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(
-    x: np.ndarray, axis: int = 0
-) -> np.ndarray:
+def cumsum(x: np.ndarray, axis: int = 0) -> np.ndarray:
     return np.cumsum(x, axis)
 
 
 def cumprod(
-    x: np.ndarray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False
+    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)

@@ -12,9 +12,7 @@ import ivy
 
 
 def min(
-    x: Tensor,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False
+    x: Tensor, axis: Union[int, Tuple[int]] = None, keepdims: bool = False
 ) -> Tensor:
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
@@ -23,7 +21,7 @@ def sum(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
 
     if dtype is None:
@@ -60,7 +58,7 @@ def prod(
 def mean(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -71,9 +69,7 @@ def mean(
 
 
 def max(
-    x: Tensor,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False
+    x: Tensor, axis: Union[int, Tuple[int]] = None, keepdims: bool = False
 ) -> Tensor:
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
@@ -82,7 +78,7 @@ def var(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
 
@@ -91,7 +87,7 @@ def std(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     return tf.experimental.numpy.std(x, axis, keepdims)
 

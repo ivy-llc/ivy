@@ -126,9 +126,7 @@ def cumsum(x: tf.Tensor, axis: int = 0) -> tf.Tensor:
 
 
 def cumprod(
-    x: tf.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False
+    x: tf.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> tf.Tensor:
     return tf.math.cumprod(x, axis, exclusive)
 

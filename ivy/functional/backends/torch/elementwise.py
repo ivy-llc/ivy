@@ -26,7 +26,9 @@ def expm1(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
     return torch.expm1(x, out=out)
 
 
-def bitwise_invert(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def bitwise_invert(
+    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.bitwise_not(x, out=out)
 
 

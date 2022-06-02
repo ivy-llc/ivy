@@ -375,7 +375,7 @@ def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -433,7 +433,7 @@ def clip_matrix_norm(
 def floormod(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns element-wise remainder of division.
@@ -1194,7 +1194,7 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -1221,7 +1221,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: Optional[bool] = False,
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative product of the elements along a given axis.
@@ -1333,7 +1333,7 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
     *,
-    device: Union[ivy.Device, ivy.NativeDevice] = None, 
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.

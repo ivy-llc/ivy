@@ -27,9 +27,7 @@ def inv(x: Tensor) -> Tensor:
 
 
 def tensordot(
-    x1: Tensor,
-    x2: Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2
+    x1: Tensor, x2: Tensor, axes: Union[int, Tuple[List[int], List[int]]] = 2
 ) -> Tensor:
 
     # find type to promote to
@@ -42,19 +40,14 @@ def tensordot(
     return ret
 
 
-def vecdot(
-    x1: Tensor, x2: Tensor, axis: int = -1
-) -> Tensor:
+def vecdot(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
     return ret
 
 
-def pinv(
-    x: Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None
-) -> Tensor:
+def pinv(x: Tensor, rtol: Optional[Union[float, Tuple[float]]] = None) -> Tensor:
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
@@ -72,7 +65,7 @@ def vector_norm(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
 ) -> Tensor:
 
     if ord == -float("inf"):
@@ -100,7 +93,7 @@ def vector_norm(
 def matrix_norm(
     x: Tensor,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     axes = (-2, -1)
     if ord == -float("inf"):
@@ -156,10 +149,7 @@ def matrix_power(x: Tensor, n: int) -> Tensor:
 
 
 # noinspection PyPep8Naming
-def svd(
-    x: Tensor,
-    full_matrices: bool = True
-) -> Union[Tensor, Tuple[Tensor, ...]]:
+def svd(x: Tensor, full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
     batch_shape = tf.shape(x)[:-2]
@@ -177,18 +167,13 @@ def outer(x1: Tensor, x2: Tensor) -> Tensor:
 
 
 def diagonal(
-    x: tf.Tensor,
-    offset: int = 0,
-    axis1: int = -2,
-    axis2: int = -1
+    x: tf.Tensor, offset: int = 0, axis1: int = -2, axis2: int = -1
 ) -> tf.Tensor:
     ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
     return ret
 
 
-def qr(
-    x: tf.Tensor, mode: str = "reduced"
-) -> NamedTuple:
+def qr(x: tf.Tensor, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
@@ -269,9 +254,7 @@ def svdvals(x: tf.Tensor) -> tf.Tensor:
     return ret
 
 
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray]
-) -> Union[Tensor, Tuple[Tensor, ...]]:
+def slogdet(x: Union[ivy.Array, ivy.NativeArray]) -> Union[Tensor, Tuple[Tensor, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
     ret = results(sign, logabsdet)
@@ -290,9 +273,7 @@ def det(x: Tensor) -> Tensor:
     return ret
 
 
-def cholesky(
-    x: tf.Tensor, upper: bool = False
-) -> tf.Tensor:
+def cholesky(x: tf.Tensor, upper: bool = False) -> tf.Tensor:
     if not upper:
         ret = tf.linalg.cholesky(x)
     else:
@@ -306,10 +287,7 @@ def eigvalsh(x: Tensor) -> Tensor:
     return ret
 
 
-def matrix_rank(
-    x: Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None
-) -> Tensor:
+def matrix_rank(x: Tensor, rtol: Optional[Union[float, Tuple[float]]] = None) -> Tensor:
     if rtol is None:
         ret = tf.linalg.matrix_rank(x)
     elif tf.size(x) == 0:
@@ -330,9 +308,7 @@ def matrix_rank(
     return ret
 
 
-def cross(
-    x1: tf.Tensor, x2: tf.Tensor, axis: int = -1
-) -> tf.Tensor:
+def cross(x1: tf.Tensor, x2: tf.Tensor, axis: int = -1) -> tf.Tensor:
     ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
     return ret
 
@@ -341,9 +317,7 @@ def cross(
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(
-    vector: Tensor
-) -> Tensor:
+def vector_to_skew_symmetric_matrix(vector: Tensor) -> Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = tf.expand_dims(vector, -1)

@@ -4,8 +4,6 @@ from typing import Tuple
 from collections import namedtuple
 from packaging import version
 
-import ivy
-
 
 def unique_all(x: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     UniqueAll = namedtuple(

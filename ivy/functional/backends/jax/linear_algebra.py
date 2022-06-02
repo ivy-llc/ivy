@@ -18,10 +18,7 @@ def eigh(x: JaxArray) -> JaxArray:
     return ret
 
 
-def pinv(
-    x: JaxArray,
-    rtol: Optional[Union[float, Tuple[float]]] = None
-) -> JaxArray:
+def pinv(x: JaxArray, rtol: Optional[Union[float, Tuple[float]]] = None) -> JaxArray:
 
     if rtol is None:
         ret = jnp.linalg.pinv(x)
@@ -110,9 +107,7 @@ def svdvals(x: JaxArray) -> JaxArray:
     return ret
 
 
-def qr(
-    x: JaxArray, mode: str = "reduced"
-) -> NamedTuple:
+def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     ret = res(q, r)
@@ -152,9 +147,7 @@ def det(x: JaxArray) -> JaxArray:
     return ret
 
 
-def cholesky(
-    x: JaxArray, upper: bool = False
-) -> JaxArray:
+def cholesky(x: JaxArray, upper: bool = False) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
     else:
@@ -191,16 +184,12 @@ def matrix_rank(
     return ret
 
 
-def cross(
-    x1: JaxArray, x2: JaxArray, axis: int = -1
-) -> JaxArray:
+def cross(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.cross(a=x1, b=x2, axis=axis)
     return ret
 
 
-def vecdot(
-    x1: JaxArray, x2: JaxArray, axis: int = -1
-) -> JaxArray:
+def vecdot(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.tensordot(x1, x2, (axis, axis))
     return ret
 
@@ -209,9 +198,7 @@ def vecdot(
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(
-    vector: JaxArray
-) -> JaxArray:
+def vector_to_skew_symmetric_matrix(vector: JaxArray) -> JaxArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = jnp.expand_dims(vector, -1)

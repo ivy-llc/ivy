@@ -4,13 +4,10 @@ import jax.numpy as jnp
 from typing import Optional
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def bitwise_left_shift(
-    x1: JaxArray, x2: JaxArray
-) -> JaxArray:
+def bitwise_left_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.left_shift(x1, x2)
@@ -82,9 +79,7 @@ def greater(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.greater(x1, x2)
 
 
-def greater_equal(
-    x1: JaxArray, x2: JaxArray
-) -> JaxArray:
+def greater_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.greater_equal(x1, x2)
 
 

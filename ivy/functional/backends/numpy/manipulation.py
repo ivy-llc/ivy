@@ -5,7 +5,6 @@ from typing import Union, Tuple, Optional, List
 from numbers import Number
 
 # local
-import ivy
 
 
 def squeeze(
@@ -44,23 +43,17 @@ def flip(
     return ret
 
 
-def expand_dims(
-    x: np.ndarray, axis: int = 0
-) -> np.ndarray:
+def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
 
 
-def permute_dims(
-    x: np.ndarray, axes: Tuple[int, ...]
-) -> np.ndarray:
+def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
     ret = np.transpose(x, axes)
     return ret
 
 
-def concat(
-    xs: List[np.ndarray], axis: int = 0
-) -> np.ndarray:
+def concat(xs: List[np.ndarray], axis: int = 0) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
         if is_tuple:
@@ -88,9 +81,7 @@ def stack(
 
 
 def reshape(
-    x: np.ndarray,
-    shape: Tuple[int, ...],
-    copy: Optional[bool] = None
+    x: np.ndarray, shape: Tuple[int, ...], copy: Optional[bool] = None
 ) -> np.ndarray:
     ret = np.reshape(x, shape)
     return ret
@@ -133,9 +124,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 
 def repeat(
-    x: np.ndarray,
-    repeats: Union[int, List[int]],
-    axis: int = None
+    x: np.ndarray, repeats: Union[int, List[int]], axis: int = None
 ) -> np.ndarray:
     ret = np.repeat(x, repeats, axis)
     return ret
@@ -147,9 +136,7 @@ def tile(x: np.ndarray, reps, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def constant_pad(
-    x: np.ndarray,
-    pad_width: List[List[int]],
-    value: Number = 0.0
+    x: np.ndarray, pad_width: List[List[int]], value: Number = 0.0
 ) -> np.ndarray:
     ret = np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
     return ret
@@ -170,9 +157,7 @@ def swapaxes(
 
 
 def clip(
-    x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray]
+    x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
 ) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret

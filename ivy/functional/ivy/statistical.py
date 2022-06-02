@@ -418,10 +418,7 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str,
-    *operands: Union[ivy.Array, ivy.NativeArray]
-) -> ivy.Array:
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 

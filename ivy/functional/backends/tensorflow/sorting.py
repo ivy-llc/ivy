@@ -1,17 +1,12 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Optional
 
 # local
-import ivy
 
 
 def argsort(
-    x: Tensor,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True
+    x: Tensor, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> Tensor:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -44,10 +39,7 @@ def argsort(
 
 
 def sort(
-    x: tf.Tensor,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True
+    x: tf.Tensor, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> tf.Tensor:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:

@@ -58,9 +58,7 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor
-) -> torch.Tensor:
+def floormod(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     ret = x % y
     return ret
 
@@ -119,9 +117,7 @@ def cumsum(x: torch.Tensor, axis: int = 0):
 
 
 def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False
+    x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)

@@ -3,8 +3,6 @@ import torch
 from typing import Tuple
 from collections import namedtuple
 
-import ivy
-
 
 def unique_all(
     x: torch.Tensor,

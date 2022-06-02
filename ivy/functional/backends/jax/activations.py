@@ -7,7 +7,6 @@ import jax
 import jax.numpy as jnp
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 

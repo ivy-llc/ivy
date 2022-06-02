@@ -6,7 +6,6 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
 def roll(
@@ -27,9 +26,7 @@ def roll(
     return ret
 
 
-def squeeze(
-    x: Tensor, axis: Union[int, Tuple[int], List[int]]
-) -> Tensor:
+def squeeze(x: Tensor, axis: Union[int, Tuple[int], List[int]]) -> Tensor:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
             raise ValueError(
@@ -62,10 +59,7 @@ def squeeze(
     return ret
 
 
-def flip(
-    x: Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None
-) -> Tensor:
+def flip(x: Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None) -> Tensor:
     num_dims = len(x.shape)
     if not num_dims:
         ret = x
@@ -91,25 +85,17 @@ def expand_dims(x: Tensor, axis: int = 0) -> Tensor:
         raise IndexError(error)
 
 
-def permute_dims(
-    x: Tensor, axes: Tuple[int, ...]
-) -> Tensor:
+def permute_dims(x: Tensor, axes: Tuple[int, ...]) -> Tensor:
     ret = tf.transpose(x, perm=axes)
     return ret
 
 
-def stack(
-    x: Union[Tuple[Tensor], List[Tensor]],
-    axis: Optional[int] = 0
-) -> Tensor:
+def stack(x: Union[Tuple[Tensor], List[Tensor]], axis: Optional[int] = 0) -> Tensor:
     ret = tf.experimental.numpy.stack(x, axis)
     return ret
 
 
-def reshape(
-    x: Tensor,
-    shape: Tuple[int, ...]
-) -> Tensor:
+def reshape(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
     ret = tf.reshape(x, shape)
     return ret
 
@@ -162,11 +148,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return tf.split(x, num_or_size_splits, axis)
 
 
-def repeat(
-    x: Tensor,
-    repeats: Union[int, List[int]],
-    axis: int = None
-) -> Tensor:
+def repeat(x: Tensor, repeats: Union[int, List[int]], axis: int = None) -> Tensor:
     ret = tf.repeat(x, repeats, axis)
     return ret
 
@@ -211,9 +193,7 @@ def swapaxes(x, axis0, axis1):
 
 
 def clip(
-    x: Tensor,
-    x_min: Union[Number, Tensor],
-    x_max: Union[Number, Tensor]
+    x: Tensor, x_min: Union[Number, Tensor], x_max: Union[Number, Tensor]
 ) -> Tensor:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)

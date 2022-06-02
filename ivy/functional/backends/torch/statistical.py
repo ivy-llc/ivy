@@ -16,7 +16,7 @@ def min(
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
         if ivy.exists(out):
@@ -60,7 +60,8 @@ def sum(
                         for i in axis
                     ]
                 ),
-                dtype=dtype, out=out
+                dtype=dtype,
+                out=out,
             )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
@@ -91,14 +92,15 @@ def prod(
             axis = x.dim() - 1
         else:
             return torch.prod(
-                    torch.Tensor(
-                        [
-                            torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims)
-                            for i in axis
-                        ]
-                    ),
-                    dtype=dtype, out=out
-                )
+                torch.Tensor(
+                    [
+                        torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims)
+                        for i in axis
+                    ]
+                ),
+                dtype=dtype,
+                out=out,
+            )
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
@@ -144,7 +146,7 @@ def var(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -155,9 +157,17 @@ def var(
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         if i == len(axis) - 1:
-            x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False, out=out)
+            x = torch.var(
+                x,
+                dim=a if keepdims else a - i,
+                keepdim=keepdims,
+                unbiased=False,
+                out=out,
+            )
         else:
-            x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
+            x = torch.var(
+                x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False
+            )
     return x
 
 
@@ -167,7 +177,7 @@ def std(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -179,7 +189,11 @@ def std(
     for i, a in enumerate(axis):
         if i == len(axis) - 1:
             x = torch.std(
-                x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False, out=out
+                x,
+                dim=a if keepdims else a - i,
+                keepdim=keepdims,
+                unbiased=False,
+                out=out,
             )
         else:
             x = torch.std(
@@ -192,7 +206,5 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str, *operands: torch.Tensor
-) -> torch.Tensor:
+def einsum(equation: str, *operands: torch.Tensor) -> torch.Tensor:
     return torch.einsum(equation, *operands)

@@ -13,7 +13,7 @@ from ivy.functional.backends.jax import JaxArray
 def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
@@ -22,7 +22,7 @@ def sum(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
 
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
@@ -48,7 +48,7 @@ def sum(
 def mean(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
     if axis is None:
         num_dims = len(x.shape)
@@ -89,7 +89,7 @@ def prod(
 def max(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
@@ -98,7 +98,7 @@ def var(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
@@ -107,7 +107,7 @@ def std(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
@@ -116,7 +116,5 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str, *operands: JaxArray
-) -> JaxArray:
+def einsum(equation: str, *operands: JaxArray) -> JaxArray:
     return jnp.einsum(equation, *operands)

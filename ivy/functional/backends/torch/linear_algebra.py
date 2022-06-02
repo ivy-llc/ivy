@@ -31,9 +31,7 @@ def pinv(
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-def matrix_transpose(
-    x: torch.Tensor
-) -> torch.Tensor:
+def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
     ret = torch.swapaxes(x, -1, -2)
     return ret
 
@@ -51,7 +49,7 @@ def vector_norm(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
 ) -> torch.Tensor:
 
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
@@ -104,9 +102,7 @@ def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.linalg.svdvals(x, out=out)
 
 
-def qr(
-    x: torch.Tensor, mode: str = "reduced"
-) -> NamedTuple:
+def qr(x: torch.Tensor, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = torch.qr(x, some=True)
@@ -141,7 +137,7 @@ def slogdet(
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
 ) -> torch.Tensor:
 
     # find the type to promote to
@@ -158,9 +154,7 @@ def tensordot(
     return ret
 
 
-def trace(
-    x: torch.Tensor, offset: int = 0
-) -> torch.Tensor:
+def trace(x: torch.Tensor, offset: int = 0) -> torch.Tensor:
     desired_dtype = x.dtype
     ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
     ret = torch.sum(ret, dim=-1)
@@ -172,9 +166,7 @@ def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
 
 
-def cholesky(
-    x: torch.Tensor, upper: bool = False
-) -> torch.Tensor:
+def cholesky(x: torch.Tensor, upper: bool = False) -> torch.Tensor:
     if not upper:
         ret = torch.linalg.cholesky(x)
     else:
@@ -211,7 +203,7 @@ def vecdot(
     x2: torch.Tensor,
     axis: int = -1,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = torch.promote_types(x1.dtype, x2.dtype)
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)

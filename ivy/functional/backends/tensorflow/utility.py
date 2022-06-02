@@ -4,14 +4,13 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
 # noinspection PyShadowingBuiltins
 def all(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -26,7 +25,7 @@ def all(
 def any(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False
+    keepdims: bool = False,
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)

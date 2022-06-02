@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Optional, Tuple, Union
+from typing import Tuple, Union
 
 # local
 import ivy

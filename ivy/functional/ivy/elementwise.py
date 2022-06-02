@@ -14,7 +14,7 @@ from ivy.backend_handler import current_backend as _cur_backend
 def bitwise_left_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
@@ -46,7 +46,7 @@ def bitwise_left_shift(
 def add(
     x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -262,7 +262,7 @@ def add(
 def bitwise_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -292,7 +292,7 @@ def bitwise_xor(
 
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the exponential function,
@@ -338,7 +338,7 @@ def exp(
 
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
@@ -382,7 +382,7 @@ def expm1(
 
 def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
@@ -415,7 +415,7 @@ def bitwise_invert(
 def bitwise_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise AND of the underlying binary representation of each element
@@ -445,7 +445,7 @@ def bitwise_and(
 
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
@@ -489,7 +489,7 @@ def ceil(
 
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
@@ -527,7 +527,7 @@ def floor(
 
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
@@ -554,7 +554,7 @@ def isfinite(
 
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -592,7 +592,7 @@ def asin(
 
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element x_i of the input array x to determine if equal to positive or
@@ -620,7 +620,7 @@ def isinf(
 def greater(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i < x2_i for each element x1_i of the input array
@@ -654,7 +654,7 @@ def greater(
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array
@@ -681,7 +681,7 @@ def greater_equal(
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
@@ -708,7 +708,7 @@ def less_equal(
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
@@ -772,7 +772,7 @@ def multiply(
 
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -811,7 +811,7 @@ def asinh(
 
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns an indication of the sign of a number for each element ``x_i`` of the
@@ -843,7 +843,7 @@ def sign(
 
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
@@ -881,7 +881,7 @@ def sqrt(
 
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic cosine,
@@ -919,7 +919,7 @@ def cosh(
 
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the natural (base ``e``)
@@ -957,7 +957,7 @@ def log(
 
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
@@ -995,7 +995,7 @@ def log2(
 
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``10``
@@ -1033,7 +1033,7 @@ def log10(
 
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to log(1+x), where log
@@ -1058,7 +1058,7 @@ def log1p(
 
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine whether the
@@ -1086,7 +1086,7 @@ def isnan(
 def less(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
@@ -1121,7 +1121,7 @@ def less(
 
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the cosine, having domain
@@ -1166,7 +1166,7 @@ def cos(
 
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1202,7 +1202,7 @@ def acos(
 
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical NOT for each element ``x_i`` of the input array ``x``.
@@ -1235,7 +1235,7 @@ def logical_not(
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -1266,7 +1266,7 @@ def logical_xor(
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with
@@ -1303,7 +1303,7 @@ def logical_or(
 def logical_and(
     x1: ivy.Array,
     x2: ivy.Array,
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical AND for each element x1_i of the input array x1 with the
@@ -1332,7 +1332,7 @@ def logical_and(
 
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -1370,7 +1370,7 @@ def acosh(
 
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the sine, having domain
@@ -1407,7 +1407,7 @@ def sin(
 
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the numerical negative of each element.
@@ -1429,7 +1429,7 @@ def negative(
 def not_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
@@ -1459,7 +1459,7 @@ def not_equal(
 def floor_divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the result of dividing each element x1_i of the input array x1 by the
@@ -1487,7 +1487,7 @@ def floor_divide(
 def bitwise_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise OR of the underlying binary representation of each element
@@ -1517,7 +1517,7 @@ def bitwise_or(
 
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic sine,
@@ -1555,7 +1555,7 @@ def sinh(
 
 def positive(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the positive value of each element in ``x``.
@@ -1576,7 +1576,7 @@ def positive(
 
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Each element ``x_i`` of the input array ``x``.
@@ -1598,7 +1598,7 @@ def square(
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
@@ -1638,7 +1638,7 @@ def logaddexp(
 
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the values of an array to the nearest integer, element-wise.
@@ -1659,7 +1659,7 @@ def round(
 
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element x_i of the input array x to the integer-valued number that is
@@ -1694,7 +1694,7 @@ def trunc(
 
 def abs(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
@@ -1733,7 +1733,7 @@ def abs(
 
 def tan(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Calculates an implementation-dependent approximation to the tangent, having
@@ -1839,7 +1839,7 @@ def tan(
 
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1880,7 +1880,7 @@ def atan(
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
@@ -1964,7 +1964,7 @@ def atan2(
 
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the hyperbolic tangent of the elements of x.
@@ -1985,7 +1985,7 @@ def tanh(
 
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the inverse hyperbolic tangent of the elements of ``x``.
@@ -2016,7 +2016,7 @@ def atanh(
 def subtract(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -2045,7 +2045,7 @@ def subtract(
 def divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the division for each element x1_i of the input array x1 with the
@@ -2072,7 +2072,7 @@ def divide(
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of exponentiation by raising
@@ -2158,7 +2158,7 @@ def pow(
 def remainder(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
@@ -2237,7 +2237,7 @@ def remainder(
 def bitwise_right_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
@@ -2279,7 +2279,7 @@ def bitwise_right_shift(
 def equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i == x2_i for each element x1_i of the input array
@@ -2309,7 +2309,7 @@ def equal(
 
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes the Gauss error function of ``x`` element-wise.
@@ -2331,7 +2331,7 @@ def erf(
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
@@ -2355,7 +2355,7 @@ def minimum(
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
-    *, 
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
