@@ -81,6 +81,7 @@ _MIN_BASE = 1e-5
 
 
 # local
+import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -380,6 +381,10 @@ promotion_table = {
     (float64, float32): float64,
     (float64, float64): float64,
     (bool, bool): bool,
+}
+
+locks = {
+    'backend_setter' : threading.Lock()
 }
 
 backend = "none"
