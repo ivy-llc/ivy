@@ -149,7 +149,7 @@
              
   <section id="docstring-examples">
 <h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this heading"></a></h1>
-<p>The final step is to add helpful examples to the docstring.</p>
+<p>After writing the general docstring, the final step is to add helpful examples to the docstring.</p>
 <p>There are two types of examples. There are <em>functional</em> examples, which show the function being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code></p>
 <p>There are also <em>instance method</em> examples which are called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code></p>
@@ -157,11 +157,18 @@
 <p>Firstly, we should include <em>functional</em> examples with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
 <ol class="arabic simple">
-<li><p>cover all possible variants (explained below) for each of the arguments independently, not combinatorily. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)</p></li>
+<li><p>cover all possible variants (explained below) for each of the arguments independently,
+not combinatorily. This means the number of examples should be equal to the maximum number of
+variations for a single argument, and not the entire grid of variations across all arguments
+(further explained in the examples below)</p></li>
 <li><p>vary the values and input shapes considerably between examples</p></li>
-<li><p>start with the simplest examples first. For example, this means using the default values for all optional arguments in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the function in question.</p></li>
-<li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>, and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
-<li><p>If broadcasting is relevant for the function, then show examples which highlight this. For example, passing in different shapes for two array arguments.</p></li>
+<li><p>start with the simplest examples first. For example, this means using the default values for all optional arguments
+in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the
+function in question.</p></li>
+<li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>,
+and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p>If broadcasting is relevant for the function, then show examples which highlight this.
+For example, passing in different shapes for two array arguments.</p></li>
 </ol>
 <p>For all remaining examples, we can repeat input values from these <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> <em>functional</em>
 examples covered by points 1-5.</p>
@@ -176,26 +183,31 @@ of the function. The purpose is not to provide an excessive number of variations
 <ol class="arabic simple" start="7">
 <li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
 </ol>
-<p>Going further, for <em>flexible</em> functions there should be an example that:</p>
+<p>Going further, for <em>nestable</em> functions there should be an example that:</p>
 <ol class="arabic simple" start="8">
 <li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of all array arguments</p></li>
 </ol>
-<p>For <em>flexible</em> functions which accept more than one array, there should also be an example that:</p>
+<p>For <em>nestable</em> functions which accept more than one argument, there should also be an example that:</p>
 <ol class="arabic simple" start="9">
-<li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
+<li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and non-container instances.</p></li>
 </ol>
 <p><strong>Instance Method Examples</strong></p>
-<p><em>Instance method</em> examples are only relevant for <em>flexible</em> functions. These examples should:</p>
+<p><em>Instance method</em> examples are of course only relevant if an instance method for the function exists.
+If so, these examples should:</p>
 <ol class="arabic simple" start="10">
-<li><p>call the function as an instance method on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class</p></li>
-<li><p>call the function as an instance method on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class</p></li>
+<li><p>call this instance method of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class</p></li>
+<li><p>call this instance method of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class</p></li>
 </ol>
 <p><strong>Operator Examples</strong></p>
+<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
+(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
 <p><em>Operator</em> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
-corresponding operator is applied to an array. For example, the methods x, y, z, a are called when the operators X are
-used respectively. Under the hood, these operators call the instance methods X on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance upon which the operator is being applied. These special methods in turn call the
-corresponding methods X.</p>
+corresponding operator is applied to an array. For example, the functions <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
+are used respectively. Under the hood, these operators first call the special methods <code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respecitvely, on either the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instance upon which the operator is being applied.
+These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p>If the function is an <em>operator</em> function, then examples should be added which:</p>
 <ol class="arabic simple" start="12">
 <li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
@@ -203,7 +215,8 @@ corresponding methods X.</p>
 <li><p>call the operator on a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
 </ol>
 <p><strong>All Possible Variants</strong></p>
-<p>Let’s look at an example to make it more clear what is meant by “all possible variants” of each argument independently.</p>
+<p>Point 1 mentions that the examples should cover <em>all possible variations</em>.
+Let’s look at an example to make it more clear what is meant by <em>all possible variants</em> of each argument independently.</p>
 <p>Let’s take an imaginary function with the following argument spec:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span>
             <span class="n">mode</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">std</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="n">var</span><span class="p">],</span>
@@ -220,8 +233,8 @@ corresponding methods X.</p>
 <li><p><code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> being all of: <code class="code docutils literal notranslate"><span class="pre">default</span></code>, <code class="code docutils literal notranslate"><span class="pre">True</span></code>, <code class="code docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">axis</span></code> being all of: <code class="code docutils literal notranslate"><span class="pre">default</span></code>, <code class="code docutils literal notranslate"><span class="pre">list</span></code>, <code class="code docutils literal notranslate"><span class="pre">int</span></code>.</p></li>
 </ul>
-<p>Please note, this does not need to be done with a grid search. There are 1 x 3 x 2 x 3 x 3 = 54 possible variations here,
-and we do not need an example for each one!
+<p>Please note, this does not need to be done with a grid search.
+There are 1 x 3 x 2 x 3 x 3 = 54 possible variations here, and we do not need an example for each one!
 Instead, we only need as many examples as there are variations for the argument with the maximum number of variations,
 in this case jointly being the <code class="code docutils literal notranslate"><span class="pre">mode</span></code>, <code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> arguments, each with 3 variations.</p>
 <p>For example, we could have three examples using the following arguments:</p>
@@ -232,18 +245,18 @@ in this case jointly being the <code class="code docutils literal notranslate"><
 </div>
 <p>It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is
 included in the examples. These three examples procedurally go through the variations from left to right for each
-argument, but this doesn’t need to be the case if you think other combinations make more sense for examples.</p>
+argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.</p>
 <p>You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
 examples that should be included in the docstring!</p>
-<p>We’ll next go through some examples to make these 12 points more clear.</p>
+<p>We’ll next go through some examples to make these 14 points more clear.</p>
 <section id="ivy-tan">
 <h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>Let’s start with the functional examples, with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input:</p>
@@ -275,10 +288,11 @@ ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
 <p>Please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
 to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
 <p>Point 1 is simple to satisfy. Ignoring the union over <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by
-points 6 and 7, and ignoring <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which is covered by points 8 and 9,
+points 6 and 7, and ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
 then as far as point 1 is concerned, the input <code class="code docutils literal notranslate"><span class="pre">x</span></code> only has one possible variation. It must be an array.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant, and the values and shapes do become increasingly <em>complex</em>.</p>
+<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
+and the values and shapes do become increasingly <em>complex</em>.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
 explained in point 4.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
@@ -335,12 +349,12 @@ Using :code:`ivy.Container` instance method:
 <h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
-    <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>Let’s start with the functional examples, with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input:</p>
@@ -377,13 +391,14 @@ ivy.array([[[ 9., 3.],
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Point 1 is a bit less trivial to satisfy than it was for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> above. While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one
 variation (for the same reason as explained in the <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations
-(<code class="code docutils literal notranslate"><span class="pre">int</span></code> or <code class="code docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations
-(<code class="code docutils literal notranslate"><span class="pre">int</span></code>, <code class="code docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="code docutils literal notranslate"><span class="pre">int</span></code>, or <code class="code docutils literal notranslate"><span class="pre">None</span></code>).</p>
+(<code class="code docutils literal notranslate"><span class="pre">int</span></code> or sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations
+(<code class="code docutils literal notranslate"><span class="pre">int</span></code>, :sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>, or <code class="code docutils literal notranslate"><span class="pre">None</span></code>).</p>
 <p>Therefore, we need at least three examples (equal to the maximum number of variations, in this case <code class="code docutils literal notranslate"><span class="pre">axis</span></code>),
 in order to show all variations for each argument. By going through each of the three examples above, it can be seen
 that each variation for each argument is demonstrated in at least one of the examples. Therefore, point 1 is satisfied.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, as the first example uses the default values for optional arguments, and the subsequent examples the non-default values in increasingly <em>complex</em> examples.</p>
+<p>Point 3 is satisfied, as the first example uses the default values for optional arguments,
+and the subsequent examples the non-default values in increasingly <em>complex</em> examples.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
 explained in point 4.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
@@ -441,11 +456,11 @@ Using :code:`ivy.Container` instance method:
 <h2>ivy.add<a class="headerlink" href="#ivy-add" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>Let’s start with the functional examples, with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input:</p>
@@ -479,12 +494,14 @@ ivy.array([[[9.5],
 </pre></div>
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
-<p>Point 1 is again trivial to satisfy, as was the case for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>. Ignoring <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which is
-covered by points 4 and 5, and ignoring the union over <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is true for
-<strong>all</strong> array inputs, then as far as point 1 is concerned, inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code> both only have one possible
-variation. They must both be arrays.</p>
+<p>Point 1 is again trivial to satisfy, as was the case for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>.
+Ignoring the union over <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7,
+and also ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
+then as far as point 1 is concerned, inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code> both only have one possible variation.
+They must both be arrays.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant, and the values and shapes do become increasingly <em>complex</em>.</p>
+<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
+and the values and shapes do become increasingly <em>complex</em>.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
 explained in point 4.</p>
 <p>Point 5 is satisfied, as the second example uses different shapes for the inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code>. This causes
@@ -617,7 +634,8 @@ With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 </div>
 <p><strong>Round Up</strong></p>
 <p>These three examples should give you a good understanding of what is required when adding docsting examples.</p>
-<p>If you’re ever unsure of how best to proceed, please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs,
+<p>If you’re ever unsure of how best to proceed,
+please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs,
 and reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> if you have any questions!</p>
 </section>
 </section>
