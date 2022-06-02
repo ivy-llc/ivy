@@ -58,7 +58,8 @@ def layer_norm(
     >>> arr = ivy.array([[ 0.0976, -0.3452,  1.2740],
         [ 0.1047,  0.5886,  1.2732],
         [ 0.7696, -1.7024, -2.2518]])
-    >>> norm = ivy.layer_norm(arr, [0, 1, 2], epsilon=0.001, new_std=1.5, offset=0.5, scale=0.5)
+    >>> norm = ivy.layer_norm(arr, [0, 1, 2], epsilon=0.001,
+                 new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
     ivy.array([[ 0.57629204,  0.29217   ,  1.3311275 ],
            [ 0.58084774,  0.89134157,  1.3306142 ],
@@ -72,7 +73,8 @@ def layer_norm(
     ivy.array([[ 0.07071576, -0.10856849],
            [ 0.16035788,  0.8774949 ]], dtype=float32)
 
-    >>> container = ivy.Container({'a': ivy.array([2.,3.,4.]), 'b': ivy.array([1.3, 2.11, 0.243])})
+    >>> container = ivy.Container({'a': ivy.array([2.,3.,4.]),
+    'b': ivy.array([1.3, 2.11, 0.243])})
     >>> norm = ivy.layer_norm(container, [0,1], new_std=1.25, offset=0.2)
     >>> print(norm)
 
