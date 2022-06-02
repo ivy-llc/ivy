@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_dev
 # -------------------#
 
 
-def asarray(object_in, copy=None, *, dtype: np.dtype, device: str):
+def asarray(object_in, *, copy=None, dtype: np.dtype, device: str):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
@@ -39,28 +39,20 @@ def asarray(object_in, copy=None, *, dtype: np.dtype, device: str):
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
-    *,
-    dtype: np.dtype,
-    device: str,
+    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_dev(np.zeros(shape, dtype), device=device)
 
 
 def ones(
-    shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_dev(np.ones(shape, dtype), device=device)
 
 
 def full_like(
-    x: np.ndarray,
-    fill_value: Union[int, float],
-    dtype: Optional[Union[np.dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    x: np.ndarray, fill_value: Union[int, float], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -69,11 +61,7 @@ def full_like(
     return _to_dev(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
-def ones_like(
-    x: np.ndarray,
-    dtype: Optional[Union[np.dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> np.ndarray:
+def ones_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
 
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -84,11 +72,7 @@ def ones_like(
     return _to_dev(np.ones_like(x, dtype=dtype), device=device)
 
 
-def zeros_like(
-    x: np.ndarray,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> np.ndarray:
+def zeros_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
     else:
@@ -105,20 +89,14 @@ def triu(x: np.ndarray, k: int = 0) -> np.ndarray:
 
 
 def empty(
-    shape: Union[int, Tuple[int], List[int]],
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_dev(
         np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
     )
 
 
-def empty_like(
-    x: np.ndarray,
-    dtype: Optional[Union[np.dtype, str]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> np.ndarray:
+def empty_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
 
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -129,7 +107,9 @@ def empty_like(
     return _to_dev(np.empty_like(x, dtype=dtype), device=device)
 
 
-def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
+def linspace(
+    start, stop, num, axis=None, endpoint=True, *, dtype: np.dtype, device: str
+):
     if axis is None:
         axis = -1
     ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
@@ -153,8 +133,9 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: np.dtype,
+    device: str
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device=device)
@@ -176,8 +157,9 @@ def arange(start, stop=None, step=1, *, dtype: np.dtype, device: str):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: np.dtype,
+    device: str
 ) -> np.ndarray:
     return _to_dev(
         np.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
@@ -195,7 +177,7 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, device=None):
+def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
     if axis is None:
         axis = -1
     return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), device=device)
