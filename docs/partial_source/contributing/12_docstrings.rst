@@ -4,6 +4,11 @@ Docstrings
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 
+All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+In contrast, all backend implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+on account that these are just different instantiations of the functions at :code:`ivy/functional/ivy/category_name.py`.
+
 In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an exemplar.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
