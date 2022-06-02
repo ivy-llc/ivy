@@ -12,11 +12,8 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
-def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.nn.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: Tensor) -> Tensor:
+    return tf.nn.relu(x)
 
 
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:

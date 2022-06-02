@@ -11,12 +11,9 @@ import ivy
 def all(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
+    keepdims: bool = False
 ) -> JaxArray:
     ret = jnp.all(x, axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -24,10 +21,7 @@ def all(
 def any(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
+    keepdims: bool = False
 ) -> JaxArray:
     ret = jnp.any(x, axis, keepdims=keepdims)
-    if ivy.exists(out):
-        ivy.inplace_update(out, ret)
     return ret

@@ -52,7 +52,7 @@ def unique_inverse(x: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: np.ndarray, out: np.ndarray = None) -> np.ndarray:
+def unique_values(x: np.ndarray) -> np.ndarray:
     nan_count = np.count_nonzero(np.isnan(x))
     if version.parse(np.__version__) >= version.parse("1.21.0") and nan_count > 1:
         unique = np.append(
@@ -60,8 +60,6 @@ def unique_values(x: np.ndarray, out: np.ndarray = None) -> np.ndarray:
         ).astype(x.dtype)
     else:
         unique = np.unique(x.flatten()).astype(x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, unique)
     return unique
 
 

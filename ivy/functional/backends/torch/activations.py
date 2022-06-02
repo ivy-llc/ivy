@@ -12,11 +12,8 @@ import torch
 import ivy
 
 
-def relu(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: torch.Tensor) -> torch.Tensor:
+    return torch.relu(x)
 
 
 def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2) -> torch.Tensor:

@@ -83,10 +83,8 @@ get_num_dims = (
 container_types = lambda: [FlatMapping]
 
 
-def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def floormod(x: JaxArray, y: JaxArray) -> JaxArray:
     ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -116,31 +114,21 @@ inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, jnp.cumsum(x, axis))
-    else:
-        return jnp.cumsum(x, axis)
+def cumsum(x: JaxArray, axis: int = 0) -> JaxArray:
+    return jnp.cumsum(x, axis)
 
 
 def cumprod(
     x: JaxArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = jnp.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, jnp.copy(jnp.swapaxes(res, axis, -1)))
-        else:
-            return jnp.swapaxes(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, jnp.cumprod(x, axis))
-    else:
-        return jnp.cumprod(x, axis)
+        return jnp.swapaxes(res, axis, -1)
+    return jnp.cumprod(x, axis)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):

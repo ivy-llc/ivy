@@ -58,7 +58,7 @@ def unique_inverse(x: JaxArray) -> Tuple[JaxArray, JaxArray]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: JaxArray, out: JaxArray = None) -> JaxArray:
+def unique_values(x: JaxArray) -> JaxArray:
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
         unique = jnp.append(
@@ -66,8 +66,6 @@ def unique_values(x: JaxArray, out: JaxArray = None) -> JaxArray:
         ).astype(x.dtype)
     else:
         unique = jnp.unique(x.flatten()).astype(x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, unique)
     return unique
 
 

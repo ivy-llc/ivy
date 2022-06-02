@@ -11,8 +11,7 @@ def argsort(
     x: JaxArray,
     axis: int = -1,
     descending: bool = False,
-    stable: bool = True,
-    out: Optional[JaxArray] = None,
+    stable: bool = True
 ) -> JaxArray:
     if descending:
         ret = jnp.asarray(
@@ -20,8 +19,6 @@ def argsort(
         )
     else:
         ret = jnp.asarray(jnp.argsort(x, axis, kind="stable"))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -29,8 +26,7 @@ def sort(
     x: JaxArray,
     axis: int = -1,
     descending: bool = False,
-    stable: bool = True,
-    out: Optional[JaxArray] = None,
+    stable: bool = True
 ) -> JaxArray:
     kind = "stable" if stable else "quicksort"
     res = jnp.asarray(jnp.sort(x, axis=axis, kind=kind))
@@ -38,6 +34,4 @@ def sort(
         ret = jnp.asarray(jnp.flip(res, axis=axis))
     else:
         ret = res
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
