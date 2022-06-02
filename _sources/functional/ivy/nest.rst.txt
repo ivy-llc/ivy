@@ -29,4 +29,5 @@ Nest
    nest/nested_map.rst
    nest/nested_any.rst
    nest/copy_nest.rst
+   nest/nested_multi_map.rst
 

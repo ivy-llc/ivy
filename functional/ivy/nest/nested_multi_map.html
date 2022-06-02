@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index_nest &mdash; Ivy 1.0 documentation</title>
+  <title>nested_multi_map &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="prune_nest_at_index" href="prune_nest_at_index.html" />
-    <link rel="prev" title="Nest" href="../nest.html" /> 
+    <link rel="next" title="Norms" href="../norms.html" />
+    <link rel="prev" title="copy_nest" href="copy_nest.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,7 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../nest.html">Nest</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_nest.html">index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prune_nest_at_index.html">prune_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_index.html">insert_into_nest_at_index</a></li>
@@ -82,7 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_any.html">nested_any</a></li>
 <li class="toctree-l2"><a class="reference internal" href="copy_nest.html">copy_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nested_multi_map.html">nested_multi_map</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nested_multi_map</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
@@ -132,9 +132,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../nest.html">Nest</a> &raquo;</li>
-      <li>index_nest</li>
+      <li>nested_multi_map</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/nest/index_nest.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/nest/nested_multi_map.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -142,18 +142,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="index-nest">
-<h1>index_nest<a class="headerlink" href="#index-nest" title="Permalink to this heading"></a></h1>
+  <section id="nested-multi-map">
+<h1>nested_multi_map<a class="headerlink" href="#nested-multi-map" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.nest.index_nest">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">index_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#index_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.index_nest" title="Permalink to this definition"></a></dt>
-<dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_multi_map">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">nested_multi_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#nested_multi_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_multi_map" title="Permalink to this definition"></a></dt>
+<dd><p>Apply function to all array values from a collection of identically
+structured ivy arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to index.</p></li>
-<li><p><strong>index</strong> – A tuple of indices for indexing.</p></li>
+<li><p><strong>func</strong> – Function to apply to each nest entry.</p></li>
+<li><p><strong>nest</strong> – nests to map.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
+be skipped. Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied,
+otherwise the leftmost nest value is used. Default is False.</p></li>
+<li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
+<li><p><strong>config</strong> – The configuration for the nests. Default is the same as nest0.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>nest containing the result of the funciton.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -169,8 +180,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../nest.html" class="btn btn-neutral float-left" title="Nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="prune_nest_at_index.html" class="btn btn-neutral float-right" title="prune_nest_at_index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="copy_nest.html" class="btn btn-neutral float-left" title="copy_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../norms.html" class="btn btn-neutral float-right" title="Norms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

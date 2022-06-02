@@ -293,6 +293,7 @@
 <span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">global</span> <span class="n">ivy_original_fn_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
@@ -327,7 +328,8 @@
                 <span class="k">pass</span>
     <span class="n">_wrap_functions</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;backend stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">))</span></div>
+        <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;backend stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">))</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../backend_handler/get_backend.html#ivy.backend_handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
