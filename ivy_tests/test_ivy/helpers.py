@@ -399,7 +399,7 @@ def as_lists(dtype, as_variable, native_array, container):
 
 
 def test_array_function(
-    dtype,
+    input_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -410,18 +410,19 @@ def test_array_function(
     fn_name,
     rtol=1e-03,
     atol=1e-06,
+    test_values=True,
     **all_as_kwargs_np
 ):
 
     # convert single values to length 1 lists
-    dtype, as_variable, native_array, container = as_lists(
-        dtype, as_variable, native_array, container
+    input_dtype, as_variable, native_array, container = as_lists(
+        input_dtype, as_variable, native_array, container
     )
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable = [
         v if ivy.is_float_dtype(d) and not with_out else False
-        for v, d in zip(as_variable, dtype)
+        for v, d in zip(as_variable, input_dtype)
     ]
 
     # update instance_method flag to only be considered if the
@@ -432,14 +433,14 @@ def test_array_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
-    dtype = ["float32" if d in ivy.invalid_dtypes else d for d in dtype]
+    input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, dtype[:num_arg_vals])
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtype[:num_arg_vals])
     ]
     arg_array_vals = [
         ivy.variable(x) if v else x
@@ -461,7 +462,7 @@ def test_array_function(
     )
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, dtype[num_arg_vals:])
+        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, input_dtype[num_arg_vals:])
     ]
     kwarg_array_vals = [
         ivy.variable(x) if v else x
@@ -538,10 +539,14 @@ def test_array_function(
         else:
             assert ret.data is out.data
 
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret
+
     # value test
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if dtype == "bfloat16":
+    if input_dtype == "bfloat16":
         return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -758,73 +763,103 @@ def get_shape(draw,
 
 
 def none_or_list_of_floats(
-        dtype,
-        size,
-        min_value=None,
-        max_value=None,
-        exclude_min=False,
-        exclude_max=False,
-        no_none=False
+    dtype,
+    size,
+    min_value=None,
+    max_value=None,
+    exclude_min=False,
+    exclude_max=False,
+    no_none=False,
 ):
     if no_none:
         if dtype == "float16":
-            values = list_of_length(st.floats(min_value=min_value,
-                                              max_value=max_value,
-                                              width=16,
-                                              allow_subnormal=False,
-                                              allow_infinity=False,
-                                              allow_nan=False,
-                                              exclude_min=exclude_min,
-                                              exclude_max=exclude_max), size)
+            values = list_of_length(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=16,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
         elif dtype == "float32":
-            values = list_of_length(st.floats(min_value=min_value,
-                                              max_value=max_value,
-                                              width=32,
-                                              allow_subnormal=False,
-                                              allow_infinity=False,
-                                              allow_nan=False,
-                                              exclude_min=exclude_min,
-                                              exclude_max=exclude_max), size)
+            values = list_of_length(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=32,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
         elif dtype == "float64":
-            values = list_of_length(st.floats(min_value=min_value,
-                                              max_value=max_value,
-                                              width=64,
-                                              allow_subnormal=False,
-                                              allow_infinity=False,
-                                              allow_nan=False,
-                                              exclude_min=exclude_min,
-                                              exclude_max=exclude_max), size)
+            values = list_of_length(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=64,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
     else:
         if dtype == "float16":
-            values = list_of_length(st.none() | st.floats(min_value=min_value,
-                                                          max_value=max_value,
-                                                          width=16,
-                                                          allow_subnormal=False,
-                                                          allow_infinity=False,
-                                                          allow_nan=False,
-                                                          exclude_min=exclude_min,
-                                                          exclude_max=exclude_max),
-                                    size)
+            values = list_of_length(
+                st.none()
+                | st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=16,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
         elif dtype == "float32":
-            values = list_of_length(st.none() | st.floats(min_value=min_value,
-                                                          max_value=max_value,
-                                                          width=32,
-                                                          allow_subnormal=False,
-                                                          allow_infinity=False,
-                                                          allow_nan=False,
-                                                          exclude_min=exclude_min,
-                                                          exclude_max=exclude_max),
-                                    size)
+            values = list_of_length(
+                st.none()
+                | st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=32,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
         elif dtype == "float64":
-            values = list_of_length(st.none() | st.floats(min_value=min_value,
-                                                          max_value=max_value,
-                                                          width=64,
-                                                          allow_subnormal=False,
-                                                          allow_infinity=False,
-                                                          allow_nan=False,
-                                                          exclude_min=exclude_min,
-                                                          exclude_max=exclude_max),
-                                    size)
+            values = list_of_length(
+                st.none()
+                | st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    width=64,
+                    allow_subnormal=False,
+                    allow_infinity=False,
+                    allow_nan=False,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                size,
+            )
     return values
 
 
@@ -837,7 +872,7 @@ def get_mean_std(draw, dtype):
 
 @st.composite
 def get_bounds(draw, dtype):
-    if 'int' in dtype:
+    if "int" in dtype:
         values = draw(array_values(dtype, 2))
         values[0], values[1] = abs(values[0]), abs(values[1])
         low, high = min(values), max(values)

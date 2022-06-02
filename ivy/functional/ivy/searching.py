@@ -79,6 +79,12 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
+    Examples
+    --------
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    tensor([2])
     """
     return _cur_backend(x).argmin(x, axis, keepdims)
 
