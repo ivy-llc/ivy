@@ -563,6 +563,58 @@ def test_array_function(
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
+class TestArrayClass:
+    """Helper class for testing classes"""
+
+    def __init__(self, class_to_be_tested, *con_args, **con_kwargs):
+        self.rtol = 1e-03
+        self.atol = 1e-06
+        self.ins = ivy.__dict__[class_to_be_tested](*con_args, **con_kwargs)
+
+    def test_array_method(self, method_name, *calling_args, **calling_kwargs):
+        self.with_out = calling_kwargs["with_out"]
+        self.as_variable = calling_kwargs["as_variable"]
+        self.dtype = calling_kwargs["dtype"]
+        self.num_positional_args = calling_kwargs["num_positional_args"]
+        self.instance_method = calling_kwargs["instance_method"]
+        self.fw = calling_kwargs["fw"]
+        self.all_as_kwargs_np = kwargs_to_args_n_kwargs(
+            self.num_positional_args, self.calling_kwargs
+        )
+        self.ret = self.ins(*calling_args, **calling_kwargs)
+
+        out1 = test_array_function(
+            self.dtype,
+            self.as_variable,
+            self.with_out,
+            self.num_positional_args,
+            self.native_array,
+            self.container,
+            self.instance_method,
+            self.fw,
+            method_name,
+            self.rtol,
+            self.atol,
+            self.all_as_kwargs_np,
+        )
+        out2 = test_array_function(
+            self.ret.dtype,
+            self.ret.as_variable,
+            self.ret.with_out,
+            self.ret.num_positional_args,
+            self.ret.native_array,
+            self.ret.container,
+            self.ret.instance_method,
+            self.ret.fw,
+            method_name,
+            self.ret.rtol,
+            self.ret.atol,
+            self.ret.all_as_kwargs_np,
+        )
+        # assert with the return values and actual values passed into the instance.
+        assert out1 == out2
+
+
 # Hypothesis #
 # -----------#
 
