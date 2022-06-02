@@ -14,6 +14,7 @@ def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -44,7 +45,7 @@ def argmax(
         the default array index data type.
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out)
+    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
 
 
 def argmin(

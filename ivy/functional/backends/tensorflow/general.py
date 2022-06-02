@@ -46,14 +46,12 @@ def to_list(x: Tensor) -> list:
     return x.numpy().tolist()
 
 
-def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None) -> tf.Tensor:
+def floormod(x: tf.Tensor, y: tf.Tensor) -> tf.Tensor:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
         x = tf.cast(x, promoted_type)
         y = tf.cast(y, promoted_type)
     ret = tf.math.floormod(x, y)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -123,23 +121,14 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: tf.Tensor, axis: int = 0, out: Optional[tf.Tensor] = None) -> tf.Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.math.cumsum(x, axis))
-    else:
-        return tf.math.cumsum(x, axis)
+def cumsum(x: tf.Tensor, axis: int = 0) -> tf.Tensor:
+    return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: tf.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[tf.Tensor] = None,
+    x: tf.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> tf.Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.math.cumprod(x, axis, exclusive))
-    else:
-        return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
