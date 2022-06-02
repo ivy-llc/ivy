@@ -16,7 +16,7 @@ def add(
 
 
 def bitwise_xor(
-    x1: torch.Tensor, x2: torch.Tensor, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2, out=out)
@@ -34,7 +34,7 @@ def isfinite(x: Tensor) -> Tensor:
     return torch.isfinite(x)
 
 
-def isinf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def isinf(x: torch.Tensor) -> torch.Tensor:
     return torch.isinf(x)
 
 

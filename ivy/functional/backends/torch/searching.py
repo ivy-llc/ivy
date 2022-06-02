@@ -5,20 +5,21 @@ from typing import Optional, Tuple
 def argmax(
     x: torch.Tensor,
     axis: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
     keepdims: Optional[bool] = False,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = torch.tensor(x)
-    ret = torch.argmax(x, dim=axis, out=out, keepdim=keepdims)
+    ret = torch.argmax(x, dim=axis, out=out, keepdim=keepdims, out=out)
     return ret
 
 
 def argmin(
-    x: torch.Tensor, axis: Optional[int] = None, keepdims: Optional[bool] = False
+    x: torch.Tensor, axis: Optional[int] = None, keepdims: Optional[bool] = False, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
 
     x = torch.tensor(x)
-    ret = torch.argmin(x, axis=axis, keepdim=keepdims)
+    ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
     return ret
 
 
