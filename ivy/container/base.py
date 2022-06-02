@@ -295,7 +295,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _sum_unify(containers, device, _=None, _1=None):
-        return sum([cont.to_dev(device) for cont in containers.values()])
+        return sum(
+            [cont.to_dev(device) for cont in containers.values()], start=ivy.zeros([])
+        )
 
     @staticmethod
     def _mean_unify(containers, device, _=None, _1=None):
@@ -1420,7 +1422,9 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(self, dict_in, **config):
+    def inplace_update(
+        self, dict_in: Union[ivy.Container, dict], **config
+    ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
         container.
 
@@ -2185,7 +2189,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self._ivy.DevClonedItem(
-            {device: self.to_dev(device) for device in devices}
+            {device: self.to_dev(device=device) for device in devices}
         )
 
     def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -2585,7 +2589,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device))
+            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device=device))
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
