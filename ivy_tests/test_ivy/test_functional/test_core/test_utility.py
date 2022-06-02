@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
     kd=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
-    as_variable=st.booleans()
+    as_variable=st.booleans(),
 )
 def test_all(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test
@@ -63,7 +63,7 @@ def test_all(data, kd, dtype, with_out, as_variable, device, call):
     kd=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
-    as_variable=st.booleans()
+    as_variable=st.booleans(),
 )
 def test_any(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test

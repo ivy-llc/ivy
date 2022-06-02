@@ -38,16 +38,18 @@ def test_unique_values(
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "unique_values",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "unique_values",
+        x=x,
+    )
 
 
 @given(
@@ -78,16 +80,18 @@ def test_unique_all(
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "unique_all",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "unique_all",
+        x=x,
+    )
 
 
 @given(
@@ -119,15 +123,18 @@ def test_unique_counts(
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "unique_counts", x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "unique_counts",
+        x=x,
+    )
 
 
 @given(
@@ -160,13 +167,15 @@ def test_unique_inverse(
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "unique_inverse",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "unique_inverse",
+        x=x,
+    )

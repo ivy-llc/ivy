@@ -51,19 +51,21 @@ def test_argsort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "argsort",
-                                x=x,
-                                axis=axis,
-                                descending=descending,
-                                stable=stable)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "argsort",
+        x=x,
+        axis=axis,
+        descending=descending,
+        stable=stable,
+    )
 
 
 # sort
@@ -108,16 +110,18 @@ def test_sort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "sort",
-                                x=x,
-                                axis=axis,
-                                descending=descending,
-                                stable=stable)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "sort",
+        x=x,
+        axis=axis,
+        descending=descending,
+        stable=stable,
+    )
