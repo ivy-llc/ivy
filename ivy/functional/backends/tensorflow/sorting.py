@@ -11,8 +11,7 @@ def argsort(
     x: Tensor,
     axis: int = -1,
     descending: bool = False,
-    stable: bool = True,
-    out: Optional[Tensor] = None,
+    stable: bool = True
 ) -> Tensor:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -41,8 +40,6 @@ def argsort(
             ret = tf.argsort(
                 tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
             )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -50,8 +47,7 @@ def sort(
     x: tf.Tensor,
     axis: int = -1,
     descending: bool = False,
-    stable: bool = True,
-    out: Optional[Tensor] = None,
+    stable: bool = True
 ) -> tf.Tensor:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -65,6 +61,4 @@ def sort(
             ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="DESCENDING")
         else:
             ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="ASCENDING")
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret

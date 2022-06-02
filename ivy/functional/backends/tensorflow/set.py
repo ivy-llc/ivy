@@ -55,10 +55,8 @@ def unique_inverse(x: Tensor) -> Tuple[Tensor, Tensor]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: Tensor, out: Tensor = None) -> Tensor:
+def unique_values(x: Tensor) -> Tensor:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 

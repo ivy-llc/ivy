@@ -11,8 +11,7 @@ import ivy
 def all(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -20,8 +19,6 @@ def all(
     elif isinstance(axis, list):
         axis = tuple(axis)
     ret = tf.reduce_all(tf.cast(x, tf.bool), axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -29,8 +26,7 @@ def all(
 def any(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -38,6 +34,4 @@ def any(
     elif isinstance(axis, list):
         axis = tuple(axis)
     ret = tf.reduce_any(tf.cast(x, tf.bool), axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret

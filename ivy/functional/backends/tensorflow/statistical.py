@@ -14,21 +14,16 @@ import ivy
 def min(
     x: Tensor,
     axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.math.reduce_min(x, axis, keepdims))
-    else:
-        return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
 def sum(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
 
     if dtype is None:
@@ -40,12 +35,7 @@ def sum(
             dtype = tf.int64
         elif x.dtype == tf.uint64:
             dtype = tf.uint64
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, tf.experimental.numpy.sum(x, axis, dtype, keepdims)
-        )
-    else:
-        return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
+    return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
 def prod(
@@ -53,8 +43,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    dtype: tf.DType,
-    out: Optional[Tensor] = None,
+    dtype: tf.DType
 ) -> Tensor:
     if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
@@ -65,84 +54,51 @@ def prod(
             dtype = tf.int64
         elif x.dtype == tf.uint64:
             dtype = tf.uint64
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out,
-            tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims),
-        )
-    else:
-        return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
+    return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
 
 
 def mean(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
-        )
-    else:
-        return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def max(
     x: Tensor,
     axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
-        )
-    else:
-        return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
 def var(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
-        )
-    else:
-        return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
 
 
 def std(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[Tensor] = None,
+    keepdims: bool = False
 ) -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims)
-        )
-    else:
-        return tf.experimental.numpy.std(x, axis, keepdims)
+    return tf.experimental.numpy.std(x, axis, keepdims)
 
 
 # Extra #
 # ------#
 
 
-def einsum(equation: str, *operands: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.einsum(equation, *operands))
-    else:
-        return tf.einsum(equation, *operands)
+def einsum(equation: str, *operands: Tensor) -> Tensor:
+    return tf.einsum(equation, *operands)
