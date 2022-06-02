@@ -487,9 +487,10 @@ def test_to_ivy_module_distributed_multiprocess(
     ret_val = ivy.map(
         loss_fn,
         constant={"module": ivy_module},
-        unique={"x_": x.values(), "v_": ivy_module.v.dev_clone(
-            devices=devices
-        ).values()},
+        unique={
+            "x_": x.values(),
+            "v_": ivy_module.v.dev_clone(devices=devices).values(),
+        },
     )[0]
     assert ivy.is_array(ret_val)
 

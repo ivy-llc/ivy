@@ -383,9 +383,7 @@ promotion_table = {
     (bool, bool): bool,
 }
 
-locks = {
-    'backend_setter' : threading.Lock()
-}
+locks = {"backend_setter": threading.Lock()}
 
 backend = "none"
 
