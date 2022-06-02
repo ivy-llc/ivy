@@ -11,12 +11,6 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # all
-# @pytest.mark.parametrize("x", [[1.0, 2.0, 3.0], [[1.0, 2.0, 3.0]]])
-# @pytest.mark.parametrize("axis", [None, 0, -1, (0,), (-1,)])
-# @pytest.mark.parametrize("kd", [True, False])
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("with_out", [True, False])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @given(
     data=st.data(),
     kd=st.booleans(),
@@ -26,8 +20,6 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_all(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test
-    if dtype == 'float16':
-        return
     x, axis = data.draw(helpers.get_axis(dtype))
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
@@ -75,9 +67,6 @@ def test_all(data, kd, dtype, with_out, as_variable, device, call):
 )
 def test_any(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test
-    # print(ivy_np.invalid_float_dtypes)
-    if dtype in ivy_np.invalid_float_dtypes:
-        return
     x, axis = data.draw(helpers.get_axis(dtype))
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
