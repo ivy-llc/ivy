@@ -83,10 +83,8 @@ get_num_dims = (
 container_types = lambda: [FlatMapping]
 
 
-def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def floormod(x: JaxArray, y: JaxArray) -> JaxArray:
     ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -116,36 +114,24 @@ inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, jnp.cumsum(x, axis))
-    else:
-        return jnp.cumsum(x, axis)
+def cumsum(x: JaxArray, axis: int = 0) -> JaxArray:
+    return jnp.cumsum(x, axis)
 
 
 def cumprod(
     x: JaxArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = jnp.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, jnp.copy(jnp.swapaxes(res, axis, -1)))
-        else:
-            return jnp.swapaxes(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, jnp.cumprod(x, axis))
-    else:
-        return jnp.cumprod(x, axis)
+        return jnp.swapaxes(res, axis, -1)
+    return jnp.cumprod(x, axis)
 
 
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -182,7 +168,7 @@ def scatter_flat(
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
 
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
@@ -248,23 +234,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: JaxArray,
-    indices: JaxArray,
-    axis: Optional[int] = -1,
-    device: Optional[str] = None,
-    out: Optional[JaxArray] = None,
+    params: JaxArray, indices: JaxArray, axis: Optional[int] = -1, *, device: str
 ) -> JaxArray:
     if device is None:
         device = callable_dev(params)
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, _to_dev(jnp.take_along_axis(params, indices, axis), device)
-        )
-    else:
-        return _to_dev(jnp.take_along_axis(params, indices, axis), device)
+    return _to_dev(jnp.take_along_axis(params, indices, axis), device)
 
 
-def gather_nd(params, indices, device=None):
+def gather_nd(params, indices, *, device: str):
     if device is None:
         device = callable_dev(params)
     indices_shape = indices.shape
@@ -302,7 +279,7 @@ multiprocessing = (
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
     return _to_dev(res.reshape(list(indices.shape) + [depth]), default_device(device))

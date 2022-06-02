@@ -13,7 +13,6 @@ import logging
 import nvidia_smi
 from typing import Optional
 
-
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
@@ -366,12 +365,8 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    device_cnt = nvidia_smi.nvmlDeviceGetCount()
-    if device_cnt != 0:
-        return True
-    else:
-        return False
-        
+    return _cur_backend().gpu_is_available()
+
 
 def num_cpu_cores() -> int:
     """Determine the number of cores available in the cpu.
@@ -466,12 +461,13 @@ def default_device(device=None, item=None, as_native: bool = None):
 
 
 # noinspection PyShadowingNames
-def set_default_device(device):
-    """Summary.
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
+    """Set the default device to given device instance
 
     Parameters
     ----------
     device
+        The device to set as the default device
 
     """
     global default_device_stack
@@ -1095,12 +1091,14 @@ def _concat_unify_array(xs, device, axis):
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
-    return sum([ivy.to_dev(x_sub, device) for x_sub in xs.values()])
+    return sum(
+        [ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], start=ivy.zeros([])
+    )
 
 
 # noinspection PyShadowingNames
 def _mean_unify_array(xs, device, _=None):
-    return _sum_unify_array(xs, device) / len(xs)
+    return _sum_unify_array(xs, device=device) / len(xs)
 
 
 # noinspection PyShadowingNames
@@ -1163,9 +1161,9 @@ def dev_unify(xs, device, mode, axis=0):
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return dev_unify_array(xs, device, mode, axis)
+        return dev_unify_array(xs, device=device, mode=mode, axis=axis)
     elif isinstance(xs0, ivy.Container):
-        return ivy.Container.unify(xs, device, mode, axis)
+        return ivy.Container.unify(xs, device=device, mode=mode, axis=axis)
     return xs
 
 
@@ -1202,8 +1200,8 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
             MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
             for mdi in list(map(list, zip(*xs)))
         ]
-        return [dev_unify(x, device, mode, axis) for x in xs_t]
-    return dev_unify(xs, device, mode, axis)
+        return [dev_unify(x, device=device, mode=mode, axis=axis) for x in xs_t]
+    return dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
@@ -1240,10 +1238,14 @@ def dev_unify_nest(
     args = args._data if isinstance(args, MultiDevIter) else args
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(
-        args, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth
+        args,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     kwargs_uni = ivy.nested_map(
-        kwargs, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth
+        kwargs,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     return args_uni, kwargs_uni
 
