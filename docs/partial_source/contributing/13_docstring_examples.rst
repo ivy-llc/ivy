@@ -287,6 +287,9 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
 
 These examples cover points 1, 2, 3, 4 and 5.
 
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
+to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
+
 Point 1 is a bit less trivial to satisfy than it was for :code:`ivy.tan` above. While :code:`x` again only has one
 variation (for the same reason as explained in the :code:`ivy.tan` example above), :code:`shift` has two variations
 (:code:`int` or sequence of :code:`int`), and :code:`axis` has three variations
@@ -409,6 +412,9 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
                 [-4.7]]])
 
 These examples cover points 1, 2, 3, 4 and 5.
+
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
+to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is again trivial to satisfy, as was the case for :code:`ivy.tan`.
 Ignoring the union over :code:`ivy.Array` and :code:`ivy.NativeArray` which is covered by points 6 and 7,
