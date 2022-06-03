@@ -53,8 +53,8 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (k) :ref:`Inplace Updates`
 | How the :code:`out` argument is used to specify the output target  🎯
 |
-| (l) :ref:`Type Hints`
-| How to add the correct type hints 📑
+| (l) :ref:`Function Arguments`
+| How to add the correct function arguments 📑
 |
 | (m) :ref:`Docstrings`
 | How to properly write docstrings 📄

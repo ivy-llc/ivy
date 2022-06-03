@@ -166,7 +166,7 @@ This could for example be the input array itself, but can also be any other arra
 All Ivy functions which return a single array should support inplace updates.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
 However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
-This is ommitted from the type hint, as explained in the :ref:`Type Hints` section.
+This is ommitted from the type hint, as explained in the :ref:`Function Arguments` section.
 
 When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
 :code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
