@@ -7,8 +7,7 @@ from tensorflow.python.types.core import Tensor
 def argmax(x: Tensor, axis: Optional[int] = None, keepdims: bool = False) -> Tensor:
 
     ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
-    ret_dtype = ret.dtype
-    ret = tf.convert_to_tensor(ret, dtype=ret_dtype)
+    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
 
     return ret
 
