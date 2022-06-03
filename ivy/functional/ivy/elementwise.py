@@ -1406,10 +1406,10 @@ def sin(
 
 
 def negative(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the
     input array x.
 
