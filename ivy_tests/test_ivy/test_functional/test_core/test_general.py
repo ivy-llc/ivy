@@ -1,7 +1,9 @@
 """Collection of tests for unified general functions."""
 
 # global
+import time
 import einops
+import jax.numpy as jnp
 import pytest
 from hypothesis import given, strategies as st
 import numpy as np
@@ -10,6 +12,7 @@ from collections.abc import Sequence
 import torch.multiprocessing as multiprocessing
 
 # local
+import threading
 import ivy
 import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
@@ -1086,38 +1089,36 @@ def test_cache_fn_with_args(device, call):
     assert ret0 is not ret1
 
 
-# def test_framework_setting_with_threading(device, call):
-#
-#     if call is helpers.np_call:
-#         # Numpy is the conflicting framework being tested against
-#         pytest.skip()
-#
-#     def thread_fn():
-#         ivy.set_framework('numpy')
-#         x_ = np.array([0., 1., 2.])
-#         for _ in range(2000):
-#             try:
-#                 ivy.mean(x_)
-#             except TypeError:
-#                 return False
-#         ivy.unset_framework()
-#         return True
-#
-#     # get original framework string and array
-#     fws = ivy.current_framework_str()
-#     x = ivy.array([0., 1., 2.])
-#
-#     # start numpy loop thread
-#     thread = threading.Thread(target=thread_fn)
-#     thread.start()
-#
-#     # start local original framework loop
-#     ivy.set_framework(fws)
-#     for _ in range(2000):
-#         ivy.mean(x)
-#     ivy.unset_framework()
-#
-#     assert not thread.join()
+def test_framework_setting_with_threading(device, call):
+    if call is helpers.jnp_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    def thread_fn():
+        x_ = jnp.array([0.0, 1.0, 2.0])
+        ivy.set_backend("jax")
+        for _ in range(2000):
+            try:
+                ivy.mean(x_)
+            except TypeError:
+                return False
+        ivy.unset_backend()
+        return True
+
+    # get original framework string and array
+    fws = ivy.current_backend_str()
+    x = ivy.array([0.0, 1.0, 2.0])
+
+    # start jax loop thread
+    thread = threading.Thread(target=thread_fn)
+    thread.start()
+    time.sleep(0.01)
+    # start local original framework loop
+    ivy.set_backend(fws)
+    for _ in range(2000):
+        ivy.mean(x)
+    ivy.unset_backend()
+    assert not thread.join()
 
 
 def test_framework_setting_with_multiprocessing(device, call):
