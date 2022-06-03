@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Function Types &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Backend Setting" href="2_backend_setting.html" />
+    <link rel="prev" title="Navigating the Code" href="0_navigating_the_code.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Function Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#primary-functions">Primary Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compositional-functions">Compositional Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mixed-functions">Mixed Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-functions">Standalone Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convenience-functions">Convenience Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_ivy_tests.html">Ivy Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Function Types</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/1_function_types.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="function-types">
+<h1>Function Types<a class="headerlink" href="#function-types" title="Permalink to this heading"></a></h1>
+<p>Firstly, we explain the difference between <em>primary</em>, <em>compositional</em>, <em>mixed</em> and <em>standalone</em> functions.
+These four function categorizations are all <strong>mutually exclusive</strong>,
+and combined they consitute the set of <strong>all</strong> functions in Ivy, as outlined in the simple Venn diagram below.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" style="width: 50%;" /></a>
+<section id="primary-functions">
+<h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this heading"></a></h2>
+<p><em>Primary</em> functions are essentially the lowest level building blocks in Ivy. Each primary function has a unique
+backend-specific implementation for each backend specified in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>. These are generally implemented as light wrapping
+around an existing function in the backend framework, which serves a near-identical purpose.</p>
+<p>Primary functions must both be specified in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> and also in each of
+the backend files <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code></p>
+<p>The function in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> includes the type hints, docstring and docstring examples
+(explained in more detail in the subsequent sections), but does not include an actual implementation.</p>
+<p>Instead, in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, primary functions simply defer to the backend-specific
+implementation.</p>
+<p>For example, the code for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/elementwise.py</span></code>
+(with docstrings removed) is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The backend-specific implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>  for PyTorch in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/torch/elementwise.py</span></code> is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reason that the Ivy implementation has type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> but PyTorch
+implementation has <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <a class="reference internal" href="9_function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a> section.
+Likewise, the reason that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the Ivy implementation has array type hint <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <a class="reference internal" href="9_function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
+</section>
+<section id="compositional-functions">
+<h2>Compositional Functions<a class="headerlink" href="#compositional-functions" title="Permalink to this heading"></a></h2>
+<p><em>Compositional</em> functions on the other hand <strong>do not</strong> have backend-specific implementations. They are implemented as
+a <em>composition</em> of other Ivy functions,
+which themselves can be either compositional, primary or mixed (explained below).</p>
+<p>Therefore, compositional functions are only implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and there are no
+implementations in any of the backend files <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code></p>
+<p>For example, the implementation of <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/losses.py</span></code>
+(with docstrings removed) is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
+    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mixed-functions">
+<h2>Mixed Functions<a class="headerlink" href="#mixed-functions" title="Permalink to this heading"></a></h2>
+<p>Some functions have some backend-specific implementations in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>, but not for all backends.
+To support backends that do not have a backend-specific implementation,
+a compositional implementation is also provided in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
+Because these functions include both a compositional implementation and also at least one backend-specific
+implementation, these functions are refered to as <em>mixed</em>.</p>
+<p>When using ivy without a backend set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> has not been called),
+then the function called is always the one implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
+For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend(array_arg).func_name(...)</span></code>
+will call the backend-specific implementation in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>
+directly. However, as just explained, <em>mixed</em> functions implement a compositional approach in
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, without deferring to the backend.
+Therefore, when no backend is explicitly set,
+then the compositional implementation is always used for <em>mixed</em> functions,
+even for backends that have a more efficient backend-specific implementation.
+Typically the backend should always be set explicitly though (using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> for example),
+and in this case the efficient backend-specific implementation will always be used if it exists.</p>
+</section>
+<section id="standalone-functions">
+<h2>Standalone Functions<a class="headerlink" href="#standalone-functions" title="Permalink to this heading"></a></h2>
+<p><em>Standalone</em> functions are functions which do not reference any other <em>primary</em>,
+<em>compositional</em> or <em>mixed</em> functions whatsoever.</p>
+<p>By definition, standalone functions can only reference themselves or other standlone functions.
+Most commonly, these functions are <em>convenience</em> functions (see below).</p>
+<p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
+All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
+or (c) reference other standalone functions.</p>
+<p>A few other examples outside of the <code class="code docutils literal notranslate"><span class="pre">nest.py</span></code> module are:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622">ivy.default</a> which simply returns <code class="code docutils literal notranslate"><span class="pre">x</span></code> if it exists else the default value,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L747">ivy.cache_fn</a> which wraps a function such that when <code class="code docutils literal notranslate"><span class="pre">cache=True</span></code> is passed,
+then a previously cached output is returned,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928">ivy.stable_divide</a> which simply adds a small constant to the denominator of the division.</p>
+</section>
+<section id="nestable-functions">
+<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
+<p><em>Nestable</em> functions are functions which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
+of <strong>any</strong> of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
+provided that the containers share the same nested structure.
+If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
+leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
+In this case, the function will return an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.
+<em>Primary</em>, <em>compositional</em>, <em>mixed</em>, and <em>standalone</em> functions can all <em>also</em> be nestable.
+This categorization is <strong>not</strong> mutually exclusive, as outlined by the Venn diagram below:</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/nestable.png?raw=true" style="width: 50%;" /></a>
+<p>The <em>nestable</em> property makes it very easy to write a single piece of code that can deal either with individual
+arguments or arbitrary batches of nested arguments. This is very useful in machine learning,
+where batches of different training data often need to be processed concurrently.
+Another example is when the same operation must be performed on each weight in a network.
+This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases
+without modification.</p>
+<p>This added support for handling <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137">_wrap_function</a>
+is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
+in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.
+This function wrapping process is covered in a bit more detail in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<p>Under the hood, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are called when <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed
+in as inputs to functions in the functional API. This is explained in more detail in the <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> section.</p>
+</section>
+<section id="convenience-functions">
+<h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading"></a></h2>
+<p>A final group of functions are the <em>convenience</em> functions (briefly mentioned above).
+Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
+However, they can be used to organize and improve the code for other functions which do modify the arrays.
+Convenience functions can be <em>primary</em>, <em>compositional</em>, <em>mixed</em> or <em>standalone</em> functions. Many are also <em>nestable</em>.
+This is another categorization which is <strong>not</strong> mutually exclusive, as outlined by the Venn diagram below:</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" style="width: 50%;" /></a>
+<p>Primary convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22">ivy.can_cast</a> which determines if one data type can be cast to another data type according to type-promotion rules,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L140">ivy.dtype</a> which gets the data type for the input array,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132">ivy.dev</a> which gets the device for the input array.</p>
+<p>Compositional convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536">ivy.set_default_dtype</a> which sets the global default data dtype,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> which returns the correct data type to use,
+considering both the inputs and also the globally set default,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71">ivy.get_all_arrays_on_dev</a> which gets all arrays which are currently on the specified device.</p>
+<p>Standalone convenience functions include:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211">ivy.get_backend</a> which returns a local Ivy module with the associated backend framework.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L333">ivy.nested_map</a> which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L15">ivy.index_nest</a> which enables an arbitrary nest to be recursively indexed.</p>
+<p>There are many other examples. The convenience functions are not grouped by file or folder.
+Feel free to have a look through all of the <a class="reference external" href="https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy">submodules</a>, you should be able to spot quite a few!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="0_navigating_the_code.html" class="btn btn-neutral float-left" title="Navigating the Code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_backend_setting.html" class="btn btn-neutral float-right" title="Backend Setting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Containers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Types" href="6_data_types.html" />
+    <link rel="prev" title="Arrays" href="4_arrays.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#container-instance-methods">Container Instance Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#container-static-methods">Container Static Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-static-methods">API Static Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-instance-methods">API Instance Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-special-methods">API Special Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_ivy_tests.html">Ivy Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Containers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/5_containers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="containers">
+<h1>Containers<a class="headerlink" href="#containers" title="Permalink to this heading"></a></h1>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56">dict</a>, and is useful for storing nested data.
+For example, the container is equally suitable for storing batches of training data,
+or for storing the weights of a network.</p>
+<p>The methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+All methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods,
+and almost all of them directly wrap a function in the functional API.</p>
+<p>For the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
+for performing nested operations on the leaves of the container for example.
+In addition, there are also static methods.
+Overall, this results in the following five mutually exclusive groups of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods.
+Each of these are explained in the following sub-sections.</p>
+<ol class="arabic simple">
+<li><p>Container instance methods</p></li>
+<li><p>Container static methods</p></li>
+<li><p>API instance methods</p></li>
+<li><p>API special methods</p></li>
+<li><p>API static methods</p></li>
+</ol>
+<section id="container-instance-methods">
+<h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this heading"></a></h2>
+<p>Container instance methods are methods which are specific to the container itself.
+A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030">ivy.Container.map</a> which is used for mapping a function to all leaves of the container,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490">ivy.Container.all_true</a> which determines if all container leaves evaluate to boolean <cite>True</cite>,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019">ivy.Container.to_iterator</a> which returns an iterator for traversing the leaves of the container.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
+</section>
+<section id="container-static-methods">
+<h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this heading"></a></h2>
+<p>Container static methods are also methods which are specific to containers,
+but which generally operate across <em>multiple</em> containers rather than a single container.
+This underpins the decision to not bind these method to a single container instance,
+and instead implement them as <em>static</em> methods.</p>
+<p>A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>
+which is used for mapping a function to all leaves of <em>multiple</em> containers with the same nested structure,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396">ivy.Container.diff</a> which displays the difference in nested structure between multiple containers,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663">ivy.Container.common_key_chains</a> which returns the nested structure that is common to all containers.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a> class to see some more!</p>
+</section>
+<section id="api-static-methods">
+<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this heading"></a></h2>
+<p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements all functions in the functional API as
+<em>static</em> methods. The main reason for this is to support the <em>nestable</em> property of all functions in the API,
+which is explained in detail in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+<p>To recap, what this means is that every function can arbitrarily accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
+of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
+When multiple containers are passed, this mapping is only applied to their shared nested structure,
+with the mapping applied to each of these leaves.</p>
+<p>In such cases, the function in the functional API defers to this <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
+Under the hood, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> enables us to pass in arbitrary combinations of containers
+and non-containers, and perform the correct mapping across the leaves.
+Internally, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.multi_map_in_static_method</span></code> calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>.
+In cases where there are no containers passed,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> will simply call the function once on the non-container arguments provided.</p>
+<p>A few examples of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135">ivy.Container.static_roll</a>.</p>
+<p>As with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+given the simple set of rules which underpin how these static methods should all be implemented,
+if a source-code implementation is not found,
+then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199">static method is added</a> programmatically.
+This serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
+<p>The benefit of the source code implementations is that this makes the code much more readable,
+with important methods not being entirely absent from the code.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
+</section>
+<section id="api-instance-methods">
+<h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this heading"></a></h2>
+<p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
+They enable functions in Ivy’s functional API to be called as instance methods on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
+The difference is that with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
+the API function is applied recursively to all the leaves of the container.</p>
+<p>Under the hood, every <em>instance</em> method calls the corresponding <em>static</em> method.
+For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92">ivy.Container.add</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259">ivy.Container.tan</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_tan</span></code>,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158">ivy.Container.roll</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>.</p>
+<p>As is the case for <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+the organization of these instance methods follows the same organizational structure as the
+files in the functional API.
+The <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/container.py#L25">inherits</a> from many category-specific array classes,
+such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/elementwise.py#L12">ContainerWithElementwise</a>, each of which implement the category-specific instance methods.</p>
+<p>Again, as with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+given the simple set of rules which underpin how these instance methods should all be implemented,
+if a source-code implementation is not found,
+then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L173">instance method is added</a> programmatically.
+Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
+<p>Again, the benefit of the source code implementations is that this makes the code much more readable,
+with important methods not being entirely absent from the code.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
+</section>
+<section id="api-special-methods">
+<h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this heading"></a></h2>
+<p>As is the case for the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+most special methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> simply wrap a corresponding function in the functional API.</p>
+<p>The special methods which <strong>do not</strong> wrap functions in the functional API are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a>,
+which is the base abstract class for all containers.
+These special methods include
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4588">__repr__</a> which controls how the container is printed in the terminal,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782">__getattr__</a> that enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4790">__setattr__</a> that enables attribute setting to update the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4842">__getitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried via a chain of keys,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
+<p>As for the special methods which <strong>do</strong> simply wrap corresponding functions in the functional API,
+these are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.</p>
+<p>These special methods all directly wrap the corresponding API <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> method.</p>
+<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which directly call
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_subtract</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_divide</span></code> respectively.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_arrays.html" class="btn btn-neutral float-left" title="Arrays" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_data_types.html" class="btn btn-neutral float-right" title="Data Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

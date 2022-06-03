@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arrays &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Containers" href="5_containers.html" />
+    <link rel="prev" title="Function Wrapping" href="3_function_wrapping.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Arrays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#native-array">Native Array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-array">Ivy Array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#array-handling">Array Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_ivy_tests.html">Ivy Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
+      <li>Arrays</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deep_dive/4_arrays.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arrays">
+<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h1>
+<p>There are two types of array in Ivy, there is the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and also the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
+<section id="native-array">
+<h2>Native Array<a class="headerlink" href="#native-array" title="Permalink to this heading"></a></h2>
+<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> is simply a placeholder class for a backend-specific array class,
+such as <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code> or <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
+<p>When no framework is set, this is an <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L8">empty class</a>.
+When a framework is set, this is <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/functional/backends/torch/__init__.py#L11">overwritten</a> with the backend-specific array class.</p>
+</section>
+<section id="ivy-array">
+<h2>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this heading"></a></h2>
+<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> is a simple wrapper class, which wraps around the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>,
+storing it in <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89">self._data</a>.</p>
+<p>All functions in the Ivy functional API which accept <em>at least one array argument</em> in the input are implemented
+as instance methods in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
+<p>The organization of these instance methods follows the same organizational structure as the
+files in the functional API.
+The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/array/__init__.py#L44">inherits</a> from many category-specific array classes, such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L12">ArrayWithElementwise</a>,
+each of which implement the category-specific instance methods.</p>
+<p>Each instance method simply calls the functional API function internally,
+but passes in <code class="code docutils literal notranslate"><span class="pre">self</span></code> as the first array argument. <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
+<p>Given the simple set of rules which underpin how these instance methods should all be implemented,
+if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
+This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
+<p>The benefit of the source code implementations is that this makes the code much more readable,
+with important methods not being entirely absent from the code.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
+<p>Special methods are a little bit different. Most of these simply wrap a corresponding function in the functional API,
+as <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">is the case</a> in the Array API Standard.
+Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L291">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319">__truediv__</a> which directly call
+<code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> respectively.
+However, for some special methods such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>,
+there are substantial differences between the backend frameworks
+which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation.</p>
+</section>
+<section id="array-handling">
+<h2>Array Handling<a class="headerlink" href="#array-handling" title="Permalink to this heading"></a></h2>
+<p>When calling backend-specific functions such as <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code>, we must pass in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
+For example, <code class="code docutils literal notranslate"><span class="pre">torch.sin</span></code> will throw an error if we try to pass in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance.
+It must be provided with a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and this is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219">backend type hints</a>.</p>
+<p>However, all Ivy functions must return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, which is reflected in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342">Ivy type hints</a>.
+The reason we always return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances from Ivy functions is to ensure that any subsequent Ivy code is
+fully framework-agnostic, with all operators performed on the returned array being handled by the special methods of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, and not the special methods of the backend <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> class.</p>
+<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
+(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
+<p>For most special methods, calling them on the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> would not be a problem
+because all backends are generally quite consistent,
+but as explained above, for some functions such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/array/__init__.py#L234">__setitem__</a>
+there are substantial differences which must be addressed in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> implementation
+in order to guarantee unified behaviour.</p>
+<p>Given that all Ivy functions return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances,
+all Ivy functions must also support <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input,
+otherwise it would be impossible to chain functions together!</p>
+<p>Therefore, most functions in Ivy must adopt the following pipeline:</p>
+<ol class="arabic simple">
+<li><p>convert all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input arguments to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
+<li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
+<li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
+</ol>
+<p>Given the repeating nature of these steps, this is all entirely handling in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170">function wrapping</a>,
+as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<p>All Ivy functions <em>also</em> accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
+This is for a couple of reasons.
+Firstly, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,
+and so supporting them in the input is not a problem.
+Secondly, this makes it easier to combine backend-specific code with Ivy code,
+without needing to explicitly wrap any arrays before calling sections of Ivy code.</p>
+<p>Therefore, all input arrays to Ivy functions have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>,
+whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+<p>However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
+which is used in most functions.
+This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
+serves the same purpose as the function return. This is further explained in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+<p>As a final point, extra attention is required for <em>compositional</em> functions,
+as these do not directly defer to a backend implementation.
+If the first line of code in a compositional function performs operations on the input array,
+then this will call the special methods on an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and not on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+For the reasons explained above, this would be a problem.</p>
+<p>Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+instances are converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before entering into the compositional function.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="3_function_wrapping.html" class="btn btn-neutral float-left" title="Function Wrapping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_containers.html" class="btn btn-neutral float-right" title="Containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
