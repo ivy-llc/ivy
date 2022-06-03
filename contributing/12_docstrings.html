@@ -147,8 +147,9 @@
 <p>All functions in the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough docstrings.
 In contrast, all backend implementations at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should not have any docstrings,
-on account that these are just different instantiations of the functions at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
-<p>In order to explain how docstrings should be written, we will use <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> as an exemplar.</p>
+on account that these are effectively just different instantiations of the functions at
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
+<p>In order to explain how docstrings should be written, we will use <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> as an example.</p>
 <p>Firstly, if the function exists in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, the we start with the corresponding docstring as a
 template. These docstrings can be found under <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api">spec/API_specification/array_api</a>.</p>
 <p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> docstring for <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is as follows:</p>
@@ -188,7 +189,7 @@ Ivy extends many of these functions with additional behaviour and arguments.
 In the case of <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, there is also the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code> which needs to be added to the docstring,
 like so:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+out</span><span class="w"></span>
-<span class="gi">+    optional output, for writing the result to. It must have a shape that the inputs</span><span class="w"></span>
+<span class="gi">+    optional output array, for writing the result to. It must have a shape that the inputs</span><span class="w"></span>
 <span class="gi">+    broadcast to.</span><span class="w"></span>
 </pre></div>
 </div>
@@ -233,7 +234,7 @@ x
     input array whose elements are expressed in radians. Should have a
     floating-point data type.
 out
-    optional output, for writing the result to. It must have a shape that the inputs
+    optional output array, for writing the result to. It must have a shape that the inputs
     broadcast to.
 
 Returns

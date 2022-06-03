@@ -7,9 +7,10 @@ Docstrings
 All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
-on account that these are just different instantiations of the functions at :code:`ivy/functional/ivy/category_name.py`.
+on account that these are effectively just different instantiations of the functions at
+:code:`ivy/functional/ivy/category_name.py`.
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an exemplar.
+In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
@@ -58,7 +59,7 @@ like so:
 .. code-block:: diff
 
     +out
-    +    optional output, for writing the result to. It must have a shape that the inputs
+    +    optional output array, for writing the result to. It must have a shape that the inputs
     +    broadcast to.
 
 Because of this :code:`out` argument in the input, we also need to rename the :code:`out` argument in the return, which
@@ -111,7 +112,7 @@ Following these changes, the new docstring is as follows:
         input array whose elements are expressed in radians. Should have a
         floating-point data type.
     out
-        optional output, for writing the result to. It must have a shape that the inputs
+        optional output array, for writing the result to. It must have a shape that the inputs
         broadcast to.
 
     Returns
