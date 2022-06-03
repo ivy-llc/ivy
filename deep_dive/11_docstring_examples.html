@@ -414,21 +414,19 @@ Point 7 is not relevant as there is only one array input
 ivy.array([2., 0., 1.])
 </pre></div>
 </div>
-<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 8.
-.. code-block:: python</p>
-<blockquote>
-<div><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> \
-<span class="go">                      b=ivy.array([3., 4., 5.]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([2., 0., 1.]),</span>
-<span class="go">    b: ivy.array([5., 3., 4.])</span>
-<span class="go">}</span>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 8.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
+
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; y = ivy.roll(x, 1)
+&gt;&gt;&gt; print(y)
+{
+    a: ivy.array([2., 0., 1.]),
+    b: ivy.array([5., 3., 4.])
+}
 </pre></div>
 </div>
-</div></blockquote>
 <p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
 as there are three function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
 We can therefore add an example with multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
