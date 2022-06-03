@@ -45,7 +45,7 @@ For functions which accept more than one array, there should also be an example 
 
 Going further, for *nestable* functions there should be an example that:
 
-8. passes in :code:`ivy.Container` instances in place of one of the arguments
+8. passes in an :code:`ivy.Container` instance in place of one of the arguments
 
 For *nestable* functions which accept more than one argument, there should also be an example that:
 
