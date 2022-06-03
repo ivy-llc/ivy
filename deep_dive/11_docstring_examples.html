@@ -184,11 +184,11 @@ of the function. The purpose is not to provide an excessive number of variations
 </ol>
 <p>Going further, for <em>nestable</em> functions there should be an example that:</p>
 <ol class="arabic simple" start="8">
-<li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of all arguments</p></li>
+<li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of one of the arguments</p></li>
 </ol>
 <p>For <em>nestable</em> functions which accept more than one argument, there should also be an example that:</p>
 <ol class="arabic simple" start="9">
-<li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and non-container instances.</p></li>
+<li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for multiple arguments.</p></li>
 </ol>
 <p><strong>Instance Method Examples</strong></p>
 <p><em>Instance method</em> examples are of course only relevant if an instance method for the function exists.
@@ -414,7 +414,25 @@ Point 7 is not relevant as there is only one array input
 ivy.array([2., 0., 1.])
 </pre></div>
 </div>
-<p>We then also add an example with <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 8.</p>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 8.
+.. code-block:: python</p>
+<blockquote>
+<div><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> \
+<span class="go">                      b=ivy.array([3., 4., 5.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([2., 0., 1.]),</span>
+<span class="go">    b: ivy.array([5., 3., 4.])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
+as there are three function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
+We can therefore add an example with multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
+in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -425,22 +443,6 @@ ivy.array([2., 0., 1.])
 {
     a: ivy.array([2., 0., 1.]),
     b: ivy.array([4., 5., 3.])
-}
-</pre></div>
-</div>
-<p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
-as there are three function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
-We therefore add an example with a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and non-container inputs,
-in order to satisfy point 9.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
-
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
-&gt;&gt;&gt; y = ivy.roll(x, 1)
-&gt;&gt;&gt; print(y)
-{
-    a: ivy.array([2., 0., 1.]),
-    b: ivy.array([5., 3., 4.])
 }
 </pre></div>
 </div>
@@ -545,25 +547,7 @@ We also add an example with a mix of <code class="code docutils literal notransl
 ivy.array([5, 7, 9])
 </pre></div>
 </div>
-<p>We then also add an example with <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 8.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
-
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                      b=ivy.array([2, 3, 4]))
-&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                      b=ivy.array([5, 6, 7]))
-&gt;&gt;&gt; z = ivy.add(x, y)
-&gt;&gt;&gt; print(z)
-{
-    a: ivy.array([5, 7, 9]),
-    b: ivy.array([7, 9, 11])
-}
-</pre></div>
-</div>
-<p>Again, unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
-as there are two function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
-We therefore add an example with a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and non-container inputs,
-in order to satisfy point 9.</p>
+<p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
@@ -578,6 +562,24 @@ in order to satisfy point 9.</p>
     b: ivy.array([[6.1, 7.3, 1.4],
                   [7.1, 8.3, 2.4],
                   [8.1, 9.3, 3.4]])
+}
+</pre></div>
+</div>
+<p>Again, unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
+as there are two function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
+We can therefore add an example with multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
+in order to satisfy point 9.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
+
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([2, 3, 4]))
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                      b=ivy.array([5, 6, 7]))
+&gt;&gt;&gt; z = ivy.add(x, y)
+&gt;&gt;&gt; print(z)
+{
+    a: ivy.array([5, 7, 9]),
+    b: ivy.array([7, 9, 11])
 }
 </pre></div>
 </div>
