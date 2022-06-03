@@ -45,7 +45,7 @@ For functions which accept more than one array, there should also be an example 
 
 Going further, for *nestable* functions there should be an example that:
 
-8. passes in :code:`ivy.Container` instances in place of all array arguments
+8. passes in :code:`ivy.Container` instances in place of all arguments
 
 For *nestable* functions which accept more than one argument, there should also be an example that:
 
@@ -196,7 +196,7 @@ Point 7 is not relevant as there is only one array input
     ivy.array([0., 1.5574077, -2.1850398])
 
 We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 8.
-Point 9 is not relevant as there is only one array input
+Point 9 is not relevant as there is only one input argument
 (excluding :code:`out` which does not count, as it essentially acts as an output)
 
 .. code-block:: python
@@ -322,9 +322,26 @@ Point 7 is not relevant as there is only one array input
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 8.
-Point 9 is not relevant as there is again only one array input
-(excluding :code:`out` which does not count, as it essentially acts as an output).
+We then also add an example with :code:`ivy.Container` inputs, in order to satisfy point 8.
+
+.. code-block:: python
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> shift = ivy.Container(a=1, b=-1)
+    >>> y = ivy.roll(x, shift)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([4., 5., 3.])
+    }
+
+Unlike :code:`ivy.tan`, point 9 is relevant in this case,
+as there are three function inputs in total (exluding :code:`out`).
+We therefore add an example with a mix of :code:`ivy.Container` and non-container inputs,
+in order to satisfy point 9.
 
 .. code-block:: python
 
@@ -475,9 +492,10 @@ We then also add an example with :code:`ivy.Container` inputs, in order to satis
         b: ivy.array([7, 9, 11])
     }
 
-Again, unlike :code:`ivy.tan` and :code:`ivy.roll` above, point 9 is relevant in this case,
-as there are two array inputs.
-We also add an example with a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs, in order to satisfy point 9.
+Again, unlike :code:`ivy.tan`, point 9 is relevant in this case,
+as there are two function inputs in total (exluding :code:`out`).
+We therefore add an example with a mix of :code:`ivy.Container` and non-container inputs,
+in order to satisfy point 9.
 
 .. code-block:: python
 
