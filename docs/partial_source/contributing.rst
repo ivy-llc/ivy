@@ -87,7 +87,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
    contributing/8_data_types.rst
    contributing/9_devices.rst
    contributing/10_inplace_updates.rst
-   contributing/11_type_hints.rst
+   contributing/11_function_arguments.rst
    contributing/12_docstrings.rst
    contributing/13_docstring_examples.rst
    contributing/14_array_api_tests.rst
