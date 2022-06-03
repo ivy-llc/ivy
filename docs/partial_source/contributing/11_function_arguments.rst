@@ -8,7 +8,7 @@ Here, we explain how the function arguments differ between the placeholder imple
 :code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
-Many of these points have already been adressed in the previous sections:
+Many of these points are already adressed in the previous sections:
 :ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
 However, we thought it would be convenient to revisit all of these considerations in a single section,
 dedicated to function arguments.
@@ -135,10 +135,10 @@ the :code:`dtype` and :code:`device` arguments should both always be provided as
 with default value of :code:`None`.
 In contrast, these arguments should both be added as required arguments in the backend implementation
 at :code:`ivy/functional/backends/backend_name/category_name.py`.
-This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
 In a nutshell, by the time the backend implementation is enterred,
 the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
+This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
 
 Integer Sequences
 -----------------
