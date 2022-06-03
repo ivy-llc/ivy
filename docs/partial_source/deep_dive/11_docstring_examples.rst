@@ -45,11 +45,11 @@ For functions which accept more than one array, there should also be an example 
 
 Going further, for *nestable* functions there should be an example that:
 
-8. passes in :code:`ivy.Container` instances in place of all arguments
+8. passes in :code:`ivy.Container` instances in place of one of the arguments
 
 For *nestable* functions which accept more than one argument, there should also be an example that:
 
-9. passes in a combination of :code:`ivy.Container` and non-container instances.
+9. passes in :code:`ivy.Container` instances for multiple arguments.
 
 **Instance Method Examples**
 
@@ -322,7 +322,24 @@ Point 7 is not relevant as there is only one array input
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-We then also add an example with :code:`ivy.Container` inputs, in order to satisfy point 8.
+We then also add an example with an :code:`ivy.Container` for one of the inputs, in order to satisfy point 8.
+.. code-block:: python
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
+    }
+
+Unlike :code:`ivy.tan`, point 9 is relevant in this case,
+as there are three function inputs in total (exluding :code:`out`).
+We can therefore add an example with multiple :code:`ivy.Container` inputs,
+in order to satisfy point 9.
 
 .. code-block:: python
 
@@ -336,24 +353,6 @@ We then also add an example with :code:`ivy.Container` inputs, in order to satis
     {
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([4., 5., 3.])
-    }
-
-Unlike :code:`ivy.tan`, point 9 is relevant in this case,
-as there are three function inputs in total (exluding :code:`out`).
-We therefore add an example with a mix of :code:`ivy.Container` and non-container inputs,
-in order to satisfy point 9.
-
-.. code-block:: python
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.roll(x, 1)
-    >>> print(y)
-    {
-        a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
     }
 
 We then add instance method examples to satisfy points 10 and 11.
@@ -475,34 +474,14 @@ We also add an example with a mix of :code:`ivy.NativeArray` and :code:`ivy.Arra
     >>> print(z)
     ivy.array([5, 7, 9])
 
-We then also add an example with :code:`ivy.Container` inputs, in order to satisfy point 8.
-
-.. code-block:: python
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\ 
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\ 
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-Again, unlike :code:`ivy.tan`, point 9 is relevant in this case,
-as there are two function inputs in total (exluding :code:`out`).
-We therefore add an example with a mix of :code:`ivy.Container` and non-container inputs,
-in order to satisfy point 9.
+We then also add an example with an :code:`ivy.Container` for one of the inputs, in order to satisfy point 8.
 
 .. code-block:: python
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\ 
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                           b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
@@ -513,6 +492,26 @@ in order to satisfy point 9.
         b: ivy.array([[6.1, 7.3, 1.4],
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
+    }
+
+Again, unlike :code:`ivy.tan`, point 9 is relevant in this case,
+as there are two function inputs in total (exluding :code:`out`).
+We can therefore add an example with multiple :code:`ivy.Container` inputs,
+in order to satisfy point 9.
+
+.. code-block:: python
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
     }
 
 We then add instance method examples to satisfy points 10 and 11.
