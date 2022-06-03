@@ -192,7 +192,7 @@ which, as mentioned above, is the main IDE of choice for our development team:</
 <li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
 <li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p>
 <ol class="loweralpha simple">
-<li><p>Go to the settings -&gt; Build, Execution, Deployment -&gt; Docker. CLick the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker. Click the “+” on top left and it should add a docker connection.</p></li>
 <li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing “Docker” from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
@@ -202,7 +202,8 @@ which, as mentioned above, is the main IDE of choice for our development team:</
 <p>Once these steps are finished, your interpreter should be set up correctly!
 If Docker’s latest version causes error,
 try using an earlier version by visiting
-<a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.</p>
+<a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.
+For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.</p>
 </section>
 <section id="macos">
 <h3>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading"></a></h3>
@@ -217,7 +218,7 @@ try using an earlier version by visiting
 <li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
 <li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p>
 <ol class="loweralpha simple">
-<li><p>Go to the settings -&gt; Build, Execution, Deployment -&gt; Docker. CLick the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker. Click the “+” on top left and it should add a docker connection.</p></li>
 <li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing “Docker” from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
@@ -231,11 +232,11 @@ try using an earlier version by visiting
 </section>
 <section id="ubuntu">
 <h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this heading"></a></h3>
-<ol class="arabic simple">
-<li><p>Install Docker by running the commands below one by one in the linux terminal. You may
-visit <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker Ubuntu Installation Page</a> for the details.</p></li>
-</ol>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get update
+<ol class="arabic">
+<li><p>Install Docker by running the commands below one by one in the Linux terminal. You may
+visit <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker Ubuntu Installation Page</a> for the details.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get update
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get install \
@@ -262,18 +263,19 @@ $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 </pre></div>
 </div>
-<ol class="arabic">
+</div></blockquote>
+</li>
 <li><p>Get the latest Docker Image for Ivy by:</p>
 <ol class="loweralpha simple">
 <li><p>Opening terminal and running <code class="code docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">docker</span></code></p></li>
+<li><p>Running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
 </ol>
-<p>b. Running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code>
-Note: If you get permission related errors please visit the simple steps at <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">Linux post-installation page.</a></p>
+<p>Note: If you get permission related errors please visit the simple steps at <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">Linux post-installation page.</a></p>
 </li>
 <li><p>Install Pycharm Professional Version. You may use Ubuntu Software for this.</p></li>
 <li><p>Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:</p>
 <ol class="loweralpha simple">
-<li><p>Go to the settings -&gt; Build, Execution, Deployment -&gt; Docker. CLick the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker. Click the “+” on top left and it should add a docker connection.</p></li>
 <li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
 <li><p>Choosing “Docker” from the left panel. Type python3 (with the number) in python interpreter path and press ok.</p></li>
@@ -296,7 +298,7 @@ and the commit will then succeed on the next attempt.</p>
 <p>In order to install and properly set up pre-commit, these steps should be followed:</p>
 <ol class="arabic simple">
 <li><p>Run <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pre-commit</span></code></p></li>
-<li><p>Enter enter into your cloned ivy folder, for example <code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/ivy</span></code></p></li>
+<li><p>Enter into your cloned ivy folder, for example <code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/ivy</span></code></p></li>
 <li><p>Run <code class="code docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code></p></li>
 </ol>
 <p>That’s it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.</p>
