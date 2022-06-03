@@ -1,14 +1,24 @@
-Type Hints
-==========
+Function Arguments
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
-All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
+Here, we explain how the function arguments differ between the placeholder implementation at
+:code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
+:code:`ivy/functional/backends/backend_name/category_name.py`.
+
+Many of these points have already been adressed in the previous sections:
+:ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
+However, we thought it would be convenient to revisit all of these considerations in a single section,
+dedicated to function arguments.
+
+As for type-hints,
+all functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
 Likewise, all backend implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py` should also have full and thorough type-hints.
 
-In order to understand the type-hint requirements, it's useful to look at some examples.
+In order to understand the various requirements for function arguments, it's useful to first look at some examples.
 
 Examples
 --------
@@ -64,8 +74,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 
     # TensorFlow
     def add(
-        x1: Tensor,
-        x2: Tensor
+        x1: Union[tf.Tensor, tf.Variable],
+        x2: Union[tf.Tensor, tf.Variable]
     ) -> Tensor:
 
 .. code-block:: python
@@ -86,6 +96,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
+
+Positional and Keyword Arguments
 
 Arrays
 ------
@@ -113,16 +125,20 @@ the backend implementation. The inplace update is automatically handled in the
 wrapper code if no :code:`out` argument is detected in the backend signature, which is why we should only add it if the
 wrapped backend function itself supports the :code:`out` argument,
 which will result in the most efficient inplace update.
+This is all explained in more detail in the :ref:`Inplace Updates` section.
 
 dtype and device arguments
 --------------------------
 
-The :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments,
+In the Ivy API at :code:`ivy/functional/ivy/category_name.py`,
+the :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments,
 with default value of :code:`None`.
-In contrast, these arguments should both be added as required arguments in the backend implementation.
+In contrast, these arguments should both be added as required arguments in the backend implementation
+at :code:`ivy/functional/backends/backend_name/category_name.py`.
 This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
 In a nutshell, by the time the backend implementation is enterred,
-the correct :code:`dtype` and :code:`device` to use have both already been correctly inferred.
+the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
+by code which is wrapped around the backend implementation.
 
 Integer Sequences
 -----------------

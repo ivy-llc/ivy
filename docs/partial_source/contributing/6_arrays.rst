@@ -105,7 +105,7 @@ Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`,
-whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Type Hints` section.
+whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
