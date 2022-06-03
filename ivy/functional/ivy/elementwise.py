@@ -14,6 +14,7 @@ from ivy.backend_handler import current_backend as _cur_backend
 def bitwise_left_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
@@ -39,7 +40,7 @@ def bitwise_left_shift(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
 def add(
@@ -255,12 +256,13 @@ def add(
     }
 
     """
-    return _cur_backend(x1, x2).add(x1, x2, out)
+    return _cur_backend(x1, x2).add(x1, x2, out=out)
 
 
 def bitwise_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -285,11 +287,12 @@ def bitwise_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the exponential function,
@@ -330,11 +333,12 @@ def exp(
     ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
-    return _cur_backend(x).exp(x, out)
+    return _cur_backend(x).exp(x, out=out)
 
 
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
@@ -373,11 +377,12 @@ def expm1(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).expm1(x, out)
+    return _cur_backend(x).expm1(x, out=out)
 
 
 def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
@@ -404,12 +409,13 @@ def bitwise_invert(
     ivy.array([-2, -7, -10])
 
     """
-    return _cur_backend(x).bitwise_invert(x, out)
+    return _cur_backend(x).bitwise_invert(x, out=out)
 
 
 def bitwise_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise AND of the underlying binary representation of each element
@@ -434,11 +440,12 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_and(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
@@ -477,11 +484,12 @@ def ceil(
     >>> print(y)
     ivy.array([1., 0., -0.])
     """
-    return _cur_backend(x).ceil(x, out)
+    return _cur_backend(x).ceil(x, out=out)
 
 
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
@@ -514,11 +522,12 @@ def floor(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).floor(x, out)
+    return _cur_backend(x).floor(x, out=out)
 
 
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
@@ -540,11 +549,12 @@ def isfinite(
         ``bool``.
 
     """
-    return _cur_backend(x).isfinite(x, out)
+    return _cur_backend(x).isfinite(x, out=out)
 
 
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -577,11 +587,12 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asin(x, out)
+    return _cur_backend(x).asin(x, out=out)
 
 
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element x_i of the input array x to determine if equal to positive or
@@ -603,12 +614,13 @@ def isinf(
         a data type of bool.
 
     """
-    return _cur_backend(x).isinf(x, out)
+    return _cur_backend(x).isinf(x, out=out)
 
 
 def greater(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i < x2_i for each element x1_i of the input array
@@ -636,12 +648,13 @@ def greater(
     ivy.array([False, False,  True])
 
     """
-    return _cur_backend(x1, x2).greater(x1, x2, out)
+    return _cur_backend(x1, x2).greater(x1, x2, out=out)
 
 
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array
@@ -662,12 +675,13 @@ def greater_equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).greater_equal(x1, x2, out)
+    return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
@@ -688,12 +702,13 @@ def less_equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).less_equal(x1, x2, out)
+    return _cur_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
@@ -752,11 +767,12 @@ def multiply(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).multiply(x1, x2, out)
+    return _cur_backend(x1, x2).multiply(x1, x2, out=out)
 
 
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -790,11 +806,12 @@ def asinh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asinh(x, out)
+    return _cur_backend(x).asinh(x, out=out)
 
 
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns an indication of the sign of a number for each element ``x_i`` of the
@@ -821,11 +838,12 @@ def sign(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).sign(x, out)
+    return _cur_backend(x).sign(x, out=out)
 
 
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
@@ -858,11 +876,12 @@ def sqrt(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sqrt(x, out)
+    return _cur_backend(x).sqrt(x, out=out)
 
 
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic cosine,
@@ -895,11 +914,12 @@ def cosh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).cosh(x, out)
+    return _cur_backend(x).cosh(x, out=out)
 
 
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the natural (base ``e``)
@@ -932,11 +952,12 @@ def log(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log(x, out)
+    return _cur_backend(x).log(x, out=out)
 
 
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
@@ -969,11 +990,12 @@ def log2(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log2(x, out)
+    return _cur_backend(x).log2(x, out=out)
 
 
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``10``
@@ -1006,11 +1028,12 @@ def log10(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log10(x, out)
+    return _cur_backend(x).log10(x, out=out)
 
 
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to log(1+x), where log
@@ -1030,11 +1053,12 @@ def log1p(
         a new array containing the evaluated result for each element in x.
 
     """
-    return _cur_backend(x).log1p(x, out)
+    return _cur_backend(x).log1p(x, out=out)
 
 
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine whether the
@@ -1056,12 +1080,13 @@ def isnan(
         ``bool``.
 
     """
-    return _cur_backend(x).isnan(x, out)
+    return _cur_backend(x).isnan(x, out=out)
 
 
 def less(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
@@ -1091,11 +1116,12 @@ def less(
     ivy.array([True, False, False])
 
     """
-    return _cur_backend(x1).less(x1, x2, out)
+    return _cur_backend(x1).less(x1, x2, out=out)
 
 
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the cosine, having domain
@@ -1135,11 +1161,12 @@ def cos(
     ivy.array([1., 0.54, -0.416])
 
     """
-    return _cur_backend(x).cos(x, out)
+    return _cur_backend(x).cos(x, out=out)
 
 
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1170,11 +1197,12 @@ def acos(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acos(x, out)
+    return _cur_backend(x).acos(x, out=out)
 
 
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical NOT for each element ``x_i`` of the input array ``x``.
@@ -1201,12 +1229,13 @@ def logical_not(
         data type of ``bool``.
 
     """
-    return _cur_backend(x).logical_not(x, out)
+    return _cur_backend(x).logical_not(x, out=out)
 
 
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -1231,12 +1260,13 @@ def logical_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logical_xor(x1, x2, out)
+    return _cur_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with
@@ -1267,12 +1297,13 @@ def logical_or(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).logical_or(x1, x2, out)
+    return _cur_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
 def logical_and(
     x1: ivy.Array,
     x2: ivy.Array,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical AND for each element x1_i of the input array x1 with the
@@ -1296,11 +1327,12 @@ def logical_and(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).logical_and(x1, x2, out)
+    return _cur_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -1333,11 +1365,12 @@ def acosh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acosh(x, out)
+    return _cur_backend(x).acosh(x, out=out)
 
 
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the sine, having domain
@@ -1369,11 +1402,12 @@ def sin(
         have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sin(x, out)
+    return _cur_backend(x).sin(x, out=out)
 
 
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the numerical negative of each element.
@@ -1389,12 +1423,13 @@ def negative(
         an array containing the evaluated result for each element in x
 
     """
-    return _cur_backend(x).negative(x, out)
+    return _cur_backend(x).negative(x, out=out)
 
 
 def not_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
@@ -1418,12 +1453,13 @@ def not_equal(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).not_equal(x1, x2, out)
+    return _cur_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
 def floor_divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the result of dividing each element x1_i of the input array x1 by the
@@ -1445,12 +1481,13 @@ def floor_divide(
         numeric data type.
 
     """
-    return _cur_backend(x1, x2).floor_divide(x1, x2, out)
+    return _cur_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
 def bitwise_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise OR of the underlying binary representation of each element
@@ -1475,11 +1512,12 @@ def bitwise_or(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_or(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic sine,
@@ -1512,11 +1550,12 @@ def sinh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sinh(x, out)
+    return _cur_backend(x).sinh(x, out=out)
 
 
 def positive(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the positive value of each element in ``x``.
@@ -1532,11 +1571,12 @@ def positive(
         A new array with the positive value of each element in ``x``.
 
     """
-    return _cur_backend(x).positive(x, out)
+    return _cur_backend(x).positive(x, out=out)
 
 
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Each element ``x_i`` of the input array ``x``.
@@ -1552,12 +1592,13 @@ def square(
         an array containing the evaluated result for each element in ``x``.
 
     """
-    return _cur_backend(x).square(x, out)
+    return _cur_backend(x).square(x, out=out)
 
 
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
@@ -1592,11 +1633,12 @@ def logaddexp(
         floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logaddexp(x1, x2, out)
+    return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the values of an array to the nearest integer, element-wise.
@@ -1612,11 +1654,12 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
     """
-    return _cur_backend(x).round(x, out)
+    return _cur_backend(x).round(x, out=out)
 
 
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element x_i of the input array x to the integer-valued number that is
@@ -1646,7 +1689,7 @@ def trunc(
         The returned array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).trunc(x, out)
+    return _cur_backend(x).trunc(x, out=out)
 
 
 def abs(
@@ -1685,7 +1728,7 @@ def abs(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).abs(x, out)
+    return _cur_backend(x).abs(x, out=out)
 
 
 def tan(
@@ -1791,11 +1834,12 @@ def tan(
         b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
-    return ivy.current_backend(x).tan(x, out)
+    return ivy.current_backend(x).tan(x, out=out)
 
 
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1830,12 +1874,13 @@ def atan(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).atan(x, out)
+    return _cur_backend(x).atan(x, out=out)
 
 
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
@@ -1914,11 +1959,12 @@ def atan2(
         array must have a floating-point data type.
 
     """
-    return _cur_backend(x1).atan2(x1, x2, out)
+    return _cur_backend(x1).atan2(x1, x2, out=out)
 
 
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the hyperbolic tangent of the elements of x.
@@ -1934,11 +1980,12 @@ def tanh(
         A new array with the hyperbolic tangent of the elements of x.
 
     """
-    return _cur_backend(x).tanh(x, out)
+    return _cur_backend(x).tanh(x, out=out)
 
 
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the inverse hyperbolic tangent of the elements of ``x``.
@@ -1963,12 +2010,13 @@ def atanh(
     ivy.array([0., -0.549])
 
     """
-    return _cur_backend(x).atanh(x, out)
+    return _cur_backend(x).atanh(x, out=out)
 
 
 def subtract(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -1991,12 +2039,13 @@ def subtract(
         an array containing the element-wise differences.
 
     """
-    return _cur_backend(x1).subtract(x1, x2, out)
+    return _cur_backend(x1).subtract(x1, x2, out=out)
 
 
 def divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the division for each element x1_i of the input array x1 with the
@@ -2017,12 +2066,13 @@ def divide(
         floating-point data type determined by Type Promotion Rules.
 
     """
-    return _cur_backend(x1, x2).divide(x1, x2, out)
+    return _cur_backend(x1, x2).divide(x1, x2, out=out)
 
 
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of exponentiation by raising
@@ -2102,12 +2152,13 @@ def pow(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).pow(x1, x2, out)
+    return _cur_backend(x1, x2).pow(x1, x2, out=out)
 
 
 def remainder(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
@@ -2180,12 +2231,13 @@ def remainder(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).remainder(x1, x2, out)
+    return _cur_backend(x1, x2).remainder(x1, x2, out=out)
 
 
 def bitwise_right_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
@@ -2221,12 +2273,13 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 0, 0, 0])
     """
-    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
 def equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i == x2_i for each element x1_i of the input array
@@ -2247,7 +2300,7 @@ def equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).equal(x1, x2, out)
+    return _cur_backend(x1, x2).equal(x1, x2, out=out)
 
 
 # Extra #
@@ -2256,6 +2309,7 @@ def equal(
 
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes the Gauss error function of ``x`` element-wise.
@@ -2271,12 +2325,13 @@ def erf(
         The Gauss error function of x.
 
     """
-    return _cur_backend(x).erf(x, out)
+    return _cur_backend(x).erf(x, out=out)
 
 
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
@@ -2294,12 +2349,13 @@ def minimum(
         An array with the elements of x, but clipped to not exceed the y values.
 
     """
-    return _cur_backend(x1).minimum(x1, x2, out)
+    return _cur_backend(x1).minimum(x1, x2, out=out)
 
 
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
@@ -2317,4 +2373,4 @@ def maximum(
         An array with the elements of x, but clipped to not be lower than the y values.
 
     """
-    return _cur_backend(x1).maximum(x1, x2, out)
+    return _cur_backend(x1).maximum(x1, x2, out=out)
