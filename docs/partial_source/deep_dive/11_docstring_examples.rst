@@ -3,10 +3,15 @@ Docstring Examples
 
 After writing the general docstring, the final step is to add helpful examples to the docstring.
 
-There are two types of examples. There are *functional* examples, which show the function being called like so
-:code:`ivy.func_name(...)`
+There are three types of examples. There are *functional* examples, which show the function being called like so
+:code:`ivy.func_name(...)`, there are *instance method* examples,
+show the method being called like so :code:`x.func_name(...)`,
+and there are also *operator* examples,
+which show an operation being performed like so :code:`x + y`.
 
-There are also *instance method* examples which are called like so :code:`x.func_name(...)`
+The first two example types are very common, while the latter is, unsurprisingly,
+only relevant for *operator* functions
+such as :code:`ivy.add`, `ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`.
 
 **Functional Examples**
 
