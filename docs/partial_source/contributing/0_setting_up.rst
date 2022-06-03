@@ -64,7 +64,7 @@ Windows
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-   a. Go to the settings -> Build, Execution, Deployment -> Docker. CLick the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
@@ -73,7 +73,7 @@ Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
-
+For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
 MacOS
 ****
@@ -88,7 +88,7 @@ MacOS
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-   a. Go to the settings -> Build, Execution, Deployment -> Docker. CLick the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
@@ -102,53 +102,54 @@ Ubuntu
 ****
 
 
-#. Install Docker by running the commands below one by one in the linux terminal. You may
+#. Install Docker by running the commands below one by one in the Linux terminal. You may
    visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
 
-.. code-block:: none
+    .. code-block:: none
 
-    sudo apt-get update
+        sudo apt-get update
 
-.. code-block:: none
+    .. code-block:: none
 
-    sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+        sudo apt-get install \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
 
-.. code-block:: none
+    .. code-block:: none
 
-    sudo mkdir -p /etc/apt/keyrings
+        sudo mkdir -p /etc/apt/keyrings
 
-.. code-block:: none
+    .. code-block:: none
 
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-.. code-block:: none
+    .. code-block:: none
 
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-.. code-block:: none
+    .. code-block:: none
 
-    sudo apt-get update
+        sudo apt-get update
 
-.. code-block:: none
+    .. code-block:: none
 
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 #. Get the latest Docker Image for Ivy by:
 
    a. Opening terminal and running :code:`systemctl start docker`
    b. Running the command: :code:`docker pull unifyai/ivy:latest`
+
    Note: If you get permission related errors please visit the simple steps at `Linux post-installation page. <https://docs.docker.com/engine/install/linux-postinstall/>`_
 
 #. Install Pycharm Professional Version. You may use Ubuntu Software for this.
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-   a. Go to the settings -> Build, Execution, Deployment -> Docker. CLick the "+" on top left and it should add a docker connection.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
@@ -173,7 +174,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 1. Run :code:`python3 -m pip install pre-commit`
 
-2. Enter enter into your cloned ivy folder, for example :code:`cd ~/ivy`
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
 
 3. Run :code:`pre-commit install`
 
