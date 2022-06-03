@@ -21,11 +21,11 @@ These should:
 2. vary the values and input shapes considerably between examples
 3. start with the simplest examples first. For example, this means using the default values for all optional arguments
    in the first example, and using small arrays, with a small number of dimensions, and with *simple* values for the
-   function in question.
+   function in question
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`,
    and (c) :code:`out` used to inplace update the input array :code:`x`
 5. If broadcasting is relevant for the function, then show examples which highlight this.
-   For example, passing in different shapes for two array arguments.
+   For example, passing in different shapes for two array arguments
 
 For all remaining examples, we can repeat input values from these :code:`ivy.Array` *functional*
 examples covered by points 1-5.
@@ -49,7 +49,7 @@ Going further, for *nestable* functions there should be an example that:
 
 For *nestable* functions which accept more than one argument, there should also be an example that:
 
-9. passes in :code:`ivy.Container` instances for multiple arguments.
+9. passes in :code:`ivy.Container` instances for multiple arguments
 
 **Instance Method Examples**
 
