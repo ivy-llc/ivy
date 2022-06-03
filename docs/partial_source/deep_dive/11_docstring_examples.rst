@@ -323,6 +323,7 @@ Point 7 is not relevant as there is only one array input
     ivy.array([2., 0., 1.])
 
 We then also add an example with an :code:`ivy.Container` for one of the inputs, in order to satisfy point 8.
+
 .. code-block:: python
 
     With :code:`ivy.Container` input:
