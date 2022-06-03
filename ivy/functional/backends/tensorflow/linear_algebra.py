@@ -13,28 +13,21 @@ import ivy
 # -------------------#
 
 
-def eigh(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def eigh(x: Tensor) -> Tensor:
     ret = tf.linalg.eigh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def inv(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def inv(x: Tensor) -> Tensor:
     if tf.math.reduce_any(tf.linalg.det(x) == 0):
         ret = x
     else:
         ret = tf.linalg.inv(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def tensordot(
-    x1: Tensor,
-    x2: Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[Tensor] = None,
+    x1: Tensor, x2: Tensor, axes: Union[int, Tuple[List[int], List[int]]] = 2
 ) -> Tensor:
 
     # find type to promote to
@@ -44,40 +37,26 @@ def tensordot(
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
 
     ret = tf.cast(tf.tensordot(x1, x2, axes), dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def vecdot(
-    x1: Tensor, x2: Tensor, axis: int = -1, out: Optional[Tensor] = None
-) -> Tensor:
+def vecdot(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def pinv(
-    x: Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[Tensor] = None,
-) -> Tensor:
+def pinv(x: Tensor, rtol: Optional[Union[float, Tuple[float]]] = None) -> Tensor:
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
         ret = tf.linalg.pinv(tf.cast(x != 0, "float32"), tf.cast(rtol != 0, "float32"))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_transpose(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def matrix_transpose(x: Tensor) -> Tensor:
     ret = tf.experimental.numpy.swapaxes(x, -1, -2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -87,7 +66,6 @@ def vector_norm(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    out: Optional[Tensor] = None,
 ) -> Tensor:
 
     if ord == -float("inf"):
@@ -109,8 +87,6 @@ def vector_norm(
         ret = tf.expand_dims(tn_normalized_vector, 0)
     else:
         ret = tn_normalized_vector
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -118,7 +94,6 @@ def matrix_norm(
     x: Tensor,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    out: Optional[Tensor] = None,
 ) -> Tensor:
     axes = (-2, -1)
     if ord == -float("inf"):
@@ -145,8 +120,6 @@ def matrix_norm(
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
     else:
         ret = tf.reshape(ret, x.shape[:-2])
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -176,11 +149,7 @@ def matrix_power(x: Tensor, n: int) -> Tensor:
 
 
 # noinspection PyPep8Naming
-def svd(
-    x: Tensor,
-    full_matrices: bool = True,
-    out: Optional[Union[Tensor, Tuple[Tensor, ...]]] = None,
-) -> Union[Tensor, Tuple[Tensor, ...]]:
+def svd(x: Tensor, full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
     batch_shape = tf.shape(x)[:-2]
@@ -189,34 +158,22 @@ def svd(
     D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
     VT = tf.transpose(V, transpose_dims)
     ret = results(U, D, VT)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def outer(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def outer(x1: Tensor, x2: Tensor) -> Tensor:
     ret = tf.experimental.numpy.outer(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def diagonal(
-    x: tf.Tensor,
-    offset: int = 0,
-    axis1: int = -2,
-    axis2: int = -1,
-    out: Optional[Tensor] = None,
+    x: tf.Tensor, offset: int = 0, axis1: int = -2, axis2: int = -1
 ) -> tf.Tensor:
     ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def qr(
-    x: tf.Tensor, mode: str = "reduced", out: Optional[Tuple[Tensor, Tensor]] = None
-) -> NamedTuple:
+def qr(x: tf.Tensor, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
@@ -229,12 +186,10 @@ def qr(
             "Only 'reduced' and 'complete' qr modes are allowed "
             "for the tensorflow backend."
         )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def matmul(x1: tf.Tensor, x2: tf.Tensor, out: Optional[Tensor] = None) -> tf.Tensor:
+def matmul(x1: tf.Tensor, x2: tf.Tensor) -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(
         x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
     )
@@ -291,73 +246,48 @@ def matmul(x1: tf.Tensor, x2: tf.Tensor, out: Optional[Tensor] = None) -> tf.Ten
         ret = tf.squeeze(ret, axis=-2)
     elif x2_padded:
         ret = tf.squeeze(ret, axis=-1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def svdvals(x: tf.Tensor, out: Optional[Tensor] = None) -> tf.Tensor:
+def svdvals(x: tf.Tensor) -> tf.Tensor:
     ret = tf.linalg.svd(x, compute_uv=False)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[Tensor] = None
-) -> Union[Tensor, Tuple[Tensor, ...]]:
+def slogdet(x: Union[ivy.Array, ivy.NativeArray]) -> Union[Tensor, Tuple[Tensor, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
     ret = results(sign, logabsdet)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def trace(x: tf.Tensor, offset: int = 0, out: Optional[Tensor] = None) -> tf.Tensor:
+def trace(x: tf.Tensor, offset: int = 0) -> tf.Tensor:
     ret = tf.experimental.numpy.trace(
         x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
     )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def det(
-        x: Tensor,
-        out: Optional[Tensor] = None
-) -> Tensor:
+def det(x: Tensor) -> Tensor:
     ret = tf.linalg.det(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def cholesky(
-    x: tf.Tensor, upper: bool = False, out: Optional[Tensor] = None
-) -> tf.Tensor:
+def cholesky(x: tf.Tensor, upper: bool = False) -> tf.Tensor:
     if not upper:
         ret = tf.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         ret = tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)), perm=axes)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def eigvalsh(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def eigvalsh(x: Tensor) -> Tensor:
     ret = tf.linalg.eigvalsh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_rank(
-    x: Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[Tensor] = None,
-) -> Tensor:
+def matrix_rank(x: Tensor, rtol: Optional[Union[float, Tuple[float]]] = None) -> Tensor:
     if rtol is None:
         ret = tf.linalg.matrix_rank(x)
     elif tf.size(x) == 0:
@@ -375,17 +305,11 @@ def matrix_rank(
                 x = tf.cast(x, promoted_dtype)
                 rtol = tf.cast(rtol, promoted_dtype)
         ret = tf.linalg.matrix_rank(x, rtol)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def cross(
-    x1: tf.Tensor, x2: tf.Tensor, axis: int = -1, out: Optional[Tensor] = None
-) -> tf.Tensor:
+def cross(x1: tf.Tensor, x2: tf.Tensor, axis: int = -1) -> tf.Tensor:
     ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -393,9 +317,7 @@ def cross(
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(
-    vector: Tensor, out: Optional[Tensor] = None
-) -> Tensor:
+def vector_to_skew_symmetric_matrix(vector: Tensor) -> Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = tf.expand_dims(vector, -1)
@@ -411,8 +333,6 @@ def vector_to_skew_symmetric_matrix(
     row3 = tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 

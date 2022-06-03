@@ -99,6 +99,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
 
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the unique elements of an input array ``x``.
@@ -141,7 +142,7 @@ def unique_values(
            implementations.
 
     """
-    return _cur_backend(x).unique_values(x, out)
+    return _cur_backend(x).unique_values(x, out=out)
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:

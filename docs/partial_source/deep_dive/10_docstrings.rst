@@ -4,8 +4,13 @@ Docstrings
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
 
-As we did when explaining :ref:`Type Hints`, we will again use the functions :code:`ivy.tan`, :code:`ivy.roll` and
-:code:`ivy.add` as exemplars.
+All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+In contrast, all backend implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+on account that these are effectively just different instantiations of the functions at
+:code:`ivy/functional/ivy/category_name.py`.
+
+In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
@@ -54,7 +59,7 @@ like so:
 .. code-block:: diff
 
     +out
-    +    optional output, for writing the result to. It must have a shape that the inputs
+    +    optional output array, for writing the result to. It must have a shape that the inputs
     +    broadcast to.
 
 Because of this :code:`out` argument in the input, we also need to rename the :code:`out` argument in the return, which
@@ -65,7 +70,7 @@ is the default name used in the `Array API Standard`_. We change this to :code:`
     -out
     +ret
 
-Finally, we add a section in the docstring which explains that it has been modified from the version available in the
+Next, we add a section in the docstring which explains that it has been modified from the version available in the
 `Array API Standard`_:
 
 .. code-block:: diff
@@ -73,10 +78,15 @@ Finally, we add a section in the docstring which explains that it has been modif
     +This method conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    +in the standard. The descriptions above assume an array input for simplicity, but
-    +the method also accepts :code:`ivy.Container` instances in place of
-    +:code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    +and also the examples below.
+    +in the standard.
+
+Finally, **if** the function is *nestable*, then we add a simple explanation for this as follows:
+
+.. code-block:: diff
+
+    +Both the description and the type hints above assumes an array input for simplicity,
+    +but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    +instances in place of any of the arguments.
 
 Following these changes, the new docstring is as follows:
 
@@ -102,7 +112,7 @@ Following these changes, the new docstring is as follows:
         input array whose elements are expressed in radians. Should have a
         floating-point data type.
     out
-        optional output, for writing the result to. It must have a shape that the inputs
+        optional output array, for writing the result to. It must have a shape that the inputs
         broadcast to.
 
     Returns
@@ -114,7 +124,13 @@ Following these changes, the new docstring is as follows:
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+If the function that you are writing a docstring for is **not** in the `Array API Standard`_,
+then you must simply follow this general template as closely as possible,
+but instead you must use your own judgment when adding descriptions for the overall function,
+and also for each of its arguments.
