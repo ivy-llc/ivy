@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Type Hints" href="11_type_hints.html" />
+    <link rel="next" title="Function Arguments" href="11_type_hints.html" />
     <link rel="prev" title="Devices" href="9_devices.html" /> 
 </head>
 
@@ -61,7 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#copy-argument">copy argument</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
@@ -271,7 +271,7 @@ This could for example be the input array itself, but can also be any other arra
 <p>All Ivy functions which return a single array should support inplace updates.
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
 However, as discussed above, the function is <em>nestable</em>, meaning <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
-This is ommitted from the type hint, as explained in the <a class="reference internal" href="11_type_hints.html#type-hints"><span class="std std-ref">Type Hints</span></a> section.</p>
+This is ommitted from the type hint, as explained in the <a class="reference internal" href="11_type_hints.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
@@ -350,7 +350,7 @@ As with the <code class="code docutils literal notranslate"><span class="pre">ou
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="9_devices.html" class="btn btn-neutral float-left" title="Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="11_type_hints.html" class="btn btn-neutral float-right" title="Type Hints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="11_type_hints.html" class="btn btn-neutral float-right" title="Function Arguments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

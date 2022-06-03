@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Type Hints &mdash; Ivy 1.0 documentation</title>
+  <title>Function Arguments &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -57,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Type Hints</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Function Arguments</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arrays">Arrays</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#out-argument">out Argument</a></li>
@@ -140,7 +140,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
-      <li>Type Hints</li>
+      <li>Function Arguments</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/contributing/11_type_hints.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -150,12 +150,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="type-hints">
-<h1>Type Hints<a class="headerlink" href="#type-hints" title="Permalink to this heading"></a></h1>
-<p>All functions in the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough type-hints.
+  <section id="function-arguments">
+<h1>Function Arguments<a class="headerlink" href="#function-arguments" title="Permalink to this heading"></a></h1>
+<p>Here, we explain how the function arguments differ between the placeholder implementation at
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
+<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
+<p>Many of these points have already been adressed in the previous sections:
+<a class="reference internal" href="6_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="8_data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="9_devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="10_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
+However, we thought it would be convenient to revisit all of these considerations in a single section,
+dedicated to function arguments.</p>
+<p>As for type-hints,
+all functions in the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough type-hints.
 Likewise, all backend implementations at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should also have full and thorough type-hints.</p>
-<p>In order to understand the type-hint requirements, it’s useful to look at some examples.</p>
+<p>In order to understand the various requirements for function arguments, it’s useful to first look at some examples.</p>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <p>For the purposes of explanation, we will use four functions as examples:
@@ -203,8 +211,8 @@ Likewise, all backend implementations at
 
 <span class="c1"># TensorFlow</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Tensor</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 </pre></div>
 </div>
@@ -226,6 +234,7 @@ Likewise, all backend implementations at
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
 </pre></div>
 </div>
+<p>Positional and Keyword Arguments</p>
 </section>
 <section id="arrays">
 <h2>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
@@ -249,16 +258,20 @@ directly supports supports the <code class="code docutils literal notranslate"><
 the backend implementation. The inplace update is automatically handled in the
 wrapper code if no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is detected in the backend signature, which is why we should only add it if the
 wrapped backend function itself supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
-which will result in the most efficient inplace update.</p>
+which will result in the most efficient inplace update.
+This is all explained in more detail in the <a class="reference internal" href="10_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
 </section>
 <section id="dtype-and-device-arguments">
 <h2>dtype and device arguments<a class="headerlink" href="#dtype-and-device-arguments" title="Permalink to this heading"></a></h2>
-<p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> arguments should both always be provided as keyword-only arguments,
+<p>In the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
+the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> arguments should both always be provided as keyword-only arguments,
 with default value of <code class="code docutils literal notranslate"><span class="pre">None</span></code>.
-In contrast, these arguments should both be added as required arguments in the backend implementation.
+In contrast, these arguments should both be added as required arguments in the backend implementation
+at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.
 This is futher explained in the <a class="reference internal" href="8_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="9_devices.html#devices"><span class="std std-ref">Devices</span></a> sections respectively.
 In a nutshell, by the time the backend implementation is enterred,
-the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly inferred.</p>
+the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly handled
+by code which is wrapped around the backend implementation.</p>
 </section>
 <section id="integer-sequences">
 <h2>Integer Sequences<a class="headerlink" href="#integer-sequences" title="Permalink to this heading"></a></h2>

@@ -62,7 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="8_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Type Hints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_type_hints.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
@@ -217,7 +217,7 @@ and so supporting them in the input is not a problem.
 Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.</p>
 <p>Therefore, all input arrays to Ivy functions have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>,
-whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="11_type_hints.html#type-hints"><span class="std std-ref">Type Hints</span></a> section.</p>
+whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="11_type_hints.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
 which is used in most functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
