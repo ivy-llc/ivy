@@ -211,3 +211,11 @@ and `ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed.
 
 There are many other examples. The convenience functions are not grouped by file or folder.
 Feel free to have a look through all of the `submodules`_, you should be able to spot quite a few!
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different function types.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
