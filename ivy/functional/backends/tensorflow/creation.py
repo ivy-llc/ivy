@@ -70,6 +70,8 @@ def asarray(object_in, *, copy=None, dtype: tf.DType, device: str):
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]], *, dtype: tf.DType, device: str) -> Tensor:
+    dtype = as_native_dtype(default_dtype(dtype))
+    device = as_native_dev(default_device(device))
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
