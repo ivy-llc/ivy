@@ -378,6 +378,10 @@
 
 
 <div class="viewcode-block" id="to_native_arrays_and_back"><a class="viewcode-back" href="../../func_wrapper/to_native_arrays_and_back.html#ivy.func_wrapper.to_native_arrays_and_back">[docs]</a><span class="k">def</span> <span class="nf">to_native_arrays_and_back</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances</span>
+<span class="sd">    and return arrays are all converted to `ivy.Array` instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
 
 
@@ -462,6 +466,26 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls `fn` with the `out` argument handled correctly for performing an inplace</span>
+<span class="sd">        update.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+
+<span class="sd">        out</span>
+<span class="sd">            The array to write the result to.</span>
+
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with `out` handled correctly for</span>
+<span class="sd">            inplace updates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">handle_out_in_backend</span><span class="p">:</span>
@@ -489,6 +513,24 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls `fn` with the *nestable* property of the function correctly handled.</span>
+<span class="sd">        This means mapping the function to the container leaves if any containers are</span>
+<span class="sd">        passed in the input.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with the nestable property handled correctly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># if any of the arguments or keyword arguments passed to the function contains</span>
         <span class="c1"># a container, get the container&#39;s version of the function and call it using</span>
         <span class="c1"># the passed arguments.</span>
