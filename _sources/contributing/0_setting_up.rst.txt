@@ -8,6 +8,7 @@ Setting Up
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -204,4 +205,5 @@ This should have hopefully given you a good understanding of how to get things p
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `setting up discussion`_,
 or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_ or `pip packages channel`_ depending on the question!
+`pre-commit channel`_, `pip packages channel`_ or `other channel`_
+depending on the question!
