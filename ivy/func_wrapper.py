@@ -141,8 +141,31 @@ NATIVE_KEYS_TO_SKIP = {
     "mxnet": [],
 }
 
-# Specific Wrappers #
-# ------------------#
+# Helpers #
+# --------#
+
+
+# noinspection DuplicatedCode
+def _get_first_array(*args, **kwargs):
+    # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    arr = None
+    if args:
+        arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
+        if arr_idxs:
+            arr = ivy.index_nest(args, arr_idxs[0])
+        else:
+            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(kwargs, arr_idxs[0])
+    elif kwargs:
+        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+        if arr_idxs:
+            arr = ivy.index_nest(kwargs, arr_idxs[0])
+    return arr
+
+
+# Array Handling #
+# ---------------#
 
 
 def inputs_to_native_arrays(fn):
@@ -229,6 +252,41 @@ def outputs_to_ivy_arrays(fn):
 
 def to_native_arrays_and_back(fn):
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+# Data Type Handling #
+# -------------------#
+
+
+def infer_dtype(fn):
+    def new_fn(*args, dtype=None, **kwargs):
+        """
+        Determines the correct `dtype`, and then calls the function with the `dtype`
+        passed explicitly.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        dtype
+            The data type for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with native arrays as ivy arrays.
+        """
+        # find the first array argument, if required
+        arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
+        # infer the correct data type
+        dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+        # call the function with dtype provided explicitly
+        return fn(*args, dtype=dtype, **kwargs)
+
+    return new_fn
 
 
 # Functions #
