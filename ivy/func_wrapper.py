@@ -201,6 +201,32 @@ def inputs_to_ivy_arrays(fn):
     return new_fn
 
 
+def outputs_to_ivy_arrays(fn):
+    def new_fn(*args, **kwargs):
+        """
+        Calls the function, and then converts all `ivy.NativeArray` instances in
+        the function return into `ivy.Array` instances.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with native arrays as ivy arrays.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+        # convert all arrays in the return to `ivy.Array` instances
+        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+
+    return new_fn
+
+
 # Functions #
 
 
