@@ -663,10 +663,8 @@ def greater_equal(
 
     Examples
     --------
-
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
@@ -735,7 +733,6 @@ def greater_equal(
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 2, 3])
@@ -759,7 +756,6 @@ def greater_equal(
 
     Operator Examples
     -----------------
-
     With :code:`ivy.Array` instances:
 
     >>> x = ivy.array([6, 2, 3])
