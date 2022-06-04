@@ -124,6 +124,7 @@
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
@@ -292,6 +293,7 @@
 
 
 <div class="viewcode-block" id="inputs_to_native_arrays"><a class="viewcode-back" href="../../func_wrapper/inputs_to_native_arrays.html#ivy.func_wrapper.inputs_to_native_arrays">[docs]</a><span class="k">def</span> <span class="nf">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all `ivy.Array` instances in both the positional and keyword arguments</span>
@@ -320,6 +322,7 @@
 
 
 <div class="viewcode-block" id="inputs_to_ivy_arrays"><a class="viewcode-back" href="../../func_wrapper/inputs_to_ivy_arrays.html#ivy.func_wrapper.inputs_to_ivy_arrays">[docs]</a><span class="k">def</span> <span class="nf">inputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all `ivy.NativeArray` instances in both the positional and keyword</span>
@@ -348,6 +351,7 @@
 
 
 <div class="viewcode-block" id="outputs_to_ivy_arrays"><a class="viewcode-back" href="../../func_wrapper/outputs_to_ivy_arrays.html#ivy.func_wrapper.outputs_to_ivy_arrays">[docs]</a><span class="k">def</span> <span class="nf">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calls the function, and then converts all `ivy.NativeArray` instances in</span>
@@ -382,6 +386,7 @@
 
 
 <div class="viewcode-block" id="infer_dtype"><a class="viewcode-back" href="../../func_wrapper/infer_dtype.html#ivy.func_wrapper.infer_dtype">[docs]</a><span class="k">def</span> <span class="nf">infer_dtype</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determines the correct `dtype`, and then calls the function with the `dtype`</span>
@@ -417,6 +422,7 @@
 
 
 <div class="viewcode-block" id="infer_device"><a class="viewcode-back" href="../../func_wrapper/infer_device.html#ivy.func_wrapper.infer_device">[docs]</a><span class="k">def</span> <span class="nf">infer_device</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determines the correct `device`, and then calls the function with the `device`</span>
@@ -454,6 +460,7 @@
 <div class="viewcode-block" id="handle_out_argument"><a class="viewcode-back" href="../../func_wrapper/handle_out_argument.html#ivy.func_wrapper.handle_out_argument">[docs]</a><span class="k">def</span> <span class="nf">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="n">handle_out_in_backend</span> <span class="o">=</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -480,6 +487,7 @@
     <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="n">cont_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="s2">&quot;static_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span><span class="p">)</span>
 
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># if any of the arguments or keyword arguments passed to the function contains</span>
         <span class="c1"># a container, get the container&#39;s version of the function and call it using</span>
