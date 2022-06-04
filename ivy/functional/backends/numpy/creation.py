@@ -15,7 +15,7 @@ from ivy.functional.backends.numpy.device import _to_dev
 # -------------------#
 
 
-def asarray(object_in, *, copy=None, dtype: np.dtype, device: str):
+def asarray(object_in, *, copy=None, dtype: np.dtype = None, device: str):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
