@@ -20,4 +20,5 @@ Func wrapper
    func_wrapper/infer_dtype.rst
    func_wrapper/infer_device.rst
    func_wrapper/handle_out_argument.rst
+   func_wrapper/handle_nestable.rst
 

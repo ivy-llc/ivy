@@ -472,6 +472,30 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
+<span class="c1"># Nestable Handling #</span>
+<span class="c1"># ------------------#</span>
+
+
+<div class="viewcode-block" id="handle_nestable"><a class="viewcode-back" href="../../func_wrapper/handle_nestable.html#ivy.func_wrapper.handle_nestable">[docs]</a><span class="k">def</span> <span class="nf">handle_nestable</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">cont_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="s2">&quot;static_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># if any of the arguments or keyword arguments passed to the function contains</span>
+        <span class="c1"># a container, get the container&#39;s version of the function and call it using</span>
+        <span class="c1"># the passed arguments.</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cont_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># if the passed arguments does not contain a container, the function using</span>
+        <span class="c1"># the passed arguments, returning an ivy or a native array.</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
 <span class="c1"># Functions #</span>
 
 
