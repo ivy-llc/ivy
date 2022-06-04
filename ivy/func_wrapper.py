@@ -36,7 +36,7 @@ NON_WRAPPED_METHODS = [
     "compile_graph",
     "dev",
     "dev",
-    "dev_to_str",
+    "as_ivy_dev",
     "dev_from_str",
     "memory_on_dev",
     "gpu_is_available",

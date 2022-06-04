@@ -142,7 +142,7 @@ def dev(
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[Device, str]) -> str:
+def as_ivy_dev(device: Union[Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -162,7 +162,7 @@ def dev_to_str(device: Union[Device, str]) -> str:
     >>> print(device)
     'cuda:0'
     """
-    return _cur_framework().dev_to_str(device)
+    return _cur_framework().as_ivy_dev(device)
 
 
 # noinspection PyShadowingNames
@@ -415,7 +415,7 @@ def default_device(device=None):
 
     """
     if ivy.exists(device):
-        _assert_dev_correct_formatting(ivy.dev_to_str(device))
+        _assert_dev_correct_formatting(ivy.as_ivy_dev(device))
         return device
     global default_device_stack
     if not default_device_stack:

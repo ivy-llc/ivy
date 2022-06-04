@@ -86,7 +86,7 @@ def _raise(ex):
 
 
 def _mxnet_init_context(device):
-    device = dev_to_str(device)
+    device = as_ivy_dev(device)
     if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
     elif device.find("gpu") != -1:

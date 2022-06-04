@@ -92,7 +92,7 @@ class Array(
         )
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
-        self._dev_str = ivy.dev_to_str(self._device)
+        self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy."
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
@@ -241,7 +241,7 @@ class Array(
 
         # also store the local ivy framework that created this array
         data_dict['framework_str'] = self.framework_str
-        data_dict['device_str'] = ivy.dev_to_str(self.device)
+        data_dict['device_str'] = ivy.as_ivy_dev(self.device)
 
         return data_dict
 

@@ -18,7 +18,7 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 def dev(x, as_str=False):
     dv = x.context
     if as_str:
-        return dev_to_str(dv)
+        return as_ivy_dev(dv)
     return dv
 
 
@@ -33,7 +33,7 @@ def to_dev(x, device=None, out=None):
     return x
 
 
-def dev_to_str(device: Device) \
+def as_ivy_dev(device: Device) \
         -> str:
     if isinstance(device, str):
         return device

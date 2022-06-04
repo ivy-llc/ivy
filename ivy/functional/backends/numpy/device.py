@@ -18,7 +18,7 @@ dev.__name__ = "dev"
 _dev_callable = dev
 
 
-def dev_to_str(dev: Device) -> str:
+def as_ivy_dev(dev: Device) -> str:
     return "cpu"
 
 

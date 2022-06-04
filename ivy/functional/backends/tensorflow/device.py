@@ -24,7 +24,7 @@ def _same_device(dev_a, dev_b):
 def dev(x, as_str=False):
     dv = x.device
     if as_str:
-        return dev_to_str(dv)
+        return as_ivy_dev(dv)
     return dv
 
 
@@ -45,7 +45,7 @@ def to_dev(x: Tensor, device=None, out: Tensor = None) -> Tensor:
     return x
 
 
-def dev_to_str(device: tf.device)\
+def as_ivy_dev(device: tf.device)\
                 -> str:
     if isinstance(device, str) and "/" not in device:
         return device
