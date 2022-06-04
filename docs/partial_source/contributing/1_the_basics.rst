@@ -4,7 +4,6 @@ The Basics
 .. _`contributing discussion`: https://github.com/unifyai/ivy/discussions/1309
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
-.. _`getting help channel`: https://discord.com/channels/799879767196958751/982728567664283679
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
@@ -61,8 +60,7 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
 
 |
 
-For questions, please reach out on the `contributing discussion`_
-or on `discord`_ in the `getting help channel`_!
+For questions, please reach out on the `contributing discussion`_!
 
 ToDo List Issues
 ----------------
@@ -259,6 +257,6 @@ This should have hopefully given you a good understanding of the basics for cont
 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `contributing discussion`_,
-or reach out on `discord`_ in the `getting help channel`_, `todo list issues channel`_,
+or reach out on `discord`_ in the `todo list issues channel`_,
 `fork management channel`_, `pull requests channel`_, `commit frequency channel`_
 or `other channel`_, depending on the question!
