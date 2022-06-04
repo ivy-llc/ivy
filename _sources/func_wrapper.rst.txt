@@ -13,4 +13,5 @@ Func wrapper
    :maxdepth: -1
    :caption: Func wrapper
 
+   func_wrapper/inputs_to_native_arrays.rst
 
