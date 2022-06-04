@@ -400,7 +400,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            The return of the function, with native arrays as ivy arrays.</span>
+<span class="sd">            The return of the function, with `dtype` passed explicitly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># find the first array argument, if required</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -408,6 +408,41 @@
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">arr</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># call the function with dtype provided explicitly</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
+<span class="c1"># Device Handling #</span>
+<span class="c1"># ----------------#</span>
+
+
+<div class="viewcode-block" id="infer_device"><a class="viewcode-back" href="../../func_wrapper/infer_device.html#ivy.func_wrapper.infer_device">[docs]</a><span class="k">def</span> <span class="nf">infer_device</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines the correct `device`, and then calls the function with the `device`</span>
+<span class="sd">        passed explicitly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+
+<span class="sd">        device</span>
+<span class="sd">            The device for the function.</span>
+
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with `device` passed explicitly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># find the first array argument, if required</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">else</span> <span class="n">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># infer the correct device</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">arr</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># call the function with device provided explicitly</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
