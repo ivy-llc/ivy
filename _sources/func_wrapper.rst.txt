@@ -19,4 +19,5 @@ Func wrapper
    func_wrapper/to_native_arrays_and_back.rst
    func_wrapper/infer_dtype.rst
    func_wrapper/infer_device.rst
+   func_wrapper/handle_out_argument.rst
 

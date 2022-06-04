@@ -447,6 +447,31 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
+<span class="c1"># Inplace Update Handling #</span>
+<span class="c1"># ------------------------#</span>
+
+
+<div class="viewcode-block" id="handle_out_argument"><a class="viewcode-back" href="../../func_wrapper/handle_out_argument.html#ivy.func_wrapper.handle_out_argument">[docs]</a><span class="k">def</span> <span class="nf">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">handle_out_in_backend</span> <span class="o">=</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handle_out_in_backend</span><span class="p">:</span>
+            <span class="c1"># extract underlying native array for out</span>
+            <span class="n">native_out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="c1"># compute return, with backend inplace update handled by</span>
+            <span class="c1"># the backend function</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">native_out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="c1"># compute return, and then handle the inplace update explicitly</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
 <span class="c1"># Functions #</span>
 
 
