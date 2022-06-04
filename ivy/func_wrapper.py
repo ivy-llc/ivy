@@ -277,7 +277,7 @@ def infer_dtype(fn):
 
         Returns
         -------
-            The return of the function, with native arrays as ivy arrays.
+            The return of the function, with `dtype` passed explicitly.
         """
         # find the first array argument, if required
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
@@ -285,6 +285,41 @@ def infer_dtype(fn):
         dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
+
+    return new_fn
+
+
+# Device Handling #
+# ----------------#
+
+
+def infer_device(fn):
+    def new_fn(*args, device=None, **kwargs):
+        """
+        Determines the correct `device`, and then calls the function with the `device`
+        passed explicitly.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        device
+            The device for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `device` passed explicitly.
+        """
+        # find the first array argument, if required
+        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
+        # infer the correct device
+        device = ivy.default_device(device, item=arr, as_native=True)
+        # call the function with device provided explicitly
+        return fn(*args, device=device, **kwargs)
 
     return new_fn
 
