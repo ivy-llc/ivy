@@ -20,3 +20,11 @@ the following steps are performed:
 #. `wrap the functions`_, extending each of them with shared repeated functionality, which is solved via wrapping in
    order to avoid excessive code duplication in every backend function implementation. \
    This is explained in more detail in the next section: :ref:`Function Wrapping`.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how the backend framework is set.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

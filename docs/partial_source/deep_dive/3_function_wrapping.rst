@@ -23,3 +23,11 @@ might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :re
 
 Each of these topics and each associated piece of logic added by :code:`_wrap_function` are covered in more detail
 in the next sections. For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_
+
+**Round Up**
+
+This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
