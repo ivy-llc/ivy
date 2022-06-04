@@ -179,3 +179,11 @@ In order to install and properly set up pre-commit, these steps should be follow
 3. Run :code:`pre-commit install`
 
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
+
+**Round Up**
+
+This should have hopefully given you a good understanding of how to get things properly set up.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

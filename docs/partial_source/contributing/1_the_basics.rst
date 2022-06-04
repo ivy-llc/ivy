@@ -141,3 +141,11 @@ We're much more concerned that the code itself is good, that things are updated 
 and that all developers are able to work efficiently.
 If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
 so don't stress about this too much 🙂
+
+**Round Up**
+
+This should have hopefully given you a good understanding of the basics for contributing.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

@@ -18,3 +18,11 @@ adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard.
+
+**Round Up**
+
+This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
