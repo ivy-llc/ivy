@@ -601,3 +601,11 @@ These three examples should give you a good understanding of what is required wh
 If you're ever unsure of how best to proceed,
 please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
 and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/rtce8XthiKA">
+    </iframe>
