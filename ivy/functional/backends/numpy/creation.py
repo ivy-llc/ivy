@@ -37,9 +37,7 @@ def asarray(object_in, *, copy=None, dtype: np.dtype, device: str):
         return _to_dev(np.asarray(object_in, dtype=dtype), device=device)
 
 
-def zeros(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
-) -> np.ndarray:
+def zeros(shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str) -> np.ndarray:
     return _to_dev(np.zeros(shape, dtype), device=device)
 
 

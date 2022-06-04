@@ -69,9 +69,7 @@ def asarray(object_in, *, copy=None, dtype: tf.DType, device: str):
                 return tf.cast(tensor, dtype)
 
 
-def zeros(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: tf.DType, device: str
-) -> Tensor:
+def zeros(shape: Union[int, Tuple[int], List[int]], *, dtype: tf.DType, device: str) -> Tensor:
     with tf.device(device):
         return tf.zeros(shape, dtype)
 

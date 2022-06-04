@@ -59,12 +59,7 @@ def asarray(
         return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
 
 
-def zeros(
-    shape: Union[int, Tuple[int], List[int]],
-    *,
-    dtype: torch.dtype,
-    device: torch.device,
-) -> Tensor:
+def zeros(shape: Union[int, Tuple[int], List[int]],*,dtype: torch.dtype,device: torch.device) -> Tensor:
     return torch.zeros(
         shape,
         dtype=dtype,
