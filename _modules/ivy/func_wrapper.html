@@ -272,7 +272,7 @@
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all `ivy.Array` instances in both the positional and keyword arguments</span>
-<span class="sd">        into `ivy.NativeArray` instances, and then calls the function with the updates</span>
+<span class="sd">        into `ivy.NativeArray` instances, and then calls the function with the updated</span>
 <span class="sd">        arguments.</span>
 
 <span class="sd">        Parameters</span>
@@ -292,6 +292,34 @@
             <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">native_args</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
+<div class="viewcode-block" id="inputs_to_ivy_arrays"><a class="viewcode-back" href="../../func_wrapper/inputs_to_ivy_arrays.html#ivy.func_wrapper.inputs_to_ivy_arrays">[docs]</a><span class="k">def</span> <span class="nf">inputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts all `ivy.NativeArray` instances in both the positional and keyword</span>
+<span class="sd">        arguments into `ivy.Array` instances, and then calls the function with the</span>
+<span class="sd">        updated arguments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with ivy arrays passed in the arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># convert all arrays in the inputs to ivy.Array instances</span>
+        <span class="n">ivy_args</span><span class="p">,</span> <span class="n">ivy_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">args_to_ivy</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">ivy_args</span><span class="p">,</span> <span class="o">**</span><span class="n">ivy_kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_fn</span></div>
 

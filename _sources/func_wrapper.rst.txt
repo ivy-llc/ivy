@@ -14,4 +14,5 @@ Func wrapper
    :caption: Func wrapper
 
    func_wrapper/inputs_to_native_arrays.rst
+   func_wrapper/inputs_to_ivy_arrays.rst
 
