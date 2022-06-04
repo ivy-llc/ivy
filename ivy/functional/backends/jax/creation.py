@@ -196,7 +196,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: jnp.dtype,
+    dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     return _to_dev(
