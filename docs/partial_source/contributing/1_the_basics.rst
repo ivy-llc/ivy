@@ -1,6 +1,55 @@
 The Basics
 ==========
 
+Getting Help
+------------
+
+There are a few different communication channels that you can make use of in order to ask for help:
+
+#. `discord server <https://discord.gg/ZVQdvbzNQJ>`_
+#. `discussions <https://github.com/unifyai/ivy/discussions>`_
+#. `issues <https://github.com/unifyai/ivy/issues>`_
+
+We'll quickly outline how each of these should be used, and also which question is most appropriate for which context.
+
+**Discord Server**
+
+The `discord server <https://discord.gg/ZVQdvbzNQJ>`_ is most suitable for very quick and simple questions.
+These questions should **always** be asked in the correct channel.
+There is a tendency to use the *general* landing channel for everything.
+This isn't the end of the world, but if many unrelated messages come flying into the *general* channel,
+then it does make it very hard to keep track of the different discussions,
+and it makes it less likely that you will receive a response.
+For example, if you are applying for an internship, then you should make use of the **internship** channels,
+and **not** the general channel for your questions.
+
+**Discussions**
+
+Almost all questions are best asked in the
+`discussions <https://github.com/unifyai/ivy/discussions>`_ section on GitHub.
+Even for very simple questions, there are benefits in starting a discussion for this.
+This means that the question can be asked once and then easily found by others in future,
+avoiding the case where different people ask the same question multiple times on the discord server.
+
+I or someone else in the team will strive to respond to your newly created discussion as quickly as possible!
+
+**Issues**
+
+As the name suggests, the `issues <https://github.com/unifyai/ivy/issues>`_ section on GitHub is the best place to
+raise issues or general bugs that you find with the project.
+It can also serve as a useful place to ask questions, but only if you suspect that the behaviour you are observing
+*might* be a bug. If you are confident there is nothing wrong with the code, but you just don't understand something,
+then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is your best bet.
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/T5vQP1pCXS8">
+    </iframe>
+
+|
 
 Managing Your Fork
 ------------------
