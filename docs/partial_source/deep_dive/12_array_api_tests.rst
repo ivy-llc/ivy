@@ -5,6 +5,10 @@ Array API Tests
 .. _`test suite`: https://github.com/data-apis/array-api-tests
 .. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
 .. _`for each backend`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows
+.. _`array api tests discussion`: https://github.com/unifyai/ivy/discussions/1306
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
 
 All functions which are present in the `Array API Standard`_ have a corresponding unit test in the
 `test suite`_ for the standard.
@@ -24,5 +28,5 @@ functions which are part of the standard.
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `array api tests discussion`_,
+or reach out on `discord`_ in the `array api tests channel`_!

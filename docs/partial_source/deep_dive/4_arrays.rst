@@ -17,6 +17,10 @@ Arrays
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
+.. _`arrays discussion`: https://github.com/unifyai/ivy/discussions/1315
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -126,5 +130,5 @@ instances are converted to :code:`ivy.Array` instances before entering into the 
 This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `arrays discussion`_,
+or reach out on `discord`_ in the `arrays channel`_!
