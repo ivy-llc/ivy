@@ -149,7 +149,7 @@ def inputs_to_native_arrays(fn):
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
-        into `ivy.NativeArray` instances, and then calls the function with the updates
+        into `ivy.NativeArray` instances, and then calls the function with the updated
         arguments.
 
         Parameters
@@ -169,6 +169,34 @@ def inputs_to_native_arrays(fn):
             *args, **kwargs, include_derived={tuple: True}
         )
         return fn(*native_args, **native_kwargs)
+
+    return new_fn
+
+
+def inputs_to_ivy_arrays(fn):
+    def new_fn(*args, **kwargs):
+        """
+        Converts all `ivy.NativeArray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then calls the function with the
+        updated arguments.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with ivy arrays passed in the arguments.
+        """
+        # convert all arrays in the inputs to ivy.Array instances
+        ivy_args, ivy_kwargs = ivy.args_to_ivy(
+            *args, **kwargs, include_derived={tuple: True}
+        )
+        return fn(*ivy_args, **ivy_kwargs)
 
     return new_fn
 
