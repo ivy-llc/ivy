@@ -51,27 +51,11 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
 
 |
 
-Managing Your Fork
-------------------
-
-When contributing to Ivy, the first step is create a fork of the repository.
-Then, it's best practice to create a separate branch for each new pull request (PR) you create.
-The master branch then simply has the role of being kept up to date with upstream.
-You *can* create PRs based on the master branch of your fork,
-but this will make things more complicated if you would then like to create additional PRs in future.
-
-For keeping any branch on your fork up to date,
-there is a script in the root folder of the repo
-`merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream master branch,
-simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the master branch, this would then be: :code:`./merge_with_upstream.sh master`.
-
-
 ToDo List Issues
 ----------------
 
-We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_,
+We make extensive use of
+`ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_,
 which act as placeholders for tracking many related sub-tasks in a ToDo list.
 
 We have a clear process for contributors to engage with such ToDo lists:
@@ -119,12 +103,54 @@ Please don't take it personally if your issue or PR gets closed because of this 
 Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!
 
+**Video**
 
-Creating Pull Requests
-----------------------
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/wBKTOGmwfbo">
+    </iframe>
+
+|
+
+Managing Your Fork
+------------------
+
+When contributing to Ivy, the first step is create a fork of the repository.
+Then, it's best practice to create a separate branch for each new pull request (PR) you create.
+The master branch then simply has the role of being kept up to date with upstream.
+You *can* create PRs based on the master branch of your fork,
+but this will make things more complicated if you would then like to create additional PRs in future.
+
+For keeping any branch on your fork up to date,
+there is a script in the root folder of the repo
+`merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
+To update your fork's branch to the upstream master branch,
+simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
+To update the master branch, this would then be: :code:`./merge_with_upstream.sh master`.
+
+When making a PR (explained in the next sub-section),
+sometimes you will see that changes to upstream have caused conflicts with your PR.
+In this case, you will need to either resolve these conflicts in the browser,
+or clone your fork and make changes locally in the terminal and push once resolved.
+Both of these cases are explained in the following video.
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/TFMPihytg9U">
+    </iframe>
+
+|
+
+Pull Requests
+-------------
 
 Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
-and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+and then the PR will either be merged or changes will be requested.
+In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
 We will then take another look, and either merge the PR or request further changes.
 This process then will repeat until either the PR is closed by us or yourself, or the PR is merged.
@@ -141,6 +167,17 @@ Finally, all PRs must give write access to Ivy maintainers of the branch. This c
 lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
 much more quickly without us needing to request very simple fixes from yourself.
 
+The code review process is explained in more detail in the following video.
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/9G4d-CvlT2g">
+    </iframe>
+
+|
 
 Small Commits Often
 -------------------
