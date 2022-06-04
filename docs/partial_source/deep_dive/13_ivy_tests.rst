@@ -102,3 +102,11 @@ The rule is simple, if the test should not pass any arrays in the input,
 then we should not use the helper :code:`test_array_function`.
 For example, :code:`ivy.num_gpus` does not receive any arrays in the input,
 and so we should not make us of :code:`test_array_function` in the test implementation.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how the tests are implemented in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

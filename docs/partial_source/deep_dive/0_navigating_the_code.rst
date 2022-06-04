@@ -152,3 +152,11 @@ All arrays also now have the same type hint :code:`torch.Tensor`,
 rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how to navigate the Ivy codebase.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

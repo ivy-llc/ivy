@@ -257,3 +257,11 @@ Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
 As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_
+
+**Round Up**
+
+This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

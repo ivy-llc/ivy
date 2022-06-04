@@ -120,3 +120,11 @@ For the reasons explained above, this would be a problem.
 
 Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
