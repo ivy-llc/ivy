@@ -141,6 +141,37 @@ NATIVE_KEYS_TO_SKIP = {
     "mxnet": [],
 }
 
+# Specific Wrappers #
+# ------------------#
+
+
+def inputs_to_native_arrays(fn):
+    def new_fn(*args, **kwargs):
+        """
+        Converts all `ivy.Array` instances in both the positional and keyword arguments
+        into `ivy.NativeArray` instances, and then calls the function with the updates
+        arguments.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with native arrays passed in the arguments.
+        """
+        # convert all arrays in the inputs to ivy.NativeArray instances
+        native_args, native_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
+        return fn(*native_args, **native_kwargs)
+
+    return new_fn
+
 
 # Functions #
 
