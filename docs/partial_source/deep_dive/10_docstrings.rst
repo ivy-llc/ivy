@@ -134,3 +134,19 @@ If the function that you are writing a docstring for is **not** in the `Array AP
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding docstings.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/TnshJ8swuJM">
+    </iframe>
