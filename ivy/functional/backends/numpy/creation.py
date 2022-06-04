@@ -157,7 +157,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: np.dtype,
+    dtype: np.dtype = None,
     device: str
 ) -> np.ndarray:
     return _to_dev(
