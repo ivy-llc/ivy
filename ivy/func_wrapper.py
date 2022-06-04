@@ -349,6 +349,30 @@ def handle_out_argument(fn):
     return new_fn
 
 
+# Nestable Handling #
+# ------------------#
+
+
+def handle_nestable(fn):
+    fn_name = fn.__name__
+    cont_fn = getattr(ivy.Container, "static_" + fn_name)
+
+    def new_fn(*args, **kwargs):
+        # if any of the arguments or keyword arguments passed to the function contains
+        # a container, get the container's version of the function and call it using
+        # the passed arguments.
+        if ivy.nested_any(
+            args, ivy.is_ivy_container, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
+            return cont_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    return new_fn
+
+
 # Functions #
 
 
