@@ -185,5 +185,8 @@ That's it! Now when you make a commit, the pre-commit hooks will all be run corr
 This should have hopefully given you a good understanding of how to get things properly set up.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `setting up discussion <https://github.com/unifyai/ivy/discussions/1308>`_
+on the `repo <https://github.com/unifyai/ivy>`_,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_
+in the `setting-up channel <https://discord.com/channels/799879767196958751/982720340172095498>`_
+if you have any questions!
