@@ -205,5 +205,5 @@ This should have hopefully given you a good understanding of how to get things p
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `setting up discussion`_,
 or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
-`pre-commit channel`_, `pip packages channel`_ or `other channel`_
+`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
 depending on the question!

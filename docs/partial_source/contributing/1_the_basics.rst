@@ -1,6 +1,16 @@
 The Basics
 ==========
 
+.. _`contributing discussion`: https://github.com/unifyai/ivy/discussions/1309
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`getting help channel`: https://discord.com/channels/799879767196958751/982728567664283679
+.. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
+.. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
+.. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
+.. _`other channel`: https://discord.com/channels/799879767196958751/933380219832762430
+
 Getting Help
 ------------
 
@@ -50,6 +60,9 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
     </iframe>
 
 |
+
+For questions, please reach out on the `contributing discussion`_
+or on `discord`_ in the `getting help channel`_!
 
 ToDo List Issues
 ----------------
@@ -113,6 +126,9 @@ investigate!
 
 |
 
+For questions, please reach out on the `contributing discussion`_
+or on `discord`_ in the `todo list issues channel`_!
+
 Managing Your Fork
 ------------------
 
@@ -144,6 +160,9 @@ Both of these cases are explained in the following video.
     </iframe>
 
 |
+
+For questions, please reach out on the `contributing discussion`_
+or on `discord`_ in the `fork management channel`_!
 
 Pull Requests
 -------------
@@ -178,6 +197,9 @@ The code review process is explained in more detail in the following video.
     </iframe>
 
 |
+
+For questions, please reach out on the `contributing discussion`_
+or on `discord`_ in the `pull requests channel`_!
 
 Small Commits Often
 -------------------
@@ -228,10 +250,15 @@ and that all developers are able to work efficiently.
 If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
 so don't stress about this too much 🙂
 
+For questions, please reach out on the `contributing discussion`_
+or on `discord`_ in the `commit frequency channel`_!
+
 **Round Up**
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `contributing discussion`_,
+or reach out on `discord`_ in the `getting help channel`_, `todo list issues channel`_,
+`fork management channel`_, `pull requests channel`_, `commit frequency channel`_
+or `other channel`_, depending on the question!
