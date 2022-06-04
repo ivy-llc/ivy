@@ -5,6 +5,10 @@ Backend Setting
 .. _`import the backend module`: https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L182
 .. _`in either case`: https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L200
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/7fb947f85075aa18e1000461617e067b5a3f56da/ivy/backend_handler.py#L206
+.. _`backend setting discussion`: https://github.com/unifyai/ivy/discussions/1313
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
 
 The backend framework is set by calling :code:`ivy.set_backend(backend_name)`. When calling `this function`_,
 the following steps are performed:
@@ -26,5 +30,5 @@ the following steps are performed:
 This should have hopefully given you a good feel for how the backend framework is set.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `backend setting discussion`_,
+or reach out on `discord`_ in the `backend setting channel`_!

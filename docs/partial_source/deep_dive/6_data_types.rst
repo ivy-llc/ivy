@@ -23,6 +23,10 @@ Data Types
 .. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
+.. _`data types discussion`: https://github.com/unifyai/ivy/discussions/1307
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
 
 
 The data types supported by Ivy are as follows:
@@ -266,5 +270,5 @@ backend-specific implementation.
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `data types discussion`_,
+or reach out on `discord`_ in the `data types channel`_!
