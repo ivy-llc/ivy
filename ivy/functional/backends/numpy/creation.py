@@ -141,7 +141,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, *, dtype: np.dtype, device: str):
+def arange(start, stop=None, step=1, *, dtype: np.dtype = None, device: str):
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device=device)
