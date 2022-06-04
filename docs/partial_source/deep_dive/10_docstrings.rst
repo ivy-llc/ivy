@@ -15,6 +15,10 @@ In order to explain how docstrings should be written, we will use :code:`ivy.tan
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
 
+Important: you should open the file in **raw** format.
+If you copy directly from the file preview on GitHub before clicking **raw**,
+then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
+
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
 .. code-block:: python
