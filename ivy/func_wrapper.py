@@ -407,7 +407,6 @@ def handle_nestable(fn: Callable) -> Callable:
         -------
             The return of the function, with the nestable property handled correctly.
         """
-
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
