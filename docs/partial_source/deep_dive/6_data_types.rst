@@ -260,3 +260,11 @@ The PyTorch-specific implementation is as follows:
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
+
+**Round Up**
+
+This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
