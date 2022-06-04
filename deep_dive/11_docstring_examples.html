@@ -149,9 +149,14 @@
   <section id="docstring-examples">
 <h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this heading"></a></h1>
 <p>After writing the general docstring, the final step is to add helpful examples to the docstring.</p>
-<p>There are two types of examples. There are <em>functional</em> examples, which show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code></p>
-<p>There are also <em>instance method</em> examples which are called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code></p>
+<p>There are three types of examples. There are <em>functional</em> examples, which show the function being called like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, there are <em>instance method</em> examples,
+show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code>,
+and there are also <em>operator</em> examples,
+which show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>.</p>
+<p>The first two example types are very common, while the latter is, unsurprisingly,
+only relevant for <em>operator</em> functions
+such as <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>.</p>
 <p><strong>Functional Examples</strong></p>
 <p>Firstly, we should include <em>functional</em> examples with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
