@@ -49,9 +49,9 @@
 <li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">The Basics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#small-commits-often">Small Commits Often</a></li>
 </ul>
 </li>
@@ -177,23 +177,10 @@ src="https://www.youtube.com/embed/T5vQP1pCXS8">
 <div class="line"><br /></div>
 </div>
 </section>
-<section id="managing-your-fork">
-<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this heading"></a></h2>
-<p>When contributing to Ivy, the first step is create a fork of the repository.
-Then, it’s best practice to create a separate branch for each new pull request (PR) you create.
-The master branch then simply has the role of being kept up to date with upstream.
-You <em>can</em> create PRs based on the master branch of your fork,
-but this will make things more complicated if you would then like to create additional PRs in future.</p>
-<p>For keeping any branch on your fork up to date,
-there is a script in the root folder of the repo
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh">merge_with_upstream.sh</a>.
-To update your fork’s branch to the upstream master branch,
-simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
-To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
-</section>
 <section id="todo-list-issues">
 <h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this heading"></a></h2>
-<p>We make extensive use of <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>,
+<p>We make extensive use of
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>,
 which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
 <p>We have a clear process for contributors to engage with such ToDo lists:</p>
 <ol class="loweralpha">
@@ -229,11 +216,43 @@ people, and sometimes there is not as much free time available as initially thou
 Please don’t take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.</p>
 <p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/wBKTOGmwfbo">
+</iframe><div class="line-block">
+<div class="line"><br /></div>
+</div>
 </section>
-<section id="creating-pull-requests">
-<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this heading"></a></h2>
+<section id="managing-your-fork">
+<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this heading"></a></h2>
+<p>When contributing to Ivy, the first step is create a fork of the repository.
+Then, it’s best practice to create a separate branch for each new pull request (PR) you create.
+The master branch then simply has the role of being kept up to date with upstream.
+You <em>can</em> create PRs based on the master branch of your fork,
+but this will make things more complicated if you would then like to create additional PRs in future.</p>
+<p>For keeping any branch on your fork up to date,
+there is a script in the root folder of the repo
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh">merge_with_upstream.sh</a>.
+To update your fork’s branch to the upstream master branch,
+simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
+To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
+<p>When making a PR (explained in the next sub-section),
+sometimes you will see that changes to upstream have caused conflicts with your PR.
+In this case, you will need to either resolve these conflicts in the browser,
+or clone your fork and make changes locally in the terminal and push once resolved.
+Both of these cases are explained in the following video.</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/TFMPihytg9U">
+</iframe><div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="pull-requests">
+<h2>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this heading"></a></h2>
 <p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
-and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+and then the PR will either be merged or changes will be requested.
+In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
 We will then take another look, and either merge the PR or request further changes.
 This process then will repeat until either the PR is closed by us or yourself, or the PR is merged.</p>
@@ -246,6 +265,13 @@ Your PR will never be closed until we have provided at least code review on it, 
 <p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
 lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
 much more quickly without us needing to request very simple fixes from yourself.</p>
+<p>The code review process is explained in more detail in the following video.</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/9G4d-CvlT2g">
+</iframe><div class="line-block">
+<div class="line"><br /></div>
+</div>
 </section>
 <section id="small-commits-often">
 <h2>Small Commits Often<a class="headerlink" href="#small-commits-often" title="Permalink to this heading"></a></h2>
