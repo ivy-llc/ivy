@@ -213,7 +213,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: tf.DType,
+    dtype: tf.DType = None,
     device: str
 ) -> Tensor:
     with tf.device(as_native_dev(default_device(device))):
