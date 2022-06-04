@@ -169,7 +169,7 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def inputs_to_native_arrays(fn):
+def inputs_to_native_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -198,7 +198,7 @@ def inputs_to_native_arrays(fn):
     return new_fn
 
 
-def inputs_to_ivy_arrays(fn):
+def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -227,7 +227,7 @@ def inputs_to_ivy_arrays(fn):
     return new_fn
 
 
-def outputs_to_ivy_arrays(fn):
+def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -254,7 +254,7 @@ def outputs_to_ivy_arrays(fn):
     return new_fn
 
 
-def to_native_arrays_and_back(fn):
+def to_native_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
@@ -262,7 +262,7 @@ def to_native_arrays_and_back(fn):
 # -------------------#
 
 
-def infer_dtype(fn):
+def infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
         """
@@ -298,7 +298,7 @@ def infer_dtype(fn):
 # ----------------#
 
 
-def infer_device(fn):
+def infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, device=None, **kwargs):
         """
@@ -334,7 +334,7 @@ def infer_device(fn):
 # ------------------------#
 
 
-def handle_out_argument(fn):
+def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = "out" in inspect.signature(fn).parameters.keys()
 
     @functools.wraps(fn)
@@ -360,7 +360,7 @@ def handle_out_argument(fn):
 # ------------------#
 
 
-def handle_nestable(fn):
+def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
     cont_fn = getattr(ivy.Container, "static_" + fn_name)
 
