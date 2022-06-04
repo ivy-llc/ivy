@@ -324,6 +324,31 @@ def infer_device(fn):
     return new_fn
 
 
+# Inplace Update Handling #
+# ------------------------#
+
+
+def handle_out_argument(fn):
+    handle_out_in_backend = "out" in inspect.signature(fn).parameters.keys()
+
+    def new_fn(*args, out=None, **kwargs):
+        if out is None:
+            return fn(*args, **kwargs)
+        if handle_out_in_backend:
+            # extract underlying native array for out
+            native_out = ivy.to_native(out)
+            # compute return, with backend inplace update handled by
+            # the backend function
+            ret = fn(*args, out=native_out, **kwargs)
+            out.data = ivy.to_native(ret)
+            return out
+        # compute return, and then handle the inplace update explicitly
+        ret = fn(*args, **kwargs)
+        return ivy.inplace_update(out, ret)
+
+    return new_fn
+
+
 # Functions #
 
 
