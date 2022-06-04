@@ -255,6 +255,10 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+    and return arrays are all converted to `ivy.Array` instances.
+    """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
@@ -339,6 +343,26 @@ def handle_out_argument(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def new_fn(*args, out=None, **kwargs):
+        """
+        Calls `fn` with the `out` argument handled correctly for performing an inplace
+        update.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        out
+            The array to write the result to.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `out` handled correctly for
+            inplace updates.
+        """
         if out is None:
             return fn(*args, **kwargs)
         if handle_out_in_backend:
@@ -366,6 +390,24 @@ def handle_nestable(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
+        """
+        Calls `fn` with the *nestable* property of the function correctly handled.
+        This means mapping the function to the container leaves if any containers are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the nestable property handled correctly.
+        """
+
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
