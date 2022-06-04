@@ -1,8 +1,77 @@
 # global
+from typing import Optional, Union, Tuple
 import abc
+
+# local
+import ivy
 
 # ToDo: implement all methods here as public instance methods
 
 
 class ArrayWithStatistical(abc.ABC):
-    pass
+    def min(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.min(self, axis, keepdims, out=out)
+
+    def max(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.max(self, axis, keepdims, out=out)
+
+    def mean(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.mean(self, axis, keepdims, out=out)
+
+    def var(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.var(self, axis, correction, keepdims, out=out)
+
+    def prod(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.prod(self, axis, keepdims, dtype=dtype, out=out)
+
+    def sum(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.sum(self, axis, dtype, keepdims, out=out)
+
+    def std(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.std(self, axis, correction, keepdims, out=out)
+
+    def einsum(
+        self: ivy.Array,
+        equation: str,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.einsum(equation, self, out=out)

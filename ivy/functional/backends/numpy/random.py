@@ -1,13 +1,11 @@
-"""
-Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import numpy as np
 from typing import Optional, Union, Tuple
 
-# local
-import ivy
+# localf
+
 
 # Extra #
 # ------#
@@ -17,19 +15,31 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+    *,
+    device: str
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
 
-random_normal = lambda mean=0.0, std=1.0, shape=None, device=None: np.asarray(
-    np.random.normal(mean, std, shape)
-)
+def random_normal(
+    mean: float = 0.0,
+    std: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    device: str
+) -> np.ndarray:
+    return np.asarray(np.random.normal(mean, std, shape))
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[np.ndarray] = None,
+    replace=True,
+    *,
+    device: str
+) -> np.ndarray:
     if probs is None:
         probs = (
             np.ones(
@@ -43,7 +53,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = np.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True)
+    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True, dtype="float64")
     probs_stack = np.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         np.random.choice(num_classes, num_samples, replace, p=prob[0])
@@ -53,9 +63,15 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
-seed = lambda seed_value=0: np.random.seed(seed_value)
+def randint(
+    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+) -> np.ndarray:
+    return np.random.randint(low, high, shape)
 
 
-def shuffle(x):
+def seed(seed_value: int = 0) -> None:
+    np.random.seed(seed_value)
+
+
+def shuffle(x: np.ndarray) -> np.ndarray:
     return np.random.permutation(x)

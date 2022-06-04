@@ -1,6 +1,4 @@
-"""
-Collection of tests for module converters
-"""
+"""Collection of tests for module converters."""
 
 # global
 import pytest
@@ -14,7 +12,6 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 class TorchLinearModule(torch.nn.Module):
-
     def __init__(self, in_size, out_size):
         super(TorchLinearModule, self).__init__()
         self._linear = torch.nn.Linear(in_size, out_size)
@@ -24,7 +21,6 @@ class TorchLinearModule(torch.nn.Module):
 
 
 class TorchModule(torch.nn.Module):
-
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(TorchModule, self).__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
@@ -39,7 +35,6 @@ class TorchModule(torch.nn.Module):
 
 
 class HaikuLinear(hk.Module):
-
     def __init__(self, out_size):
         super(HaikuLinear, self).__init__()
         self._linear = hk.Linear(out_size)
@@ -49,7 +44,6 @@ class HaikuLinear(hk.Module):
 
 
 class HaikuModule(hk.Module):
-
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(HaikuModule, self).__init__()
         self._linear0 = HaikuLinear(hidden_size)
@@ -63,38 +57,44 @@ class HaikuModule(hk.Module):
         return jnp.tanh(self._linear2(x))[0]
 
 
-NATIVE_MODULES = {'torch': TorchModule,
-                  'jax': HaikuModule}
+NATIVE_MODULES = {"torch": TorchModule, "jax": HaikuModule}
 
 
 # to_ivy_module
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
-@pytest.mark.parametrize(
-    "from_class_and_args", [True, False])
-@pytest.mark.parametrize(
-    "inplace_update", [True, False])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("from_class_and_args", [True, False])
+@pytest.mark.parametrize("inplace_update", [True, False])
 def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, call):
     # smoke test
     if call not in [helpers.torch_call, helpers.jnp_call]:
         # Currently only implemented for PyTorch
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
+    x = ivy.astype(
+        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+        "float32",
+    )
+    natvie_module_class = NATIVE_MODULES[ivy.current_backend_str()]
     if from_class_and_args:
-        ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
-                                       args=[input_channels, output_channels],
-                                       device=device, inplace_update=inplace_update)
+        ivy_module = ivy.to_ivy_module(
+            native_module_class=natvie_module_class,
+            args=[input_channels, output_channels],
+            device=device,
+            inplace_update=inplace_update,
+        )
     else:
         if call is helpers.jnp_call:
+
             def forward_fn(*a, **kw):
                 model = natvie_module_class(input_channels, output_channels)
                 return model(*a, **kw)
+
             native_module = hk.transform(forward_fn)
         else:
             native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module, device=device, inplace_update=inplace_update)
+        ivy_module = ivy.to_ivy_module(
+            native_module, device=device, inplace_update=inplace_update
+        )
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)

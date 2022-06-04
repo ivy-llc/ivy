@@ -1,12 +1,13 @@
+# flake8: noqa
 # global
 import copy
 import functools
+import numpy as np
 from operator import mul
 
 # local
 from . import conversions
 from .conversions import *
-
 from .activations import ArrayWithActivations
 from .creation import ArrayWithCreation
 from .data_types import ArrayWithDataTypes
@@ -80,6 +81,9 @@ class Array(
         ArrayWithSorting.__init__(self)
         ArrayWithStatistical.__init__(self)
         ArrayWithUtility.__init__(self)
+        self._init(data)
+
+    def _init(self, data):
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
@@ -91,12 +95,14 @@ class Array(
         )
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
-        self._dev_str = ivy.dev_to_str(self._device)
+        self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy."
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
+
+        self.framework_str = ivy.current_backend_str()
 
     # Properties #
     # -----------#
@@ -117,12 +123,13 @@ class Array(
 
     @property
     def ndim(self):
-        """
-        Number of array dimensions (axes).
+        """Number of array dimensions (axes).
+
         Returns
         -------
-        out: int
+        ret
             number of array dimensions (axes).
+
         """
         return len(tuple(self._shape))
 
@@ -142,20 +149,22 @@ class Array(
 
     @property
     def size(self):
-        """
-        Number of elements in an array.
+        """Number of elements in an array.
 
         .. note::
            This must equal the product of the array's dimensions.
 
         Returns
         -------
-        out: Optional[int]
-            number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
+        out
+            number of elements in an array. The returned value must be ``None`` if
+            and only if one or more array dimensions are unknown.
 
 
         .. note::
-           For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
+           For array libraries having graph-based computational models, an array may
+           have unknown dimensions due to data-dependent operations.
+
         """
         return self._size
 
@@ -165,7 +174,7 @@ class Array(
     @data.setter
     def data(self, data):
         assert ivy.is_native_array(data)
-        self._data = data
+        self._init(data)
 
     # Built-ins #
     # ----------#
@@ -192,11 +201,19 @@ class Array(
 
     @_native_wrapper
     def __repr__(self):
-        return (
-            self._pre_repr
-            + ivy.to_numpy(self._data).__repr__()[:-1].replace("\n", "\n    ")
-            + self._post_repr.format(ivy.current_framework_str())
+        sig_fig = ivy.array_significant_figures()
+        dec_vals = ivy.array_decimal_values()
+        rep = (
+            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
+            if self._size > 0
+            else ivy.to_numpy(self._data)
         )
+        with np.printoptions(precision=dec_vals):
+            return (
+                self._pre_repr
+                + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+                + self._post_repr.format(ivy.current_backend_str())
+            )
 
     @_native_wrapper
     def __dir__(self):
@@ -230,15 +247,40 @@ class Array(
         return self._data.__contains__(key)
 
     @_native_wrapper
+    def __getstate__(self):
+        data_dict = dict()
+
+        # only pickle the native array
+        data_dict["data"] = self.data
+
+        # also store the local ivy framework that created this array
+        data_dict["framework_str"] = self.framework_str
+        data_dict["device_str"] = ivy.as_ivy_dev(self.device)
+
+        return data_dict
+
+    @_native_wrapper
+    def __setstate__(self, state):
+        # we can construct other details of ivy.Array
+        # just by re-creating the ivy.Array using the native array
+
+        # get the required backend
+        backend = ivy.get_backend(state["framework_str"])
+        ivy_array = backend.array(state["data"])
+
+        self.__dict__ = ivy_array.__dict__
+
+        # TODO: what about placement of the array on the right device ?
+        # device = backend.as_native_dev(state["device_str"])
+        # backend.to_dev(self, device)
+
+    @_native_wrapper
     def __pos__(self):
-        return self
+        return ivy.positive(self._data)
 
     @_native_wrapper
     def __neg__(self):
-        res = self._data.__neg__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.negative(self._data)
 
     @_native_wrapper
     def __pow__(self, power):
@@ -250,45 +292,27 @@ class Array(
 
     @_native_wrapper
     def __add__(self, other):
-        other = to_native(other)
         return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
-        other = to_native(other)
-        res = self._data.__radd__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.add(other, self._data)
 
     @_native_wrapper
     def __sub__(self, other):
-        other = to_native(other)
         return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __rsub__(self, other):
-        other = to_native(other)
-        res = -ivy.subtract(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.subtract(other, self._data)
 
     @_native_wrapper
     def __mul__(self, other):
-        other = to_native(other)
-        res = ivy.multiply(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.multiply(self._data, other)
 
     @_native_wrapper
     def __rmul__(self, other):
-        other = to_native(other)
-        res = self._data.__rmul__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.multiply(other, self._data)
 
     @_native_wrapper
     def __mod__(self, other):
@@ -300,11 +324,7 @@ class Array(
 
     @_native_wrapper
     def __rtruediv__(self, other):
-        other = to_native(other)
-        res = self._data.__rtruediv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.divide(other, self._data)
 
     @_native_wrapper
     def __floordiv__(self, other):
@@ -312,20 +332,11 @@ class Array(
 
     @_native_wrapper
     def __rfloordiv__(self, other):
-        other = to_native(other)
-        res = self._data.__rfloordiv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.floor_divide(other, self._data)
 
     @_native_wrapper
     def __abs__(self):
-        if "uint" in ivy.dtype(self._data, as_str=True):
-            return self
-        res = self._data.__abs__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.abs(self._data)
 
     @_native_wrapper
     def __float__(self):
@@ -351,11 +362,7 @@ class Array(
 
     @_native_wrapper
     def __lt__(self, other):
-        other = to_native(other)
-        res = ivy.less(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.less(self._data, other)
 
     @_native_wrapper
     def __le__(self, other):
@@ -363,11 +370,7 @@ class Array(
 
     @_native_wrapper
     def __eq__(self, other):
-        other = to_native(other)
-        res = ivy.equal(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.equal(self._data, other)
 
     @_native_wrapper
     def __ne__(self, other):
@@ -387,7 +390,7 @@ class Array(
 
     @_native_wrapper
     def __rand__(self, other):
-        return ivy.bitwise_and(self._data, other)
+        return ivy.bitwise_and(other, self._data)
 
     @_native_wrapper
     def __or__(self, other):
@@ -395,34 +398,19 @@ class Array(
 
     @_native_wrapper
     def __ror__(self, other):
-        other = to_native(other)
-        res = self._data.__ror__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_or(other, self._data)
 
     @_native_wrapper
     def __invert__(self):
-        res = self._data.__invert__()
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_invert(self._data)
 
     @_native_wrapper
     def __xor__(self, other):
-        other = to_native(other)
-        res = ivy.bitwise_xor(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_xor(self._data, other)
 
     @_native_wrapper
     def __rxor__(self, other):
-        other = to_native(other)
-        res = self._data.__rxor__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_xor(other, self._data)
 
     @_native_wrapper
     def __lshift__(self, other):
@@ -430,11 +418,7 @@ class Array(
 
     @_native_wrapper
     def __rlshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rlshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_left_shift(other, self._data)
 
     @_native_wrapper
     def __rshift__(self, other):
@@ -442,19 +426,7 @@ class Array(
 
     @_native_wrapper
     def __rrshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rrshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
-
-    @_native_wrapper
-    def __rrshift__(self, other):
-        other = to_native(other)
-        res = self._data.__rrshift__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_right_shift(other, self._data)
 
     # noinspection PyDefaultArgument
     @_native_wrapper
@@ -462,8 +434,9 @@ class Array(
         try:
             return to_ivy(self._data.__deepcopy__(memodict))
         except AttributeError:
-            # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
-            if ivy.current_framework_str() == "jax":
+            # ToDo: try and find more elegant solution to jax inability to
+            #  deepcopy device arrays
+            if ivy.current_backend_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)

@@ -1,6 +1,4 @@
-"""
-Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import ivy
@@ -13,7 +11,7 @@ def variable(x):
 
 
 def is_variable(x, exclusive=False):
-    return isinstance(x, mx.ndarray.ndarray.NDArray) and x.grad is not None
+    return isinstance(x, mx.nd.NDArray) and x.grad is not None
 
 
 variable_data = lambda x: x

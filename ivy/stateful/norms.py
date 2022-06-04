@@ -1,6 +1,4 @@
-"""
-Collection of Ivy normalization classes.
-"""
+"""Collection of Ivy normalization classes."""
 
 # local
 import ivy
@@ -21,18 +19,23 @@ class LayerNorm(Module):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
 
-        :param normalized_shape: Trailing shape to applying the normalization to.
-        :type normalized_shape: int or sequence of ints
-        :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.
-        :type epsilon: float, optional
-        :param elementwise_affine: Whether to include learnable affine parameters, default is True.
-        :type elementwise_affine: bool, optional
-        :param new_std: The standard deviation of the new normalized values. Default is 1.
-        :type new_std: float, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type device: ivy.Device, optional
-        :param v: the variables for each submodule in the sequence, constructed internally by default.
-        :type v: ivy container of variables, optional
+        Parameters
+        ----------
+        normalized_shape
+            Trailing shape to applying the normalization to.
+        epsilon
+            small constant to add to the denominator,
+            use global ivy._MIN_BASE by default.
+        elementwise_affine
+            Whether to include learnable affine parameters, default is True.
+        new_std
+            The standard deviation of the new normalized values. Default is 1.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
+        v
+            the variables for each submodule in the sequence,
+            constructed internally by default.
         """
         self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
         self._epsilon = epsilon
@@ -45,9 +48,7 @@ class LayerNorm(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer"""
         if self._elementwise_affine:
             return {
                 "scale": self._scale_init.create_variables(self._scale_shape, device),
@@ -61,9 +62,16 @@ class LayerNorm(Module):
         """
         Perform forward pass of the LayerNorm layer.
 
-        :param inputs: Inputs to process.
-        :type inputs: array
-        :return: The outputs following the layer normalization operation.
+        Parameters
+        ----------
+        inputs
+            Inputs to process.
+
+        Returns
+        -------
+        ret
+            The outputs following the layer normalization operation.
+
         """
         return ivy.layer_norm(
             inputs,

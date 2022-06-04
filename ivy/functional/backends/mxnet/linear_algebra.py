@@ -1,7 +1,5 @@
 # global
 import mxnet as mx
-import numpy as np
-
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
@@ -17,7 +15,7 @@ DET_THRESHOLD = 1e-12
 # -------------------#
 
 
-def eigh(x: mx.ndarray) -> mx.ndarray:
+def eigh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigh(x)
 
 
@@ -29,9 +27,7 @@ def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 def pinv(x):
-    """
-    reference: https://help.matheass.eu/en/Pseudoinverse.html
-    """
+    """reference: https://help.matheass.eu/en/Pseudoinverse.html"""
     x_dim, y_dim = x.shape[-2:]
     if x_dim == y_dim and mx.nd.sum(mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
         return inv(x)
@@ -70,12 +66,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
-    results = namedtuple("svd", "U S Vh")
-    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    res = results(U, D, VT)
-    return res
-
-    return mx.np.linalg.norm(x, p, axis, keepdims)
+    return mx.np.linalg.svd(x)
 
 
 def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
@@ -104,8 +95,11 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
-def det(x: NDArray) -> NDArray:
-    return mx.linalg.det(x)
+def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
+    ret = mx.linalg.det(x)
+    if _ivy.exists(out):
+        return _ivy.inplace_update(out, ret)
+    return ret
 
 
 def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
@@ -119,7 +113,7 @@ def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
         )
 
 
-def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+def eigvalsh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 

@@ -1,5 +1,5 @@
-"""
-Collection of PyTorch activation functions, wrapped to fit Ivy syntax and signature.
+"""Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
+signature.
 """
 
 from typing import Optional
@@ -9,14 +9,10 @@ import numpy as np
 import torch
 
 # local
-import ivy
 
 
-def relu(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: torch.Tensor) -> torch.Tensor:
+    return torch.relu(x)
 
 
 def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2) -> torch.Tensor:

@@ -1,6 +1,4 @@
-"""
-Base Container Object
-"""
+"""Base Container Object."""
 
 # global
 import colorama
@@ -12,7 +10,7 @@ except ModuleNotFoundError:
     _h5py = None
 
 # local
-from .wrapping import add_ivy_container_instance_methods
-from .container import ContainerBase, Container, MultiDevContainer
+from .wrapping import add_ivy_container_instance_methods  # noqa
+from .container import ContainerBase, Container, MultiDevContainer  # noqa
 
 colorama.init(strip=False)

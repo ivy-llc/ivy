@@ -1,6 +1,4 @@
-"""
-Collection of MXNet activation functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of MXNet activation functions, wrapped to fit Ivy syntax and signature."""
 
 from typing import Optional
 

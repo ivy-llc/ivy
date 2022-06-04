@@ -1,14 +1,15 @@
-"""
-Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signature.
+"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
+signature.
 """
 
 # global
 _round = round
 import tensorflow as tf
+from typing import Union
 from tensorflow.python.types.core import Tensor
-import ivy
 
 # local
+import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -20,53 +21,46 @@ def _same_device(dev_a, dev_b):
     )
 
 
-def dev(x, as_str=False):
+def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
     dv = x.device
-    if as_str:
-        return dev_to_str(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
-def to_dev(x: Tensor, device=None, out: Tensor = None) -> Tensor:
+def to_dev(x: Tensor, *, device) -> Tensor:
     if device is None:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
         return x
     current_dev = _dev_callable(x)
     if not _same_device(current_dev, device):
         with tf.device("/" + device.upper()):
-            if ivy.exists(out):
-                return ivy.inplace_update(out, tf.identity(x))
             return tf.identity(x)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str) and "/" not in device:
-        return device
+        return ivy.Device(device)
     dev_in_split = device[1:].split(":")[-2:]
     if len(dev_in_split) == 1:
-        return dev_in_split[0]
+        return ivy.Device(dev_in_split[0])
     dev_type, dev_idx = dev_in_split
     dev_type = dev_type.lower()
     if dev_type == "cpu":
-        return dev_type
-    return ":".join([dev_type, dev_idx])
+        return ivy.Device(dev_type)
+    return ivy.Device(":".join([dev_type, dev_idx]))
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if isinstance(device, str) and "/" in device:
         return device
-    ret = "/" + device.upper()
+    ret = "/" + ivy.Device(device).upper()
     if not ret[-1].isnumeric():
-        ret = ret + ":0"
+        ret += ":0"
     return ret
 
 
-clear_mem_on_dev = lambda dev: None
+clear_mem_on_dev = lambda device: None
 _dev_callable = dev
 
 

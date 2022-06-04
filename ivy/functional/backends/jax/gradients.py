@@ -1,10 +1,7 @@
-"""
-Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import jax
-import jax.numpy as jnp
 import jax.lax as jlax
 import jaxlib as jaxlib
 from jaxlib.xla_extension import Buffer

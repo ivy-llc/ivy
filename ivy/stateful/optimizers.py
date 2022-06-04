@@ -1,10 +1,7 @@
-"""
-Collection of Ivy optimizers.
-"""
+"""Collection of Ivy optimizers."""
 
 # global
 import abc
-import logging
 
 # local
 import ivy
@@ -28,23 +25,28 @@ class Optimizer(abc.ABC):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
-        :param lr: Learning rate.
-        :type lr: function or float.
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
-        :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
-        :type stop_gradients: bool, optional
-        :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.
-        :type init_on_first_step: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
-        :type compile_on_next_step: bool, optional
-        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
-                                         raised during the compiled forward pass. Default is True.
-        :type fallback_to_non_compiled: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type device: ivy.Device, optional
+        Parameters
+        ----------
+        lr
+            Learning rate.
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        init_on_first_step
+            Whether the optimizer is initialized on the first step. Default is False.
+        compile_on_next_step
+            Whether to compile the optimizer on the next step. Default is False.
+        fallback_to_non_compiled
+            Whether to fall back to non-compiled forward call in the case that an error
+            is raised during the compiled forward pass. Default is True.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
         """
         self._lr = lr
         self._inplace = inplace
@@ -66,20 +68,39 @@ class Optimizer(abc.ABC):
     @abc.abstractmethod
     def _step(self, v, grads):
         """
-        Update nested variables container v from update step, using nested grads container.
-        Override this abstract method with child class custom implementation.
+        Update nested variables container v from update step, using nested grads
+        container. Override this abstract method with child class custom
+        implementation.
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :return: The updated variables, following update step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The updated variables, following update step.
+
         """
         raise NotImplementedError
 
     # Given #
 
     def _step_fn(self, v, grads, ignore_missing):
+        """
+
+        Parameters
+        ----------
+        v
+
+        grads
+
+        ignore_missing
+
+        """
         if ignore_missing:
             return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
         return self._step(v, grads)
@@ -94,8 +115,10 @@ class Optimizer(abc.ABC):
         """
         Set state of the optimizer.
 
-        :param state: Nested state to update.
-        :type state: Ivy container of state tensors
+        Parameters
+        ----------
+        state
+            Nested state to update.
         """
         raise NotImplementedError
 
@@ -105,14 +128,22 @@ class Optimizer(abc.ABC):
         """
         Update nested variables container v from overriden private self._step
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
-                               Default is False.
-        :type ignore_missing: bool, optional
-        :return: The updated variables, following update step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+        ignore_missing
+            Whether to ignore keys missing from the gradients which exist in
+            the variables.
+            Default is False.
+
+        Returns
+        -------
+        ret
+            The updated variables, following update step.
+
         """
         self._count += 1
         self._initialized = True
@@ -134,16 +165,20 @@ class SGD(Optimizer):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
-        :param lr: Learning rate, default is 1e-4.
-        :type lr: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
-        :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
-        :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
-        :type compile_on_next_step: bool, optional
+        Parameters
+        ----------
+        lr
+            Learning rate, default is 1e-4.
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        compile_on_next_step
+            Whether to compile the optimizer on the next step. Default is False.
         """
         Optimizer.__init__(
             self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
@@ -153,13 +188,21 @@ class SGD(Optimizer):
 
     def _step(self, v, grads):
         """
-        Update nested variables container v by gradient descent step, using nested gradients container.
+        Update nested variables container v by gradient descent step,
+        using nested gradients container.
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :return: The new updated variables container, following gradient descent step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The new updated variables container, following gradient descent step.
+
         """
         return ivy.gradient_descent_update(
             v,
@@ -173,13 +216,16 @@ class SGD(Optimizer):
         """
         Set state of the optimizer.
 
-        :param state: Nested state to update.
-        :type state: Ivy container of state tensors
+        Parameters
+        ----------
+        state
+            Nested state to update.
         """
         pass
 
     @property
     def state(self):
+
         return ivy.Container({})
 
 
@@ -195,18 +241,22 @@ class LARS(Optimizer):
         """
         Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.
 
-        :param lr: Learning rate, default is 1e-4.
-        :type lr: float, optional
-        :param decay_lambda: The factor used for weight decay. Default is zero.
-        :type decay_lambda: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
-        :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
-        :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
-        :type compile_on_next_step: bool, optional
+        Parameters
+        ----------
+        lr
+            Learning rate, default is 1e-4.
+        decay_lambda
+            The factor used for weight decay. Default is zero.
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        compile_on_next_step
+            Whether to compile the optimizer on the next step. Default is False.
         """
         self._decay_lambda = decay_lambda
         Optimizer.__init__(
@@ -217,13 +267,21 @@ class LARS(Optimizer):
 
     def _step(self, v, grads):
         """
-        Update nested variables container v by gradient descent step, using nested gradients container.
+        Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :return: The new updated variables container, following LARS step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The new updated variables container, following LARS step.
+
         """
         return ivy.lars_update(
             v,
@@ -238,13 +296,16 @@ class LARS(Optimizer):
         """
         Set state of the optimizer.
 
-        :param state: Nested state to update.
-        :type state: Ivy container of state tensors
+        Parameters
+        ----------
+        state
+            Nested state to update.
         """
         pass
 
     @property
     def state(self):
+
         return ivy.Container({})
 
 
@@ -263,24 +324,29 @@ class Adam(Optimizer):
         """
         Construct an ADAM optimizer.
 
-        :param lr: Learning rate, default is 1e-4.
-        :type lr: float, optional
-        :param beta1: gradient forgetting factor, default is 0.9
-        :type beta1: float, optional
-        :param beta2: second moment of gradient forgetting factor, default is 0.999
-        :type beta2: float, optional
-        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
-        :type epsilon: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
-        :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
-        :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
-        :type compile_on_next_step: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type device: ivy.Device, optional
+        Parameters
+        ----------
+        lr
+            Learning rate, default is 1e-4.
+        beta1
+            gradient forgetting factor, default is 0.9
+        beta2
+            second moment of gradient forgetting factor, default is 0.999
+        epsilon
+            divisor during adam update, preventing division by zero, default is 1e-07
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        compile_on_next_step
+            Whether to compile the optimizer on the next step. Default is False.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
         """
         Optimizer.__init__(
             self, lr, inplace, stop_gradients, True, compile_on_next_step, device
@@ -297,13 +363,21 @@ class Adam(Optimizer):
 
     def _step(self, v, grads):
         """
-        Update nested variables container v by Adam update step, using nested grads container.
+        Update nested variables container v by Adam update step,
+        using nested grads container.
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :return: The updated variables, following Adam update step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The updated variables, following Adam update step.
+
         """
         if self._first_pass:
             self._mw = grads
@@ -328,14 +402,17 @@ class Adam(Optimizer):
         """
         Set state of the optimizer.
 
-        :param state: Nested state to update.
-        :type state: Ivy container of state tensors
+        Parameters
+        ----------
+        state
+            Nested state to update.
         """
         self._mw = state.mw
         self._vw = state.vw
 
     @property
     def state(self):
+
         return ivy.Container({"mw": self._mw, "vw": self._vw})
 
 
@@ -356,29 +433,34 @@ class LAMB(Optimizer):
         """
         Construct an LAMB optimizer.
 
-        :param lr: Learning rate, default is 1e-4.
-        :type lr: float, optional
-        :param beta1: gradient forgetting factor, default is 0.9
-        :type beta1: float, optional
-        :param beta2: second moment of gradient forgetting factor, default is 0.999
-        :type beta2: float, optional
-        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
-        :type epsilon: float, optional
-        :param max_trust_ratio: The max value of the trust ratio; the ratio between the norm of the layer weights and
-                                norm of gradients update. Default is 10.
-        :type max_trust_ratio: float, optional
-        :param decay_lambda: The factor used for weight decay. Default is zero.
-        :type decay_lambda: float, optional
-        :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch.
-                        Default is True, provided the backend framework supports it.
-        :type inplace: bool, optional
-        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
-        :type stop_gradients: bool, optional
-        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
-        :type compile_on_next_step: bool, optional
-        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type device: ivy.Device, optional
+        Parameters
+        ----------
+        lr
+            Learning rate, default is 1e-4.
+        beta1
+            gradient forgetting factor, default is 0.9
+        beta2
+            second moment of gradient forgetting factor, default is 0.999
+        epsilon
+            divisor during adam update, preventing division by zero, default is 1e-07
+        max_trust_ratio
+            The max value of the trust ratio; the ratio between the norm of the layer
+            weights and norm of gradients update. Default is 10.
+        decay_lambda
+            The factor used for weight decay. Default is zero.
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        compile_on_next_step
+            Whether to compile the optimizer on the next step. Default is False.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
         """
         Optimizer.__init__(
             self, lr, inplace, stop_gradients, True, compile_on_next_step, device
@@ -396,13 +478,20 @@ class LAMB(Optimizer):
 
     def _step(self, v, grads):
         """
-        Update nested variables container v by LAMB update step, using nested grads container.
+        Update nested variables container v by LAMB update step,
+        using nested grads container.
 
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :return: The updated variables, following LAMB update step.
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The updated variables, following LAMB update step.
         """
         if self._first_pass:
             self._mw = grads
@@ -426,15 +515,17 @@ class LAMB(Optimizer):
         return new_v
 
     def set_state(self, state):
-        """
-        Set state of the optimizer.
+        """Set state of the optimizer.
 
-        :param state: Nested state to update.
-        :type state: Ivy container of state tensors
+        Parameters
+        ----------
+        state
+            Nested state to update.
         """
         self._mw = state.mw
         self._vw = state.vw
 
     @property
     def state(self):
+
         return ivy.Container({"mw": self._mw, "vw": self._vw})

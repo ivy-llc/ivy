@@ -1,6 +1,4 @@
-"""
-Converter from JAX Haiku Modules to Ivy Modules
-"""
+"""Converter from JAX Haiku Modules to Ivy Modules."""
 
 # global
 import haiku as hk
@@ -52,7 +50,7 @@ class IvyModule(ivy.Module):
         self._hk_params = ivy.Container(params_dict)
         param_iterator = self._hk_params.to_iterator()
         _, param0 = next(param_iterator)
-        self._dev = ivy.dev_to_str(param0.device())
+        self._dev = ivy.as_ivy_dev(param0.device())
 
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
