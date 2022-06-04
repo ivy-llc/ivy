@@ -174,3 +174,11 @@ However, the :code:`device` argument for functions listed in `NON_WRAPPED_FUNCTI
 are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
 and so these defaults must be handled by the backend-specific implementations themselves,
 by calling :code:`ivy.default_device` internally.
+
+**Round Up**
+
+This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

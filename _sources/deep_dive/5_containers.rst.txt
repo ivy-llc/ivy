@@ -167,3 +167,12 @@ These special methods all directly wrap the corresponding API *static* :code:`iv
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
 :code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
 :code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+
+
+**Round Up**
+
+This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
