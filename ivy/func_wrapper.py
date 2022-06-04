@@ -227,6 +227,10 @@ def outputs_to_ivy_arrays(fn):
     return new_fn
 
 
+def to_native_arrays_and_back(fn):
+    return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
 # Functions #
 
 
