@@ -60,7 +60,7 @@ def asarray(
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]], *, dtype: torch.dtype, device: torch.device
-    ) -> Tensor:
+) -> torch.Tensor:
     return torch.zeros(
         shape,
         dtype=dtype,

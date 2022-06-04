@@ -28,10 +28,7 @@ def ones(
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]], *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device,) -> JaxArray:
-    return _to_dev(
-        jnp.zeros(shape, dtype),
-        device=device,
-    )
+    return _to_dev(jnp.zeros(shape, dtype),device=device)
 
 
 def full_like(
