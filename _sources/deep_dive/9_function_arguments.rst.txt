@@ -165,3 +165,19 @@ every type hint for these functions should technically be extended like so: :cod
 However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
 Therefore, we simply omit these :code:`ivy.Container` type hints from *nestable* functions,
 and instead mention in the docstring whether the function is *nestable* or not.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding function arguments.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5cAbryXza18">
+    </iframe>
