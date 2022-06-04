@@ -1,6 +1,11 @@
 Docstring Examples
 ==================
 
+.. _`docstring examples discussion`: https://github.com/unifyai/ivy/discussions/1322
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
+
 After writing the general docstring, the final step is to add helpful examples to the docstring.
 
 There are three types of examples. There are *functional* examples, which show the function being called like so
@@ -599,8 +604,9 @@ However, :code:`ivy.add` *is* an operator function. We therefore add the three o
 These three examples should give you a good understanding of what is required when adding docsting examples.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `docstring examples discussion`_,
+or reach out on `discord`_ in the `docstring examples channel`_!
+
 
 **Video**
 
