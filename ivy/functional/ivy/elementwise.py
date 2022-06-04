@@ -1451,7 +1451,7 @@ def negative(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.NativeArray([-1.1,-1,0,1,1.1])
+    >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
     >>> y = ivy.negative(x)
     >>> print(y)
     ivy.array([ 1.1,  1. , -0. , -1. , -1.1], dtype=float32)
