@@ -174,7 +174,12 @@ def eye(
 
 # noinspection PyShadowingNames
 def arange(
-    start, stop=None, step=1, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    start,
+    stop=None,
+    step=1,
+    *,
+    dtype: jnp.dtype = None,
+    device: jaxlib.xla_extension.Device,
 ):
     if dtype:
         dtype = as_native_dtype(dtype)
