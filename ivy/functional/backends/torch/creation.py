@@ -320,7 +320,9 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, *, dtype: torch.dtype, device: torch.device):
+def arange(
+    start, stop=None, step=1, *, dtype: torch.dtype = None, device: torch.device
+):
 
     if stop is None:
         stop = start
