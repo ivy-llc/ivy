@@ -113,7 +113,7 @@ def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype,
+    dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
