@@ -1,6 +1,7 @@
 import ivy
 import inspect
 import importlib
+import functools
 import numpy as np
 from types import ModuleType
 from typing import Callable, Optional, List, Union
@@ -169,6 +170,7 @@ def _get_first_array(*args, **kwargs):
 
 
 def inputs_to_native_arrays(fn):
+    @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
@@ -197,6 +199,7 @@ def inputs_to_native_arrays(fn):
 
 
 def inputs_to_ivy_arrays(fn):
+    @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
         Converts all `ivy.NativeArray` instances in both the positional and keyword
@@ -225,6 +228,7 @@ def inputs_to_ivy_arrays(fn):
 
 
 def outputs_to_ivy_arrays(fn):
+    @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.NativeArray` instances in
@@ -259,6 +263,7 @@ def to_native_arrays_and_back(fn):
 
 
 def infer_dtype(fn):
+    @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
         """
         Determines the correct `dtype`, and then calls the function with the `dtype`
@@ -294,6 +299,7 @@ def infer_dtype(fn):
 
 
 def infer_device(fn):
+    @functools.wraps(fn)
     def new_fn(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
@@ -331,6 +337,7 @@ def infer_device(fn):
 def handle_out_argument(fn):
     handle_out_in_backend = "out" in inspect.signature(fn).parameters.keys()
 
+    @functools.wraps(fn)
     def new_fn(*args, out=None, **kwargs):
         if out is None:
             return fn(*args, **kwargs)
@@ -357,6 +364,7 @@ def handle_nestable(fn):
     fn_name = fn.__name__
     cont_fn = getattr(ivy.Container, "static_" + fn_name)
 
+    @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
