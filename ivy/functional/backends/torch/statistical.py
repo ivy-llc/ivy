@@ -46,7 +46,10 @@ def sum(
             dtype = torch.int64
 
     if axis is None:
-        return torch.sum(input=x, dtype=dtype, out=out)
+        if out:
+            return torch.sum(input=x, dtype=dtype, out=out)
+        else:
+            return torch.sum(input=x, dtype=dtype)
     elif type(axis) == list:
         return torch.sum(input=x, dim=axis, out=out)
     elif type(axis) == tuple:
