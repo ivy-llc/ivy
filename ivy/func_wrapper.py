@@ -103,7 +103,15 @@ ARRAYLESS_RET_FUNCTIONS = [
     "is_variable",
 ]
 NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
-NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
+NON_DTYPE_WRAPPED_FUNCTIONS = [
+    "arange",
+    "asarray",
+    "array",
+    "full",
+    "prod",
+    "sum",
+    "astype",
+]
 NON_DEV_WRAPPED_FUNCTIONS = []
 
 FW_FN_KEYWORDS = {
