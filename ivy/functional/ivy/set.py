@@ -217,7 +217,7 @@ def unique_counts(
 
     With :code: 'ivy.NativeArray' input:
 
-    >>> x = ivy.NativeArray([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
+    >>> x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
     Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
@@ -226,7 +226,7 @@ def unique_counts(
     ------------------------
 
     Using :code:`ivy.Array` instance method:
-    >>> x = ivy.Array([0., 1., 3. , 2. , 1. , 0.])
+    >>> x = ivy.array([0., 1., 3. , 2. , 1. , 0.])
     >>> y = x.unique_counts()
     >>> print(y)
     Tuple([0., 1., 2., 3.],[2,2,1,1])
