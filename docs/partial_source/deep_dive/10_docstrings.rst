@@ -15,6 +15,10 @@ In order to explain how docstrings should be written, we will use :code:`ivy.tan
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
 
+Important: you should open the file in **raw** format.
+If you copy directly from the file preview on GitHub before clicking **raw**,
+then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
+
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
 .. code-block:: python
@@ -134,3 +138,19 @@ If the function that you are writing a docstring for is **not** in the `Array AP
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding docstings.
+
+If you're ever unsure of how best to proceed,
+please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
+and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/TnshJ8swuJM">
+    </iframe>

@@ -117,6 +117,7 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
 
 
 def astype(x: np.ndarray, dtype: np.dtype, copy: bool = True) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = np.copy(x)

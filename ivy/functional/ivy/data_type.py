@@ -162,7 +162,9 @@ def dtype(
 
 
 def astype(
-    x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True
+    x: Union[ivy.Array, ivy.NativeArray],
+    dtype: Union[ivy.Dtype, ivy.NativeDtype],
+    copy: bool = True,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.

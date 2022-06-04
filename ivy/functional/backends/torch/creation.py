@@ -22,7 +22,11 @@ from ivy.functional.backends.numpy.data_type import as_ivy_dtype as np_as_ivy_dt
 
 
 def asarray(
-    object_in, *, copy: Optional[bool] = None, dtype: torch.dtype, device: torch.device
+    object_in,
+    *,
+    copy: Optional[bool] = None,
+    dtype: torch.dtype = None,
+    device: torch.device,
 ):
     device = default_device(device)
     if isinstance(object_in, torch.Tensor) and dtype is None:
@@ -316,7 +320,9 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, *, dtype: torch.dtype, device: torch.device):
+def arange(
+    start, stop=None, step=1, *, dtype: torch.dtype = None, device: torch.device
+):
 
     if stop is None:
         stop = start
