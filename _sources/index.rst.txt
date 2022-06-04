@@ -95,7 +95,7 @@ We use 🚧 to indicate that the feature being discussed is in development. We u
 Check out the docs_ for more info, and check out our Google Colabs_ for some interactive demos!
 
 🚨 Ivy is still at a relatively early stage of development.
-Expect breaking changes and sharp edges until we release version 2.0 in the next few weeks!
+Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
 
 Quick Start
 -----------
