@@ -1,13 +1,28 @@
-Type Hints
-==========
+Function Arguments
+==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`function arguments discussion`: https://github.com/unifyai/ivy/discussions/1320
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
 
-The most basic three rules are (a) all arguments should use full and thorough type hints,
-and (b) all arguments should be added on a new line, and (c) the return type hint should also be added on a new line.
+Here, we explain how the function arguments differ between the placeholder implementation at
+:code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
+:code:`ivy/functional/backends/backend_name/category_name.py`.
 
-For diving deeper into other requirements for the type-hints, it's useful to look at some examples.
+Many of these points are already adressed in the previous sections:
+:ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
+However, we thought it would be convenient to revisit all of these considerations in a single section,
+dedicated to function arguments.
+
+As for type-hints,
+all functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
+Likewise, all backend implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py` should also have full and thorough type-hints.
+
+In order to understand the various requirements for function arguments, it's useful to first look at some examples.
 
 Examples
 --------
@@ -63,8 +78,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 
     # TensorFlow
     def add(
-        x1: Tensor,
-        x2: Tensor
+        x1: Union[tf.Tensor, tf.Variable],
+        x2: Union[tf.Tensor, tf.Variable]
     ) -> Tensor:
 
 .. code-block:: python
@@ -86,6 +101,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
         device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
+Positional and Keyword Arguments
+
 Arrays
 ------
 
@@ -100,13 +117,32 @@ calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array wi
 :code:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
 This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no :code:`out` argument is specified.
+This is all explained in more detail in the :ref:`Arrays` section.
 
-However, there is no need to prevent native arrays from being permitted in the input.
-For Ivy methods which wrap backend-specific implementations, the input arrays needs to be converted to a native arrays
-(such as :code:`torch.Tensor`) anyway before calling the wrapped backend function.
-This is also not a problem for compositional Ivy functions such as :code:`ivy.lstm_update`
-which do not defer to any backend function,
-the native array inputs can simply be converted to :code:`ivy.Array` instances before executing the Ivy implementation.
+out Argument
+------------
+
+The :code:`out` argument should always be provided as keyword-only arguments.
+Additionally, the :code:`out` argument should **only** be added to the backend functions if the wrapped backend function
+directly supports supports the :code:`out` argument itself. Otherwise, the :code:`out` argument should be omitted from
+the backend implementation. The inplace update is automatically handled in the
+wrapper code if no :code:`out` argument is detected in the backend signature, which is why we should only add it if the
+wrapped backend function itself supports the :code:`out` argument,
+which will result in the most efficient inplace update.
+This is all explained in more detail in the :ref:`Inplace Updates` section.
+
+dtype and device arguments
+--------------------------
+
+In the Ivy API at :code:`ivy/functional/ivy/category_name.py`,
+the :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments,
+with default value of :code:`None`.
+In contrast, these arguments should both be added as required arguments in the backend implementation
+at :code:`ivy/functional/backends/backend_name/category_name.py`.
+In a nutshell, by the time the backend implementation is enterred,
+the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
+by code which is wrapped around the backend implementation.
+This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
 
 Integer Sequences
 -----------------
@@ -115,33 +151,38 @@ For sequences of integers, generally the `Array API Standard`_ dictates that the
 and not :code:`List[int]`. However, in order to make Ivy code less brittle,
 we accept arbitrary integer sequences :code:`Sequence[int]` for such arguments
 (which includes :code:`list`, :code:`tuple` etc.).
-This does not break the standard, as the standard is only intended to define a subset of required function behaviour.
+This does not break the standard, as the standard is only intended to define a subset of required behaviour.
 The standard can be freely extended, as we are doing here.
 Good examples of this are the :code:`axis` argument of :code:`ivy.roll`
 and the :code:`shape` argument of :code:`ivy.zeros`, as shown above.
-
-Keyword-Only Arguments
-----------------------
-
-The :code:`dtype`, :code:`device` and :code:`out` arguments should always be provided as keyword-only arguments.
-Additionally, the :code:`out` argument should **only** be added if the wrapped backend function directly supports
-supports the :code:`out` argument itself. Otherwise, the :code:`out` argument should be omitted.
-The reasons for this are explaiend in the :ref:`Adding Functions` section,
-but in a nutshell it's because these three arguments are handled by external code which wraps around these functions.
-By the time the backend implementation is enterred, the correct :code:`dtype` and :code:`device` to use have both
-already been correctly inferred. As for the :code:`out` argument, the inplace update is automatically handled in the
-wrapper code if no :code:`out` argument is detected in the backend signature, which is why we should only add it if the
-wrapped backend function itself supports the :code:`out` argument, which will result in a more efficient inplace update.
 
 Nestable Functions
 ------------------
 
 Most functions in the Ivy API can also consume and return :code:`ivy.Container` instances in place of the **any** of
 the function arguments. if an :code:`ivy.Container` is passed, then the function is mapped across all of the leaves of
-this container. Because of this feature, we refer to these functions as as *nestable* functions.
+this container. Because of this feature, we refer to these functions as *nestable* functions.
 However, because so many functions in the Ivy API are indeed *nestable* functions,
-and because this flexibility applies to **every** argument,
+and because this flexibility applies to **every** argument in the function,
 every type hint for these functions should technically be extended like so: :code:`Union[original_type, ivy.Container]`.
+
 However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
 Therefore, we simply omit these :code:`ivy.Container` type hints from *nestable* functions,
 and instead mention in the docstring whether the function is *nestable* or not.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding function arguments.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `function arguments discussion`_,
+or reach out on `discord`_ in the `function arguments channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/5cAbryXza18">
+    </iframe>

@@ -14,6 +14,7 @@ def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.
@@ -56,7 +57,7 @@ def min(
         as x.
 
     """
-    return _cur_backend.min(x, axis, keepdims, out)
+    return _cur_backend.min(x, axis, keepdims, out=out)
 
 
 # noinspection PyShadowingBuiltins
@@ -64,6 +65,7 @@ def max(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
@@ -72,8 +74,8 @@ def max(
        When the number of elements over which to compute the maximum value is zero, the
        maximum value is implementation-defined. Specification-compliant libraries may
        choose to raise an error, return a sentinel value (e.g., if ``x`` is a
-       floating-point input array, return ``NaN``), or return the minimum possible 
-       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point 
+       floating-point input array, return ``NaN``), or return the minimum possible
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point
        array, return ``-infinity``).
 
     **Special Cases**
@@ -116,6 +118,7 @@ def var(
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the variance of the input array x.
@@ -170,6 +173,7 @@ def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
@@ -208,8 +212,8 @@ def mean(
            While this specification recommends that this function only accept input
            arrays having a floating-point data type, specification-compliant array
            libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input 
-           array ``x`` has an integer data type, the returned array must have the 
+           While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
     """
@@ -272,6 +276,7 @@ def sum(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
@@ -346,6 +351,7 @@ def std(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the standard deviation of the input array ``x``.
@@ -412,11 +418,7 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str,
-    *operands: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
@@ -513,4 +515,4 @@ def einsum(
                 [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
 
     """
-    return _cur_backend(operands[0]).einsum(equation, *operands, out=out)
+    return _cur_backend(operands[0]).einsum(equation, *operands)

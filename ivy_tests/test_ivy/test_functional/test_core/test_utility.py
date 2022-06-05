@@ -1,25 +1,29 @@
 """Collection of tests for utility functions."""
 
 # global
-import pytest
 import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 
 
 # all
-@pytest.mark.parametrize("x", [[1.0, 2.0, 3.0], [[1.0, 2.0, 3.0]]])
-@pytest.mark.parametrize("axis", [None, 0, -1, (0,), (-1,)])
-@pytest.mark.parametrize("kd", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_all(x, axis, kd, dtype, with_out, tensor_fn, device, call):
+@given(
+    data=st.data(),
+    kd=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    with_out=st.booleans(),
+    as_variable=st.booleans(),
+)
+def test_all(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test
-    x = tensor_fn(x, dtype, device)
+    x, axis = data.draw(helpers.get_axis(dtype))
+    x = ivy.array(x, dtype=dtype, device=device)
+    if as_variable:
+        x = ivy.variable(x)
     if axis is None:
         expected_shape = [1] * len(x.shape) if kd else []
     else:
@@ -34,7 +38,7 @@ def test_all(x, axis, kd, dtype, with_out, tensor_fn, device, call):
         else:
             [expected_shape.pop(item) for item in axis_]
     if with_out:
-        out = ivy.astype(ivy.zeros(tuple(expected_shape)), ivy.bool)
+        out = ivy.astype(ivy.zeros(tuple(expected_shape)), dtype=ivy.bool)
         ret = ivy.all(x, axis, kd, out=out)
     else:
         ret = ivy.all(x, axis, kd)
@@ -47,22 +51,26 @@ def test_all(x, axis, kd, dtype, with_out, tensor_fn, device, call):
             # these backends do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
-            # value test
+    # value test
     assert np.allclose(
         call(ivy.all, x), ivy.functional.backends.numpy.all(ivy.to_numpy(x))
     )
 
 
 # any
-@pytest.mark.parametrize("x", [[1.0, 2.0, 3.0], [[1.0, 2.0, 3.0]]])
-@pytest.mark.parametrize("axis", [None, 0, -1, (0,), (-1,)])
-@pytest.mark.parametrize("kd", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_any(x, axis, kd, dtype, with_out, tensor_fn, device, call):
+@given(
+    data=st.data(),
+    kd=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    with_out=st.booleans(),
+    as_variable=st.booleans(),
+)
+def test_any(data, kd, dtype, with_out, as_variable, device, call):
     # smoke test
-    x = tensor_fn(x, dtype, device)
+    x, axis = data.draw(helpers.get_axis(dtype))
+    x = ivy.array(x, dtype=dtype, device=device)
+    if as_variable:
+        x = ivy.variable(x)
     if axis is None:
         expected_shape = [1] * len(x.shape) if kd else []
     else:
@@ -77,7 +85,7 @@ def test_any(x, axis, kd, dtype, with_out, tensor_fn, device, call):
         else:
             [expected_shape.pop(item) for item in axis_]
     if with_out:
-        out = ivy.astype(ivy.zeros(tuple(expected_shape)), ivy.bool)
+        out = ivy.astype(ivy.zeros(tuple(expected_shape)), dtype=ivy.bool)
         ret = ivy.any(x, axis, kd, out=out)
     else:
         ret = ivy.any(x, axis, kd)

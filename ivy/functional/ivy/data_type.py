@@ -162,7 +162,9 @@ def dtype(
 
 
 def astype(
-    x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True
+    x: Union[ivy.Array, ivy.NativeArray],
+    dtype: Union[ivy.Dtype, ivy.NativeDtype],
+    copy: bool = True,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -644,9 +646,8 @@ def is_int_dtype(
         return (
             True
             if ivy.nested_indices_where(
-                dtype_in, lambda x: isinstance(
-                    x, (int, np.integer)
-                ) and not type(x) == bool
+                dtype_in,
+                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
             )
             else False
         )
