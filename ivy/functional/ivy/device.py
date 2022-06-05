@@ -140,7 +140,6 @@ def print_all_arrays_on_dev(device: Union[ivy.Device]):
     <class 'numpy.ma.core.MaskedConstant'> () 
     
     """
-    
     for arr in get_all_arrays_on_dev(device):
         print(type(arr), arr.shape)
 
