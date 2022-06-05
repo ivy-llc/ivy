@@ -14,6 +14,10 @@ Devices
 .. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L326
 .. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L371
 .. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424
+.. _`devices discussion`: https://github.com/unifyai/ivy/discussions/1317
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
 
 The devices currently supported by Ivy are as follows:
 
@@ -174,3 +178,11 @@ However, the :code:`device` argument for functions listed in `NON_WRAPPED_FUNCTI
 are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
 and so these defaults must be handled by the backend-specific implementations themselves,
 by calling :code:`ivy.default_device` internally.
+
+**Round Up**
+
+This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `devices discussion`_,
+or reach out on `discord`_ in the `devices channel`_!

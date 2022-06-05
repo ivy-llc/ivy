@@ -4,7 +4,6 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-import ivy
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 
@@ -16,7 +15,7 @@ from ivy.functional.backends.numpy.device import _to_dev
 # -------------------#
 
 
-def asarray(object_in, *, copy=None, dtype: np.dtype, device: str):
+def asarray(object_in, *, copy=None, dtype: np.dtype = None, device: str):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
@@ -142,7 +141,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, *, dtype: np.dtype, device: str):
+def arange(start, stop=None, step=1, *, dtype: np.dtype = None, device: str):
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device=device)
@@ -158,7 +157,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: np.dtype,
+    dtype: np.dtype = None,
     device: str
 ) -> np.ndarray:
     return _to_dev(

@@ -232,11 +232,86 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     ----------
     xs
         Sequence of arrays to compare for equality
+    dtype
+        list data type
 
     Returns
     -------
     ret
         Boolean, whether or not all of the input arrays are equal across all elements.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> i = ivy.array([1, 2])
+    >>> j = ivy.arrays_equal([i])
+    >>> print(j)
+    True
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.array([1, 0, 2])
+    >>> z = ivy.array([0, 1, 2])
+    >>> w = ivy.arrays_equal([x, y, z])
+    >>> print(w)
+    False
+
+    >>> a = ivy.array([-1, 0, 1])
+    >>> b = ivy.array([-1, 0, 1])
+    >>> c = ivy.array([-1, 0, 1])
+    >>> d = ivy.arrays_equal([a, b, c])
+    >>> print(d)
+    True
+
+    >>> x = ivy.array([0.1, 1.1])
+    >>> y = ivy.array([0.1, 1.1, 2.1])
+    >>> z = ivy.array([0.1, 1.1])
+    >>> w = ivy.arrays_equal([x, y, z])
+    >>> print(w)
+    False
+
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
+    >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
+    >>> o = ivy.arrays_equal([m, n])
+    >>> print(o)
+    False
+
+    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> b = ivy.array([1, 2, 3, 0, -1])
+    >>> c = ivy.arrays_equal([a,b])
+    >>> print(c)
+    True
+
+    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> b = ivy.array([1, 2, 3, 0, -2])
+    >>> c = ivy.arrays_equal([a,b])
+    >>> print(c)
+    False
+
+
+    With :code:`ivy.Container` input:
+
+    >>> r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> t = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([6., 7., 8.]))
+    >>> print(ivy.arrays_equal([r,s,t]))
+    {
+        a: true,
+        b: false
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.array([0,1,2])
+    >>> z = ivy.arrays_equal([x,y])
+    >>> print(z)
+    {
+        a: true,
+        b: false
+    }
 
     """
     x0 = xs[0]
@@ -375,6 +450,7 @@ def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -400,14 +476,8 @@ def clip_vector_norm(
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ratio * x)
-        else:
-            return ratio * x
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
-    else:
-        return ivy.copy_array(x)._data
+        return ratio * x
+    return ivy.copy_array(x)._data
 
 
 def clip_matrix_norm(
@@ -438,6 +508,7 @@ def clip_matrix_norm(
 def floormod(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns element-wise remainder of division.
@@ -458,7 +529,7 @@ def floormod(
         An array of the same shape and type as x, with the elements floor modded.
 
     """
-    return _cur_backend(x).floormod(x, y, out)
+    return _cur_backend(x).floormod(x, y, out=out)
 
 
 def unstack(
@@ -1198,6 +1269,7 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -1224,6 +1296,7 @@ def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative product of the elements along a given axis.

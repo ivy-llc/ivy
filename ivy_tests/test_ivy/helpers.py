@@ -613,7 +613,9 @@ def integers(draw, min_value=None, max_value=None):
 
 
 @st.composite
-def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
+def dtype_and_values(
+    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10
+):
     if n_arrays == 1:
         types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
@@ -626,11 +628,12 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1, allow_inf=True):
         dtype = list(draw(st.sampled_from(types)))
     if n_arrays == 3:
         dtype.append(dtype[0])
-
-    size = draw(st.integers(0, 10))
+    shape = draw(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size))
     values = []
     for i in range(n_arrays):
-        values.append(draw(array_values(dtype[i], size, allow_inf)))
+        values.append(
+            draw(array_values(dtype=dtype[i], shape=shape, allow_inf=allow_inf))
+        )
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
@@ -657,64 +660,133 @@ def subsets(draw, elements):
 
 
 @st.composite
-def array_values(draw, dtype, size, allow_inf=None):
-    if dtype == "int8":
-        values = draw(list_of_length(st.integers(-128, 127), size))
-    elif dtype == "int16":
-        values = draw(list_of_length(st.integers(-32768, 32767), size))
-    elif dtype == "int32":
-        values = draw(list_of_length(st.integers(-2147483648, 2147483647), size))
-    elif dtype == "int64":
-        values = draw(
-            list_of_length(st.integers(-9223372036854775808, 9223372036854775807), size)
-        )
-    elif dtype == "uint8":
-        values = draw(list_of_length(st.integers(0, 255), size))
-    elif dtype == "uint16":
-        values = draw(list_of_length(st.integers(0, 65535), size))
-    elif dtype == "uint32":
-        values = draw(list_of_length(st.integers(0, 4294967295), size))
-    elif dtype == "uint64":
-        values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
+def array_values(
+    draw,
+    dtype,
+    shape,
+    min_value=None,
+    max_value=None,
+    allow_nan=False,
+    allow_subnormal=False,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    allow_negative=True,
+):
+    size = 1
+    if type(shape) != tuple:
+        size = shape
+    else:
+        for dim in shape:
+            size *= dim
+    if "int" in dtype:
+        if dtype == "int8":
+            min_value = min_value if min_value else -128
+            max_value = max_value if max_value else 127
+        elif dtype == "int16":
+            min_value = min_value if min_value else -32768
+            max_value = max_value if max_value else 32767
+        elif dtype == "int32":
+            min_value = min_value if min_value else -2147483648
+            max_value = max_value if max_value else 2147483647
+        elif dtype == "int64":
+            min_value = min_value if min_value else -9223372036854775808
+            max_value = max_value if max_value else 9223372036854775807
+        elif dtype == "uint8":
+            min_value = min_value if min_value else 0
+            max_value = max_value if max_value else 255
+        elif dtype == "uint16":
+            min_value = min_value if min_value else 0
+            max_value = max_value if max_value else 65535
+        elif dtype == "uint32":
+            min_value = min_value if min_value else 0
+            max_value = max_value if max_value else 4294967295
+        elif dtype == "uint64":
+            min_value = min_value if min_value else 0
+            max_value = max_value if max_value else 18446744073709551615
+        values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
             list_of_length(
-                st.floats(width=16, allow_subnormal=False, allow_infinity=allow_inf),
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
                 size,
             )
         )
     elif dtype == "float32":
         values = draw(
             list_of_length(
-                st.floats(width=32, allow_subnormal=False, allow_infinity=allow_inf),
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
                 size,
             )
         )
     elif dtype == "float64":
         values = draw(
             list_of_length(
-                st.floats(width=64, allow_subnormal=False, allow_infinity=allow_inf),
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
                 size,
             )
         )
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
-    return values
+    array = np.array(values)
+    if dtype != "bool" and not allow_negative:
+        array = np.abs(array)
+    if type(shape) == tuple:
+        array = array.reshape(shape)
+    return array.tolist()
 
 
 @st.composite
-def get_shape(draw, allow_none=True, min_size=0):
+def get_shape(
+    draw,
+    allow_none=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
     if allow_none:
         shape = draw(
             st.none()
             | st.lists(
-                st.integers(min_value=1, max_value=8), min_size=min_size, max_size=8
+                st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
             )
         )
     else:
         shape = draw(
             st.lists(
-                st.integers(min_value=1, max_value=8), min_size=min_size, max_size=8
+                st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
             )
         )
     if shape is None:
@@ -852,26 +924,42 @@ def get_bounds(draw, dtype):
 @st.composite
 def get_probs(draw, dtype):
     shape = draw(
-        st.lists(st.integers(min_value=2, max_value=8), min_size=2, max_size=2)
+        get_shape(min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10)
     )
-    probs = []
-    for i in range(shape[0]):
-        probs.append(
-            draw(
-                none_or_list_of_floats(
-                    dtype, shape[1], min_value=0, exclude_min=True, no_none=True
-                )
-            )
-        )
+    probs = draw(array_values(dtype, shape, min_value=0, exclude_min=True))
     return probs, shape[1]
 
 
 @st.composite
-def get_float_array(draw, dtype, allow_nan=False, allow_negative=True):
-    shape = draw(get_shape(allow_none=False, min_size=1))
-    res = np.asarray(draw(xps.arrays(dtype, shape)))
-    if not allow_nan:
-        res[np.isnan(res)] = 0
-    if not allow_negative:
-        res = np.abs(res)
-    return res.tolist()
+def get_axis(draw, dtype):
+    shape = draw(get_shape(allow_none=False, min_num_dims=1))
+    res = np.asarray(
+        draw(
+            array_values(
+                dtype=dtype,
+                shape=shape,
+                min_value=np.nextafter(0, 1) * 1e50 if dtype == "float64" else None,
+            )
+        )
+    )
+    axes = len(shape)
+    axis = draw(
+        st.none()
+        | st.integers(-axes, axes - 1)
+        | st.lists(
+            st.integers(-axes, axes - 1),
+            min_size=1,
+            max_size=axes,
+            unique_by=lambda x: shape[x],
+        )
+    )
+    if type(axis) == list:
+
+        def sort_key(ele, max_len):
+            if ele < 0:
+                return ele + max_len - 1
+            return ele
+
+        axis.sort(key=(lambda ele: sort_key(ele, axes)))
+        axis = tuple(axis)
+    return res, axis

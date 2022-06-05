@@ -4,7 +4,7 @@
 import numpy as np
 from typing import Optional, Union, Tuple
 
-# localf 
+# localf
 
 
 # Extra #
