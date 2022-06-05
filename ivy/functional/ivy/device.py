@@ -39,14 +39,14 @@ class DefaultDevice:
 
     # noinspection PyShadowingNames
     def __init__(self,
-                 device: str,
+                 device: ivy.Device,
                 ) -> None:
         """Initialises the DefaultDevice class
 
         Parameters
         ----------
         device
-            The device string
+            The device string - as an ivy device class
 
         Returns
         -------
