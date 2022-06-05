@@ -2,6 +2,10 @@ Navigating the Code
 ===================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
 
 Categorization
 --------------
@@ -158,5 +162,5 @@ Again, the reasons for these features are explained in the following sections.
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
 If you're ever unsure of how best to proceed,
-please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs,
-and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+please feel free to engage with the `project structure discussion`_,
+or reach out on `discord`_ in the `project structure channel`_!
