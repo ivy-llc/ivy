@@ -108,6 +108,29 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
         row-major, C-style order. The returned array must have the default array index
         data type.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([0, 10, 15, 20, -50, 0])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([1, 2, 3, 4]),)
+
+    >>> x = ivy.array([[1, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (array([0, 0, 1]), array([0, 1, 0]))
+
+    >>> x = ivy.native_array([[0], [1], [1], [0], [1]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
     """
     return _cur_backend(x).nonzero(x)
 
