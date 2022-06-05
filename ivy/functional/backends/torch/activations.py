@@ -7,23 +7,24 @@ from typing import Optional
 # global
 import numpy as np
 import torch
-
+import torch.nn
 # local
+from torch.overrides import handle_torch_function, has_torch_function_unary
+
+import ivy
 
 
-def relu(x: torch.Tensor) -> torch.Tensor:
-    return torch.relu(x)
+def relu(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    ret = torch.relu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2) -> torch.Tensor:
-    return torch.nn.functional.leaky_relu(x, alpha)
+def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2)-> torch.Tensor:
+    return torch.nn.functional.leaky_relu(x,alpha)
 
-
-def gelu(x, approximate: bool = True):
-    if approximate:
-        return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+def gelu(x: torch.Tensor)->torch.Tensor:
     return torch.nn.functional.gelu(x)
 
 
@@ -36,8 +37,8 @@ def sigmoid(x: torch.Tensor) -> torch.Tensor:
 
 
 def softmax(x: torch.Tensor, axis: Optional[int] = -1) -> torch.Tensor:
-    return torch.softmax(x, axis)
+    return torch.nn.functional.softmax(x,axis)
 
 
-def softplus(x: torch.Tensor) -> torch.Tensor:
-    return torch.nn.functional.softplus(x)
+def softplus(x: torch.Tensor,approximate = False) -> torch.Tensor:
+    return torch.nn.functional.softplus(x,approximate)
