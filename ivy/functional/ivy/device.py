@@ -128,10 +128,24 @@ def print_all_arrays_on_dev(device: Union[ivy.Device]):
     -------
     out
         print all the arrays on device
-
-
-
+    
+    Example
+    _______
+    
+    >>> import ivy
+    >>> import numpy as np
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.array(np.array([1,2,3]))
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_arrays_on_dev(y)
+    <class 'numpy.ma.core.MaskedArray'> ()
+    <class 'numpy.ma.core.MaskedConstant'> () 
+    
     """
+    
+
+
+   
     for arr in get_all_arrays_on_dev(device):
         print(type(arr), arr.shape)
 
