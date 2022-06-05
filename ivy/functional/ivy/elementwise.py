@@ -2455,6 +2455,14 @@ def minimum(
     >>> print(z)
     ivy.array([1, 5, 8])
 
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([2, 6, 8, 5])
+    >>> y = ivy.native_array([1, 5, 9, 6])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([1, 5, 8, 5])
+
     With :code:`Number` inputs:
 
     >>> z = ivy.zeros(1)
@@ -2462,12 +2470,27 @@ def minimum(
     >>> print(z)
     ivy.array([1])
 
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([2, 3])
+    >>> y = ivy.native_array([0, 4])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([0, 3])
+
     With a mix of :code:`ivy.Array` and :code:`Number` inputs:
 
     >>> x = ivy.array([2, 3, 9])
     >>> z = ivy.minimum(x, 5)
     >>> print(z)
     ivy.array([2, 3, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([2, 3, 9, 7, 3])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.array([2, 3, 5, 5, 3])
 
     Instance Method Examples
     ------------------------
@@ -2480,13 +2503,45 @@ def minimum(
     >>> print(z)
     ivy.array([3, 3, 2])
 
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 7])
+    >>> y = ivy.native_array([6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([4, 0])
+
     With :code:`ivy.Array` instance method using :code:`Number` input:
 
     >>> x = ivy.array([1, 4, 8])
-    >>> z = ivy.zeros(5)
+    >>> z = ivy.zeros(3)
     >>> x.minimum(3, out=z)
     >>> print(z)
     ivy.array([1, 4, 5])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3, 2])
+    >>> y = ivy.native_array([1, 9, 2, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([1, 7, 2, 3, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3])
+    >>> y = ivy.array([1, 9, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([1, 7, 6, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([3, 8])
+    >>> z = ivy.zeros(2)
+    >>> x.minimum(3, out=z)
+    >>> print(z)
+    ivy.array([3, 6])
 
     """
     return _cur_backend(x1).minimum(x1, x2, out=out)
@@ -2532,6 +2587,14 @@ def maximum(
     >>> print(z)
     ivy.array([9, 9, 5])
 
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([1, 5, 9, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 0, 7])
+    >>> z = ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([9, 5, 9, 8, 7])
+
     With :code:`Number` inputs:
 
     >>> z = ivy.zeros(1)
@@ -2539,12 +2602,27 @@ def maximum(
     >>> print(z)
     ivy.array([5])
 
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([7, 3])
+    >>> y = ivy.native_array([0, 7])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.array([7, 3])
+
     With a mix of :code:`ivy.Array` and :code:`Number` inputs:
 
     >>> x = ivy.array([1, 7, 3])
     >>> z = ivy.maximum(x, 5)
     >>> print(z)
     ivy.array([5, 7, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([1, 3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.array([5, 5])
 
     Instance Method Examples
     ------------------------
@@ -2557,6 +2635,14 @@ def maximum(
     >>> print(z)
     ivy.array([9, 8, 3])
 
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 1, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.array([9, 3, 8, 6])
+
     With :code:`ivy.Array` instance method using :code:`Number` input:
 
     >>> x = ivy.array([1, 7, 8])
@@ -2564,6 +2650,30 @@ def maximum(
     >>> x.maximum(3, out=z)
     >>> print(z)
     ivy.array([3, 7, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 8])
+    >>> y = ivy.native_array([9, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.array([9, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([1, 8, 6, 0, 5])
+    >>> y = ivy.array([9, 6, 2, 5, 8])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.array([9, 8, 6, 5, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([0, 2, 7])
+    >>> z = ivy.zeros(3)
+    >>> x.maximum(5, out=z)
+    >>> print(z)
+    ivy.array([0, 2, 5])
 
     """
     return _cur_backend(x1).maximum(x1, x2, out=out)
