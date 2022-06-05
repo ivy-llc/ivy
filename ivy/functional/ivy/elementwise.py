@@ -1,11 +1,10 @@
 # global
 from numbers import Number
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-
 
 # Array API Standard #
 # -------------------#
@@ -503,8 +502,7 @@ def floor(
 
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
-    - If ``x_i`` is ``+0``, the result is ``+0``.
-    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``0``, the result is ``0``.
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
 
     Parameters
@@ -521,6 +519,72 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    This method conforms to the `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*,
+    and therefore also accepts :code:`ivy.Container` instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2,3,4])
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    ivy.array([2, 3, 4])
+
+    >>> x = ivy.array([1.5, -5.5, 0, -1, -0])
+    >>> y = ivy.zeros(5)
+    >>> ivy.floor(x, out=y)
+    >>> print(y)
+    ivy.array([ 1., -6.,  0., -1.,  0.])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+    >>> ivy.floor(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.,  2.,  3.],
+               [-5., -6., -7.]])
+
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, -1.5, -1, 1, 2.5])
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    ivy.array([ 0.,  0., -2., -1.,  1.,  2.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]), b=ivy.array([3.4, -4.2, -0, -1.2]))
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., -3.]),
+        b: ivy.array([3., -5., 0., -2.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1.5, -5.5, 0.5, -0])
+    >>> y = x.floor()
+    >>> print(y)
+    ivy.array([ 1., -6.,  0.,  0.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, -2.4]), b=ivy.array([3.4, -4.2, 1.2]))
+    >>> y = x.floor()
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., -3.]),
+        b: ivy.array([3., -5., 1.])
+    }
     """
     return _cur_backend(x).floor(x, out=out)
 
