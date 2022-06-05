@@ -34,6 +34,10 @@ Containers
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133
+.. _`containers discussion`: https://github.com/unifyai/ivy/discussions/1316
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -167,3 +171,12 @@ These special methods all directly wrap the corresponding API *static* :code:`iv
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
 :code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
 :code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+
+
+**Round Up**
+
+This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `containers discussion`_,
+or reach out on `discord`_ in the `containers channel`_!
