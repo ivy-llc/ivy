@@ -525,8 +525,9 @@ def floor(
     `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.elementwise_functions.floor.html>`_ in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*,
-    and therefore also accepts :code:`ivy.Container` instances in place of any of the arguments.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
