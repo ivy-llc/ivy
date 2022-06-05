@@ -519,9 +519,11 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
-    This method conforms to the `Array API Standard<https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html>`_
-    in the standard.
+    This method conforms to the 
+    `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the 
+    `docstring <https://data-apis.org/array-api/latest/API_specification/
+    generated/signatures.elementwise_functions.floor.html>`_ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*,
     and therefore also accepts :code:`ivy.Container` instances in place of any of the arguments.
@@ -558,7 +560,8 @@ def floor(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]), b=ivy.array([3.4, -4.2, -0, -1.2]))
+    >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\
+    ... b=ivy.array([3.4, -4.2, -0, -1.2]))
     >>> y = ivy.floor(x)
     >>> print(y)
     {
