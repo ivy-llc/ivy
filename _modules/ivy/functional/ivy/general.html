@@ -355,11 +355,86 @@
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        Sequence of arrays to compare for equality</span>
+<span class="sd">    dtype</span>
+<span class="sd">        list data type</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not all of the input arrays are equal across all elements.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; i = ivy.array([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; j = ivy.arrays_equal([i])</span>
+<span class="sd">    &gt;&gt;&gt; print(j)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 0, 2])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.arrays_equal([x, y, z])</span>
+<span class="sd">    &gt;&gt;&gt; print(w)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([-1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([-1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.array([-1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.arrays_equal([a, b, c])</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.1, 1.1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0.1, 1.1, 2.1])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array([0.1, 1.1])</span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.arrays_equal([x, y, z])</span>
+<span class="sd">    &gt;&gt;&gt; print(w)</span>
+<span class="sd">    False</span>
+
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; m = ivy.NativeArray([1.1, 0.2, 1.3])</span>
+<span class="sd">    &gt;&gt;&gt; n = ivy.NativeArray([1.1, 0.2, 1.4])</span>
+<span class="sd">    &gt;&gt;&gt; o = ivy.arrays_equal([m, n])</span>
+<span class="sd">    &gt;&gt;&gt; print(o)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.NativeArray([1, 2, 3, 0, -1])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([1, 2, 3, 0, -1])</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.arrays_equal([a,b])</span>
+<span class="sd">    &gt;&gt;&gt; print(c)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.NativeArray([1, 2, 3, 0, -1])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([1, 2, 3, 0, -2])</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.arrays_equal([a,b])</span>
+<span class="sd">    &gt;&gt;&gt; print(c)</span>
+<span class="sd">    False</span>
+
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; r = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; s = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; t = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([6., 7., 8.]))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.arrays_equal([r,s,t]))</span>
+<span class="sd">    {</span>
+<span class="sd">        a: true,</span>
+<span class="sd">        b: false</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0,1,2])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.arrays_equal([x,y])</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: true,</span>
+<span class="sd">        b: false</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
