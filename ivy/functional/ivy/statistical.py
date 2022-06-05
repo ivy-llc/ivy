@@ -337,6 +337,11 @@ def sum(
     >>> print(y)
     ivy.array(1.3)
 
+    >>> a = ivy.array([])
+    >>> b = ivy.sum(a)
+    >>> print(b)
+    ivy.array(0)
+
     """
     return _cur_backend(x).sum(x, axis, dtype, keepdims, out=out)
 
