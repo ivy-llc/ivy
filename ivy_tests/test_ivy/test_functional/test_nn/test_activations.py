@@ -7,7 +7,6 @@ import torch
 from hypothesis import given, strategies as st
 
 # local
-from typeguard import function_name
 
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,9 +15,6 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # relu
-from ivy import inf, nan
-
-
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
