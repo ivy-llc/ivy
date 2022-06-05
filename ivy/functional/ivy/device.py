@@ -122,8 +122,6 @@ def print_all_arrays_on_dev(device: Union[ivy.Device]):
     device
         get the device handle
 
-
-
     Returns
     -------
     out
@@ -143,9 +141,6 @@ def print_all_arrays_on_dev(device: Union[ivy.Device]):
     
     """
     
-
-
-   
     for arr in get_all_arrays_on_dev(device):
         print(type(arr), arr.shape)
 
