@@ -15,8 +15,8 @@ except (ImportError, ModuleNotFoundError):
 def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    #numpy.array_api doesn't support float16
-    if x1.dtype=="float16" or x2.dtype=="float16":
+    # numpy.array_api doesn't support float16
+    if x1.dtype == "float16" or x2.dtype == "float16":
         return np.asarray(np.add(np.asarray(x1), np.asarray(x2)))
     return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
 
