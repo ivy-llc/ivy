@@ -565,7 +565,7 @@ def set_split_factor(factor, device=None):
 # noinspection PyShadowingNames
 def split_func_call(
     func: Callable,
-    inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
+    inputs: Union[ivy.Array, ivy.NativeArray],
     mode: str,
     max_chunk_size: int = None,
     chunk_size: int = None,
@@ -573,7 +573,7 @@ def split_func_call(
     output_axes: Union[int, Iterable[int]] = None,
     stop_gradients: bool = False,
     device=None,
-) -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
     useful to reduce memory usage of the device the arrays are on.
