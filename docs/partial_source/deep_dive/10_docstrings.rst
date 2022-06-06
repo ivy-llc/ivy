@@ -3,16 +3,25 @@ Docstrings
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
+.. _`docstrings discussion`: https://github.com/unifyai/ivy/discussions/1321
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 
 All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
-on account that these are just different instantiations of the functions at :code:`ivy/functional/ivy/category_name.py`.
+on account that these are effectively just different instantiations of the functions at
+:code:`ivy/functional/ivy/category_name.py`.
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an exemplar.
+In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
+
+Important: you should open the file in **raw** format.
+If you copy directly from the file preview on GitHub before clicking **raw**,
+then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
@@ -58,7 +67,7 @@ like so:
 .. code-block:: diff
 
     +out
-    +    optional output, for writing the result to. It must have a shape that the inputs
+    +    optional output array, for writing the result to. It must have a shape that the inputs
     +    broadcast to.
 
 Because of this :code:`out` argument in the input, we also need to rename the :code:`out` argument in the return, which
@@ -111,7 +120,7 @@ Following these changes, the new docstring is as follows:
         input array whose elements are expressed in radians. Should have a
         floating-point data type.
     out
-        optional output, for writing the result to. It must have a shape that the inputs
+        optional output array, for writing the result to. It must have a shape that the inputs
         broadcast to.
 
     Returns
@@ -133,3 +142,20 @@ If the function that you are writing a docstring for is **not** in the `Array AP
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding docstings.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `docstrings discussion`_,
+or reach out on `discord`_ in the `docstrings channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/TnshJ8swuJM">
+    </iframe>

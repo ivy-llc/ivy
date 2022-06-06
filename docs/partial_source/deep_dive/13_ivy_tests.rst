@@ -12,6 +12,10 @@ Ivy Tests
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+.. _`ivy tests discussion`: https://github.com/unifyai/ivy/discussions/1304
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`,
 there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -102,3 +106,11 @@ The rule is simple, if the test should not pass any arrays in the input,
 then we should not use the helper :code:`test_array_function`.
 For example, :code:`ivy.num_gpus` does not receive any arrays in the input,
 and so we should not make us of :code:`test_array_function` in the test implementation.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how the tests are implemented in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `ivy tests discussion`_,
+or reach out on `discord`_ in the `ivy tests channel`_!
