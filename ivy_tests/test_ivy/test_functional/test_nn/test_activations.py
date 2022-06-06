@@ -14,7 +14,7 @@ import ivy.functional.backends.numpy as ivy_np
 # relu
 @given(
     x=st.lists(st.floats()),
-    dtype=st.sampled_from(ivy.float_dtypes),
+    dtype=st.sampled_from(ivy.all_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
@@ -44,7 +44,7 @@ def test_relu(x, dtype, as_variable, with_out, native_array, fw):
         if not native_array:
             assert ret is out
         if fw in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
+            # these backends do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
     # value test

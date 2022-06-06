@@ -2,7 +2,7 @@
 import ivy
 
 # global
-from typing import Callable, Type, List, Iterable
+from typing import Callable, Type, List, Iterable, Optional
 from types import ModuleType
 
 
@@ -21,7 +21,7 @@ def _wrap_function(function_name: str) -> Callable:
 
     Examples
     --------
-    >>> ivy.set_framework("torch")
+    >>> ivy.set_backend("torch")
     >>> from ivy.array.wrapping import _wrap_function
     >>> absolute = _wrap_function("abs")
     >>> x = ivy.array([-1])
@@ -56,7 +56,7 @@ def _wrap_function(function_name: str) -> Callable:
 
 
 def add_ivy_array_instance_methods(
-    cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Iterable = ()
+    cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Optional[Iterable] = ()
 ):
     """Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy arrays as instance methods using _wrap_function.
