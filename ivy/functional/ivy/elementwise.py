@@ -277,9 +277,7 @@ def bitwise_xor(
     
 
     Parameters
-
     ----------
-
     x1
 
     first input array. Should have an integer or boolean data type.
@@ -299,9 +297,7 @@ def bitwise_xor(
     
 
     Returns
-
     -------
-
     ret
 
     an array containing the element-wise results. The returned array must have a
@@ -324,7 +320,7 @@ def bitwise_xor(
 
 
     Functional Examples
-    ___________________
+    -------------------
     With :code:`ivy.Array` input:
 
     >>> a = ivy.array([1,2,3])
@@ -382,8 +378,7 @@ def bitwise_xor(
 
 
     Instance Method Examples
-    ________________________
-
+    ------------------------
     Using :code: `ivy.Array` instance method:
 
     >>> a = ivy.array([[89,51,32],[14,18,19]])
@@ -410,8 +405,7 @@ def bitwise_xor(
 
 
     Operator Examples
-    _________________
-
+    -----------------
     With :code:`ivy.Array` instances:
     >>> a = ivy.array([1,2,3])
     >>> b = ivy.array([3,2,1])
@@ -428,7 +422,7 @@ def bitwise_xor(
     >>> y = ivy.container(a = ivy.array([12])),\
                         b = ivy.array([78]))
                         
-    >>> z = x + y 
+    >>> z = x ^ y 
     >>> print(z)
     {
     a:ivy.array([20])
@@ -450,7 +444,6 @@ def bitwise_xor(
     } 
 
     """
-
     return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
