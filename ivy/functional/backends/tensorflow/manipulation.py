@@ -6,7 +6,6 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
 def roll(
@@ -27,11 +26,7 @@ def roll(
     return ret
 
 
-def squeeze(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int], List[int]],
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def squeeze(x: Union[tf.Tensor, tf.Variable], axis: Union[int, Tuple[int], List[int]]) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
             raise ValueError(
@@ -61,16 +56,10 @@ def squeeze(
             else:
                 x = tf.squeeze(x, i)
         ret = x
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def flip(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def flip(x: Union[tf.Tensor, tf.Variable], axis: Optional[Union[int, Tuple[int], List[int]]] = None) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:
         ret = x
@@ -85,64 +74,33 @@ def flip(
             new_axis = new_axis
         new_axis = [item + num_dims if item < 0 else item for item in new_axis]
         ret = tf.reverse(x, new_axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def expand_dims(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def expand_dims(x: Union[tf.Tensor, tf.Variable], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
     try:
         ret = tf.expand_dims(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
         return ret
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
 
 
-def permute_dims(
-    x: Union[tf.Tensor, tf.Variable],
-    axes: Tuple[int, ...],
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def permute_dims(x: Union[tf.Tensor, tf.Variable], axes: Tuple[int, ...]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.transpose(x, perm=axes)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def stack(
-    x: Union[Tuple[tf.Tensor], List[Union[tf.Tensor, tf.Variable]]],
-    axis: Optional[int] = 0,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def stack(x: Union[Tuple[tf.Tensor], List[tf.Tensor]], axis: Optional[int] = 0) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.stack(x, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def reshape(
-    x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def reshape(x: Union[tf.Tensor, tf.Variable], shape: Tuple[int, ...]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def concat(
-    xs: List[Union[tf.Tensor, tf.Variable]],
-    axis: int = 0,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def concat(xs: List[tf.Tensor], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
     is_axis_none = axis is None
     if is_tuple:
@@ -160,8 +118,6 @@ def concat(
         if is_tuple:
             xs = tuple(xs)
     ret = tf.concat(xs, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -192,19 +148,12 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return tf.split(x, num_or_size_splits, axis)
 
 
-def repeat(
-    x: Union[tf.Tensor, tf.Variable],
-    repeats: Union[int, List[int]],
-    axis: int = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def repeat(x: Union[tf.Tensor, tf.Variable], repeats: Union[int, List[int]], axis: int = None) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.repeat(x, repeats, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def tile(x, reps, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(x, reps):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
@@ -212,30 +161,24 @@ def tile(x, reps, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
     ret = tf.tile(x, reps)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def constant_pad(x, pad_width, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def constant_pad(x, pad_width, value=0):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     ret = tf.pad(x, pad_width, constant_values=value)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def zero_pad(x, pad_width, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def zero_pad(x, pad_width):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     ret = tf.pad(x, pad_width)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def swapaxes(x, axis0, axis1, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def swapaxes(x, axis0, axis1):
     x_shape = x.shape
     num_dims = len(x_shape)
     axis0 %= num_dims
@@ -246,16 +189,11 @@ def swapaxes(x, axis0, axis1, out: Optional[Union[tf.Tensor, tf.Variable]] = Non
     config.pop(axis1)
     config.insert(axis1, axis0)
     ret = tf.transpose(x, config)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def clip(
-    x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable], x_min: Union[Number, tf.Tensor, tf.Variable], x_max: Union[Number, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
@@ -270,6 +208,4 @@ def clip(
         ret = tf.cast(ret, x.dtype)
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret

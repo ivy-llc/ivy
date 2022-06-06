@@ -1,10 +1,8 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Tuple
+from typing import Tuple, Union
 from collections import namedtuple
-
-import ivy
 
 
 def unique_all(
@@ -59,13 +57,8 @@ def unique_inverse(
     return out(values, inverse_indices)
 
 
-def unique_values(
-    x: Union[tf.Tensor, tf.Variable],
-    out: Union[tf.Tensor, tf.Variable] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+def unique_values(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 

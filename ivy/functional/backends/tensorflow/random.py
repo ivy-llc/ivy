@@ -8,7 +8,6 @@ from tensorflow.python.types.core import Tensor
 from typing import Optional, Union, Tuple
 
 # local
-import ivy
 from ivy.functional.ivy.device import default_device
 
 
@@ -20,7 +19,8 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, "float32")
     high = tf.cast(high, "float32")
@@ -32,7 +32,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     mean = tf.cast(mean, "float32")
     std = tf.cast(std, "float32")
@@ -46,7 +47,8 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    device: str
 ) -> Union[tf.Tensor, tf.Variable]:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
@@ -66,10 +68,7 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, str]] = None,
+    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")

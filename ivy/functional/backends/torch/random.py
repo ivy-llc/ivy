@@ -5,7 +5,6 @@ import torch
 from typing import Optional, List, Union, Tuple
 
 # local
-import ivy
 from ivy.functional.ivy.device import default_device
 
 
@@ -17,7 +16,8 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
+    device: torch.device
 ) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
@@ -29,7 +29,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[List[int]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
+    device: torch.device
 ) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
@@ -46,7 +47,8 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
+    device: torch.device
 ) -> torch.Tensor:
     if probs is None:
         probs = (
@@ -64,10 +66,7 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: torch.device
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 
