@@ -674,10 +674,9 @@ def greater_equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
-    Examples
-    --------
     Functional Examples
     -------------------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
@@ -718,6 +717,7 @@ def greater_equal(
     ivy.array([False, False,  True])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                            b=ivy.array([[5.], [6.], [7.]]))
@@ -733,6 +733,7 @@ def greater_equal(
     }
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
                   b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
@@ -746,6 +747,7 @@ def greater_equal(
 
     Instance Method Examples
     ------------------------
+
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 2, 3])
@@ -769,6 +771,7 @@ def greater_equal(
 
     Operator Examples
     -----------------
+
     With :code:`ivy.Array` instances:
 
     >>> x = ivy.array([6, 2, 3])
@@ -805,6 +808,7 @@ def greater_equal(
                       [False, False, False],
                       [False, False, False]])
     }
+
     """
     return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
 
