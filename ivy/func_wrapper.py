@@ -115,9 +115,17 @@ NON_DTYPE_WRAPPED_FUNCTIONS = [
 ]
 NON_DEV_WRAPPED_FUNCTIONS = [
     "get_all_ivy_arrays_on_dev",
-    "num_ivy_arrays_on_dev" "print_all_ivy_arrays_on_dev",
+    "num_ivy_arrays_on_dev",
+    "print_all_ivy_arrays_on_dev",
     "as_native_dev",
     "as_ivy_dev",
+    "dev_unify_iter",
+    "dev_unify_nest",
+    "dev_unify",
+    "dev_unify_array",
+    "dev_util",
+    "percent_used_mem_on_dev",
+    "used_mem_on_dev",
 ]
 
 FW_FN_KEYWORDS = {

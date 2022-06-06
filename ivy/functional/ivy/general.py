@@ -1320,7 +1320,7 @@ def cumprod(
     return _cur_backend(x).cumprod(x, axis, exclusive, out=out)
 
 
-# @infer_device
+@infer_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
