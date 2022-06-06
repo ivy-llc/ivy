@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dev_unify_array &mdash; Ivy 1.0 documentation</title>
+  <title>get_all_ivy_arrays_on_dev &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="dev_unify" href="dev_unify.html" />
-    <link rel="prev" title="dev_clone_nest" href="dev_clone_nest.html" /> 
+    <link rel="next" title="num_ivy_arrays_on_dev" href="num_ivy_arrays_on_dev.html" />
+    <link rel="prev" title="Device" href="../device.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../device.html">Device</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="get_all_ivy_arrays_on_dev.html">get_all_ivy_arrays_on_dev</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get_all_ivy_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_ivy_arrays_on_dev.html">num_ivy_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_ivy_arrays_on_dev.html">print_all_ivy_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
@@ -87,7 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dev_unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_nest.html">dev_unify_nest</a></li>
@@ -162,9 +162,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../device.html">Device</a> &raquo;</li>
-      <li>dev_unify_array</li>
+      <li>get_all_ivy_arrays_on_dev</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/device/dev_unify_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/device/get_all_ivy_arrays_on_dev.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -172,25 +172,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dev-unify-array">
-<h1>dev_unify_array<a class="headerlink" href="#dev-unify-array" title="Permalink to this heading"></a></h1>
+  <section id="get-all-ivy-arrays-on-dev">
+<h1>get_all_ivy_arrays_on_dev<a class="headerlink" href="#get-all-ivy-arrays-on-dev" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_unify_array">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dev_unify_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_unify_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_array" title="Permalink to this definition"></a></dt>
-<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single array on the
-specified device.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.get_all_ivy_arrays_on_dev">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">get_all_ivy_arrays_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#get_all_ivy_arrays_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.get_all_ivy_arrays_on_dev" title="Permalink to this definition"></a></dt>
+<dd><p>Gets all ivy arrays which are currently alive on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> – The list of arrays to unify onto the specified device.</p></li>
-<li><p><strong>device</strong> – The device to unify the arrays to.</p></li>
-<li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
-<li><p><strong>axis</strong> – The axis along which to concattenate the array, if concat mode is set. Default
-is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – array unified to the target device</p>
+<dd class="field-odd"><p><strong>device</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -206,8 +196,8 @@ is 0.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="dev_clone_nest.html" class="btn btn-neutral float-left" title="dev_clone_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dev_unify.html" class="btn btn-neutral float-right" title="dev_unify" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../device.html" class="btn btn-neutral float-left" title="Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="num_ivy_arrays_on_dev.html" class="btn btn-neutral float-right" title="num_ivy_arrays_on_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

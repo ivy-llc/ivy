@@ -13,9 +13,9 @@ Device
    :maxdepth: -1
    :caption: Device
 
-   device/get_all_arrays_on_dev.rst
-   device/num_arrays_on_dev.rst
-   device/print_all_arrays_on_dev.rst
+   device/get_all_ivy_arrays_on_dev.rst
+   device/num_ivy_arrays_on_dev.rst
+   device/print_all_ivy_arrays_on_dev.rst
    device/dev.rst
    device/as_ivy_dev.rst
    device/as_native_dev.rst
