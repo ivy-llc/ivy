@@ -128,6 +128,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">infer_device</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
@@ -135,7 +136,8 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
+<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="nd">@infer_device</span>
+<span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -176,7 +178,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../../functional/ivy/random/random_normal.html#ivy.functional.ivy.random.random_normal">[docs]</a><span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
+<div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../../functional/ivy/random/random_normal.html#ivy.functional.ivy.random.random_normal">[docs]</a><span class="nd">@infer_device</span>
+<span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
     <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -213,7 +216,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../../functional/ivy/random/multinomial.html#ivy.functional.ivy.random.multinomial">[docs]</a><span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span>
+<div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../../functional/ivy/random/multinomial.html#ivy.functional.ivy.random.multinomial">[docs]</a><span class="nd">@infer_device</span>
+<span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span>
     <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -301,7 +305,8 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="k">def</span> <span class="nf">randint</span><span class="p">(</span>
+<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="nd">@infer_device</span>
+<span class="k">def</span> <span class="nf">randint</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
