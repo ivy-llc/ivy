@@ -240,7 +240,6 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
         )
 
 
-@infer_device
 def used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
@@ -280,7 +279,6 @@ def used_mem_on_dev(
         )
 
 
-@infer_device
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
@@ -323,7 +321,6 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
-@infer_device
 def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
@@ -1103,7 +1100,6 @@ def _mean_unify_array(xs, device, _=None):
     return _sum_unify_array(xs, device=device) / len(xs)
 
 
-@infer_device
 def dev_unify_array(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
@@ -1133,7 +1129,6 @@ def dev_unify_array(xs, device, mode, axis=0):
     }[mode](xs, device, axis)
 
 
-@infer_device
 def dev_unify(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single concatenated array
     on the specified device.
@@ -1169,7 +1164,6 @@ def dev_unify(xs, device, mode, axis=0):
     return xs
 
 
-@infer_device
 def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     """Unify elements of the iterable xs to a single target device.
 
@@ -1206,7 +1200,6 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     return dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
-@infer_device
 def dev_unify_nest(
     args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
 ):
