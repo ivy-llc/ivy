@@ -266,27 +266,191 @@ def bitwise_xor(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
+
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
+
     array ``x2``.
 
+    **Special cases**
+
+    this function does not take floating point operands 
+    
+
     Parameters
+
     ----------
+
     x1
-        first input array. Should have an integer or boolean data type.
+
+    first input array. Should have an integer or boolean data type.
+
     x2
-        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
-        Should have an integer or boolean data type.
+
+    second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+
+    Should have an integer or boolean data type.
+
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+
+    optional output array, for writing the result to. It must have a shape that the
+
+    inputs broadcast to.
+
+    
 
     Returns
+
     -------
+
     ret
-        an array containing the element-wise results. The returned array must have a
-        data type determined by :ref:`type-promotion`.
+
+    an array containing the element-wise results. The returned array must have a
+
+    data type determined by :ref:`type-promotion`.
+
+
+    This method conforms to the `Array API Standard
+
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+
+    in the standard. The descriptions above assume an array input for simplicity, but
+
+    the method also accepts :code:`ivy.Container` instances in place of
+
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+
+    and also the examples below.
+
+
+    Functional Examples
+    ___________________
+    With :code:`ivy.Array` input:
+
+    >>> a = ivy.array([1,2,3])
+    >>> b = ivy.array([3,2,1])
+    >>> y = ivy.bitwise_xor(a,b)
+    >>> print(y)
+        ivy.array([2, 0, 2])
+        
+        
+    >>> a = ivy.array([-3,200,50])
+    >>> b = ivy.array([45,68,30])
+    >>> ivy.bitwise_xor(a,b,out=y)
+    >>> print(y)
+        ivy.array([-48, 140, 44])
+        
+        
+    With :code: `ivy.NativeArray` input:
+
+    >>> a = ivy.native_array([0,1,3,67,91])
+    >>> b = ivy.native_array([4,7,90,89,98])
+    >>> y = ivy.bitwise_xor(a,b)
+    >>> print(y)
+        ivy.array([[ 4,  6, 89, 26, 57]])
+        
+
+    With :code: `ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([89]),\
+                        b = ivy.array([90]))
+                        
+    >>> y = ivy.container(a = ivy.array([12])),\
+                        b = ivy.array([78]))
+                        
+    >>> z = ivy.bitwise_xor(x,y)
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.array([-67,21]),\
+                        b = ivy.array([78,34]))
+                        
+    >>> y = ivy.array([12,13]])
+
+    >>> z = ivy.bitwise_xor(x,y)
+    >>> print(z)
+    {
+        a: ivy.array([-79,24])
+        b: ivy.array([6,74])
+    }
+        
+
+
+    Instance Method Examples
+    ________________________
+
+    Using :code: `ivy.Array` instance method:
+
+    >>> a = ivy.array([[89,51,32],[14,18,19]])
+    >>> b = ivy.array([[[19,26,27],[22,23,20]]])
+    >>> y = a.bitwise_xor(b)
+    >>> print(y)
+    ivy.array([[74,41,59],
+                [24,5,7]])
+
+
+    Using :code:`ivy.Container` instance method:
+    >>>x = ivy.Container(a = ivy.array([89]),\
+                        b = ivy.array([90]))
+                        
+    >>> y = ivy.container(a = ivy.array([12])),\
+                        b = ivy.array([78]))
+                        
+    >>>z = x.bitwise_xor(y)
+    >>>print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }
+
+
+    Operator Examples
+    _________________
+
+    With :code:`ivy.Array` instances:
+    >>> a = ivy.array([1,2,3])
+    >>> b = ivy.array([3,2,1])
+    >>> y = a ^ b 
+    >>> print(y)
+        ivy.array([2, 0, 2])
+        
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a = ivy.array([89]),\
+                        b = ivy.array([90]))
+                        
+    >>> y = ivy.container(a = ivy.array([12])),\
+                        b = ivy.array([78]))
+                        
+    >>> z = x + y 
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }
+
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+    >>> x = ivy.Container(a = ivy.array([-67,21]),\
+                        b = ivy.array([78,34]))
+                        
+    >>> y = ivy.array([12,13]])
+
+    >>> z = x ^ y 
+    >>> print(z)
+    {
+        a: ivy.array([-79,24])
+        b: ivy.array([6,74])
+    } 
 
     """
+
     return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
