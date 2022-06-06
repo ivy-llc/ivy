@@ -70,8 +70,8 @@ def _get_nvml_gpu_handle(device):
 
 
 @infer_device
-def get_all_arrays_on_dev(device):
-    """Gets all arrays which are currently alive on the specified device.
+def get_all_ivy_arrays_on_dev(device):
+    """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
@@ -82,7 +82,7 @@ def get_all_arrays_on_dev(device):
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj) and ivy.dev(obj) == device:
+            if ivy.is_ivy_array(obj) and ivy.dev(obj) == device:
                 all_arrays.append(obj)
         except Exception:
             pass
@@ -90,7 +90,7 @@ def get_all_arrays_on_dev(device):
 
 
 @infer_device
-def num_arrays_on_dev(device: ivy.Device) -> int:
+def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
@@ -107,16 +107,16 @@ def num_arrays_on_dev(device: ivy.Device) -> int:
     --------
     >>> x = ivy.array([-1,0,5.2])
     >>> y = ivy.dev(x)
-    >>> z = ivy.num_arrays_on_dev(y)
+    >>> z = ivy.num_ivy_arrays_on_dev(y)
     >>> print(z)
     2
 
     """
-    return len(get_all_arrays_on_dev(device))
+    return len(get_all_ivy_arrays_on_dev(device))
 
 
 @infer_device
-def print_all_arrays_on_dev(device):
+def print_all_ivy_arrays_on_dev(device):
     """Prints all arrays which are currently alive on the specified device.
 
     Parameters
@@ -124,7 +124,7 @@ def print_all_arrays_on_dev(device):
     device
 
     """
-    for arr in get_all_arrays_on_dev(device):
+    for arr in get_all_ivy_arrays_on_dev(device):
         print(type(arr), arr.shape)
 
 
