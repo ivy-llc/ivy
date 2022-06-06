@@ -674,6 +674,141 @@ def greater_equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    ivy.array([False, True,  True])
+
+    >>> x = ivy.array([[10.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> shape = (3,3)
+    >>> fill_value = False
+    >>> z = ivy.full(shape, fill_value)
+    >>> ivy.greater_equal(x, y, out=z)
+    >>> print(z)
+    ivy.array([[ True, False, False],
+       [ True, False, False],
+       [ True, False, False]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.greater_equal(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[0.],[1.],[0.]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([4, 5])
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    ivy.array([False, False])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 0])
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    ivy.array([False, False,  True])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                           b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = z = x.greater_equal(y)
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x.greater_equal(y)
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([6, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x >= y
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x >= y
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x >= y
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
+
     """
     return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
 
