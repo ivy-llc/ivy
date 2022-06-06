@@ -20,6 +20,10 @@ Inplace Updates
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
 .. _`wrapping`:
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
+.. _`inplace updates discussion`: https://github.com/unifyai/ivy/discussions/1319
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program,
@@ -166,7 +170,7 @@ This could for example be the input array itself, but can also be any other arra
 All Ivy functions which return a single array should support inplace updates.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
 However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
-This is ommitted from the type hint, as explained in the :ref:`Type Hints` section.
+This is ommitted from the type hint, as explained in the :ref:`Function Arguments` section.
 
 When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
 :code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
@@ -257,3 +261,11 @@ Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
 As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_
+
+**Round Up**
+
+This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `inplace updates discussion`_,
+or reach out on `discord`_ in the `inplace updates channel`_!

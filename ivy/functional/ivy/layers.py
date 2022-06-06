@@ -322,7 +322,14 @@ def conv1d_transpose(
     )
 
 
-def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
+def conv2d(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+) -> Union[ivy.Array, ivy.Container]:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
@@ -345,6 +352,68 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
     -------
     ret
         The result of the convolution operation.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]]]]) #NHWC
+
+    >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]]]) #HWIO
+    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', 'NHWC', (1,))
+    >>> print(result)
+    ivy.array([[
+              [[2.],[4.],[6.]], \
+              [[3.],[6.],[9.]], \
+              [[2.],[4.],[6.]] \
+              ]])
+    
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 32, 32, 3]))
+    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 5, 3, 5])) #HWIO
+    >>> result = ivy.conv2d(x, filters, strides = [2, 1], padding = 'VALID') \
+        #non-square filter with unequal stride and valid padding 
+    >>> print(result.shape)
+    [1, 15, 28, 5]
+
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
+            b = ivy.eye(5, 5).view(1, 5, 5, 1))
+    >>> filters = ivy.array([[2, 0, 1], \
+                             [1, 3, 1], \
+                             [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+    >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+    >>> print(result)
+    {
+        a: ivy.array([[[[4.],
+                        [0.]],
+                       [[1.],
+                        [5.]]]]),
+        b: ivy.array([[[[4.],
+                        [0.],
+                        [0.]],
+
+                       [[1.],
+                        [6.],
+                        [0.]],
+
+                       [[0.],
+                        [1.],
+                        [5.]]]])
+    }
 
     """
     return _cur_backend(x).conv2d(x, filters, strides, padding, data_format, dilations)

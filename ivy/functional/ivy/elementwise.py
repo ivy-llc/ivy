@@ -44,11 +44,11 @@ def bitwise_left_shift(
 
 
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
@@ -1408,19 +1408,106 @@ def sin(
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the numerical negative of each element.
+    """Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the
+    input array x.
 
     Parameters
     ----------
     x
         Input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         an array containing the evaluated result for each element in x
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0,1,1,2])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 0, -1, -1, -2])
+
+    >>> x = ivy.array([0,-1,-0.5,2,3])
+    >>> y = ivy.zeros(5)
+    >>> ivy.negative(x,out=y)
+    >>> print(y)
+    ivy.array([-0. ,  1. ,  0.5, -2. , -3. ], dtype=float32)
+
+    >>> x = ivy.array([[1.1,2.2,3.3], \
+                       [-4.4,-5.5,-6.6]])
+    >>> ivy.negative(x,out=x)
+    >>> print(x)
+    ivy.array([[-1.1, -2.2, -3.3],
+               [ 4.4,  5.5,  6.6]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -1. , -1.1], dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),\
+                         b=ivy.array([3.,4.,-5.]))
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0., -1., -2.], dtype=float32),
+        b: ivy.array([-3., -4., 5.], dtype=float32)
+    }
+
+    Instance Method Examples
+    -------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
+    >>> y = x.negative()
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -0. , -1. , -1.1], dtype=float32)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = x.negative()
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
+
+    Operator Examples
+    -----------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1,2,3])
+    >>> y = -x
+    >>> print(y)
+    ivy.array([-1, -2, -3])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = -x
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
 
     """
     return _cur_backend(x).negative(x, out=out)
@@ -1693,10 +1780,10 @@ def trunc(
 
 
 def abs(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
@@ -1732,10 +1819,10 @@ def abs(
 
 
 def tan(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be

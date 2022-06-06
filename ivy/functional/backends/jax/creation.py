@@ -113,7 +113,7 @@ def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype,
+    dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
@@ -174,7 +174,12 @@ def eye(
 
 # noinspection PyShadowingNames
 def arange(
-    start, stop=None, step=1, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    start,
+    stop=None,
+    step=1,
+    *,
+    dtype: jnp.dtype = None,
+    device: jaxlib.xla_extension.Device,
 ):
     if dtype:
         dtype = as_native_dtype(dtype)
@@ -191,7 +196,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: jnp.dtype,
+    dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     return _to_dev(
