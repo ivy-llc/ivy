@@ -113,7 +113,12 @@ NON_DTYPE_WRAPPED_FUNCTIONS = [
     "sum",
     "astype",
 ]
-NON_DEV_WRAPPED_FUNCTIONS = []
+NON_DEV_WRAPPED_FUNCTIONS = [
+    "get_all_ivy_arrays_on_dev",
+    "num_ivy_arrays_on_dev" "print_all_ivy_arrays_on_dev",
+    "as_native_dev",
+    "as_ivy_dev",
+]
 
 FW_FN_KEYWORDS = {
     "numpy": [],
