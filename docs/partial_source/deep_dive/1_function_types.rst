@@ -25,6 +25,10 @@ Function Types
 .. _`ivy.dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71
+.. _`function types discussion`: https://github.com/unifyai/ivy/discussions/1312
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**,
@@ -61,7 +65,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.current_backend(x).tan(x, out)
+        return ivy.current_backend(x).tan(x, out=out)
 
 The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
@@ -118,7 +122,7 @@ a compositional implementation is also provided in :code:`ivy/functional/ivy/cat
 Because these functions include both a compositional implementation and also at least one backend-specific
 implementation, these functions are refered to as *mixed*.
 
-When using ivy without a backend set explicitly (for example :code:`ivy.set_framework()` has not been called),
+When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
 will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
@@ -127,7 +131,7 @@ directly. However, as just explained, *mixed* functions implement a compositiona
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using :code:`ivy.set_framework()` for example),
+Typically the backend should always be set explicitly though (using :code:`ivy.set_backend()` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Standalone Functions
@@ -211,3 +215,11 @@ and `ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed.
 
 There are many other examples. The convenience functions are not grouped by file or folder.
 Feel free to have a look through all of the `submodules`_, you should be able to spot quite a few!
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different function types.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `function types discussion`_,
+or reach out on `discord`_ in the `function types channel`_!

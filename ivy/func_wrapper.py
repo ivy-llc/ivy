@@ -1,6 +1,7 @@
 import ivy
 import inspect
 import importlib
+import functools
 import numpy as np
 from types import ModuleType
 from typing import Callable, Optional, List, Union
@@ -103,8 +104,29 @@ ARRAYLESS_RET_FUNCTIONS = [
     "is_variable",
 ]
 NESTED_ARRAY_RET_FUNCTIONS = ["unstack", "split"]
-NON_DTYPE_WRAPPED_FUNCTIONS = ["arange", "asarray", "array", "full", "prod", "sum"]
-NON_DEV_WRAPPED_FUNCTIONS = []
+NON_DTYPE_WRAPPED_FUNCTIONS = [
+    "arange",
+    "asarray",
+    "array",
+    "full",
+    "prod",
+    "sum",
+    "astype",
+]
+NON_DEV_WRAPPED_FUNCTIONS = [
+    "get_all_ivy_arrays_on_dev",
+    "num_ivy_arrays_on_dev",
+    "print_all_ivy_arrays_on_dev",
+    "as_native_dev",
+    "as_ivy_dev",
+    "dev_unify_iter",
+    "dev_unify_nest",
+    "dev_unify",
+    "dev_unify_array",
+    "dev_util",
+    "percent_used_mem_on_dev",
+    "used_mem_on_dev",
+]
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -133,11 +155,290 @@ NATIVE_KEYS_TO_SKIP = {
     "mxnet": [],
 }
 
+# Helpers #
+# --------#
+
+
+# noinspection DuplicatedCode
+def _get_first_array(*args, **kwargs):
+    # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    arr = None
+    if args:
+        arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
+        if arr_idxs:
+            arr = ivy.index_nest(args, arr_idxs[0])
+        else:
+            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+            if arr_idxs:
+                arr = ivy.index_nest(kwargs, arr_idxs[0])
+    elif kwargs:
+        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+        if arr_idxs:
+            arr = ivy.index_nest(kwargs, arr_idxs[0])
+    return arr
+
+
+# Array Handling #
+# ---------------#
+
+
+def inputs_to_native_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Converts all `ivy.Array` instances in both the positional and keyword arguments
+        into `ivy.NativeArray` instances, and then calls the function with the updated
+        arguments.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with native arrays passed in the arguments.
+        """
+        # convert all arrays in the inputs to ivy.NativeArray instances
+        native_args, native_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
+        return fn(*native_args, **native_kwargs)
+
+    return new_fn
+
+
+def inputs_to_ivy_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Converts all `ivy.NativeArray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then calls the function with the
+        updated arguments.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with ivy arrays passed in the arguments.
+        """
+        # convert all arrays in the inputs to ivy.Array instances
+        ivy_args, ivy_kwargs = ivy.args_to_ivy(
+            *args, **kwargs, include_derived={tuple: True}
+        )
+        return fn(*ivy_args, **ivy_kwargs)
+
+    return new_fn
+
+
+def outputs_to_ivy_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls the function, and then converts all `ivy.NativeArray` instances in
+        the function return into `ivy.Array` instances.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with native arrays as ivy arrays.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+        # convert all arrays in the return to `ivy.Array` instances
+        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+
+    return new_fn
+
+
+def to_native_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+    and return arrays are all converted to `ivy.Array` instances.
+    """
+    return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+# Data Type Handling #
+# -------------------#
+
+
+def infer_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        """
+        Determines the correct `dtype`, and then calls the function with the `dtype`
+        passed explicitly.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        dtype
+            The data type for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `dtype` passed explicitly.
+        """
+        # find the first array argument, if required
+        arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
+        # infer the correct data type
+        dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+        # call the function with dtype provided explicitly
+        return fn(*args, dtype=dtype, **kwargs)
+
+    return new_fn
+
+
+# Device Handling #
+# ----------------#
+
+
+def infer_device(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, device=None, **kwargs):
+        """
+        Determines the correct `device`, and then calls the function with the `device`
+        passed explicitly.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        device
+            The device for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `device` passed explicitly.
+        """
+        # find the first array argument, if required
+        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
+        # infer the correct device
+        device = ivy.default_device(device, item=arr, as_native=True)
+        # call the function with device provided explicitly
+        return fn(*args, device=device, **kwargs)
+
+    return new_fn
+
+
+# Inplace Update Handling #
+# ------------------------#
+
+
+def handle_out_argument(fn: Callable) -> Callable:
+    handle_out_in_backend = "out" in inspect.signature(fn).parameters.keys()
+
+    @functools.wraps(fn)
+    def new_fn(*args, out=None, **kwargs):
+        """
+        Calls `fn` with the `out` argument handled correctly for performing an inplace
+        update.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        out
+            The array to write the result to.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `out` handled correctly for
+            inplace updates.
+        """
+        if out is None:
+            return fn(*args, **kwargs)
+        if handle_out_in_backend:
+            # extract underlying native array for out
+            native_out = ivy.to_native(out)
+            # compute return, with backend inplace update handled by
+            # the backend function
+            ret = fn(*args, out=native_out, **kwargs)
+            out.data = ivy.to_native(ret)
+            return out
+        # compute return, and then handle the inplace update explicitly
+        ret = fn(*args, **kwargs)
+        return ivy.inplace_update(out, ret)
+
+    return new_fn
+
+
+# Nestable Handling #
+# ------------------#
+
+
+def handle_nestable(fn: Callable) -> Callable:
+    fn_name = fn.__name__
+    cont_fn = getattr(ivy.Container, "static_" + fn_name)
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls `fn` with the *nestable* property of the function correctly handled.
+        This means mapping the function to the container leaves if any containers are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the nestable property handled correctly.
+        """
+        # if any of the arguments or keyword arguments passed to the function contains
+        # a container, get the container's version of the function and call it using
+        # the passed arguments.
+        if ivy.nested_any(
+            args, ivy.is_ivy_container, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
+            return cont_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    return new_fn
+
 
 # Functions #
 
 
-def _wrap_function(function: Callable) -> Callable:
+def _wrap_function(fn: Callable) -> Callable:
     """
     Creates a wrapped ivy version of the function if it is not a private function and
     not in the non wrapped functions list. This allows the new function to accept as
@@ -146,173 +447,51 @@ def _wrap_function(function: Callable) -> Callable:
 
     Parameters
     ----------
-    function
-        native function to be wrapped
+    fn
+        function to be wrapped
 
     Returns
     -------
         The wrapped version of the function with all the necessary attributes updated.
-
-    Examples
-    --------
-    This gives us the original `abs` implementation:
-
-    >>> from ivy.functional.backends.jax import abs as ivy_jax_abs
-    >>> print(ivy_jax_abs)
-    <function abs at 0x7fef19ddf040>
-
-    whereas the following gives us the wrapped version of `abs`:
-
-    >>> from ivy.functional.backends.jax import abs as ivy_jax_abs
-    >>> from ivy.func_wrapper import _wrap_function
-    >>> abs_wrapped = _wrap_function(ivy_jax_abs)
-    >>> print(abs_wrapped)
-    <function _wrap_function.<locals>._function_wrapped at 0x7fef1852a0d0>
-
     """
+    # do nothing if the function is private or in the non wrapped functions list
+    if hasattr(fn, "__name__") and (
+        fn.__name__[0] == "_" or fn.__name__ in NON_WRAPPED_FUNCTIONS
+    ):
+        return fn
+
     # determine whether the function has an out argument
-    keys = inspect.signature(function).parameters.keys()
-    handle_out_with_backend = "out" in keys
+    keys = inspect.signature(fn).parameters.keys()
     handle_dtype = "dtype" in keys
     handle_dev = "device" in keys
 
-    # do nothing if the function is private or in the non wrapped functions list
-    if hasattr(function, "__name__") and (
-        function.__name__[0] == "_" or function.__name__ in NON_WRAPPED_FUNCTIONS
-    ):
-        return function
+    # get function name
+    fn_name = fn.__name__
 
-    # do nothing if the function is already wrapped
-    if hasattr(function, "wrapped") and function.wrapped:
-        return function
+    # with outputs converted to ivy arrays
+    if fn_name not in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
+        fn = outputs_to_ivy_arrays(fn)
 
-    def _function_w_arrays_n_out_handled(*args, out=None, **kwargs):
-        """
-        Converts all `ivy.Array` instances in both the positional and keyword arguments
-        into `ivy.NativeArray` instances, calls the internal function `function`, and
-        then converts all `ivy.NativeArray` instances in the return back to `ivy.Array`
-        instances. Also handles `out` argument correctly, enabling an inplace update.
+    # with input converted to native arrays
+    fn = inputs_to_native_arrays(fn)
 
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
+    # with inplace updates handled
+    fn = handle_out_argument(fn)
 
-        out
-            optional output array, for writing the result to.
+    # with dtypes handled
+    if handle_dtype and fn_name not in NON_DTYPE_WRAPPED_FUNCTIONS:
+        fn = infer_dtype(fn)
 
-        kwargs
-            The key word arguments to be passed  to the function.
+    # with device handled
+    if handle_dev and fn_name not in NON_DEV_WRAPPED_FUNCTIONS:
+        fn = infer_device(fn)
 
-        Returns
-        -------
-            The result of computing the function fn as an ivy array or a native array.
-        """
-        # convert all arrays in the inputs to ivy.NativeArray instances
-        native_args, native_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
-        )
-        if ivy.exists(out):
-            # extract underlying native array for out
-            native_out = ivy.to_native(out)
-            if handle_out_with_backend:
-                # compute return, with backend inplace update handled by
-                # the backend function
-                ret = function(*native_args, out=native_out, **native_kwargs)
-            else:
-                # compute return, with backend inplace update handled explicitly
-                ret = function(*native_args, **native_kwargs)
-                ret = ivy.inplace_update(native_out, ivy.to_native(ret))
-        else:
-            ret = function(*native_args, **native_kwargs)
-        if function.__name__ in ARRAYLESS_RET_FUNCTIONS + NESTED_ARRAY_RET_FUNCTIONS:
-            return ret
-        elif ivy.exists(out):
-            # handle ivy.Array inplace update as well
-            out.data = ivy.to_native(ret)
-            return out
-        # convert all returned arrays to ivy.Array instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+    # with nestable property handled
+    if hasattr(ivy.Container, fn_name) and fn_name not in FUNCTIONS_W_CONT_SUPPORT:
+        fn = handle_nestable(fn)
 
-    def _get_first_array(*args, **kwargs):
-        # ToDo: make this more efficient, with function ivy.nested_nth_index_where
-        arr = None
-        if args:
-            arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
-            if arr_idxs:
-                arr = ivy.index_nest(args, arr_idxs[0])
-            else:
-                arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
-                if arr_idxs:
-                    arr = ivy.index_nest(kwargs, arr_idxs[0])
-        elif kwargs:
-            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
-            if arr_idxs:
-                arr = ivy.index_nest(kwargs, arr_idxs[0])
-        return arr
-
-    def _function_w_arrays_dtype_n_dev_handled(
-        *args, dtype=None, device=None, **kwargs
-    ):
-        if handle_dtype or handle_dev:
-            arr = _get_first_array(*args, **kwargs)
-            if handle_dtype:
-                if function.__name__ not in NON_DTYPE_WRAPPED_FUNCTIONS:
-                    dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
-                kwargs["dtype"] = dtype
-            if handle_dev:
-                if function.__name__ not in NON_DEV_WRAPPED_FUNCTIONS:
-                    device = ivy.default_device(device, item=arr, as_native=True)
-                kwargs["device"] = device
-        return _function_w_arrays_n_out_handled(*args, **kwargs)
-
-    def _function_wrapped(*args, **kwargs):
-        """
-        Computes the result of `function`, returning the result as an ivy array,
-        a native framework array, or an ivy container.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The key word arguments to be passed to the function.
-
-        Returns
-        -------
-            The result of computing the function fn as an ivy array, a native array,
-            or an ivy container.
-        """
-        fn_name = function.__name__
-        # if the function is not implemented for containers or the function has built-in
-        # container support, call the function using the passed arguments directly,
-        # returning an ivy or a native array.
-        if not hasattr(ivy.Container, fn_name) or fn_name in FUNCTIONS_W_CONT_SUPPORT:
-            return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
-        # if any of the arguments or keyword arguments passed to the function contains a
-        # a container, get the container's version of the function and call it using
-        # the passed arguments.
-        if ivy.nested_any(
-            args, ivy.is_ivy_container, check_nests=True
-        ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            f = getattr(ivy.Container, "static_" + fn_name)
-            return f(*args, **kwargs)
-
-        # if the passed arguments does not contain a container, the function using
-        # the passed arguments, returning an ivy or a native array.
-        return _function_w_arrays_dtype_n_dev_handled(*args, **kwargs)
-
-    if hasattr(function, "__name__"):
-        _function_wrapped.__name__ = function.__name__
-    _function_wrapped.wrapped = True
-    _function_wrapped.inner_fn = function
-    if hasattr(function, "array_spec"):
-        _function_wrapped.array_spec = function.array_spec
-    if hasattr(function, "reduce"):
-        _function_wrapped.reduce = function.reduce
-
-    return _function_wrapped
+    # return the wrapped function
+    return fn
 
 
 def _unwrap_function(function_wrapped: Callable) -> Callable:
