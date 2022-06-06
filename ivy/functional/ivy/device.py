@@ -69,7 +69,6 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-@infer_device
 def get_all_ivy_arrays_on_dev(device):
     """Gets all ivy arrays which are currently alive on the specified device.
 
@@ -78,6 +77,7 @@ def get_all_ivy_arrays_on_dev(device):
     device
 
     """
+    device = ivy.as_ivy_dev(device)
     all_arrays = list()
     for obj in gc.get_objects():
         # noinspection PyBroadException
@@ -89,7 +89,6 @@ def get_all_ivy_arrays_on_dev(device):
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-@infer_device
 def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
@@ -115,7 +114,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     return len(get_all_ivy_arrays_on_dev(device))
 
 
-@infer_device
 def print_all_ivy_arrays_on_dev(device):
     """Prints all arrays which are currently alive on the specified device.
 
@@ -163,7 +161,6 @@ def dev(
 # Conversions
 
 
-@infer_device
 def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     """Convert native data type to string representation.
 
@@ -181,7 +178,6 @@ def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     return _cur_backend().as_ivy_dev(device)
 
 
-@infer_device
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
