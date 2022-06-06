@@ -125,3 +125,19 @@ dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.
   flex-direction: row;
   justify-content: center;
 }
+
+.video{
+  width: 100%;
+}
+
+@media only screen and (min-width: 900px) {
+  .video{
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .video{
+    width: 60%;
+  }
+}
