@@ -9,11 +9,11 @@ import ivy
 
 # noinspection PyShadowingBuiltins
 def all(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-    out: Optional[Tensor] = None,
-) -> Tensor:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -27,11 +27,11 @@ def all(
 
 # noinspection PyShadowingBuiltins
 def any(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-    out: Optional[Tensor] = None,
-) -> Tensor:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))

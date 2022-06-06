@@ -8,12 +8,12 @@ import ivy
 
 
 def argsort(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Tensor] = None,
-) -> Tensor:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
             ret = tf.argsort(
@@ -47,12 +47,12 @@ def argsort(
 
 
 def sort(
-    x: tf.Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Tensor] = None,
-) -> tf.Tensor:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
             res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="DESCENDING")

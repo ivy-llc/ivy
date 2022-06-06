@@ -5,11 +5,11 @@ from tensorflow.python.types.core import Tensor
 
 
 def argmax(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = None,
     keepdims: bool = False,
     out: Optional[int] = tf.dtypes.int64,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
 
     ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
     ret_dtype = ret.dtype
@@ -19,19 +19,25 @@ def argmax(
 
 
 def argmin(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_type: Optional[int] = tf.dtypes.int64,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
     ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
     return ret
 
 
-def nonzero(x: Tensor) -> Tensor:
+def nonzero(
+    x: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.nonzero(x)
 
 
-def where(condition: Tensor, x1: Tensor, x2: Tensor) -> Tensor:
+def where(
+    condition: Union[tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.where(condition, x1, x2)

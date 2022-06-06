@@ -9,8 +9,8 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 
 
-def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType) -> bool:
-    if isinstance(from_, Tensor):
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+    if isinstance(from_, tf.Tensor):
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)
@@ -66,7 +66,7 @@ native_dtype_dict = {
 
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[DType, str, Tensor]) -> np.iinfo:
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
@@ -96,11 +96,11 @@ class Finfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[DType, str, Tensor]) -> Finfo:
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
-def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
+def result_type(*arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType]) -> tf.DType:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
@@ -112,11 +112,11 @@ def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
     return result
 
 
-def broadcast_to(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
+def broadcast_to(x: Union[tf.Tensor, tf.Variable], shape: Tuple[int, ...]) -> Union[tf.Tensor, tf.Variable]:
     return tf.broadcast_to(x, shape)
 
 
-def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
+def broadcast_arrays(*arrays: Union[tf.Tensor, tf.Variable]) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
         desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
         if len(arrays) > 2:
@@ -133,7 +133,7 @@ def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
     return result
 
 
-def astype(x: Tensor, dtype: tf.DType, copy: bool = True) -> Tensor:
+def astype(x: Union[tf.Tensor, tf.Variable], dtype: tf.DType, copy: bool = True) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         if x.dtype == dtype:
             new_tensor = tf.experimental.numpy.copy(x)

@@ -74,7 +74,7 @@ def zeros(
     *,
     dtype: tf.DType,
     device: str,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
@@ -83,7 +83,7 @@ def ones(
     shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> tf.Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
     with tf.device(device):
@@ -91,11 +91,11 @@ def ones(
 
 
 def full_like(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     fill_value: Union[int, float],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = as_native_dev(default_device(device))
     with tf.device(device):
@@ -103,10 +103,10 @@ def full_like(
 
 
 def ones_like(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
@@ -114,20 +114,20 @@ def ones_like(
 
 
 def zeros_like(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.zeros_like(x, dtype=dtype)
 
 
-def tril(x: tf.Tensor, k: int = 0) -> tf.Tensor:
+def tril(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.tril(x, k)
 
 
-def triu(x: tf.Tensor, k: int = 0) -> tf.Tensor:
+def triu(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.triu(x, k)
 
 
@@ -135,17 +135,17 @@ def empty(
     shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty(shape, as_native_dtype(default_dtype(dtype)))
 
 
 def empty_like(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
@@ -169,7 +169,7 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
         return ans
 
 
-def meshgrid(*arrays: tf.Tensor, indexing: str = "xy") -> List[tf.Tensor]:
+def meshgrid(*arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy") -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.meshgrid(*arrays, indexing=indexing)
 
 
@@ -179,7 +179,7 @@ def eye(
     k: Optional[int] = 0,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> tf.Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
     with tf.device(device):
@@ -237,7 +237,7 @@ def full(
     fill_value: Union[int, float],
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
             shape,
