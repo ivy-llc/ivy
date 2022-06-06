@@ -17,6 +17,10 @@ Arrays
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
+.. _`arrays discussion`: https://github.com/unifyai/ivy/discussions/1315
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -105,7 +109,7 @@ Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`,
-whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Type Hints` section.
+whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
@@ -120,3 +124,11 @@ For the reasons explained above, this would be a problem.
 
 Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `arrays discussion`_,
+or reach out on `discord`_ in the `arrays channel`_!
