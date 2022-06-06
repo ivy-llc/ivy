@@ -47,5 +47,5 @@ but you can also dive in at any stage! We're excited for you to get involved!  ð
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/HF-ZLF23g38">
+    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video">
     </iframe>
