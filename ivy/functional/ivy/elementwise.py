@@ -2421,19 +2421,126 @@ def minimum(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
+    """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
     x1
         Input array containing elements to minimum threshold.
     x2
-        Tensor containing minimum values, must be broadcastable to x.
+        Tensor containing minimum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not exceed the y values.
+        An array with the elements of x1, but clipped to not exceed the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 5, 9])
+    >>> y = ivy.array([2, 6, 8])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([1, 5, 8])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([2, 6, 8, 5])
+    >>> y = ivy.native_array([1, 5, 9, 6])
+    >>> ivy.minimum(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([1, 5, 8, 5])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.minimum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([1])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([2, 3])
+    >>> y = ivy.native_array([0, 4])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([0, 3])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([2, 3, 9])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.array([2, 3, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([2, 3, 9, 7, 3])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.native_array([2, 3, 5, 5, 3])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 7, 3])
+    >>> y = ivy.array([3, 3, 2])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([3, 3, 2])
+
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 7])
+    >>> y = ivy.native_array([6, 0])
+    >>> x.minimum(y, out=y)
+    >>> print(y)
+    ivy.native_array([4, 0])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 4, 8])
+    >>> z = ivy.zeros(3)
+    >>> x.minimum(3, out=z)
+    >>> print(z)
+    ivy.array([1, 4, 5])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3, 2])
+    >>> y = ivy.native_array([1, 9, 2, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.native_array([1, 7, 2, 3, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3])
+    >>> y = ivy.array([1, 9, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.native_array([1, 7, 6, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([3, 8])
+    >>> z = x.minimum(3)
+    >>> print(z)
+    ivy.native_array([3, 6])
 
     """
     return _cur_backend(x1).minimum(x1, x2, out=out)
@@ -2445,19 +2552,126 @@ def maximum(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
+    """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
-    x
+    x1
         Input array containing elements to maximum threshold.
-    y
-        Tensor containing maximum values, must be broadcastable to x.
+    x2
+        Tensor containing maximum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not be lower than the y values.
+        An array with the elements of x1, but clipped to not be lower than the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([7, 9, 5])
+    >>> y = ivy.array([9, 3, 2])
+    >>> z = ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([9, 9, 5])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([1, 5, 9, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 0, 7])
+    >>> ivy.maximum(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([9, 5, 9, 8, 7])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.maximum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([5])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([7, 3])
+    >>> y = ivy.native_array([0, 7])
+    >>> z = ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([7, 3])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([1, 7, 3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.array([5, 7, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([1, 3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.native_array([5, 5])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 8, 3])
+    >>> y = ivy.array([9, 3, 2])
+    >>> x.maximum(y, out=y)
+    >>> print(y)
+    ivy.array([9, 8, 3])
+
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 1, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.array([9, 3, 8, 6])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 7, 8])
+    >>> z = ivy.zeros(3)
+    >>> x.maximum(3, out=z)
+    >>> print(z)
+    ivy.array([3, 7, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 8])
+    >>> y = ivy.native_array([9, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.native_array([9, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([1, 8, 6, 0, 5])
+    >>> y = ivy.array([9, 6, 2, 5, 8])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.native_array([9, 8, 6, 5, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([0, 2, 7])
+    >>> z = x.maximum(5)
+    >>> print(z)
+    ivy.native_array([0, 2, 5])
 
     """
     return _cur_backend(x1).maximum(x1, x2, out=out)
