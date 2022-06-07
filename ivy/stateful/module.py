@@ -10,6 +10,7 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
+from ivy.func_wrapper import _get_first_array
 
 
 # Base #
@@ -360,7 +361,12 @@ class Module(abc.ABC):
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
-            self.build(*args, **kwargs, from_call=True, dtype=args[0].dtype)
+            self.build(
+                *args,
+                **kwargs,
+                from_call=True,
+                dtype=_get_first_array(*args, **kwargs).dtype
+            )
         if v is not None:
             v_orig = self.v
             if not with_grads:
@@ -650,8 +656,6 @@ class Module(abc.ABC):
             track_submod_call_order,
             expected_submod_rets,
         )
-        # if not v:
-        #     v=self.v
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -674,10 +678,10 @@ class Module(abc.ABC):
 
         if not from_call and self._build_mode == "on_call":
             return self.v
-        if self._dtype:
-            dtype = ivy.default_dtype(self._dtype, as_native=True)
-        else:
+        if dtype:
             dtype = ivy.default_dtype(dtype, as_native=True)
+        else:
+            dtype = ivy.default_dtype(self._dtype, as_native=True)
 
         kwargs["dtype"] = dtype
         # build local Module, and any child modules flagged with "explicit" build mode

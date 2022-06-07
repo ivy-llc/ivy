@@ -15,11 +15,7 @@ class Constant:
     ):
         """Create internal variables for the layer"""
         return ivy.variable(
-            ivy.array(
-                ivy.ones(var_shape, device=device) * self._constant,
-                dtype=dtype,
-                device=device,
-            )
+            ivy.ones(var_shape, device=device, dtype=dtype) * self._constant,
         )
 
 
