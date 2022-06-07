@@ -157,26 +157,24 @@ class ContainerWithManipulation(ContainerBase):
 
     def roll(
         self: ivy.Container,
-        *,
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
-        shift: Union[int, Tuple[int, ...], ivy.Container] = None,
+        shift: Union[int, Tuple[int, ...], ivy.Container],
         axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self._call_static_method(
-            {"x": x, "shift": shift, "axis": axis},
-            ("x", "shift"),
-            {},
-            self.static_roll,
+        return self.static_roll(
+            self,
+            shift,
+            axis,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
         )
 
     def squeeze(
@@ -235,7 +233,7 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    def repeats(
+    def repeat(
         self: ivy.Container,
         repeats: Union[int, Iterable[int]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
