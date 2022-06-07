@@ -8,7 +8,7 @@ Deep Dive
 For general users of the framework, who are mainly concerned with learning how to *use* Ivy,
 then the :ref:`Design` section is the best place to start 🙂
 
-This *deep dive* section is more targetted at people who would like to dive deeper into
+This *deep dive* section is more targeted at people who would like to dive deeper into
 how Ivy actually works under the hood 🔧
 
 Going through the sections outlined below will get you right into the weeds of the framework 🌱,

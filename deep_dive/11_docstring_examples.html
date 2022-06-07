@@ -209,7 +209,7 @@ If so, these examples should:</p>
 corresponding operator is applied to an array. For example, the functions <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>,
 <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
 are used respectively. Under the hood, these operators first call the special methods <code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respecitvely, on either the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respectively, on either the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p>If the function is an <em>operator</em> function, then examples should be added which:</p>
@@ -433,7 +433,7 @@ ivy.array([2., 0., 1.])
 </pre></div>
 </div>
 <p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 9 is relevant in this case,
-as there are three function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
+as there are three function inputs in total (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
 We can therefore add an example with multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
 in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:

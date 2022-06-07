@@ -153,7 +153,7 @@
 <h1>Function Types<a class="headerlink" href="#function-types" title="Permalink to this heading"></a></h1>
 <p>Firstly, we explain the difference between <em>primary</em>, <em>compositional</em>, <em>mixed</em> and <em>standalone</em> functions.
 These four function categorizations are all <strong>mutually exclusive</strong>,
-and combined they consitute the set of <strong>all</strong> functions in Ivy, as outlined in the simple Venn diagram below.</p>
+and combined they constitute the set of <strong>all</strong> functions in Ivy, as outlined in the simple Venn diagram below.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true" style="width: 50%;" /></a>
 <section id="primary-functions">
 <h2>Primary Functions<a class="headerlink" href="#primary-functions" title="Permalink to this heading"></a></h2>
@@ -222,7 +222,7 @@ implementations in any of the backend files <code class="code docutils literal n
 To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
 Because these functions include both a compositional implementation and also at least one backend-specific
-implementation, these functions are refered to as <em>mixed</em>.</p>
+implementation, these functions are referred to as <em>mixed</em>.</p>
 <p>When using ivy without a backend set explicitly (for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code> has not been called),
 then the function called is always the one implemented in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.
 For <em>primary</em> functions, then <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend(array_arg).func_name(...)</span></code>
@@ -239,7 +239,7 @@ and in this case the efficient backend-specific implementation will always be us
 <h2>Standalone Functions<a class="headerlink" href="#standalone-functions" title="Permalink to this heading"></a></h2>
 <p><em>Standalone</em> functions are functions which do not reference any other <em>primary</em>,
 <em>compositional</em> or <em>mixed</em> functions whatsoever.</p>
-<p>By definition, standalone functions can only reference themselves or other standlone functions.
+<p>By definition, standalone functions can only reference themselves or other standalone functions.
 Most commonly, these functions are <em>convenience</em> functions (see below).</p>
 <p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
 All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
