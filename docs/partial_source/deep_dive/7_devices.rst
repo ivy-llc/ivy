@@ -37,7 +37,7 @@ Device Module
 
 The `device.py`_ module provides a variety of functions for working with devices.
 A few examples include
-:code:`ivy.get_all_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
+:code:`ivy.get_all_ivy_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
 :code:`ivy.dev` which gets the device for input array,
 and :code:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
 
@@ -65,7 +65,7 @@ Some other functions outside of the :code:`creation.py` submodule also support t
 such as :code:`ivy.random_uniform` which is located in :code:`random.py`,
 but this is simply because of dual categorization.
 :code:`ivy.random_uniform` is also essentially a creation function,
-despite not being being located in :code:`creation.py`.
+despite not being located in :code:`creation.py`.
 
 The :code:`device` argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
@@ -79,7 +79,7 @@ with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUN
 `NON_DTYPE_WRAPPED_FUNCTIONS`_.
 This function calls `ivy.default_device`_ in order to determine the correct data type.
 As discussed in the :ref:`Function Wrapping` section,
-this is applied to all applicable function dynamically during `backend setting`_.
+this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_device`_ infers the device as follows:
 
