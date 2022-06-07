@@ -6,7 +6,7 @@ from typing import Union, Tuple, Optional, List
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import infer_device
+from ivy.func_wrapper import infer_device, infer_dtype
 
 
 # Array API Standard #
@@ -207,6 +207,7 @@ def full_like(
     return _cur_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -244,6 +245,7 @@ def ones_like(
     return _cur_backend(x).ones_like(x, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -358,6 +360,7 @@ def empty(
     return _cur_backend().empty(shape, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -629,7 +632,6 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 array = asarray
 
 
-@infer_device
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     *,
