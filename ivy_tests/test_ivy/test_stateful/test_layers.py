@@ -114,9 +114,9 @@ def test_linear_layer(
 def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph, call):
     # smoke test
     if as_variable:
-        x = ivy.variable(ivy.random_uniform(shape=x_shape, dtype=dtype))
+        x = ivy.variable(ivy.array(ivy.random_uniform(shape=x_shape), dtype=dtype))
     else:
-        x = ivy.random_uniform(shape=x_shape, dtype=dtype)
+        x = ivy.array(ivy.random_uniform(shape=x_shape), dtype=dtype)
     dropout_layer = ivy.Dropout(0.9)
     ret = dropout_layer(x)
     # type test
