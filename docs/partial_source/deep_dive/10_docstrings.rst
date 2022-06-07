@@ -157,5 +157,5 @@ or reach out on `discord`_ in the `docstrings channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/TnshJ8swuJM">
+    src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
     </iframe>
