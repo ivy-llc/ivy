@@ -55,7 +55,7 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/T5vQP1pCXS8">
+    src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video">
     </iframe>
 
 |
@@ -119,7 +119,7 @@ investigate!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/wBKTOGmwfbo">
+    src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video">
     </iframe>
 
 |
@@ -154,7 +154,7 @@ Both of these cases are explained in the following video.
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/TFMPihytg9U">
+    src="https://www.youtube.com/embed/TFMPihytg9U" class="video">
     </iframe>
 
 |
@@ -191,7 +191,7 @@ The code review process is explained in more detail in the following video.
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/9G4d-CvlT2g">
+    src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video">
     </iframe>
 
 |
