@@ -117,8 +117,7 @@ def test_tanh(dtype_and_x,as_variable, num_positional_args,container,instance_me
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
         return
-    if  (len(v) > 2 for v in x) or len(x) > 2 :
-        return
+
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -172,8 +171,6 @@ def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance
 def test_softmax(dtype_and_x,axis,as_variable, num_positional_args,container,instance_method,native_array, fw):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
-        return
-    if fw == "tensorflow" and (a == [] for a in x):
         return
     helpers.test_array_function(
         dtype,
