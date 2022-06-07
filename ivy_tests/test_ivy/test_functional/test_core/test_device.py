@@ -48,7 +48,6 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
 
 
 # as_ivy_dev
-
 @given(
     array_shape=helpers.lists(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
@@ -66,7 +65,6 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
         x = ivy.variable(x)
 
     if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
-
         # mxnet does not support 0-dimensional variables
         return
 
