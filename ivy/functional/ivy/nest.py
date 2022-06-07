@@ -13,8 +13,7 @@ import ivy
 
 
 def index_nest(nest, index):
-    """Index a nested object, using a tuple of indices or keys in the case of
-    dicts.
+    """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     Parameters
     ----------
@@ -97,8 +96,8 @@ def map_nest_at_index(nest, index, fn):
 
 
 def multi_index_nest(nest, indices):
-    """Repeatedly index a nested object, using a tuple of tuples of indices or
-    keys in the case of dicts.
+    """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
+    the case of dicts.
 
     Parameters
     ----------
@@ -126,8 +125,7 @@ def prune_nest_at_indices(nest, indices):
 
 
 def set_nest_at_indices(nest, indices, values):
-    """Set the value of a nested item at specified indices with specified
-    values.
+    """Set the value of a nested item at specified indices with specified values.
 
     Parameters
     ----------
@@ -145,15 +143,17 @@ def set_nest_at_indices(nest, indices, values):
 
 
 def insert_into_nest_at_indices(nest, indices, values):
-    """Insert a value into the nested item at specified indices with specified
-    values.
+    """Insert a value into the nested item at specified indices with specified values.
 
-    :param nest: The nested object to insert into.
-    :type nest: nested
-    :param indices: A tuple of tuples of indices for the indices at which to insert values.
-    :type indices: tuple of tuples of indices
-    :param values: The new values for inserting.
-    :type values: sequence of any
+    Parameters
+    ----------
+    nest
+        The nested object to insert into.
+    indices
+        A tuple of tuples of indices for the indices at which to insert
+        values.
+    values
+        The new values for inserting.
 
     """
     if not isinstance(values, (list, tuple)):
@@ -188,8 +188,8 @@ def nested_indices_where(
     _index: List = None,
     _base: bool = True,
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest
-    indices where the method evaluates as True.
+    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
+    where the method evaluates as True.
 
     Parameters
     ----------
@@ -198,12 +198,16 @@ def nested_indices_where(
     fn
         The conditon function, returning True or False.
     check_nests
-        Whether to also check the nests for the condition, not only nest leaves. Default is False.
+        Whether to also check the nests for the condition, not only nest leaves.
+        Default is False.
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     _index
-        The indices detected so far. None at the beginning. Used internally, do not set manually.
+        The indices detected so far. None at the beginning. Used internally, do not set
+        manually.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -240,20 +244,22 @@ def nested_indices_where(
 def all_nested_indices(
     nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest
-    indices where the method evaluates as True.
+    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
+    where the method evaluates as True.
 
     Parameters
     ----------
     nest
         The nest to check the leaves of.
     include_nests
-        Whether to also include indices of the nests themselves, not only leaves. Default is False.
+        Whether to also include indices of the nests themselves, not only leaves.
+        Default is False.
     _index
-        The indices detected so far. None at the beginning. Used internally, do not set manually.
+        The indices detected so far. None at the beginning. Used internally, do not set
+        manually.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -297,11 +303,13 @@ def map(
     fn
         The function to map onto x.
     constant
-        keyword arguments which remain constant between each function call. Default is None.
+        keyword arguments which remain constant between each function call.
+        Default is None.
     unique
         keyword arguments which are unique for each function call. Default is None.
     mean
-        Whether to compute the mean across the return values, and return this mean. Default is False.
+        Whether to compute the mean across the return values, and return this mean.
+        Default is False.
 
     Returns
     -------
@@ -333,9 +341,9 @@ def nested_map(
     _list_check_fn: Optional[callable] = None,
     _dict_check_fn: Optional[callable] = None,
 ) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
-    """Applies a function on x in a nested manner, whereby all dicts, lists and
-    tuples are traversed to their lowest leaves before applying the method and
-    returning x. If x is not nested, the method is applied to x directly.
+    """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
+    are traversed to their lowest leaves before applying the method and returning x. If
+    x is not nested, the method is applied to x directly.
 
     Parameters
     ----------
@@ -344,11 +352,14 @@ def nested_map(
     fn
         The function to map onto x.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     to_mutable
-        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+        Whether to convert the nest to a mutable form, changing all tuples to lists.
+        Default is False.
     max_depth
-        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+        The maximum nested depth to reach. Default is 1. Increase this if the nest is
+        deeper.
     _depth
         Placeholder for tracking the recursive depth, do not set this parameter.
     _tuple_check_fn
@@ -361,7 +372,8 @@ def nested_map(
     Returns
     -------
     ret
-        x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
+        x following the applicable of fn to it's nested leaves, or x itself if x is not
+        nested.
 
     """
     if include_derived is True:
@@ -455,8 +467,8 @@ def nested_map(
 def nested_any(
     nest: Iterable, fn: Callable, check_nests: bool = False, _base: bool = True
 ) -> bool:
-    """Checks the leaf nodes of nest x via function fn, and returns True if any
-    evaluate to True, else False.
+    """Checks the leaf nodes of nest x via function fn, and returns True if any evaluate
+    to True, else False.
 
     Parameters
     ----------
@@ -465,10 +477,11 @@ def nested_any(
     fn
         The conditon function, returning True or False.
     check_nests
-        Whether to also check the nests for the condition, not only nest leaves. Default is False.
+        Whether to also check the nests for the condition, not only nest leaves.
+        Default is False.
     _base
-        Whether the current function call is the first function call in the recursive stack.
-        Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
 
     Returns
     -------
@@ -498,17 +511,19 @@ def copy_nest(
     include_derived: bool = False,
     to_mutable: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
-    """Copies a nest deeply, but without copying leaves of the nest, only the
-    nest lists, tuples and dicts are copied.
+    """Copies a nest deeply, but without copying leaves of the nest, only the nest
+    lists, tuples and dicts are copied.
 
     Parameters
     ----------
     nest
         The nest to copy.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     to_mutable
-        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+        Whether to convert the nest to a mutable form, changing all tuples to lists.
+        Default is False.
 
     Returns
     -------
@@ -535,3 +550,75 @@ def copy_nest(
             {k: copy_nest(v, include_derived, to_mutable) for k, v in nest.items()}
         )
     return nest
+
+
+def nested_multi_map(
+    func,
+    nests,
+    key_chains=None,
+    to_apply=True,
+    prune_unapplied=False,
+    key_chain="",
+    config=None,
+):
+    """Apply function to all array values from a collection of identically
+    structured ivy arrays.
+
+    Parameters
+    ----------
+    func
+        Function to apply to each nest entry.
+    nest
+        nests to map.
+    key_chains
+        The key-chains to apply or not apply the method to. Default is None.
+    to_apply
+        If True, the method will be applied to key_chains, otherwise key_chains will
+        be skipped. Default is True.
+    prune_unapplied
+        Whether to prune key_chains for which the function was not applied,
+        otherwise the leftmost nest value is used. Default is False.
+    key_chain
+        Chain of keys for this dict entry (Default value = '')
+    config
+        The configuration for the nests. Default is the same as nest0.
+
+    Returns
+    -------
+        nest containing the result of the funciton.
+
+    """
+    nest0 = nests[0]
+    return_list = list()
+    for index, val in enumerate(nest0):
+        values = [nest[index] for nest in nests]
+        value0 = values[0]
+        this_key_chain = index if key_chain == "" else (key_chain + "/" + index)
+        if (
+            isinstance(value0, ivy.Array)
+            or isinstance(value0, ivy.NativeArray)
+            and ivy.get_num_dims(value0) > 0
+        ):
+            ret = ivy.nested_multi_map(
+                func,
+                values,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                this_key_chain,
+                config,
+            )
+            if ret:
+                return_list.insert(index, ret)
+        else:
+            if key_chains is not None:
+                if (this_key_chain in key_chains and not to_apply) or (
+                    this_key_chain not in key_chains and to_apply
+                ):
+                    if prune_unapplied:
+                        continue
+                    return_list.insert(index, ivy.to_list(value0))
+                    continue
+            return_list.insert(index, ivy.to_list(func(values, this_key_chain)))
+    # noinspection PyProtectedMember
+    return ivy.array(return_list)

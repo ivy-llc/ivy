@@ -67,8 +67,9 @@ def test_imports(fname, assert_version, update_versions):
                     mod_name, detected_version
                 )
             else:
-                msg = "expected version {} for module {}, but detected version {}\n".format(
-                    expected_version, mod_name, detected_version
+                msg = (
+                    "expected version {} for module {}, but detected version "
+                    "{}\n".format(expected_version, mod_name, detected_version)
                 )
                 versions_to_update[line_num] = {
                     "expected": expected_version,
@@ -83,16 +84,18 @@ def test_imports(fname, assert_version, update_versions):
             PRINT_MSG += msg
         else:
             if detected_version:
-                msg = "{} detected version: {}, but no expected version provided\n".format(
-                    mod_name, detected_version
+                msg = (
+                    "{} detected version: {}, but no expected version "
+                    "provided\n".format(mod_name, detected_version)
                 )
             elif expected_version:
                 msg = "{} expected version: {}, but unable to detect version\n".format(
                     mod_name, expected_version
                 )
             else:
-                msg = "no expected version provided, and unable to detect version for {}\n".format(
-                    mod_name
+                msg = (
+                    "no expected version provided, and unable to detect "
+                    "version for {}\n".format(mod_name)
                 )
             WARN = True
             PRINT_MSG += msg
@@ -129,14 +132,19 @@ if __name__ == "__main__":
         "--filepaths",
         type=str,
         required=True,
-        help="Comma separated filepaths of all text files to check. Spaces are ignored.",
+        help=(
+            "Comma separated filepaths of all text files to check. "
+            "Spaces are ignored."
+        ),
     )
     parser.add_argument(
         "-amv",
         "--assert_matching_versions",
         action="store_true",
-        help="Whether to assert that all module versions match those lists in the requirements.txt and"
-        "optional.txt files.",
+        help=(
+            "Whether to assert that all module versions match those lists in the "
+            "requirements.txt and optional.txt files."
+        ),
     )
     parser.add_argument(
         "-uv",

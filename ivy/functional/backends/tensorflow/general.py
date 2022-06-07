@@ -1,21 +1,21 @@
 """Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
-from typing import Optional
-import ivy
+from typing import List, Optional, Union
 
 _round = round
 import numpy as _np
 import tensorflow as tf
-from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
+from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -31,7 +31,7 @@ def copy_array(x: Tensor) -> Tensor:
 
 
 def array_equal(x0: Tensor, x1: Tensor) -> bool:
-    return tf.experimental.numpy.array_equal(x0, x1)
+    return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
 def to_numpy(x: Tensor) -> _np.ndarray:
@@ -46,10 +46,12 @@ def to_list(x: Tensor) -> list:
     return x.numpy().tolist()
 
 
-def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None) -> tf.Tensor:
-    ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+def floormod(x: tf.Tensor, y: tf.Tensor) -> tf.Tensor:
+    if hasattr(x, "dtype") and hasattr(y, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
+        x = tf.cast(x, promoted_type)
+        y = tf.cast(y, promoted_type)
+    ret = tf.math.floormod(x, y)
     return ret
 
 
@@ -65,7 +67,9 @@ def unstack(x, axis, keepdims=False):
 container_types = lambda: []
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(val_native)
@@ -117,29 +121,18 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: tf.Tensor, axis: int = 0, out: Optional[tf.Tensor] = None) -> tf.Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.math.cumsum(x, axis))
-    else:
-        return tf.math.cumsum(x, axis)
+def cumsum(x: tf.Tensor, axis: int = 0) -> tf.Tensor:
+    return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: tf.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[tf.Tensor] = None,
+    x: tf.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> tf.Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.math.cumprod(x, axis, exclusive))
-    else:
-        return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -180,7 +173,7 @@ def scatter_flat(
                 reduction
             )
         )
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return res
 
 
@@ -203,7 +196,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -213,8 +206,10 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
         )
     # handle numeric updates
     updates = tf.constant(
-        [updates] if isinstance(updates, Number) else updates,
-        dtype=ivy.dtype(tensor, as_str=False)
+        # keep below commented out, asarray API tests working without it
+        # [updates] if isinstance(updates, Number) else
+        updates,
+        dtype=ivy.dtype(tensor, as_native=True)
         if ivy.exists(tensor)
         else ivy.default_dtype(item=updates),
     )
@@ -288,48 +283,37 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
                 reduction
             )
         )
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return res
 
 
 def gather(
-    params: tf.Tensor,
-    indices: tf.Tensor,
-    axis: Optional[int] = -1,
-    device: Optional[str] = None,
-    out: Optional[tf.Tensor] = None,
+    params: tf.Tensor, indices: tf.Tensor, axis: Optional[int] = -1, *, device: str
 ) -> tf.Tensor:
     axis = axis % len(indices.shape)
     if device is None:
         device = _dev_callable(params)
-    with tf.device(dev_from_str(device)):
-        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        else:
-            return ret
+    with tf.device(as_native_dev(device)):
+        return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices, device=None):
+def gather_nd(params, indices, *, device: str):
     if device is None:
         device = _dev_callable(params)
-    with tf.device(dev_from_str(device)):
+    with tf.device(as_native_dev(device)):
         return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     device = default_device(device)
     if device is not None:
-        with tf.device(dev_from_str(device)):
+        with tf.device(as_native_dev(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: tf.function(
-    fn
-)
-current_framework_str = lambda: "tensorflow"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "tensorflow"
+current_backend_str.__name__ = "current_backend_str"
 
 multiprocessing = (
     lambda context=None: _multiprocessing
@@ -337,8 +321,15 @@ multiprocessing = (
     else _multiprocessing.get_context(context)
 )
 indices_where = tf.where
-shape = lambda x, as_tensor=False: tf.shape(x) if as_tensor else tuple(x.shape)
-shape.__name__ = "shape"
+
+
+def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
+    if as_tensor:
+        return tf.shape(x)
+    else:
+        return tuple(x.shape)
+
+
 get_num_dims = (
     lambda x, as_tensor=False: tf.shape(tf.shape(x))[0]
     if as_tensor

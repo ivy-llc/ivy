@@ -5,7 +5,7 @@ import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 from typing import Union, List, Tuple
 
 
@@ -17,8 +17,8 @@ def stack_images(
     images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
 ) -> ivy.Array:
-    """Stacks a group of images into a combined windowed image, fitting the
-    desired aspect ratio as closely as possible.
+    """Stacks a group of images into a combined windowed image, fitting the desired
+    aspect ratio as closely as possible.
 
     Parameters
     ----------
@@ -39,18 +39,17 @@ def stack_images(
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
     >>> print(stacked)
-    [[[1., 1., 1.],
+    ivy.array([[[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]],
-
            [[1., 1., 1.],
             [1., 1., 1.],
             [0., 0., 0.],
-            [0., 0., 0.]]]
+            [0., 0., 0.]]])
 
     """
-    return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
+    return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp):
@@ -69,7 +68,7 @@ def bilinear_resample(x, warp):
         Image after bilinear re-sampling.
 
     """
-    return _cur_framework(x).bilinear_resample(x, warp)
+    return _cur_backend(x).bilinear_resample(x, warp)
 
 
 def gradient_image(x):
@@ -85,13 +84,37 @@ def gradient_image(x):
     ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
 
+    Examples
+    --------
+    >>> batch_size = 1
+    >>> h = 3
+    >>> w = 3
+    >>> d = 1
+    >>> x = ivy.arange(h * w * d, dtype=ivy.float32)
+    >>> image = ivy.reshape(x,shape=(batch_size, h, w, d))
+    >>> dy, dx = ivy.gradient_image(image)
+    >>> print(image[0, :,:,0])
+    ivy.array([[0., 1., 2.],
+               [3., 4., 5.],
+               [6., 7., 8.]])
+
+    >>> print(dy[0, :,:,0])
+     ivy.array([[3., 3., 3.],
+               [3., 3., 3.],
+               [0., 0., 0.]])
+
+    >>> print(dx[0, :,:,0])
+     ivy.array([[1., 1., 0.],
+               [1., 1., 0.],
+               [1., 1., 0.]])
+
     """
-    return _cur_framework(x).gradient_image(x)
+    return _cur_backend(x).gradient_image(x)
 
 
 def float_img_to_uint8_img(x):
-    """Converts an image of floats into a bit-cast 4-channel image of uint8s,
-    which can be saved to disk.
+    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
+    be saved to disk.
 
     Parameters
     ----------
@@ -104,14 +127,14 @@ def float_img_to_uint8_img(x):
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
-    x_np = ivy.to_numpy(x)
+    x_np = ivy.to_numpy(x).astype("float32")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
     return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
-def uint8_img_to_float_img(x):
+def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
     Parameters
@@ -124,15 +147,28 @@ def uint8_img_to_float_img(x):
     ret
         The new float image *[batch_shape,h,w]*
 
+    Examples
+    --------
+    >>> batch_shape = 1
+    >>> h = 2
+    >>> w = 2
+    >>> d = 4
+    >>> x = ivy.arange(h * w * d)
+    >>> image = ivy.reshape(x,(batch_size, h, w, d))
+    >>> y = ivy.uint8_img_to_float_img(image)
+    >>> print(y)
+    ivy.array([[[3.820471434542632e-37, 1.0082513512365273e-34],
+                [2.658462758989161e-32, 7.003653270560797e-30]]])
+
     """
-    x_np = ivy.to_numpy(x)
+    x_np = ivy.to_numpy(x).astype("uint8")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)
     return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
 
 
-def random_crop(x, crop_size, batch_shape=None, image_dims=None):
+def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     """Randomly crops the input images.
 
     Parameters
@@ -152,7 +188,6 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
         The new cropped image *[batch_shape,nh,nw,f]*
 
     """
-
     x_shape = x.shape
     if batch_shape is None:
         batch_shape = x_shape[:-3]
@@ -160,6 +195,8 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
     flat_batch_size = _reduce(_mul, batch_shape, 1)
+    crop_size[0] = min(crop_size[-2], x_shape[-3])
+    crop_size[1] = min(crop_size[-1], x_shape[-2])
 
     # shapes as list
     batch_shape = list(batch_shape)
@@ -170,8 +207,9 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
-    x_offsets = _np.random.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
-    y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
+    rng = _np.random.default_rng(seed)
+    x_offsets = rng.integers(0, margins[0] + 1, flat_batch_size).tolist()
+    y_offsets = rng.integers(0, margins[1] + 1, flat_batch_size).tolist()
 
     # list of 1 x NH x NW x F
     cropped_list = [
@@ -194,7 +232,7 @@ def linear_resample(
     Parameters
     ----------
     x
-        Input array
+        Input image
     num_samples
         The number of interpolated samples to take.
     axis
@@ -205,5 +243,11 @@ def linear_resample(
     ret
         The array after the linear resampling.
 
+    Examples
+    --------
+    >>> data = ivy.array([[1, 2],[3, 4]])
+    >>> y = linear_resample(data, 5)
+    >>> print(y)
+    ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
     """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
+    return _cur_backend(x).linear_resample(x, num_samples, axis)

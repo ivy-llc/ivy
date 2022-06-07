@@ -1,9 +1,7 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import logging
-from typing import Optional
+from typing import List, Optional, Union
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -12,7 +10,6 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 # Helpers #
@@ -44,9 +41,19 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+    # make both arrays contiguous if not already
+    if not x_native.flags.c_contiguous:
+        x_native = np.ascontiguousarray(x_native)
+    if not val_native.flags.c_contiguous:
+        val_native = np.ascontiguousarray(val_native)
+
     x_native.data = val_native
+
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
@@ -60,12 +67,8 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(
-    x: np.ndarray, y: np.ndarray, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     ret = np.asarray(x % y)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -98,38 +101,22 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(
-    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, np.cumsum(x, axis))
-    else:
-        return np.cumsum(x, axis)
+def cumsum(x: np.ndarray, axis: int = 0) -> np.ndarray:
+    return np.cumsum(x, axis)
 
 
 def cumprod(
-    x: np.ndarray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[np.ndarray] = None,
+    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, np.swapaxes(res, axis, -1).copy())
-        else:
-            return np.swapaxes(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, np.cumprod(x, axis))
-    else:
-        return np.cumprod(x, axis)
+        return np.swapaxes(res, axis, -1)
+    return np.cumprod(x, axis)
 
 
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -168,7 +155,7 @@ def scatter_flat(
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -210,22 +197,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
 
 
 def gather(
-    params: np.ndarray,
-    indices: np.ndarray,
-    axis: Optional[int] = -1,
-    device: Optional[str] = None,
-    out: Optional[np.ndarray] = None,
+    params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
 ) -> np.ndarray:
     if device is None:
         device = _dev_callable(params)
-    ret = _to_dev(np.take_along_axis(params, indices, axis), device)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    else:
-        return ret
+    return _to_dev(np.take_along_axis(params, indices, axis), device)
 
 
-def gather_nd(params, indices, device=None):
+def gather_nd(params, indices, *, device: str):
     if device is None:
         device = _dev_callable(params)
     indices_shape = indices.shape
@@ -271,14 +250,19 @@ def indices_where(x):
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
 
 
-shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
-shape.__name__ = "shape"
+def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
+    if as_tensor:
+        return np.asarray(np.shape(x))
+    else:
+        return x.shape
+
+
 get_num_dims = (
     lambda x, as_tensor=False: np.asarray(len(np.shape(x)))
     if as_tensor
@@ -286,16 +270,5 @@ get_num_dims = (
 )
 
 
-# noinspection PyUnusedLocal
-def compile(
-    func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None
-):
-    logging.warning(
-        "Numpy does not support compiling functions.\n"
-        "Now returning the unmodified function."
-    )
-    return func
-
-
-current_framework_str = lambda: "numpy"
-current_framework_str.__name__ = "current_framework_str"
+current_backend_str = lambda: "numpy"
+current_backend_str.__name__ = "current_backend_str"

@@ -13,7 +13,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.min(self, axis, keepdims, out=out)
 
@@ -21,7 +21,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.max(self, axis, keepdims, out=out)
 
@@ -29,32 +29,49 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.mean(self, axis, keepdims, out=out)
 
     def var(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.var(self, axis, keepdims, out=out)
+        return ivy.var(self, axis, correction, keepdims, out=out)
 
     def prod(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.prod(self, axis, dtype, keepdims, out=out)
+        return ivy.prod(self, axis, keepdims, dtype=dtype, out=out)
 
     def sum(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
-        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.sum(self, axis, dtype, keepdims, out=out)
+
+    def std(
+        self: ivy.Array,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.std(self, axis, correction, keepdims, out=out)
+
+    def einsum(
+        self: ivy.Array,
+        equation: str,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.einsum(equation, self, out=out)

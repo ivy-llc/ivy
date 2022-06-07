@@ -1,5 +1,4 @@
-"""Collection of Numpy image functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import math
@@ -79,10 +78,10 @@ def bilinear_resample(x, warp):
     height, width = input_image_dims
     max_x = width - 1
     max_y = height - 1
-    idx_size = np.prod(np.asarray(_ivy.shape(warp)[-3:-1]))
+    idx_size = warp.shape[-2]
     batch_shape_flat = int(np.prod(np.asarray(batch_shape)))
     # B
-    batch_offsets = np.arange(batch_shape_flat) * idx_size
+    batch_offsets = np.arange(batch_shape_flat) * height * width
     # B x (HxW)
     base_grid = np.tile(np.expand_dims(batch_offsets, 1), [1, idx_size])
     # (BxHxW)

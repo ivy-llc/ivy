@@ -13,8 +13,8 @@ def _is_optional(typ):
             rep.startswith("Union") and type(None) in typ.__args__
         ):
             return True
-    except:
-        pass
+    except BaseException as error:
+        print("Exception occured: {}".format(error))
     return False
 
 
@@ -24,8 +24,8 @@ def _is_union(typ):
         rep = typ.__repr__().split(".")[1]
         if rep.startswith("Union"):
             return True
-    except:
-        pass
+    except BaseException as error:
+        print("Exception occured: {}".format(error))
     return False
 
 
@@ -35,8 +35,8 @@ def _is_dict(typ):
         rep = typ.__repr__().split(".")[1]
         if rep.startswith("Dict"):
             return True
-    except:
-        pass
+    except BaseException as error:
+        print("Exception occured: {}".format(error))
     return False
 
 
@@ -46,8 +46,8 @@ def _is_iterable(typ):
         rep = typ.__repr__().split(".")[1]
         if rep.startswith("List") or rep.startswith("Tuple"):
             return True
-    except:
-        pass
+    except BaseException as error:
+        print("Exception occured: {}".format(error))
     return False
 
 
@@ -89,12 +89,18 @@ def _get_array_idxs(typ, idx_so_far=None):
 
 
 def fn_array_spec(fn):
-    """Return a specification of the function, indicating all arguments which
-    include arrays, and the indexes of these.
+    """Return a specification of the function, indicating all arguments which include
+    arrays, and the indexes of these.
 
-    :param fn: function to inspect
-    :type fn: callable
-    :return: specification
+    Parameters
+    ----------
+    fn
+        function to inspect
+
+    Returns
+    -------
+    ret
+        specification
 
     """
     type_hints = get_type_hints(fn)

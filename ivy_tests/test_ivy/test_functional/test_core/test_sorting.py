@@ -1,72 +1,127 @@
 """Collection of tests for sorting functions."""
 
 # global
-import pytest
+from hypothesis import given, strategies as st
+import numpy as np
 
 # local
-import ivy
+import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # argsort
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_argsort(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=ivy.default_int_dtype())
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.argsort(x, out=out)
-    else:
-        ret = ivy.argsort(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 4),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_argsort(
+    array_shape,
+    input_dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    # we do not want any nans
+    x = data.draw(
+        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
+            lambda x: not np.any(np.isnan(x))
+        )
+    )
+
+    ndim = len(x.shape)
+    axis = data.draw(st.integers(-ndim, ndim - 1))
+    descending = data.draw(st.booleans())
+    stable = data.draw(st.booleans())
+
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "argsort",
+        x=x,
+        axis=axis,
+        descending=descending,
+        stable=stable,
+    )
 
 
 # sort
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("as_variable", [True, False])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("native_array", [True, False])
-def test_sort(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.sort(x, out=out)
-    else:
-        ret = ivy.sort(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 4),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_sort(
+    array_shape,
+    input_dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    # smoke for torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
+        return
+
+    # we do not want any nans
+    x = data.draw(
+        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
+            lambda x: not np.any(np.isnan(x))
+        )
+    )
+
+    ndim = len(x.shape)
+    axis = data.draw(st.integers(-ndim, ndim - 1))
+    descending = data.draw(st.booleans())
+    stable = data.draw(st.booleans())
+
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "sort",
+        x=x,
+        axis=axis,
+        descending=descending,
+        stable=stable,
+    )

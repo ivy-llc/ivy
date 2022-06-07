@@ -1,5 +1,6 @@
 """Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import tensorflow as tf
@@ -10,7 +11,7 @@ from ivy.container import Container
 
 
 def variable(x):
-    with tf.device("/" + ivy.dev(x, as_str=True).upper()):
+    with tf.device(ivy.dev(x, as_native=True)):
         return tf.Variable(x, trainable=True)
 
 

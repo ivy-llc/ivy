@@ -1,5 +1,4 @@
-"""Collection of Jax activation functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
 from typing import Optional
 
@@ -8,15 +7,11 @@ import jax
 import jax.numpy as jnp
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def relu(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.maximum(x, 0)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: JaxArray) -> JaxArray:
+    return jnp.maximum(x, 0)
 
 
 def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2) -> JaxArray:

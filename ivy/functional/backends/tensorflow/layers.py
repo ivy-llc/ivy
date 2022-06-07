@@ -1,8 +1,8 @@
-"""Collection of TensorFlow network layers, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
 import tensorflow as tf
+from typing import Union, List, Tuple
 
 from tensorflow.python.types.core import Tensor
 
@@ -23,12 +23,22 @@ def conv1d(
     return res
 
 
-conv1d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1: tf.nn.conv1d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv1d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
+):
+    return tf.nn.conv1d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )
 
 
-def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
+def conv2d(
+    x: Tensor,
+    filters: Tensor,
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    data_format: str = "NHWC",
+    dilations: int = 1,
+) -> Tensor:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -37,12 +47,22 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
     return res
 
 
-conv2d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1: tf.nn.conv2d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv2d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
+):
+    return tf.nn.conv2d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
+def depthwise_conv2d(
+    x: Tensor,
+    filters: Tensor,
+    strides: int,
+    padding: Union[str, List[int]],
+    data_format: str = "NHWC",
+    dilations: int = 1,
+) -> Tensor:
     filters = tf.expand_dims(filters, -1)
     strides = [1, strides, strides, 1]
     dilations = [dilations, dilations]
@@ -56,6 +76,9 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     return tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
 
 
-conv3d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1: tf.nn.conv3d_transpose(
-    x, filters, output_shape, strides, padding, data_format, dilations
-)
+def conv3d_transpose(
+    x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
+):
+    return tf.nn.conv3d_transpose(
+        x, filters, output_shape, strides, padding, data_format, dilations
+    )

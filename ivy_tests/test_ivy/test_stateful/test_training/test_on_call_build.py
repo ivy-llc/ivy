@@ -1,13 +1,15 @@
 """Collection of tests for training neural network layers with "on call"
-building."""
+building.
+"""
 
 # global
-import pytest
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # Weight Conditioned Network #
@@ -91,9 +93,7 @@ class WeConFC(ivy.Module):
     def _forward(self, implicit_weights):
         batch_shape = [i for i in implicit_weights.shape if i]
         total_batch_size = np.prod(batch_shape)
-        reshaped_weights = implicit_weights.reshape(
-            pre_shape=[total_batch_size], post_shape=[-1]
-        )
+        reshaped_weights = implicit_weights.reshape(shape=(total_batch_size, -1))
         xs = self._layer_specific_fc(reshaped_weights)
         x = ivy.concat([v for k, v in xs.to_iterator()], -1)
         ret_flat = self._fc(x)
@@ -101,17 +101,16 @@ class WeConFC(ivy.Module):
 
 
 # WeConFC
-@pytest.mark.parametrize("batch_shape", [[1, 2]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_weight_conditioned_network_training(
-    batch_shape, dtype, tensor_fn, device, call
-):
+@given(
+    batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+)
+def test_weight_conditioned_network_training(batch_shape, dtype, device, call):
 
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     x = ivy.Container(
         {
             "layer0": {
@@ -254,15 +253,16 @@ class HyperHypoNet(ivy.Module):
 
 
 # HyperHypoNet
-@pytest.mark.parametrize("batch_shape", [[1, 2]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_hyper_hypo_network_training(batch_shape, dtype, tensor_fn, device, call):
+@given(
+    batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+)
+def test_hyper_hypo_network_training(batch_shape, dtype, device, call):
 
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
+        return
     x = ivy.random_uniform(shape=batch_shape + [1], device=device)
     hyper_hypo_net = HyperHypoNet(device=device)
 

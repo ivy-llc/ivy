@@ -1,17 +1,10 @@
-"""Collection of TensorFlow image functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Union, Tuple
-
-# global
+from typing import List, Tuple
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
-
-from tensorflow.python.types.core import Tensor
-
-import ivy
 
 tfa = None
 import tensorflow as tf
@@ -53,7 +46,6 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis + 1 :]
     xp = tf.range(num_vals, dtype=tf.float32)
     x_coords = tf.range(num_samples, dtype=tf.float32) * (
         (num_vals - 1) / (num_samples - 1)
@@ -75,9 +67,10 @@ def bilinear_resample(x, warp):
     if tfa is None:
         try:
             import tensorflow_addons as tfa
-        except:
+        except ImportError:
             raise Exception(
-                "Unable to import tensorflow_addons, verify this is correctly installed."
+                "Unable to import tensorflow_addons, "
+                "verify this is correctly installed."
             )
     ret = tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing="xy")
     return tf.reshape(ret, batch_shape + [-1, num_feats])

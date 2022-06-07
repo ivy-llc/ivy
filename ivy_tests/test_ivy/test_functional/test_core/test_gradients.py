@@ -4,7 +4,6 @@
 from numbers import Number
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -437,3 +436,18 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
+
+
+# Still to Add #
+# ---------------#
+
+# with_grads
+# set_with_grads
+# unset_with_grads
+# variable
+# is_variable
+# variable_data
+# stop_gradient
+# execute_with_gradients
+# adam_step
+# optimizer_update

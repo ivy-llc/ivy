@@ -1,13 +1,10 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import os
 import importlib
-
-torch_scatter = None
 import torch
-from typing import Optional
+from typing import Optional, Union
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
@@ -15,48 +12,48 @@ from torch.profiler import profile as _profile
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
+torch_scatter = None
 
 # API #
 # ----#
 
 
-def dev(x, as_str=False):
+def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
-    if as_str:
-        return as_ivy_dev(dv)
-    return dv
+    if as_native:
+        return torch.device(dv)
+    return as_ivy_dev(dv)
 
 
-def to_dev(
-    x, device: Optional[str] = None, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    ret = x.to(dev_from_str(device))
+
+def to_dev(x, *, device: torch.device) -> torch.Tensor:
+    ret = x.to(as_native_dev(device))
     if isinstance(x, torch.nn.Parameter):
-        if ivy.exists(out):
-            return ivy.inplace_update(out, torch.nn.Parameter(ret))
         return torch.nn.Parameter(ret)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
+
 
 
 def as_ivy_dev(device: torch.device)\
         -> str:
+
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     dev_type, dev_idx = (device.type, device.index)
     if dev_type == "cpu":
-        return dev_type
-    return dev_type.replace("cuda", "gpu") + (
-        ":" + (str(dev_idx) if dev_idx is not None else "0")
+        return ivy.Device(dev_type)
+    return ivy.Device(
+        dev_type.replace("cuda", "gpu")
+        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
     )
 
 
-def dev_from_str(device: Optional[str] = None) -> Optional[torch.device]:
+def as_native_dev(
+    device: Optional[Union[ivy.Device, torch.device]] = None
+) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    return torch.device(device.replace("gpu", "cuda"))
+    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
 def clear_mem_on_dev(device):

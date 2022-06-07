@@ -4,7 +4,7 @@
 import ivy
 import ivy as _ivy
 from typing import Union
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
 
 
 # Extra #
@@ -92,7 +92,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
         An ivy variable, supporting gradient computation.
 
     """
-    return _cur_framework(x).variable(x)
+    return _cur_backend(x).variable(x)
 
 
 def is_variable(x, exclusive=False):
@@ -103,9 +103,10 @@ def is_variable(x, exclusive=False):
     x
         An ivy array.
     exclusive
-        Whether to check if the data type is exclusively a variable, rather than an array.
-        For frameworks like JAX that do not have exclusive variable types, the function will always return
-        False if this flag is set, otherwise the check is the same for general arrays. Default is False.
+        Whether to check if the data type is exclusively a variable, rather than an
+        array. For frameworks like JAX that do not have exclusive variable types, the
+        function will always return False if this flag is set, otherwise the check is
+        the same for general arrays. Default is False.
 
     Returns
     -------
@@ -113,14 +114,13 @@ def is_variable(x, exclusive=False):
         Boolean, true if x is a trainable variable, false otherwise.
 
     """
-    return _cur_framework(x).is_variable(x, exclusive)
+    return _cur_backend(x).is_variable(x, exclusive)
 
 
 def variable_data(x):
-    """Some backends wrap arrays in a dedicated variable class. For those
-    frameworks, this function returns that wrapped array. For frameworks which
-    do not have a dedicated variable class, the function returns the data
-    passed in.
+    """Some backends wrap arrays in a dedicated variable class. For those frameworks,
+    this function returns that wrapped array. For frameworks which do not have a
+    dedicated variable class, the function returns the data passed in.
 
     Parameters
     ----------
@@ -133,7 +133,7 @@ def variable_data(x):
         The internal data stored by the variable
 
     """
-    return _cur_framework(x).variable_data(x)
+    return _cur_backend(x).variable_data(x)
 
 
 def stop_gradient(x, preserve_type=True):
@@ -155,21 +155,22 @@ def stop_gradient(x, preserve_type=True):
         The same array x, but with no gradient information.
 
     """
-    return _cur_framework(x).stop_gradient(x, preserve_type)
+    return _cur_backend(x).stop_gradient(x, preserve_type)
 
 
 # AutoGrad #
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    """Call function func with input of xs variables, and return func first
-    output y, the gradients [dy/dx for x in xs], and any other function outputs
-    after the returned y value.
+    """Call function func with input of xs variables, and return func first output y,
+    the gradients [dy/dx for x in xs], and any other function outputs after the returned
+    y value.
 
     Parameters
     ----------
     func
-        Function for which we compute the gradients of the output with respect to xs input.
+        Function for which we compute the gradients of the output with respect to xs
+        input.
     xs
         Variables for which to compute the function gradients with respective to.
     retain_grads
@@ -178,18 +179,20 @@ def execute_with_gradients(func, xs, retain_grads=False):
     Returns
     -------
     ret
-        the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs
+        the function first output y, the gradients [dy/dx for x in xs], and any other
+        extra function outputs
 
     """
-    return _cur_framework(None).execute_with_gradients(func, xs, retain_grads)
+    return _cur_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 
 # Optimizer Steps #
 
 
 def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
-    """Compute adam step delta, given the derivatives of some cost c with
-    respect to ws, using ADAM update. `[reference]
+    """Compute adam step delta, given the derivatives of some cost c with respect to ws,
+    using ADAM update. `[reference]
+
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
     Parameters
@@ -229,24 +232,28 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 
 def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the true or effective
-    derivatives of some cost c with respect to ws, [dc/dw for w in ws].
+    """Update weights ws of some function, given the true or effective derivatives of
+    some cost c with respect to ws, [dc/dw for w in ws].
 
     Parameters
     ----------
     ws
         Weights of the function to be updated.
     effective_grads
-        Effective gradients of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        Effective gradients of the cost c with respect to the weights ws,
+        [dc/dw for w in ws].
     lr
-        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+        Learning rate(s), the rate(s) at which the weights should be updated relative to
+        the gradient.
     inplace
-        Whether to perform the operation inplace, for backends which support inplace variable updates,
-        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-        computation graph (i.e. higher order optimization), then this should be set to False.
-        Default is True, provided the backend framework supports it.
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch. If the
+        update step should form part of a computation graph (i.e. higher order
+        optimization), then this should be set to False. Default is True, provided the
+        backend framework supports it.
     stop_gradients
-        Whether to stop the gradients of the variables after each gradient step. Default is True.
+        Whether to stop the gradients of the variables after each gradient step.
+        Default is True.
 
     Returns
     -------
@@ -269,8 +276,8 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
 
 
 def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the derivatives of some cost c
-    with respect to ws, [dc/dw for w in ws].
+    """Update weights ws of some function, given the derivatives of some cost c with
+    respect to ws, [dc/dw for w in ws].
 
     Parameters
     ----------
@@ -279,14 +286,17 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
     dcdws
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
-        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+        Learning rate(s), the rate(s) at which the weights should be updated relative to
+        the gradient.
     inplace
-        Whether to perform the operation inplace, for backends which support inplace variable updates,
-        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-        computation graph (i.e. higher order optimization), then this should be set to False.
-        Default is True, provided the backend framework supports it.
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch. If the
+        update step should form part of a computation graph (i.e. higher order
+        optimization), then this should be set to False. Default is True, provided the
+        backend framework supports it.
     stop_gradients
-        Whether to stop the gradients of the variables after each gradient step. Default is True.
+        Whether to stop the gradients of the variables after each gradient step.
+        Default is True.
 
     Returns
     -------
@@ -298,9 +308,9 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
 
 
 def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the derivatives of some cost c
-    with respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive
-    Rate Scaling (LARS) method.
+    """Update weights ws of some function, given the derivatives of some cost c with
+    respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
+    (LARS) method.
 
     Parameters
     ----------
@@ -309,16 +319,19 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True
     dcdws
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
-        Learning rate, the rate at which the weights should be updated relative to the gradient.
+        Learning rate, the rate at which the weights should be updated relative to the
+        gradient.
     decay_lambda
         The factor used for weight decay. Default is zero.
     inplace
-        Whether to perform the operation inplace, for backends which support inplace variable updates,
-        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-        computation graph (i.e. higher order optimization), then this should be set to False.
-        Default is True, provided the backend framework supports it.
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch. If the
+        update step should form part of a computation graph (i.e. higher order
+        optimization), then this should be set to False. Default is True, provided the
+        backend framework supports it.
     stop_gradients
-        Whether to stop the gradients of the variables after each gradient step. Default is True.
+        Whether to stop the gradients of the variables after each gradient step.
+        Default is True.
 
     Returns
     -------
@@ -346,8 +359,9 @@ def adam_update(
     inplace=None,
     stop_gradients=True,
 ):
-    """Update weights ws of some function, given the derivatives of some cost c
-    with respect to ws, using ADAM update. `[reference]
+    """Update weights ws of some function, given the derivatives of some cost c with
+    respect to ws, using ADAM update. `[reference]
+
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
     Parameters
@@ -357,7 +371,8 @@ def adam_update(
     dcdws
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
-        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+        Learning rate(s), the rate(s) at which the weights should be updated relative to
+        the gradient.
     mw_tm1
         running average of the gradients, from the previous time-step.
     vw_tm1
@@ -371,17 +386,20 @@ def adam_update(
     epsilon
         divisor during adam update, preventing division by zero (Default value = 1e-7)
     inplace
-        Whether to perform the operation inplace, for backends which support inplace variable updates,
-        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-        computation graph (i.e. higher order optimization), then this should be set to False.
-        Default is True, provided the backend framework supports it.
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch. If the
+        update step should form part of a computation graph (i.e. higher order
+        optimization), then this should be set to False. Default is True, provided the
+        backend framework supports it.
     stop_gradients
-        Whether to stop the gradients of the variables after each gradient step. Default is True.
+        Whether to stop the gradients of the variables after each gradient step.
+        Default is True.
 
     Returns
     -------
     ret
-        The new function weights ws_new, and also new mw and vw, following the adam updates.
+        The new function weights ws_new, and also new mw and vw, following the adam
+        updates.
 
     """
     effective_grads, mw, vw = adam_step(
@@ -405,8 +423,8 @@ def lamb_update(
     inplace=None,
     stop_gradients=True,
 ):
-    """Update weights ws of some function, given the derivatives of some cost c
-    with respect to ws, [dc/dw for w in ws], by applying LAMB method.
+    """Update weights ws of some function, given the derivatives of some cost c with
+    respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
     Parameters
     ----------
@@ -415,7 +433,8 @@ def lamb_update(
     dcdws
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
-        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+        Learning rate(s), the rate(s) at which the weights should be updated relative to
+        the gradient.
     mw_tm1
         running average of the gradients, from the previous time-step.
     vw_tm1
@@ -433,12 +452,14 @@ def lamb_update(
     decay_lambda
         The factor used for weight decay. Default is zero.
     inplace
-        Whether to perform the operation inplace, for backends which support inplace variable updates,
-        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-        computation graph (i.e. higher order optimization), then this should be set to False.
-        Default is True, provided the backend framework supports it.
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch. If the
+        update step should form part of a computation graph (i.e. higher order
+        optimization), then this should be set to False. Default is True, provided the
+        backend framework supports it.
     stop_gradients
-        Whether to stop the gradients of the variables after each gradient step. Default is True.
+        Whether to stop the gradients of the variables after each gradient step.
+        Default is True.
 
     Returns
     -------
