@@ -613,5 +613,5 @@ or reach out on `discord`_ in the `docstring examples channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/rtce8XthiKA">
+    src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
     </iframe>
