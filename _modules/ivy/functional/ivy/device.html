@@ -146,7 +146,6 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">infer_device</span>
 
 <span class="n">default_device_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">dev_handles</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -321,8 +320,7 @@
 <span class="c1"># Memory</span>
 
 
-<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Clear memory cache on target device.</span>
 
 <span class="sd">    Parameters</span>
@@ -334,8 +332,7 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the total amount of memory (in GB) for a given device string. In case of CPU,</span>
 <span class="sd">    the total RAM is returned.</span>
 
@@ -604,8 +601,7 @@
 <span class="c1"># Device Allocation #</span>
 
 
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span>
+<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
@@ -640,8 +636,7 @@
 <span class="c1"># Function Splitting #</span>
 
 
-<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the global split factor for a given device, which can be used to scale batch</span>
 <span class="sd">    splitting chunk sizes for the device across the codebase. Default global value for</span>
 <span class="sd">    each device is 1.</span>
@@ -665,8 +660,7 @@
     <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the global split factor for a given device, which can be used to scale batch</span>
 <span class="sd">    splitting chunk sizes for the device across the codebase.</span>
 
@@ -684,8 +678,7 @@
     <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span></div>
 
 
-<div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../../functional/ivy/device/split_func_call.html#ivy.functional.ivy.device.split_func_call">[docs]</a><span class="nd">@infer_device</span>
-<span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span>
+<div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../../functional/ivy/device/split_func_call.html#ivy.functional.ivy.device.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span>
     <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
