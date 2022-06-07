@@ -131,6 +131,7 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_out_argument</span>
 
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
@@ -219,7 +220,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
+<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Broadcasts an array to a specified shape.</span>
@@ -284,7 +286,8 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 
 
-<div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/astype.html#ivy.functional.ivy.data_type.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
+<div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/astype.html#ivy.functional.ivy.data_type.astype">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">],</span>
     <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>

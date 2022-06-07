@@ -129,7 +129,7 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">infer_device</span><span class="p">,</span> <span class="n">infer_dtype</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">infer_device</span><span class="p">,</span> <span class="n">infer_dtype</span><span class="p">,</span> <span class="n">handle_out_argument</span>
 
 
 <span class="c1"># Array API Standard #</span>
@@ -137,6 +137,7 @@
 
 
 <div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../functional/ivy/creation/arange.html#ivy.functional.ivy.creation.arange">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">arange</span><span class="p">(</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span>
     <span class="n">stop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -187,6 +188,7 @@
 
 
 <div class="viewcode-block" id="asarray"><a class="viewcode-back" href="../../../../functional/ivy/creation/asarray.html#ivy.functional.ivy.creation.asarray">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">asarray</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Number</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -216,6 +218,7 @@
 
 
 <div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../functional/ivy/creation/zeros.html#ivy.functional.ivy.creation.zeros">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -253,6 +256,7 @@
 
 
 <div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../../../functional/ivy/creation/ones.html#ivy.functional.ivy.creation.ones">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">ones</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -289,6 +293,7 @@
 
 
 <div class="viewcode-block" id="full_like"><a class="viewcode-back" href="../../../../functional/ivy/creation/full_like.html#ivy.functional.ivy.creation.full_like">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
@@ -332,6 +337,7 @@
 
 <div class="viewcode-block" id="ones_like"><a class="viewcode-back" href="../../../../functional/ivy/creation/ones_like.html#ivy.functional.ivy.creation.ones_like">[docs]</a><span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">ones_like</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -370,6 +376,7 @@
 
 <div class="viewcode-block" id="zeros_like"><a class="viewcode-back" href="../../../../functional/ivy/creation/zeros_like.html#ivy.functional.ivy.creation.zeros_like">[docs]</a><span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">zeros_like</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -407,7 +414,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../../functional/ivy/creation/tril.html#ivy.functional.ivy.creation.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../../functional/ivy/creation/tril.html#ivy.functional.ivy.creation.tril">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -431,7 +439,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="triu"><a class="viewcode-back" href="../../../../functional/ivy/creation/triu.html#ivy.functional.ivy.creation.triu">[docs]</a><span class="k">def</span> <span class="nf">triu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="triu"><a class="viewcode-back" href="../../../../functional/ivy/creation/triu.html#ivy.functional.ivy.creation.triu">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">triu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -456,6 +465,7 @@
 
 
 <div class="viewcode-block" id="empty"><a class="viewcode-back" href="../../../../functional/ivy/creation/empty.html#ivy.functional.ivy.creation.empty">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -485,6 +495,7 @@
 
 <div class="viewcode-block" id="empty_like"><a class="viewcode-back" href="../../../../functional/ivy/creation/empty_like.html#ivy.functional.ivy.creation.empty_like">[docs]</a><span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">empty_like</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -514,6 +525,7 @@
 
 
 <div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../../../functional/ivy/creation/eye.html#ivy.functional.ivy.creation.eye">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">eye</span><span class="p">(</span>
     <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -550,6 +562,7 @@
 
 
 <div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/linspace.html#ivy.functional.ivy.creation.linspace">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">linspace</span><span class="p">(</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
@@ -682,6 +695,7 @@
 
 
 <div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../functional/ivy/creation/full.html#ivy.functional.ivy.creation.full">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">full</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
     <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
@@ -725,7 +739,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_dlpack"><a class="viewcode-back" href="../../../../functional/ivy/creation/from_dlpack.html#ivy.functional.ivy.creation.from_dlpack">[docs]</a><span class="k">def</span> <span class="nf">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="from_dlpack"><a class="viewcode-back" href="../../../../functional/ivy/creation/from_dlpack.html#ivy.functional.ivy.creation.from_dlpack">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns a new array containing the data from another (array) object with a</span>
 <span class="sd">    ``__dlpack__`` method.</span>
 
@@ -786,6 +801,7 @@
 
 
 <div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/logspace.html#ivy.functional.ivy.creation.logspace">[docs]</a><span class="nd">@infer_device</span>
+<span class="nd">@handle_out_argument</span>
 <span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
