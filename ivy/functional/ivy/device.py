@@ -39,8 +39,8 @@ class DefaultDevice:
 
     # noinspection PyShadowingNames
     def __init__(self,
-                 device: Union[ivy.Device,ivy.NativeDevice],
-                ) -> None:
+                 device: Union[ivy.Device,ivy.NativeDevice], 
+    ) -> None:
         """Initialises the DefaultDevice class
 
         Parameters
