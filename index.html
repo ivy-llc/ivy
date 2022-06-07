@@ -190,9 +190,9 @@
 </section>
 <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h1>
-<p>Ivy is an ML framework which currently supports JAX, TensorFlow, PyTorch, MXNet and Numpy. We’re very excited for you to try it out!</p>
-<p>Next on our road-map is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊</p>
-<p>The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our road-map, and how to contribute! Click on the sub-headings to check out these pages!</p>
+<p>Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy. We’re very excited for you to try it out!</p>
+<p>Next on our roadmap is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊</p>
+<p>The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our roadmap, and how to contribute! Click on the sub-headings to check out these pages!</p>
 <p>We use 🚧 to indicate that the feature being discussed is in development. We use ✅ to indicate that it is already implemented!</p>
 <p>Check out the <a class="reference external" href="https://lets-unify.ai/ivy">docs</a> for more info, and check out our Google <a class="reference external" href="https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing">Colabs</a> for some interactive demos!</p>
 <p>🚨 Ivy is still at a relatively early stage of development.
@@ -201,7 +201,7 @@ Expect breaking changes and sharp edges until we release version 1.2.0 in the ne
 <section id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h1>
 <p>Ivy can be installed like so: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ivy-core</span></code>
-You can immediately use Ivy to train a neural network, using your favourite framework in the background, like so:</p>
+You can immediately use Ivy to train a neural network, using your favorite framework in the background, like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -233,7 +233,7 @@ You can immediately use Ivy to train a neural network, using your favourite fram
 </pre></div>
 </div>
 <p>This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favourite framework, such as TensorFlow, JAX or MXNet.</p>
+but the backend can easily be changed to your favorite frameworks, such as TensorFlow, JAX, or MXNet.</p>
 <p><strong>Framework Agnostic Functions</strong></p>
 <p>In the example below we show how Ivy’s concatenation function is compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.</p>
@@ -314,7 +314,7 @@ You should then see output like the following:</p>
 <div class="line">1. Serve as a transpiler between frameworks 🚧</div>
 <div class="line">2. Serve as a new ML framework with multi-framework support ✅</div>
 <div class="line"><br /></div>
-<div class="line">The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:</div>
+<div class="line">The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:</div>
 </div>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <div class="line-block">
@@ -337,7 +337,7 @@ You should then see output like the following:</p>
 <h1>Extensions<a class="headerlink" href="#extensions" title="Permalink to this heading"></a></h1>
 <div class="line-block">
 <div class="line">(a) <a class="reference external" href="https://lets-unify.ai/ivy/extensions/applied_libraries.html">Applied Libraries</a> ✅</div>
-<div class="line">Ivy libraries in mechanics, vision, robotics, memory and other areas</div>
+<div class="line">Ivy libraries in mechanics, vision, robotics, memory, and other areas</div>
 <div class="line"><br /></div>
 <div class="line">(b) <strong>Builder [page coming soon!]</strong> ✅</div>
 <div class="line"><code class="code docutils literal notranslate"><span class="pre">ivy.Trainer</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dataset</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dataloader</span></code> and other helpful classes and functions for creating training workflows in only a few lines of code</div>
