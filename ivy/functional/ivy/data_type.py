@@ -534,7 +534,6 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames
 def set_default_dtype(dtype: Union[ivy.Dtype, str]):
     """Summary.
 
