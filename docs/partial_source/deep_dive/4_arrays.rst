@@ -48,7 +48,8 @@ The :code:`ivy.Array` class `inherits`_ from many category-specific array classe
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self` as the first array argument. `ivy.Array.add`_ is a good example.
+but passes in :code:`self._data` as the first array argument.
+`ivy.Array.add`_ is a good example.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
