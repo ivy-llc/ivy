@@ -5,12 +5,14 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_out_argument
 def bitwise_left_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -43,6 +45,7 @@ def bitwise_left_shift(
     return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
+@handle_out_argument
 def add(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -259,6 +262,7 @@ def add(
     return _cur_backend(x1, x2).add(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -290,6 +294,7 @@ def bitwise_xor(
     return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
+@handle_out_argument
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -336,6 +341,7 @@ def exp(
     return _cur_backend(x).exp(x, out=out)
 
 
+@handle_out_argument
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -380,6 +386,7 @@ def expm1(
     return _cur_backend(x).expm1(x, out=out)
 
 
+@handle_out_argument
 def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -412,6 +419,7 @@ def bitwise_invert(
     return _cur_backend(x).bitwise_invert(x, out=out)
 
 
+@handle_out_argument
 def bitwise_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -443,6 +451,7 @@ def bitwise_and(
     return _cur_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
+@handle_out_argument
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -487,6 +496,7 @@ def ceil(
     return _cur_backend(x).ceil(x, out=out)
 
 
+@handle_out_argument
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -525,6 +535,7 @@ def floor(
     return _cur_backend(x).floor(x, out=out)
 
 
+@handle_out_argument
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -552,6 +563,7 @@ def isfinite(
     return _cur_backend(x).isfinite(x, out=out)
 
 
+@handle_out_argument
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -590,6 +602,7 @@ def asin(
     return _cur_backend(x).asin(x, out=out)
 
 
+@handle_out_argument
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -617,6 +630,7 @@ def isinf(
     return _cur_backend(x).isinf(x, out=out)
 
 
+@handle_out_argument
 def greater(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -651,6 +665,7 @@ def greater(
     return _cur_backend(x1, x2).greater(x1, x2, out=out)
 
 
+@handle_out_argument
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -813,6 +828,7 @@ def greater_equal(
     return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -840,6 +856,7 @@ def less_equal(
     return _cur_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -905,6 +922,7 @@ def multiply(
     return _cur_backend(x1, x2).multiply(x1, x2, out=out)
 
 
+@handle_out_argument
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -944,6 +962,7 @@ def asinh(
     return _cur_backend(x).asinh(x, out=out)
 
 
+@handle_out_argument
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -976,6 +995,7 @@ def sign(
     return _cur_backend(x).sign(x, out=out)
 
 
+@handle_out_argument
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1014,6 +1034,7 @@ def sqrt(
     return _cur_backend(x).sqrt(x, out=out)
 
 
+@handle_out_argument
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1052,6 +1073,7 @@ def cosh(
     return _cur_backend(x).cosh(x, out=out)
 
 
+@handle_out_argument
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1090,6 +1112,7 @@ def log(
     return _cur_backend(x).log(x, out=out)
 
 
+@handle_out_argument
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1128,6 +1151,7 @@ def log2(
     return _cur_backend(x).log2(x, out=out)
 
 
+@handle_out_argument
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1166,6 +1190,7 @@ def log10(
     return _cur_backend(x).log10(x, out=out)
 
 
+@handle_out_argument
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1191,6 +1216,7 @@ def log1p(
     return _cur_backend(x).log1p(x, out=out)
 
 
+@handle_out_argument
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1218,6 +1244,7 @@ def isnan(
     return _cur_backend(x).isnan(x, out=out)
 
 
+@handle_out_argument
 def less(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1254,6 +1281,7 @@ def less(
     return _cur_backend(x1).less(x1, x2, out=out)
 
 
+@handle_out_argument
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1299,6 +1327,7 @@ def cos(
     return _cur_backend(x).cos(x, out=out)
 
 
+@handle_out_argument
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1335,6 +1364,7 @@ def acos(
     return _cur_backend(x).acos(x, out=out)
 
 
+@handle_out_argument
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1367,6 +1397,7 @@ def logical_not(
     return _cur_backend(x).logical_not(x, out=out)
 
 
+@handle_out_argument
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1398,6 +1429,7 @@ def logical_xor(
     return _cur_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
+@handle_out_argument
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1435,6 +1467,7 @@ def logical_or(
     return _cur_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
+@handle_out_argument
 def logical_and(
     x1: ivy.Array,
     x2: ivy.Array,
@@ -1465,6 +1498,7 @@ def logical_and(
     return _cur_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
+@handle_out_argument
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1503,6 +1537,7 @@ def acosh(
     return _cur_backend(x).acosh(x, out=out)
 
 
+@handle_out_argument
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1540,6 +1575,7 @@ def sin(
     return _cur_backend(x).sin(x, out=out)
 
 
+@handle_out_argument
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1648,6 +1684,7 @@ def negative(
     return _cur_backend(x).negative(x, out=out)
 
 
+@handle_out_argument
 def not_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1678,6 +1715,7 @@ def not_equal(
     return _cur_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def floor_divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1706,6 +1744,7 @@ def floor_divide(
     return _cur_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1737,6 +1776,7 @@ def bitwise_or(
     return _cur_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
+@handle_out_argument
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1775,6 +1815,7 @@ def sinh(
     return _cur_backend(x).sinh(x, out=out)
 
 
+@handle_out_argument
 def positive(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1796,6 +1837,7 @@ def positive(
     return _cur_backend(x).positive(x, out=out)
 
 
+@handle_out_argument
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1817,6 +1859,7 @@ def square(
     return _cur_backend(x).square(x, out=out)
 
 
+@handle_out_argument
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1858,6 +1901,7 @@ def logaddexp(
     return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+@handle_out_argument
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1879,6 +1923,7 @@ def round(
     return _cur_backend(x).round(x, out=out)
 
 
+@handle_out_argument
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1914,6 +1959,7 @@ def trunc(
     return _cur_backend(x).trunc(x, out=out)
 
 
+@handle_out_argument
 def abs(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1953,6 +1999,7 @@ def abs(
     return _cur_backend(x).abs(x, out=out)
 
 
+@handle_out_argument
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2059,6 +2106,7 @@ def tan(
     return ivy.current_backend(x).tan(x, out=out)
 
 
+@handle_out_argument
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2099,6 +2147,7 @@ def atan(
     return _cur_backend(x).atan(x, out=out)
 
 
+@handle_out_argument
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2184,6 +2233,7 @@ def atan2(
     return _cur_backend(x1).atan2(x1, x2, out=out)
 
 
+@handle_out_argument
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2205,6 +2255,7 @@ def tanh(
     return _cur_backend(x).tanh(x, out=out)
 
 
+@handle_out_argument
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2235,6 +2286,7 @@ def atanh(
     return _cur_backend(x).atanh(x, out=out)
 
 
+@handle_out_argument
 def subtract(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2264,6 +2316,7 @@ def subtract(
     return _cur_backend(x1).subtract(x1, x2, out=out)
 
 
+@handle_out_argument
 def divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2291,6 +2344,7 @@ def divide(
     return _cur_backend(x1, x2).divide(x1, x2, out=out)
 
 
+@handle_out_argument
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2377,6 +2431,7 @@ def pow(
     return _cur_backend(x1, x2).pow(x1, x2, out=out)
 
 
+@handle_out_argument
 def remainder(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2456,6 +2511,7 @@ def remainder(
     return _cur_backend(x1, x2).remainder(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_right_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2498,6 +2554,7 @@ def bitwise_right_shift(
     return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
+@handle_out_argument
 def equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2529,6 +2586,7 @@ def equal(
 # ------#
 
 
+@handle_out_argument
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2550,6 +2608,7 @@ def erf(
     return _cur_backend(x).erf(x, out=out)
 
 
+@handle_out_argument
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2681,6 +2740,7 @@ def minimum(
     return _cur_backend(x1).minimum(x1, x2, out=out)
 
 
+@handle_out_argument
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
