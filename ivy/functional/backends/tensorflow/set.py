@@ -63,7 +63,7 @@ def unique_values(x: Tensor, out: Tensor = None) -> Tensor:
 
 
 def unique_counts(
-     x: Tensor
+    x: Tensor
 ) -> Tuple[Tensor, Tensor]:
     uc = namedtuple("uc", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))

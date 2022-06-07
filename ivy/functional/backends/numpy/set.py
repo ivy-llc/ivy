@@ -66,7 +66,7 @@ def unique_values(x: np.ndarray, out: np.ndarray = None) -> np.ndarray:
 
 
 def unique_counts(
-     x: np.ndarray
+    x: np.ndarray
 ) -> Tuple[np.ndarray, np.ndarray]:
     v, c = np.unique(x, return_counts=True)
     nan_count = np.count_nonzero(np.isnan(x))

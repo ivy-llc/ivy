@@ -174,27 +174,30 @@ def unique_counts(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten ``x`` and
-        return the unique elements of the flattened array.
+        input array. If ``x`` has more than one dimension, the function must flatten 
+        ``x`` and return the unique elements of the flattened array.
 
     Returns
     -------
     ret
         a namedtuple ``(values, counts)`` whose
 
-        - first element must have the field name ``values`` and must be an array containing the
-          unique elements of ``x``.The array must have the same data type as ``x``.
-        - second element must have the field name ``counts`` and must be an array containing
-          the number of times each unique element occurs in ``x``. The returned array must
-          have same shape as ``values`` and must have the default array index data type.
+        - first element must have the field name ``values`` and must be an 
+          array containing the unique elements of ``x``.
+          The array must have the same data type as ``x``.
+        - second element must have the field name ``counts`` and must be an array 
+          containing the number of times each unique element occurs in ``x``.
+          The returned array must have same shape as ``values`` and must
+          have the default array index data type.
 
     .. note::
            The order of unique elements is not specified and may vary between
            implementations.
 
     This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/
+    generated/signatures.elementwise_functions.tan.html>`_
     in the standard. The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints

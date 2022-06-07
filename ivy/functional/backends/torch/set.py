@@ -66,7 +66,7 @@ def unique_values(x: torch.Tensor, out: torch.Tensor = None) -> torch.Tensor:
 
 
 def unique_counts(
-     x: torch.Tensor
+    x: torch.Tensor
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
     nan_idx = torch.where(torch.isnan(v))

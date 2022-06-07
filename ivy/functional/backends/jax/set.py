@@ -72,7 +72,7 @@ def unique_values(x: JaxArray, out: JaxArray = None) -> JaxArray:
 
 
 def unique_counts(
-     x: JaxArray
+    x: JaxArray
 ) -> Tuple[JaxArray, JaxArray]:
     v, c = jnp.unique(x, return_counts=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))
