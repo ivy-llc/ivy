@@ -23,6 +23,7 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import handle_out_argument
 
 default_device_stack = list()
 dev_handles = dict()
@@ -478,6 +479,7 @@ def unset_default_device():
 # Device Allocation #
 
 
+@handle_out_argument
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
