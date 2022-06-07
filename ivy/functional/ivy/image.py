@@ -232,7 +232,7 @@ def linear_resample(
     Parameters
     ----------
     x
-        Input array
+        Input image
     num_samples
         The number of interpolated samples to take.
     axis
@@ -243,5 +243,11 @@ def linear_resample(
     ret
         The array after the linear resampling.
 
+    Examples
+    --------
+    >>> data = ivy.array([[1, 2],[3, 4]])
+    >>> y = linear_resample(data, 5)
+    >>> print(y)
+    ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
     """
     return _cur_backend(x).linear_resample(x, num_samples, axis)
