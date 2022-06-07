@@ -32,7 +32,7 @@ Function Types
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**,
-and combined they consitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
+and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true
    :align: center
@@ -120,7 +120,7 @@ Some functions have some backend-specific implementations in
 To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
 Because these functions include both a compositional implementation and also at least one backend-specific
-implementation, these functions are refered to as *mixed*.
+implementation, these functions are referred to as *mixed*.
 
 When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
@@ -140,7 +140,7 @@ Standalone Functions
 *Standalone* functions are functions which do not reference any other *primary*,
 *compositional* or *mixed* functions whatsoever.
 
-By definition, standalone functions can only reference themselves or other standlone functions.
+By definition, standalone functions can only reference themselves or other standalone functions.
 Most commonly, these functions are *convenience* functions (see below).
 
 As a first example, every function in the `nest.py`_ module is a standalone function.
