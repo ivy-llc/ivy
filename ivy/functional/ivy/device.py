@@ -23,7 +23,6 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import infer_device
 
 default_device_stack = list()
 dev_handles = dict()
@@ -198,7 +197,6 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
 # Memory
 
 
-@infer_device
 def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
@@ -211,7 +209,6 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     return _cur_backend(None).clear_mem_on_dev(device)
 
 
-@infer_device
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
@@ -481,7 +478,6 @@ def unset_default_device():
 # Device Allocation #
 
 
-@infer_device
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -517,7 +513,6 @@ def to_dev(
 # Function Splitting #
 
 
-@infer_device
 def split_factor(device=None):
     """Get the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase. Default global value for
@@ -542,7 +537,6 @@ def split_factor(device=None):
     return split_factors[device]
 
 
-@infer_device
 def set_split_factor(factor, device=None):
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -561,7 +555,6 @@ def set_split_factor(factor, device=None):
     split_factors[device] = factor
 
 
-@infer_device
 def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
