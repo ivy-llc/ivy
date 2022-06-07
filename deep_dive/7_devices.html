@@ -163,7 +163,7 @@ When a backend is set, the <code class="code docutils literal notranslate"><span
 <h2>Device Module<a class="headerlink" href="#device-module" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py">device.py</a> module provides a variety of functions for working with devices.
 A few examples include
-<code class="code docutils literal notranslate"><span class="pre">ivy.get_all_arrays_on_dev</span></code> which gets all arrays which are currently alive on the specified device,
+<code class="code docutils literal notranslate"><span class="pre">ivy.get_all_ivy_arrays_on_dev</span></code> which gets all arrays which are currently alive on the specified device,
 <code class="code docutils literal notranslate"><span class="pre">ivy.dev</span></code> which gets the device for input array,
 and <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> which determines the number of available GPUs for use with the backend framework.</p>
 <p>Many functions in the <code class="code docutils literal notranslate"><span class="pre">device.py</span></code> module are <em>convenience</em> functions,
@@ -187,7 +187,7 @@ Some other functions outside of the <code class="code docutils literal notransla
 such as <code class="code docutils literal notranslate"><span class="pre">ivy.random_uniform</span></code> which is located in <code class="code docutils literal notranslate"><span class="pre">random.py</span></code>,
 but this is simply because of dual categorization.
 <code class="code docutils literal notranslate"><span class="pre">ivy.random_uniform</span></code> is also essentially a creation function,
-despite not being being located in <code class="code docutils literal notranslate"><span class="pre">creation.py</span></code>.</p>
+despite not being located in <code class="code docutils literal notranslate"><span class="pre">creation.py</span></code>.</p>
 <p>The <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
 the input arrays. In cases where the input arrays are located on different devices, an error will generally be thrown,
@@ -199,7 +199,7 @@ with the exception that functions are omitted if they’re in <a class="referenc
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>.
 This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> in order to determine the correct data type.
 As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
-this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
+this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> infers the device as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is provided, use this directly</p></li>

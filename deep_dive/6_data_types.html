@@ -222,7 +222,7 @@ array, which could result in overflows, and so an explicit <code class="code doc
 appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a> or <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>.
 This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> in order to determine the correct data type.
 As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
-this is applied to all applicable function dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
+this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> infers the data type as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is provided, use this directly</p></li>
