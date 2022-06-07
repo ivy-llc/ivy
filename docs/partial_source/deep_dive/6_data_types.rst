@@ -117,7 +117,7 @@ The :code:`dtype` argument is handled in `_function_w_arrays_dtype_n_dev_handled
 appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
 As discussed in the :ref:`Function Wrapping` section,
-this is applied to all applicable function dynamically during `backend setting`_.
+this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_dtype`_ infers the data type as follows:
 
