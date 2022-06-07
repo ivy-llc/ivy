@@ -4,7 +4,7 @@ Design
 This section is aimed at general users, who would like to learn how to use Ivy,
 and are less concerned about how it all works under the hood 🔧
 
-The :ref:`Deep Dive` section is more targetted at potential contributors,
+The :ref:`Deep Dive` section is more targeted at potential contributors,
 and at users who would like to dive deeper into the weeds of the framework🌱,
 and gain a better understanding of what is actually going on behind the scenes 🎬
 
