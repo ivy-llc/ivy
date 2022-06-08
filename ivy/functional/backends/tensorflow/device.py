@@ -28,7 +28,7 @@ def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
     return as_ivy_dev(dv)
 
 
-def to_dev(x: Tensor, *, device) -> Tensor:
+def to_dev(x: Tensor, device=None) -> Tensor:
     if device is None:
         return x
     current_dev = _dev_callable(x)

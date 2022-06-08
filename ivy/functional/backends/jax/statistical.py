@@ -3,7 +3,6 @@ import jax.numpy as jnp
 from typing import Tuple, Union, Optional
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 # Array API Standard #
@@ -21,8 +20,9 @@ def min(
 def sum(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     keepdims: bool = False,
+    *,
+    dtype: jnp.dtype = None
 ) -> JaxArray:
 
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
@@ -63,7 +63,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    dtype: jnp.dtype
+    dtype: jnp.dtype = None
 ) -> JaxArray:
 
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):

@@ -38,8 +38,9 @@ def var(
 def sum(
     x: np.ndarray,
     axis: Union[int, Tuple[int]] = None,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     keepdims: bool = False,
+    *,
+    dtype: np.dtype = None
 ) -> np.ndarray:
 
     if dtype is None and np.issubdtype(x.dtype, np.integer):
@@ -67,7 +68,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    dtype: np.dtype
+    dtype: np.dtype = None
 ) -> np.ndarray:
 
     if dtype is None and np.issubdtype(x.dtype, np.integer):

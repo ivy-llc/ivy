@@ -20,8 +20,9 @@ def min(
 def sum(
     x: Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     keepdims: bool = False,
+    *,
+    dtype: tf.DType = None
 ) -> Tensor:
 
     if dtype is None:
@@ -41,7 +42,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    dtype: tf.DType
+    dtype: tf.DType = None
 ) -> Tensor:
     if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
