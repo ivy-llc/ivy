@@ -585,11 +585,25 @@ def test_profiler(device, call):
         time.sleep(1)  # required by MXNet for some reason
 
 
+@given(num=st.integers(0, 5))
+def test_num_arrays_on_dev(num):
+    arrays = {"x": []}
+    arr_device = ivy.default_device()
+    arr_device = ivy.as_ivy_dev(arr_device)
+    if num:
+        for _ in range(num):
+            # arr size fixed as its irrelevant.
+            arr = ivy.array(np.random.uniform(size=2))
+            arrays["x"].append(arr)
+        assert ivy.num_ivy_arrays_on_dev(arr_device) == num
+    elif num == 0:
+        assert ivy.num_ivy_arrays_on_dev(arr_device) == 0
+  
+
 # Still to Add #
 # ---------------#
 
 # get_all_arrays_on_dev
-# num_arrays_on_dev
 # print_all_arrays_on_dev
 # clear_mem_on_dev
 # total_mem_on_dev
