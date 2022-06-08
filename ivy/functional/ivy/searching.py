@@ -4,16 +4,20 @@ from typing import Union, Optional, Tuple
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -44,9 +48,11 @@ def argmax(
         the default array index data type.
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out)
+    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -79,10 +85,17 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
+    Examples
+    --------
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    tensor([2])
     """
     return _cur_backend(x).argmin(x, axis, keepdims)
 
 
+@to_native_arrays_and_back
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -105,6 +118,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     return _cur_backend(x).nonzero(x)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],

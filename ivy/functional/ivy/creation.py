@@ -6,12 +6,22 @@ from typing import Union, Tuple, Optional, List
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import (
+    infer_device,
+    infer_dtype,
+    handle_out_argument,
+    outputs_to_ivy_arrays,
+    to_native_arrays_and_back,
+)
 
 
 # Array API Standard #
 # -------------------#
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_device
 def arange(
     start: Number,
     stop: Optional[Number] = None,
@@ -61,6 +71,9 @@ def arange(
     return _cur_backend().arange(start, stop, step, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     *,
@@ -89,6 +102,10 @@ def asarray(
     return _cur_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_dtype
+@infer_device
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
     *,
@@ -125,8 +142,13 @@ def zeros(
     return _cur_backend().zeros(shape, dtype=dtype, device=device)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_dtype
+@infer_device
 def ones(
     shape: Union[int, Tuple[int], List[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -156,12 +178,17 @@ def ones(
                [1.,  1.]])
 
     """
-    return _cur_backend().ones(shape, dtype, device)
+    return _cur_backend().ones(shape, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     fill_value: Union[int, float],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -199,8 +226,13 @@ def full_like(
     return _cur_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -231,11 +263,16 @@ def ones_like(
     ivy.array([[1, 1, 1],[1, 1, 1]])
 
     """
-    return _cur_backend(x).ones_like(x, dtype, device)
+    return _cur_backend(x).ones_like(x, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -267,9 +304,11 @@ def zeros_like(
                [0, 0, 0]])
 
     """
-    return _cur_backend(x).zeros_like(x, dtype, device)
+    return _cur_backend(x).zeros_like(x, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -294,6 +333,8 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     return _cur_backend(x).tril(x, k)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -318,8 +359,13 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     return _cur_backend(x).triu(x, k)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_dtype
+@infer_device
 def empty(
     shape: Union[int, Tuple[int], List[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -341,11 +387,16 @@ def empty(
         an uninitialized array having a specified shape
 
     """
-    return _cur_backend().empty(shape, dtype, device)
+    return _cur_backend().empty(shape, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -368,13 +419,17 @@ def empty_like(
         an array having the same shape as x and containing uninitialized data.
 
     """
-    return _cur_backend(x).empty_like(x, dtype, device)
+    return _cur_backend(x).empty_like(x, dtype=dtype, device=device)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_device
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -402,18 +457,22 @@ def eye(
         device on which to place the created array. Default: None.
 
     """
-    return _cur_backend().eye(n_rows, n_cols, k, dtype, device)
+    return _cur_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device)
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
     num: int,
     axis: int = None,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    dtype=None,
     endpoint: bool = True,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
@@ -441,10 +500,11 @@ def linspace(
 
     """
     return _cur_backend(start).linspace(
-        start, stop, num, axis, device=device, dtype=dtype, endpoint=endpoint
+        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device
     )
 
 
+@to_native_arrays_and_back
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
@@ -504,6 +564,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
@@ -515,6 +576,7 @@ def meshgrid(
         ivy.array([[1, 1],
                    [2, 2],
                    [5, 5]])
+
         >>> print(yv)
         ivy.array([[4, 1],
                    [4, 1],
@@ -528,6 +590,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+                   
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
@@ -536,9 +599,13 @@ def meshgrid(
     return _cur_backend().meshgrid(*arrays, indexing=indexing)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
+@infer_device
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -575,9 +642,11 @@ def full(
                [10., 10.]])
 
     """
-    return _cur_backend().full(shape, fill_value, dtype, device)
+    return _cur_backend().full(shape, fill_value, dtype=dtype, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
@@ -610,6 +679,7 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
@@ -634,16 +704,20 @@ def native_array(
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
     # converting back to native with ivy.to_native
-    return ivy.to_native(ivy.asarray(x, dtype, device))
+
+    return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
     num: int,
     base: float = 10.0,
     axis: int = None,
+    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
@@ -673,4 +747,4 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_backend(start).logspace(start, stop, num, base, axis, device)
+    return _cur_backend(start).logspace(start, stop, num, base, axis, device=device)
