@@ -55,7 +55,7 @@ class Linear(Module):
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._with_bias = with_bias
-        Module.__init__(self, device, v, dtype)
+        Module.__init__(self, device, v)
 
     def _create_variables(self, device, dtype):
         """
@@ -70,14 +70,14 @@ class Linear(Module):
         """
         v = {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels, dtype=dtype
+                self._w_shape, device, self._output_channels, self._input_channels
             )
         }
         if self._with_bias:
             v = dict(
                 **v,
                 b=self._b_init.create_variables(
-                    self._b_shape, device, self._output_channels, dtype=dtype
+                    self._b_shape, device, self._output_channels
                 )
             )
         return v
