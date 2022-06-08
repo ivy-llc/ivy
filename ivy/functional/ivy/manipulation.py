@@ -458,7 +458,9 @@ def expand_dims(
 @to_native_arrays_and_back
 @handle_out_argument
 def permute_dims(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[
+        ivy.Array, ivy.NativeArray
+    ],
     axes: Tuple[int, ...],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -470,16 +472,19 @@ def permute_dims(
     x
         input array.
     axes
-        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes
+        tuple containing a permutation of (0, 1, 2, ..., N-1) where N is the number
+        of axes
         (dimensions) of x.
     out
-        optional output array, for writing the result to. It must have a shape that the
+        optional output array, for writing the result to. It must have a shape that
+        the
         inputs broadcast to.
 
     Returns
     -------
     ret
-        an array containing the axes permutation. The returned array must have the same
+        an array containing the axes permutation. The returned array must have the
+        same
         data type as x.
 
     """
