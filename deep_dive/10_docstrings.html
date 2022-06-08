@@ -259,6 +259,34 @@ instances in place of any of the arguments.
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.</p>
+<p><strong>Classes</strong></p>
+<p>The instance methods in <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
+a function in the functional API do <strong>not</strong> require a docstring, on account that
+these instance methods require no explanation beyond that provided in the docstring
+for the wrapped function.
+A good example is <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/array/elementwise.py#L13">ivy.Array.abs</a>
+which does not require a docstring,
+because <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/elementwise.py#L2013">ivy.abs</a>
+already has one.</p>
+<p>However, for all other classes, such as the various layers at
+<code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>, then we <strong>should</strong> add docstrings for both
+the <strong>contstructor</strong> and also <strong>all methods</strong>.</p>
+<p>This is the case even when the class directly wraps a function in the functional API.
+For example, the class
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13">ivy.Linear</a>
+wraps the function
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22">ivy.linear</a>,
+but does so in a stateful manner
+with the variables stored internally in the instance of the class.
+Even though the <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> in the forward pass
+defined in <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84">ivy.Linear._forward</a>,
+the function signatures of <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Linear._forward</span></code> are still
+quite distinct, with the former including all trainable variables explicitly,
+and the latter having these implicit as internal instance attributes of the class.</p>
+<p>Therefore, with the exception of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+methods which directly wrap functions in the functional API,
+we should always add docstrings to all methods of all other classes in Ivy,
+including cases where these also directly wrap functions in the functional API.</p>
 <p><strong>Round Up</strong></p>
 <p>These examples should hopefully give you a good understanding of what is required when adding docstings.</p>
 <p>If you’re ever unsure of how best to proceed,
