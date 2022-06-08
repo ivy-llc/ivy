@@ -69,7 +69,6 @@ def layer_norm(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> ivy.set_backend('tensorflow')
     >>> tensor = ivy.native_array([[3.,1.],[4.,12.]])
     >>> norm = ivy.layer_norm(tensor, [0,1], new_std=1.25, offset=0.25, scale=0.3)
     >>> print(norm)
