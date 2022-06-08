@@ -307,11 +307,11 @@ def flip(
 
 
 def expand_dims(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis with the size of one. This
     new axis will appear at the ``axis`` position in the expanded array shape.
 
@@ -332,115 +332,16 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given ``axis``.
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
-
-    Functional Examples
-    -------------------
-
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> print(x.shape)
-    (3,)
+    Examples
+    --------
+    >>> x = ivy.array([[0, 1], [1, 0]])
     >>> y = ivy.expand_dims(x)
-    >>> print(y.shape)
-    (1, 3)
     >>> print(y)
-    ivy.array([[0, 1, 2]])
+    ivy.array([[[0, 1],
+                [1, 0]]])
 
-
-    >>> x = ivy.array([[0.5, -0.7, 2.4], [1, 2, 3]])
-    >>> print(x.shape)
-    (2, 3)
-    >>> y = ivy.zeros((2, 1, 3))
-    >>> print(y)
-    ivy.array([[[0., 0., 0.]],
-
-           [[0., 0., 0.]]], dtype=float32)
-    >>> ivy.expand_dims(x, axis=1, out=y)
-    >>> print(y)
-    ivy.array([[[ 0.5, -0.7,  2.4]],
-
-           [[ 1. ,  2. ,  3. ]]], dtype=float32)
-
-
-    >>> x = ivy.array([[-1, -2], [3, 4]])
-    >>> print(x)
-    ivy.array([[-1, -2],
-           [ 3,  4]])
-    >>> ivy.expand_dims(x, out=x)
-    >>> print(x)
-    ivy.array([[[-1],
-            [-2]],
-
-           [[ 3],
-            [ 4]]])
-
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> print(x.shape)
-    (3,)
-    >>> y = ivy.expand_dims(x)
-    >>> print(y.shape)
-    (1, 3)
-    >>> print(y)
-    ivy.array([[0, 1, 2]])
-    
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.expand_dims(x, axis=-1)
-    >>> print(y)
-    {
-        a: ivy.array([[0.],
-                      [1.],
-                      [2.]]),
-        b: ivy.array([[3.],
-                      [4.],
-                      [5.]])
-    }
-
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.expand_dims()
     >>> print(x.shape, y.shape)
-    (3,) (1, 3)
-    >>> print(y)
-    ivy.array([[0., 1., 2.]])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \
-                            b=ivy.array([[4., 5.], [6., 7.]]))
-    >>> print(x)
-    {
-        a: ivy.array([[0., 1.],
-                      [2., 3.]]),
-        b: ivy.array([[4., 5.],
-                      [6., 7.]])
-    }
-    >>> y = x.expand_dims(axis=1)
-    >>> print(y)
-    {
-        a: ivy.array([[[0., 1.]],
-                      [[2., 3.]]]),
-        b: ivy.array([[[4., 5.]],
-                      [[6., 7.]]])
-    }
+    (2, 2) (1, 2, 2)
 
     """
     return _cur_backend(x).expand_dims(x, axis, out=out)
