@@ -21,19 +21,53 @@ class Variable:
     pass
 
 
+class FrameworkStr(str):
+    def __new__(cls, fw_str):
+        assert fw_str in ["jax", "tensorflow", "torch", "mxnet", "numpy"]
+        return str.__new__(cls, fw_str)
+
+
 class Framework:
     pass
 
 
-class Device:
+class NativeDevice:
     pass
 
 
-class Node:
+class NativeDtype:
     pass
 
 
-class Dtype:
+class Device(str):
+    def __new__(cls, dev_str):
+        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+        if dev_str != "cpu":
+            assert dev_str[3] == ":"
+            assert dev_str[4:].isnumeric()
+        return str.__new__(cls, dev_str)
+
+
+class Dtype(str):
+    def __new__(cls, dtype_str):
+        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class IntDtype(Dtype):
+    def __new__(cls, dtype_str):
+        assert "int" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class FloatDtype(Dtype):
+    def __new__(cls, dtype_str):
+        assert "float" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class Node(str):
+    # ToDo: add formatting checks once multi-node is supported
     pass
 
 
@@ -47,6 +81,7 @@ _MIN_BASE = 1e-5
 
 
 # local
+import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -55,21 +90,21 @@ from .container import (
     MultiDevContainer,
     add_ivy_container_instance_methods,
 )
-from .framework_handler import (
-    current_framework,
-    get_framework,
-    set_framework,
-    unset_framework,
-    framework_stack,
-    choose_random_framework,
+from .backend_handler import (
+    current_backend,
+    get_backend,
+    set_backend,
+    unset_backend,
+    backend_stack,
+    choose_random_backend,
     try_import_ivy_jax,
     try_import_ivy_tf,
     try_import_ivy_torch,
     try_import_ivy_mxnet,
     try_import_ivy_numpy,
-    clear_framework_stack,
+    clear_backend_stack,
 )
-from . import framework_handler, func_wrapper
+from . import backend_handler, func_wrapper
 from .debugger import (
     set_debug_mode,
     set_breakpoint_debug_mode,
@@ -162,12 +197,8 @@ add_ivy_container_instance_methods(
 )
 
 
-class StaticContainer(ContainerBase):
-    pass
-
-
 add_ivy_container_instance_methods(
-    StaticContainer,
+    Container,
     [
         activations,
         creation,
@@ -189,27 +220,42 @@ add_ivy_container_instance_methods(
         statistical,
         utility,
     ],
+    static=True,
 )
 
 # data types
-int8 = "int8"
-int16 = "int16"
-int32 = "int32"
-int64 = "int64"
-uint8 = "uint8"
-uint16 = "uint16"
-uint32 = "uint32"
-uint64 = "uint64"
-bfloat16 = "bfloat16"
-float16 = "float16"
-float32 = "float32"
-float64 = "float64"
+int8 = IntDtype("int8")
+int16 = IntDtype("int16")
+int32 = IntDtype("int32")
+int64 = IntDtype("int64")
+uint8 = IntDtype("uint8")
+uint16 = IntDtype("uint16")
+uint32 = IntDtype("uint32")
+uint64 = IntDtype("uint64")
+bfloat16 = FloatDtype("bfloat16")
+float16 = FloatDtype("float16")
+float32 = FloatDtype("float32")
+float64 = FloatDtype("float64")
 # noinspection PyShadowingBuiltins
-bool = "bool"
-nan = float("nan")
-inf = float("inf")
+bool = Dtype("bool")
 
-valid_dtypes = (
+# native data types
+native_int8 = IntDtype("int8")
+native_int16 = IntDtype("int16")
+native_int32 = IntDtype("int32")
+native_int64 = IntDtype("int64")
+native_uint8 = IntDtype("uint8")
+native_uint16 = IntDtype("uint16")
+native_uint32 = IntDtype("uint32")
+native_uint64 = IntDtype("uint64")
+native_bfloat16 = FloatDtype("bfloat16")
+native_float16 = FloatDtype("float16")
+native_float32 = FloatDtype("float32")
+native_float64 = FloatDtype("float64")
+native_bool = Dtype("bool")
+
+# all
+all_dtypes = (
     int8,
     int16,
     int32,
@@ -224,7 +270,7 @@ valid_dtypes = (
     float64,
     bool,
 )
-valid_numeric_dtypes = (
+all_numeric_dtypes = (
     int8,
     int16,
     int32,
@@ -238,63 +284,36 @@ valid_numeric_dtypes = (
     float32,
     float64,
 )
-valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
-valid_float_dtypes = (bfloat16, float16, float32, float64)
-
-# all
-all_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
+all_int_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
 )
-numeric_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-    "float16",
-    "float32",
-    "float64",
+all_float_dtypes = (
+    bfloat16,
+    float16,
+    float32,
+    float64,
 )
-int_dtype_strs = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-float_dtype_strs = ("bfloat16", "float16", "float32", "float64")
 
-# valid
-valid_dtype_strs = all_dtype_strs
-valid_numeric_dtype_strs = numeric_dtype_strs
-valid_int_dtype_strs = int_dtype_strs
-valid_float_dtype_strs = float_dtype_strs
+# valid data types
+valid_dtypes = all_dtypes
+valid_numeric_dtypes = all_numeric_dtypes
+valid_int_dtypes = all_int_dtypes
+valid_float_dtypes = all_float_dtypes
 
-# invalid
-invalid_dtype_strs = ()
-invalid_numeric_dtype_strs = ()
-invalid_int_dtype_strs = ()
-invalid_float_dtype_strs = ()
+# invalid data types
+invalid_dtypes = ()
+invalid_numeric_dtypes = ()
+invalid_int_dtypes = ()
+invalid_float_dtypes = ()
 
+# data type promotion
 promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,
@@ -364,10 +383,12 @@ promotion_table = {
     (bool, bool): bool,
 }
 
+locks = {"backend_setter": threading.Lock()}
+
 backend = "none"
 
 if "IVY_BACKEND" in os.environ:
-    ivy.set_framework(os.environ["IVY_BACKEND"])
+    ivy.set_backend(os.environ["IVY_BACKEND"])
 
 # Array Significant Figures #
 
@@ -385,9 +406,9 @@ def _sf(x, sig_fig=3):
             x, precision=sig_fig, unique=False, fractional=False, trim="k"
         )
     )
-    if np.issubdtype(type(x), np.uint):
+    if 'uint' in type(x).__name__:
         f = np.uint(f)
-    if np.issubdtype(type(x), np.int):
+    elif 'int' in type(x).__name__:
         f = np.int(f)
     x = f
     return x

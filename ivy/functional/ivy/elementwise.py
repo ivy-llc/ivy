@@ -4,16 +4,19 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_out_argument
 def bitwise_left_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
@@ -39,14 +42,16 @@ def bitwise_left_shift(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
+@handle_out_argument
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
@@ -160,11 +165,11 @@ def add(
     ivy.array([5, 7, 9])
 
     With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                        b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                        b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -175,8 +180,8 @@ def add(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
@@ -201,10 +206,11 @@ def add(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                         b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                         b=ivy.array([5, 6, 7]))
+
     >>> z = x.add(y)
     >>> print(z)
     {
@@ -225,10 +231,10 @@ def add(
 
     With :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    >>>                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-    >>>                   b=ivy.array([5, 6, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                         b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                            b=ivy.array([5, 6, 7]))
     >>> z = x + y
     >>> print(z)
     {
@@ -239,8 +245,8 @@ def add(
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                        b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x + y
     >>> print(z)
     {
@@ -253,12 +259,14 @@ def add(
     }
 
     """
-    return _cur_framework(x1, x2).add(x1, x2, out)
+    return _cur_backend(x1, x2).add(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -283,11 +291,13 @@ def bitwise_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_xor(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
+@handle_out_argument
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the exponential function,
@@ -325,14 +335,16 @@ def exp(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.exp(x)
     >>> print(y)
-    ivy.array([2.71828183, 7.3890561 , 20.08553692])
+    ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
-    return _cur_framework(x).exp(x, out)
+    return _cur_backend(x).exp(x, out=out)
 
 
+@handle_out_argument
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
@@ -371,11 +383,13 @@ def expm1(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).expm1(x, out)
+    return _cur_backend(x).expm1(x, out=out)
 
 
+@handle_out_argument
 def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
@@ -402,12 +416,14 @@ def bitwise_invert(
     ivy.array([-2, -7, -10])
 
     """
-    return _cur_framework(x).bitwise_invert(x, out)
+    return _cur_backend(x).bitwise_invert(x, out=out)
 
 
+@handle_out_argument
 def bitwise_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise AND of the underlying binary representation of each element
@@ -432,11 +448,13 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_and(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
+@handle_out_argument
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
@@ -473,14 +491,15 @@ def ceil(
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    ivy.array([1.0, 0.0, -0.0])
-
+    ivy.array([1., 0., -0.])
     """
-    return _cur_framework(x).ceil(x, out)
+    return _cur_backend(x).ceil(x, out=out)
 
 
+@handle_out_argument
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
@@ -513,11 +532,13 @@ def floor(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).floor(x, out)
+    return _cur_backend(x).floor(x, out=out)
 
 
+@handle_out_argument
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
@@ -539,11 +560,13 @@ def isfinite(
         ``bool``.
 
     """
-    return _cur_framework(x).isfinite(x, out)
+    return _cur_backend(x).isfinite(x, out=out)
 
 
+@handle_out_argument
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -576,11 +599,13 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).asin(x, out)
+    return _cur_backend(x).asin(x, out=out)
 
 
+@handle_out_argument
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element x_i of the input array x to determine if equal to positive or
@@ -602,12 +627,14 @@ def isinf(
         a data type of bool.
 
     """
-    return _cur_framework(x).isinf(x, out)
+    return _cur_backend(x).isinf(x, out=out)
 
 
+@handle_out_argument
 def greater(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i < x2_i for each element x1_i of the input array
@@ -635,12 +662,14 @@ def greater(
     ivy.array([False, False,  True])
 
     """
-    return _cur_framework(x1, x2).greater(x1, x2, out)
+    return _cur_backend(x1, x2).greater(x1, x2, out=out)
 
 
+@handle_out_argument
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array
@@ -660,13 +689,150 @@ def greater_equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    ivy.array([False, True,  True])
+
+    >>> x = ivy.array([[10.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> shape = (3,3)
+    >>> fill_value = False
+    >>> z = ivy.full(shape, fill_value)
+    >>> ivy.greater_equal(x, y, out=z)
+    >>> print(z)
+    ivy.array([[ True, False, False],
+       [ True, False, False],
+       [ True, False, False]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.greater_equal(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[0.],[1.],[0.]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([4, 5])
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    ivy.array([False, False])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 0])
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    ivy.array([False, False,  True])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                           b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = z = x.greater_equal(y)
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x.greater_equal(y)
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([6, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x >= y
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x >= y
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x >= y
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
+
     """
-    return _cur_framework(x1, x2).greater_equal(x1, x2, out)
+    return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
@@ -687,12 +853,14 @@ def less_equal(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).less_equal(x1, x2, out)
+    return _cur_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
@@ -751,11 +919,13 @@ def multiply(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_framework(x1, x2).multiply(x1, x2, out)
+    return _cur_backend(x1, x2).multiply(x1, x2, out=out)
 
 
+@handle_out_argument
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -789,11 +959,13 @@ def asinh(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).asinh(x, out)
+    return _cur_backend(x).asinh(x, out=out)
 
 
+@handle_out_argument
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns an indication of the sign of a number for each element ``x_i`` of the
@@ -820,11 +992,13 @@ def sign(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).sign(x, out)
+    return _cur_backend(x).sign(x, out=out)
 
 
+@handle_out_argument
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
@@ -857,11 +1031,13 @@ def sqrt(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sqrt(x, out)
+    return _cur_backend(x).sqrt(x, out=out)
 
 
+@handle_out_argument
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic cosine,
@@ -894,11 +1070,13 @@ def cosh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).cosh(x, out)
+    return _cur_backend(x).cosh(x, out=out)
 
 
+@handle_out_argument
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the natural (base ``e``)
@@ -931,11 +1109,13 @@ def log(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log(x, out)
+    return _cur_backend(x).log(x, out=out)
 
 
+@handle_out_argument
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
@@ -968,11 +1148,13 @@ def log2(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log2(x, out)
+    return _cur_backend(x).log2(x, out=out)
 
 
+@handle_out_argument
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``10``
@@ -1005,11 +1187,13 @@ def log10(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).log10(x, out)
+    return _cur_backend(x).log10(x, out=out)
 
 
+@handle_out_argument
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to log(1+x), where log
@@ -1029,11 +1213,13 @@ def log1p(
         a new array containing the evaluated result for each element in x.
 
     """
-    return _cur_framework(x).log1p(x, out)
+    return _cur_backend(x).log1p(x, out=out)
 
 
+@handle_out_argument
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine whether the
@@ -1055,12 +1241,14 @@ def isnan(
         ``bool``.
 
     """
-    return _cur_framework(x).isnan(x, out)
+    return _cur_backend(x).isnan(x, out=out)
 
 
+@handle_out_argument
 def less(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
@@ -1090,11 +1278,13 @@ def less(
     ivy.array([True, False, False])
 
     """
-    return _cur_framework(x1).less(x1, x2, out)
+    return _cur_backend(x1).less(x1, x2, out=out)
 
 
+@handle_out_argument
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the cosine, having domain
@@ -1131,14 +1321,16 @@ def cos(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
-    ivy.array([1., 0.54030231, -0.41614684])
+    ivy.array([1., 0.54, -0.416])
 
     """
-    return _cur_framework(x).cos(x, out)
+    return _cur_backend(x).cos(x, out=out)
 
 
+@handle_out_argument
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1169,11 +1361,13 @@ def acos(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).acos(x, out)
+    return _cur_backend(x).acos(x, out=out)
 
 
+@handle_out_argument
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical NOT for each element ``x_i`` of the input array ``x``.
@@ -1200,12 +1394,14 @@ def logical_not(
         data type of ``bool``.
 
     """
-    return _cur_framework(x).logical_not(x, out)
+    return _cur_backend(x).logical_not(x, out=out)
 
 
+@handle_out_argument
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
@@ -1230,12 +1426,14 @@ def logical_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).logical_xor(x1, x2, out)
+    return _cur_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
+@handle_out_argument
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with
@@ -1266,12 +1464,14 @@ def logical_or(
         data type of ``bool``.
 
     """
-    return _cur_framework(x1, x2).logical_or(x1, x2, out)
+    return _cur_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
+@handle_out_argument
 def logical_and(
     x1: ivy.Array,
     x2: ivy.Array,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical AND for each element x1_i of the input array x1 with the
@@ -1295,11 +1495,13 @@ def logical_and(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).logical_and(x1, x2, out)
+    return _cur_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
+@handle_out_argument
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
@@ -1332,11 +1534,13 @@ def acosh(
         :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).acosh(x, out)
+    return _cur_backend(x).acosh(x, out=out)
 
 
+@handle_out_argument
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the sine, having domain
@@ -1368,32 +1572,123 @@ def sin(
         have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sin(x, out)
+    return _cur_backend(x).sin(x, out=out)
 
 
+@handle_out_argument
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the numerical negative of each element.
+    """Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the
+    input array x.
 
     Parameters
     ----------
     x
         Input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         an array containing the evaluated result for each element in x
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0,1,1,2])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 0, -1, -1, -2])
+
+    >>> x = ivy.array([0,-1,-0.5,2,3])
+    >>> y = ivy.zeros(5)
+    >>> ivy.negative(x,out=y)
+    >>> print(y)
+    ivy.array([-0. ,  1. ,  0.5, -2. , -3. ], dtype=float32)
+
+    >>> x = ivy.array([[1.1,2.2,3.3], \
+                       [-4.4,-5.5,-6.6]])
+    >>> ivy.negative(x,out=x)
+    >>> print(x)
+    ivy.array([[-1.1, -2.2, -3.3],
+               [ 4.4,  5.5,  6.6]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -1. , -1.1], dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),\
+                         b=ivy.array([3.,4.,-5.]))
+    >>> y = ivy.negative(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0., -1., -2.], dtype=float32),
+        b: ivy.array([-3., -4., 5.], dtype=float32)
+    }
+
+    Instance Method Examples
+    -------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
+    >>> y = x.negative()
+    >>> print(y)
+    ivy.array([ 1.1,  1. , -0. , -0. , -1. , -1.1], dtype=float32)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = x.negative()
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
+
+    Operator Examples
+    -----------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1,2,3])
+    >>> y = -x
+    >>> print(y)
+    ivy.array([-1, -2, -3])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = -x
+    >>> print(y)
+    {
+        a: ivy.array([-1, -2, -3]),
+        b: ivy.array([4.4, -5., 6.6], dtype=float32)
+    }
+
     """
-    return _cur_framework(x).negative(x, out)
+    return _cur_backend(x).negative(x, out=out)
 
 
+@handle_out_argument
 def not_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
@@ -1417,12 +1712,14 @@ def not_equal(
         data type of ``bool``.
 
     """
-    return _cur_framework(x1, x2).not_equal(x1, x2, out)
+    return _cur_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
+@handle_out_argument
 def floor_divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the result of dividing each element x1_i of the input array x1 by the
@@ -1444,12 +1741,14 @@ def floor_divide(
         numeric data type.
 
     """
-    return _cur_framework(x1, x2).floor_divide(x1, x2, out)
+    return _cur_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise OR of the underlying binary representation of each element
@@ -1474,11 +1773,13 @@ def bitwise_or(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).bitwise_or(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
+@handle_out_argument
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic sine,
@@ -1511,11 +1812,13 @@ def sinh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).sinh(x, out)
+    return _cur_backend(x).sinh(x, out=out)
 
 
+@handle_out_argument
 def positive(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the positive value of each element in ``x``.
@@ -1531,11 +1834,13 @@ def positive(
         A new array with the positive value of each element in ``x``.
 
     """
-    return _cur_framework(x).positive(x, out)
+    return _cur_backend(x).positive(x, out=out)
 
 
+@handle_out_argument
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Each element ``x_i`` of the input array ``x``.
@@ -1551,12 +1856,14 @@ def square(
         an array containing the evaluated result for each element in ``x``.
 
     """
-    return _cur_framework(x).square(x, out)
+    return _cur_backend(x).square(x, out=out)
 
 
+@handle_out_argument
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
@@ -1591,11 +1898,13 @@ def logaddexp(
         floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).logaddexp(x1, x2, out)
+    return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+@handle_out_argument
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the values of an array to the nearest integer, element-wise.
@@ -1611,11 +1920,13 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
     """
-    return _cur_framework(x).round(x, out)
+    return _cur_backend(x).round(x, out=out)
 
 
+@handle_out_argument
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element x_i of the input array x to the integer-valued number that is
@@ -1645,14 +1956,15 @@ def trunc(
         The returned array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).trunc(x, out)
+    return _cur_backend(x).trunc(x, out=out)
 
 
+@handle_out_argument
 def abs(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
@@ -1684,13 +1996,15 @@ def abs(
         array must have the same data type as ``x``.
 
     """
-    return _cur_framework(x).abs(x, out)
+    return _cur_backend(x).abs(x, out=out)
 
 
+@handle_out_argument
 def tan(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
@@ -1734,30 +2048,30 @@ def tan(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tan(x, out=y)
     >>> print(y)
-    ivy.array([0.5463025, -0.8422884, -0.91601413])
+    ivy.array([0.546, -0.842, -0.916])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    >>>                [-4.4, -5.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                        [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
-               [-3.0963247,  0.9955841, -0.3278579]])
+    ivy.array([[1.96, -1.37, 0.16], 
+        [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0, 1, 2])
+    >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
@@ -1765,8 +2079,8 @@ def tan(
     >>> y = ivy.tan(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+        a: ivy.array([0., 1.56, -2.19]),
+        b: ivy.array([-0.143, 1.16, -3.38])
     }
 
     Instance Method Examples
@@ -1777,7 +2091,7 @@ def tan(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.tan()
     >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
+    ivy.array([0., 1.56, -2.19])
 
     Using :code:`ivy.Container` instance method:
 
@@ -1785,16 +2099,17 @@ def tan(
     >>> y = x.tan()
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
-    }
+        a:ivy.array([0., 1.56, -2.19]),
+        b:ivy.array([-0.143, 1.16, -3.38])}
 
     """
-    return _cur_framework(x).tan(x, out)
+    return ivy.current_backend(x).tan(x, out=out)
 
 
+@handle_out_argument
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
@@ -1829,12 +2144,14 @@ def atan(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x).atan(x, out)
+    return _cur_backend(x).atan(x, out=out)
 
 
+@handle_out_argument
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
@@ -1913,11 +2230,13 @@ def atan2(
         array must have a floating-point data type.
 
     """
-    return _cur_framework(x1).atan2(x1, x2, out)
+    return _cur_backend(x1).atan2(x1, x2, out=out)
 
 
+@handle_out_argument
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the hyperbolic tangent of the elements of x.
@@ -1933,11 +2252,13 @@ def tanh(
         A new array with the hyperbolic tangent of the elements of x.
 
     """
-    return _cur_framework(x).tanh(x, out)
+    return _cur_backend(x).tanh(x, out=out)
 
 
+@handle_out_argument
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the inverse hyperbolic tangent of the elements of ``x``.
@@ -1959,15 +2280,17 @@ def atanh(
     --------
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
-    ivy.array([ 0., -0.54930614])
+    ivy.array([0., -0.549])
 
     """
-    return _cur_framework(x).atanh(x, out)
+    return _cur_backend(x).atanh(x, out=out)
 
 
+@handle_out_argument
 def subtract(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -1990,12 +2313,14 @@ def subtract(
         an array containing the element-wise differences.
 
     """
-    return _cur_framework(x1).subtract(x1, x2, out)
+    return _cur_backend(x1).subtract(x1, x2, out=out)
 
 
+@handle_out_argument
 def divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the division for each element x1_i of the input array x1 with the
@@ -2016,12 +2341,14 @@ def divide(
         floating-point data type determined by Type Promotion Rules.
 
     """
-    return _cur_framework(x1, x2).divide(x1, x2, out)
+    return _cur_backend(x1, x2).divide(x1, x2, out=out)
 
 
+@handle_out_argument
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of exponentiation by raising
@@ -2101,12 +2428,14 @@ def pow(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_framework(x1, x2).pow(x1, x2, out)
+    return _cur_backend(x1, x2).pow(x1, x2, out=out)
 
 
+@handle_out_argument
 def remainder(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
@@ -2179,12 +2508,14 @@ def remainder(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_framework(x1, x2).remainder(x1, x2, out)
+    return _cur_backend(x1, x2).remainder(x1, x2, out=out)
 
 
+@handle_out_argument
 def bitwise_right_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
@@ -2220,12 +2551,14 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 0, 0, 0])
     """
-    return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
+    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
+@handle_out_argument
 def equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i == x2_i for each element x1_i of the input array
@@ -2246,15 +2579,17 @@ def equal(
         data type of bool.
 
     """
-    return _cur_framework(x1, x2).equal(x1, x2, out)
+    return _cur_backend(x1, x2).equal(x1, x2, out=out)
 
 
 # Extra #
 # ------#
 
 
+@handle_out_argument
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes the Gauss error function of ``x`` element-wise.
@@ -2270,50 +2605,268 @@ def erf(
         The Gauss error function of x.
 
     """
-    return _cur_framework(x).erf(x, out)
+    return _cur_backend(x).erf(x, out=out)
 
 
+@handle_out_argument
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the min of x and y (i.e. x < y ? x : y) element-wise.
+    """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
     x1
         Input array containing elements to minimum threshold.
     x2
-        Tensor containing minimum values, must be broadcastable to x.
+        Tensor containing minimum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not exceed the y values.
+        An array with the elements of x1, but clipped to not exceed the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 5, 9])
+    >>> y = ivy.array([2, 6, 8])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([1, 5, 8])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([2, 6, 8, 5])
+    >>> y = ivy.native_array([1, 5, 9, 6])
+    >>> ivy.minimum(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([1, 5, 8, 5])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.minimum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([1])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([2, 3])
+    >>> y = ivy.native_array([0, 4])
+    >>> z = ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([0, 3])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([2, 3, 9])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.array([2, 3, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([2, 3, 9, 7, 3])
+    >>> z = ivy.minimum(x, 5)
+    >>> print(z)
+    ivy.native_array([2, 3, 5, 5, 3])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 7, 3])
+    >>> y = ivy.array([3, 3, 2])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.array([3, 3, 2])
+
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 7])
+    >>> y = ivy.native_array([6, 0])
+    >>> x.minimum(y, out=y)
+    >>> print(y)
+    ivy.native_array([4, 0])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 4, 8])
+    >>> z = ivy.zeros(3)
+    >>> x.minimum(3, out=z)
+    >>> print(z)
+    ivy.array([1, 4, 5])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3, 2])
+    >>> y = ivy.native_array([1, 9, 2, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.native_array([1, 7, 2, 3, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([4, 7, 8, 3])
+    >>> y = ivy.array([1, 9, 6, 0])
+    >>> z = x.minimum(y)
+    >>> print(z)
+    ivy.native_array([1, 7, 6, 0])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([3, 8])
+    >>> z = x.minimum(3)
+    >>> print(z)
+    ivy.native_array([3, 6])
 
     """
-    return _cur_framework(x1).minimum(x1, x2, out)
+    return _cur_backend(x1).minimum(x1, x2, out=out)
 
 
+@handle_out_argument
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the max of x and y (i.e. x > y ? x : y) element-wise.
+    """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
-    x
+    x1
         Input array containing elements to maximum threshold.
-    y
-        Tensor containing maximum values, must be broadcastable to x.
+    x2
+        Tensor containing maximum values, must be broadcastable to x1.
 
     Returns
     -------
     ret
-        An array with the elements of x, but clipped to not be lower than the y values.
+        An array with the elements of x1, but clipped to not be lower than the x2 values.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([7, 9, 5])
+    >>> y = ivy.array([9, 3, 2])
+    >>> z = ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([9, 9, 5])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([1, 5, 9, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 0, 7])
+    >>> ivy.maximum(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([9, 5, 9, 8, 7])
+
+    With :code:`Number` inputs:
+
+    >>> z = ivy.zeros(1)
+    >>> ivy.maximum(1, 5, out=z)
+    >>> print(z)
+    ivy.array([5])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([7, 3])
+    >>> y = ivy.native_array([0, 7])
+    >>> z = ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([7, 3])
+
+    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
+
+    >>> x = ivy.array([1, 7, 3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.array([5, 7, 5])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
+
+    >>> x = ivy.native_array([1, 3])
+    >>> z = ivy.maximum(x, 5)
+    >>> print(z)
+    ivy.native_array([5, 5])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4, 8, 3])
+    >>> y = ivy.array([9, 3, 2])
+    >>> x.maximum(y, out=y)
+    >>> print(y)
+    ivy.array([9, 8, 3])
+
+    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([4, 1, 8, 3])
+    >>> y = ivy.native_array([9, 3, 2, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.array([9, 3, 8, 6])
+
+    With :code:`ivy.Array` instance method using :code:`Number` input:
+
+    >>> x = ivy.array([1, 7, 8])
+    >>> z = ivy.zeros(3)
+    >>> x.maximum(3, out=z)
+    >>> print(z)
+    ivy.array([3, 7, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 8])
+    >>> y = ivy.native_array([9, 6])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.native_array([9, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
+
+    >>> x = ivy.native_array([1, 8, 6, 0, 5])
+    >>> y = ivy.array([9, 6, 2, 5, 8])
+    >>> z = x.maximum(y)
+    >>> print(z)
+    ivy.native_array([9, 8, 6, 5, 8])
+
+    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
+
+    >>> x = ivy.native_array([0, 2, 7])
+    >>> z = x.maximum(5)
+    >>> print(z)
+    ivy.native_array([0, 2, 5])
 
     """
-    return _cur_framework(x1).maximum(x1, x2, out)
+    return _cur_backend(x1).maximum(x1, x2, out=out)

@@ -7,20 +7,20 @@ from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
 def argmax(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[int] = None,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+    out: Optional[mx.nd.NDArray] = None,
     keepdims: bool = False,
-) -> mx.ndarray.ndarray.NDArray:
+) -> mx.nd.NDArray:
     return mx.nd.argmax(x, axis=axis, out=out, keepdims=keepdims)
 
 
 def argmin(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[int] = None,
-    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+    out: Optional[mx.nd.NDArray] = None,
     keepdims: bool = False,
-) -> mx.ndarray.ndarray.NDArray:
+) -> mx.nd.NDArray:
     ret = mx.nd.argmin(x, axis=axis, out=out, keepdims=keepdims)
     return ret
 

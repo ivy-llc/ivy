@@ -4,16 +4,19 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import handle_out_argument
 
 
 # Extra #
 # ------#
 
 
+@handle_out_argument
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -39,9 +42,10 @@ def relu(
     ivy.array([0., 0., 1.])
 
     """
-    return _cur_framework(x).relu(x, out)
+    return _cur_backend(x).relu(x, out)
 
 
+@handle_out_argument
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2
 ) -> ivy.Array:
@@ -67,9 +71,10 @@ def leaky_relu(
     ivy.array([0.39, -0.17])
 
     """
-    return _cur_framework(x).leaky_relu(x, alpha)
+    return _cur_backend(x).leaky_relu(x, alpha)
 
 
+@handle_out_argument
 def gelu(x, approximate=True):
     """Applies the Gaussian error linear unit (GELU) activation function.
 
@@ -86,9 +91,10 @@ def gelu(x, approximate=True):
         The input array with leaky relu applied element-wise.
 
     """
-    return _cur_framework(x).gelu(x, approximate)
+    return _cur_backend(x).gelu(x, approximate)
 
 
+@handle_out_argument
 def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the Hyperbolic tangent activation function element-wise.
 
@@ -110,9 +116,10 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([0.50, -0.50])
 
     """
-    return _cur_framework(x).tanh(x)
+    return _cur_backend(x).tanh(x)
 
 
+@handle_out_argument
 def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
@@ -131,12 +138,12 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.268, 0.5, 0.880])
-
+    ivy.array([0.269, 0.731, 0.881])
     """
-    return _cur_framework(x).sigmoid(x)
+    return _cur_backend(x).sigmoid(x)
 
 
+@handle_out_argument
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1
 ) -> ivy.Array:
@@ -160,12 +167,13 @@ def softmax(
     >>> x = ivy.array([-1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
     >>> print(y)
-    ivy.array([0.09003057, 0.24472847, 0.66524096])
+    ivy.array([0.09003057, 0.24472848, 0.66524094])
 
     """
-    return _cur_framework(x).softmax(x, axis)
+    return _cur_backend(x).softmax(x, axis)
 
 
+@handle_out_argument
 def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the softplus function element-wise.
 
@@ -184,7 +192,6 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    ivy.array([0.5350, 0.4203])
-
+    ivy.array([0.5349962, 0.4203641])
     """
-    return _cur_framework(x).softplus(x)
+    return _cur_backend(x).softplus(x)

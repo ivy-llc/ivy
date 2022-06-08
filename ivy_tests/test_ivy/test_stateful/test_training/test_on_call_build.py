@@ -93,9 +93,7 @@ class WeConFC(ivy.Module):
     def _forward(self, implicit_weights):
         batch_shape = [i for i in implicit_weights.shape if i]
         total_batch_size = np.prod(batch_shape)
-        reshaped_weights = implicit_weights.reshape(
-            pre_shape=[total_batch_size], post_shape=[-1]
-        )
+        reshaped_weights = implicit_weights.reshape(shape=(total_batch_size, -1))
         xs = self._layer_specific_fc(reshaped_weights)
         x = ivy.concat([v for k, v in xs.to_iterator()], -1)
         ret_flat = self._fc(x)
@@ -105,7 +103,7 @@ class WeConFC(ivy.Module):
 # WeConFC
 @given(
     batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_weight_conditioned_network_training(batch_shape, dtype, device, call):
 
@@ -257,7 +255,7 @@ class HyperHypoNet(ivy.Module):
 # HyperHypoNet
 @given(
     batch_shape=st.sampled_from([[1, 2], [1, 3], [1, 4]]),
-    dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
 def test_hyper_hypo_network_training(batch_shape, dtype, device, call):
 

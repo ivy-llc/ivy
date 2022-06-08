@@ -32,7 +32,7 @@ def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType) -> bool:
     return True
 
 
-DTYPE_TO_STR = {
+ivy_dtype_dict = {
     tf.int8: "int8",
     tf.int16: "int16",
     tf.int32: "int32",
@@ -48,7 +48,7 @@ DTYPE_TO_STR = {
     tf.bool: "bool",
 }
 
-DTYPE_FROM_STR = {
+native_dtype_dict = {
     "int8": tf.int8,
     "int16": tf.int16,
     "int32": tf.int32,
@@ -67,7 +67,7 @@ DTYPE_FROM_STR = {
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[DType, str, Tensor]) -> np.iinfo:
-    return tf.experimental.numpy.iinfo(ivy.dtype_to_str(type))
+    return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
 class Finfo:
@@ -97,7 +97,7 @@ class Finfo:
 
 # noinspection PyShadowingBuiltins
 def finfo(type: Union[DType, str, Tensor]) -> Finfo:
-    return Finfo(tf.experimental.numpy.finfo(ivy.dtype_from_str(type)))
+    return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
 def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
@@ -134,6 +134,7 @@ def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
 
 
 def astype(x: Tensor, dtype: tf.DType, copy: bool = True) -> Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = tf.experimental.numpy.copy(x)
@@ -149,7 +150,7 @@ def astype(x: Tensor, dtype: tf.DType, copy: bool = True) -> Tensor:
 
 
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -161,20 +162,19 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
+def dtype(x, as_native=False):
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def dtype_from_str(dtype_in):
+def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]

@@ -8,8 +8,8 @@ Contributing
 We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community,
 regardless of skill-level!
 
-Whether you're a veterned developer or a total beginner, everyone is welcome to create `issues`_, start `discussions`_,
-and create `pull-requests`_.
+Whether you're a veterned developer 🥷 or a total beginner 🤷,
+everyone is welcome to create `issues`_, start `discussions`_, and create `pull-requests`_.
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
 
@@ -19,28 +19,33 @@ and all are totally welcome on board for our journey! 🙂
 The contributor guide is split into the sections below, it's best to go from start to finish,
 but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
-| (a) :ref:`The Basics`
+
+| (a) :ref:`Setting Up`
+| Building the right environment 🏛️
+|
+| (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (b) :ref:`Navigating the Code`
-| A quick tour through the codebase 🔍
+| (c) :ref:`Building the Docs`
+| How to build the documentation locally 🏗️
 |
-| (c) :ref:`Type Hints`
-| How add the correct type hints 📑
-|
-| (d) :ref:`Docstrings`
-| How to properly write docstrings 📄
-|
-| (e) :ref:`Docstring Examples`
-| How to add useful examples to the docstrings 💯
+| (d) :ref:`Deep Dive`
+| Take a deep dive into the codebase, and see where you can help out 🤿
 
 .. toctree::
    :hidden:
    :maxdepth: -1
    :caption: Contributing
 
-   contributing/0_the_basics.rst
-   contributing/1_navigating_the_code.rst
-   contributing/2_type_hints.rst
-   contributing/3_docstrings.rst
-   contributing/4_docstring_examples.rst
+   contributing/0_setting_up.rst
+   contributing/1_the_basics.rst
+   contributing/building_the_docs.rst
+   deep_dive.rst
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video">
+    </iframe>

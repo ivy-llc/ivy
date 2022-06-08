@@ -3,24 +3,33 @@
 # global
 import os
 import time
-
 import numpy as np
-from typing import Optional
+from typing import Union
 
 # local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: np.ndarray, as_str: bool = False) -> str:
+def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
+    if as_native:
+        return "cpu"
+    return as_ivy_dev("cpu")
+
+
+_dev_callable = dev
+
+
+def as_ivy_dev(device):
+    return ivy.Device("cpu")
+
+
+def as_native_dev(device):
     return "cpu"
 
 
-dev.__name__ = "dev"
-_dev_callable = dev
-dev_to_str = lambda dev: "cpu"
-dev_from_str = lambda dev: "cpu"
-clear_mem_on_dev = lambda dev: None
+def clear_mem_on_dev(device):
+    return None
 
 
 def tpu_is_available() -> bool:
@@ -35,7 +44,9 @@ def gpu_is_available() -> bool:
     return False
 
 
-def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.ndarray:
+# private version of to_dev to be used in backend implementations
+def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
+    """Private version of `to_dev` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
             raise Exception(
@@ -49,15 +60,24 @@ def _to_dev(x: np.ndarray, device=None, out: Optional[np.ndarray] = None) -> np.
                 "Invalid device specified, must be in the form "
                 "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
             )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
     return x
 
 
-# bind to_dev to _to_dev
-# _to_dev is imported in creation, so to minimize
-# changes, we bind it to to_dev
-to_dev = _to_dev
+def to_dev(x: np.ndarray, *, device: str) -> np.ndarray:
+    if device is not None:
+        if "gpu" in device:
+            raise Exception(
+                "Native Numpy does not support GPU placement, "
+                "consider using Jax instead"
+            )
+        elif "cpu" in device:
+            pass
+        else:
+            raise Exception(
+                "Invalid device specified, must be in the form "
+                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+            )
+    return x
 
 
 class Profiler(BaseProfiler):

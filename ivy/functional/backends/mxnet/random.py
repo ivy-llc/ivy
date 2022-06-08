@@ -23,8 +23,8 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):
@@ -41,8 +41,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
-) -> mx.ndarray.ndarray.NDArray:
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()
     if isinstance(std, mx.nd.NDArray):
@@ -54,8 +54,13 @@ def random_normal(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
-):
+    population_size: int,
+    num_samples: int,
+    batch_size: int = 1,
+    probs: Optional[mx.nd.NDArray] = None,
+    replace: bool = True,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
     if not replace:
         raise Exception("MXNet does not support multinomial without replacement")
     ctx = _mxnet_init_context(default_device(device))
@@ -74,7 +79,12 @@ def multinomial(
     return mx.nd.sample_multinomial(probs, (num_samples,))
 
 
-def randint(low, high, shape, device=None):
+def randint(
+    low: int,
+    high: int,
+    shape: Union[int, Tuple[int, ...]],
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = int(low.asscalar())
     if isinstance(high, mx.nd.NDArray):
@@ -87,7 +97,8 @@ def randint(low, high, shape, device=None):
     return mx.nd.random.randint(low, high, shape, ctx=ctx)
 
 
-seed = lambda seed_value=0: mx.random.seed(seed_value)
+def seed(seed_value: int = 0) -> None:
+    mx.random.seed(seed_value)
 
 
 def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
