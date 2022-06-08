@@ -43,6 +43,8 @@ def layer_norm(
     Functional Examples
     -------------------
 
+    With :code:`ivy.Array` input:
+
     >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
     >>> norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)
     >>> print(norm)
@@ -65,6 +67,8 @@ def layer_norm(
            [ 0.58084774,  0.89134157,  1.3306142 ],
            [ 1.0074799 , -0.5786756 , -0.9311974 ]], dtype=float32)
 
+    With :code:`ivy.NativeArray` input:
+
     >>> import tensorflow as tf # ivy.NativeArray
     >>> ivy.set_backend('tensorflow')
     >>> tensor = tf.constant([[3.,1.],[4.,12.]])
@@ -72,6 +76,8 @@ def layer_norm(
     >>> print(norm)
     ivy.array([[ 0.07071576, -0.10856849],
            [ 0.16035788,  0.8774949 ]], dtype=float32)
+    
+    With :code:`ivy.Container` input:
 
     >>> container = ivy.Container({'a': ivy.array([2.,3.,4.]),
     'b': ivy.array([1.3, 2.11, 0.243])})
