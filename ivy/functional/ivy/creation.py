@@ -499,6 +499,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
@@ -510,6 +511,7 @@ def meshgrid(
         ivy.array([[1, 1],
                    [2, 2],
                    [5, 5]])
+
         >>> print(yv)
         ivy.array([[4, 1],
                    [4, 1],
@@ -523,6 +525,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+                   
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
@@ -629,7 +632,7 @@ def native_array(
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
     # converting back to native with ivy.to_native
-    return ivy.to_native(ivy.asarray(x, dtype, device))
+    return ivy.to_native(ivy.asarray(x, dtype = dtype, device = device))
 
 
 # noinspection PyShadowingNames

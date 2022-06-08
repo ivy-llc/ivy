@@ -287,7 +287,7 @@ def unset_backend():
     >>> ivy.unset_backend()
     >>> x = ivy.native_array([1])
     >>> print(type(x))
-    <class 'tensorflow.python.backend.ops.EagerTensor'>
+    <class'tensorflow.python.framework.ops.EagerTensor'>
 
     """
     backend = None

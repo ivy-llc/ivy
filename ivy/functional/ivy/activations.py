@@ -159,7 +159,7 @@ def softmax(
     >>> x = ivy.array([-1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
     >>> print(y)
-    ivy.array([0.09003057, 0.24472848, 0.66524094])
+    ivy.array([0.09,0.245,0.665])
 
     """
     return _cur_backend(x).softmax(x, axis)
@@ -183,6 +183,6 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    ivy.array([0.5349962, 0.4203641])
+    ivy.array([0.535,0.42])
     """
     return _cur_backend(x).softplus(x)
