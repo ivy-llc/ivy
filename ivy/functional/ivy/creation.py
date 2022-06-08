@@ -94,6 +94,7 @@ def asarray(
     return _cur_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def zeros(
@@ -132,6 +133,7 @@ def zeros(
     return _cur_backend().zeros(shape, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def ones(
@@ -169,6 +171,7 @@ def ones(
     return _cur_backend().ones(shape, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def full_like(
@@ -341,6 +344,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     return _cur_backend(x).triu(x, k)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def empty(
@@ -438,6 +442,7 @@ def eye(
     return _cur_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def linspace(
@@ -571,6 +576,7 @@ def meshgrid(
     return _cur_backend().meshgrid(*arrays, indexing=indexing)
 
 
+@infer_dtype
 @infer_device
 @handle_out_argument
 def full(
