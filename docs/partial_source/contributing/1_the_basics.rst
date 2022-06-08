@@ -55,7 +55,7 @@ then the `discussions <https://github.com/unifyai/ivy/discussions>`_ section is 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/T5vQP1pCXS8">
+    src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video">
     </iframe>
 
 |
@@ -100,11 +100,11 @@ you should request a new code review to flag to us that our attention is again n
 
 The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
 priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
-allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
+allocated but then are not acted upon for long periods of time, while preventing others in the community from working
 on these instead.
 
 Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
-these just so we can keep our communuty engaged with these tasks :)
+these just so we can keep our community engaged with these tasks :)
 
 Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
 reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
@@ -119,7 +119,7 @@ investigate!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/wBKTOGmwfbo">
+    src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video">
     </iframe>
 
 |
@@ -154,7 +154,7 @@ Both of these cases are explained in the following video.
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/TFMPihytg9U">
+    src="https://www.youtube.com/embed/TFMPihytg9U" class="video">
     </iframe>
 
 |
@@ -191,7 +191,7 @@ The code review process is explained in more detail in the following video.
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/9G4d-CvlT2g">
+    src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video">
     </iframe>
 
 |
@@ -215,7 +215,7 @@ This is for a few reasons:
 
 #. It keeps everyone up to date and on the same page as early as possible.
 #. It avoids the case where multiple people waste time fixing the same problem.
-#. It enables others to spot mistakes or conflicts in propsals much earlier.
+#. It enables others to spot mistakes or conflicts in proposals much earlier.
 #. It means you avoid the mountain of conflicts to resolve when you do get around to merging.
 
 This is also why we advocate using individual pull-requests per issue in the ToDo list issues.
@@ -242,7 +242,7 @@ When in the interactive session, you can split code blocks into smaller code blo
 You can also manually edit the exact lines added if further splitting is not possible, using :code:`e`.
 Check the `git documentation <https://git-scm.com/doc>`_ for more details.
 
-As a final note, a beautiful commit hisotry is not something we particularly care about.
+As a final note, a beautiful commit history is not something we particularly care about.
 We're much more concerned that the code itself is good, that things are updated as quickly as possible,
 and that all developers are able to work efficiently.
 If a mistake is commited into the history, it's generally not too difficult to simply undo this in future commits,
