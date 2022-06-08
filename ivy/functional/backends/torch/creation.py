@@ -164,7 +164,7 @@ def _differentiable_linspace(start, stop, num, device, dtype=None):
 
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
+def linspace_helper(start, stop, num, axis: int = 0, device=None, dtype=None):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
@@ -256,13 +256,13 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
     return res.to(as_native_dev(device))
 
 
-def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
+def linspace(start, stop, num, axis: int = 0, device=None, dtype=None, endpoint=True):
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
+        ans = linspace_helper(start, stop, num + 1, axis=axis, device=device, dtype=dtype)[
             :-1
         ]
     else:
-        ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
+        ans = linspace_helper(start, stop, num, axis=axis, device=device, dtype=dtype)
     if dtype is None:
         dtype = torch.float32
     ans = ans.type(dtype)
