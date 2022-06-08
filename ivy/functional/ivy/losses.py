@@ -3,11 +3,14 @@
 # local
 import ivy
 from typing import Optional, Union
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 # Extra #
 # ------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -54,12 +57,13 @@ def cross_entropy(
     return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
 
 
-# noinspection PyUnresolvedReferences
+@to_native_arrays_and_back
+@handle_out_argument
 def binary_cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    pred: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
     epsilon: Optional[float] = 1e-7,
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Computes the binary cross entropy loss.
 
     Parameters
@@ -77,10 +81,9 @@ def binary_cross_entropy(
     ret
         The binary cross entropy between the given distributions.
 
-    """
-    """
+
     Functional Examples
-    --------
+    -------------------
 
     With :code:`ivy.Array` input:
 
@@ -148,10 +151,11 @@ def binary_cross_entropy(
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    # noinspection PyTypeChecker
     return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
