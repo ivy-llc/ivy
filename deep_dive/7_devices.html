@@ -197,7 +197,7 @@ appearing in <a class="reference external" href="https://github.com/unifyai/ivy/
 This is similar to how <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is handled,
 with the exception that functions are omitted if they’re in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104">NON_DEV_WRAPPED_FUNCTIONS</a> in this case rather than
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103">NON_DTYPE_WRAPPED_FUNCTIONS</a>.
-This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> in order to determine the correct data type.
+This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> in order to determine the correct device.
 As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
 <p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> infers the device as follows:</p>
@@ -208,7 +208,7 @@ this is applied to all applicable functions dynamically during <a class="referen
 </ol>
 <p>For the majority of functions which defer to <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242">_function_w_arrays_dtype_n_dev_handled</a> for handling the device,
 these steps will have been followed and the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument will be populated with the correct value
-before the backend-specific implementation is even enterred into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is
+before the backend-specific implementation is even entered into. Therefore, whereas the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is
 listed as optional in the ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
 the argument is listed as required in the backend-specific implementations at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>

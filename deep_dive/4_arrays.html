@@ -208,7 +208,7 @@ otherwise it would be impossible to chain functions together!</p>
 <li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
 <li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
 </ol>
-<p>Given the repeating nature of these steps, this is all entirely handling in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170">function wrapping</a>,
+<p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170">function wrapping</a>,
 as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>All Ivy functions <em>also</em> accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
 This is for a couple of reasons.
@@ -220,14 +220,14 @@ without needing to explicitly wrap any arrays before calling sections of Ivy cod
 whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
 which is used in most functions.
-This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
+This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
 <p>As a final point, extra attention is required for <em>compositional</em> functions,
 as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array,
 then this will call the special methods on an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and not on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
 For the reasons explained above, this would be a problem.</p>
-<p>Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+<p>Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
 instances are converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before entering into the compositional function.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.</p>
