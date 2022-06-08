@@ -498,10 +498,10 @@ def slodget(
 
 
 def tensordot(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
@@ -701,37 +701,95 @@ def vecdot(
     return _cur_backend(x1).vecdot(x1, x2, axis)
 
 
-def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
+def det(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
     x
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions form
-        square matrices. Should have a floating-point data type.
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions 
+        form square matrices. Should have a floating-point data type.
 
     Returns
     -------
     ret
         if ``x`` is a two-dimensional array, a zero-dimensional array containing the
-        determinant; otherwise, a non-zero dimensional array containing the determinant
+        determinant; otherwise,a non-zero dimensional array containing the determinant
         for each square matrix. The returned array must have the same data type as
         ``x``.
 
-    Examples
-    --------
-    >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
-    >>> out = ivy.det(x)
-    >>> print(out)
-    ivy.array([-2., -3.])
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring \
+    <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg \
+    .det.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[2.,4.],[6.,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    ivy.array([-10.0])
+
+    >>> x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    ivy.array([293.47])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
+    >>> y = ivy.det(x)
+    >>> print(y)
+    ivy.array([293.47])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
+                                 b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> y = ivy.det(x)
+    >>> print(y)
+    {
+        a: ivy.array([8.0]),
+        b: ivy.array([1.0])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[2.,4.],[6.,7.]])
+    >>> y = x.det()
+    >>> print(y)
+    ivy.array([-10.0])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
+                                    b = ivy.array([[2., 1.], [1., 1.]]))
+    >>> y = x.det()
+    >>> print(y)
+    {
+        a: ivy.array([8.0]),
+        b: ivy.array([1.0])
+    }
 
     """
     return _cur_backend(x).det(x)
 
 
-def cholesky(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container], upper: bool = False
-) -> Union[ivy.Array, ivy.Container]:
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -898,7 +956,7 @@ def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
@@ -920,6 +978,89 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
+
+    Functional Examples
+    --------
+
+    With :code:`ivy.Array` inputs:
+
+    1. Axis = -1: (default) vector cross product
+
+    >>> x = ivy.array([1., 0., 0.])
+    >>> y = ivy.array([0., 1., 0.])
+    >>> z = ivy.cross(x, y)
+    >>> print(z)
+    ivy.array([0., 0., 1.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([1., 3., 5.])
+    >>> y = ivy.native_array([2., 4., 6.])
+    >>> z = ivy.cross(x, y)
+    >>> print(z)
+    ivy.array([-2., 4., -2.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> z = ivy.cross(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([0., 0., 35.]),
+    b: ivy.array([0., 6., 0.])
+    }
+
+    With a combination of :code:`ivy.Array`
+    and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([9., 0., 3.])
+    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+    >>> z = ivy.cross(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([-3., 3., 9.]),
+    b: ivy.array([0., -6., 0.])
+    }
+
+    With a combination of :code:`ivy.NativeArray`
+    and :code:`ivy.Array` inputs:
+
+    2. Axis = 0: changing vector definition
+
+    >>> x = ivy.native_array([[1., 2.], \
+                              [4., 5.], \
+                              [7., 8.]])
+    >>> y = ivy.array([[1.],\
+                       [0.],\
+                       [0.]])
+    >>> z = ivy.cross(x,y, axis = 0)
+    >>> print(z)
+    ivy.array([[ 0.,  0.],
+               [7.,  8.],
+               [ -4., -5.]])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance inputs:
+
+    >>> x = ivy.array([1., 0., 0.])
+    >>> y = ivy.array([0., 1., 0.])
+    >>> z = x.cross(y)
+    >>> print(z)
+    ivy.array([0., 0., 1.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> z = x.cross(y)
+    >>> print(z)
+    {
+    a: ivy.array([0., 0., 35.]),
+    b: ivy.array([0., 6., 0.])
+    }
 
     """
     return _cur_backend(x1).cross(x1, x2, axis)
