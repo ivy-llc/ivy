@@ -35,7 +35,7 @@ def random_uniform(
         If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
         If size is ``None`` (Default), a single value is returned.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        device on which to create the array 'gpu:0', 'gpu:1', 'cpu' etc.
 
     Returns
     -------
@@ -47,7 +47,7 @@ def random_uniform(
     >>> y = ivy.random_uniform()
     >>> print(y)
     ivy.array(0.26431865)
-    >>> y = ivy.random_uniform(0.0, 2.0)
+    >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
     >>> print(y)
     ivy.array(1.89150229)
     >>> y = ivy.random_uniform(shape=(2,2))
