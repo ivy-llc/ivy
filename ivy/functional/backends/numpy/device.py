@@ -63,7 +63,7 @@ def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
     return x
 
 
-def to_dev(x: np.ndarray, device: str) -> np.ndarray:
+def to_dev(x: np.ndarray, device: str = None) -> np.ndarray:
     if device is not None:
         if "gpu" in device:
             raise Exception(
