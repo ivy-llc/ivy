@@ -23,7 +23,7 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import handle_out_argument
+from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
 
 default_device_stack = list()
 dev_handles = dict()
@@ -479,6 +479,7 @@ def unset_default_device():
 # Device Allocation #
 
 
+@to_native_arrays_and_back
 @handle_out_argument
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -894,7 +895,7 @@ def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
 
 
 def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-    """Distribute elements of the iterbale xs across the specified devices.
+    """Distribute elements of the iterable xs across the specified devices.
 
     Parameters
     ----------
