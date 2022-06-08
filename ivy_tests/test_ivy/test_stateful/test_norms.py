@@ -32,8 +32,7 @@ def test_layer_norm_layer(
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    #ivy.seed(0)
-    assert np.min(call(ivy.dropout, x, 0.9)) == 0.0
+    assert np.allclose(call(norm_layer, x), ivy.to_numpy(ret))
     # compilation test
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
