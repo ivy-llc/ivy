@@ -40,8 +40,8 @@ def layer_norm(
      ret
         The layer after applying layer normalization.
     
-    Example
-    -------
+    Functional Examples
+    -------------------
 
     >>> arr = ivy.full([2, 3], 13, dtype=ivy.float32)
     >>> norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)
