@@ -48,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#manaing-backend-versions">Manaing Backend Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-sizes">Dynamic Sizes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#type-and-shape-checking">Type and Shape Checking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-control-flow">Dynamic Control Flow</a></li>
@@ -142,6 +143,29 @@ in the community.</p>
 then many more questions and answers will no doubt be added!</p>
 <p>We are all incredibly grateful to everyone in the community who has put in the time and effort to ask so many important
 and probing questions! We hope these Q&amp;As are a useful reference!</p>
+<section id="manaing-backend-versions">
+<h2>Manaing Backend Versions<a class="headerlink" href="#manaing-backend-versions" title="Permalink to this heading"></a></h2>
+<p><strong>Q:</strong> Isn’t it complex to maintain support for all backend versions,
+particularly as they undergo constant changes?
+How are you going to handle this,
+will you have an option to select any version for any backend?</p>
+<p><strong>A:</strong> Ivy <strong>only</strong> wraps the functional APIs of each backend framework.
+The last 2 years of Ivy development have shown us how remarkably stable the functional
+APIs are for each backend framework.
+<strong>Not once</strong> have we needed to change an implementation or a unit test as a result of a
+version update of a backend framework. This is not entirely surprising,
+each framework has strong backward compatibility requirements,
+and the functional API is generally one of the lower level building blocks upon
+which everything else in the framework depends.
+Our CI always tests against the latest version available on PyPI,
+and this has been the case since we started development.
+We do not lock-in any versions during our continuous testing,
+and we will contunue to always pull the latest version.</p>
+<p>In future, we hope to add explicit testing also for previous versions,
+so we can guaranteed backward compatibility for each backend.
+We will also add an option to select backend versions for the small minority of cases
+where changes in the backend functional APIs do cause breaking changes for Ivy.</p>
+</section>
 <section id="dynamic-sizes">
 <h2>Dynamic Sizes<a class="headerlink" href="#dynamic-sizes" title="Permalink to this heading"></a></h2>
 <p><strong>Q:</strong> Assuming a static computation graph, can tensors have sizes that dynamically change?
