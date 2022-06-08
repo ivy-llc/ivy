@@ -1102,7 +1102,7 @@ def cosh(
 
     With :code:`ivy.Array` input:
 
-    >>> x= ivy.array([1, 2, 3, 4])
+    >>> x = ivy.array([1, 2, 3, 4])
     >>> y = ivy.cosh(x)
     >>> print(y)
     ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
