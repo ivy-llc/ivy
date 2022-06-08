@@ -140,7 +140,7 @@ Overall, `ivy.default_dtype`_ infers the data type as follows:
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the data type,
 these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
-before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`dtype` argument is
+before the backend-specific implementation is even entered into. Therefore, whereas the :code:`dtype` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
@@ -228,7 +228,7 @@ PyTorch:
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
 
-This makes it clear that these backend-specific functions are only enterred into once the correct :code:`dtype`
+This makes it clear that these backend-specific functions are only entered into once the correct :code:`dtype`
 has been determined.
 
 However, the :code:`dtype` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_

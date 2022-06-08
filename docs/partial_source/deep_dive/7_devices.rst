@@ -77,7 +77,7 @@ appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_.
 This is similar to how :code:`dtype` is handled,
 with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUNCTIONS`_ in this case rather than
 `NON_DTYPE_WRAPPED_FUNCTIONS`_.
-This function calls `ivy.default_device`_ in order to determine the correct data type.
+This function calls `ivy.default_device`_ in order to determine the correct device.
 As discussed in the :ref:`Function Wrapping` section,
 this is applied to all applicable functions dynamically during `backend setting`_.
 
@@ -93,7 +93,7 @@ Overall, `ivy.default_device`_ infers the device as follows:
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the device,
 these steps will have been followed and the :code:`device` argument will be populated with the correct value
-before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`device` argument is
+before the backend-specific implementation is even entered into. Therefore, whereas the :code:`device` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
