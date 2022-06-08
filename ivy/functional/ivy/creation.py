@@ -576,7 +576,6 @@ def meshgrid(
     return _cur_backend().meshgrid(*arrays, indexing=indexing)
 
 
-@infer_dtype
 @infer_device
 @handle_out_argument
 def full(
