@@ -171,6 +171,7 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+    ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     global ivy_original_fn_dict
     if not backend_stack:
@@ -190,7 +191,7 @@ def set_backend(backend: str):
     # appropriate backend implementation (backend specified by `backend`)
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
-            if k in ivy.valid_dtypes:
+            if k in backend.invalid_dtypes:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
@@ -206,6 +207,7 @@ def set_backend(backend: str):
     _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
+    ivy.locks["backend_setter"].release()
 
 
 def get_backend(backend: Optional[str] = None):

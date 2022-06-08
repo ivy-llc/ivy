@@ -25,13 +25,13 @@ def test_cross_entropy(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     if (v == [] for v in x):
         return
-    if fw == "torch" and dtype == "float16":
+    if fw == "torch" and input_dtype == "float16":
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -40,8 +40,8 @@ def test_cross_entropy(
         instance_method,
         fw,
         "cross_entropy",
-        true=np.asarray(x[0], dtype=dtype[0]),
-        pred=np.asarray(x[1], dtype=dtype[1]),
+        true=np.asarray(x[0], dtype=input_dtype[0]),
+        pred=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -63,13 +63,13 @@ def test_binary_cross_entropy(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     if (v == [] for v in x):
         return
-    if fw == "torch" and dtype == "float16":
+    if fw == "torch" and input_dtype == "float16":
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -78,8 +78,8 @@ def test_binary_cross_entropy(
         instance_method,
         fw,
         "binary_cross_entropy",
-        true=np.asarray(x[0], dtype=dtype[0]),
-        pred=np.asarray(x[1], dtype=dtype[1]),
+        true=np.asarray(x[0], dtype=input_dtype[0]),
+        pred=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -101,13 +101,13 @@ def test_sparse_cross_entropy(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     if (v == [] for v in x):
         return
-    if fw == "torch" and dtype == "float16":
+    if fw == "torch" and input_dtype == "float16":
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -116,6 +116,6 @@ def test_sparse_cross_entropy(
         instance_method,
         fw,
         "sparse_cross_entropy",
-        true=np.asarray(x[0], dtype=dtype[0]),
-        pred=np.asarray(x[1], dtype=dtype[1]),
+        true=np.asarray(x[0], dtype=input_dtype[0]),
+        pred=np.asarray(x[1], dtype=input_dtype[1]),
     )
