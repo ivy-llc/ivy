@@ -4,12 +4,14 @@ from typing import Union, Tuple, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@to_native_arrays_and_back
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
@@ -79,6 +81,7 @@ def unique_all(
     return _cur_backend(x).unique_all(x)
 
 
+@to_native_arrays_and_back
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns a tuple of two arrays, one being the unique elements of an input array x
     and the other one the indices from the set of uniques elements that reconstruct x.
@@ -97,6 +100,8 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
     return _cur_backend(x).unique_inverse(x)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -145,9 +150,8 @@ def unique_values(
     return _cur_backend(x).unique_values(x, out=out)
 
 
-def unique_counts(
-        x: Union[ivy.Array, ivy.NativeArray]
-) -> Tuple[ivy.Array, ivy.Array]:
+@to_native_arrays_and_back
+def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
@@ -175,7 +179,7 @@ def unique_counts(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten 
+        input array. If ``x`` has more than one dimension, the function must flatten
         ``x`` and return the unique elements of the flattened array.
 
     Returns
@@ -183,10 +187,10 @@ def unique_counts(
     ret
         a namedtuple ``(values, counts)`` whose
 
-        - first element must have the field name ``values`` and must be an 
+        - first element must have the field name ``values`` and must be an
           array containing the unique elements of ``x``.
           The array must have the same data type as ``x``.
-        - second element must have the field name ``counts`` and must be an array 
+        - second element must have the field name ``counts`` and must be an array
           containing the number of times each unique element occurs in ``x``.
           The returned array must have same shape as ``values`` and must
           have the default array index data type.
@@ -196,7 +200,7 @@ def unique_counts(
            implementations.
 
     This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.elementwise_functions.tan.html>`_
     in the standard. The descriptions above assume an array input for simplicity, but
