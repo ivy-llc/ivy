@@ -1,7 +1,6 @@
 # global
 _round = round
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from typing import Tuple, Union, Optional
 
 # local
@@ -12,7 +11,9 @@ import ivy
 
 
 def min(
-    x: Union[tf.Tensor, tf.Variable], axis: Union[int, Tuple[int]] = None, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
@@ -69,7 +70,9 @@ def mean(
 
 
 def max(
-    x: Union[tf.Tensor, tf.Variable], axis: Union[int, Tuple[int]] = None, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
@@ -96,5 +99,8 @@ def std(
 # ------#
 
 
-def einsum(equation: str, *operands: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def einsum(
+    equation: str,
+    *operands: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.einsum(equation, *operands)

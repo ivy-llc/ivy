@@ -1,13 +1,15 @@
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from typing import Union
 
 # local
 
 
 def argsort(
-    x: Union[tf.Tensor, tf.Variable], axis: int = -1, descending: bool = False, stable: bool = True
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -34,24 +36,38 @@ def argsort(
             )
         else:
             ret = tf.argsort(
-                tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
+                tf.convert_to_tensor(x),
+                axis=axis,
+                direction="ASCENDING",
+                stable=stable
             )
     return ret
 
 
 def sort(
-    x: Union[tf.Tensor, tf.Variable], axis: int = -1, descending: bool = False, stable: bool = True
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
-            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="DESCENDING")
+            res = tf.sort(tf.cast(x, dtype=tf.int32),
+                          axis=axis,
+                          direction="DESCENDING")
             ret = tf.cast(res, tf.bool)
         else:
-            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="ASCENDING")
+            res = tf.sort(tf.cast(x, dtype=tf.int32),
+                          axis=axis,
+                          direction="ASCENDING")
             ret = tf.cast(res, tf.bool)
     else:
         if descending:
-            ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="DESCENDING")
+            ret = tf.sort(tf.convert_to_tensor(x),
+                          axis=axis,
+                          direction="DESCENDING")
         else:
-            ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="ASCENDING")
+            ret = tf.sort(tf.convert_to_tensor(x),
+                          axis=axis,
+                          direction="ASCENDING")
     return ret

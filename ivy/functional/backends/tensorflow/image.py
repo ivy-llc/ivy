@@ -9,14 +9,14 @@ from operator import mul as _mul
 tfa = None
 import tensorflow as tf
 import tensorflow_probability as tfp
-from tensorflow.python.types.core import Tensor
 
 # local
 from ivy.functional.backends import tensorflow as _ivy
 
 
 def stack_images(
-    images: List[Union[tf.Tensor, tf.Variable]], desired_aspect_ratio: Tuple[int, int] = (1, 1)
+    images: List[Union[tf.Tensor, tf.Variable]],
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
 ) -> Union[tf.Tensor, tf.Variable]:
     num_images = len(images)
     if num_images == 0:

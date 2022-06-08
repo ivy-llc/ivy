@@ -4,7 +4,6 @@ signature.
 
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from typing import Optional, Union, Tuple
 
 # local

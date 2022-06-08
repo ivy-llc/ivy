@@ -1,6 +1,5 @@
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
@@ -27,7 +26,9 @@ def inv(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def tensordot(
-    x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable], axes: Union[int, Tuple[List[int], List[int]]] = 2
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axes: Union[int, Tuple[List[int], List[int]]] = 2
 ) -> Union[tf.Tensor, tf.Variable]:
 
     # find type to promote to
@@ -40,14 +41,21 @@ def tensordot(
     return ret
 
 
-def vecdot(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable], axis: int = -1) -> Union[tf.Tensor, tf.Variable]:
+def vecdot(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
     return ret
 
 
-def pinv(x: Union[tf.Tensor, tf.Variable], rtol: Optional[Union[float, Tuple[float]]] = None) -> Union[tf.Tensor, tf.Variable]:
+def pinv(
+    x: Union[tf.Tensor, tf.Variable],
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
@@ -55,7 +63,9 @@ def pinv(x: Union[tf.Tensor, tf.Variable], rtol: Optional[Union[float, Tuple[flo
     return ret
 
 
-def matrix_transpose(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def matrix_transpose(
+    x: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.swapaxes(x, -1, -2)
     return ret
 
@@ -123,7 +133,10 @@ def matrix_norm(
     return ret
 
 
-def matrix_power(x: Union[tf.Tensor, tf.Variable], n: int) -> Union[tf.Tensor, tf.Variable]:
+def matrix_power(
+    x: Union[tf.Tensor, tf.Variable],
+    n: int,
+) -> Union[tf.Tensor, tf.Variable]:
     if n == 0:
         return tf.broadcast_to(tf.eye(x.shape[-2], dtype=x.dtype), x.shape)
     elif n < 0:
@@ -149,7 +162,10 @@ def matrix_power(x: Union[tf.Tensor, tf.Variable], n: int) -> Union[tf.Tensor, t
 
 
 # noinspection PyPep8Naming
-def svd(x: Union[tf.Tensor, tf.Variable], full_matrices: bool = True) -> Union[tf.Tensor, Tuple[tf.Tensor, ...]]:
+def svd(
+    x: Union[tf.Tensor, tf.Variable],
+    full_matrices: bool = True,
+) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
     batch_shape = tf.shape(x)[:-2]
@@ -161,7 +177,10 @@ def svd(x: Union[tf.Tensor, tf.Variable], full_matrices: bool = True) -> Union[t
     return ret
 
 
-def outer(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def outer(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.outer(x1, x2)
     return ret
 
@@ -189,7 +208,10 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-def matmul(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def matmul(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     dtype_from = tf.experimental.numpy.promote_types(
         x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
     )
@@ -254,26 +276,34 @@ def svdvals(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def slogdet(x: Union[ivy.Array, ivy.NativeArray]) -> Union[Tensor, Tuple[Tensor, ...]]:
+def slogdet(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
     ret = results(sign, logabsdet)
     return ret
 
 
-def trace(x: Union[tf.Tensor, tf.Variable], offset: int = 0) -> Union[tf.Tensor, tf.Variable]:
+def trace(
+    x: Union[tf.Tensor, tf.Variable],
+    offset: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.trace(
         x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
     )
     return ret
 
 
-def det(x: Tensor) -> Tensor:
+def det(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.det(x)
     return ret
 
 
-def cholesky(x: Union[tf.Tensor, tf.Variable], upper: bool = False) -> Union[tf.Tensor, tf.Variable]:
+def cholesky(
+    x: Union[tf.Tensor, tf.Variable],
+    upper: bool = False,
+) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
         ret = tf.linalg.cholesky(x)
     else:
@@ -287,7 +317,10 @@ def eigvalsh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def matrix_rank(x: Union[tf.Tensor, tf.Variable], rtol: Optional[Union[float, Tuple[float]]] = None) -> Union[tf.Tensor, tf.Variable]:
+def matrix_rank(
+    x: Union[tf.Tensor, tf.Variable],
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
         ret = tf.linalg.matrix_rank(x)
     elif tf.size(x) == 0:
@@ -308,7 +341,11 @@ def matrix_rank(x: Union[tf.Tensor, tf.Variable], rtol: Optional[Union[float, Tu
     return ret
 
 
-def cross(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable], axis: int = -1) -> Union[tf.Tensor, tf.Variable]:
+def cross(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
     return ret
 
@@ -317,7 +354,9 @@ def cross(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable], 
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(vector: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def vector_to_skew_symmetric_matrix(
+    vector: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = tf.expand_dims(vector, -1)
@@ -336,7 +375,10 @@ def vector_to_skew_symmetric_matrix(vector: Union[tf.Tensor, tf.Variable]) -> Un
     return ret
 
 
-def solve(x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def solve(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     if x1.dtype != tf.float32 or x1.dtype != tf.float64:
         x1 = tf.cast(x1, tf.float32)
     if x2.dtype != tf.float32 or x2.dtype != tf.float32:

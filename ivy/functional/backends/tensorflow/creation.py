@@ -1,6 +1,5 @@
 # global
 import tensorflow as tf
-from tensorflow import Tensor
 from typing import Union, Tuple, List, Optional
 
 # local
@@ -86,7 +85,11 @@ def ones(
 
 
 def full_like(
-    x: Union[tf.Tensor, tf.Variable], fill_value: Union[int, float], *, dtype: tf.DType, device: str
+    x: Union[tf.Tensor, tf.Variable],
+    fill_value: Union[int, float],
+    *,
+    dtype: tf.DType,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = as_native_dev(default_device(device))
@@ -94,14 +97,24 @@ def full_like(
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-def ones_like(x: Union[tf.Tensor, tf.Variable], *, dtype: tf.DType, device: str) -> Union[tf.Tensor, tf.Variable]:
+def ones_like(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: tf.DType,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.ones_like(x, dtype=dtype)
 
 
-def zeros_like(x: Union[tf.Tensor, tf.Variable], *, dtype: tf.DType, device: str) -> Union[tf.Tensor, tf.Variable]:
+def zeros_like(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: tf.DType,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.zeros_like(x, dtype=dtype)
@@ -115,13 +128,23 @@ def triu(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Va
     return tf.experimental.numpy.triu(x, k)
 
 
-def empty(shape: Union[int, Tuple[int]], *, dtype: tf.DType, device: str) -> Union[tf.Tensor, tf.Variable]:
+def empty(
+    shape: Union[int, Tuple[int]],
+    *,
+    dtype: tf.DType,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty(shape, as_native_dtype(default_dtype(dtype)))
 
 
-def empty_like(x: Union[tf.Tensor, tf.Variable], *, dtype: tf.DType, device: str) -> Union[tf.Tensor, tf.Variable]:
+def empty_like(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: tf.DType,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
@@ -147,7 +170,10 @@ def linspace(
         return ans
 
 
-def meshgrid(*arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy") -> List[Union[tf.Tensor, tf.Variable]]:
+def meshgrid(
+    *arrays: Union[tf.Tensor, tf.Variable],
+    indexing: str = "xy",
+) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.meshgrid(*arrays, indexing=indexing)
 
 

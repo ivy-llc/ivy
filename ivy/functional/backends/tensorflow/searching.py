@@ -1,10 +1,12 @@
 # global
 import tensorflow as tf
 from typing import Optional, Union
-from tensorflow.python.types.core import Tensor
 
 
-def argmax(x: Union[tf.Tensor, tf.Variable], axis: Optional[int] = None, keepdims: bool = False,
+def argmax(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = None,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
     ret_dtype = ret.dtype
@@ -13,7 +15,10 @@ def argmax(x: Union[tf.Tensor, tf.Variable], axis: Optional[int] = None, keepdim
     return ret
 
 
-def argmin(x: Union[tf.Tensor, tf.Variable], axis: Optional[int] = None, keepdims: bool = False,
+def argmin(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = None,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
     ret = tf.convert_to_tensor(ret, dtype=ret.dtype)

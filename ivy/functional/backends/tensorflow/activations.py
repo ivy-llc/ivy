@@ -6,7 +6,6 @@ from typing import Optional, Union
 
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 
 # local
 

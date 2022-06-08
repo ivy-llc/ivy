@@ -4,8 +4,6 @@
 import tensorflow as tf
 from typing import Union, List, Tuple
 
-from tensorflow.python.types.core import Tensor
-
 
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
@@ -32,13 +30,13 @@ def conv1d_transpose(
 
 
 def conv2d(
-    x: Tensor,
-    filters: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
     dilations: int = 1,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)

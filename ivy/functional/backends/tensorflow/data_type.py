@@ -2,7 +2,6 @@
 import numpy as np
 import tensorflow as tf
 from typing import Union, Tuple, List
-from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -100,7 +99,9 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
-def result_type(*arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType]) -> tf.DType:
+def result_type(
+    *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
+) -> tf.DType:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
@@ -112,11 +113,16 @@ def result_type(*arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType]) -> 
     return result
 
 
-def broadcast_to(x: Union[tf.Tensor, tf.Variable], shape: Tuple[int, ...]) -> Union[tf.Tensor, tf.Variable]:
+def broadcast_to(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.broadcast_to(x, shape)
 
 
-def broadcast_arrays(*arrays: Union[tf.Tensor, tf.Variable]) -> List[Union[tf.Tensor, tf.Variable]]:
+def broadcast_arrays(
+    *arrays: Union[tf.Tensor, tf.Variable],
+) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
         desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
         if len(arrays) > 2:
@@ -133,7 +139,10 @@ def broadcast_arrays(*arrays: Union[tf.Tensor, tf.Variable]) -> List[Union[tf.Te
     return result
 
 
-def astype(x: Union[tf.Tensor, tf.Variable], dtype: tf.DType, copy: bool = True) -> Union[tf.Tensor, tf.Variable]:
+def astype(
+    x: Union[tf.Tensor, tf.Variable],
+    dtype: tf.DType, copy: bool = True,
+) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:

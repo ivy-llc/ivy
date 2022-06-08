@@ -9,7 +9,6 @@ _round = round
 import numpy as _np
 import tensorflow as tf
 import multiprocessing as _multiprocessing
-from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
@@ -30,7 +29,10 @@ def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable
     return tf.identity(x)
 
 
-def array_equal(x0: Union[tf.Tensor, tf.Variable], x1: Union[tf.Tensor, tf.Variable]) -> bool:
+def array_equal(
+    x0: Union[tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+) -> bool:
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
@@ -46,7 +48,10 @@ def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
     return x.numpy().tolist()
 
 
-def floormod(x: Union[tf.Tensor, tf.Variable], y: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
         x = tf.cast(x, promoted_type)
@@ -121,7 +126,10 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: Union[tf.Tensor, tf.Variable], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
+def cumsum(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
 
@@ -288,7 +296,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
 
 
 def gather(
-    params: Union[tf.Tensor, tf.Variable], indices: Union[tf.Tensor, tf.Variable], axis: Optional[int] = -1, *, device: str
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = -1, *, device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     if device is None:
