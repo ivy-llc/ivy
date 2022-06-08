@@ -13,6 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 import ivy
 from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import infer_device
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -118,6 +119,16 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
+
+    Examples
+    --------
+    >>> x = [0., 1., 2.]
+    >>> ivy.is_ivy_array(x)
+    False
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> ivy.is_ivy_array(x)
+    True
 
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
@@ -273,7 +284,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
     >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
     >>> o = ivy.arrays_equal([m, n])
@@ -1319,7 +1330,7 @@ def cumprod(
     return _cur_backend(x).cumprod(x, axis, exclusive, out=out)
 
 
-# noinspection PyShadowingNames
+@infer_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -1360,7 +1371,7 @@ def scatter_flat(
     )
 
 
-# noinspection PyShadowingNames
+@infer_device
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -1402,7 +1413,7 @@ def scatter_nd(
     )
 
 
-# noinspection PyShadowingNames
+@infer_device
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1437,7 +1448,7 @@ def gather(
     return _cur_backend(params).gather(params, indices, axis, device=device, out=out)
 
 
-# noinspection PyShadowingNames
+@infer_device
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1502,7 +1513,7 @@ def indices_where(
     return _cur_backend(x).indices_where(x)
 
 
-# noinspection PyShadowingNames
+@infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
