@@ -216,7 +216,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype = dtype, copy = copy)
+    return _cur_backend(x).astype(x, dtype=dtype, copy=copy)
 
 
 # Extra #
