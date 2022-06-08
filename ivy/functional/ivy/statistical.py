@@ -4,12 +4,15 @@ from typing import Union, Tuple, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
-# noinspection PyShadowingBuiltins
+
+@to_native_arrays_and_back
+@handle_out_argument
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
@@ -60,7 +63,8 @@ def min(
     return _cur_backend.min(x, axis, keepdims, out=out)
 
 
-# noinspection PyShadowingBuiltins
+@to_native_arrays_and_back
+@handle_out_argument
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
@@ -113,6 +117,8 @@ def max(
     return _cur_backend.max(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
@@ -169,6 +175,8 @@ def var(
     return _cur_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -220,6 +228,8 @@ def mean(
     return _cur_backend(x).mean(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -271,6 +281,8 @@ def prod(
     return _cur_backend.prod(x, axis, keepdims, dtype=dtype, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -346,6 +358,8 @@ def sum(
     return _cur_backend(x).sum(x, axis, dtype, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -418,6 +432,8 @@ def std(
 # ------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
