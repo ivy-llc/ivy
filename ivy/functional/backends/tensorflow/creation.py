@@ -18,7 +18,7 @@ from ivy import (
 # -------------------#
 
 
-def asarray(object_in, dtype=None, device=None, copy=None):
+def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         if copy:
@@ -26,15 +26,15 @@ def asarray(object_in, dtype=None, device=None, copy=None):
                 return tf.identity(object_in)
             if dtype is None and not isinstance(object_in, tf.Tensor):
                 try:
-                    return tf.identity(tf.convert_to_tensor(object_in))
+                    dtype = default_dtype(item=object_in, as_native=True)
+                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-                    return tf.identity(
-                        tf.convert_to_tensor(
-                            ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
-                            dtype=dtype,
-                        )
+                    dtype = default_dtype(dtype, object_in, True)
+                    tensor = tf.convert_to_tensor(
+                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        dtype=dtype,
                     )
+                return tf.identity(tf.cast(tensor, dtype))
             else:
                 dtype = as_ivy_dtype(default_dtype(dtype, object_in))
                 try:
@@ -70,20 +70,13 @@ def asarray(object_in, dtype=None, device=None, copy=None):
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
-    *,
-    dtype: tf.DType,
-    device: str,
+    shape: Union[int, Tuple[int], List[int]], *, dtype: tf.DType, device: str
 ) -> Tensor:
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
 
-def ones(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> tf.Tensor:
+def ones(shape: Union[int, Tuple[int]], *, dtype: tf.DType, device: str) -> tf.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
     with tf.device(device):
@@ -91,10 +84,7 @@ def ones(
 
 
 def full_like(
-    x: Tensor,
-    fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    x: Tensor, fill_value: Union[int, float], *, dtype: tf.DType, device: str
 ) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = as_native_dev(default_device(device))
@@ -102,22 +92,14 @@ def full_like(
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-def ones_like(
-    x: Tensor,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+def ones_like(x: Tensor, *, dtype: tf.DType, device: str) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.ones_like(x, dtype=dtype)
 
 
-def zeros_like(
-    x: Tensor,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+def zeros_like(x: Tensor, *, dtype: tf.DType, device: str) -> Tensor:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.zeros_like(x, dtype=dtype)
@@ -131,28 +113,22 @@ def triu(x: tf.Tensor, k: int = 0) -> tf.Tensor:
     return tf.experimental.numpy.triu(x, k)
 
 
-def empty(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+def empty(shape: Union[int, Tuple[int]], *, dtype: tf.DType, device: str) -> Tensor:
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty(shape, as_native_dtype(default_dtype(dtype)))
 
 
-def empty_like(
-    x: Tensor,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+def empty_like(x: Tensor, *, dtype: tf.DType, device: str) -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
+def linspace(
+    start, stop, num, axis=None, endpoint=True, *, dtype: tf.DType, device: str
+):
     if axis is None:
         axis = -1
     device = default_device(device)
@@ -177,8 +153,9 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: tf.DType,
+    device: str
 ) -> tf.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
@@ -199,7 +176,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, device=None):
+def arange(start, stop=None, step=1, *, dtype: tf.DType = None, device: str):
 
     if stop is None:
         stop = start
@@ -235,8 +212,9 @@ def arange(start, stop=None, step=1, dtype=None, device=None):
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
+    *,
+    dtype: tf.DType = None,
+    device: str
 ) -> Tensor:
     with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
@@ -257,6 +235,6 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, device=None):
+def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
     power_seq = linspace(start, stop, num, axis, default_device(device))
     return base**power_seq

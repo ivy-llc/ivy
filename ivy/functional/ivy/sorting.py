@@ -11,11 +11,12 @@ from ivy.backend_handler import current_backend as _cur_backend
 
 
 def argsort(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    *,
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Returns the indices that sort an array ``x`` along a specified axis.
 
@@ -85,15 +86,16 @@ def argsort(
         b: ivy.array([[0, 1], [0, 1]])
     }
     """
-    return _cur_backend(x).argsort(x, axis, descending, stable, out)
+    return _cur_backend(x).argsort(x, axis, descending, stable, out=out)
 
 
 def sort(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
 
@@ -124,7 +126,8 @@ def sort(
         along the given `axis`.
 
     """
-    return _cur_backend(x).sort(x, axis, descending, stable, out)
+    return _cur_backend(x).sort(x, axis, descending, stable, out=out)
+
 
 # Extra #
 # ------#
