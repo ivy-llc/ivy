@@ -212,11 +212,11 @@ def astype(
     --------
     >>> x = ivy.array([1, 2])
     >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype)
+    >>> y = ivy.astype(x, dtype = dtype)
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype, copy)
+    return _cur_backend(x).astype(x, dtype = dtype, copy = copy)
 
 
 # Extra #

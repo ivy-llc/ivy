@@ -564,6 +564,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
@@ -575,6 +576,7 @@ def meshgrid(
         ivy.array([[1, 1],
                    [2, 2],
                    [5, 5]])
+
         >>> print(yv)
         ivy.array([[4, 1],
                    [4, 1],
@@ -588,6 +590,7 @@ def meshgrid(
         >>> print(xv)
         ivy.array([[1, 2],
                    [1, 2]])
+                   
         >>> print(yv)
         ivy.array([[3, 3],
                    [4, 4]])
