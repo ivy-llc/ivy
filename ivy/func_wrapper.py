@@ -64,6 +64,7 @@ NON_WRAPPED_FUNCTIONS = [
     "set_default_device",
     "unset_default_device",
     "closest_valid_dtype",
+    "set_default_dtype",
     "default_dtype",
     "default_device",
     "as_native_dtype",
@@ -113,7 +114,26 @@ NON_DTYPE_WRAPPED_FUNCTIONS = [
     "sum",
     "astype",
 ]
-NON_DEV_WRAPPED_FUNCTIONS = []
+NON_DEV_WRAPPED_FUNCTIONS = [
+    "get_all_ivy_arrays_on_dev",
+    "num_ivy_arrays_on_dev",
+    "print_all_ivy_arrays_on_dev",
+    "clear_mem_on_dev",
+    "total_mem_on_dev",
+    "to_dev",
+    "split_factor",
+    "set_split_factor",
+    "split_func_call",
+    "as_native_dev",
+    "as_ivy_dev",
+    "dev_unify_iter",
+    "dev_unify_nest",
+    "dev_unify",
+    "dev_unify_array",
+    "dev_util",
+    "percent_used_mem_on_dev",
+    "used_mem_on_dev",
+]
 
 FW_FN_KEYWORDS = {
     "numpy": [],
