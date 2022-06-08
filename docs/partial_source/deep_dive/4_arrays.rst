@@ -48,7 +48,8 @@ The :code:`ivy.Array` class `inherits`_ from many category-specific array classe
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self` as the first array argument. `ivy.Array.add`_ is a good example.
+but passes in :code:`self._data` as the first array argument.
+`ivy.Array.add`_ is a good example.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
@@ -98,7 +99,7 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
    :code:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handling in the `function wrapping`_,
+Given the repeating nature of these steps, this is all entirely handled in the `function wrapping`_,
 as explained in the :ref:`Function Wrapping` section.
 
 All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
@@ -113,7 +114,7 @@ whereas the output arrays have type :code:`ivy.Array`. This is further explained
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
-This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
+This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
 
 As a final point, extra attention is required for *compositional* functions,
@@ -122,7 +123,7 @@ If the first line of code in a compositional function performs operations on the
 then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
+Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
 
 **Round Up**
