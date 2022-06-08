@@ -3,8 +3,6 @@ import torch
 from typing import Tuple
 from collections import namedtuple
 
-import ivy
-
 
 def unique_all(
     x: torch.Tensor,
@@ -58,14 +56,14 @@ def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: torch.Tensor, out: torch.Tensor = None) -> torch.Tensor:
+def unique_values(x: torch.Tensor) -> torch.Tensor:
     ret = torch.unique(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+def unique_counts(
+    x: torch.Tensor
+) -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
     nan_idx = torch.where(torch.isnan(v))
     c[nan_idx] = 1

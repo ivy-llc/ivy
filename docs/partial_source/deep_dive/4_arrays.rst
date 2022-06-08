@@ -17,6 +17,10 @@ Arrays
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
+.. _`arrays discussion`: https://github.com/unifyai/ivy/discussions/1315
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -44,7 +48,8 @@ The :code:`ivy.Array` class `inherits`_ from many category-specific array classe
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self` as the first array argument. `ivy.Array.add`_ is a good example.
+but passes in :code:`self._data` as the first array argument.
+`ivy.Array.add`_ is a good example.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
@@ -94,7 +99,7 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
    :code:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handling in the `function wrapping`_,
+Given the repeating nature of these steps, this is all entirely handled in the `function wrapping`_,
 as explained in the :ref:`Function Wrapping` section.
 
 All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
@@ -105,11 +110,11 @@ Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`,
-whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Type Hints` section.
+whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
-This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
+This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
 
 As a final point, extra attention is required for *compositional* functions,
@@ -118,5 +123,13 @@ If the first line of code in a compositional function performs operations on the
 then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
+Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `arrays discussion`_,
+or reach out on `discord`_ in the `arrays channel`_!
