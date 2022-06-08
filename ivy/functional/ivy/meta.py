@@ -2,6 +2,8 @@
 import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
+# local
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
@@ -372,6 +374,7 @@ def _train_tasks(
 # First Order
 
 
+@to_native_arrays_and_back
 def fomaml_step(
     batch,
     inner_cost_fn,
@@ -486,6 +489,7 @@ def fomaml_step(
     return cost, grads
 
 
+@to_native_arrays_and_back
 def reptile_step(
     batch,
     cost_fn,
@@ -571,6 +575,7 @@ def reptile_step(
 # Second Order
 
 
+@to_native_arrays_and_back
 def maml_step(
     batch,
     inner_cost_fn,
