@@ -17,7 +17,6 @@ import ivy.functional.backends.numpy as ivy_np
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-
 def test_layer_norm_layer(
     array_shape, dtype, device, call
 ):
