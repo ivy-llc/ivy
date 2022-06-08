@@ -20,7 +20,7 @@ import ivy.functional.backends.numpy as ivy_np
                                  size_bounds=[1, 2]),
        input_channels=st.integers(2, 4),
        output_channels=st.integers(1, 5),
-       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+       dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
        with_v=st.booleans(),
        as_variable=st.booleans(),
        )
@@ -31,29 +31,49 @@ def test_linear_layer_training(
     if call is helpers.np_call:
         # NumPy does not support gradients
         return
-    x = ivy.astype(
-        ivy.linspace(
-            ivy.zeros(batch_shape, device=device),
-            ivy.ones(batch_shape, device=device),
-            input_channels,
-        ),
-        dtype="float32",
-    )
+    if as_variable:
+        x = ivy.variable(
+            ivy.asarray(
+                ivy.linspace(
+                    ivy.zeros(batch_shape, device=device),
+                    ivy.ones(batch_shape, device=device),
+                    input_channels,
+                ),
+                dtype=dtype,
+                device=device,
+            )
+        )
+    else:
+        x = ivy.asarray(
+            ivy.linspace(
+                ivy.zeros(batch_shape, device=device),
+                ivy.ones(batch_shape, device=device),
+                input_channels,
+            ),
+            dtype=dtype,
+            device=device,
+        )
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(
-            ivy.array(
+            ivy.asarray(
                 np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype="float32",
+                dtype=dtype,
                 device=device,
             )
         )
-        b = ivy.variable(ivy.zeros([output_channels], device=device))
+        b = ivy.variable(
+            ivy.array(
+                ivy.zeros([output_channels], device=device),
+                dtype=dtype,
+                device=device,
+            )
+        )
         v = ivy.Container({"w": w, "b": b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v, dtype=dtype)
 
     def loss_fn(x_, v_):
         out = linear_layer(x_, v=v_)
@@ -91,35 +111,25 @@ def test_linear_layer_training(
 
 
 # conv1d
-@given(x_n_fs_n_pad_n_oc=st.sampled_from(
-    [
-        (
-            [[[0.0], [3.0], [0.0]]],
-            3,
-            "SAME",
-            1
-        ),
-        (
-            [[[0.0], [3.0], [0.0]] for _ in range(5)],
-            3,
-            "SAME",
-            1
-        ),
-        (
-            [[[0.0], [3.0], [0.0]]],
-            3,
-            "VALID",
-            1
-        ),
-    ],
-),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-)
+@given(batch_size=helpers.lists(st.integers(1, 3),
+                                 min_size="num_dims",
+                                 max_size="num_dims",
+                                 size_bounds=[1, 3],
+                                 ),
+       weight=st.integers(1, 3),
+       input_dims=st.integers(1),
+       filter_size=st.integers(3),
+       padding=st.sampled_from(("SAME", "VALID")),
+       output_channels=st.integers(1),
+       with_v=st.booleans(),
+       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+       as_variable=st.booleans(),
+       )
 def test_conv1d_layer_training(
-    x_n_fs_n_pad_n_oc, with_v, dtype, as_variable, device, compile_graph, call
-):
+    batch_size, weight, input_dims,
+        filter_size, padding, output_channels,
+        with_v, dtype, as_variable, device,
+        fw, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
@@ -127,14 +137,15 @@ def test_conv1d_layer_training(
         # numpy and jax do not yet support conv1d
         return
     # smoke test
-    x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = ivy.asarray(x)
+    input_shape=(batch_size, weight, input_dims)
+    x = ivy.array(np.random.uniform(input_shape))
     if as_variable:
         x = ivy.variable(x)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
+        print(wlim)
         w = ivy.variable(
             ivy.array(
                 np.random.uniform(
@@ -227,6 +238,7 @@ def test_conv1d_transpose_layer_training(
         return
     # smoke test
     x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
+    print(out_shape)
     x = ivy.asarray(x)
     if as_variable:
         x = ivy.variable(x)
@@ -1023,31 +1035,24 @@ def test_lstm_layer_training(
 
 
 # sequential
-@given(bs_c=st.sampled_from(
-    [
-        (
-            [1, 2],
-            5,
-        ),
-    ],
-),
-    with_v=st.booleans(),
-    seq_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-)
+@given(batch_shape=st.lists(st.integers(1, 2)),
+       channels=st.integers(5),
+       with_v=st.booleans(),
+       seq_v=st.booleans(),
+       dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+       as_variable=st.booleans(),
+       )
 def test_sequential_layer_training(
-    bs_c, with_v, seq_v, dtype, as_variable, device, compile_graph, call
+    batch_shape, channels, with_v, seq_v, dtype, as_variable, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         return
-    batch_shape, channels = bs_c
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape),
                      ivy.ones(batch_shape),
-                     channels),
+                     channels,),
         dtype="float32"
     )
     if with_v:

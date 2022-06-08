@@ -10,7 +10,7 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
-
+from ivy.func_wrapper import _get_first_array
 
 # Base #
 # -----#
@@ -30,6 +30,7 @@ class Module(abc.ABC):
         fallback_to_non_compiled=False,
         with_partial_v=False,
         devices=None,
+        dtype=None,
     ):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable
@@ -108,6 +109,7 @@ class Module(abc.ABC):
             alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._sub_mods = set()
+        self.dtype = dtype
         if build_mode != "on_init":
             return
         self.build()
@@ -307,7 +309,7 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
@@ -358,7 +360,8 @@ class Module(abc.ABC):
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
-            self.build(*args, **kwargs, from_call=True)
+            self.build(*args, **kwargs, from_call=True,
+                       dtype=_get_first_array(*args, **kwargs).dtype)
         if v is not None:
             v_orig = self.v
             if not with_grads:
