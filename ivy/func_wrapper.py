@@ -109,6 +109,7 @@ NON_DTYPE_WRAPPED_FUNCTIONS = [
     "arange",
     "asarray",
     "array",
+    "full",
     "prod",
     "sum",
     "astype",
