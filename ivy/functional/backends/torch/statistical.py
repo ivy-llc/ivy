@@ -45,6 +45,8 @@ def sum(
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
 
+    dtype = ivy.as_native_dtype(dtype)
+
     if axis is None:
         if out:
             return torch.sum(input=x, dtype=dtype, out=out)
@@ -88,6 +90,8 @@ def prod(
         elif x.dtype == torch.bfloat16:
             dtype = torch.float16
 
+    dtype = ivy.as_native_dtype(dtype)
+    
     if axis is None:
         axis = x.dim() - 1
     elif type(axis) == tuple:

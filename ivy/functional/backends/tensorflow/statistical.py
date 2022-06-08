@@ -34,6 +34,7 @@ def sum(
             dtype = tf.int64
         elif x.dtype == tf.uint64:
             dtype = tf.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
@@ -53,6 +54,7 @@ def prod(
             dtype = tf.int64
         elif x.dtype == tf.uint64:
             dtype = tf.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
 
 

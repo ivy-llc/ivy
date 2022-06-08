@@ -3,6 +3,7 @@ import jax.numpy as jnp
 from typing import Tuple, Union, Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 # Array API Standard #
@@ -42,6 +43,7 @@ def sum(
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -83,6 +85,7 @@ def prod(
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
