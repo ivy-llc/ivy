@@ -4,8 +4,6 @@ from tensorflow.python.types.core import Tensor
 from typing import Tuple
 from collections import namedtuple
 
-import ivy
-
 
 def unique_all(x: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
     UniqueAll = namedtuple(
@@ -55,14 +53,14 @@ def unique_inverse(x: Tensor) -> Tuple[Tensor, Tensor]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: Tensor, out: Tensor = None) -> Tensor:
+def unique_values(x: Tensor) -> Tensor:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def unique_counts(x: Tensor) -> Tuple[Tensor, Tensor]:
+def unique_counts(
+    x: Tensor
+) -> Tuple[Tensor, Tensor]:
     uc = namedtuple("uc", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
     return uc(v, c)

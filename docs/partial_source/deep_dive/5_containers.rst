@@ -34,6 +34,10 @@ Containers
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133
+.. _`containers discussion`: https://github.com/unifyai/ivy/discussions/1316
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -46,8 +50,8 @@ and almost all of them directly wrap a function in the functional API.
 
 For the :code:`ivy.Container`, there are also methods which are specific to the container itself,
 for performing nested operations on the leaves of the container for example.
-In addition, there are also static methods, which are not present in the :code:`ivy.Array`.
-Overall, this results in the following five mutually exclusive groups of methods.
+In addition, there are also static methods.
+Overall, this results in the following five mutually exclusive groups of :code:`ivy.Container` methods.
 Each of these are explained in the following sub-sections.
 
 #. Container instance methods
@@ -62,7 +66,7 @@ Container Instance Methods
 Container instance methods are methods which are specific to the container itself.
 A few examples include `ivy.Container.map`_ which is used for mapping a function to all leaves of the container,
 `ivy.Container.all_true`_ which determines if all container leaves evaluate to boolean `True`,
-and `ivy.Container.to_iterator`_ returns an iterator for traversing the leaves of the container.
+and `ivy.Container.to_iterator`_ which returns an iterator for traversing the leaves of the container.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
@@ -93,14 +97,15 @@ of the arguments, and in such cases the function will automatically be mapped to
 When multiple containers are passed, this mapping is only applied to their shared nested structure,
 with the mapping applied to each of these leaves.
 
-In such cases, the function in the functional API defers to the *static* :code:`ivy.Container` implementation.
+In such cases, the function in the functional API defers to this *static* :code:`ivy.Container` implementation.
 Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers
 and non-containers, and perform the correct mapping across the leaves.
 Internally, :code:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
 In cases where there are no containers passed,
-`ivy.Container.multi_map_in_static_method`_ will simply call the function once on the arguments provided.
+`ivy.Container.multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
 
-A few examples are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
+A few examples of :code:`ivy.Container` API static methods are
+`ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
 
 As with :code:`ivy.Array`,
 given the simple set of rules which underpin how these static methods should all be implemented,
@@ -109,7 +114,7 @@ then this `static method is added`_ programmatically.
 This serves as a helpful backup in cases where some static methods are accidentally missed out.
 
 The benefit of the source code implementations is that this makes the code much more readable,
-without important methods being entirely absent.
+with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
 
 API Instance Methods
@@ -138,7 +143,7 @@ then this `instance method is added`_ programmatically.
 Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.
 
 Again, the benefit of the source code implementations is that this makes the code much more readable,
-without important methods being entirely absent.
+with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
 
 API Special Methods
@@ -166,3 +171,12 @@ These special methods all directly wrap the corresponding API *static* :code:`iv
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
 :code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
 :code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+
+
+**Round Up**
+
+This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `containers discussion`_,
+or reach out on `discord`_ in the `containers channel`_!
