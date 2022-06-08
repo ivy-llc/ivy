@@ -5,6 +5,7 @@ from typing import Optional, Union, Tuple
 
 # local
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import infer_device
 import ivy
 
 
@@ -12,6 +13,7 @@ import ivy
 # ------#
 
 
+@infer_device
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
@@ -53,6 +55,7 @@ def random_uniform(
     return _cur_backend().random_uniform(low, high, shape, device=device)
 
 
+@infer_device
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
@@ -90,6 +93,7 @@ def random_normal(
     return _cur_backend().random_normal(mean, std, shape, device=device)
 
 
+@infer_device
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -178,6 +182,7 @@ def multinomial(
     )
 
 
+@infer_device
 def randint(
     low: int,
     high: int,

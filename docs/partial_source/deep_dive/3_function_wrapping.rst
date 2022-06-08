@@ -26,7 +26,7 @@ Depending on the function being wrapped, the new function :code:`_function_wrapp
 might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
 Each of these topics and each associated piece of logic added by :code:`_wrap_function` are covered in more detail
-in the next sections. For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_
+in the next sections. For now, suffice it to say that :code:`_wrap_function` `does a quite lot`_.
 
 **Round Up**
 

@@ -8,6 +8,7 @@ from typing import Union, Tuple, List, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import handle_out_argument
 
 # Array API Standard #
 # -------------------#
@@ -96,6 +97,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     return _cur_backend(None).finfo(type)
 
 
+@handle_out_argument
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
 ) -> ivy.Array:
@@ -161,6 +163,7 @@ def dtype(
 # noinspection PyShadowingNames
 
 
+@handle_out_argument
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -534,7 +537,6 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames
 def set_default_dtype(dtype: Union[ivy.Dtype, str]):
     """Summary.
 

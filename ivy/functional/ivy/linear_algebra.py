@@ -498,10 +498,10 @@ def slodget(
 
 
 def tensordot(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
@@ -702,8 +702,8 @@ def vecdot(
 
 
 def det(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-) -> Union[ivy.Array, ivy.Container]:
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
@@ -789,9 +789,7 @@ def det(
     return _cur_backend(x).det(x)
 
 
-def cholesky(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container], upper: bool = False
-) -> Union[ivy.Array, ivy.Container]:
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -955,10 +953,10 @@ def matrix_rank(
 
 
 def cross(
-    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
-) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
@@ -980,12 +978,12 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
-         
+
     Functional Examples
     --------
 
     With :code:`ivy.Array` inputs:
-    
+
     1. Axis = -1: (default) vector cross product
 
     >>> x = ivy.array([1., 0., 0.])
@@ -1001,9 +999,9 @@ def cross(
     >>> z = ivy.cross(x, y)
     >>> print(z)
     ivy.array([-2., 4., -2.])
-    
+
     With :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
     >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
     >>> z = ivy.cross(x,y)
@@ -1012,10 +1010,10 @@ def cross(
     a: ivy.array([0., 0., 35.]),
     b: ivy.array([0., 6., 0.])
     }
-    
+
     With a combination of :code:`ivy.Array`
     and :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.array([9., 0., 3.])
     >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
     >>> z = ivy.cross(x,y)
@@ -1027,7 +1025,7 @@ def cross(
 
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
-    
+
     2. Axis = 0: changing vector definition
 
     >>> x = ivy.native_array([[1., 2.], \
@@ -1052,9 +1050,9 @@ def cross(
     >>> z = x.cross(y)
     >>> print(z)
     ivy.array([0., 0., 1.])
-    
+
     With :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
     >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
     >>> z = x.cross(y)
@@ -1063,7 +1061,7 @@ def cross(
     a: ivy.array([0., 0., 35.]),
     b: ivy.array([0., 6., 0.])
     }
-    
+
     """
     return _cur_backend(x1).cross(x1, x2, axis)
 
