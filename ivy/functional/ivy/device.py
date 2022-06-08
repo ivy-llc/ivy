@@ -416,22 +416,50 @@ def tpu_is_available() -> bool:
 
 # Default Device #
 
-
-def default_device(device=None, item=None, as_native: bool = None):
-    """Summary.
+# noinspection PyShadowingNames
+def default_device(
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None, 
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None, 
+    as_native: bool = None
+) -> Union[str, ivy.Device, ivy.NativeDevice]:
+    """Returns the input device or the default device. 
+    If the as native flag is set, the device will be converted to a native device.
+    If the item is provided, the item's device is returned. 
+    If the device is not provided, the last default device is returned.
+    If a default device has not been set, the first gpu is returned if available,
+    otherwise the cpu is returned.
+    
 
     Parameters
     ----------
     device
-         (Default value = None)
+        The device to be returned or converted.
     item
-         (Default value = None)
+        The item to get the device from.
     as_native
-         (Default value = None)
+        Whether to convert the device to a native device.
 
     Returns
     -------
     ret
+        Device handle or string.
+
+    Examples
+    --------
+    >>> ivy.default_device()
+    device(type='cpu')
+    >>> ivy.default_device("gpu:0")
+    'gpu:0'
+    >>> ivy.default_device(item=[], as_native=False)
+    'cpu'
+    >>> ivy.default_device(item=(), as_native=True)
+    device(type='cpu')
+    >>> ivy.default_device(item={"a": 1}, as_native=True)
+    device(type='cpu')
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_dev(x, 'gpu:0')
+    >>> ivy.default_device(item=x, as_native=True)
+    device(type='gpu', id=0)
 
     """
     if ivy.exists(device):
