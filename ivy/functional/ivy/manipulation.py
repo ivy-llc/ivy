@@ -307,11 +307,11 @@ def flip(
 
 
 def expand_dims(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis with the size of one. This
     new axis will appear at the ``axis`` position in the expanded array shape.
 
