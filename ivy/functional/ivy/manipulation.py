@@ -5,12 +5,15 @@ from numbers import Number
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def roll(
     x: Union[ivy.Array, ivy.NativeArray],
     shift: Union[int, Tuple[int, ...]],
@@ -132,6 +135,8 @@ def roll(
     return _cur_backend(x).roll(x, shift, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
@@ -170,6 +175,8 @@ def squeeze(
     return _cur_backend(x).squeeze(x, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -306,6 +313,8 @@ def flip(
     return _cur_backend(x).flip(x, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -446,6 +455,8 @@ def expand_dims(
     return _cur_backend(x).expand_dims(x, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
@@ -475,6 +486,8 @@ def permute_dims(
     return _cur_backend(x).permute_dims(x, axes, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def stack(
     arrays: Union[
         Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
@@ -519,6 +532,8 @@ def stack(
     return _cur_backend(arrays).stack(arrays, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int, ...],
@@ -555,6 +570,8 @@ def reshape(
     return _cur_backend(x).reshape(x, shape, copy, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -595,6 +612,8 @@ def concat(
 # ------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
@@ -606,7 +625,7 @@ def split(
     Parameters
     ----------
     x
-        Tensor to be divided into sub-arrays.
+        array to be divided into sub-arrays.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
         integer. The size of each split element if a sequence of integers. Default is to
@@ -673,13 +692,15 @@ def split(
     return _cur_backend(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     repeats: Union[int, Iterable[int]],
     axis: int = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Repeat values along a given dimension.
 
     Parameters
@@ -792,12 +813,14 @@ def repeat(
     return _cur_backend(x).repeat(x, repeats, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Constructs an array by repeating x the number of times given by reps.
 
     Parameters
@@ -816,13 +839,15 @@ def tile(
     return _cur_backend(x).tile(x, reps, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
     value: Number = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Pads an array with a constant value.
 
     Parameters
@@ -845,6 +870,8 @@ def constant_pad(
     return _cur_backend(x).constant_pad(x, pad_width, value, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
@@ -870,6 +897,8 @@ def zero_pad(
     return _cur_backend(x).zero_pad(x, pad_width, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -897,6 +926,8 @@ def swapaxes(
     return _cur_backend(x).swapaxes(x, axis0, axis1, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
