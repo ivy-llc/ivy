@@ -674,6 +674,7 @@ def native_array(
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
     # converting back to native with ivy.to_native
+
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
