@@ -127,13 +127,16 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">to_native_arrays_and_back</span><span class="p">,</span> <span class="n">handle_out_argument</span>
 
 
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../../functional/ivy/statistical/min.html#ivy.functional.ivy.statistical.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
+
+<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../../functional/ivy/statistical/min.html#ivy.functional.ivy.statistical.min">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -183,8 +186,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../../functional/ivy/statistical/max.html#ivy.functional.ivy.statistical.max">[docs]</a><span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
+<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../../functional/ivy/statistical/max.html#ivy.functional.ivy.statistical.max">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -236,7 +240,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../../functional/ivy/statistical/var.html#ivy.functional.ivy.statistical.var">[docs]</a><span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
+<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../../functional/ivy/statistical/var.html#ivy.functional.ivy.statistical.var">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -292,7 +298,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -343,7 +351,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../functional/ivy/statistical/prod.html#ivy.functional.ivy.statistical.prod">[docs]</a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../functional/ivy/statistical/prod.html#ivy.functional.ivy.statistical.prod">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -394,7 +404,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum.html#ivy.functional.ivy.statistical.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
+<div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum.html#ivy.functional.ivy.statistical.sum">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -469,7 +481,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
+<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -541,7 +555,9 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/einsum.html#ivy.functional.ivy.statistical.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/einsum.html#ivy.functional.ivy.statistical.einsum">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Sums the product of the elements of the input operands along dimensions specified</span>
 <span class="sd">    using a notation based on the Einstein summation convention.</span>
 

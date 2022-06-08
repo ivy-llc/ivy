@@ -127,13 +127,16 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">to_native_arrays_and_back</span><span class="p">,</span> <span class="n">handle_out_argument</span>
 
 
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../../functional/ivy/utility/all.html#ivy.functional.ivy.utility.all">[docs]</a><span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
+
+<div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../../functional/ivy/utility/all.html#ivy.functional.ivy.utility.all">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -243,8 +246,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="any"><a class="viewcode-back" href="../../../../functional/ivy/utility/any.html#ivy.functional.ivy.utility.any">[docs]</a><span class="k">def</span> <span class="nf">any</span><span class="p">(</span>
+<div class="viewcode-block" id="any"><a class="viewcode-back" href="../../../../functional/ivy/utility/any.html#ivy.functional.ivy.utility.any">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">any</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

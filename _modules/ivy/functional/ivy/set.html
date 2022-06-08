@@ -127,13 +127,15 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">to_native_arrays_and_back</span><span class="p">,</span> <span class="n">handle_out_argument</span>
 
 
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span>
+<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, the first occurring indices</span>
@@ -202,7 +204,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns a tuple of two arrays, one being the unique elements of an input array x</span>
 <span class="sd">    and the other one the indices from the set of uniques elements that reconstruct x.</span>
 
@@ -220,7 +223,9 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="k">def</span> <span class="nf">unique_values</span><span class="p">(</span>
+<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">unique_values</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -268,9 +273,8 @@
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x`` and the corresponding counts for</span>
 <span class="sd">    each unique element in ``x``.</span>
 
@@ -298,7 +302,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten </span>
+<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten</span>
 <span class="sd">        ``x`` and return the unique elements of the flattened array.</span>
 
 <span class="sd">    Returns</span>
@@ -306,10 +310,10 @@
 <span class="sd">    ret</span>
 <span class="sd">        a namedtuple ``(values, counts)`` whose</span>
 
-<span class="sd">        - first element must have the field name ``values`` and must be an </span>
+<span class="sd">        - first element must have the field name ``values`` and must be an</span>
 <span class="sd">          array containing the unique elements of ``x``.</span>
 <span class="sd">          The array must have the same data type as ``x``.</span>
-<span class="sd">        - second element must have the field name ``counts`` and must be an array </span>
+<span class="sd">        - second element must have the field name ``counts`` and must be an array</span>
 <span class="sd">          containing the number of times each unique element occurs in ``x``.</span>
 <span class="sd">          The returned array must have same shape as ``values`` and must</span>
 <span class="sd">          have the default array index data type.</span>
@@ -319,7 +323,7 @@
 <span class="sd">           implementations.</span>
 
 <span class="sd">    This method conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of </span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of</span>
 <span class="sd">    the `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
 <span class="sd">    generated/signatures.elementwise_functions.tan.html&gt;`_</span>
 <span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
