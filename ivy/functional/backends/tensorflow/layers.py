@@ -2,9 +2,27 @@
 
 # global
 import tensorflow as tf
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 from tensorflow.python.types.core import Tensor
+
+def scaled_dot_product_attention(
+    q: Tensor, 
+    k: Tensor,
+    v: Tensor, 
+    scale: float, 
+    mask: Optional[Tensor] = None
+) -> Tuple[Tensor, Tensor]:
+
+    attention = tf.matmul(q, k, transpose_b=True) * scale
+
+    if mask is not None:
+        attention += (mask * -1e9)
+    
+    attention = tf.nn.softmax(attention, axis=-1)
+    output = tf.matmul(attention, v)
+
+    return output, attention
 
 
 def conv1d(

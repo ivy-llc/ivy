@@ -109,7 +109,13 @@ def dropout(x, prob, scale=True):
 # Attention #
 
 
-def scaled_dot_product_attention(q, k, v, scale, mask=None):
+def scaled_dot_product_attention(
+    q: Union[ivy.Array, ivy.NativeArray], 
+    k: Union[ivy.Array, ivy.NativeArray],
+    v: Union[ivy.Array, ivy.NativeArray], 
+    scale: float, 
+    mask: Union[ivy.Array, ivy.NativeArray]=None) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+
     """Applies scaled dot product attention to inputs x using optional mask.
 
     Parameters
@@ -130,27 +136,12 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     -------
     ret
         The output following application of scaled dot-product attention.
-        *[batch_shape,num_queries,feat_dim]*
+        *[batch_shape,num_queries,feat_dim]*, *[batch_shape,num_queries,feat_dim]*
 
     """
-    # BS x Q x K
-    sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
-
-    if ivy.exists(mask):
-
-        # BS x Q x K
-        sim = ivy.where(
-            ivy.logical_not(mask),
-            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim))).max,
-            sim,
-        )
-
-    # BS x Q x K
-    attn = ivy.softmax(sim, -1)
-
-    # BS x Q x F
-    return ivy.einsum("... q k, ... k f -> ... q f", attn, v)
-
+    return _cur_backend(q, k, v).scaled_dot_product_attention(
+        q, k, v, scale, mask
+    )
 
 def multi_head_attention(
     x,

@@ -6,6 +6,24 @@ import torch
 from typing import List, Optional, Tuple, Union
 
 
+def scaled_dot_product_attention(
+    q: torch.Tensor, 
+    k: torch.Tensor,
+    v: torch.Tensor, 
+    scale: float, 
+    mask: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    
+    attention = torch.matmul(q, k.transpose(2, 3)) * scale
+
+    if mask is not None:
+        attention = attention.masked_fill(mask == 0, -1e9) 
+
+    attention = torch.nn.functional.softmax(attention, dim=-1)
+    output = torch.matmul(attention, v)
+
+    return output, attention
+
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,

@@ -103,7 +103,7 @@ def test_scaled_dot_product_attention(
     k = tensor_fn(k, dtype, device)
     v = tensor_fn(v, dtype, device)
     mask = tensor_fn(mask, dtype, device)
-    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
+    ret, attn = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test

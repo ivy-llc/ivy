@@ -2,8 +2,26 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
+
+def scaled_dot_product_attention(
+    q: np.ndarray, 
+    k: np.ndarray,
+    v: np.ndarray, 
+    scale: float, 
+    mask: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, np.ndarray]:
+
+    attention = np.matmul(q, np.transpose(k)) * scale
+
+    if mask is not None:
+        attention += (mask * -1e9)
+    
+    attention = np.exp(attention)/ np.sum(np.exp(attention), axis=-1, keepdims=True)
+    output = np.matmul(attention, v)
+
+    return output, attention
 
 def conv1d(
     x: np.ndarray,
