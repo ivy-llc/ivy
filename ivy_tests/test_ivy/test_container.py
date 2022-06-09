@@ -3022,6 +3022,34 @@ def test_container_multi_map(device, call):
     assert np.allclose(ivy.to_numpy(container_mapped["b"]["d"]), np.array([[8]]))
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
 
+    # with sequences
+    container0 = Container(
+        {
+            "a": ivy.array([1], device=device),
+            "b": [
+                ivy.array([2], device=device),
+                ivy.array([3], device=device),
+            ],
+        }
+    )
+    container1 = Container(
+        {
+            "a": ivy.array([3], device=device),
+            "b": [
+                ivy.array([4], device=device),
+                ivy.array([5], device=device),
+            ],
+        }
+    )
+
+    container_mapped = ivy.Container.multi_map(
+        lambda x, _: x[0] + x[1], [container0, container1],map_sequences=True
+    )
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([4]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][0]), np.array([6]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][1]), np.array([8]))
+
 
 def test_container_common_key_chains(device, call):
     arr1 = ivy.array([1], device=device)

@@ -593,11 +593,13 @@ def nested_multi_map(
     for index, val in enumerate(nest0):
         values = [nest[index] for nest in nests]
         value0 = values[0]
-        this_key_chain = index if key_chain == "" else (key_chain + "/" + index)
+        this_key_chain = str(index) if key_chain == "" else (key_chain + "/" + str(index))
         if (
-            isinstance(value0, ivy.Array)
-            or isinstance(value0, ivy.NativeArray)
-            and ivy.get_num_dims(value0) > 0
+            ((isinstance(value0, ivy.Array)
+            or isinstance(value0, ivy.NativeArray))
+            and ivy.get_num_dims(value0) > 0)
+            or (isinstance(value0,list)
+            or isinstance(value0,tuple))
         ):
             ret = ivy.nested_multi_map(
                 func,
@@ -609,7 +611,7 @@ def nested_multi_map(
                 config,
             )
             if ret:
-                return_list.insert(index, ret)
+                return_list.insert(index, ivy.to_list(ret))
         else:
             if key_chains is not None:
                 if (this_key_chain in key_chains and not to_apply) or (

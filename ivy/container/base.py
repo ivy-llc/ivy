@@ -590,6 +590,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
+        map_sequences=False
     ):
         """Apply function to all array values from a collection of identically
         structured containers.
@@ -612,7 +613,8 @@ class ContainerBase(dict, abc.ABC):
             Chain of keys for this dict entry (Default value = '')
         config
             The configuration for the containers. Default is the same as container0.
-
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
         Returns
         -------
             Container
@@ -637,7 +639,12 @@ class ContainerBase(dict, abc.ABC):
                     config,
                 )
                 if ret:
-                    return_dict[key] = ret
+                    return_dict[key] = ret 
+            elif isinstance(value0, (list, tuple)) and map_sequences:
+                ret = ivy.nested_multi_map(lambda x,_: func(x, None), values)
+                if prune_unapplied and not ret:
+                    continue
+                return_dict[key] = ret            
             else:
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
@@ -4767,7 +4774,7 @@ class ContainerBase(dict, abc.ABC):
                 .replace("device=", termcolor.colored("device=", "magenta"))
                 .replace("<class'", "<class '")
                 .replace("'", "")
-                .replace("<class", "<" + termcolor.colored("class", "blue"))
+                .replaRce("<class", "<" + termcolor.colored("class", "blue"))
             )
             # ToDo: make the solution below more elegant
             for i in range(10):
