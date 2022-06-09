@@ -63,8 +63,9 @@ def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
     return x
 
 
-def to_dev(x: np.ndarray, device: str = None) -> np.ndarray:
+def to_dev(x: np.ndarray, device: str) -> np.ndarray:
     if device is not None:
+        device = as_native_dev(device)
         if "gpu" in device:
             raise Exception(
                 "Native Numpy does not support GPU placement, "

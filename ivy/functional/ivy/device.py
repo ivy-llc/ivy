@@ -511,7 +511,7 @@ def unset_default_device():
 @handle_out_argument
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    device: Union[ivy.Device, ivy.NativeDevice],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
