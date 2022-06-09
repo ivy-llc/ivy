@@ -131,6 +131,19 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    {
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[2], <class ivy.array.Array> shape=[2])
+    }
+    >>> print(y.a)
+    (ivy.array([1, 2, 3]),)
+    >>> print(y.b)
+    (ivy.array([0, 0]), ivy.array([0, 1]))
     """
     return _cur_backend(x).nonzero(x)
 
