@@ -186,6 +186,9 @@ in as inputs to functions in the functional API. This is explained in more detai
 
 **Shared Nested Structure**
 
+NOTE - implementing the behaviour for shared nested structures is a work in progress,
+the master branch will soon support all of the examples given below, but not yet 🚧
+
 When the nested structures of the multiple containers are *shared* but not *identical*,
 then the behaviour of the nestable function is a bit different.
 Containers have *shared* nested structures if all unique leaves in any of the containers
