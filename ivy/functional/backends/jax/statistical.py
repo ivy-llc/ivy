@@ -62,10 +62,10 @@ def mean(
 
 def prod(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: jnp.dtype = None
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: jnp.dtype = None,
+    keepdims: bool = False,
 ) -> JaxArray:
 
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):

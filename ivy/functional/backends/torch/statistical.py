@@ -73,10 +73,10 @@ def sum(
 
 def prod(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
     *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 

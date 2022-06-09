@@ -232,10 +232,10 @@ def mean(
 @handle_out_argument
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product of input array x elements.
@@ -278,7 +278,7 @@ def prod(
         parameter above.
 
     """
-    return _cur_backend.prod(x, axis, keepdims, dtype=dtype, out=out)
+    return _cur_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back

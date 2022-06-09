@@ -66,10 +66,10 @@ def sum(
 
 def prod(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: np.dtype = None
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: np.dtype = None,
+    keepdims: bool = False,
 ) -> np.ndarray:
 
     if dtype is None and np.issubdtype(x.dtype, np.integer):
