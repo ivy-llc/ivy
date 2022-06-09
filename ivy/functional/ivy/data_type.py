@@ -172,6 +172,7 @@ def dtype(
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
+    *,
     copy: bool = True,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
@@ -216,7 +217,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype=dtype, copy=copy)
+    return _cur_backend(x).astype(x, dtype, copy=copy)
 
 
 # Extra #
