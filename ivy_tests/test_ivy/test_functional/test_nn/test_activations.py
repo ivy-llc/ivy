@@ -20,7 +20,7 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=st.integers(0, 1),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
@@ -45,10 +45,10 @@ def test_relu(dtype_and_x, as_variable, with_out, native_array,num_positional_ar
 # leaky_relu
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    container=st.booleans(),
     instance_method=st.booleans(),
     alpha = st.floats(),
 )
@@ -109,7 +109,7 @@ def test_gelu(dtype_and_x,as_variable,approximate, num_positional_args,container
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=st.integers(0, 1),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
@@ -137,7 +137,7 @@ def test_tanh(dtype_and_x,as_variable, num_positional_args,container,instance_me
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=st.integers(0, 1),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
@@ -162,7 +162,7 @@ def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
     axis = st.integers(-1,0),
@@ -191,7 +191,7 @@ def test_softmax(dtype_and_x,axis,as_variable, num_positional_args,container,ins
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=st.integers(0, 1),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
