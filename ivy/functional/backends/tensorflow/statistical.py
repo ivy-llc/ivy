@@ -19,10 +19,10 @@ def min(
 
 def sum(
     x: Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: tf.DType = None
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    dtype: tf.DType = None,
+    keepdims: bool = False,
 ) -> Tensor:
 
     if dtype is None:

@@ -285,10 +285,10 @@ def prod(
 @handle_out_argument
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
@@ -355,7 +355,7 @@ def sum(
     ivy.array(1.3)
 
     """
-    return _cur_backend(x).sum(x, axis, keepdims, dtype=dtype, out=out)
+    return _cur_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
