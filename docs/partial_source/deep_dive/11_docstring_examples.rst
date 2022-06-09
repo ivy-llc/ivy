@@ -34,6 +34,7 @@ These should:
    function in question
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`,
    and (c) :code:`out` used to inplace update the input array :code:`x`
+   (provided that it shares the same :code:`dtype` and :code:`shape` as the return)
 5. If broadcasting is relevant for the function, then show examples which highlight this.
    For example, passing in different shapes for two array arguments
 
@@ -189,6 +190,8 @@ and the values and shapes do become increasingly *complex*.
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
@@ -316,6 +319,8 @@ and the subsequent examples the non-default values in increasingly *complex* exa
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
@@ -456,6 +461,8 @@ and the values and shapes do become increasingly *complex*.
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is satisfied, as the second example uses different shapes for the inputs :code:`x1` and :code:`x2`. This causes
 the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.
