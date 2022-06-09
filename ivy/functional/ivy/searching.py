@@ -110,7 +110,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 
     Functional Examples
     -------------------
+
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
     >>> y = ivy.nonzero(x)
     >>> print(y)
@@ -122,6 +124,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
 
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
     >>> print(y)
@@ -133,6 +136,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
     >>> y = ivy.nonzero(x)
     >>> print(y)
@@ -144,6 +148,37 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     (ivy.array([1, 2, 3]),)
     >>> print(y.b)
     (ivy.array([0, 0]), ivy.array([0, 1]))
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0,0,0,1,1,1])
+    >>> y = x.nonzero()
+    >>> print(y)
+    (ivy.array([3, 4, 5]),)
+
+    Using :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
+    >>> y = x.nonzero()
+    >>> print(y)
+    (array([0, 0, 2, 2]), array([0, 1, 0, 1]))
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
+    >>> y = x.nonzero()
+    >>> print(y)
+    {
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[1], <class ivy.array.Array> shape=[0])
+    }
+    >>> print(y.a)
+    (ivy.array([0, 1, 2]),)
+    >>> print(y.b)
+    (ivy.array([]),)
     """
     return _cur_backend(x).nonzero(x)
 
