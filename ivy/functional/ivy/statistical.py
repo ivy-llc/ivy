@@ -432,16 +432,58 @@ def std(
     Functional Examples
     -------------------
     
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.std(x)
+    >>> print(y)
+    ivy.array([0.816496580927726])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(1)
+    >>> ivy.std(x, out=y)
+    >>> print(y)
+    ivy.array([1.27627931460511])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                        [-4.4, -5.5, -6.6]])
+    >>> ivy.std(x, keepdims=True, out=x)
+    >>> print(x)
+    ivy.array([[3.95337409]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.std(x)
+    >>> print(y)
+    ivy.array([0.816496580927726])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([-3., -4., -5.]))
+    >>> y = ivy.std(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.816496580927726]),
+        b: ivy.array([0.816496580927726])
+    }
+    
     Instance Method Examples
     ------------------------
 
-    Examples
-    --------
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.std(x)
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.std()
     >>> print(y)
-    ivy.array(0.8164966)
-
+    ivy.array([0.816496580927726])
+    
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([-3., -4., -5.]))
+    >>> y = x.std()
+    >>> print(y)
+    {
+        a: ivy.array([0.816496580927726]),
+        b: ivy.array([0.816496580927726])
+    }
+    
     """
     return _cur_backend(x).std(x, axis, correction, keepdims, out=out)
 
