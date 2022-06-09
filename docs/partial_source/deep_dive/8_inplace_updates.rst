@@ -36,7 +36,8 @@ We also explain the rational for why each implementation is the way it is,
 and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking,
-the function :code:`ivy.inplace_update` will result in very subtly different behaviour for each backend.
+the function :code:`ivy.inplace_update` will result in subtly different behaviour
+for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
 While :code:`ivy.Array` instances will always be inplace updated consistently,
 in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
@@ -48,13 +49,16 @@ which :code:`ivy.Array` wraps, due to design choices made by each backend.
 
     def inplace_update(
         x: Union[ivy.Array, JaxArray],
-        val: Union[ivy.Array, JaxArray]
+        val: Union[ivy.Array, JaxArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
+        if ensure_in_backend:
+            raise Exception("JAX does not natively support inplace updates")
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            x = ivy.Array(val_native)
+            raise Exception("JAX does not natively support inplace updates")
         return x
 
 JAX **does not** natively support inplace updates,
@@ -67,7 +71,8 @@ Therefore, an inplace update is only performed on :code:`ivy.Array` instances pr
 
     def inplace_update(
         x: Union[ivy.Array, mx.nd.NDArray],
-        val: Union[ivy.Array, mx.nd.NDArray]
+        val: Union[ivy.Array, mx.nd.NDArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native[:] = val_native
@@ -87,7 +92,8 @@ Following this, an inplace update is then also performed on the :code:`ivy.Array
 
     def inplace_update(
         x: Union[ivy.Array, np.ndarray],
-        val: Union[ivy.Array, np.ndarray]
+        val: Union[ivy.Array, np.ndarray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -108,7 +114,8 @@ if provided in the input.
 
     def inplace_update(
         x: Union[ivy.Array, tf.Tensor, tf.Variable],
-        val: Union[ivy.Array, tf.Tensor, tf.Variable]
+        val: Union[ivy.Array, tf.Tensor, tf.Variable],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_variable(x_native):
@@ -117,11 +124,12 @@ if provided in the input.
                 x.data = x_native
             else:
                 x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            if ivy.is_ivy_array(x):
-                x.data = val_native
-            else:
-                x = ivy.Array(val_native)
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
         return x
 
 TensorFlow **does not** natively support inplace updates for :code:`tf.Tensor` instances,
@@ -138,7 +146,8 @@ an inplace update is then also performed on the :code:`ivy.Array` instance, if p
 
     def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
-        val: Union[ivy.Array, torch.Tensor]
+        val: Union[ivy.Array, torch.Tensor],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
