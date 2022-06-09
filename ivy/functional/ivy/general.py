@@ -341,7 +341,6 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
@@ -468,13 +467,12 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
 
@@ -499,14 +497,20 @@ def clip_vector_norm(
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        return ratio * x
-    return ivy.copy_array(x)._data
+        ret = ratio * x
+    else:
+        ret = ivy.copy_array(x)._data
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def clip_matrix_norm(
-    x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0
+    x: Union[ivy.Array, ivy.NativeArray],
+    max_norm: float,
+    p: float = 2.0,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
 
@@ -527,7 +531,7 @@ def clip_matrix_norm(
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
-    return ratios * x
+    return ivy.multiply(ratios, x, out=out)
 
 
 @to_native_arrays_and_back
@@ -584,7 +588,6 @@ def unstack(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
@@ -907,10 +910,12 @@ def current_backend_str() -> Union[str, None]:
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def einops_rearrange(
-    x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]
-) -> Union[ivy.Array, ivy.NativeArray]:
+    x: Union[ivy.Array, ivy.NativeArray],
+    pattern: str,
+    out: Optional[ivy.Array] = None,
+    **axes_lengths: Dict[str, int],
+) -> ivy.Array:
     """Perform einops rearrange operation on input array x.
 
     Parameters
@@ -928,17 +933,20 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
-    return einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x, pattern, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
+    out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Perform einops reduce operation on input array x.
 
     Parameters
@@ -958,13 +966,18 @@ def einops_reduce(
         New array with einops.reduce having been applied.
 
     """
-    return einops.reduce(x, pattern, reduction, **axes_lengths)
+    ret = einops.reduce(x, pattern, reduction, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def einops_repeat(
-    x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]
+    x: Union[ivy.Array, ivy.NativeArray],
+    pattern: str,
+    out: Optional[ivy.Array] = None,
+    **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Perform einops repeat operation on input array x.
 
@@ -983,7 +996,10 @@ def einops_repeat(
         New array with einops.repeat having been applied.
 
     """
-    return einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x, pattern, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def get_min_denominator() -> float:
