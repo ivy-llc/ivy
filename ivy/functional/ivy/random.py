@@ -60,7 +60,7 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    dtype=ivy.default_dtype(dtype,as_native=True)
+    dtype = ivy.default_dtype(dtype, as_native=True)
     return _cur_backend().random_uniform(low, high, shape, device=device, dtype=dtype)
 
 
