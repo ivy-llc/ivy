@@ -308,7 +308,7 @@ def bitwise_xor(
     This method conforms to the `Array API Standard
 
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
 
     in the standard. The descriptions above assume an array input for simplicity, but
 
@@ -341,6 +341,15 @@ def bitwise_xor(
 
     >>> a = ivy.native_array([0,1,3,67,91])
     >>> b = ivy.native_array([4,7,90,89,98])
+    >>> y = ivy.bitwise_xor(a,b)
+    >>> print(y)
+        ivy.array([[ 4,  6, 89, 26, 57]])
+
+    
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+    >>> a = ivy.array([0,1,3,67,91])
+    >>> a = ivy.native_array([4,7,90,89,98])
     >>> y = ivy.bitwise_xor(a,b)
     >>> print(y)
         ivy.array([[ 4,  6, 89, 26, 57]])
