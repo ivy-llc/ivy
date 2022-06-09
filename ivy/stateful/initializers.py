@@ -15,7 +15,7 @@ class Constant:
     ):
         """Create internal variables for the layer"""
         return ivy.variable(
-            ivy.ones(var_shape, device=device, dtype=dtype) * self._constant,
+            ivy.full(var_shape,self._constant, device=device, dtype=dtype) ,
         )
 
 
@@ -82,11 +82,10 @@ class Uniform:
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
         return ivy.variable(
-            ivy.array(
-                ivy.random_uniform(-wlim, wlim, var_shape, device=device),
-                dtype=dtype,
-                device=device,
-            )
+
+                ivy.random_uniform(-wlim, wlim, var_shape, device=device, dtype=dtype),
+
+
         )
 
 

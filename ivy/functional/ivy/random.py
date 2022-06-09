@@ -27,6 +27,7 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype=None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -59,7 +60,8 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    return _cur_backend().random_uniform(low, high, shape, device=device)
+    dtype=ivy.default_dtype(dtype,as_native=True)
+    return _cur_backend().random_uniform(low, high, shape, device=device, dtype=dtype)
 
 
 @outputs_to_ivy_arrays
