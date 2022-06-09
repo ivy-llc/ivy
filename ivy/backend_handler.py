@@ -6,10 +6,11 @@ import collections
 import numpy as np
 from ivy import verbosity
 from typing import Optional
+from types import FunctionType
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_functions, _unwrap_functions
+from ivy.func_wrapper import _wrap_functions, _unwrap_functions, outputs_to_ivy_arrays, inputs_to_native_arrays, handle_out_argument, infer_dtype, infer_device, handle_nestable
 
 
 backend_stack = []
@@ -198,13 +199,25 @@ def set_backend(backend: str):
         specific_v = backend.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
+        if isinstance(specific_v, FunctionType):
+            if hasattr(v, "outputs_to_ivy_arrays"):
+                specific_v = outputs_to_ivy_arrays(specific_v)
+            if hasattr(v, "inputs_to_native_arrays"):
+                specific_v = inputs_to_native_arrays(specific_v)
+            if hasattr(v, "handle_out_argument"):
+                specific_v = handle_out_argument(specific_v)
+            if hasattr(v, "infer_dtype"):
+                specific_v = infer_dtype(specific_v)
+            if hasattr(v, "infer_device"):
+                specific_v = infer_device(specific_v)
+            if hasattr(v, "handle_nestable"):
+                specific_v = handle_nestable(specific_v)
         ivy.__dict__[k] = specific_v
         if isinstance(specific_v, collections.Hashable):
             try:
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
