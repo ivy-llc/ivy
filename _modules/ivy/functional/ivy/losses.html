@@ -156,9 +156,6 @@
 <span class="sd">    epsilon</span>
 <span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
 <span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -179,7 +176,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="c1"># noinspection PyUnresolvedReferences</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/binary_cross_entropy.html#ivy.functional.ivy.losses.binary_cross_entropy">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -188,7 +186,6 @@
     <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes the binary cross entropy loss.</span>
 
@@ -201,9 +198,6 @@
 <span class="sd">    epsilon</span>
 <span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the</span>
 <span class="sd">        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -280,10 +274,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="n">true</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span></div>
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="n">true</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="sparse_cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/sparse_cross_entropy.html#ivy.functional.ivy.losses.sparse_cross_entropy">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -293,7 +284,6 @@
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes sparse cross entropy between logits and labels.</span>
 
@@ -309,9 +299,6 @@
 <span class="sd">    epsilon</span>
 <span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the</span>
 <span class="sd">        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -389,7 +376,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">true</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

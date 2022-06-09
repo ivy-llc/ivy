@@ -158,7 +158,7 @@ Nestable Functions
 
 *Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
-provided that the containers share a common nested structure.
+provided that the containers share the same nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :code:`ivy.Container` in the output.
@@ -183,92 +183,6 @@ This function wrapping process is covered in a bit more detail in the :ref:`Func
 
 Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
 in as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
-
-**Shared Nested Structure**
-
-When the nested structures of the multiple containers are *shared* but not *identical*,
-then the behaviour of the nestable function is a bit different.
-Containers have *shared* nested structures if all unique leaves in any of the containers
-are children of a nested structure which is shared by all other containers.
-
-Take the example below, the nested structures of containers :code:`x` and :code:`y`
-are shared but not identical.
-
-.. code-block:: python
-
-    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
-    y = ivy.Container(a=2, d=3)
-
-The shared key chains (chains of keys, used for indexing the container)
-are :code:`a` and :code:`d`. The key chains unique to :code:`x` are :code:`a/b`, :code:`a/c`,
-:code:`d/e` and :code:`d/f`. The unique key chains all share the same base structure as
-all other containers (in this case only one other container, :code:`y`).
-Therefore, the containers :code:`x` and :code:`y` have shared nested structure.
-
-When calling *nestable* functions on containers with non-identical structure,
-then the shared leaves of the shallowest container are broadcast to the leaves of the
-deepest container.
-
-It's helpful to look at an example:
-
-.. code-block:: python
-
-    print(x / y)
-    {
-        a: {
-          b: 1,
-          c: 2
-        },
-        d: {
-          e: 3,
-          f: 2.67
-        }
-    }
-
-In this case, the integer at :code:`y.a` is broadcast to the leaves :code:`x.a.b` and
-:code:`x.a.c`, and the integer at :code:`y.d` is broadcast to the leaves :code:`x.d.e`
-and :code:`x.d.f`.
-
-Another example of containers with shared nested structure is given below:
-
-.. code-block:: python
-
-    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
-    y = ivy.Container(a=2, d=3)
-    z = ivy.Container(a={'b': 10, 'c': {'g': 11, 'h': 12}}, d={'e': 13, 'f': 14})
-
-Adding these containers together would result in the following:
-
-.. code-block:: python
-
-    print(x + y + z)
-    {
-        a: {
-          b: 14,
-          c: {
-            g: 17,
-            h: 18,
-          }
-        },
-        d: {
-          e: 22,
-          f: 25
-        }
-    }
-
-An example of containers which **do not** have shared nested structure is given below:
-
-.. code-block:: python
-
-    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
-    y = ivy.Container(a=2, d=3, g=4)
-    z = ivy.Container(a={'b': 10, 'c': {'g': 11, 'h': 12}}, d={'e': 13, 'g': 14})
-
-This is for three reasons, (a) the key chain :code:`g` is not shared by any container other
-than :code:`y`, (b) the key chain :code:`d/f` for :code:`x` is not present in
-:code:`z` despite :code:`d` not being a non-leaf node in :code:`z`,
-and likewise the key chain :code:`d/g` for :code:`z` is not present in :code:`x`
-despite :code:`d` not being a non-leaf node in :code:`x`.
 
 Convenience Functions
 ---------------------
