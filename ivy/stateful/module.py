@@ -10,7 +10,7 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
-
+from ivy.func_wrapper import _get_first_array
 
 # Base #
 # -----#
@@ -30,6 +30,7 @@ class Module(abc.ABC):
         fallback_to_non_compiled=False,
         with_partial_v=False,
         devices=None,
+        dtype=None,
     ):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable
@@ -108,6 +109,7 @@ class Module(abc.ABC):
             alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._sub_mods = set()
+        self._dtype = dtype
         if build_mode != "on_init":
             return
         self.build()
@@ -307,7 +309,7 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
@@ -358,7 +360,7 @@ class Module(abc.ABC):
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
-            self.build(*args, **kwargs, from_call=True)
+            self.build(*args, **kwargs, from_call=True, dtype=_get_first_array(*args, **kwargs).dtype)
         if v is not None:
             v_orig = self.v
             if not with_grads:
@@ -662,20 +664,25 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, **kwargs):
+    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """Build the internal layers and variables for this module."""
         self._dev = ivy.default(device, self._dev)
 
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
+        if dtype:
+            dtype = ivy.default_dtype(dtype, as_native=True)
+        else:
+            dtype = ivy.default_dtype(self._dtype, as_native=True)
 
+        kwargs["dtype"] = dtype
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(self._dev))
+        created = Container(self._create_variables(self._dev, dtype))
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
@@ -715,7 +722,7 @@ class Module(abc.ABC):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(self),
-                        **self._create_variables(self._dev)
+                        **self._create_variables(self._dev, dtype)
                     )
                 )
                 self.v = created_n_found
