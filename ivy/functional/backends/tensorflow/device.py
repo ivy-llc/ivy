@@ -28,20 +28,14 @@ def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
     return as_ivy_dev(dv)
 
 
-def to_dev(x: Tensor, device=None, out: Tensor = None) -> Tensor:
+def to_dev(x: Tensor, device: str) -> Tensor:
     if device is None:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
         return x
+    device = as_native_dev(device)
     current_dev = _dev_callable(x)
     if not _same_device(current_dev, device):
         with tf.device("/" + device.upper()):
-            if ivy.exists(out):
-                return ivy.inplace_update(out, tf.identity(x))
             return tf.identity(x)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
     return x
 
 

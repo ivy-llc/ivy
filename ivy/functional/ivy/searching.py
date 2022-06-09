@@ -4,16 +4,20 @@ from typing import Union, Optional, Tuple
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -44,9 +48,11 @@ def argmax(
         the default array index data type.
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out)
+    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -79,10 +85,17 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
+    Examples
+    --------
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    tensor([2])
     """
     return _cur_backend(x).argmin(x, axis, keepdims)
 
 
+@to_native_arrays_and_back
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -101,10 +114,83 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
         row-major, C-style order. The returned array must have the default array index
         data type.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 10, 15, 20, -50, 0])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([1, 2, 3, 4]),)
+
+    >>> x = ivy.array([[1, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (array([0, 0, 1]), array([0, 1, 0]))
+
+    >>> x = ivy.native_array([[0], [1], [1], [0], [1]])
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    {
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[2], <class ivy.array.Array> shape=[2])
+    }
+    >>> print(y.a)
+    (ivy.array([1, 2, 3]),)
+    >>> print(y.b)
+    (ivy.array([0, 0]), ivy.array([0, 1]))
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0,0,0,1,1,1])
+    >>> y = x.nonzero()
+    >>> print(y)
+    (ivy.array([3, 4, 5]),)
+
+    Using :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
+    >>> y = x.nonzero()
+    >>> print(y)
+    (array([0, 0, 2, 2]), array([0, 1, 0, 1]))
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
+    >>> y = x.nonzero()
+    >>> print(y)
+    {
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[1], <class ivy.array.Array> shape=[0])
+    }
+    >>> print(y.a)
+    (ivy.array([0, 1, 2]),)
+    >>> print(y.b)
+    (ivy.array([]),)
     """
     return _cur_backend(x).nonzero(x)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],

@@ -4,19 +4,23 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def argsort(
-    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.Container]] = None,
-) -> Union[ivy.Array, ivy.Container]:
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns the indices that sort an array ``x`` along a specified axis.
 
     Parameters
@@ -56,7 +60,7 @@ def argsort(
     and also the examples below.
 
     Functional Examples
-    -------
+    -------------------
 
     With：code:`ivy.Array` input:
 
@@ -85,14 +89,17 @@ def argsort(
         b: ivy.array([[0, 1], [0, 1]])
     }
     """
-    return _cur_backend(x).argsort(x, axis, descending, stable, out)
+    return _cur_backend(x).argsort(x, axis, descending, stable, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
@@ -124,7 +131,7 @@ def sort(
         along the given `axis`.
 
     """
-    return _cur_backend(x).sort(x, axis, descending, stable, out)
+    return _cur_backend(x).sort(x, axis, descending, stable, out=out)
 
 
 # Extra #

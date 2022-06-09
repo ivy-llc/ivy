@@ -13,30 +13,22 @@ import ivy
 # -------------------#
 
 
-def eigh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def eigh(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.eigh(x)
     return ret
 
 
-def pinv(
-    x: JaxArray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
+def pinv(x: JaxArray, rtol: Optional[Union[float, Tuple[float]]] = None) -> JaxArray:
 
     if rtol is None:
         ret = jnp.linalg.pinv(x)
     else:
         ret = jnp.linalg.pinv(x, rtol)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_transpose(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def matrix_transpose(x: JaxArray) -> JaxArray:
     ret = jnp.swapaxes(x, -1, -2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -46,7 +38,6 @@ def vector_norm(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
     if axis is None:
@@ -58,8 +49,6 @@ def vector_norm(
         ret = jnp.expand_dims(jnp_normalized_vector, 0)
     else:
         ret = jnp_normalized_vector
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -67,7 +56,6 @@ def matrix_norm(
     x: JaxArray,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.size == 0:
         if keepdims:
@@ -76,8 +64,6 @@ def matrix_norm(
             ret = x.reshape(x.shape[:-2])
     else:
         ret = jnp.linalg.norm(x, ord, (-2, -1), keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -86,13 +72,11 @@ def matrix_power(x: JaxArray, n: int) -> JaxArray:
 
 
 def svd(
-    x: JaxArray, full_matrices: bool = True, out: Optional[JaxArray] = None
+    x: JaxArray, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
     ret = results(U, D, VT)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -112,7 +96,6 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
         ret = jnp.diagonal(x, offset, axis1, axis2)
@@ -123,44 +106,32 @@ def diagonal(
         ret = ret.at[ret == ret_edited].set(ret_edited[ret == ret_edited])
     else:
         ret = jnp.diagonal(x, offset, axis1, axis2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def svdvals(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def svdvals(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.svd(x, compute_uv=False)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def qr(
-    x: JaxArray, mode: str = "reduced", out: Optional[JaxArray] = None
-) -> NamedTuple:
+def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     ret = res(q, r)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def matmul(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def matmul(x1: JaxArray, x2: JaxArray) -> JaxArray:
     ret = jnp.matmul(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[JaxArray] = None
+    x: Union[ivy.Array, ivy.NativeArray]
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     ret = results(sign, logabsdet)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -168,60 +139,46 @@ def tensordot(
     x1: JaxArray,
     x2: JaxArray,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
     ret = jnp.tensordot(x1, x2, axes)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def trace(x: JaxArray, offset: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
+def trace(x: JaxArray, offset: int = 0) -> JaxArray:
+    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
 
 
-def det(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def det(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.det(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def cholesky(
-    x: JaxArray, upper: bool = False, out: Optional[JaxArray] = None
-) -> JaxArray:
+def cholesky(x: JaxArray, upper: bool = False) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         ret = jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)), axes=axes)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def eigvalsh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def eigvalsh(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.eigvalsh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def inv(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def inv(x: JaxArray) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         ret = x
     else:
         ret = jnp.linalg.inv(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def matrix_rank(
     x: JaxArray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.size == 0:
         ret = 0
@@ -231,26 +188,16 @@ def matrix_rank(
         if x.ndim > 2:
             x = x.reshape([-1])
         ret = jnp.linalg.matrix_rank(x, rtol)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def cross(
-    x1: JaxArray, x2: JaxArray, axis: int = -1, out: Optional[JaxArray] = None
-) -> JaxArray:
+def cross(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.cross(a=x1, b=x2, axis=axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
-def vecdot(
-    x1: JaxArray, x2: JaxArray, axis: int = -1, out: Optional[JaxArray] = None
-) -> JaxArray:
+def vecdot(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.tensordot(x1, x2, (axis, axis))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -258,9 +205,7 @@ def vecdot(
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(
-    vector: JaxArray, out: Optional[JaxArray] = None
-) -> JaxArray:
+def vector_to_skew_symmetric_matrix(vector: JaxArray) -> JaxArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = jnp.expand_dims(vector, -1)
@@ -276,8 +221,6 @@ def vector_to_skew_symmetric_matrix(
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     ret = jnp.concatenate((row1, row2, row3), -2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
