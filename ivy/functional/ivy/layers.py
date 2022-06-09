@@ -167,9 +167,9 @@ def multi_head_attention(
     num_heads: int,
     context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
+    to_q_fn: Optional[ivy.Linear] = None,
+    to_kv_fn: Optional[ivy.Linear] = None,
+    to_out_fn: Optional[ivy.Linear] = None,
     to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -211,6 +211,11 @@ def multi_head_attention(
     ret
         The output following application of multi-head attention.
         *[batch_shape,num_queries,out_feat_dim]*
+    
+    Examples
+    --------
+    
+
     """
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
