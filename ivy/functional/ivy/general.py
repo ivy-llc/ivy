@@ -1,7 +1,6 @@
 """Collection of general Ivy functions."""
 
 # global
-from ast import Try
 import gc
 import math
 import einops
