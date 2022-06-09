@@ -18,7 +18,7 @@ try:
     nvidia_smi.nvmlInit()
 except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
     pass
-from typing import Union, Type, Callable, Iterable, Dict, Any
+from typing import Union, Type, Callable, Iterable, Dict, Any, Self
 
 # local
 import ivy
@@ -42,7 +42,19 @@ class DefaultDevice:
     def __init__(self, device):
         self._dev = device
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        >>> z = ivy.DefaultDevice("cpu")
+        >>> x = ivy.DefaultDevice("tpu")
+        """
         set_default_device(self._dev)
         return self
 
