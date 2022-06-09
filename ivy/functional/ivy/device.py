@@ -68,7 +68,7 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
