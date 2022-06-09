@@ -20,6 +20,7 @@ class Linear(Module):
         with_bias=True,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         Linear layer, also referred to as dense or fully connected. The layer
@@ -56,7 +57,7 @@ class Linear(Module):
         self._with_bias = with_bias
         Module.__init__(self, device, v)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal variables for the layer
 
