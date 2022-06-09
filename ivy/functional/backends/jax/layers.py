@@ -5,22 +5,7 @@ import jax.lax as jlax
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Optional
-
-def multi_head_attention(
-    x: JaxArray,
-    scale: float,
-    num_heads: int,
-    context: Optional[JaxArray] = None,
-    mask: Optional[JaxArray] = None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
-    to_q_v: Optional[JaxArray] = None,
-    to_kv_v: Optional[JaxArray] = None,
-    to_out_v: Optional[JaxArray] = None,
-) -> JaxArray:
-    raise Exception("multi_head_attention not yet implemented for jax library")
+from typing import Union, Tuple
 
 def conv1d(
     x: JaxArray,

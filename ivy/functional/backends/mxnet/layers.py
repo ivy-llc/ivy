@@ -5,21 +5,6 @@ import math
 import mxnet as mx
 from typing import Optional, Tuple, Union
 
-def multi_head_attention(
-    x: mx.nd.NDArray,
-    scale: float,
-    num_heads: int,
-    context: Optional[mx.nd.NDArray] = None,
-    mask: Optional[mx.nd.NDArray] = None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
-    to_q_v: Optional[mx.nd.NDArray] = None,
-    to_kv_v: Optional[mx.nd.NDArray] = None,
-    to_out_v: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise Exception("multi_head_attention not yet implemented for mxnet library")
-
 def conv1d(
     x: mx.nd.NDArray,
     filters: mx.nd.NDArray,

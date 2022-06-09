@@ -4,21 +4,6 @@
 import numpy as np
 from typing import Union, Tuple, Optional
 
-def multi_head_attention(
-    x: np.ndarray,
-    scale: float,
-    num_heads: int,
-    context: Optional[np.ndarray] = None,
-    mask: Optional[np.ndarray] = None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
-    to_q_v: Optional[np.ndarray] = None,
-    to_kv_v: Optional[np.ndarray] = None,
-    to_out_v: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    raise Exception("multi_head_attention not yet implemented for numpy library")
-
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,

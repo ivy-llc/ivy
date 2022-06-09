@@ -6,22 +6,6 @@ from typing import Union, List, Tuple, Optional
 
 from tensorflow.python.types.core import Tensor
 
-def multi_head_attention(
-    x: Tensor,
-    scale: float,
-    num_heads: int,
-    context: Optional[Tensor] =None,
-    mask: Optional[Tensor] =None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
-    to_q_v: Optional[Tensor] = None,
-    to_kv_v: Optional[Tensor] = None,
-    to_out_v: Optional[Tensor] = None,
-) -> Tensor:
-    raise Exception("multi_head_attention not yet implemented for tf library")
-    
-
 def conv1d(
     x: Tensor,
     filters: Tensor,
