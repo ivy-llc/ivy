@@ -81,11 +81,10 @@ def inplace_update(
             x = ivy.Array(x_native)
     elif ensure_in_backend:
         raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+    elif ivy.is_ivy_array(x):
+        x.data = val_native
     else:
-        if ivy.is_ivy_array(x):
-            x.data = val_native
-        else:
-            x = ivy.Array(val_native)
+        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
     return x
 
 
