@@ -170,7 +170,8 @@ variations for a single argument, and not the entire grid of variations across a
 in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the
 function in question</p></li>
 <li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>,
-and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code></p></li>
+and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code>
+(provided that it shares the same <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">shape</span></code> as the return)</p></li>
 <li><p>If broadcasting is relevant for the function, then show examples which highlight this.
 For example, passing in different shapes for two array arguments</p></li>
 </ol>
@@ -298,7 +299,9 @@ then as far as point 1 is concerned, the input <code class="code docutils litera
 <p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
 and the values and shapes do become increasingly <em>complex</em>.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.</p>
+explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
+making all three examples possible.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
 <p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.
 Point 7 is not relevant as there is only one array input
@@ -406,7 +409,9 @@ that each variation for each argument is demonstrated in at least one of the exa
 <p>Point 3 is satisfied, as the first example uses the default values for optional arguments,
 and the subsequent examples the non-default values in increasingly <em>complex</em> examples.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.</p>
+explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
+making all three examples possible.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
 <p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.
 Point 7 is not relevant as there is only one array input
@@ -526,7 +531,9 @@ They must both be arrays.</p>
 <p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
 and the values and shapes do become increasingly <em>complex</em>.</p>
 <p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.</p>
+explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
+making all three examples possible.</p>
 <p>Point 5 is satisfied, as the second example uses different shapes for the inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code>. This causes
 the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.</p>
 <p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input, in order to satisfy point 6.</p>
