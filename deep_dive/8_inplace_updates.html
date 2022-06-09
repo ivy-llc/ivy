@@ -278,10 +278,12 @@ This enables users to specify the array to which they would like the output of a
 This could for example be the input array itself, but can also be any other array of choice.</p>
 <p>All Ivy functions which return a single array should support inplace updates.
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
-However, as discussed above, the function is <em>nestable</em>, meaning <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
-This is omitted from the type hint, as explained in the <a class="reference internal" href="9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
-<p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
+However, as discussed above, if the function is <em>nestable</em> then <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
+as explained in the <a class="reference internal" href="9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+<p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+(or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
+However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.</p>
 <p>In the case of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
@@ -291,7 +293,8 @@ instances before calling the backend function, and then back to <code class="cod
 As explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this wrapping is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
 dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
-<p>However, <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166">_function_w_arrays_n_out_handled</a> does not handle backend-specific functions which support an <code class="code docutils literal notranslate"><span class="pre">out</span></code>
+<p><strong>Primary Functions</strong></p>
+<p>In the case of <em>primary</em> functions, <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166">_function_w_arrays_n_out_handled</a> does not handle backend-specific functions which support an <code class="code docutils literal notranslate"><span class="pre">out</span></code>
 argument directly, such as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html">torch.tan</a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a>.
 When implementing backend-specific functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should only be added to functions which wrap a
 function in the backend supporting inplace updates directly.
@@ -332,6 +335,49 @@ If <code class="code docutils literal notranslate"><span class="pre">out</span><
 which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function. This inplace update is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L210">handled by the wrapper</a>.</p>
 <p>Alternatively, if <code class="code docutils literal notranslate"><span class="pre">out</span></code> is an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, then the inplace update is always handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69">_wrap_fn</a> in
 the container wrapping module.</p>
+<p><strong>Compositional Functions</strong></p>
+<p>For <em>compositional</em> functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should <strong>always</strong> be handled in the compositional implementation,
+with no wrapping applied at all. This is for a few reasons:</p>
+<ol class="arabic simple">
+<li><p>we need to show the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the compositional function signature,
+as this is the only function implementation in the codebase.
+Adding an argument unused in the implementation could cause some confusion.</p></li>
+<li><p>generally, inplace updates are performed because memory management is an area of
+concern for the user. By handling the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the compositional
+implementation itself. We can maximize the memory efficiency of the function,
+using inplace updates in as many of the inner Ivy functions as possible.</p></li>
+<li><p>this enables us to make use of backend-specific <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument handling</p></li>
+</ol>
+<p>The second and third points are the most important points.</p>
+<p>We’ll use <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> as an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
+    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By handling the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the function, we are able to get the benefits
+outlined above. Firstly, the return of <code class="code docutils literal notranslate"><span class="pre">ivy.sum</span></code> is the same shape and type
+as the return of entire function, and so we can also write
+this output to the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument inplace.
+We can then subsequently overwrite the contents of <code class="code docutils literal notranslate"><span class="pre">out</span></code> again with the return
+of the <code class="code docutils literal notranslate"><span class="pre">ivy.negative</span></code> function. This minimizes the number of arrays created during
+the execution of the function,
+which is generally the intention when specifying the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
+Additionally, with a PyTorch backend, the <code class="code docutils literal notranslate"><span class="pre">ivy.negative</span></code> function defers to the
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> argument of <code class="code docutils literal notranslate"><span class="pre">torch.negative</span></code> function directly, which is the most
+efficient inplace update possible, making use of backend-specific optimizations.</p>
+<p>If we had instead simply used the wrapper
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/50f1ad6b66a74931efff4931c4e2b3d485e354ca/ivy/func_wrapper.py#L361">handle_out_argument</a>,
+then we would not leverage any of these benefits, and instead simply call
+<code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> at the very end of the function call.</p>
 </section>
 <section id="copy-argument">
 <h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this heading"></a></h2>
