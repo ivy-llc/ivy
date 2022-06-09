@@ -14,16 +14,8 @@ jobs:
     - uses: actions/setup-python@v3
       with:
         python-version: '3.8'
-          
-    - name: Cache hypothesis
-      uses: actions/cache@v3
-      with:
-        path: |
-          ivy/.hypothesis
-        key: ${{ runner.os }}-hypothesis
         
     - name: Run Docstring Tests
       run: |
         cd ivy
-        mkdir -p .hypothesis
-        docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy/test_docstrings.py
+        docker run --rm -v unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy/test_docstrings.py
