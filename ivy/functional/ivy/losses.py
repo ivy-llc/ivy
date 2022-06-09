@@ -54,7 +54,7 @@ def cross_entropy(
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
     # noinspection PyUnresolvedReferences
-    return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
+    return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
 
 
 @to_native_arrays_and_back
