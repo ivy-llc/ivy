@@ -94,7 +94,6 @@ def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     >>> print(y)
     [-0.5,  0. ,  0.5]
 
-
     """
     return _cur_backend(x).gelu(x, approximate)
 
