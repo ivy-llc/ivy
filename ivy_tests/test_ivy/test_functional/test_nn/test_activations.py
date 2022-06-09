@@ -98,7 +98,8 @@ def test_tanh(x, dtype, tensor_fn, device, call):
     ret = ivy.tanh(x)
     # type test
     assert ivy.is_ivy_array(ret)
-    # cardinality test    assert ret.shape == x.shape
+    # cardinality test
+    assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.tanh, x), ivy_np.tanh(ivy.to_numpy(x)))
 
