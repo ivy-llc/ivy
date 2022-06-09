@@ -175,26 +175,7 @@ def test_conv1d_layer_training(
     if as_variable:
         x = ivy.variable(x)
     input_channels = x.shape[-1]
-    if with_v and not dtype:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        print(wlim)
-
-        w = ivy.variable(
-            ivy.asarray(
-                np.random.uniform(
-                    -wlim, wlim, (filter_size, input_channels, output_channels)
-                ),
-                dtype="float32",
-                device=device,
-            )
-        )
-
-        b = ivy.variable(
-            ivy.zeros([1, 1, output_channels]), device=device, dtype="float32"
-        )
-        v = ivy.Container({"w": w, "b": b})
-    elif with_v:
+    if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         print(wlim)
@@ -270,7 +251,7 @@ def test_conv1d_layer_training(
         ],
     ),
     with_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
 def test_conv1d_transpose_layer_training(
@@ -504,7 +485,7 @@ def test_conv2d_layer_training(
         ],
     ),
     with_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
 def test_conv2d_transpose_layer_training(
@@ -612,7 +593,7 @@ def test_conv2d_transpose_layer_training(
         ],
     ),
     with_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
 def test_depthwise_conv2d_layer_training(
