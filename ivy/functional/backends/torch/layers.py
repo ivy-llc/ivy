@@ -6,6 +6,21 @@ import torch
 from typing import List, Optional, Tuple, Union
 
 
+def multi_head_attention(
+    x: torch.Tensor,
+    scale: float,
+    num_heads: int,
+    context: Optional[torch.Tensor] = None,
+    mask: Optional[torch.Tensor] = None,
+    to_q_fn: Optional[torch.nn.Linear] = None,
+    to_kv_fn: Optional[torch.nn.Linear] = None,
+    to_out_fn: Optional[torch.nn.Linear] = None,
+    to_q_v: Optional[torch.Tensor] = None,
+    to_kv_v: Optional[torch.Tensor] = None,
+    to_out_v: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    raise Exception("multi_head_attention not yet implemented for torch library")
+
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,

@@ -162,18 +162,19 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
 @to_native_arrays_and_back
 @handle_out_argument
 def multi_head_attention(
-    x,
-    scale,
-    num_heads,
-    context=None,
-    mask=None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    scale: float,
+    num_heads: int,
+    context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     to_q_fn=None,
     to_kv_fn=None,
     to_out_fn=None,
-    to_q_v=None,
-    to_kv_v=None,
-    to_out_v=None,
-):
+    to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+
     """Applies multi-head attention to inputs x.
 
     Parameters
@@ -210,7 +211,6 @@ def multi_head_attention(
     ret
         The output following application of multi-head attention.
         *[batch_shape,num_queries,out_feat_dim]*
-
     """
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
