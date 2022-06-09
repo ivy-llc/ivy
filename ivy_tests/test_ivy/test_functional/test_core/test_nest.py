@@ -233,7 +233,7 @@ def test_copy_nest(device, call):
 
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
-    num_positional_args=st.integers(min_value=0, max_value=2),
+    num_positional_args=helpers.num_positional_args(fn_name="nested_multi_map"),
 )
 def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     # without key_chains specification
