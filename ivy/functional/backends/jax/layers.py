@@ -2,9 +2,6 @@
 
 # global
 import jax.lax as jlax
-import jax.numpy as jnp
-import jax.nn as jnn
-
 # local
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple
