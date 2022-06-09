@@ -1252,7 +1252,9 @@ def inplace_update(
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
-    array classes in the backend, when the backend supports this.
+    array classes in the backend when the backend supports this. If the backend does
+    not natively support inplace updates, and x is an ivy.NativeArray instance,
+    then an exception will be thrown.
 
     Parameters
     ----------
