@@ -587,12 +587,7 @@ def test_profiler(device, call):
 
 @given(num=st.integers(0, 5))
 def test_num_arrays_on_dev(num, device):
-    arrays = {"x": []}
-    for _ in range(num):
-        # arr size fixed as its irrelevant.
-        arr = ivy.array(np.random.uniform(size=2))
-        arrays["x"].append(arr)
-
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
     assert ivy.num_ivy_arrays_on_dev(device) == num
 
 
