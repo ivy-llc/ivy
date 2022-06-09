@@ -5,24 +5,6 @@ import math
 import mxnet as mx
 from typing import Optional, Tuple, Union
 
-def scaled_dot_product_attention(    
-    q: mx.nd.NDArray, 
-    k: mx.nd.NDArray,
-    v: mx.nd.NDArray, 
-    scale: float, 
-    mask: Optional[mx.nd.NDArray] = None
-) -> Tuple[mx.nd.NDArray, mx.nd.NDArray]:
-
-    attention = mx.np.matmul(q, mx.np.transpose(k)) * scale
-
-    if mask is not None:
-        attention += (mask * -1e9)
-
-    attention = mx.npx.softmax(attention, axis=-1)
-    output = mx.np.matmul(attention, v)
-
-    return output, attention
-
 def conv1d(
     x: mx.nd.NDArray,
     filters: mx.nd.NDArray,

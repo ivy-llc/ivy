@@ -117,7 +117,6 @@ def scaled_dot_product_attention(
     mask: Union[ivy.Array, ivy.NativeArray]=None) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
 
     """Applies scaled dot product attention to inputs x using optional mask.
-
     Parameters
     ----------
     q
@@ -131,21 +130,30 @@ def scaled_dot_product_attention(
     mask
         The mask to apply to the query-key values. Default is None.
         *[batch_shape,num_queries,num_keys]*
-
     Returns
     -------
     ret
         The output following application of scaled dot-product attention.
-        *[batch_shape,num_queries,feat_dim]*, 
-        
-    attention_weights
-        The weights of attention.
         *[batch_shape,num_queries,feat_dim]*
-
     """
-    return _cur_backend(q, k, v).scaled_dot_product_attention(
-        q, k, v, scale, mask
-    )
+    # BS x Q x K
+    sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
+
+    if ivy.exists(mask):
+
+        # BS x Q x K
+        sim = ivy.where(
+            ivy.logical_not(mask),
+            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim))).max,
+            sim,
+        )
+
+    # BS x Q x K
+    attn = ivy.softmax(sim, -1)
+
+    # BS x Q x F
+    return ivy.einsum("... q k, ... k f -> ... q f", attn, v)
+
 
 def multi_head_attention(
     x,

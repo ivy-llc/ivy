@@ -7,25 +7,7 @@ import jax.nn as jnn
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Optional
-
-
-def scaled_dot_product_attention(    
-    q: JaxArray, 
-    k: JaxArray,
-    v: JaxArray, 
-    scale: float, 
-    mask: Optional[JaxArray] = None
-) -> Tuple[JaxArray, JaxArray]:
-
-    attention = jnp.matmul(q, jnp.swapaxes(k, -2, -1)) * scale
-    if mask is not None:
-        attention = jnp.where(mask == 0, -1e9, attention)
-
-    attention = jnn.softmax(attention, axis=-1)
-    output = jnp.matmul(attention, v)
-    return output, attention
-
+from typing import Union, Tuple
 
 def conv1d(
     x: JaxArray,
