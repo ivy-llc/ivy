@@ -180,11 +180,11 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ret
         The input array with Hyperbolic tangent activation applied element-wise.
 
-    
+
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([0.55 , -0.55])
     >>> y = ivy.tanh(x)
@@ -201,7 +201,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     Instance Method Example
     -----------------------
 
-    Using :code: `ivy.Array` instance method: 
+    Using :code: `ivy.Array` instance method:
 
     >>> x = ivy.array([0.55 , -0.55])
     >>> y = x.tanh()
@@ -229,15 +229,15 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Functional Examples
     -------------------
-    
-    With :code: `ivy.Array` input: 
-    
+
+    With :code: `ivy.Array` input:
+
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-    With :code: `ivy.NativeArray` input: 
+    With :code: `ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-1.3, 3.8, 2.1])
     >>> y = ivy.sigmoid(x)
@@ -248,7 +248,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     -----------------------
 
     Using :code: `ivy.Array` instance method:
-    
+
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = x.sigmoid()
     >>> print(y)
@@ -351,7 +351,7 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Instance Method Example
     ------------------------
-    
+
     Using :code: `ivy.Array` instance method:
 
     >>> x = ivy.array([-0.3461, -0.6491])
