@@ -23,7 +23,9 @@ def random_uniform(
     rand_range = high - low
     if shape is None:
         shape = []
-    return torch.rand(shape, device=default_device(device), dtype=dtype) * rand_range + low
+    return (
+        torch.rand(shape, device=default_device(device), dtype=dtype) * rand_range + low
+    )
 
 
 def random_normal(
