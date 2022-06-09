@@ -136,7 +136,11 @@ def scaled_dot_product_attention(
     -------
     ret
         The output following application of scaled dot-product attention.
-        *[batch_shape,num_queries,feat_dim]*, *[batch_shape,num_queries,feat_dim]*
+        *[batch_shape,num_queries,feat_dim]*, 
+        
+    attention_weights
+        The weights of attention.
+        *[batch_shape,num_queries,feat_dim]*
 
     """
     return _cur_backend(q, k, v).scaled_dot_product_attention(
