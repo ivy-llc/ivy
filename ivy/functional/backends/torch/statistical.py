@@ -34,7 +34,7 @@ def sum(
     keepdims: bool = False,
     *,
     dtype: torch.dtype = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
     if dtype is None:
@@ -91,7 +91,7 @@ def prod(
             dtype = torch.float16
 
     dtype = ivy.as_native_dtype(dtype)
-    
+
     if axis is None:
         axis = x.dim() - 1
     elif type(axis) == tuple:

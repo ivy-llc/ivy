@@ -418,17 +418,17 @@ def tpu_is_available() -> bool:
 
 # noinspection PyShadowingNames
 def default_device(
-    device: Union[str, ivy.Device, ivy.NativeDevice] = None, 
-    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None, 
-    as_native: bool = None
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None,
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    as_native: bool = None,
 ) -> Union[str, ivy.Device, ivy.NativeDevice]:
-    """Returns the input device or the default device. 
+    """Returns the input device or the default device.
     If the as native flag is set, the device will be converted to a native device.
-    If the item is provided, the item's device is returned. 
+    If the item is provided, the item's device is returned.
     If the device is not provided, the last default device is returned.
     If a default device has not been set, the first gpu is returned if available,
     otherwise the cpu is returned.
-    
+
 
     Parameters
     ----------
