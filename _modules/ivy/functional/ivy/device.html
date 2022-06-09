@@ -162,7 +162,21 @@
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> 
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialises the DefaultDevice class</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        device</span>
+<span class="sd">            The device string - as an ivy device or nativedevice class</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.DefaultDevice(&quot;cpu&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.DefaultDevice(&quot;tpu&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">device</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
