@@ -416,6 +416,24 @@ def std(
         containing the standard deviation; otherwise, an array containing the standard
         deviations. The returned array must have a data type as described by the
         ``dtype`` parameter above.
+        
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>` _ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+        
+    Functional Examples
+    -------------------
+    
+    Instance Method Examples
+    ------------------------
 
     Examples
     --------
