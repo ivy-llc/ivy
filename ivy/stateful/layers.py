@@ -372,7 +372,7 @@ class Conv1D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal variables for the layer
 

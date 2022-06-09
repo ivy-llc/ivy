@@ -126,13 +126,23 @@ def test_linear_layer_training(
         max_size="num_dims",
         size_bounds=[1, 10],
     ),
-    weight=st.integers(1, 3),
-    input_dims=st.integers(1),
+    weight=helpers.lists(
+        st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
+    ),
+    input_dims=helpers.lists(
+        st.integers(1, 10),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 10],
+    ),
     filter_size=st.integers(3),
     padding=st.sampled_from(("SAME", "VALID")),
     output_channels=st.integers(1),
     with_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
 def test_conv1d_layer_training(
@@ -156,26 +166,50 @@ def test_conv1d_layer_training(
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d
         return
+    if call in [helpers.torch_call] and (dtype == "float16"):
+        # torch doesn't handle float16
+        return
     # smoke test
-    input_shape = (batch_size, weight, input_dims)
-    x = ivy.array(np.random.uniform(input_shape))
+    inputs = [batch_size, weight, input_dims]
+    x = ivy.asarray(inputs, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)
     input_channels = x.shape[-1]
-    if with_v:
+    if with_v and not dtype:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         print(wlim)
+
         w = ivy.variable(
-            ivy.array(
+            ivy.asarray(
                 np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
+                    -wlim, wlim, (filter_size, input_channels, output_channels)
                 ),
                 dtype="float32",
                 device=device,
             )
         )
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+
+        b = ivy.variable(
+            ivy.zeros([1, 1, output_channels]), device=device, dtype="float32"
+        )
+        v = ivy.Container({"w": w, "b": b})
+    elif with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        print(wlim)
+
+        w = ivy.variable(
+            ivy.asarray(
+                np.random.uniform(
+                    -wlim, wlim, (filter_size, input_channels, output_channels)
+                ),
+                dtype=dtype,
+                device=device,
+            )
+        )
+
+        b = ivy.variable(ivy.zeros([1, 1, output_channels]), device=device, dtype=dtype)
         v = ivy.Container({"w": w, "b": b})
     else:
         v = None
@@ -1065,11 +1099,16 @@ def test_lstm_layer_training(
 
 # sequential
 @given(
-    batch_shape=st.lists(st.integers(1, 2)),
+    batch_shape=helpers.lists(
+        st.integers(1, 2),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 2],
+    ),
     channels=st.integers(5),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
 def test_sequential_layer_training(
@@ -1089,9 +1128,10 @@ def test_sequential_layer_training(
         return
     x = ivy.astype(
         ivy.linspace(
-            ivy.zeros(batch_shape),
-            ivy.ones(batch_shape),
+            ivy.zeros(batch_shape, device=device),
+            ivy.ones(batch_shape, device=device),
             channels,
+            device=device,
         ),
         dtype="float32",
     )
