@@ -1,6 +1,7 @@
 """Collection of general Ivy functions."""
 
 # global
+from ast import Try
 import gc
 import math
 import einops
@@ -463,7 +464,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     True
 
     """
-    return _cur_backend(x).to_list(x)
+    return _cur_backend(x, ivy.Array).to_list(x)
 
 
 @to_native_arrays_and_back
