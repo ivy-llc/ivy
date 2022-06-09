@@ -133,7 +133,7 @@ def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
     return result
 
 
-def astype(x: Tensor, dtype: tf.DType, copy: bool = True) -> Tensor:
+def astype(x: Tensor, dtype: tf.DType, *, copy: bool = True) -> Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
