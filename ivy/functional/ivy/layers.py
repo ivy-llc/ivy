@@ -130,11 +130,33 @@ def scaled_dot_product_attention(
     mask
         The mask to apply to the query-key values. Default is None.
         *[batch_shape,num_queries,num_keys]*
+
     Returns
     -------
     ret
         The output following application of scaled dot-product attention.
         *[batch_shape,num_queries,feat_dim]*
+
+    Examples
+    --------
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
+    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
+    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
+    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
+    >>> print(result)
+    ivy.array([[
+            [4.0395, 5.0281],
+            [4.2998, 5.2998],
+            [4.3000, 5.3000]
+            ]])
+    >>> result2 = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
+    >>> print(result2)
+    ivy.array([[
+            [2.3000, 3.2333],
+            [2.3000, 3.2333],
+            [2.3000, 3.2333]
+            ]])
     """
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
