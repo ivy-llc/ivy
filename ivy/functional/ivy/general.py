@@ -13,6 +13,12 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 import ivy
 from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import (
+    infer_device,
+    inputs_to_native_arrays,
+    to_native_arrays_and_back,
+    handle_out_argument,
+)
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -119,6 +125,16 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
     ret
         Boolean, whether or not x is an array.
 
+    Examples
+    --------
+    >>> x = [0., 1., 2.]
+    >>> ivy.is_ivy_array(x)
+    False
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> ivy.is_ivy_array(x)
+    True
+
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
@@ -160,7 +176,8 @@ def is_ivy_container(x: Any) -> bool:
     return isinstance(x, ivy.Container)
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -182,6 +199,7 @@ def copy_array(
     return _cur_backend(x).copy_array(x)
 
 
+@inputs_to_native_arrays
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray]
 ) -> bool:
@@ -225,6 +243,7 @@ def array_equal(
     return _cur_backend(x0).array_equal(x0, x1)
 
 
+@inputs_to_native_arrays
 def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     """Determines whether input arrays are equal across all elements.
 
@@ -273,7 +292,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
     >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
     >>> o = ivy.arrays_equal([m, n])
@@ -321,6 +340,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     return True
 
 
+@to_native_arrays_and_back
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
@@ -446,12 +466,13 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     return _cur_backend(x).to_list(x)
 
 
+@to_native_arrays_and_back
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
 
@@ -476,12 +497,20 @@ def clip_vector_norm(
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        return ratio * x
-    return ivy.copy_array(x)._data
+        ret = ratio * x
+    else:
+        ret = ivy.copy_array(x)._data
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
+@to_native_arrays_and_back
 def clip_matrix_norm(
-    x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0
+    x: Union[ivy.Array, ivy.NativeArray],
+    max_norm: float,
+    p: float = 2.0,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
 
@@ -502,9 +531,11 @@ def clip_matrix_norm(
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
-    return ratios * x
+    return ivy.multiply(ratios, x, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def floormod(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -532,6 +563,7 @@ def floormod(
     return _cur_backend(x).floormod(x, y, out=out)
 
 
+@to_native_arrays_and_back
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -555,6 +587,7 @@ def unstack(
     return _cur_backend(x).unstack(x, axis, keepdims)
 
 
+@to_native_arrays_and_back
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
@@ -627,6 +660,7 @@ def fourier_encode(
     return sin_x, cos_x
 
 
+@inputs_to_native_arrays
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True
 ) -> bool:
@@ -653,6 +687,7 @@ def value_is_nan(
     return False
 
 
+@inputs_to_native_arrays
 def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
     """Determine whether the array contains any nans, as well as infs or -infs if
     specified.
@@ -874,9 +909,13 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
+@to_native_arrays_and_back
 def einops_rearrange(
-    x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]
-) -> Union[ivy.Array, ivy.NativeArray]:
+    x: Union[ivy.Array, ivy.NativeArray],
+    pattern: str,
+    out: Optional[ivy.Array] = None,
+    **axes_lengths: Dict[str, int],
+) -> ivy.Array:
     """Perform einops rearrange operation on input array x.
 
     Parameters
@@ -894,15 +933,20 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
-    return einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x, pattern, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
+@to_native_arrays_and_back
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
+    out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Perform einops reduce operation on input array x.
 
     Parameters
@@ -922,11 +966,18 @@ def einops_reduce(
         New array with einops.reduce having been applied.
 
     """
-    return einops.reduce(x, pattern, reduction, **axes_lengths)
+    ret = einops.reduce(x, pattern, reduction, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
+@to_native_arrays_and_back
 def einops_repeat(
-    x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]
+    x: Union[ivy.Array, ivy.NativeArray],
+    pattern: str,
+    out: Optional[ivy.Array] = None,
+    **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Perform einops repeat operation on input array x.
 
@@ -945,7 +996,10 @@ def einops_repeat(
         New array with einops.repeat having been applied.
 
     """
-    return einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x, pattern, **axes_lengths)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def get_min_denominator() -> float:
@@ -1161,6 +1215,7 @@ def inplace_variables_supported(f=None):
     return _cur_backend().inplace_variables_supported()
 
 
+@inputs_to_native_arrays
 def supports_inplace(x):
     """Determine whether inplace operations are supported for the data type of x.
 
@@ -1182,6 +1237,7 @@ def supports_inplace(x):
     raise Exception("Input x must be either a variable or an array.")
 
 
+@inputs_to_native_arrays
 def assert_supports_inplace(x):
     """Asserts that inplace operations are supported for x, else raises exception.
 
@@ -1206,11 +1262,15 @@ def assert_supports_inplace(x):
 
 
 def inplace_update(
-    x: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+    x: Union[ivy.Array, ivy.NativeArray],
+    val: Union[ivy.Array, ivy.NativeArray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
-    array classes in the backend, when the backend supports this.
+    array classes in the backend when the backend supports this. If the backend does
+    not natively support inplace updates, and x is an ivy.NativeArray instance,
+    then an exception will be thrown.
 
     Parameters
     ----------
@@ -1218,6 +1278,10 @@ def inplace_update(
         The variable to update.
     val
         The array to update the variable with.
+    ensure_in_backend
+        Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+        In cases where it should be, backends which do not natively support inplace
+        updates will raise an exception.
 
     Returns
     -------
@@ -1225,7 +1289,7 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return _cur_backend(x).inplace_update(x, val)
+    return _cur_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
 def inplace_decrement(x, val):
@@ -1266,6 +1330,8 @@ def inplace_increment(x, val):
     return _cur_backend(x).inplace_increment(x, val)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1292,6 +1358,8 @@ def cumsum(
     return _cur_backend(x).cumsum(x, axis, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1319,7 +1387,9 @@ def cumprod(
     return _cur_backend(x).cumprod(x, axis, exclusive, out=out)
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -1360,7 +1430,9 @@ def scatter_flat(
     )
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -1402,7 +1474,9 @@ def scatter_nd(
     )
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1437,7 +1511,9 @@ def gather(
     return _cur_backend(params).gather(params, indices, axis, device=device, out=out)
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1483,6 +1559,8 @@ def multiprocessing(context: str = None):
     return _cur_backend().multiprocessing(context)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1502,7 +1580,9 @@ def indices_where(
     return _cur_backend(x).indices_where(x)
 
 
-# noinspection PyShadowingNames
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1531,6 +1611,7 @@ def one_hot(
     return _cur_backend(indices).one_hot(indices, depth, device=device)
 
 
+@inputs_to_native_arrays
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
 ) -> Iterable[int]:
@@ -1563,6 +1644,7 @@ def shape(
     return _cur_backend(x).shape(x, as_array)
 
 
+@inputs_to_native_arrays
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
     """Returns the number of dimensions of the array x.
 

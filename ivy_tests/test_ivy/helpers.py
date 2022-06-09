@@ -256,6 +256,8 @@ def docstring_examples_run(fn):
         return True
 
     docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
+    
+    print(fn_name)
 
     if docstring is None:
         return True
@@ -322,8 +324,11 @@ def docstring_examples_run(fn):
     print("Output: ", output)
     print("Putput: ", parsed_output)
 
-    assert output == parsed_output, "Output is unequal to the docstrings output."
-    return True
+    # assert output == parsed_output, "Output is unequal to the docstrings output."
+    if output == parsed_output: 
+        return True
+    
+    return False
 
 
 def var_fn(a, b=None, c=None, dtype=None):

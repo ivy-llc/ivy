@@ -32,7 +32,7 @@ Function Types
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**,
-and combined they consitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
+and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true
    :align: center
@@ -65,7 +65,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.current_backend(x).tan(x, out)
+        return ivy.current_backend(x).tan(x, out=out)
 
 The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
@@ -120,9 +120,9 @@ Some functions have some backend-specific implementations in
 To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
 Because these functions include both a compositional implementation and also at least one backend-specific
-implementation, these functions are refered to as *mixed*.
+implementation, these functions are referred to as *mixed*.
 
-When using ivy without a backend set explicitly (for example :code:`ivy.set_framework()` has not been called),
+When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
 will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
@@ -131,7 +131,7 @@ directly. However, as just explained, *mixed* functions implement a compositiona
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using :code:`ivy.set_framework()` for example),
+Typically the backend should always be set explicitly though (using :code:`ivy.set_backend()` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Standalone Functions
@@ -140,7 +140,7 @@ Standalone Functions
 *Standalone* functions are functions which do not reference any other *primary*,
 *compositional* or *mixed* functions whatsoever.
 
-By definition, standalone functions can only reference themselves or other standlone functions.
+By definition, standalone functions can only reference themselves or other standalone functions.
 Most commonly, these functions are *convenience* functions (see below).
 
 As a first example, every function in the `nest.py`_ module is a standalone function.
@@ -158,7 +158,7 @@ Nestable Functions
 
 *Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
-provided that the containers share the same nested structure.
+provided that the containers share a common nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :code:`ivy.Container` in the output.
@@ -183,6 +183,92 @@ This function wrapping process is covered in a bit more detail in the :ref:`Func
 
 Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
 in as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
+
+**Shared Nested Structure**
+
+When the nested structures of the multiple containers are *shared* but not *identical*,
+then the behaviour of the nestable function is a bit different.
+Containers have *shared* nested structures if all unique leaves in any of the containers
+are children of a nested structure which is shared by all other containers.
+
+Take the example below, the nested structures of containers :code:`x` and :code:`y`
+are shared but not identical.
+
+.. code-block:: python
+
+    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
+    y = ivy.Container(a=2, d=3)
+
+The shared key chains (chains of keys, used for indexing the container)
+are :code:`a` and :code:`d`. The key chains unique to :code:`x` are :code:`a/b`, :code:`a/c`,
+:code:`d/e` and :code:`d/f`. The unique key chains all share the same base structure as
+all other containers (in this case only one other container, :code:`y`).
+Therefore, the containers :code:`x` and :code:`y` have shared nested structure.
+
+When calling *nestable* functions on containers with non-identical structure,
+then the shared leaves of the shallowest container are broadcast to the leaves of the
+deepest container.
+
+It's helpful to look at an example:
+
+.. code-block:: python
+
+    print(x / y)
+    {
+        a: {
+          b: 1,
+          c: 2
+        },
+        d: {
+          e: 3,
+          f: 2.67
+        }
+    }
+
+In this case, the integer at :code:`y.a` is broadcast to the leaves :code:`x.a.b` and
+:code:`x.a.c`, and the integer at :code:`y.d` is broadcast to the leaves :code:`x.d.e`
+and :code:`x.d.f`.
+
+Another example of containers with shared nested structure is given below:
+
+.. code-block:: python
+
+    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
+    y = ivy.Container(a=2, d=3)
+    z = ivy.Container(a={'b': 10, 'c': {'g': 11, 'h': 12}}, d={'e': 13, 'f': 14})
+
+Adding these containers together would result in the following:
+
+.. code-block:: python
+
+    print(x + y + z)
+    {
+        a: {
+          b: 14,
+          c: {
+            g: 17,
+            h: 18,
+          }
+        },
+        d: {
+          e: 22,
+          f: 25
+        }
+    }
+
+An example of containers which **do not** have shared nested structure is given below:
+
+.. code-block:: python
+
+    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
+    y = ivy.Container(a=2, d=3, g=4)
+    z = ivy.Container(a={'b': 10, 'c': {'g': 11, 'h': 12}}, d={'e': 13, 'g': 14})
+
+This is for three reasons, (a) the key chain :code:`g` is not shared by any container other
+than :code:`y`, (b) the key chain :code:`d/f` for :code:`x` is not present in
+:code:`z` despite :code:`d` not being a non-leaf node in :code:`z`,
+and likewise the key chain :code:`d/g` for :code:`z` is not present in :code:`x`
+despite :code:`d` not being a non-leaf node in :code:`x`.
 
 Convenience Functions
 ---------------------
