@@ -26,7 +26,15 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
 )
 def test_linear_layer_training(
-    batch_shape, input_channels, output_channels, with_v, dtype, as_variable, device, compile_graph, call
+    batch_shape,
+    input_channels,
+    output_channels,
+    with_v,
+    dtype,
+    as_variable,
+    device,
+    compile_graph,
+    call,
 ):
     # smoke test
     if call is helpers.np_call:
