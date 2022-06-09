@@ -36,7 +36,7 @@ We also explain the rational for why each implementation is the way it is,
 and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking,
-the function :code:`ivy.inplace_update` will result in very subtly different behaviour for each backend.
+the function :code:`ivy.inplace_update` will result in subtly different behaviour for each backend.
 
 While :code:`ivy.Array` instances will always be inplace updated consistently,
 in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
