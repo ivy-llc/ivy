@@ -33,6 +33,9 @@ def cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating
         the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -53,7 +56,6 @@ def cross_entropy(
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    # noinspection PyUnresolvedReferences
     return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
 
 
@@ -63,6 +65,7 @@ def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
     epsilon: Optional[float] = 1e-7,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
 
@@ -75,6 +78,9 @@ def binary_cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -151,7 +157,10 @@ def binary_cross_entropy(
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
+    ret = -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_native_arrays_and_back
@@ -161,6 +170,7 @@ def sparse_cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
 
@@ -176,6 +186,9 @@ def sparse_cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -253,4 +266,4 @@ def sparse_cross_entropy(
 
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon)
+    return cross_entropy(true, pred, axis, epsilon, out=out)
