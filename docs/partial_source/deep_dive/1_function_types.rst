@@ -270,6 +270,88 @@ than :code:`y`, (b) the key chain :code:`d/f` for :code:`x` is not present in
 and likewise the key chain :code:`d/g` for :code:`z` is not present in :code:`x`
 despite :code:`d` not being a non-leaf node in :code:`x`.
 
+**Container-dependent Functions**
+
+*Container-dependent* functions are functions containing arguments which, if provided,
+**must** be provided as an :code:`ivy.Container`.
+*Container-dependent* functions are never *nestable*, as we will explain.
+Due to their dependence on containers, *container-dependent* functions all have a natural
+many (the containers) to one (all other arguments) correspondence in the arguments,
+unlike *nestable* functions which have a one-to-one correspondence between the arguments
+by default.
+
+A couple of examples of *Container-dependent* functions are:
+:code:`ivy.execute_with_gradients` and :code:`ivy.multi_head_attention`.
+
+We'll go through the signatures and docstring descriptions for both of these in turn.
+
+.. code-block:: python
+
+    def execute_with_gradients(
+        func: Callable,
+        xs: ivy.Container,
+        retain_grads: bool = False,
+    ) -> Tuple[ivy.Array, ivy.Container, Any]:
+        """
+        Call function func with container of input variables xs, and return the
+        functions first output y, the gradients dy/dx as a new container, and any other
+        function outputs after the returned y value.
+        """
+
+Technically, this function *could* be made fully nestable, whereby the function would
+be independently applied on each leaf node of the :code:`ivy.Container` of variables,
+but this would be much less efficient, with the backend autograd function
+(such as :code:`torch.autograd.grad`) being called many times independently for each
+variable in the container of variables :code:`xs`. By making this function non-nestable,
+we do not map the function across each of the container leaves, and instead pass the
+entire container into the backend autograd function directly,
+which is much more efficient.
+
+If the function were *nestable*, it would also repeatedly return :code:`y` and all
+other function return values at each leaf of the single returned container,
+changing the signature of the function, and causing repeated redundancy in the return.
+
+The example :code:`ivy.multi_head_attention` is a bit different.
+
+.. code-block:: python
+
+    def multi_head_attention(
+        x: Union[ivy.Array, ivy.NativeArray],
+        scale: Number,
+        num_heads: int,
+        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        to_q_fn: Optional[Callable] = None,
+        to_kv_fn: Optional[Callable] = None,
+        to_out_fn: Optional[Callable] = None,
+        to_q_v: Optional[ivy.Container] = None,
+        to_kv_v: Optional[ivy.Container] = None,
+        to_out_v: Optional[ivy.Container] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Applies multi-head attention, with the array (x) to determine the queries from,
+        the scale for the query-key similarity measure, the number of
+        attention heads, the context to determine the keys and values from,
+        the mask to apply to the query-key values, the function (to_q_fn) to compute
+        queries from input x, the function (to_kv_fn) to compute keys and values from
+        the context, the function (to_out_fn) to compute the output from the scaled
+        dot-product attention, the variables (to_q_v) for function to_q_fn, the
+        variables (to_kv_v) for function to_kv_fn, and the variables (to_out_v) for
+        function to_out_fn.
+        """
+
+This function fundamentally could not be made *nestable*,
+as the function takes a many-to-one approach with regards to the optional containers:
+:code:`to_q_v`, :code:`to_kv_v` and :code:`to_out_v`.
+The containers are optionally used for the purpose of returning a single
+:code:`ivy.Array` at the end. Calling this function on each leaf of the containers
+passed in the input would not make any sense.
+
+Hopefully, these two examples explain why *Container-dependent* functions
+(with arguments which, if provided, **must** be provided as an :code:`ivy.Container`),
+are never implemented as *nestable* functions.
+
 Convenience Functions
 ---------------------
 
