@@ -2,7 +2,8 @@ name: Ivy PR Automation
 on:
   pull_request_target:
     types: [opened]
-permissions: read-all|write-all
+permissions:
+  pull-requests: write-all
 
 jobs:
   pull_request_assigners:
