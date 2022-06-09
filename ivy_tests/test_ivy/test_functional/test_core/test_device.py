@@ -586,19 +586,15 @@ def test_profiler(device, call):
 
 
 @given(num=st.integers(0, 5))
-def test_num_arrays_on_dev(num):
+def test_num_arrays_on_dev(num, device):
     arrays = {"x": []}
-    arr_device = ivy.default_device()
-    arr_device = ivy.as_ivy_dev(arr_device)
-    if num:
-        for _ in range(num):
-            # arr size fixed as its irrelevant.
-            arr = ivy.array(np.random.uniform(size=2))
-            arrays["x"].append(arr)
-        assert ivy.num_ivy_arrays_on_dev(arr_device) == num
-    elif num == 0:
-        assert ivy.num_ivy_arrays_on_dev(arr_device) == 0
-  
+    for _ in range(num):
+        # arr size fixed as its irrelevant.
+        arr = ivy.array(np.random.uniform(size=2))
+        arrays["x"].append(arr)
+
+    assert ivy.num_ivy_arrays_on_dev(device) == num
+
 
 # Still to Add #
 # ---------------#
