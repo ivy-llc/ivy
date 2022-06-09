@@ -28,7 +28,9 @@ def random_uniform(
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
-        _jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype),
+        _jax.random.uniform(
+            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
+        ),
         device=default_device(device),
     )
 
@@ -38,7 +40,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -59,7 +61,7 @@ def multinomial(
     probs: Optional[JaxArray] = None,
     replace: bool = True,
     *,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
 
     global RNG
@@ -95,7 +97,7 @@ def randint(
     high: int,
     shape: Union[int, Tuple[int, ...]],
     *,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
