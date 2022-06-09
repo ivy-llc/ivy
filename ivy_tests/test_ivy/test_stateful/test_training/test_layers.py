@@ -3,45 +3,53 @@
 # global
 import pytest
 import numpy as np
-
+from hypothesis import given, strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+import ivy.functional.backends.numpy as ivy_np
 
 # Linear #
 # -------#
 
 
 # linear
-@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    batch_shape=helpers.lists(
+        st.integers(1, 2), min_size="num_dims", max_size="num_dims", size_bounds=[1, 2]
+    ),
+    input_channels=st.integers(2, 4),
+    output_channels=st.integers(1, 5),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    with_v=st.booleans(),
+    as_variable=st.booleans(),
+)
 def test_linear_layer_training(
-    bs_ic_oc, with_v, dtype, tensor_fn, device, compile_graph, call
+    batch_shape, input_channels, output_channels, with_v, dtype, as_variable, device, compile_graph, call
 ):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
     x = ivy.astype(
         ivy.linspace(
             ivy.zeros(batch_shape, device=device),
             ivy.ones(batch_shape, device=device),
             input_channels,
+            device=device,
         ),
-        "float32",
+        dtype=dtype,
     )
+    if as_variable:
+        x = ivy.variable(x)
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(
             ivy.array(
                 np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                "float32",
+                dtype=dtype,
                 device=device,
             )
         )
