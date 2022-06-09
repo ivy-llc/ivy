@@ -19,13 +19,14 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype=None,
     *,
     device: str
 ) -> Tensor:
-    low = tf.cast(low, "float32")
-    high = tf.cast(high, "float32")
+    low = tf.cast(low, dtype)
+    high = tf.cast(high, dtype)
     with tf.device(default_device(device)):
-        return tf.random.uniform(shape if shape else (), low, high)
+        return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
 
 
 def random_normal(
