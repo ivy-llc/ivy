@@ -86,8 +86,6 @@ def test_gelu(x, approx, dtype, tensor_fn, device, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.gelu, x, approx), ivy_np.gelu(ivy.to_numpy(x), approx))
-    # docstrings test
-    helpers.docstring_examples_run(ivy.gelu)
 
 
 
