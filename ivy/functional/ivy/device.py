@@ -39,7 +39,21 @@ class DefaultDevice:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, device):
+    def __init__(self,
+                 device: Union[ivy.Device, ivy.NativeDevice], 
+                 ) -> None:
+        """Initialises the DefaultDevice class
+
+        Parameters
+        ----------
+        device
+            The device string - as an ivy device or nativedevice class
+
+        Examples
+        --------
+        >>> z = ivy.DefaultDevice("cpu")
+        >>> x = ivy.DefaultDevice("tpu")
+        """
         self._dev = device
 
     def __enter__(self):
