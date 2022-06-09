@@ -110,7 +110,7 @@ def inplace_update(
     if ivy.is_ivy_array(x):
         x.data = val_native
     else:
-        x = ivy.Array(val_native)
+        raise Exception("JAX does not natively support inplace updates")
     return x
 
 
