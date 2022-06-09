@@ -1246,11 +1246,15 @@ def assert_supports_inplace(x):
 
 
 def inplace_update(
-    x: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+    x: Union[ivy.Array, ivy.NativeArray],
+    val: Union[ivy.Array, ivy.NativeArray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
-    array classes in the backend, when the backend supports this.
+    array classes in the backend when the backend supports this. If the backend does
+    not natively support inplace updates, and x is an ivy.NativeArray instance,
+    then an exception will be thrown.
 
     Parameters
     ----------
@@ -1258,6 +1262,10 @@ def inplace_update(
         The variable to update.
     val
         The array to update the variable with.
+    ensure_in_backend
+        Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+        In cases where it should be, backends which do not natively support inplace
+        updates will raise an exception.
 
     Returns
     -------
@@ -1265,7 +1273,7 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return _cur_backend(x).inplace_update(x, val)
+    return _cur_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
 def inplace_decrement(x, val):
