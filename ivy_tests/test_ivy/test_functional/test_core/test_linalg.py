@@ -71,19 +71,21 @@ def test_matmul(
     seed,
 ):
     np.random.seed(seed)
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                with_out,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "matmul",
-                                rtol=5e-02,
-                                atol=5e-02,
-                                x1=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
-                                x2=np.random.uniform(size=(b, c)).astype(input_dtype[1]))
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "matmul",
+        rtol=5e-02,
+        atol=5e-02,
+        x1=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
+        x2=np.random.uniform(size=(b, c)).astype(input_dtype[1]),
+    )
 
 
 # Still to Add #

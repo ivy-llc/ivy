@@ -18,7 +18,7 @@ from ivy import (
 # -------------------#
 
 
-def asarray(object_in, *, copy=None, dtype: tf.DType, device: str):
+def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
     device = default_device(device)
     with tf.device(as_native_dev(device)):
         if copy:
@@ -176,7 +176,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, *, dtype: tf.DType, device: str):
+def arange(start, stop=None, step=1, *, dtype: tf.DType = None, device: str):
 
     if stop is None:
         stop = start
@@ -213,7 +213,7 @@ def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
     *,
-    dtype: tf.DType,
+    dtype: tf.DType = None,
     device: str
 ) -> Tensor:
     with tf.device(as_native_dev(default_device(device))):
