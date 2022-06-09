@@ -1375,7 +1375,9 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Perform in-place update for the input array. This will always be performed on</span>
 <span class="sd">    ivy.Array instances pass in the input, and will also be performed on the native</span>
-<span class="sd">    array classes in the backend, when the backend supports this.</span>
+<span class="sd">    array classes in the backend when the backend supports this. If the backend does</span>
+<span class="sd">    not natively support inplace updates, and x is an ivy.NativeArray instance,</span>
+<span class="sd">    then an exception will be thrown.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
