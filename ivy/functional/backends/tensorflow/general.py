@@ -68,7 +68,9 @@ container_types = lambda: []
 
 
 def inplace_update(
-    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+    x: Union[ivy.Array, tf.Tensor],
+    val: Union[ivy.Array, tf.Tensor],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
@@ -77,11 +79,12 @@ def inplace_update(
             x.data = x_native
         else:
             x = ivy.Array(x_native)
+    elif ensure_in_backend:
+        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+    elif ivy.is_ivy_array(x):
+        x.data = val_native
     else:
-        if ivy.is_ivy_array(x):
-            x.data = val_native
-        else:
-            x = ivy.Array(val_native)
+        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
     return x
 
 

@@ -36,7 +36,8 @@ We also explain the rational for why each implementation is the way it is,
 and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking,
-the function :code:`ivy.inplace_update` will result in very subtly different behaviour for each backend.
+the function :code:`ivy.inplace_update` will result in subtly different behaviour
+for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
 While :code:`ivy.Array` instances will always be inplace updated consistently,
 in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
@@ -48,13 +49,16 @@ which :code:`ivy.Array` wraps, due to design choices made by each backend.
 
     def inplace_update(
         x: Union[ivy.Array, JaxArray],
-        val: Union[ivy.Array, JaxArray]
+        val: Union[ivy.Array, JaxArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
+        if ensure_in_backend:
+            raise Exception("JAX does not natively support inplace updates")
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            x = ivy.Array(val_native)
+            raise Exception("JAX does not natively support inplace updates")
         return x
 
 JAX **does not** natively support inplace updates,
@@ -67,7 +71,8 @@ Therefore, an inplace update is only performed on :code:`ivy.Array` instances pr
 
     def inplace_update(
         x: Union[ivy.Array, mx.nd.NDArray],
-        val: Union[ivy.Array, mx.nd.NDArray]
+        val: Union[ivy.Array, mx.nd.NDArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native[:] = val_native
@@ -87,7 +92,8 @@ Following this, an inplace update is then also performed on the :code:`ivy.Array
 
     def inplace_update(
         x: Union[ivy.Array, np.ndarray],
-        val: Union[ivy.Array, np.ndarray]
+        val: Union[ivy.Array, np.ndarray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -108,7 +114,8 @@ if provided in the input.
 
     def inplace_update(
         x: Union[ivy.Array, tf.Tensor, tf.Variable],
-        val: Union[ivy.Array, tf.Tensor, tf.Variable]
+        val: Union[ivy.Array, tf.Tensor, tf.Variable],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_variable(x_native):
@@ -117,11 +124,12 @@ if provided in the input.
                 x.data = x_native
             else:
                 x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            if ivy.is_ivy_array(x):
-                x.data = val_native
-            else:
-                x = ivy.Array(val_native)
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
         return x
 
 TensorFlow **does not** natively support inplace updates for :code:`tf.Tensor` instances,
@@ -138,7 +146,8 @@ an inplace update is then also performed on the :code:`ivy.Array` instance, if p
 
     def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
-        val: Union[ivy.Array, torch.Tensor]
+        val: Union[ivy.Array, torch.Tensor],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -169,15 +178,17 @@ This could for example be the input array itself, but can also be any other arra
 
 All Ivy functions which return a single array should support inplace updates.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
-However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
-This is ommitted from the type hint, as explained in the :ref:`Function Arguments` section.
+However, as discussed above, if the function is *nestable* then :code:`ivy.Container` instances are also supported.
+:code:`ivy.Container` is omitted from the type hint in such cases,
+as explained in the :ref:`Function Arguments` section.
 
-When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
-:code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
+When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array`
+(or :code:`ivy.Container` if *nestable*).
+However, when :code:`out` is specified, then the return is provided as an inplace update of the
 :code:`out` argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.
 
-In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominatly handled in
+In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominantly handled in
 `_function_w_arrays_n_out_handled`_, which as discussed in the :ref:`Arrays` section,
 is also responsible for converting :code:`ivy.Array` instances to :code:`ivy.NativeArray`
 instances before calling the backend function, and then back to :code:`ivy.Array` instances again for returning.
@@ -185,7 +196,9 @@ As explained in the :ref:`Function Wrapping` section,
 this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
 dynamically during `backend setting`_.
 
-However, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
+**Primary Functions**
+
+In the case of *primary* functions, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
 argument directly, such as `torch.tan`_ and `numpy.tan`_.
 When implementing backend-specific functions, the :code:`out` argument should only be added to functions which wrap a
 function in the backend supporting inplace updates directly.
@@ -241,6 +254,55 @@ which is how :code:`out` is provided to the function. This inplace update is alw
 
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
+
+**Compositional Functions**
+
+For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation,
+with no wrapping applied at all. This is for a few reasons:
+
+#. we need to show the :code:`out` argument in the compositional function signature,
+   as this is the only function implementation in the codebase.
+   Adding an argument unused in the implementation could cause some confusion.
+#. generally, inplace updates are performed because memory management is an area of
+   concern for the user. By handling the :code:`out` argument in the compositional
+   implementation itself. We can maximize the memory efficiency of the function,
+   using inplace updates in as many of the inner Ivy functions as possible.
+#. this enables us to make use of backend-specific :code:`out` argument handling
+
+The second and third points are the most important points.
+
+We'll use :code:`ivy.cross_entropy` as an example:
+
+.. code-block:: python
+
+    def cross_entropy(
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        pred = ivy.clip(pred, epsilon, 1 - epsilon)
+        log_pred = ivy.log(pred)
+        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+
+By handling the :code:`out` argument in the function, we are able to get the benefits
+outlined above. Firstly, the return of :code:`ivy.sum` is the same shape and type
+as the return of entire function, and so we can also write
+this output to the :code:`out` argument inplace.
+We can then subsequently overwrite the contents of :code:`out` again with the return
+of the :code:`ivy.negative` function. This minimizes the number of arrays created during
+the execution of the function,
+which is generally the intention when specifying the :code:`out` argument.
+Additionally, with a PyTorch backend, the :code:`ivy.negative` function defers to the
+:code:`out` argument of :code:`torch.negative` function directly, which is the most
+efficient inplace update possible, making use of backend-specific optimizations.
+
+If we had instead simply used the wrapper
+`handle_out_argument <https://github.com/unifyai/ivy/blob/50f1ad6b66a74931efff4931c4e2b3d485e354ca/ivy/func_wrapper.py#L361>`_,
+then we would not leverage any of these benefits, and instead simply call
+:code:`ivy.inplace_update` at the very end of the function call.
 
 copy argument
 -------------

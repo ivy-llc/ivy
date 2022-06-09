@@ -184,5 +184,5 @@ or reach out on `discord`_ in the `function arguments channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/5cAbryXza18">
+    src="https://www.youtube.com/embed/5cAbryXza18" class="video">
     </iframe>

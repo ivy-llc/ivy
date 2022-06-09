@@ -5,6 +5,7 @@ import ivy
 import ivy as _ivy
 from typing import Union
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Extra #
@@ -78,6 +79,8 @@ def unset_with_grads():
 # Variables #
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
 
@@ -117,6 +120,8 @@ def is_variable(x, exclusive=False):
     return _cur_backend(x).is_variable(x, exclusive)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def variable_data(x):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
@@ -136,6 +141,8 @@ def variable_data(x):
     return _cur_backend(x).variable_data(x)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def stop_gradient(x, preserve_type=True):
     """Stops gradient computation.
 
@@ -161,6 +168,7 @@ def stop_gradient(x, preserve_type=True):
 # AutoGrad #
 
 
+@to_native_arrays_and_back
 def execute_with_gradients(func, xs, retain_grads=False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
@@ -189,6 +197,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
 # Optimizer Steps #
 
 
+@to_native_arrays_and_back
 def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
     """Compute adam step delta, given the derivatives of some cost c with respect to ws,
     using ADAM update. `[reference]
@@ -231,6 +240,7 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 # Optimizer Updates #
 
 
+@to_native_arrays_and_back
 def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
     """Update weights ws of some function, given the true or effective derivatives of
     some cost c with respect to ws, [dc/dw for w in ws].
@@ -275,6 +285,7 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
     return ws
 
 
+@to_native_arrays_and_back
 def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws].
@@ -307,6 +318,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
     return optimizer_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
+@to_native_arrays_and_back
 def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
@@ -346,6 +358,7 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
+@to_native_arrays_and_back
 def adam_update(
     ws,
     dcdws,
@@ -408,6 +421,7 @@ def adam_update(
     return optimizer_update(ws, effective_grads, lr, inplace, stop_gradients), mw, vw
 
 
+@to_native_arrays_and_back
 def lamb_update(
     ws,
     dcdws,
