@@ -53,15 +53,12 @@ class DefaultDevice:
         Examples
         --------
 
-        A `cpu` as device:
-        >>> with ivy.DefaultDevice("cpu") as z:
-        >>>  # Called z.__enter__()
-        >>>  pass
-
-        A `tpu` as device:
-        >>> with ivy.DefaultDevice("tpu") as x:
-        >>>  # Called x.__enter__()
-        >>>  pass
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+        
         """
         set_default_device(self._dev)
         return self
