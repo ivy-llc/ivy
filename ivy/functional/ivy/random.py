@@ -35,8 +35,9 @@ def random_uniform(
         If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
         If size is ``None`` (Default), a single value is returned.
     device
-        device on which to create the array 'gpu:0', 'gpu:1', 'cpu' etc.
-
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
+        
     Returns
     -------
     ret
