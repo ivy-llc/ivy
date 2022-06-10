@@ -410,6 +410,61 @@ passed in the input would not make any sense.</p>
 <p>Hopefully, these two examples explain why <em>Container-dependent</em> functions
 (with arguments which, if provided, <strong>must</strong> be provided as an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>),
 are never implemented as <em>nestable</em> functions.</p>
+<p><strong>Implicitly Nestable Functions</strong></p>
+<p>The <em>nestable</em> behaviour is added to any function which is decorated with the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a>
+wrapper. This wrapper causes the function to be applied at each leaf of any containers
+passed in the input. For <em>compositional</em> functions which are composed of other nestable
+functions, then this compositional function is already <strong>implicitly nestable</strong>,
+without us needing to explicitly wrap it at all.</p>
+<p>Let’s take the function <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> as an example.
+The internally called functions are: <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.log</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.sum</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">ivy.negative</span></code>, each of which are themselves <em>nestable</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
+    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Therefore, when passing an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in the input,
+each internal function will, in turn, correctly handle the container, and return
+a new container with the correct operations having been performed. This makes it very
+easy and intuitive to debug the code, as the code is stepped through chronologically.
+In effect, all leaves of the input container are being processed concurrently,
+during the computation steps of the <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> function.</p>
+<p>However, what if we had added the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a>
+wrapping as a decorator directly to the function <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code>?</p>
+<p>In this case, the <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> function would itself be called
+multiple times, on each of the leaves of the container.
+The functions <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.log</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.sum</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">ivy.negative</span></code> would each only consume and return arrays,
+and debugging the <code class="code docutils literal notranslate"><span class="pre">ivy.cross_entropy</span></code> function
+would then become less intuitively chronological,
+with each leaf of the input container now processed sequentially,
+rather than concurrently.</p>
+<p>Therefore, our approach is to <strong>not</strong> wrap any compositional functions which are
+already <em>implicitly nestable</em> as a result of the <em>nestable</em> functions called internally.</p>
+<p>There may be some compositional functions which are not implicitly nestable for some
+reason, and in such cases adding the explicit
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a>
+wrapping may be necessary. But we should try to avoid this,
+in order to make the flow of computation as intuitive to the user as possible.</p>
+<p>When compiling the code, the computation graph is <strong>identical</strong> in either case,
+and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode,
+as the leaves of the container are traversed multiple times rather than once,
+but if performance is of concern then the code should always be compiled in any case.
+The distinction is only really relevant when stepping through and debugging with eager
+mode execution, and for the reasons outlined above, the preference is to keep
+compositional implicitly nestable where possible.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for containers, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,
