@@ -3,7 +3,7 @@ import inspect
 import importlib
 import functools
 import numpy as np
-from types import ModuleType
+from types import ModuleType, FunctionType
 from typing import Callable, Optional, List, Union
 
 
@@ -450,6 +450,23 @@ def handle_nestable(fn: Callable) -> Callable:
 
 
 # Functions #
+
+
+def _wrap_function2(value: Callable, original: Callable) -> Callable:
+    if isinstance(value, FunctionType):
+        if hasattr(original, "handle_nestable"):
+            value = handle_nestable(value)
+        if hasattr(original, "infer_device"):
+            value = infer_device(value)
+        if hasattr(original, "infer_dtype"):
+            value = infer_dtype(value)
+        if hasattr(original, "handle_out_argument"):
+            value = handle_out_argument(value)
+        if hasattr(original, "inputs_to_native_arrays"):
+            value = inputs_to_native_arrays(value)
+        if hasattr(original, "outputs_to_ivy_arrays"):
+            value = outputs_to_ivy_arrays(value)
+    return value
 
 
 def _wrap_function(fn: Callable) -> Callable:

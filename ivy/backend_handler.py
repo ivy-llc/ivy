@@ -10,7 +10,7 @@ from types import FunctionType
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_functions, _unwrap_functions, outputs_to_ivy_arrays, inputs_to_native_arrays, handle_out_argument, infer_dtype, infer_device, handle_nestable
+from ivy.func_wrapper import _wrap_function2, _wrap_functions, _unwrap_functions
 
 
 backend_stack = []
@@ -143,8 +143,9 @@ def current_backend(*args, **kwargs):
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(
-            "get_backend failed to find a valid library from the inputs: "
-            "{} {}".format(args, kwargs)
+            "get_backend failed to find a valid library from the inputs: {} {}".format(
+                args, kwargs
+            )
         )
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
@@ -199,19 +200,14 @@ def set_backend(backend: str):
         specific_v = backend.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
-        if isinstance(specific_v, FunctionType):
-            if hasattr(v, "outputs_to_ivy_arrays"):
-                specific_v = outputs_to_ivy_arrays(specific_v)
-            if hasattr(v, "inputs_to_native_arrays"):
-                specific_v = inputs_to_native_arrays(specific_v)
-            if hasattr(v, "handle_out_argument"):
-                specific_v = handle_out_argument(specific_v)
-            if hasattr(v, "infer_dtype"):
-                specific_v = infer_dtype(specific_v)
-            if hasattr(v, "infer_device"):
-                specific_v = infer_device(specific_v)
-            if hasattr(v, "handle_nestable"):
-                specific_v = handle_nestable(specific_v)
+        if callable(specific_v):
+            specific_v = _wrap_function2(specific_v, v)
+        if k == "linalg":
+            for linalg_k, linalg_v in specific_v.__dict__.items():
+                if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+                    specific_v.__dict__[linalg_k] = _wrap_function2(
+                        linalg_v, ivy.__dict__[linalg_k]
+                    )
         ivy.__dict__[k] = specific_v
         if isinstance(specific_v, collections.Hashable):
             try:
