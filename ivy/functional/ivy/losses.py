@@ -157,10 +157,7 @@ def binary_cross_entropy(
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    ret = -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
 
 
 @to_native_arrays_and_back
