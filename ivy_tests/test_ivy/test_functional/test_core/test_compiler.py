@@ -51,7 +51,6 @@ def test_compile(data, dtype, as_variable, with_array_caching, device, call):
     ):
         # mxnet does not support 0-dimensional variables
         return
-    _unwrap_functions()
     # function 1
     comp_fn = ivy.compile(_fn_1)
     # type test
@@ -80,4 +79,3 @@ def test_compile(data, dtype, as_variable, with_array_caching, device, call):
         x = ivy.variable(x)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
-    _wrap_functions()
