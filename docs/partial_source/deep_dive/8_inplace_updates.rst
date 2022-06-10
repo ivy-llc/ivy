@@ -178,11 +178,13 @@ This could for example be the input array itself, but can also be any other arra
 
 All Ivy functions which return a single array should support inplace updates.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
-However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
-This is omitted from the type hint, as explained in the :ref:`Function Arguments` section.
+However, as discussed above, if the function is *nestable* then :code:`ivy.Container` instances are also supported.
+:code:`ivy.Container` is omitted from the type hint in such cases,
+as explained in the :ref:`Function Arguments` section.
 
-When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
-:code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
+When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array`
+(or :code:`ivy.Container` if *nestable*).
+However, when :code:`out` is specified, then the return is provided as an inplace update of the
 :code:`out` argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.
 
@@ -194,7 +196,9 @@ As explained in the :ref:`Function Wrapping` section,
 this wrapping is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
 dynamically during `backend setting`_.
 
-However, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
+**Primary Functions**
+
+In the case of *primary* functions, `_function_w_arrays_n_out_handled`_ does not handle backend-specific functions which support an :code:`out`
 argument directly, such as `torch.tan`_ and `numpy.tan`_.
 When implementing backend-specific functions, the :code:`out` argument should only be added to functions which wrap a
 function in the backend supporting inplace updates directly.
@@ -250,6 +254,69 @@ which is how :code:`out` is provided to the function. This inplace update is alw
 
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
+
+**Compositional Functions**
+
+For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation,
+with no wrapping applied at all. This is for a few reasons:
+
+#. we need to show the :code:`out` argument in the compositional function signature,
+   as this is the only function implementation in the codebase.
+   Adding an argument unused in the implementation could cause some confusion.
+#. generally, inplace updates are performed because memory management is an area of
+   concern for the user. By handling the :code:`out` argument in the compositional
+   implementation itself. We can maximize the memory efficiency of the function,
+   using inplace updates in as many of the inner Ivy functions as possible.
+#. this enables us to make use of backend-specific :code:`out` argument handling
+
+The second and third points are the most important points.
+
+We'll use :code:`ivy.cross_entropy` as an example:
+
+.. code-block:: python
+
+    def cross_entropy(
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        pred = ivy.clip(pred, epsilon, 1 - epsilon)
+        log_pred = ivy.log(pred)
+        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+
+By handling the :code:`out` argument in the function, we are able to get the benefits
+outlined above. Firstly, the return of :code:`ivy.sum` is the same shape and type
+as the return of the entire function, and so we can also write
+this output to the :code:`out` argument inplace.
+We can then subsequently overwrite the contents of :code:`out` again with the return
+of the :code:`ivy.negative` function. This minimizes the number of arrays created during
+the execution of the function,
+which is generally the intention when specifying the :code:`out` argument.
+Additionally, with a PyTorch backend, the :code:`ivy.negative` function defers to the
+:code:`out` argument of :code:`torch.negative` function directly, which is the most
+efficient inplace update possible, making use of backend-specific optimizations.
+
+If we had instead simply used the wrapper
+`handle_out_argument <https://github.com/unifyai/ivy/blob/50f1ad6b66a74931efff4931c4e2b3d485e354ca/ivy/func_wrapper.py#L361>`_,
+then we would not leverage any of these benefits, and instead simply call
+:code:`ivy.inplace_update` at the very end of the function call.
+
+For some compositional functions, the internal function which generates the final return
+value does not itself support the :code:`out` argument. For example,
+`ivy.multi_head_attention <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L165>`_
+includes support for arbitrary functions passed in the input, including :code:`to_out_fn`
+which, if specified, is applied to the outputs before returning.
+For such functions, the inplace update should just be performed using
+:code:`ivy.inplace_update` at the end of the function,
+like `so <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254>`_.
+
+Technically, this could be handled using the
+`handle_out_argument <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/func_wrapper.py#L361>`_
+wrapping, but we opt to implement this in the compositional function itself,
+due to point 1 mentioned above.
 
 copy argument
 -------------
