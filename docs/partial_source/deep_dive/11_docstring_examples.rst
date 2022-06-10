@@ -34,6 +34,7 @@ These should:
    function in question
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`,
    and (c) :code:`out` used to inplace update the input array :code:`x`
+   (provided that it shares the same :code:`dtype` and :code:`shape` as the return)
 5. If broadcasting is relevant for the function, then show examples which highlight this.
    For example, passing in different shapes for two array arguments
 
@@ -78,7 +79,7 @@ For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on
 corresponding operator is applied to an array. For example, the functions :code:`ivy.add`, `ivy.subtract`,
 :code:`ivy.multiply` and :code:`ivy.divide` are called when the operators :code:`+`, :code:`-`, :code:`*` and :code:`/`
 are used respectively. Under the hood, these operators first call the special methods :code:`__add__`, :code:`__sub__`,
-:code:`__mul__` and :code:`__truediv__` respecitvely, on either the :code:`ivy.Array` or :code:`ivy.Container`
+:code:`__mul__` and :code:`__truediv__` respectively, on either the :code:`ivy.Array` or :code:`ivy.Container`
 instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.
 
@@ -189,6 +190,8 @@ and the values and shapes do become increasingly *complex*.
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
@@ -316,6 +319,8 @@ and the subsequent examples the non-default values in increasingly *complex* exa
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
@@ -348,7 +353,7 @@ We then also add an example with an :code:`ivy.Container` for one of the inputs,
     }
 
 Unlike :code:`ivy.tan`, point 9 is relevant in this case,
-as there are three function inputs in total (exluding :code:`out`).
+as there are three function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :code:`ivy.Container` inputs,
 in order to satisfy point 9.
 
@@ -456,6 +461,8 @@ and the values and shapes do become increasingly *complex*.
 
 Point 4 is clearly satisfied, as each of the three examples shown above use the :code:`out` argument exactly as
 explained in point 4.
+The return has the same :code:`shape` and :code:`dtype` as the input,
+making all three examples possible.
 
 Point 5 is satisfied, as the second example uses different shapes for the inputs :code:`x1` and :code:`x2`. This causes
 the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.
@@ -613,5 +620,5 @@ or reach out on `discord`_ in the `docstring examples channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/rtce8XthiKA">
+    src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
     </iframe>

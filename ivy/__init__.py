@@ -406,9 +406,9 @@ def _sf(x, sig_fig=3):
             x, precision=sig_fig, unique=False, fractional=False, trim="k"
         )
     )
-    if np.issubdtype(type(x), np.uint):
+    if "uint" in type(x).__name__:
         f = np.uint(f)
-    if np.issubdtype(type(x), np.int):
+    elif "int" in type(x).__name__:
         f = np.int(f)
     x = f
     return x

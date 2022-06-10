@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import sys
 import re
+import inspect
 
 import numpy as np
 import math
@@ -257,6 +258,8 @@ def docstring_examples_run(fn):
 
     docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
 
+    print(fn_name)
+
     if docstring is None:
         return True
 
@@ -322,8 +325,11 @@ def docstring_examples_run(fn):
     print("Output: ", output)
     print("Putput: ", parsed_output)
 
-    assert output == parsed_output, "Output is unequal to the docstrings output."
-    return True
+    # assert output == parsed_output, "Output is unequal to the docstrings output."
+    if output == parsed_output:
+        return True
+
+    return False
 
 
 def var_fn(a, b=None, c=None, dtype=None):
@@ -963,3 +969,14 @@ def get_axis(draw, dtype):
         axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
     return res, axis
+
+
+@st.composite
+def num_positional_args(draw, fn_name=None):
+    num_keyword_only = 0
+    total = 0
+    for param in inspect.signature(ivy.__dict__[fn_name]).parameters.values():
+        total += 1
+        if param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+    return draw(integers(min_value=0, max_value=(total - num_keyword_only)))

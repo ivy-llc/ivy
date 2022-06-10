@@ -37,8 +37,9 @@ def var(
 
 def sum(
     x: np.ndarray,
+    *,
     axis: Union[int, Tuple[int]] = None,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
+    dtype: np.dtype = None,
     keepdims: bool = False,
 ) -> np.ndarray:
 
@@ -59,15 +60,16 @@ def sum(
             dtype = np.int64
         else:
             dtype = np.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims))
 
 
 def prod(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: np.dtype
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: np.dtype = None,
+    keepdims: bool = False,
 ) -> np.ndarray:
 
     if dtype is None and np.issubdtype(x.dtype, np.integer):
@@ -87,6 +89,7 @@ def prod(
             dtype = np.int64
         else:
             dtype = np.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return np.asarray(np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims))
 
 
