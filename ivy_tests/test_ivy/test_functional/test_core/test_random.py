@@ -170,9 +170,8 @@ def test_seed(seed_val):
 )
 def test_shuffle(data, dtype, as_variable, device, call):
     # smoke test
-    if dtype == "float16":
-        return
-    x = data.draw(helpers.get_float_array(dtype))
+    shape = data.draw(helpers.get_shape(min_num_dims=1))
+    x = data.draw(helpers.array_values(dtype, shape))
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)

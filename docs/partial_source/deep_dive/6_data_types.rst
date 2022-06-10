@@ -23,6 +23,10 @@ Data Types
 .. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
+.. _`data types discussion`: https://github.com/unifyai/ivy/discussions/1307
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
 
 
 The data types supported by Ivy are as follows:
@@ -113,7 +117,7 @@ The :code:`dtype` argument is handled in `_function_w_arrays_dtype_n_dev_handled
 appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
 As discussed in the :ref:`Function Wrapping` section,
-this is applied to all applicable function dynamically during `backend setting`_.
+this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_dtype`_ infers the data type as follows:
 
@@ -136,24 +140,22 @@ Overall, `ivy.default_dtype`_ infers the data type as follows:
 
 For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the data type,
 these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
-before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`dtype` argument is
+before the backend-specific implementation is even entered into. Therefore, whereas the :code:`dtype` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
-Let's take a look at the function :code:`ivy.prod` as an example.
+Let's take a look at the function :code:`ivy.zeros` as an example.
 
-The implementation in :code:`ivy/functional/ivy/statistical.py` has the following signature:
+The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
 
 .. code-block:: python
 
-    def prod(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
 Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
@@ -163,68 +165,58 @@ Jax:
 
 .. code-block:: python
 
-    def prod(
-        x: JaxArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: jnp.dtype,
-        out: Optional[JaxArray] = None,
+        device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
 MXNet:
 
 .. code-block:: python
 
-    def prod(
-        x: mx.nd.NDArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: type,
-        out: Optional[mx.nd.NDArray] = None,
+        device: mx.context.Context,
     ) -> mx.nd.NDArray:
 
 NumPy:
 
 .. code-block:: python
 
-    def prod(
-        x: np.ndarray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: np.dtype,
-        out: Optional[np.ndarray] = None,
+        device: str,
     ) -> np.ndarray:
 
 TensorFlow:
 
 .. code-block:: python
 
-    def prod(
-        x: Tensor,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: tf.DType,
-        out: Optional[Tensor] = None,
-    ) -> Tensor:
+        device: str,
+    ) -> Union[tf.Tensor, tf.Variable]:
 
 PyTorch:
 
 .. code-block:: python
 
-    def prod(
-        x: torch.Tensor,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: torch.dtype,
-        out: Optional[torch.Tensor] = None,
+        device: torch.device,
     ) -> torch.Tensor:
 
-This makes it clear that these backend-specific functions are only enterred into once the correct :code:`dtype`
+This makes it clear that these backend-specific functions are only entered into once the correct :code:`dtype`
 has been determined.
 
 However, the :code:`dtype` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_
@@ -260,3 +252,11 @@ The PyTorch-specific implementation is as follows:
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
+
+**Round Up**
+
+This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `data types discussion`_,
+or reach out on `discord`_ in the `data types channel`_!

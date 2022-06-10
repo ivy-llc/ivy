@@ -20,6 +20,10 @@ Inplace Updates
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
 .. _`wrapping`:
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
+.. _`inplace updates discussion`: https://github.com/unifyai/ivy/discussions/1319
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program,
@@ -32,7 +36,8 @@ We also explain the rational for why each implementation is the way it is,
 and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking,
-the function :code:`ivy.inplace_update` will result in very subtly different behaviour for each backend.
+the function :code:`ivy.inplace_update` will result in subtly different behaviour
+for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
 While :code:`ivy.Array` instances will always be inplace updated consistently,
 in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
@@ -44,13 +49,16 @@ which :code:`ivy.Array` wraps, due to design choices made by each backend.
 
     def inplace_update(
         x: Union[ivy.Array, JaxArray],
-        val: Union[ivy.Array, JaxArray]
+        val: Union[ivy.Array, JaxArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
+        if ensure_in_backend:
+            raise Exception("JAX does not natively support inplace updates")
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            x = ivy.Array(val_native)
+            raise Exception("JAX does not natively support inplace updates")
         return x
 
 JAX **does not** natively support inplace updates,
@@ -63,7 +71,8 @@ Therefore, an inplace update is only performed on :code:`ivy.Array` instances pr
 
     def inplace_update(
         x: Union[ivy.Array, mx.nd.NDArray],
-        val: Union[ivy.Array, mx.nd.NDArray]
+        val: Union[ivy.Array, mx.nd.NDArray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native[:] = val_native
@@ -83,7 +92,8 @@ Following this, an inplace update is then also performed on the :code:`ivy.Array
 
     def inplace_update(
         x: Union[ivy.Array, np.ndarray],
-        val: Union[ivy.Array, np.ndarray]
+        val: Union[ivy.Array, np.ndarray],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -104,7 +114,8 @@ if provided in the input.
 
     def inplace_update(
         x: Union[ivy.Array, tf.Tensor, tf.Variable],
-        val: Union[ivy.Array, tf.Tensor, tf.Variable]
+        val: Union[ivy.Array, tf.Tensor, tf.Variable],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_variable(x_native):
@@ -113,11 +124,12 @@ if provided in the input.
                 x.data = x_native
             else:
                 x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            if ivy.is_ivy_array(x):
-                x.data = val_native
-            else:
-                x = ivy.Array(val_native)
+            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
         return x
 
 TensorFlow **does not** natively support inplace updates for :code:`tf.Tensor` instances,
@@ -134,7 +146,8 @@ an inplace update is then also performed on the :code:`ivy.Array` instance, if p
 
     def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
-        val: Union[ivy.Array, torch.Tensor]
+        val: Union[ivy.Array, torch.Tensor],
+        ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -166,14 +179,14 @@ This could for example be the input array itself, but can also be any other arra
 All Ivy functions which return a single array should support inplace updates.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
 However, as discussed above, the function is *nestable*, meaning :code:`ivy.Container` instances are also supported.
-This is ommitted from the type hint, as explained in the :ref:`Type Hints` section.
+This is omitted from the type hint, as explained in the :ref:`Function Arguments` section.
 
 When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array` or
 :code:`ivy.Container`. However, when :code:`out` is specified, then the return is provided as an inplace update of the
 :code:`out` argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.
 
-In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominatly handled in
+In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominantly handled in
 `_function_w_arrays_n_out_handled`_, which as discussed in the :ref:`Arrays` section,
 is also responsible for converting :code:`ivy.Array` instances to :code:`ivy.NativeArray`
 instances before calling the backend function, and then back to :code:`ivy.Array` instances again for returning.
@@ -257,3 +270,11 @@ Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
 As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_
+
+**Round Up**
+
+This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `inplace updates discussion`_,
+or reach out on `discord`_ in the `inplace updates channel`_!

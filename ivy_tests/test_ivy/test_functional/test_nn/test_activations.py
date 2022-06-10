@@ -86,6 +86,10 @@ def test_gelu(x, approx, dtype, tensor_fn, device, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.gelu, x, approx), ivy_np.gelu(ivy.to_numpy(x), approx))
+<<<<<<< HEAD
+=======
+
+>>>>>>> cde340fc8199e9da5d371eef8cdafcb1f61b866d
 
 # tanh
 @pytest.mark.parametrize("x", [[[-1.0, 1.0, 2.0]]])

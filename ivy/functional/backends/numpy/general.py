@@ -42,7 +42,9 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_update(
-    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+    x: Union[ivy.Array, np.ndarray],
+    val: Union[ivy.Array, np.ndarray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -67,12 +69,8 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(
-    x: np.ndarray, y: np.ndarray, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     ret = np.asarray(x % y)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -105,33 +103,19 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(
-    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, np.cumsum(x, axis))
-    else:
-        return np.cumsum(x, axis)
+def cumsum(x: np.ndarray, axis: int = 0) -> np.ndarray:
+    return np.cumsum(x, axis)
 
 
 def cumprod(
-    x: np.ndarray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[np.ndarray] = None,
+    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, np.swapaxes(res, axis, -1).copy())
-        else:
-            return np.swapaxes(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, np.cumprod(x, axis))
-    else:
-        return np.cumprod(x, axis)
+        return np.swapaxes(res, axis, -1)
+    return np.cumprod(x, axis)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):

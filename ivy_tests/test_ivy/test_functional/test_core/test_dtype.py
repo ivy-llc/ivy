@@ -50,18 +50,20 @@ def test_astype(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "astype",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "astype",
+        x=x,
+    )
 
 
 # broadcast_to
@@ -92,17 +94,19 @@ def test_broadcast_to(
     if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "broadcast_to",
-                                x=x,
-                                shape=array_shape)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "broadcast_to",
+        x=x,
+        shape=array_shape,
+    )
 
 
 # can_cast
@@ -124,18 +128,20 @@ def test_can_cast(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "can_cast",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "can_cast",
+        x=x,
+    )
 
 
 # dtype_bits
@@ -157,18 +163,20 @@ def test_dtype_bits(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "dtype_bits",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_bits",
+        x=x,
+    )
 
 
 # dtype_from_str
@@ -190,18 +198,20 @@ def test_dtype_from_str(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "dtype_from_str",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_from_str",
+        x=x,
+    )
 
 
 # dtype_to_str
@@ -223,18 +233,20 @@ def test_dtype_to_str(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "dtype_to_str",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "dtype_to_str",
+        x=x,
+    )
 
 
 # finfo
@@ -256,18 +268,20 @@ def test_finfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "finfo",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "finfo",
+        x=x,
+    )
 
 
 # iinfo
@@ -289,18 +303,20 @@ def test_iinfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    if max(v == [] for v in x):
         return
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "iinfo",
-                                x=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "iinfo",
+        x=x,
+    )
 
 
 # is_float_dtype
@@ -331,16 +347,18 @@ def test_is_float_dtype(
     if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array,
-                                container,
-                                instance_method,
-                                fw,
-                                "is_float_dtype",
-                                dtype_in=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_float_dtype",
+        dtype_in=x,
+    )
 
 
 # is_int_dtype
@@ -371,15 +389,18 @@ def test_is_int_dtype(
     if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(input_dtype,
-                                as_variable,
-                                False,
-                                num_positional_args,
-                                native_array, container,
-                                instance_method,
-                                fw,
-                                "is_int_dtype",
-                                dtype_in=x)
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_int_dtype",
+        dtype_in=x,
+    )
 
 
 # Still to Add #

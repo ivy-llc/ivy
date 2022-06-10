@@ -4,16 +4,20 @@ from typing import Union, Optional, Tuple, List
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 # Array API Standard #
 # -------------------#
 
-# noinspection PyShadowingBuiltins
+
+@to_native_arrays_and_back
+@handle_out_argument
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests whether all input array elements evaluate to ``True`` along a specified
@@ -119,11 +123,13 @@ def all(
     return _cur_backend(x).all(x, axis, keepdims, out=out)
 
 
-# noinspection PyShadowingBuiltins
+@to_native_arrays_and_back
+@handle_out_argument
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests whether any input array element evaluates to ``True`` along a specified
