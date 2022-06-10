@@ -18,8 +18,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def linear(x, weight, bias=None):
+def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -72,7 +71,8 @@ def linear(x, weight, bias=None):
         # OBS x IBS x OF
         y = y + bias_broadcast
 
-    # OBS x IBS x OF
+    if ivy.exists(out):
+        return ivy.inplace_update(out, y)
     return y
 
 
@@ -80,8 +80,7 @@ def linear(x, weight, bias=None):
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def dropout(x, prob, scale=True):
+def dropout(x, prob, scale=True, out: Optional[ivy.Array] = None):
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
 
@@ -107,7 +106,9 @@ def dropout(x, prob, scale=True):
         x,
     )
     if scale:
-        x *= 1 / (1 - prob)
+        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
     return x
 
 
@@ -115,8 +116,9 @@ def dropout(x, prob, scale=True):
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def scaled_dot_product_attention(q, k, v, scale, mask=None):
+def scaled_dot_product_attention(
+    q, k, v, scale, mask=None, out: Optional[ivy.Array] = None
+):
     """Applies scaled dot product attention to inputs x using optional mask.
 
     Parameters
@@ -156,11 +158,10 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     attn = ivy.softmax(sim, -1)
 
     # BS x Q x F
-    return ivy.einsum("... q k, ... k f -> ... q f", attn, v)
+    return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def multi_head_attention(
     x,
     scale,
@@ -173,6 +174,7 @@ def multi_head_attention(
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
+    out: Optional[ivy.Array] = None,
 ):
     """Applies multi-head attention to inputs x.
 
@@ -248,7 +250,10 @@ def multi_head_attention(
     sdpa = ivy.einops_rearrange(sdpa, "... h q f -> ... q (h f)")
 
     # BS x Q x OF
-    return to_out_fn(sdpa, v=to_out_v) if ivy.exists(to_out_fn) else sdpa
+    ret = to_out_fn(sdpa, v=to_out_v) if ivy.exists(to_out_fn) else sdpa
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # Convolutions #

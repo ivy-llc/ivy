@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.helpers as helpers
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -49,7 +49,7 @@ def test_cross_entropy(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -87,7 +87,7 @@ def test_binary_cross_entropy(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
