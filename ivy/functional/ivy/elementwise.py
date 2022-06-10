@@ -338,8 +338,8 @@ def bitwise_xor(
 
     >>> a = ivy.array([1,2,3])
     >>> b = ivy.array([3,2,1])
-    >>> ivy.bitwise_xor(a,b,out = y)
-    >>> print(y)
+    >>> ivy.bitwise_xor(a,b,out = a)
+    >>> print(a)
         ivy.array([2, 0, 2])
         
         
