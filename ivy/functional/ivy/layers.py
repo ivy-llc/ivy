@@ -130,7 +130,7 @@ def scaled_dot_product_attention(
         The values input array should have the same size as queries and keys.
     scale
         The scale float value.
-        The value is used to scale the query-key pairs before softmax.
+        The scale float value is used to scale the query-key pairs before softmax.
     mask
         The mask input array. The mask to apply to the query-key values. Default is None.
         The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
