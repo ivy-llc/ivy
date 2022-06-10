@@ -52,7 +52,6 @@ class DefaultDevice:
 
         Examples
         --------
-
         A "cpu" as device:
         >>> with ivy.DefaultDevice("cpu") as device:
         >>>     # with block calls device.__enter__()
