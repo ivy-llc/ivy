@@ -585,11 +585,18 @@ def test_profiler(device, call):
         time.sleep(1)  # required by MXNet for some reason
 
 
+@given(num=st.integers(0, 5))
+def test_num_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    assert ivy.num_ivy_arrays_on_dev(device) == num
+    # to satisfy lint requirements
+    del arrays
+    
+    
 # Still to Add #
 # ---------------#
 
 # get_all_arrays_on_dev
-# num_arrays_on_dev
 # print_all_arrays_on_dev
 # clear_mem_on_dev
 # total_mem_on_dev
