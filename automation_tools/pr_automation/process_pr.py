@@ -11,7 +11,7 @@ class Process_pr:
     def author(self):
         return self.__pr_author
 
-    def number(self):
+    def pr_number(self):
         return self.__pr_number
 
     def command(self, cmd, save_output=True):
@@ -27,7 +27,7 @@ class Process_pr:
     def assign_intern(self, ivy_intern):
         # --add-reviewer "{ivy_intern}" -- Need to find a way how to overcome the permissions for GH Actions
         self.command(
-            f'gh pr edit {self.__pr_number} --add-assignee "{ivy_intern}"',
+            f'gh pr edit {self.pr_number()} --add-assignee "{ivy_intern}"',
             save_output=False,
         )
 
@@ -35,7 +35,7 @@ class Process_pr:
         random_intern = rn.choice(intern_list)
         # --add-reviewer "{random_intern}" -- Need to find a way how to overcome the permissions for GH Actions 
         self.command(
-            f'gh pr edit {self.__pr_number} --add-assignee "{random_intern}"',
+            f'gh pr edit {self.pr_number()} --add-assignee "{random_intern}"',
             save_output=False,
         )
-        print(f"[+] {random_intern} was assigned to PR {self.__pr_number}")
+        print(f"[+] {random_intern} was assigned to PR {self.pr_number()}")
