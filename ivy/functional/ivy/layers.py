@@ -139,8 +139,8 @@ def scaled_dot_product_attention(
     -------
     ret
         The output following application of scaled dot-product attention. 
-        The output is the weighted sum produced by the attention score and value.
-        The shape of output is *[batch_shape,num_queries,feat_dim]* .
+        The output array is the weighted sum produced by the attention score and value.
+        The shape of output array is *[batch_shape,num_queries,feat_dim]* .
 
     
 
