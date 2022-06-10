@@ -465,8 +465,8 @@ def eye(
 @infer_dtype
 @infer_device
 def linspace(
-    start: Union[ivy.Array, ivy.NativeArray, int],
-    stop: Union[ivy.Array, ivy.NativeArray, int],
+    start: Union[ivy.Array, ivy.NativeArray, int, float],
+    stop: Union[ivy.Array, ivy.NativeArray, int, float],
     num: int,
     axis: int = None,
     endpoint: bool = True,
