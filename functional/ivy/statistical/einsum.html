@@ -136,6 +136,95 @@
              
   <section id="einsum">
 <h1>einsum<a class="headerlink" href="#einsum" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.statistical.einsum">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">einsum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">equation</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#einsum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.einsum" title="Permalink to this definition"></a></dt>
+<dd><p>Sums the product of the elements of the input operands along dimensions specified
+using a notation based on the Einstein summation convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>equation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
+<li><p><strong>operands</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
+should be consistent with equation.</p></li>
+<li><p><strong>out</strong> – optional output array, for writing the result to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The array with sums computed.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>The following gives us the sum of the diagonal elements:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(12)</span>
+</pre></div>
+</div>
+<p>Or we can use einsum to sum columns:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij -&gt; j&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([9, 12, 15])</span>
+</pre></div>
+</div>
+<p>Imagine that we have two multi-dimensional arrays, A and B.
+Now let’s suppose we want to…
+- multiply A with B in a particular way to create new array
+of products; and then maybe
+- sum this new array along particular axes; and then maybe
+- transpose the axes of the new array in a particular order.</p>
+<p>There’s a good chance that einsum will help us do this faster
+and more memory-efficiently than combinations of the NumPy
+functions like multiply, sum and transpose will allow.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>    <span class="o">...</span>               <span class="p">[</span> <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">7</span><span class="p">],</span>    <span class="o">...</span>               <span class="p">[</span> <span class="mi">8</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,ij-&gt;i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+<span class="go">ivy.array([ 0, 22, 76])</span>
+</pre></div>
+</div>
+<p>Now lets see a slightly bigger example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>    <span class="o">...</span>                <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>    <span class="o">...</span>                <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>    <span class="o">...</span>                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>    <span class="o">...</span>                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,jk-&gt;ik&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2,  3,  1],</span>
+<span class="go">            [ 4,  6,  2],</span>
+<span class="go">            [10, 15,  5]])</span>
+</pre></div>
+</div>
+<p>Let A and B be two 1D arrays with the same length. For example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The sum of A can be written:
+&gt;&gt;&gt; ivy.einsum(‘i-&gt;’, A)
+ivy.array(45, dtype=int32)</p>
+<p>Element-wise multiplication, A * B, can be written:
+&gt;&gt;&gt; ivy.einsum(‘i,i-&gt;i’, A, B)
+ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126], dtype=int32)</p>
+<p>The inner product or dot product can be written:
+&gt;&gt;&gt; ivy.einsum(‘i,i-&gt;’, A, B) # or just use ‘i,i’
+ivy.array(510, dtype=int32)</p>
+<p>The outer product can be written:
+&gt;&gt;&gt; ivy.einsum(‘i,j-&gt;ij’, A, B)
+ivy.array([[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0],</p>
+<blockquote>
+<div><p>[  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
+[ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
+[ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
+[ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
+[ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
+[ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
+[ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
+[ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
+[ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)</p>
+</div></blockquote>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

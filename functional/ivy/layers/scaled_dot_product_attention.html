@@ -140,6 +140,28 @@
              
   <section id="scaled-dot-product-attention">
 <h1>scaled_dot_product_attention<a class="headerlink" href="#scaled-dot-product-attention" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.scaled_dot_product_attention">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">scaled_dot_product_attention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#scaled_dot_product_attention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.scaled_dot_product_attention" title="Permalink to this definition"></a></dt>
+<dd><p>Applies scaled dot product attention to inputs x using optional mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q</strong> – The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p></li>
+<li><p><strong>k</strong> – The keys <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>v</strong> – The values <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> – The value by which to scale the query-key pairs before softmax.</p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None.
+<em>[batch_shape,num_queries,num_keys]</em></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The output following application of scaled dot-product attention.
+<em>[batch_shape,num_queries,feat_dim]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
