@@ -13,28 +13,25 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # layer norm
 @given(
-    x_n_ns_n_target=st.sampled_from(
-        [
-            (
-                [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
-                [3],
-                [[-1.2247356, 0.0, 1.2247356], [-1.2247356, 0.0, 1.2247356]],
-            ),
-        ]
-    ),
+    data=st.data(),
     with_v=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
 )
 def test_layer_norm_layer(
-    x_n_ns_n_target, with_v, dtype, as_variable, device, compile_graph, call
+    data: st.DataObject, with_v, dtype, as_variable, device, compile_graph, call
 ):
     # smoke test
     if dtype == "float16":
         return
-    x, normalized_shape, target = x_n_ns_n_target
+    # get data from hypothesis
+    normalized_shape = data.draw(helpers.get_shape())
+    x = data.draw(helpers.array_values(dtype=dtype, shape=normalized_shape))
+    target = helpers.calculate_norm(np.asarray(x), normalized_shape)
+
     x = ivy.array(x, dtype=dtype, device=device)
     target = ivy.array(target, dtype=dtype, device=device)
+
     if as_variable:
         x = ivy.variable(x)
         target = ivy.variable(target)
