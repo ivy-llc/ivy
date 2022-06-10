@@ -424,6 +424,7 @@ def empty_like(
 
 @outputs_to_ivy_arrays
 @handle_out_argument
+@infer_dtype
 @infer_device
 def eye(
     n_rows: int,
