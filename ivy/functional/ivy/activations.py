@@ -4,6 +4,7 @@ from typing import Union, Optional
 
 # local
 import ivy
+from ivy.array.conversions import to_native
 from ivy.backend_handler import current_backend as _cur_backend
 
 
@@ -69,7 +70,6 @@ def leaky_relu(
     """
     return _cur_backend(x).leaky_relu(x, alpha)
 
-
 def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     -> ivy.Array:
     """
@@ -92,7 +92,12 @@ def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     >>> x = ivy.array([-1. , 0. , 1. ])
     >>> y = ivy.gelu(x, True)
     >>> print(y)
-    [-0.5,  0. ,  0.5]
+    [-0.158808, 0. , 0.841192]
+
+    >>> x = ivy.array([-1. , 0. , 1. ])
+    >>> y = ivy.gelu(x, False)
+    >>> print(y)
+    [-0.15865526,  0. , 0.8413447]
 
     """
     return _cur_backend(x).gelu(x, approximate)
