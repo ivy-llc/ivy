@@ -120,18 +120,19 @@ def scaled_dot_product_attention(
     Parameters
     ----------
     q
-        The queries. The shape of queries input should be in *[batch_shape,num_queries,feat_dim]*. 
-        The queries input should have the same size as keys and values.
+        The queries input array. The shape of queries input array should be in *[batch_shape,num_queries,feat_dim]*. 
+        The queries input array should have the same size as keys and values.
     k
-        The keys. The shape of keys input should be in *[batch_shape,num_keys,feat_dim]*. 
-        The values input should have the same size as queries and values.
+        The keys input array. The shape of keys input array should be in *[batch_shape,num_keys,feat_dim]*. 
+        The values input array should have the same size as queries and values.
     v
-        The values. The shape of values input should be in *[batch_shape,num_keys,feat_dim]*.
-        The values input should have the same size as queries and keys.
+        The values input array. The shape of values input should be in *[batch_shape,num_keys,feat_dim]*.
+        The values input array should have the same size as queries and keys.
     scale
-        The value by which to scale the query-key pairs before softmax.
+        The scale float value.
+        The value is used to scale the query-key pairs before softmax.
     mask
-        The mask to apply to the query-key values. Default is None.
+        The mask input array. The mask to apply to the query-key values. Default is None.
         The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
 
     Returns
