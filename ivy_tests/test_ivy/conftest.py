@@ -4,7 +4,7 @@ import pytest
 from typing import Dict
 from hypothesis import settings
 
-settings.register_profile("default", max_examples=10, deadline=None)
+settings.register_profile("default", max_examples=1, deadline=None)
 settings.load_profile("default")
 
 # local
