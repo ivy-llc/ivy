@@ -153,7 +153,7 @@ def print_all_ivy_arrays_on_dev(device):
     device
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
+    for arr in get_all_ivy_arrays_on_dev(device).values():
         print(type(arr), arr.shape)
 
 
