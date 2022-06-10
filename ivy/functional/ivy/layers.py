@@ -124,7 +124,7 @@ def scaled_dot_product_attention(
         The queries input array should have the same size as keys and values.
     k
         The keys input array. The shape of keys input array should be in *[batch_shape,num_keys,feat_dim]*. 
-        The values input array should have the same size as queries and values.
+        The keys input array should have the same size as queries and values.
     v
         The values input array. The shape of values input should be in *[batch_shape,num_keys,feat_dim]*.
         The values input array should have the same size as queries and keys.
