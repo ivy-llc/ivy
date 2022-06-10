@@ -251,6 +251,11 @@ so don't stress about this too much 🙂
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `commit frequency channel`_!
 
+Running Tests Locally
+---------------------
+
+# ToDo: write this section
+
 **Round Up**
 
 This should have hopefully given you a good understanding of the basics for contributing.
