@@ -228,6 +228,19 @@ def scaled_dot_product_attention(
                     [4.4, 5.6]]])
     }
 
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
+    >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
+    >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
+    >>> print(result)
+    ivy.array([[
+            [4.04, 5.03],
+            [4.3 , 5.3 ],
+            [4.3 , 5.3 ]
+        ]])
+
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
