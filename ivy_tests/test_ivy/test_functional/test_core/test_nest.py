@@ -5,7 +5,7 @@ import copy
 import pytest
 
 # local
-from hypothesis import given, strategies as st
+from hypothesis import given
 import ivy
 import ivy.functional.backends.numpy
 from ivy_tests.test_ivy import helpers
