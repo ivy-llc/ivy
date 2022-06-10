@@ -152,62 +152,6 @@
              
   <section id="matmul">
 <h1>matmul<a class="headerlink" href="#matmul" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.matmul">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matmul" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the matrix product.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type. Must have at least one
-dimension.</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Should have a numeric data type. Must have at least one
-dimension.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> –</p>
-<ul>
-<li><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a
-zero-dimensional array containing the inner product as its only element.</p></li>
-<li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is a
-two-dimensional array having shape (K, N), a two-dimensional array
-containing the conventional matrix product and having shape (M, N).</p></li>
-<li><p>if x1 is a one-dimensional array having shape (K,) and x2 is an array having
-shape (…, K, N), an array having shape (…, N) (i.e., prepended
-dimensions during vector-to-matrix promotion must be removed) and containing
-the conventional matrix product.</p></li>
-<li><p>if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array
-having shape (K,), an array having shape (…, M) (i.e., appended dimensions
-during vector-to-matrix promotion must be removed) and containing the
-conventional matrix product.</p></li>
-<li><p>if x1 is a two-dimensional array having shape (M, K) and x2 is an array
-having shape (…, K, N), an array having shape (…, M, N) and containing
-the conventional matrix product for each stacked matrix.</p></li>
-<li><p>if x1 is an array having shape (…, M, K) and x2 is a two-dimensional array
-having shape (K, N), an array having shape (…, M, N) and containing the
-conventional matrix product for each stacked matrix.</p></li>
-<li><p>if either x1 or x2 has more than two dimensions, an array having a shape
-determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and
-containing the conventional matrix product for each stacked matrix.</p></li>
-</ul>
-</li>
-<li><p><em>**Raises**</em></p></li>
-<li><p><em>-   if either x1 or x2 is a zero-dimensional array.</em></p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</em> – array having shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having</em> – shape (L,), and K != L.</p></li>
-<li><p><em>-   if x1 is an array having shape (…, M, K), x2 is an array having shape</em> – (…, L, N), and K != L.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
