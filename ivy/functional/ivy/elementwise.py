@@ -330,11 +330,17 @@ def bitwise_xor(
         ivy.array([2, 0, 2])
         
         
-    >>> a = ivy.array([-3,200,50])
-    >>> b = ivy.array([45,68,30])
+    >>> a = ivy.array([78,91,23])
+    >>> b = ivy.array([66,77,88])
     >>> ivy.bitwise_xor(a,b,out=y)
     >>> print(y)
-        ivy.array([-48, 140, 44])
+        ivy.array([12, 22, 79])
+
+    >>> a = ivy.array([1,2,3])
+    >>> b = ivy.array([3,2,1])
+    >>> ivy.bitwise_xor(a,b,out = y)
+    >>> print(y)
+        ivy.array([2, 0, 2])
         
         
     With :code: `ivy.NativeArray` input:
