@@ -596,8 +596,9 @@ def test_num_arrays_on_dev(num, device):
 @given(num=st.integers(0, 5))
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    arrs_on_dev = list(ivy.get_all_ivy_arrays_on_dev(device).values())
     for arr in arrays:
-        assert arr in list(ivy.get_all_ivy_arrays_on_dev(device).values())
+        assert arr in arrs_on_dev
 
 
 # Still to Add #
