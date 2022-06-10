@@ -24,7 +24,8 @@ def test_docstrings():
         "get_backend",
     ]
 
-    for k, v in ivy.__dict__.copy().items():
+    function_list = ivy.__dict__.items()
+    for k, v in function_list:
         if k in skip_functions:
             continue
         if k in ["namedtuple", "DType", "Dtype"] or helpers.docstring_examples_run(v):
