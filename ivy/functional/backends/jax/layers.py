@@ -2,9 +2,11 @@
 
 # global
 import jax.lax as jlax
+
 # local
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple
+
 
 def conv1d(
     x: JaxArray,
