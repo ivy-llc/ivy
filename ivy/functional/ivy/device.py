@@ -560,9 +560,12 @@ def to_dev(
 
 
 def split_factor(device=None):
-    """Get the global split factor for a given device, which can be used to scale batch
-    splitting chunk sizes for the device across the codebase. Default global value for
-    each device is 1.
+    """Get a device's global split factor, which can be used to scale the device's
+    batch splitting chunk sizes across the codebase.
+    If the global split factor is set for a given device,
+        returns the split factor value for the device from the split factors dictionary
+    If the global split factor for a device is not configured,
+        returns the default value which is 0.0
 
     Parameters
     ----------
@@ -574,13 +577,29 @@ def split_factor(device=None):
     ret
         The split factor for the specified device.
 
+    Examples
+    --------
+    >>> ivy.split_factors()
+    device='cpu'
+    split_factors = {}
+    0.0
+    >>> ivy.split_factors()
+    device='cpu'
+    split_factors = {'cpu': 0.5}
+    0.5
+    >>> ivy.split_factors("gpu:0")
+    gpu:0
+    split_factors = {}
+    0.0
+    >>> ivy.split_factors("gpu:0")
+    gpu:0
+    split_factors = {'cpu': 0.5, 'gpu:0': 1.5}
+    1.5
+
     """
     global split_factors
     device = ivy.default(device, default_device())
-    if device in split_factors:
-        return split_factors[device]
-    split_factors[device] = 0.0
-    return split_factors[device]
+    return split_factors.setdefault(device, 0.0)
 
 
 def set_split_factor(factor, device=None):
