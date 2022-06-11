@@ -143,6 +143,39 @@ then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
 
+**Classes**
+
+The instance methods in :code:`ivy.Array` and :code:`ivy.Container` which directly wrap
+a function in the functional API do **not** require a docstring, on account that
+these instance methods require no explanation beyond that provided in the docstring
+for the wrapped function.
+A good example is `ivy.Array.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/array/elementwise.py#L13>`_
+which does not require a docstring,
+because `ivy.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/elementwise.py#L2013>`_
+already has one.
+
+However, for all other classes, such as the various layers at
+:code:`ivy/ivy/stateful/layers`, then we **should** add docstrings for both
+the **contstructor** and also **all methods**.
+
+This is the case even when the class directly wraps a function in the functional API.
+For example, the class
+`ivy.Linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13>`_
+wraps the function
+`ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_,
+but does so in a stateful manner
+with the variables stored internally in the instance of the class.
+Even though the :code:`ivy.Linear` class wraps :code:`ivy.linear` in the forward pass
+defined in `ivy.Linear._forward <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84>`_,
+the function signatures of :code:`ivy.linear` and :code:`ivy.Linear._forward` are still
+quite distinct, with the former including all trainable variables explicitly,
+and the latter having these implicit as internal instance attributes of the class.
+
+Therefore, with the exception of the :code:`ivy.Array` and :code:`ivy.Container`
+methods which directly wrap functions in the functional API,
+we should always add docstrings to all methods of all other classes in Ivy,
+including cases where these also directly wrap functions in the functional API.
+
 **Round Up**
 
 These examples should hopefully give you a good understanding of what is required when adding docstings.

@@ -100,13 +100,17 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_update(
-    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+    x: Union[ivy.Array, JaxArray],
+    val: Union[ivy.Array, JaxArray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    if ensure_in_backend:
+        raise Exception("JAX does not natively support inplace updates")
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data = val_native
     else:
-        x = ivy.Array(val_native)
+        raise Exception("JAX does not natively support inplace updates")
     return x
 
 

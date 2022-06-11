@@ -11,50 +11,21 @@ def test_docstrings():
     success = True
 
     """ 
-        Functions that are skipped due to precision problem include:
-            add, cross_entropy, std
-
-        Functions that are skipped due to output errors:
-            roll, array_equal, cross_entropy, trace, shape
-
-        Functions that are skipped due to tensorflow returning float instead of int:
-            full_like, ones_like, zeros_like, bitwise_invert, 
-            copy_array, expand_dims, reshape, einsum
-
-        Functions skipped due to some runtime error: conv3d, tan
-
         Functions skipped as their output dependent on outside factors:
-            random_normal, random_uniform, shuffle, num_gpus
+            random_normal, random_uniform, shuffle, num_gpus, current_backend,
+            get_backend
     """
     skip_functions = [
         "random_normal",
         "random_uniform",
         "shuffle",
         "num_gpus",
-        "add",
-        "dev",
-        "softmax",
-        "softplus",
-        "exp",
-        "tan",
-        "roll",
-        "array_equal",
-        "cross_entropy",
-        "conv3d",
-        "std",
-        "trace",
-        "full_like",
-        "ones_like",
-        "zeros_like",
-        "bitwise_invert",
-        "copy_array",
-        "expand_dims",
-        "reshape",
-        "einsum",
-        "shape",
+        "current_backend",
+        "get_backend",
     ]
 
-    for k, v in ivy.__dict__.items():
+    function_list = ivy.__dict__.items()
+    for k, v in function_list:
         if k in skip_functions:
             continue
         if k in ["namedtuple", "DType", "Dtype"] or helpers.docstring_examples_run(v):

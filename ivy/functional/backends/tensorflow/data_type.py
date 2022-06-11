@@ -141,7 +141,9 @@ def broadcast_arrays(
 
 def astype(
     x: Union[tf.Tensor, tf.Variable],
-    dtype: tf.DType, copy: bool = True,
+    dtype: tf.DType,
+    *,
+    copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if copy:

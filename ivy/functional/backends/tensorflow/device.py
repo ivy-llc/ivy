@@ -32,11 +32,11 @@ def dev(
 
 def to_dev(
     x: Union[tf.Tensor, tf.Variable],
-    *,
-    device,
+  　device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
+    device = as_native_dev(device)
     current_dev = _dev_callable(x)
     if not _same_device(current_dev, device):
         with tf.device("/" + device.upper()):

@@ -2,22 +2,25 @@
 
 
 # local
-from typing import List, Union
+from typing import List, Union, Optional
 import ivy
+from ivy.func_wrapper import to_native_arrays_and_back
 
 
 # Extra #
 # ------#
 
-# noinspection PyUnresolvedReferences
+
+@to_native_arrays_and_back
 def layer_norm(
-    x: Union[ivy.Array, ivy.Container, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
     epsilon: float = ivy._MIN_BASE,
     scale=None,
     offset=None,
     new_std: float = 1.0,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Applies Layer Normalization over a mini-batch of inputs
 
     Parameters
@@ -92,4 +95,6 @@ def layer_norm(
         x = x * scale
     if offset is not None:
         x = x + offset
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
     return x
