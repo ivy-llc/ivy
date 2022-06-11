@@ -61,7 +61,10 @@ def as_native_dev(device):
     return ret
 
 
-clear_mem_on_dev = lambda device: None
+def clear_mem_on_dev(device):
+    return None
+
+
 _dev_callable = dev
 
 
