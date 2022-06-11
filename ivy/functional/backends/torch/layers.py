@@ -5,6 +5,7 @@ import math as _math
 import torch
 from typing import List, Optional, Tuple, Union
 
+
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,

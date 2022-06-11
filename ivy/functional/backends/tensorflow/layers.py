@@ -6,6 +6,7 @@ from typing import Union, List, Tuple
 
 from tensorflow.python.types.core import Tensor
 
+
 def conv1d(
     x: Tensor,
     filters: Tensor,
