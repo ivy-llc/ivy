@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 
 # local
-from ivy import inf
+from ivy import inf, exists, inplace_update
 from collections import namedtuple
 
 # Array API Standard #
@@ -86,8 +86,8 @@ def outer(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.outer(x1, x2, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+    if exists(out):
+        return inplace_update(out, ret)
     return ret
 
 
