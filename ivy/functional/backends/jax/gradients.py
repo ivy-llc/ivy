@@ -11,9 +11,10 @@ from jaxlib.xla_extension import Buffer
 import ivy
 from ivy.container import Container
 
+
 # ToDo: modify these functions to track whether variable() has been called
-variable = lambda x: x
-# noinspection PyUnresolvedReferences,PyProtectedMember
+def variable(x):
+    return x
 
 
 def is_variable(x, exclusive=False):
@@ -47,4 +48,5 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
-stop_gradient = lambda x, preserve_type=True: jlax.stop_gradient(x)
+def stop_gradient(x, preserve_type=True):
+    return jlax.stop_gradient(x)
