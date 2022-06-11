@@ -81,8 +81,12 @@ def get_referrers_recursive(
     return ret_cont
 
 
-def is_native_array(x: Any, exclusive: bool = False) -> bool:
-    """Determines whether the input x is a Native Array.
+def is_native_array(
+    x: Any, 
+    exclusive: bool = False
+) -> bool:
+    """
+    Determines whether the input x is a Native Array.
 
     Parameters
     ----------
@@ -96,6 +100,16 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
+
+    Examples
+    -------
+    >>> x = ivy.array([0, 1, 2])
+    >>> ivy.is_native_array(x)
+    False
+
+    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
+    >>> ivy.is_native_array(x)
+    True
 
     """
     try:
