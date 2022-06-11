@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Tasks &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FAQ" href="../faq.html" />
+    <link rel="prev" title="Ivy Tests" href="../deep_dive/13_ivy_tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Open Tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#function-formatting">Function Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-apis">Frontend APIs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+      <li>Open Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contributing/4_open_tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="open-tasks">
+<h1>Open Tasks<a class="headerlink" href="#open-tasks" title="Permalink to this heading"></a></h1>
+<p id="open-tasks-channel">Here, we explain all tasks which are currently open for
+contributions from the community!</p>
+<p>This section of the docs will be updated frequently, whereby new tasks will be added and
+completed tasks will be removed. The tasks outlined here are generally broad high-level
+tasks, each of which is made up of many individual sub-tasks,
+distributed across task-specific
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>.</p>
+<p>The tasks currently open are:</p>
+<ol class="arabic simple">
+<li><p>Function Formatting</p></li>
+<li><p>Frontend APIs</p></li>
+</ol>
+<p>We try to explain these tasks are clearly as possible, but in cases where things are not
+clear, then please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy">open tasks discussion</a>,
+or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference internal" href="#open-tasks-channel">open tasks channel</a>!</p>
+<section id="function-formatting">
+<h2>Function Formatting<a class="headerlink" href="#function-formatting" title="Permalink to this heading"></a></h2>
+<p>Currently, we have many ToDo list issues
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo">open</a>
+for a general function reformatting task,
+which is explained below.</p>
+<p>Each function in each submodule should be updated to follow the implementation
+instructions given in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> section.
+The updates should be applied for both the Ivy API and Backend API,
+as explained in the <a class="reference internal" href="../deep_dive/0_navigating_the_code.html#navigating-the-code"><span class="std std-ref">Navigating the Code</span></a> section.</p>
+<p>The <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> is the best general resource for learning in detail how functions
+should be implemented.
+At the time of writing, many of the functions are not implemented as they should be.
+You will need to make changes to the current implementations,
+but you do not need to address <em>all</em> sections of the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> in detail.
+Specifically, you should make the following changes, where appropriate:</p>
+<ol class="arabic simple">
+<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for backend functions,
+with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
+<li><p>update the <a class="reference internal" href="../deep_dive/9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints.</p></li>
+<li><p>add the correct <a class="reference internal" href="../deep_dive/10_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a></p></li>
+<li><p>add thorough <a class="reference internal" href="../deep_dive/11_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a></p></li>
+</ol>
+</section>
+<section id="frontend-apis">
+<h2>Frontend APIs<a class="headerlink" href="#frontend-apis" title="Permalink to this heading"></a></h2>
+<p>For this task, the goal will be to implement functions for each of the
+frontend functional APIs (see <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>),
+with frontend APIs implemented for:
+<code class="code docutils literal notranslate"><span class="pre">JAX</span></code>, <code class="code docutils literal notranslate"><span class="pre">MXNet</span></code>, <code class="code docutils literal notranslate"><span class="pre">NumPy</span></code>, <code class="code docutils literal notranslate"><span class="pre">TensorFlow</span></code> and <code class="code docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
+<p>This task is not <em>quite</em> ready to be engaged with yet,
+more details coming in the next few weeks! 🗓️</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of the basics for contributing.</p>
+<p>If you’re ever unsure of how best to proceed,
+please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy">open tasks discussion</a>,
+or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference internal" href="#open-tasks-channel">open tasks channel</a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../deep_dive/13_ivy_tests.html" class="btn btn-neutral float-left" title="Ivy Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
