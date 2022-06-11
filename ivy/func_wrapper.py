@@ -411,14 +411,14 @@ def handle_nestable(fn: Callable) -> Callable:
 
 def _wrap_function(value: Callable, original: Callable) -> Callable:
     """Apply wrapping to backend implementation `value` if the original implementation
-    `original is also wrapped, and if `value` is not already wrapped. `handle_nestable`,
-    `infer_device` etc are set during wrapping, hence indicate to us whether a certain
-    function is wrapped or not.
+    `original` is also wrapped, and if `value` is not already wrapped. Attributes
+    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
+    us whether a certain function has been wrapped or not.
 
     Parameters
     ----------
     value
-        the backend implementation to potentially wrap
+        the new implementation to potentially wrap
     original
         the original implementation of `value` which tells us which wrappers we need.
 
