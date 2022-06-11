@@ -69,6 +69,8 @@
 
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
+.. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
 
 Contents
 --------
@@ -84,18 +86,29 @@ Contents
 Overview
 --------
 
-Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy. We’re very excited for you to try it out!
+Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+We’re very excited for you to try it out!
 
-Next on our roadmap is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊
+Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
+and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
+Read on to learn more 😊
 
-The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our roadmap, and how to contribute! Click on the sub-headings to check out these pages!
+The docs are split into a number of sub-pages explaining different aspects of why we created Ivy,
+how to use it, what we’ve got planned on our roadmap, and how to contribute!
+Click on the sub-headings below to check out these pages!
 
-We use 🚧 to indicate that the feature being discussed is in development. We use ✅ to indicate that it is already implemented!
+We use 🚧 to indicate that the feature being discussed is in development.
+We use ✅ to indicate that it is already implemented!
 
-Check out the docs_ for more info, and check out our Google Colabs_ for some interactive demos!
+Check out the docs_ for more info,
+and check out our Google Colabs_ for some interactive demos!
 
 🚨 Ivy is still at a relatively early stage of development.
 Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
+
+If you would like to contribute,
+please check out our `contributor guide`_,
+and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
 
 Quick Start
 -----------
