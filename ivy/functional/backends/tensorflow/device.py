@@ -32,7 +32,7 @@ def dev(
 
 def to_dev(
     x: Union[tf.Tensor, tf.Variable],
-  　device: str,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
