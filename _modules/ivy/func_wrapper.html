@@ -564,18 +564,18 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">infer_dtype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
             <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span>
         <span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span>
+        <span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
+        <span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span>
 </pre></div>
 
