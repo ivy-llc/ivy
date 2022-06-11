@@ -17,7 +17,7 @@ import random
     ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="stack_images"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
 )
@@ -55,7 +55,7 @@ def test_stack_images(
     num_samples=st.integers(min_value=2, max_value=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="linear_resample"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
 )
@@ -97,7 +97,7 @@ def test_linear_resample(
     n_samples=st.integers(min_value=1, max_value=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="bilinear_resample"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
 )
@@ -137,7 +137,7 @@ def test_bilinear_resample(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="gradient_image"),
     native_array=st.booleans(),
     container=st.booleans(),
 )
@@ -166,7 +166,7 @@ def test_gradient_image(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="float_img_to_uint8_img"),
     native_array=st.booleans(),
     container=st.booleans(),
 )
@@ -201,7 +201,7 @@ def test_float_img_to_uint8_img(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="uint8_img_to_float_img"),
     native_array=st.booleans(),
     container=st.booleans(),
 )
@@ -237,7 +237,7 @@ def test_uint8_img_to_float_img(
     seed=st.integers(min_value=1, max_value=8),
     input_dtype=st.sampled_from(ivy.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="random_crop"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
 )
