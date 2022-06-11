@@ -6,13 +6,16 @@ import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.backend_handler import current_backend as _cur_backend
-from typing import Union, List, Tuple
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from typing import Union, List, Tuple, Optional
 
 
 # Extra #
 # ------#
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def stack_images(
     images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
@@ -52,6 +55,8 @@ def stack_images(
     return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def bilinear_resample(x, warp):
     """Performs bilinearly re-sampling on input image.
 
@@ -71,6 +76,7 @@ def bilinear_resample(x, warp):
     return _cur_backend(x).bilinear_resample(x, warp)
 
 
+@to_native_arrays_and_back
 def gradient_image(x):
     """Computes image gradients (dy, dx) for each channel.
 
@@ -112,7 +118,8 @@ def gradient_image(x):
     return _cur_backend(x).gradient_image(x)
 
 
-def float_img_to_uint8_img(x):
+@to_native_arrays_and_back
+def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
 
@@ -131,10 +138,13 @@ def float_img_to_uint8_img(x):
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
-    return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
+    return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist(), out=out)
 
 
-def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+@to_native_arrays_and_back
+def uint8_img_to_float_img(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
     Parameters
@@ -165,10 +175,18 @@ def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)
-    return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
+    return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist(), out=out)
 
 
-def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
+@to_native_arrays_and_back
+def random_crop(
+    x,
+    crop_size,
+    batch_shape=None,
+    image_dims=None,
+    seed=None,
+    out: Optional[ivy.Array] = None,
+):
     """Randomly crops the input images.
 
     Parameters
@@ -221,9 +239,11 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     flat_cropped = ivy.concat(cropped_list, 0)
 
     # BS x NH x NW x F
-    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels], out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def linear_resample(
     x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1
 ) -> Union[ivy.Array, ivy.NativeArray]:
