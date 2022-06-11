@@ -2014,19 +2014,103 @@ def logaddexp(
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds the values of an array to the nearest integer, element-wise.
+    """Rounds each element ``x_i`` of the input array ``x`` to the nearest integer-valued number.
+
+    **Special cases**
+
+    - If ``x_i`` is already an integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If two integers are equally close to ``x_i``, the result is
+      the even integer closest to ``x_i``.
 
     Parameters
     ----------
     x
-        Input array containing elements to round.
+        input array containing elements to round.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([1.2, 2.4, 3.6])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([1., 2., 4.], dtype=float32)
+
+    >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.round(x, out=y)
+    >>> print(y)
+    ivy.array([ 2.,  2., 15., -5.], dtype=float32)
+
+    >>> x = ivy.array([[0, 5.433, -343.3, 1.5], \
+                      [-5.5, 44.2, 11.5, 12.01]])
+    >>> ivy.round(x, out=x)
+    >>> print(x)
+    ivy.array([[   0.,    5., -343.,    2.],
+               [  -6.,   44.,   12.,   12.]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.NativeArray([20.2, 30.5, -5.81])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([20., 30., -6.], dtype=float32)
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                  b=ivy.array([-300.9, -527.3, 4.5]))
+    >>> y = ivy.round(x)
+    >>> print(y)
+    {
+        a: ivy.array([4., 9., 7., 0.], dtype=float32),
+        b: ivy.array([-301., -527., 4.], dtype=float32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([5.4, 1.2, 2.3])
+    >>> y = x.round()
+    >>> print(y)
+    ivy.array([5., 1., 2.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0.3, 1.5, 201.5]), b=ivy.array([3.6, 4.4, -5.2]))
+    >>> y = x.round()
+    >>> print(y)
+    {
+        a: ivy.array([0., 2., 202.]),
+        b: ivy.array([4., 4., -5.])
+    }
 
     """
     return _cur_backend(x).round(x, out=out)
