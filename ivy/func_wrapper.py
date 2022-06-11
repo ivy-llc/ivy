@@ -4,7 +4,82 @@ import functools
 from types import FunctionType
 from typing import Callable
 
-
+NON_WRAPPED_FUNCTIONS = [
+     "copy_nest",
+     "current_backend",
+     "current_backend_str",
+     "set_backend",
+     "get_backend",
+     "unset_backend",
+     "get_referrers_recursive",
+     "set_debug_mode",
+     "set_breakpoint_debug_mode",
+     "set_exception_debug_mode",
+     "unset_debug_mode",
+     "debug_mode",
+     "nested_map",
+     "to_ivy",
+     "args_to_ivy",
+     "to_native",
+     "args_to_native",
+     "default",
+     "exists",
+     "set_min_base",
+     "get_min_base",
+     "set_min_denominator",
+     "get_min_denominator",
+     "split_func_call_across_gpus",
+     "cache_fn",
+     "split_func_call",
+     "compile",
+     "compile_graph",
+     "dev",
+     "as_ivy_dev",
+     "as_native_dev",
+     "memory_on_dev",
+     "gpu_is_available",
+     "num_gpus",
+     "tpu_is_available",
+     "dtype",
+     "as_ivy_dtype",
+     "cprint",
+     "to_ivy_module",
+     "tree_flatten",
+     "tree_unflatten",
+     "start_compiling",
+     "stop_compiling",
+     "get_compiled",
+     "index_nest",
+     "set_nest_at_index",
+     "map_nest_at_index",
+     "multi_index_nest",
+     "set_nest_at_indices",
+     "map_nest_at_indices",
+     "nested_indices_where",
+     "map",
+     "set_default_device",
+     "unset_default_device",
+     "closest_valid_dtype",
+     "set_default_dtype",
+     "default_dtype",
+     "default_device",
+     "as_native_dtype",
+     "is_ivy_array",
+     "is_ivy_container",
+     "inplace_update",
+     "inplace_increment",
+     "inplace_decrement",
+     "prune_nest_at_index",
+     "prune_nest_at_indices",
+     "is_array",
+     "is_native_array",
+     "nested_any",
+     "fn_array_spec",
+     "insert_into_nest_at_index",
+     "insert_into_nest_at_indices",
+     "vec_sig_fig",
+     "native_array",
+ ]
 FUNCTIONS_W_CONT_SUPPORT = [
     "multi_head_attention",
     "execute_with_gradients",
@@ -354,8 +429,12 @@ def _wrap_function(value: Callable, original: Callable) -> Callable:
         input is returned.
     """
     if isinstance(value, FunctionType):
-        if hasattr(original, "handle_nestable") and not hasattr(
-            value, "handle_nestable"
+        if (
+            hasattr(original, "handle_nestable")
+            and not hasattr(value, "handle_nestable")
+        ) or (
+            hasattr(ivy.Container, value.__name__)
+            and value.__name__ not in FUNCTIONS_W_CONT_SUPPORT + NON_WRAPPED_FUNCTIONS
         ):
             value = handle_nestable(value)
         if hasattr(original, "infer_device") and not hasattr(value, "infer_device"):
