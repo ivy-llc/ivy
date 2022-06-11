@@ -1,10 +1,10 @@
 Open Tasks
 ==========
 
-.. _`open tasks discussion`:
+.. _`open tasks discussion`: https://github.com/unifyai/ivy/discussions/1403
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
-.. _`open tasks channel`:
+.. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
