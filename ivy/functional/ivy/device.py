@@ -85,11 +85,10 @@ def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     --------
     >>> x = ivy.array([1,0,2])
     >>> y = ivy.dev(x)
-    >>> z = ivy.get_all_arrays_on_dev(y)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
     >>> print(z)
     {
         140462020989616: ivy.array([1, 0, 2], dtype=int32),
-        140462020997888: ivy.array([1, 0, 2], dtype=int32)
     },
     """
     device = ivy.as_ivy_dev(device)
