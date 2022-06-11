@@ -82,7 +82,9 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_update(
-    x: Union[ivy.Array, mx.nd.NDArray], val: Union[ivy.Array, mx.nd.NDArray]
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] = val_native

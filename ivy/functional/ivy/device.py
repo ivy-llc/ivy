@@ -39,10 +39,41 @@ class DefaultDevice:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, device):
+    def __init__(
+        self,
+        device: Union[ivy.Device, ivy.NativeDevice],
+    ) -> None:
+        """Initialises the DefaultDevice class
+
+        Parameters
+        ----------
+        device
+            The device string - as an ivy device or nativedevice class
+
+        Examples
+        --------
+        >>> z = ivy.DefaultDevice("cpu")
+        >>> x = ivy.DefaultDevice("tpu")
+        """
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -122,7 +153,7 @@ def print_all_ivy_arrays_on_dev(device):
     device
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
+    for arr in get_all_ivy_arrays_on_dev(device).values():
         print(type(arr), arr.shape)
 
 
@@ -416,22 +447,50 @@ def tpu_is_available() -> bool:
 
 # Default Device #
 
+# noinspection PyShadowingNames
+def default_device(
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None,
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    as_native: bool = None,
+) -> Union[str, ivy.Device, ivy.NativeDevice]:
+    """Returns the input device or the default device.
+    If the as native flag is set, the device will be converted to a native device.
+    If the item is provided, the item's device is returned.
+    If the device is not provided, the last default device is returned.
+    If a default device has not been set, the first gpu is returned if available,
+    otherwise the cpu is returned.
 
-def default_device(device=None, item=None, as_native: bool = None):
-    """Summary.
 
     Parameters
     ----------
     device
-         (Default value = None)
+        The device to be returned or converted.
     item
-         (Default value = None)
+        The item to get the device from.
     as_native
-         (Default value = None)
+        Whether to convert the device to a native device.
 
     Returns
     -------
     ret
+        Device handle or string.
+
+    Examples
+    --------
+    >>> ivy.default_device()
+    device(type='cpu')
+    >>> ivy.default_device("gpu:0")
+    'gpu:0'
+    >>> ivy.default_device(item=[], as_native=False)
+    'cpu'
+    >>> ivy.default_device(item=(), as_native=True)
+    device(type='cpu')
+    >>> ivy.default_device(item={"a": 1}, as_native=True)
+    device(type='cpu')
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_dev(x, 'gpu:0')
+    >>> ivy.default_device(item=x, as_native=True)
+    device(type='gpu', id=0)
 
     """
     if ivy.exists(device):
@@ -483,8 +542,8 @@ def unset_default_device():
 @handle_out_argument
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
-    *,
     device: Union[ivy.Device, ivy.NativeDevice],
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
@@ -510,7 +569,7 @@ def to_dev(
     >>> x = ivy.to_dev(x, 'cpu')
 
     """
-    return _cur_backend(x).to_dev(x, device=device, out=out)
+    return _cur_backend(x).to_dev(x, device, out=out)
 
 
 # Function Splitting #

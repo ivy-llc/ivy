@@ -125,7 +125,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 # noinspection PyShadowingNames
-def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
+def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:

@@ -42,7 +42,9 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_update(
-    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+    x: Union[ivy.Array, np.ndarray],
+    val: Union[ivy.Array, np.ndarray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
 
