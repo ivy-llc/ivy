@@ -121,7 +121,6 @@ def scaled_dot_product_attention(
     v: Union[ivy.Array, ivy.NativeArray], 
     scale: float, 
     mask: Optional[Union[ivy.Array, ivy.NativeArray]]=None) -> Union[ivy.Array, ivy.NativeArray]:
-  
     """Applies scaled dot product attention to inputs x using optional mask.
     Parameters
     ----------
