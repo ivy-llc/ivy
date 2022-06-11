@@ -72,7 +72,7 @@ class DefaultDevice:
         >>>     # with block calls device.__enter__()
         >>>     print(device._dev)
         "cpu"
-        
+
         """
         set_default_device(self._dev)
         return self
@@ -1037,7 +1037,9 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x, devices):
+def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
+                    devices: Union[Iterable[str], Dict[str, int]]
+                    ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -1052,6 +1054,20 @@ def dev_clone_array(x, devices):
     -------
     ret
         array cloned to each of the target devices
+
+    Examples
+    --------
+    >>> x = ivy.array([4, 5, 6])
+    >>> ivy.dev_clone(x, ['cpu'])
+    DevClonedItem({'cpu': array([4, 5, 6])})
+
+    >>> x = ivy.array([[1, 8, 4], [2, 5, 6]])
+    >>> ivy.dev_clone(x, ['gpu:0'])
+    DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
+
+    >>> x = ivy.array([7, 2, 7])
+    >>> ivy.dev_clone(x, ['cpu', 'gpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'gpu:0': array([7, 2, 7])})
 
     """
     return DevClonedItem(
