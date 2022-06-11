@@ -323,7 +323,10 @@ multiprocessing = (
     if context is None
     else _multiprocessing.get_context(context)
 )
-indices_where = tf.where
+
+
+def indices_where(x):
+    return tf.where(x)
 
 
 def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
