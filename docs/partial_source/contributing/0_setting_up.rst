@@ -53,9 +53,16 @@ examples are as aligned and in accordance with the latest as possible. The stabl
 from PyPI maybe used for personal projects and experiments but avoided in development, for now. If you
 want to experiment with stable version, you can use docker.
 
+Below is a guide to creating your own virtual environment. The benefit of creating a developing python environment
+is the ability to install certain packages for a project and then other packages (perhaps different versions) in a
+new environment for another project. This makes it very easy to keep track of installed packages and their versions.
+
+Below is a guide for setting up a developing environment for Ivy using virtual environments.
 
 Virtual environments - No Docker
 -------------------------------
+
+You can either use miniconda or venv:
 
 Using miniconda
 ****
@@ -81,11 +88,49 @@ Using miniconda
         pip install git+https://github.com/unifyai/ivy.git
 
 
-
-Once you have created yoiu
-
 Using venv
 ****
+This is a builtin package and doesn't require explicit installation.
+
+#. Open your teminal/cmd in the directory where you would like to have the folder with the environment files
+#. Create the environment by running the command below with any name you like. We named it :code:`ivy_dev` like above.
+
+    .. code-block:: none
+
+        python -m venv ivy_dev
+
+    Try :code:`python3` if :code:`python` doesn't work.
+
+#. Activate the created environment by running (same directory as the environment folder):
+
+    .. code-block:: none
+
+        ivy_dev\Scripts\activate.bat
+
+    (on windows)
+
+    and
+
+    .. code-block:: none
+
+        source ivy_dev/bin/activate
+
+    (on mac/linux)
+
+#. Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in pycharm.
+   b. Going to settings -> project -> Python Interpreter
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   d. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+
+
+A visual guide here.
 
 
 Docker Interpreter with PyCharm
