@@ -256,7 +256,7 @@ def docstring_examples_run(fn):
         return True
 
     docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
-    
+
     print(fn_name)
 
     if docstring is None:
@@ -325,9 +325,9 @@ def docstring_examples_run(fn):
     print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
-    if output == parsed_output: 
+    if output == parsed_output:
         return True
-    
+
     return False
 
 
@@ -936,17 +936,7 @@ def get_probs(draw, dtype):
 
 
 @st.composite
-def get_axis(draw, dtype):
-    shape = draw(get_shape(allow_none=False, min_num_dims=1))
-    res = np.asarray(
-        draw(
-            array_values(
-                dtype=dtype,
-                shape=shape,
-                min_value=np.nextafter(0, 1) * 1e50 if dtype == "float64" else None,
-            )
-        )
-    )
+def get_axis(draw, shape):
     axes = len(shape)
     axis = draw(
         st.none()
@@ -967,4 +957,4 @@ def get_axis(draw, dtype):
 
         axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    return res, axis
+    return axis
