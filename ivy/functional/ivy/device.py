@@ -58,6 +58,22 @@ class DefaultDevice:
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -137,7 +153,7 @@ def print_all_ivy_arrays_on_dev(device):
     device
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
+    for arr in get_all_ivy_arrays_on_dev(device).values():
         print(type(arr), arr.shape)
 
 
