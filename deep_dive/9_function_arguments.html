@@ -61,7 +61,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#arrays">Arrays</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#out-argument">out Argument</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dtype-and-device-arguments">dtype and device arguments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#numbers-in-operator-functions">Numbers in Operator Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#integer-sequences">Integer Sequences</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nestable-functions">Nestable Functions</a></li>
 </ul>
@@ -203,17 +202,17 @@ Likewise, all backend implementations at
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ivy</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 
 <span class="c1"># TensorFlow</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ivy</span>
@@ -272,22 +271,6 @@ In a nutshell, by the time the backend implementation is enterred,
 the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
 This is futher explained in the <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> sections respectively.</p>
-</section>
-<section id="numbers-in-operator-functions">
-<h2>Numbers in Operator Functions<a class="headerlink" href="#numbers-in-operator-functions" title="Permalink to this heading"></a></h2>
-<p>All operator functions (which have a corresponding
-such as <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code>) must also be fully compatible with
-numbers (<code class="code docutils literal notranslate"><span class="pre">float</span></code> or <code class="code docutils literal notranslate"><span class="pre">int</span></code>) passed into any of the array inputs,
-even in the absence of any arrays.
-For example, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1,</span> <span class="pre">2)</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">2)</span></code> and
-<code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">ivy.array([2]))</span></code> should all run without error.
-Therefore, the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> include <code class="code docutils literal notranslate"><span class="pre">float</span></code> as one of the types
-in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the array inputs,
-and also as one of the types in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the output.
-<a class="reference external" href="https://peps.python.org/pep-0484/#the-numeric-tower">PEP 484 Type Hints</a>
-state that “when an argument is annotated as having type float,
-an argument of type int is acceptable”. Therefore, we only include <code class="code docutils literal notranslate"><span class="pre">float</span></code> in the
-type hints.</p>
 </section>
 <section id="integer-sequences">
 <h2>Integer Sequences<a class="headerlink" href="#integer-sequences" title="Permalink to this heading"></a></h2>

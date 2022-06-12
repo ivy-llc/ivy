@@ -254,7 +254,7 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18d
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
 <p><em>Nestable</em> functions are functions which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
-provided that the containers share a common nested structure.
+provided that the containers share the same nested structure.
 If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.
@@ -272,8 +272,7 @@ is applied to every function (except those appearing in <a class="reference exte
 in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.
 This function wrapping process is covered in a bit more detail in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>Under the hood, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are called when <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed
-in as inputs to functions in the functional API.</p>
-<p>Nestable functions are explained in more detail in the <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> section.</p>
+in as inputs to functions in the functional API. This is explained in more detail in the <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> section.</p>
 </section>
 <section id="convenience-functions">
 <h2>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading"></a></h2>

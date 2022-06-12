@@ -328,7 +328,7 @@ and so the <code class="code docutils literal notranslate"><span class="pre">out
 </div>
 <p>It’s very important to remove the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument from backend implementations that do not actually handle it,
 as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L154">presence of this argument</a> dictates whether the argument should be handled
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L199">by the backend function</a> or <a href="#id5"><span class="problematic" id="id6">`by the wrapper`_</span></a>.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L199">by the backend function</a> or <a href="#id4"><span class="problematic" id="id5">`by the wrapper`_</span></a>.</p>
 <p>This distinction only concerns how the inplace update is applied to the native array,
 which is operated upon directly by the backend.
 If <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, an inplace update is always <strong>also</strong> performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself,
@@ -365,7 +365,7 @@ using inplace updates in as many of the inner Ivy functions as possible.</p></li
 </div>
 <p>By handling the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the function, we are able to get the benefits
 outlined above. Firstly, the return of <code class="code docutils literal notranslate"><span class="pre">ivy.sum</span></code> is the same shape and type
-as the return of the entire function, and so we can also write
+as the return of entire function, and so we can also write
 this output to the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument inplace.
 We can then subsequently overwrite the contents of <code class="code docutils literal notranslate"><span class="pre">out</span></code> again with the return
 of the <code class="code docutils literal notranslate"><span class="pre">ivy.negative</span></code> function. This minimizes the number of arrays created during
@@ -378,18 +378,6 @@ efficient inplace update possible, making use of backend-specific optimizations.
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/50f1ad6b66a74931efff4931c4e2b3d485e354ca/ivy/func_wrapper.py#L361">handle_out_argument</a>,
 then we would not leverage any of these benefits, and instead simply call
 <code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> at the very end of the function call.</p>
-<p>For some compositional functions, the internal function which generates the final return
-value does not itself support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument. For example,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L165">ivy.multi_head_attention</a>
-includes support for arbitrary functions passed in the input, including <code class="code docutils literal notranslate"><span class="pre">to_out_fn</span></code>
-which, if specified, is applied to the outputs before returning.
-For such functions, the inplace update should just be performed using
-<code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> at the end of the function,
-like <a class="reference external" href="https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254">so</a>.</p>
-<p>Technically, this could be handled using the
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/func_wrapper.py#L361">handle_out_argument</a>
-wrapping, but we opt to implement this in the compositional function itself,
-due to point 1 mentioned above.</p>
 </section>
 <section id="copy-argument">
 <h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this heading"></a></h2>

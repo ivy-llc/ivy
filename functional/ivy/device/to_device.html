@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dev_clone_nest &mdash; Ivy 1.0 documentation</title>
+  <title>to_device &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="dev_unify_array" href="dev_unify_array.html" />
-    <link rel="prev" title="dev_clone_iter" href="dev_clone_iter.html" /> 
+    <link rel="next" title="split_factor" href="split_factor.html" />
+    <link rel="prev" title="unset_default_device" href="unset_default_device.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,7 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="default_device.html">default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_device.html">set_default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_device.html">unset_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="to_device.html">to_device</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">to_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
@@ -86,7 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_array.html">dev_clone_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dev_clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
@@ -162,9 +162,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../device.html">Device</a> &raquo;</li>
-      <li>dev_clone_nest</li>
+      <li>to_device</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/device/dev_clone_nest.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/device/to_device.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -172,26 +172,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dev-clone-nest">
-<h1>dev_clone_nest<a class="headerlink" href="#dev-clone-nest" title="Permalink to this heading"></a></h1>
+  <section id="to-device">
+<h1>to_device<a class="headerlink" href="#to-device" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_clone_nest">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dev_clone_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_clone_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_nest" title="Permalink to this definition"></a></dt>
-<dd><p>Clone the input arguments across the specified devices.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.to_device">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#to_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_device" title="Permalink to this definition"></a></dt>
+<dd><p>Move the input array x to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> – The positional arguments to clone.</p></li>
-<li><p><strong>kwargs</strong> – The keyword arguments to clone.</p></li>
-<li><p><strong>devices</strong> – The devices to clone the arguments to.</p></li>
-<li><p><strong>max_depth</strong> – The maximum nested depth to reach. Default is 1. Increase this if the nest is
-deeper.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array to be moved to the desired device</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – device to move the input array <cite>x</cite> to</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – arguments cloned to each of the target devices</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – input array x placed on the desired device</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
@@ -205,8 +212,8 @@ deeper.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="dev_clone_iter.html" class="btn btn-neutral float-left" title="dev_clone_iter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dev_unify_array.html" class="btn btn-neutral float-right" title="dev_unify_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="unset_default_device.html" class="btn btn-neutral float-left" title="unset_default_device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="split_factor.html" class="btn btn-neutral float-right" title="split_factor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

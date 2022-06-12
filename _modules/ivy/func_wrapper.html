@@ -123,10 +123,14 @@
   <h1>Source code for ivy.func_wrapper</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
+
+<span class="n">wrapped_modules_n_classes</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">NON_WRAPPED_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;copy_nest&quot;</span><span class="p">,</span>
     <span class="s2">&quot;current_backend&quot;</span><span class="p">,</span>
@@ -215,6 +219,45 @@
     <span class="s2">&quot;stable_divide&quot;</span><span class="p">,</span>
     <span class="s2">&quot;stable_pow&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+<span class="n">ARRAYLESS_RET_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;to_numpy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_list&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_scalar&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_native_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_ivy_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_variable&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">NESTED_ARRAY_RET_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unstack&quot;</span><span class="p">,</span> <span class="s2">&quot;split&quot;</span><span class="p">]</span>
+<span class="n">NON_DTYPE_WRAPPED_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;arange&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;asarray&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;full&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;astype&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">NON_DEV_WRAPPED_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;get_all_ivy_arrays_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_ivy_arrays_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;print_all_ivy_arrays_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;clear_mem_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;total_mem_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;split_factor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;set_split_factor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;split_func_call&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;as_native_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;as_ivy_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dev_unify_iter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dev_unify_nest&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dev_unify&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dev_unify_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dev_util&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;percent_used_mem_on_dev&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;used_mem_on_dev&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
 <span class="n">FW_FN_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">[],</span>
     <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -295,7 +338,6 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">native_args</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">inputs_to_native_arrays</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -325,7 +367,6 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">ivy_args</span><span class="p">,</span> <span class="o">**</span><span class="n">ivy_kwargs</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">inputs_to_ivy_arrays</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -353,7 +394,6 @@
         <span class="c1"># convert all arrays in the return to `ivy.Array` instances</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">outputs_to_ivy_arrays</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -398,7 +438,6 @@
         <span class="c1"># call the function with dtype provided explicitly</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">infer_dtype</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -435,7 +474,6 @@
         <span class="c1"># call the function with device provided explicitly</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">infer_device</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -482,7 +520,6 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_out_argument</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
@@ -525,58 +562,198 @@
         <span class="c1"># the passed arguments, returning an ivy or a native array.</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_nestable</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
 <span class="c1"># Functions #</span>
 
 
-<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">original</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Apply wrapping to backend implementation `value` if the original implementation</span>
-<span class="sd">    `original` is also wrapped, and if `value` is not already wrapped. Attributes</span>
-<span class="sd">    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to</span>
-<span class="sd">    us whether a certain function has been wrapped or not.</span>
+<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a wrapped ivy version of the function if it is not a private function and</span>
+<span class="sd">    not in the non wrapped functions list. This allows the new function to accept as</span>
+<span class="sd">    inputs an ivy array before performing the required operation and then returning</span>
+<span class="sd">    an ivy array.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    value</span>
-<span class="sd">        the new implementation to potentially wrap</span>
-<span class="sd">    original</span>
-<span class="sd">        the original implementation of `value` which tells us which wrappers we need.</span>
+<span class="sd">    fn</span>
+<span class="sd">        function to be wrapped</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        `value` appropriately wrapped if `value` is a function, otherwise just the</span>
-<span class="sd">        input is returned.</span>
+<span class="sd">        The wrapped version of the function with all the necessary attributes updated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">):</span>
+    <span class="c1"># do nothing if the function is private or in the non wrapped functions list</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">fn</span>
+
+    <span class="c1"># determine whether the function has an out argument</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">handle_dtype</span> <span class="o">=</span> <span class="s2">&quot;dtype&quot;</span> <span class="ow">in</span> <span class="n">keys</span>
+    <span class="n">handle_dev</span> <span class="o">=</span> <span class="s2">&quot;device&quot;</span> <span class="ow">in</span> <span class="n">keys</span>
+
+    <span class="c1"># get function name</span>
+    <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="c1"># with outputs converted to ivy arrays</span>
+    <span class="k">if</span> <span class="n">fn_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ARRAYLESS_RET_FUNCTIONS</span> <span class="o">+</span> <span class="n">NESTED_ARRAY_RET_FUNCTIONS</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># with input converted to native arrays</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># with inplace updates handled</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># with dtypes handled</span>
+    <span class="k">if</span> <span class="n">handle_dtype</span> <span class="ow">and</span> <span class="n">fn_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NON_DTYPE_WRAPPED_FUNCTIONS</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">infer_dtype</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># with device handled</span>
+    <span class="k">if</span> <span class="n">handle_dev</span> <span class="ow">and</span> <span class="n">fn_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NON_DEV_WRAPPED_FUNCTIONS</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># with nestable property handled</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># return the wrapped function</span>
+    <span class="k">return</span> <span class="n">fn</span>
+
+
+<span class="k">def</span> <span class="nf">_unwrap_function</span><span class="p">(</span><span class="n">function_wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unwraps the function `function_wrapped`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function_wrapped</span>
+<span class="sd">        The function to be unwrapped.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The unwrapped version of the function which is the same as the passed function</span>
+<span class="sd">    for unwrapped functions and the inner_fn if the function is wrapped.</span>
+<span class="sd">    The newly unwrapped function accepts inputs and returns outputs as native arrays</span>
+<span class="sd">    instead of ivy arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">function_wrapped</span><span class="p">,</span> <span class="s2">&quot;wrapped&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">function_wrapped</span><span class="o">.</span><span class="n">wrapped</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">function_wrapped</span>
+    <span class="k">return</span> <span class="n">function_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
+
+
+<span class="k">def</span> <span class="nf">_invalid_function</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">framework</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ufunc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">function</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="n">fw_fn_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ivy&quot;</span><span class="p">,</span> <span class="n">framework</span><span class="p">]</span> <span class="o">+</span> <span class="n">FW_FN_KEYWORDS</span><span class="p">[</span><span class="n">framework</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">fw_fn_keywords</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">function</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_or_unwrap_functions</span><span class="p">(</span>
+    <span class="n">wrap_or_unwrap_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">framework</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">classes_to_wrap</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">())</span> <span class="k">if</span> <span class="n">native</span> <span class="k">else</span> <span class="n">ivy</span>
+    <span class="n">str_to_check</span> <span class="o">=</span> <span class="n">framework</span> <span class="k">if</span> <span class="n">native</span> <span class="k">else</span> <span class="s2">&quot;ivy&quot;</span>
+    <span class="n">is_class</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">classes_to_wrap</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">wrapped_modules_n_classes</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">str_to_check</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="s2">&quot;framework_handler&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span>
+            <span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_class</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">wrapped_modules_n_classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="c1"># if `val` is a class we recursively call `_wrap_or_unwrap_functions`</span>
+        <span class="c1"># on every member of the class</span>
+        <span class="k">if</span> <span class="n">is_class</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">native</span> <span class="ow">and</span> <span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">NATIVE_KEYS_TO_SKIP</span><span class="p">[</span><span class="n">framework</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># noinspection PyBroadException</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span>
+                            <span class="n">val</span><span class="p">,</span>
+                            <span class="n">k</span><span class="p">,</span>
+                            <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span>
+                                <span class="n">wrap_or_unwrap_function</span><span class="p">,</span>
+                                <span class="n">v</span><span class="p">,</span>
+                                <span class="n">framework</span><span class="p">,</span>
+                                <span class="n">classes_to_wrap</span><span class="p">,</span>
+                                <span class="n">native</span><span class="p">,</span>
+                                <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+        <span class="c1"># or if `val` is a module, we recursively call</span>
+        <span class="c1"># `_wrap_or_unwrap_functions` on each value of its dict</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">native</span> <span class="ow">and</span> <span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">NATIVE_KEYS_TO_SKIP</span><span class="p">[</span><span class="n">framework</span><span class="p">]</span> <span class="ow">or</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># noinspection PyBroadException</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span>
+                            <span class="n">wrap_or_unwrap_function</span><span class="p">,</span>
+                            <span class="n">v</span><span class="p">,</span>
+                            <span class="n">framework</span><span class="p">,</span>
+                            <span class="n">classes_to_wrap</span><span class="p">,</span>
+                            <span class="n">native</span><span class="p">,</span>
+                            <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wrapped_modules_n_classes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">val</span>
+    <span class="c1"># if `val` is a function/method we wrap it and return it (unless</span>
+    <span class="c1"># there are issues with it being an invalid function)</span>
+    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_class</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wrapped_modules_n_classes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">infer_dtype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
-        <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">value</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;inner_fn&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">_invalid_function</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">native</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">_invalid_function</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">native</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">wrap_or_unwrap_function</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">wrapped_modules_n_classes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">val</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_functions</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span><span class="n">_wrap_function</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_unwrap_functions</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_functions</span><span class="p">(</span><span class="n">_unwrap_function</span><span class="p">)</span>
 </pre></div>
 
            </div>

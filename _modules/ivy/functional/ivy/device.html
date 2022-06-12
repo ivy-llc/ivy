@@ -180,25 +180,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">device</span></div>
 
-<div class="viewcode-block" id="DefaultDevice.__enter__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__enter__">[docs]</a>    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Enter the runtime context related to the specified device.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Self, an instance of the same class.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        A &quot;cpu&quot; as device:</span>
-<span class="sd">        &gt;&gt;&gt; with ivy.DefaultDevice(&quot;cpu&quot;) as device:</span>
-<span class="sd">        &gt;&gt;&gt;     # with block calls device.__enter__()</span>
-<span class="sd">        &gt;&gt;&gt;     print(device._dev)</span>
-<span class="sd">        &quot;cpu&quot;</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">set_default_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="n">unset_default_device</span><span class="p">()</span>
@@ -268,24 +252,16 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">attr_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prints the shape and dtype for all ivy arrays which are currently alive on the</span>
-<span class="sd">    specified device.</span>
+<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Prints all arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
-<span class="sd">        The device on which to print the arrays</span>
-<span class="sd">    attr_only</span>
-<span class="sd">        Whether or not to only print the `shape` and `dtype` attributes of the array</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">arrs</span> <span class="o">=</span> <span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">attr_only</span><span class="p">:</span>
-        <span class="p">[</span><span class="nb">print</span><span class="p">((</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arrs</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arrs</span><span class="p">]</span></div>
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <span class="c1"># Retrieval</span>
@@ -619,7 +595,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item={&quot;a&quot;: 1}, as_native=True)</span>
 <span class="sd">    device(type=&#39;cpu&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.to_dev(x, &#39;gpu:0&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.to_device(x, &#39;gpu:0&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item=x, as_native=True)</span>
 <span class="sd">    device(type=&#39;gpu&#39;, id=0)</span>
 
@@ -669,9 +645,9 @@
 <span class="c1"># Device Allocation #</span>
 
 
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="to_device"><a class="viewcode-back" href="../../../../functional/ivy/device/to_device.html#ivy.functional.ivy.device.to_device">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
-<span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -697,10 +673,10 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.to_dev(x, &#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.to_device(x, &#39;cpu&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># Function Splitting #</span>
@@ -1047,7 +1023,7 @@
     <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DevDistItem</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span>
+            <span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">devices</span>
             <span class="p">)</span>
@@ -1186,7 +1162,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">(</span>
-        <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">}</span>
+        <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">}</span>
     <span class="p">)</span></div>
 
 
@@ -1271,13 +1247,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_concat_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span>
+    <span class="p">)</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">start</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([])</span>
+        <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+        <span class="n">start</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([]),</span>
     <span class="p">)</span>
 
 
