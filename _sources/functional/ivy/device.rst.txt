@@ -31,7 +31,7 @@ Device
    device/default_device.rst
    device/set_default_device.rst
    device/unset_default_device.rst
-   device/to_device.rst
+   device/to_dev.rst
    device/split_factor.rst
    device/set_split_factor.rst
    device/split_func_call.rst

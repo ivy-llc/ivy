@@ -126,7 +126,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">to_native_arrays_and_back</span><span class="p">,</span> <span class="n">handle_out_argument</span>
 
 <span class="n">inf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
@@ -177,7 +177,7 @@
 <span class="sd">    .. note::</span>
 <span class="sd">       Eigenvalue sort order is left unspecified and is thus implementation-dependent.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pinv"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/pinv.html#ivy.functional.ivy.linear_algebra.pinv">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -215,7 +215,7 @@
 <span class="sd">        two dimensions must be transposed).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="matrix_transpose"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_transpose.html#ivy.functional.ivy.linear_algebra.matrix_transpose">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -236,7 +236,7 @@
 <span class="sd">        ``(..., N, M)``. The returned array must have the same data type as ``x``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="vector_norm"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/vector_norm.html#ivy.functional.ivy.linear_algebra.vector_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -389,7 +389,7 @@
 <span class="sd">    ivy.array(0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="outer"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/outer.html#ivy.functional.ivy.linear_algebra.outer">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -417,7 +417,7 @@
 <span class="sd">        The returned array must have a data type determined by Type Promotion Rules.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/diagonal.html#ivy.functional.ivy.linear_algebra.diagonal">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -474,7 +474,7 @@
 <span class="sd">    ivy.array([[1., 7.],</span>
 <span class="sd">               [2., 8.]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="matrix_norm"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_norm.html#ivy.functional.ivy.linear_algebra.matrix_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -506,7 +506,7 @@
 <span class="sd">        Matrix norm of the array at specified axes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">ord</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">ord</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/qr.html#ivy.functional.ivy.linear_algebra.qr">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -546,7 +546,7 @@
 <span class="sd">          dimensions must have the same size as those of the input x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matmul.html#ivy.functional.ivy.linear_algebra.matmul">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -604,7 +604,7 @@
 <span class="sd">        (..., L, N), and K != L.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="matrix_power"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_power.html#ivy.functional.ivy.linear_algebra.matrix_power">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -613,7 +613,7 @@
     <span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer power</span>
 <span class="sd">    n.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="slogdet"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/slogdet.html#ivy.functional.ivy.linear_algebra.slogdet">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -639,7 +639,7 @@
 <span class="sd">            The natural log of the absolute value of the determinant.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">slodget</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">slodget</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="tensordot"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/tensordot.html#ivy.functional.ivy.linear_algebra.tensordot">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -738,7 +738,7 @@
 <span class="sd">                   [14., 16.,  0.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svdvals.html#ivy.functional.ivy.linear_algebra.svdvals">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -762,7 +762,7 @@
 <span class="sd">        magnitude.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/trace.html#ivy.functional.ivy.linear_algebra.trace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -807,7 +807,7 @@
 <span class="sd">    ivy.array(5.)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="vecdot"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/vecdot.html#ivy.functional.ivy.linear_algebra.vecdot">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -851,7 +851,7 @@
 <span class="sd">        for both ``x1`` and ``x2``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">vecdot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">vecdot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/det.html#ivy.functional.ivy.linear_algebra.det">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -941,7 +941,7 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/cholesky.html#ivy.functional.ivy.linear_algebra.cholesky">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1009,7 +1009,7 @@
 <span class="sd">     }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="eigvalsh"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/eigvalsh.html#ivy.functional.ivy.linear_algebra.eigvalsh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1031,7 +1031,7 @@
 <span class="sd">        (..., M) and have the same data type as x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/inv.html#ivy.functional.ivy.linear_algebra.inv">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1068,7 +1068,7 @@
 <span class="sd">    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="matrix_rank"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_rank.html#ivy.functional.ivy.linear_algebra.matrix_rank">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1112,7 +1112,7 @@
 <span class="sd">    ivy.array(2)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/cross.html#ivy.functional.ivy.linear_algebra.cross">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1228,7 +1228,7 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <span class="c1"># Extra #</span>
@@ -1256,7 +1256,7 @@
 <span class="sd">        Skew-symmetric matrix *[batch_shape,3,3]*.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="solve"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/solve.html#ivy.functional.ivy.linear_algebra.solve">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -1290,7 +1290,7 @@
 <span class="sd">        Rules.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

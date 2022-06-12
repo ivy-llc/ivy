@@ -75,7 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="device/default_device.html">default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/set_default_device.html">set_default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/unset_default_device.html">unset_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/to_device.html">to_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/set_split_factor.html">set_split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
@@ -627,7 +627,7 @@ otherwise the cpu is returned.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">device(type=&#39;cpu&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;gpu:0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;gpu:0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">device(type=&#39;gpu&#39;, id=0)</span>
 </pre></div>
@@ -1130,8 +1130,8 @@ fist input axis.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.to_device">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_device" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.to_dev">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_dev" title="Permalink to this definition"></a></dt>
 <dd><p>Move the input array x to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1151,7 +1151,7 @@ inputs broadcast to.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
