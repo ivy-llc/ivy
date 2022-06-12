@@ -40,7 +40,9 @@ def ceil(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray
 
 
 @_handle_flat_arrays_in_out
-def floor(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
+def floor(x: mx.nd.NDArray,
+          out: Optional[mx.nd.NDArray] = None
+          ) -> mx.nd.NDArray:
     ret = mx.nd.floor(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
