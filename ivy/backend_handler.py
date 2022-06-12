@@ -141,11 +141,8 @@ def current_backend(*args, **kwargs):
     # if no global backend exists, we try to infer the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is None:
-        raise ValueError(
-            "get_backend failed to find a valid library from the inputs: {} {}".format(
-                args, kwargs
-            )
-        )
+        set_backend("numpy")
+        return backend_stack[-1]
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
     return f
