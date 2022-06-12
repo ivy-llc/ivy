@@ -410,7 +410,6 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 
     """
     x = ivy.array(x)
-    x = np.asarray(x)
     return _cur_backend(x).to_numpy(x)
 
 
