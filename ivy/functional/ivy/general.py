@@ -415,8 +415,6 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
         return np.asarray([])
 
 
-
-
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     """Converts an array with a single element into a scalar.
 
