@@ -212,6 +212,35 @@ def where(
     ret
         An array with elements from x1 where condition is True, and elements from x2
         elsewhere.
+    
+    Functional Examples
+    -------------------
+
+    With `ivy.Array` input:
+
+        >>> condition = [[True, False], [True, True]]
+        >>> x1 = ivy.array([[1, 2], [3, 4]])
+        >>> x2 = ivy.array([[5, 6], [7, 8]])
+        >>> res = ivy.where(condition, x1, x2)
+        >>> print(res)
+        (ivy.array([[1, 6], [3, 4]]))
+
+        >>> x1 = ivy.array([[6, 13, 22, 7, 12],  
+                            [7, 11, 16, 32, 9]])
+        >>> x2 = ivy.array([[44, 20, 8, 35, 9],  
+                            [98, 23, 43, 6, 13]])
+        >>> res = ivy.where(((x1 % 2 == 0) & (x2 % 2 == 1)), x1, x2)
+        print(res)
+        (ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]]))
+
+    With `ivy.NativeArray` input:
+
+        >>> condition = [[True, False], [False, True]]
+        >>> x1 = ivy.native_array([[1, 2], [3, 4]])
+        >>> x2 = ivy.native_array([[5, 6], [7, 8]])
+        >>> res = ivy.where(condition, x1, x2)
+        >>> print(res)
+        (array([[1, 6], [7, 4]]))
 
     """
     return _cur_backend(x1).where(condition, x1, x2)

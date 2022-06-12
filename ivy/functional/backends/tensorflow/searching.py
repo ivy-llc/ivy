@@ -23,5 +23,9 @@ def nonzero(x: Tensor) -> Tensor:
     return tf.experimental.numpy.nonzero(x)
 
 
-def where(condition: Tensor, x1: Tensor, x2: Tensor) -> Tensor:
+def where(
+    condition: Tensor, 
+    x1: Tensor, 
+    x2: Tensor
+) -> Tensor:
     return tf.experimental.numpy.where(condition, x1, x2)
