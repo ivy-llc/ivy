@@ -425,7 +425,8 @@ def test_array_function(
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable, input_dtype)
     ]
-
+    # tolerance dict for dtypes
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
@@ -561,7 +562,9 @@ def test_array_function(
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+        assert_all_close(
+            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
+        )
 
 
 # Hypothesis #
