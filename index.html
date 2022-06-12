@@ -224,7 +224,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
         <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>  <span class="c1"># change to any framework!</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>  <span class="c1"># change to any backend!</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
 <span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
@@ -232,7 +232,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
 
 <span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
