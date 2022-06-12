@@ -238,9 +238,11 @@ def array_equal(
     >>> k = ivy.array_equal(i,j)
     >>> print(k)
     False
-
     """
-    return _cur_backend(x0).array_equal(x0, x1)
+    x0 = np.array(x0)
+    x1 = np.array(x1)
+    return np.array_equal(x0,x1)
+
 
 
 @inputs_to_native_arrays
@@ -409,7 +411,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     <class 'numpy.ndarray'>
 
     """
-    return _cur_backend(x).to_numpy(x)
+    return np.array(x)
 
 
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
