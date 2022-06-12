@@ -411,6 +411,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     <class 'numpy.ndarray'>
 
     """
+
     return np.array(x)
 
 
