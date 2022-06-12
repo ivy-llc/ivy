@@ -409,8 +409,15 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     <class 'numpy.ndarray'>
 
     """
-    x = ivy.array(x)
-    return _cur_backend(x).to_numpy(x)
+    try:
+        if is_native_array(x, True) or is_array(x, True):
+            x = np.asarray(x)
+            return _cur_backend(x).to_numpy(x)
+        return np.asarray([])
+    except ValueError:
+        return np.asarray([])
+
+
 
 
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
