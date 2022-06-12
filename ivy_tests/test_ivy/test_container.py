@@ -3013,7 +3013,7 @@ def test_container_multi_map(device, call):
 
     # with key_chains to apply
     container_mapped = ivy.Container.multi_map(
-        lambda x, _: x[0] + x[1], [container0, container1]
+        lambda x, _: x[0] + x[1], [container0, container1], assert_identical=True
     )
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[4]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[4]]))
@@ -3043,12 +3043,25 @@ def test_container_multi_map(device, call):
     )
 
     container_mapped = ivy.Container.multi_map(
-        lambda x, _: x[0] + x[1], [container0, container1],map_sequences=True
+        lambda x, _: x[0] + x[1],
+        [container0, container1],
+        map_sequences=True,
+        assert_identical=True,
     )
 
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([4]))
     assert np.allclose(ivy.to_numpy(container_mapped["b"][0]), np.array([6]))
     assert np.allclose(ivy.to_numpy(container_mapped["b"][1]), np.array([8]))
+
+    # Non identical containers
+    a = ivy.Container(a={"b": 2, "c": 4}, d={"e": 6, "f": 9})
+    b = ivy.Container(a=2, d=3)
+    container_mapped = ivy.Container.multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"].b), 1)
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"]), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped.d.e), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped["d"].f), 3)
 
 
 def test_container_common_key_chains(device, call):
