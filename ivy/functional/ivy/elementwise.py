@@ -1157,6 +1157,72 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
+
+    >>> x = ivy.array([0.2, -1.7, -5.4, 1.1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.cosh(x, out=y)
+    >>> print(y)
+    ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2], \
+                       [-4.4, -5.5, -6.6, -7.2]])
+    >>> ivy.cosh(x, out=x)
+    >>> print(x)
+    ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],
+               [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],
+              dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([1, 2, 3, 4])
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    {
+        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
+        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = x.cosh()
+    >>> print(y)
+    ivy.array([ 1.5430806,  3.7621958, 10.067662 ], dtype=float32)
+
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
+    >>> y = x.cosh()
+    >>> print(y)
+    {
+        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
+        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
+    }
     """
     return _cur_backend(x).cosh(x, out=out)
 
