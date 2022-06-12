@@ -90,7 +90,8 @@ def ceil(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def floor(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def floor(x: Union[tf.Tensor, tf.Variable]
+         ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         ret = x
     else:
@@ -98,8 +99,7 @@ def floor(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def isfinite(x: Union[tf.Tensor, tf.Variable]
-            ) -> Union[tf.Tensor, tf.Variable]:
+def isfinite(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         ret = tf.ones_like(x, tf.bool)
     else:
