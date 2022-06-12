@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 inf = float("inf")
@@ -54,7 +54,7 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return _cur_backend(x).eigh(x)
+    return current_backend(x).eigh(x)
 
 
 @to_native_arrays_and_back
@@ -92,7 +92,7 @@ def pinv(
         two dimensions must be transposed).
 
     """
-    return _cur_backend(x).pinv(x, rtol)
+    return current_backend(x).pinv(x, rtol)
 
 
 @to_native_arrays_and_back
@@ -113,7 +113,7 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         ``(..., N, M)``. The returned array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).matrix_transpose(x)
+    return current_backend(x).matrix_transpose(x)
 
 
 @to_native_arrays_and_back
@@ -266,7 +266,7 @@ def svd(
     ivy.array(0)
 
     """
-    return _cur_backend(x).svd(x, full_matrices)
+    return current_backend(x).svd(x, full_matrices)
 
 
 @to_native_arrays_and_back
@@ -294,7 +294,7 @@ def outer(
         The returned array must have a data type determined by Type Promotion Rules.
 
     """
-    return _cur_backend(x1, x2).outer(x1, x2)
+    return current_backend(x1, x2).outer(x1, x2)
 
 
 @to_native_arrays_and_back
@@ -351,7 +351,7 @@ def diagonal(
     ivy.array([[1., 7.],
                [2., 8.]])
     """
-    return _cur_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 @to_native_arrays_and_back
@@ -383,7 +383,7 @@ def matrix_norm(
         Matrix norm of the array at specified axes.
 
     """
-    return _cur_backend(x).matrix_norm(x, ord, keepdims)
+    return current_backend(x).matrix_norm(x, ord, keepdims)
 
 
 @to_native_arrays_and_back
@@ -423,7 +423,7 @@ def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
           dimensions must have the same size as those of the input x.
 
     """
-    return _cur_backend(x).qr(x, mode)
+    return current_backend(x).qr(x, mode)
 
 
 @to_native_arrays_and_back
@@ -481,7 +481,7 @@ def matmul(
         (..., L, N), and K != L.
 
     """
-    return _cur_backend(x1).matmul(x1, x2)
+    return current_backend(x1).matmul(x1, x2)
 
 
 @to_native_arrays_and_back
@@ -490,7 +490,7 @@ def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
     """
-    return _cur_backend(x).matrix_power(x, n)
+    return current_backend(x).matrix_power(x, n)
 
 
 @to_native_arrays_and_back
@@ -516,7 +516,7 @@ def slodget(
             The natural log of the absolute value of the determinant.
 
     """
-    return _cur_backend(x).slodget(x)
+    return current_backend(x).slodget(x)
 
 
 @to_native_arrays_and_back
@@ -615,7 +615,7 @@ def tensordot(
                    [14., 16.,  0.]])
 
     """
-    return _cur_backend(x1, x2).tensordot(x1, x2, axes)
+    return current_backend(x1, x2).tensordot(x1, x2, axes)
 
 
 @to_native_arrays_and_back
@@ -639,7 +639,7 @@ def svdvals(
         magnitude.
 
     """
-    return _cur_backend(x).svdvals(x)
+    return current_backend(x).svdvals(x)
 
 
 @to_native_arrays_and_back
@@ -684,7 +684,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
     ivy.array(5.)
 
     """
-    return _cur_backend(x).trace(x, offset)
+    return current_backend(x).trace(x, offset)
 
 
 @to_native_arrays_and_back
@@ -728,7 +728,7 @@ def vecdot(
         for both ``x1`` and ``x2``.
 
     """
-    return _cur_backend(x1).vecdot(x1, x2, axis)
+    return current_backend(x1).vecdot(x1, x2, axis)
 
 
 @to_native_arrays_and_back
@@ -818,7 +818,7 @@ def det(
     }
 
     """
-    return _cur_backend(x).det(x)
+    return current_backend(x).det(x)
 
 
 @to_native_arrays_and_back
@@ -886,7 +886,7 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
      }
 
     """
-    return _cur_backend(x).cholesky(x, upper)
+    return current_backend(x).cholesky(x, upper)
 
 
 @to_native_arrays_and_back
@@ -908,7 +908,7 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
         (..., M) and have the same data type as x.
 
     """
-    return _cur_backend(x).eigvalsh(x)
+    return current_backend(x).eigvalsh(x)
 
 
 @to_native_arrays_and_back
@@ -945,7 +945,7 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
 
     """
-    return _cur_backend(x).inv(x)
+    return current_backend(x).inv(x)
 
 
 @to_native_arrays_and_back
@@ -989,7 +989,7 @@ def matrix_rank(
     ivy.array(2)
 
     """
-    return _cur_backend(x).matrix_rank(x, rtol)
+    return current_backend(x).matrix_rank(x, rtol)
 
 
 @to_native_arrays_and_back
@@ -1105,7 +1105,7 @@ def cross(
     }
 
     """
-    return _cur_backend(x1).cross(x1, x2, axis)
+    return current_backend(x1).cross(x1, x2, axis)
 
 
 # Extra #
@@ -1133,7 +1133,7 @@ def vector_to_skew_symmetric_matrix(
         Skew-symmetric matrix *[batch_shape,3,3]*.
 
     """
-    return _cur_backend(vector).vector_to_skew_symmetric_matrix(vector)
+    return current_backend(vector).vector_to_skew_symmetric_matrix(vector)
 
 
 @to_native_arrays_and_back
@@ -1167,4 +1167,4 @@ def solve(
         Rules.
 
     """
-    return _cur_backend(x1, x2).solve(x1, x2)
+    return current_backend(x1, x2).solve(x1, x2)

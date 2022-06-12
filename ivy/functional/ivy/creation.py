@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
@@ -68,7 +68,7 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return _cur_backend().arange(start, stop, step, dtype=dtype, device=device)
+    return current_backend().arange(start, stop, step, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -99,7 +99,7 @@ def asarray(
         An array interpretation of x.
 
     """
-    return _cur_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
 @outputs_to_ivy_arrays
@@ -139,7 +139,7 @@ def zeros(
                [0., 0., 0., 0., 0.]])
 
     """
-    return _cur_backend().zeros(shape, dtype=dtype, device=device)
+    return current_backend().zeros(shape, dtype=dtype, device=device)
 
 
 @outputs_to_ivy_arrays
@@ -178,7 +178,7 @@ def ones(
                [1.,  1.]])
 
     """
-    return _cur_backend().ones(shape, dtype=dtype, device=device)
+    return current_backend().ones(shape, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -223,7 +223,7 @@ def full_like(
     ivy.array([1, 1, 1, 1, 1, 1])
 
     """
-    return _cur_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
+    return current_backend(x).full_like(x, fill_value, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -263,7 +263,7 @@ def ones_like(
     ivy.array([[1, 1, 1],[1, 1, 1]])
 
     """
-    return _cur_backend(x).ones_like(x, dtype=dtype, device=device)
+    return current_backend(x).ones_like(x, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -304,7 +304,7 @@ def zeros_like(
                [0, 0, 0]])
 
     """
-    return _cur_backend(x).zeros_like(x, dtype=dtype, device=device)
+    return current_backend(x).zeros_like(x, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -330,7 +330,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_backend(x).tril(x, k)
+    return current_backend(x).tril(x, k)
 
 
 @to_native_arrays_and_back
@@ -356,7 +356,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         must be zeroed. The returned array should be allocated on the same device as x.
 
     """
-    return _cur_backend(x).triu(x, k)
+    return current_backend(x).triu(x, k)
 
 
 @outputs_to_ivy_arrays
@@ -387,7 +387,7 @@ def empty(
         an uninitialized array having a specified shape
 
     """
-    return _cur_backend().empty(shape, dtype=dtype, device=device)
+    return current_backend().empty(shape, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -419,7 +419,7 @@ def empty_like(
         an array having the same shape as x and containing uninitialized data.
 
     """
-    return _cur_backend(x).empty_like(x, dtype=dtype, device=device)
+    return current_backend(x).empty_like(x, dtype=dtype, device=device)
 
 
 @outputs_to_ivy_arrays
@@ -457,7 +457,7 @@ def eye(
         device on which to place the created array. Default: None.
 
     """
-    return _cur_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device)
+    return current_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -499,7 +499,7 @@ def linspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_backend(start).linspace(
+    return current_backend(start).linspace(
         start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device
     )
 
@@ -596,7 +596,7 @@ def meshgrid(
                    [4, 4]])
 
     """
-    return _cur_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, indexing=indexing)
 
 
 @outputs_to_ivy_arrays
@@ -642,7 +642,7 @@ def full(
                [10., 10.]])
 
     """
-    return _cur_backend().full(shape, fill_value, dtype=dtype, device=device)
+    return current_backend().full(shape, fill_value, dtype=dtype, device=device)
 
 
 @to_native_arrays_and_back
@@ -668,7 +668,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            :ref:`data-interchange` for details.
 
     """
-    return _cur_backend(x).from_dlpack(x)
+    return current_backend(x).from_dlpack(x)
 
 
 # Extra #
@@ -747,4 +747,4 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return _cur_backend(start).logspace(start, stop, num, base, axis, device=device)
+    return current_backend(start).logspace(start, stop, num, base, axis, device=device)

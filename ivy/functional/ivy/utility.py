@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -120,7 +120,7 @@ def all(
     }
 
     """
-    return _cur_backend(x).all(x, axis, keepdims, out=out)
+    return current_backend(x).all(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -174,7 +174,7 @@ def any(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return _cur_backend(x).any(x, axis, keepdims, out=out)
+    return current_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #

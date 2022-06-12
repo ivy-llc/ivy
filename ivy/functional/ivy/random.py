@@ -4,7 +4,7 @@
 from typing import Optional, Union, Tuple
 
 # local
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
     outputs_to_ivy_arrays,
@@ -59,7 +59,7 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    return _cur_backend().random_uniform(low, high, shape, device=device)
+    return current_backend().random_uniform(low, high, shape, device=device)
 
 
 @outputs_to_ivy_arrays
@@ -99,7 +99,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return _cur_backend().random_normal(mean, std, shape, device=device)
+    return current_backend().random_normal(mean, std, shape, device=device)
 
 
 @to_native_arrays_and_back
@@ -188,7 +188,7 @@ def multinomial(
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
-    return _cur_backend().multinomial(
+    return current_backend().multinomial(
         population_size, num_samples, batch_size, probs, replace, device=device
     )
 
@@ -255,7 +255,7 @@ def randint(
        [ 8, 11,  3]])
 
     """
-    return _cur_backend().randint(low, high, shape, device=device)
+    return current_backend().randint(low, high, shape, device=device)
 
 
 def seed(seed_value: int = 0) -> None:
@@ -272,7 +272,7 @@ def seed(seed_value: int = 0) -> None:
     >>> ivy.seed(42)
 
     """
-    return _cur_backend().seed(seed_value)
+    return current_backend().seed(seed_value)
 
 
 @to_native_arrays_and_back
@@ -298,4 +298,4 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return _cur_backend(x).shuffle(x)
+    return current_backend(x).shuffle(x)

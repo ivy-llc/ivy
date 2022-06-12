@@ -4,7 +4,7 @@
 import ivy
 import ivy as _ivy
 from typing import Union
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend as current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -95,7 +95,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
         An ivy variable, supporting gradient computation.
 
     """
-    return _cur_backend(x).variable(x)
+    return current_backend(x).variable(x)
 
 
 def is_variable(x, exclusive=False):
@@ -117,7 +117,7 @@ def is_variable(x, exclusive=False):
         Boolean, true if x is a trainable variable, false otherwise.
 
     """
-    return _cur_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive)
 
 
 @to_native_arrays_and_back
@@ -138,7 +138,7 @@ def variable_data(x):
         The internal data stored by the variable
 
     """
-    return _cur_backend(x).variable_data(x)
+    return current_backend(x).variable_data(x)
 
 
 @to_native_arrays_and_back
@@ -162,7 +162,7 @@ def stop_gradient(x, preserve_type=True):
         The same array x, but with no gradient information.
 
     """
-    return _cur_backend(x).stop_gradient(x, preserve_type)
+    return current_backend(x).stop_gradient(x, preserve_type)
 
 
 # AutoGrad #
@@ -191,7 +191,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         extra function outputs
 
     """
-    return _cur_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 
 # Optimizer Steps #

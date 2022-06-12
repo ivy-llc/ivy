@@ -4,7 +4,7 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
 
 
@@ -76,7 +76,7 @@ def relu(
     ivy.array([0., 1., 0.])
 
     """
-    return _cur_backend(x).relu(x, out)
+    return current_backend(x).relu(x, out)
 
 
 @to_native_arrays_and_back
@@ -141,7 +141,7 @@ def leaky_relu(
     ivy.array([-0.1,  1. , -0.5])
 
     """
-    return _cur_backend(x).leaky_relu(x, alpha)
+    return current_backend(x).leaky_relu(x, alpha)
 
 
 @to_native_arrays_and_back
@@ -162,7 +162,7 @@ def gelu(x, approximate=True):
         The input array with leaky relu applied element-wise.
 
     """
-    return _cur_backend(x).gelu(x, approximate)
+    return current_backend(x).gelu(x, approximate)
 
 
 @to_native_arrays_and_back
@@ -209,7 +209,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([0.501, -0.501])
 
     """
-    return _cur_backend(x).tanh(x)
+    return current_backend(x).tanh(x)
 
 
 @to_native_arrays_and_back
@@ -255,7 +255,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([0.269, 0.731, 0.881])
 
     """
-    return _cur_backend(x).sigmoid(x)
+    return current_backend(x).sigmoid(x)
 
 
 @to_native_arrays_and_back
@@ -314,7 +314,7 @@ def softmax(
     ivy.array([0.422, 0.155, 0.422])
 
     """
-    return _cur_backend(x).softmax(x, axis)
+    return current_backend(x).softmax(x, axis)
 
 
 @to_native_arrays_and_back
@@ -360,4 +360,4 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([0.5349962, 0.4203641])
 
     """
-    return _cur_backend(x).softplus(x)
+    return current_backend(x).softplus(x)

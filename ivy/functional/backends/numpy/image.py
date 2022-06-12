@@ -3,12 +3,12 @@
 # global
 import math
 import numpy as np
-from operator import mul as _mul
-from functools import reduce as _reduce
+from operator import mul
+from functools import reduce
 from typing import List, Tuple
 
 # local
-from ivy.functional.backends import numpy as _ivy
+from ivy.functional.backends import numpy as ivy
 
 
 def stack_images(
@@ -17,8 +17,8 @@ def stack_images(
     num_images = len(images)
     if num_images == 0:
         raise Exception("At least 1 image must be provided")
-    batch_shape = _ivy.shape(images[0])[:-3]
-    image_dims = _ivy.shape(images[0])[-3:-1]
+    batch_shape = ivy.shape(images[0])[:-3]
+    image_dims = ivy.shape(images[0])[-3:-1]
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
@@ -31,11 +31,11 @@ def stack_images(
     image_rows = list()
     for i in range(stack_width_int):
         images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
-        images_to_concat += [_ivy.zeros_like(images[0])] * (
+        images_to_concat += [ivy.zeros_like(images[0])] * (
             stack_height_int - len(images_to_concat)
         )
-        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
-    return _ivy.concat(image_rows, num_batch_dims + 1)
+        image_rows.append(ivy.concat(images_to_concat, num_batch_dims))
+    return ivy.concat(image_rows, num_batch_dims + 1)
 
 
 def linear_resample(x, num_samples, axis=-1):
@@ -43,11 +43,11 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    x_pre_size = reduce(mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
     x_post_shape = x_shape[axis + 1 :]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    x_post_size = reduce(mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
     xp = np.reshape(np.arange(num_vals * x_pre_size * x_post_size), x_shape)
     x_coords = (
@@ -127,10 +127,10 @@ def bilinear_resample(x, warp):
 
 
 def gradient_image(x):
-    x_shape = _ivy.shape(x)
+    x_shape = ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
-    device = _ivy.dev(x)
+    device = ivy.dev(x)
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -140,11 +140,11 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    dy = _ivy.concat(
-        (dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
+    dy = ivy.concat(
+        (dy, ivy.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
     )
-    dx = _ivy.concat(
-        (dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
+    dx = ivy.concat(
+        (dx, ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
     )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

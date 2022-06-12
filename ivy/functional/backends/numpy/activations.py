@@ -6,9 +6,9 @@ from typing import Optional
 import numpy as np
 
 try:
-    from scipy.special import erf as _erf
+    from scipy.special import erf
 except (ImportError, ModuleNotFoundError):
-    _erf = None
+    erf = None
 
 
 def relu(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -20,13 +20,13 @@ def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2) -> np.ndarray:
 
 
 def gelu(x, approximate=True):
-    if _erf is None:
+    if erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.gelu with a numpy backend."
         )
     if approximate:
         return 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x**3)))
-    return 0.5 * x * (1 + _erf(x / np.sqrt(2)))
+    return 0.5 * x * (1 + erf(x / np.sqrt(2)))
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:

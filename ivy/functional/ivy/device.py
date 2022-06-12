@@ -472,7 +472,7 @@ def default_device(
     >>> ivy.default_device(item={"a": 1}, as_native=True)
     device(type='cpu')
     >>> x = ivy.array([1., 2., 3.])
-    >>> x = ivy.to_dev(x, 'gpu:0')
+    >>> x = ivy.to_device(x, 'gpu:0')
     >>> ivy.default_device(item=x, as_native=True)
     device(type='gpu', id=0)
 
@@ -524,7 +524,7 @@ def unset_default_device():
 
 @to_native_arrays_and_back
 @handle_out_argument
-def to_dev(
+def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
     *,
@@ -550,10 +550,10 @@ def to_dev(
     Examples
     --------
     >>> x = ivy.array([1., 2., 3.])
-    >>> x = ivy.to_dev(x, 'cpu')
+    >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return _cur_backend(x).to_dev(x, device, out=out)
+    return _cur_backend(x).to_device(x, device, out=out)
 
 
 # Function Splitting #
@@ -900,7 +900,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, device=ds)
+            ds: ivy.to_device(x_sub, device=ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
@@ -1039,7 +1039,7 @@ def dev_clone_array(x, devices):
 
     """
     return DevClonedItem(
-        {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
+        {ds: ivy.stop_gradient(ivy.to_device(x, device=ds)) for ds in devices}
     )
 
 
@@ -1124,13 +1124,16 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, device, axis):
-    return ivy.concat([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], axis)
+    return ivy.concat(
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()], axis
+    )
 
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
     return sum(
-        [ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], start=ivy.zeros([])
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()],
+        start=ivy.zeros([]),
     )
 
 

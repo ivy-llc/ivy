@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -60,7 +60,7 @@ def min(
         as x.
 
     """
-    return _cur_backend.min(x, axis, keepdims, out=out)
+    return current_backend.min(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -114,7 +114,7 @@ def max(
         as ``x``.
 
     """
-    return _cur_backend.max(x, axis, keepdims, out=out)
+    return current_backend.max(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -172,7 +172,7 @@ def var(
         variances. The returned array must have the same data type as x.
 
     """
-    return _cur_backend(x).var(x, axis, correction, keepdims, out=out)
+    return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -225,7 +225,7 @@ def mean(
            default floating-point data type.
 
     """
-    return _cur_backend(x).mean(x, axis, keepdims, out=out)
+    return current_backend(x).mean(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -278,7 +278,7 @@ def prod(
         parameter above.
 
     """
-    return _cur_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    return current_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -355,7 +355,7 @@ def sum(
     ivy.array(1.3)
 
     """
-    return _cur_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -425,7 +425,7 @@ def std(
     ivy.array(0.8164966)
 
     """
-    return _cur_backend(x).std(x, axis, correction, keepdims, out=out)
+    return current_backend(x).std(x, axis, correction, keepdims, out=out)
 
 
 # Extra #
@@ -531,4 +531,4 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
                 [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
 
     """
-    return _cur_backend(operands[0]).einsum(equation, *operands)
+    return current_backend(operands[0]).einsum(equation, *operands)

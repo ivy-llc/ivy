@@ -7,9 +7,9 @@ import numpy.array_api as npa
 import ivy
 
 try:
-    from scipy.special import erf as _erf
+    from scipy.special import erf
 except (ImportError, ModuleNotFoundError):
-    _erf = None
+    erf = None
 
 
 def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
@@ -399,8 +399,8 @@ def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
 
 
 def erf(x, *, out: Optional[np.ndarray] = None):
-    if _erf is None:
+    if erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.erf with a numpy backend."
         )
-    return _erf(x, out=out)
+    return erf(x, out=out)

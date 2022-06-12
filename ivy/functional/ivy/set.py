@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -78,7 +78,7 @@ def unique_all(
            implementations.
 
     """
-    return _cur_backend(x).unique_all(x)
+    return current_backend(x).unique_all(x)
 
 
 @to_native_arrays_and_back
@@ -97,7 +97,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         tuple of two arrays (values, inverse_indices)
 
     """
-    return _cur_backend(x).unique_inverse(x)
+    return current_backend(x).unique_inverse(x)
 
 
 @to_native_arrays_and_back
@@ -147,7 +147,7 @@ def unique_values(
            implementations.
 
     """
-    return _cur_backend(x).unique_values(x, out=out)
+    return current_backend(x).unique_values(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -239,4 +239,4 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
     >>> print(y)
     Tuple([0., 1., 2., 3.],[2,2,1,1])
     """
-    return _cur_backend(x).unique_counts(x)
+    return current_backend(x).unique_counts(x)

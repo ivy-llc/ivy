@@ -12,7 +12,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 # local
 import ivy
 from ivy.functional.ivy.device import dev
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
     inputs_to_native_arrays,
@@ -104,7 +104,7 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
 
     """
     try:
-        return _cur_backend(x).is_native_array(x, exclusive)
+        return current_backend(x).is_native_array(x, exclusive)
     except ValueError:
         return False
 
@@ -196,7 +196,7 @@ def copy_array(
     ivy.array([-1, 0, 1])
 
     """
-    return _cur_backend(x).copy_array(x)
+    return current_backend(x).copy_array(x)
 
 
 @inputs_to_native_arrays
@@ -240,7 +240,7 @@ def array_equal(
     False
 
     """
-    return _cur_backend(x0).array_equal(x0, x1)
+    return current_backend(x0).array_equal(x0, x1)
 
 
 @inputs_to_native_arrays
@@ -409,7 +409,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     <class 'numpy.ndarray'>
 
     """
-    return _cur_backend(x).to_numpy(x)
+    return current_backend(x).to_numpy(x)
 
 
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
@@ -437,7 +437,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     True
 
     """
-    return _cur_backend(x).to_scalar(x)
+    return current_backend(x).to_scalar(x)
 
 
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
@@ -464,7 +464,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     True
 
     """
-    return _cur_backend(x).to_list(x)
+    return current_backend(x).to_list(x)
 
 
 @to_native_arrays_and_back
@@ -556,7 +556,7 @@ def floormod(
         An array of the same shape and type as x, with the elements floor modded.
 
     """
-    return _cur_backend(x).floormod(x, y, out=out)
+    return current_backend(x).floormod(x, y, out=out)
 
 
 @to_native_arrays_and_back
@@ -580,7 +580,7 @@ def unstack(
         List of arrays, unpacked along specified dimensions.
 
     """
-    return _cur_backend(x).unstack(x, axis, keepdims)
+    return current_backend(x).unstack(x, axis, keepdims)
 
 
 @to_native_arrays_and_back
@@ -900,7 +900,7 @@ def current_backend_str() -> Union[str, None]:
         The framework string.
 
     """
-    fw = _cur_backend()
+    fw = current_backend()
     if fw is None:
         return None
     return fw.current_backend_str()
@@ -1159,7 +1159,7 @@ def container_types():
     """
     # noinspection PyBroadException
     try:
-        return _cur_backend().container_types()
+        return current_backend().container_types()
     except ValueError:
         return []
 
@@ -1178,7 +1178,7 @@ def inplace_arrays_supported(f=None):
         Boolean, whether or not inplace arrays are supported.
 
     """
-    return _cur_backend().inplace_arrays_supported()
+    return current_backend().inplace_arrays_supported()
 
 
 def inplace_variables_supported(f=None):
@@ -1196,7 +1196,7 @@ def inplace_variables_supported(f=None):
         Boolean, whether or not inplace variables are supported.
 
     """
-    return _cur_backend().inplace_variables_supported()
+    return current_backend().inplace_variables_supported()
 
 
 @inputs_to_native_arrays
@@ -1273,7 +1273,7 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return _cur_backend(x).inplace_update(x, val, ensure_in_backend)
+    return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
 def inplace_decrement(x, val):
@@ -1292,7 +1292,7 @@ def inplace_decrement(x, val):
         The array following the in-place decrement.
 
     """
-    return _cur_backend(x).inplace_decrement(x, val)
+    return current_backend(x).inplace_decrement(x, val)
 
 
 def inplace_increment(x, val):
@@ -1311,7 +1311,7 @@ def inplace_increment(x, val):
         The array following the in-place increment.
 
     """
-    return _cur_backend(x).inplace_increment(x, val)
+    return current_backend(x).inplace_increment(x, val)
 
 
 @to_native_arrays_and_back
@@ -1339,7 +1339,7 @@ def cumsum(
         Input array with cumulatively summed elements along axis
 
     """
-    return _cur_backend(x).cumsum(x, axis, out=out)
+    return current_backend(x).cumsum(x, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -1368,7 +1368,7 @@ def cumprod(
         Input array with cumulatively multiplied elements along axis.
 
     """
-    return _cur_backend(x).cumprod(x, axis, exclusive, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
 
 @to_native_arrays_and_back
@@ -1409,7 +1409,7 @@ def scatter_flat(
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_backend(indices).scatter_flat(
+    return current_backend(indices).scatter_flat(
         indices, updates, size, tensor, reduction, device=device
     )
 
@@ -1453,7 +1453,7 @@ def scatter_nd(
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_backend(indices).scatter_nd(
+    return current_backend(indices).scatter_nd(
         indices, updates, shape, tensor, reduction, device=device
     )
 
@@ -1492,7 +1492,7 @@ def gather(
         axis.
 
     """
-    return _cur_backend(params).gather(params, indices, axis, device=device, out=out)
+    return current_backend(params).gather(params, indices, axis, device=device, out=out)
 
 
 @to_native_arrays_and_back
@@ -1522,7 +1522,7 @@ def gather_nd(
         New array of given shape, with the values gathered at the indices.
 
     """
-    return _cur_backend(params).gather_nd(params, indices, device=device)
+    return current_backend(params).gather_nd(params, indices, device=device)
 
 
 def multiprocessing(context: str = None):
@@ -1540,7 +1540,7 @@ def multiprocessing(context: str = None):
         Multiprocessing module
 
     """
-    return _cur_backend().multiprocessing(context)
+    return current_backend().multiprocessing(context)
 
 
 @to_native_arrays_and_back
@@ -1561,7 +1561,7 @@ def indices_where(
         Indices for where the boolean array is True.
 
     """
-    return _cur_backend(x).indices_where(x)
+    return current_backend(x).indices_where(x)
 
 
 @to_native_arrays_and_back
@@ -1592,7 +1592,7 @@ def one_hot(
         overrides.
 
     """
-    return _cur_backend(indices).one_hot(indices, depth, device=device)
+    return current_backend(indices).one_hot(indices, depth, device=device)
 
 
 @inputs_to_native_arrays
@@ -1625,7 +1625,7 @@ def shape(
     ivy.array([2, 3])
 
     """
-    return _cur_backend(x).shape(x, as_array)
+    return current_backend(x).shape(x, as_array)
 
 
 @inputs_to_native_arrays
@@ -1645,4 +1645,4 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
         Shape of the array
 
     """
-    return _cur_backend(x).get_num_dims(x, as_array)
+    return current_backend(x).get_num_dims(x, as_array)

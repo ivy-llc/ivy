@@ -1,11 +1,11 @@
 """Collection of image Ivy functions."""
 
 # local
-import ivy as ivy
-import numpy as _np
-from operator import mul as _mul
-from functools import reduce as _reduce
-from ivy.backend_handler import current_backend as _cur_backend
+import ivy
+import numpy as np
+from operator import mul
+from functools import reduce
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 from typing import Union, List, Tuple
 
@@ -52,7 +52,7 @@ def stack_images(
             [0., 0., 0.]]])
 
     """
-    return _cur_backend(images[0]).stack_images(images, desired_aspect_ratio)
+    return current_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 @to_native_arrays_and_back
@@ -73,7 +73,7 @@ def bilinear_resample(x, warp):
         Image after bilinear re-sampling.
 
     """
-    return _cur_backend(x).bilinear_resample(x, warp)
+    return current_backend(x).bilinear_resample(x, warp)
 
 
 @to_native_arrays_and_back
@@ -115,7 +115,7 @@ def gradient_image(x):
                [1., 1., 0.]])
 
     """
-    return _cur_backend(x).gradient_image(x)
+    return current_backend(x).gradient_image(x)
 
 
 @to_native_arrays_and_back
@@ -135,11 +135,11 @@ def float_img_to_uint8_img(x):
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
-    x_np = ivy.to_numpy(x).astype("float32")
-    x_shape = x_np.shape
-    x_bytes = x_np.tobytes()
-    x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
-    return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
+    xnp = ivy.to_numpy(x).astype("float32")
+    x_shape = xnp.shape
+    x_bytes = xnp.tobytes()
+    x_uint8 = np.frombuffer(x_bytes, np.uint8)
+    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
 @to_native_arrays_and_back
@@ -171,11 +171,11 @@ def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
                 [2.658462758989161e-32, 7.003653270560797e-30]]])
 
     """
-    x_np = ivy.to_numpy(x).astype("uint8")
-    x_shape = x_np.shape
-    x_bytes = x_np.tobytes()
-    x_float = _np.frombuffer(x_bytes, _np.float32)
-    return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
+    xnp = ivy.to_numpy(x).astype("uint8")
+    x_shape = xnp.shape
+    x_bytes = xnp.tobytes()
+    x_float = np.frombuffer(x_bytes, np.float32)
+    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist())
 
 
 @to_native_arrays_and_back
@@ -206,7 +206,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     if image_dims is None:
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
-    flat_batch_size = _reduce(_mul, batch_shape, 1)
+    flat_batch_size = reduce(mul, batch_shape, 1)
     crop_size[0] = min(crop_size[-2], x_shape[-3])
     crop_size[1] = min(crop_size[-1], x_shape[-2])
 
@@ -219,7 +219,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
-    rng = _np.random.default_rng(seed)
+    rng = np.random.default_rng(seed)
     x_offsets = rng.integers(0, margins[0] + 1, flat_batch_size).tolist()
     y_offsets = rng.integers(0, margins[1] + 1, flat_batch_size).tolist()
 
@@ -264,4 +264,4 @@ def linear_resample(
     >>> print(y)
     ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
     """
-    return _cur_backend(x).linear_resample(x, num_samples, axis)
+    return current_backend(x).linear_resample(x, num_samples, axis)
