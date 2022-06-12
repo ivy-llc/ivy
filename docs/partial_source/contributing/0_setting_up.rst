@@ -47,6 +47,47 @@ so we thought we would add an explicit reminder here in the setting up guide!
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `pycharm channel`_!
 
+Due to rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest
+ivy package using GitHub, as explained below. This is to ensure the contributors code and
+examples are as aligned and in accordance with the latest as possible. The stable version of Ivy
+from PyPI maybe used for personal projects and experiments but avoided in development, for now. If you
+want to experiment with stable version, you can use docker.
+
+
+Virtual environments - No Docker
+-------------------------------
+
+Using miniconda
+****
+
+#. Install miniconda
+#. Open conda terminal
+#. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
+
+    .. code-block:: none
+
+        conda create --name ivy_dev python=3.8.10
+
+#. Activate the environment by:
+
+    .. code-block:: none
+
+        conda activate ivy_dev
+
+#.  Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+
+
+Once you have created yoiu
+
+Using venv
+****
+
+
 Docker Interpreter with PyCharm
 -------------------------------
 
