@@ -3,8 +3,8 @@
 # global
 from typing import List, Optional, Union
 import numpy as np
-from operator import mul as mul
-from functools import reduce as reduce
+from operator import mul
+from functools import reduce
 import multiprocessing as _multiprocessing
 from numbers import Number
 
