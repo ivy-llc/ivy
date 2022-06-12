@@ -23,7 +23,6 @@ def _strip(line):
 
 
 def _replace_logos_html(txt):
-
     # html-containing chunks
     chunks = txt.split(".. raw:: html")
 
@@ -63,16 +62,17 @@ def _is_raw_block(line):
         return True
     return False
 
+
 def read_description(path):
     with open(path, 'r', encoding='utf-8') as f:
         return f.read()
+
 
 this_directory = Path(__file__).parent
 text = read_description('README.rst')
 lines = _replace_logos_html(text).split("\n")
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = "\n".join(lines)
-
 
 setup(
     name="ivy-core",
