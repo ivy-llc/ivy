@@ -490,7 +490,6 @@ def test_array_function(
         kwargs,
         lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
     )
-
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
@@ -563,7 +562,7 @@ def test_array_function(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(
-            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
+            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype[0]], atol=atol
         )
 
 
@@ -935,18 +934,29 @@ def get_probs(draw, dtype):
 
 
 @st.composite
-def get_axis(draw, shape):
+def get_axis(draw, shape, allow_none=False):
     axes = len(shape)
-    axis = draw(
-        st.none()
-        | st.integers(-axes, axes - 1)
-        | st.lists(
-            st.integers(-axes, axes - 1),
-            min_size=1,
-            max_size=axes,
-            unique_by=lambda x: shape[x],
+    if allow_none:
+        axis = draw(
+            st.none()
+            | st.integers(-axes, axes - 1)
+            | st.lists(
+                st.integers(-axes, axes - 1),
+                min_size=1,
+                max_size=axes,
+                unique_by=lambda x: shape[x],
+            )
         )
-    )
+    else:
+        axis = draw(
+            st.integers(-axes, axes - 1)
+            | st.lists(
+                st.integers(-axes, axes - 1),
+                min_size=1,
+                max_size=axes,
+                unique_by=lambda x: shape[x],
+            )
+        )
     if type(axis) == list:
 
         def sort_key(ele, max_len):

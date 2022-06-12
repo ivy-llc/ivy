@@ -16,8 +16,8 @@ def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
     epsilon: float = ivy._MIN_BASE,
-    scale=None,
-    offset=None,
+    scale: float = None,
+    offset: float = None,
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -37,6 +37,8 @@ def layer_norm(
         Learnable beta variables for post-addition, default is None.
     new_std
         The standard deviation of the new normalized values. Default is 1.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -52,38 +54,68 @@ def layer_norm(
     >>> norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)
     >>> print(norm)
     ivy.array([[0., 0., 0.],
-           [0., 0., 0.]], dtype=float32)
+           [0., 0., 0.]])
 
     >>> arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])
-    >>> norm = ivy.layer_norm(arr, [0, 1])
+    >>> norm = ivy.zeros((2, 3))
+    >>> ivy.layer_norm(arr, [0], out=norm)
     >>> print(norm)
-    ivy.array([[-1.4638476 , -0.8783086 , -0.29276952],
-           [ 0.29276952,  0.8783086 ,  1.4638476 ]], dtype=float32)
+    ivy.array([[-1., -1., -1.],
+           [ 1.,  1.,  1.]])
 
-    >>> arr = ivy.array([[ 0.0976, -0.3452,  1.2740], \
-        [ 0.1047,  0.5886,  1.2732], \
-        [ 0.7696, -1.7024, -2.2518]])
-    >>> norm = ivy.layer_norm(arr, [0, 1, 2], epsilon=0.001, \
+    >>> arr = ivy.array([[0.0976, -0.3452,  1.2740], \
+        [0.1047,  0.5886,  1.2732], \
+        [0.7696, -1.7024, -2.2518]])
+    >>> norm = ivy.layer_norm(arr, [0, 1], epsilon=0.001, \
                  new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
-    ivy.array([[ 0.57629204,  0.29217   ,  1.3311275 ],
-           [ 0.58084774,  0.89134157,  1.3306142 ],
-           [ 1.0074799 , -0.5786756 , -0.9311974 ]], dtype=float32)
+    ivy.array([[ 0.58 ,  0.283,  1.37 ],
+           [ 0.585,  0.909,  1.37 ],
+           [ 1.03 , -0.628, -0.997]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> tensor = ivy.native_array([[3.,1.],[4.,12.]])
-    >>> norm = ivy.layer_norm(tensor, [0,1], new_std=1.25, offset=0.25, scale=0.3)
+    >>> arr = ivy.native_array([[3., 1.],[4., 12.]])
+    >>> norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)
     >>> print(norm)
-    ivy.array([[ 0.07071576, -0.10856849],
-           [ 0.16035788,  0.8774949 ]], dtype=float32)
+    ivy.array([[ 0.0707, -0.109 ],
+           [ 0.16  ,  0.877 ]])
     
     With :code:`ivy.Container` input:
 
-    >>> container = ivy.Container({'a': ivy.array([2.,3.,4.]),
-    'b': ivy.array([1.3, 2.11, 0.243])})
-    >>> norm = ivy.layer_norm(container, [0,1], new_std=1.25, offset=0.2)
+    >>> container = ivy.Container({'a': ivy.array([2., 3., 4.]), \
+        'b': ivy.array([1.3, 2.11, 0.243])})
+    >>> norm = ivy.layer_norm(container, [0], new_std=1.25, offset=0.2)
     >>> print(norm)
+    {
+        a: ivy.array([-1.33, 0.2, 1.73]),
+        b: ivy.array([0.335, 1.66, -1.39])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> arr = ivy.array([[0.0976, -0.3452,  1.2740], \
+        [0.1047,  0.5886,  1.2732], \
+        [0.7696, -1.7024, -2.2518]])
+    >>> norm = arr.layer_norm([0, 1], epsilon=0.001, \
+                 new_std=1.5, offset=0.5, scale=0.5))
+    >>> print(norm)
+    ivy.array([[ 0.58 ,  0.283,  1.37 ],
+           [ 0.585,  0.909,  1.37 ],
+           [ 1.03 , -0.628, -0.997]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> container = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> norm = container.layer_norm([0], new_std=1.25, offset=0.2)
+    >>> print(norm)
+    {
+        a: ivy.array([-1.33, 0.2, 1.73]),
+        b: ivy.array([0.335, 1.66, -1.39])
+    }
 
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
