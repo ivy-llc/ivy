@@ -84,7 +84,7 @@ def ceil(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
 def floor(x: torch.Tensor,
           *,
           out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+          ) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)

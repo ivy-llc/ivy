@@ -49,8 +49,7 @@ def ceil(x: JaxArray) -> JaxArray:
     return ret
 
 
-def floor(x: JaxArray
-) -> JaxArray:
+def floor(x: JaxArray) -> JaxArray:
     if "int" in str(x.dtype):
         ret = x
     else:
