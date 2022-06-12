@@ -113,7 +113,10 @@ def ceil(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return ret
 
 
-def floor(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def floor(x: np.ndarray,
+          *,
+          out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:
