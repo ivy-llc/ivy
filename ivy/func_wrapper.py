@@ -441,16 +441,16 @@ def _wrap_function(value: Callable, original: Callable) -> Callable:
             value = infer_device(value)
         if hasattr(original, "infer_dtype") and not hasattr(value, "infer_dtype"):
             value = infer_dtype(value)
-        if hasattr(original, "handle_out_argument") and not hasattr(
-            value, "handle_out_argument"
-        ):
-            value = handle_out_argument(value)
-        if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-            value, "inputs_to_native_arrays"
-        ):
-            value = inputs_to_native_arrays(value)
         if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
             value, "outputs_to_ivy_arrays"
         ):
             value = outputs_to_ivy_arrays(value)
+        if hasattr(original, "inputs_to_native_arrays") and not hasattr(
+            value, "inputs_to_native_arrays"
+        ):
+            value = inputs_to_native_arrays(value)
+        if hasattr(original, "handle_out_argument") and not hasattr(
+            value, "handle_out_argument"
+        ):
+            value = handle_out_argument(value)
     return value
