@@ -22,7 +22,7 @@ def random_uniform(
     dtype=None,
     *,
     device: str
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(default_device(device)):
