@@ -1041,11 +1041,15 @@ False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">print_all_ivy_arrays_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_ivy_arrays_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev" title="Permalink to this definition"></a></dt>
-<dd><p>Prints all arrays which are currently alive on the specified device.</p>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">print_all_ivy_arrays_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_ivy_arrays_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev" title="Permalink to this definition"></a></dt>
+<dd><p>Prints the shape and dtype for all ivy arrays which are currently alive on the
+specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The device on which to print the arrays</p></li>
+<li><p><strong>attr_only</strong> – Whether or not to only print the <cite>shape</cite> and <cite>dtype</cite> attributes of the array</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

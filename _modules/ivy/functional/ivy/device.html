@@ -268,16 +268,24 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prints all arrays which are currently alive on the specified device.</span>
+<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">attr_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints the shape and dtype for all ivy arrays which are currently alive on the</span>
+<span class="sd">    specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
+<span class="sd">        The device on which to print the arrays</span>
+<span class="sd">    attr_only</span>
+<span class="sd">        Whether or not to only print the `shape` and `dtype` attributes of the array</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+    <span class="n">arrs</span> <span class="o">=</span> <span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">attr_only</span><span class="p">:</span>
+        <span class="p">[</span><span class="nb">print</span><span class="p">((</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arrs</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arrs</span><span class="p">]</span></div>
 
 
 <span class="c1"># Retrieval</span>
