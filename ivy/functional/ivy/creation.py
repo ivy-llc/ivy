@@ -424,6 +424,7 @@ def empty_like(
 
 @outputs_to_ivy_arrays
 @handle_out_argument
+@infer_dtype
 @infer_device
 def eye(
     n_rows: int,
@@ -465,8 +466,8 @@ def eye(
 @infer_dtype
 @infer_device
 def linspace(
-    start: Union[ivy.Array, ivy.NativeArray, int],
-    stop: Union[ivy.Array, ivy.NativeArray, int],
+    start: Union[ivy.Array, ivy.NativeArray, int, float],
+    stop: Union[ivy.Array, ivy.NativeArray, int, float],
     num: int,
     axis: int = None,
     endpoint: bool = True,

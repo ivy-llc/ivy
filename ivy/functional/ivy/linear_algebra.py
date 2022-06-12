@@ -495,7 +495,7 @@ def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
-def slodget(
+def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.

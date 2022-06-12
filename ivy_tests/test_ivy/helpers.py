@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import sys
 import re
+import inspect
 
 import numpy as np
 import math
@@ -256,8 +257,6 @@ def docstring_examples_run(fn):
         return True
 
     docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
-    
-    print(fn_name)
 
     if docstring is None:
         return True
@@ -296,7 +295,7 @@ def docstring_examples_run(fn):
             try:
                 exec(line)
             except RuntimeError:
-                raise Exception("ERROR EXECUTING FUNCTION IN DOCSTRING")
+                raise Exception("ERROR EXECUTING IN DOCSTRING")
 
     output = f.getvalue()
     output = output.rstrip()
@@ -324,11 +323,8 @@ def docstring_examples_run(fn):
     print("Output: ", output)
     print("Putput: ", parsed_output)
 
-    # assert output == parsed_output, "Output is unequal to the docstrings output."
-    if output == parsed_output: 
-        return True
-    
-    return False
+    assert output == parsed_output, "Output is unequal to the docstrings output."
+    return True
 
 
 def var_fn(a, b=None, c=None, dtype=None):
@@ -429,7 +425,8 @@ def test_array_function(
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable, input_dtype)
     ]
-
+    # tolerance dict for dtypes
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
@@ -544,28 +541,38 @@ def test_array_function(
         else:
             assert ret.data is out.data
 
+    # compute the return with a NumPy backend
+    ivy.set_backend("numpy")
+    ret_from_np = ivy.to_native(
+        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
+    )
+    ivy.unset_backend()
+
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret
+        return ret, ret_from_np
 
-    # value test
+    # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
     if input_dtype == "bfloat16":
         return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ivy.set_backend("numpy")
-    ret_from_np = ivy.to_native(
-        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
-    )
-    ivy.unset_backend()
+
+    # flatten the return from the NumPy backend
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+
+    # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+        assert_all_close(
+            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
+        )
 
 
 # Hypothesis #
@@ -968,3 +975,14 @@ def get_axis(draw, dtype):
         axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
     return res, axis
+
+
+@st.composite
+def num_positional_args(draw, fn_name=None):
+    num_keyword_only = 0
+    total = 0
+    for param in inspect.signature(ivy.__dict__[fn_name]).parameters.values():
+        total += 1
+        if param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+    return draw(integers(min_value=0, max_value=(total - num_keyword_only)))

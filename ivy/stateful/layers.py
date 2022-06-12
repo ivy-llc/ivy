@@ -20,6 +20,7 @@ class Linear(Module):
         with_bias=True,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         Linear layer, also referred to as dense or fully connected. The layer
@@ -54,9 +55,9 @@ class Linear(Module):
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._with_bias = with_bias
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal variables for the layer
 
@@ -69,14 +70,18 @@ class Linear(Module):
         """
         v = {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             )
         }
         if self._with_bias:
             v = dict(
                 **v,
                 b=self._b_init.create_variables(
-                    self._b_shape, device, self._output_channels
+                    self._b_shape, device, self._output_channels, dtype=dtype
                 )
             )
         return v
@@ -104,7 +109,7 @@ class Linear(Module):
 
 
 class Dropout(Module):
-    def __init__(self, prob, scale=True):
+    def __init__(self, prob, scale=True, dtype=None):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
         tensor with probability p using samples from a Bernoull distribution.
@@ -119,9 +124,9 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        Module.__init__(self, None, None)
+        Module.__init__(self, None, None, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal variables for the layer
 
@@ -169,6 +174,7 @@ class MultiHeadAttention(Module):
         device=None,
         v=None,
         build_mode="on_init",
+        dtype=None,
     ):
         """
         Multi Head Attention layer.
@@ -224,23 +230,34 @@ class MultiHeadAttention(Module):
         self._with_to_kv_fn = with_to_kv_fn
         self._with_to_out_fn = with_to_out_fn
         ivy.Module.__init__(
-            self, device, v if v_exists else None, build_mode, with_partial_v=True
+            self,
+            device,
+            v if v_exists else None,
+            build_mode,
+            with_partial_v=True,
+            dtype=dtype,
         )
 
     # noinspection PyAttributeOutsideInit
     def _build(self, *agrs, **kwargs):
         self._to_q = (
-            ivy.Linear(self._query_dim, self._inner_dim, device=self._dev)
+            ivy.Linear(
+                self._query_dim, self._inner_dim, device=self._dev, dtype=self._dtype
+            )
             if self._with_to_q_fn
             else None
         )
         self._to_k = (
-            ivy.Linear(self._context_dim, self._inner_dim, device=self._dev)
+            ivy.Linear(
+                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
+            )
             if self._with_to_kv_fn
             else None
         )
         self._to_v = (
-            ivy.Linear(self._context_dim, self._inner_dim, device=self._dev)
+            ivy.Linear(
+                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
+            )
             if self._with_to_kv_fn
             else None
         )
@@ -250,7 +267,12 @@ class MultiHeadAttention(Module):
         )
         self._to_out = (
             ivy.Sequential(
-                ivy.Linear(self._inner_dim, self._query_dim, device=self._dev),
+                ivy.Linear(
+                    self._inner_dim,
+                    self._query_dim,
+                    device=self._dev,
+                    dtype=self._dtype,
+                ),
                 ivy.Dropout(self._dropout_rate),
                 device=self._dev,
             )
@@ -258,7 +280,7 @@ class MultiHeadAttention(Module):
             else None
         )
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype=None):
         """
         Parameters
         ----------
@@ -322,6 +344,7 @@ class Conv1D(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         1D convolutional layer.
@@ -369,9 +392,9 @@ class Conv1D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """
         Create internal variables for the layer
 
@@ -382,10 +405,14 @@ class Conv1D(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape, device, self._output_channels, dtype=dtype
             ),
         }
 
@@ -432,6 +459,7 @@ class Conv1DTranspose(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         1D transpose convolutional layer.
@@ -482,9 +510,9 @@ class Conv1DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """Create internal variables for the layer
 
         Parameters
@@ -494,7 +522,11 @@ class Conv1DTranspose(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
                 self._b_shape, device, self._output_channels
@@ -543,6 +575,7 @@ class Conv2D(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """2D convolutional layer.
 
@@ -589,9 +622,9 @@ class Conv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """Create internal variables for the layer
 
         Parameters
@@ -601,10 +634,14 @@ class Conv2D(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape, device, self._output_channels, dtype=dtype
             ),
         }
 
@@ -650,6 +687,7 @@ class Conv2DTranspose(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """2D convolutional transpose layer.
 
@@ -699,9 +737,9 @@ class Conv2DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """Create internal variables for the layer
 
         Parameters
@@ -711,10 +749,14 @@ class Conv2DTranspose(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape, device, self._output_channels, dtype=dtype
             ),
         }
 
@@ -759,6 +801,7 @@ class DepthwiseConv2D(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         Depthwise 2D convolutional layer.
@@ -803,9 +846,9 @@ class DepthwiseConv2D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """Create internal variables for the layer
 
         Parameters
@@ -815,10 +858,14 @@ class DepthwiseConv2D(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._num_channels, self._num_channels
+                self._w_shape,
+                device,
+                self._num_channels,
+                self._num_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._num_channels
+                self._b_shape, device, self._num_channels, dtype=dtype
             ),
         }
 
@@ -863,6 +910,7 @@ class Conv3D(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """3D convolutional layer.
 
@@ -909,9 +957,9 @@ class Conv3D(Module):
         self._b_init = bias_initializer
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         """Create internal variables for the layer
 
         Parameters
@@ -921,10 +969,14 @@ class Conv3D(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape, device, self._output_channels, dtype=dtype
             ),
         }
 
@@ -970,6 +1022,7 @@ class Conv3DTranspose(Module):
         dilations=1,
         device=None,
         v=None,
+        dtype=None,
     ):
         """3D convolutional transpose layer.
 
@@ -1019,9 +1072,10 @@ class Conv3DTranspose(Module):
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
-        Module.__init__(self, device, v)
+        self.dtype = dtype
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
@@ -1031,10 +1085,14 @@ class Conv3DTranspose(Module):
         """
         return {
             "w": self._w_init.create_variables(
-                self._w_shape, device, self._output_channels, self._input_channels
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
             ),
             "b": self._b_init.create_variables(
-                self._b_shape, device, self._output_channels
+                self._b_shape, device, self._output_channels, dtype=dtype
             ),
         }
 
@@ -1081,6 +1139,7 @@ class LSTM(Module):
         return_state=True,
         device=None,
         v=None,
+        dtype=None,
     ):
         """LSTM layer, which is a set of stacked lstm cells.
 
@@ -1113,11 +1172,11 @@ class LSTM(Module):
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
     # Public #
 
-    def get_initial_state(self, batch_shape):
+    def get_initial_state(self, batch_shape, dtype=None):
         """Get the initial state of the hidden and cell states, if not provided
         explicitly
 
@@ -1129,18 +1188,18 @@ class LSTM(Module):
         batch_shape = list(batch_shape)
         return (
             [
-                ivy.zeros((batch_shape + [self._output_channels]))
+                ivy.zeros((batch_shape + [self._output_channels]), dtype=dtype)
                 for i in range(self._num_layers)
             ],
             [
-                ivy.zeros((batch_shape + [self._output_channels]))
+                ivy.zeros((batch_shape + [self._output_channels]), dtype=dtype)
                 for i in range(self._num_layers)
             ],
         )
 
     # Overridden
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
@@ -1163,6 +1222,7 @@ class LSTM(Module):
                             device,
                             self._output_channels,
                             self._input_channels,
+                            dtype=dtype,
                         )
                     }
                     for i in range(self._num_layers)
@@ -1179,6 +1239,7 @@ class LSTM(Module):
                             device,
                             self._output_channels,
                             self._input_channels,
+                            dtype=dtype,
                         )
                     }
                     for i in range(self._num_layers)
@@ -1207,7 +1268,9 @@ class LSTM(Module):
 
         """
         if initial_state is None:
-            initial_state = self.get_initial_state(inputs.shape[:-2])
+            initial_state = self.get_initial_state(
+                inputs.shape[:-2], dtype=inputs.dtype
+            )
         h_n_list = list()
         c_n_list = list()
         h_t = inputs
