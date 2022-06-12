@@ -158,7 +158,7 @@ Nestable Functions
 
 *Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
-provided that the containers share the same nested structure.
+provided that the containers share a common nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :code:`ivy.Container` in the output.
@@ -182,7 +182,9 @@ in the :code:`ivy` module during `backend setting`_.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
 Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
-in as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
+in as inputs to functions in the functional API.
+
+Nestable functions are explained in more detail in the :ref:`Containers` section.
 
 Convenience Functions
 ---------------------
