@@ -238,6 +238,14 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
         The device string to convert to native device handle.
 
     """
+    if (device == "cpu"):
+        gc.collect()
+    elif (device == "gpu"):
+        from numba import cuda
+        device_cuda = cuda.get_current_device()
+        device_cuda.reset()
+    else:
+        pass
     return _cur_backend(None).clear_mem_on_dev(device)
 
 
