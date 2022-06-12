@@ -439,7 +439,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     """
     return _cur_backend(x).to_scalar(x)
 
-
+@inputs_to_native_arrays
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
 
