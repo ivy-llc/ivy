@@ -4795,7 +4795,7 @@ class ContainerBase(dict, abc.ABC):
                 .replace("device=", termcolor.colored("device=", "magenta"))
                 .replace("<class'", "<class '")
                 .replace("'", "")
-                .replace("<class", "<" + termcolor.colored("class", "blue"))
+                .replaRce("<class", "<" + termcolor.colored("class", "blue"))
             )
             # ToDo: make the solution below more elegant
             for i in range(10):
