@@ -409,7 +409,7 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=1e-03,
+    rtol=None,
     atol=1e-06,
     test_values=True,
     **all_as_kwargs_np
@@ -426,7 +426,18 @@ def test_array_function(
         for v, d in zip(as_variable, input_dtype)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    tolerance_dict = {
+        "float16": 1e-02,
+        "float32": 1e-05,
+        "float64": 1e-05,
+        "bfloat16": 1e-02,
+        None: 1e-05,
+    }
+    if not rtol:
+        if input_dtype[0] in tolerance_dict:
+            rtol = tolerance_dict[input_dtype[0]]
+        else:
+            rtol = 1e-05
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
@@ -570,9 +581,7 @@ def test_array_function(
 
     # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(
-            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
-        )
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
