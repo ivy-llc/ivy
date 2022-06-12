@@ -410,10 +410,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 
     """
     try:
-        if is_native_array(x, True) or is_array(x, True):
-            x = np.asarray(x)
-            return _cur_backend(x).to_numpy(x)
-        return np.asarray([])
+        return _cur_backend(x).to_numpy(x)
     except ValueError:
         return np.asarray([])
 
