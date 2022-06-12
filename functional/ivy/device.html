@@ -179,6 +179,23 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.DefaultDevice.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__enter__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__enter__" title="Permalink to this definition"></a></dt>
+<dd><p>Enter the runtime context related to the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Self, an instance of the same class.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A “cpu” as device:
+&gt;&gt;&gt; with ivy.DefaultDevice(“cpu”) as device:
+&gt;&gt;&gt;     # with block calls device.__enter__()
+&gt;&gt;&gt;     print(device._dev)
+“cpu”</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.DefaultDevice.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialises the DefaultDevice class</p>
@@ -1024,11 +1041,15 @@ False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">print_all_ivy_arrays_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_ivy_arrays_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev" title="Permalink to this definition"></a></dt>
-<dd><p>Prints all arrays which are currently alive on the specified device.</p>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">print_all_ivy_arrays_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_ivy_arrays_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev" title="Permalink to this definition"></a></dt>
+<dd><p>Prints the shape and dtype for all ivy arrays which are currently alive on the
+specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The device on which to print the arrays</p></li>
+<li><p><strong>attr_only</strong> – Whether or not to only print the <cite>shape</cite> and <cite>dtype</cite> attributes of the array</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
