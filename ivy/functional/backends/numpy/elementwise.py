@@ -1,7 +1,6 @@
 # global
 import numpy as np
 from typing import Optional
-import numpy.array_api as npa
 
 # local
 import ivy
@@ -15,7 +14,7 @@ except (ImportError, ModuleNotFoundError):
 def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+    return np.add(np.asarray(x1), np.asarray(x2))
 
 
 def pow(

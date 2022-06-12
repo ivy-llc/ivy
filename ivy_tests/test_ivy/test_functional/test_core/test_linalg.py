@@ -47,7 +47,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, device, call):
     input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="matmul"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
