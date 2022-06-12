@@ -238,11 +238,9 @@ def array_equal(
     >>> k = ivy.array_equal(i,j)
     >>> print(k)
     False
-    """
-    x0 = np.array(x0)
-    x1 = np.array(x1)
-    return np.array_equal(x0,x1)
 
+    """
+    return _cur_backend(x0).array_equal(x0, x1)
 
 
 @inputs_to_native_arrays
@@ -402,7 +400,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 
     Examples
     --------
-    >>> x = ivy.array([-1, 0, 1])
+    >>> x = ivy.array(to_numpy)
     >>> y = ivy.to_numpy(x)
     >>> print(y)
     [-1 0 1]
@@ -411,8 +409,8 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     <class 'numpy.ndarray'>
 
     """
-
-    return np.array(x)
+    x = np.array(x)
+    return _cur_backend(x).to_numpy(x)
 
 
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
@@ -1517,7 +1515,7 @@ def gather(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
