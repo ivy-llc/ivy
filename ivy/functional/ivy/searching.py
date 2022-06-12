@@ -14,11 +14,11 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 @to_native_arrays_and_back
 @handle_out_argument
 def argmax(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
@@ -54,9 +54,9 @@ def argmax(
 @to_native_arrays_and_back
 @handle_out_argument
 def argmin(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+        x: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -192,9 +192,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 @to_native_arrays_and_back
 @handle_out_argument
 def where(
-    condition: Union[ivy.Array, ivy.NativeArray],
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+        condition: Union[ivy.Array, ivy.NativeArray],
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -214,8 +214,13 @@ def where(
         elsewhere.
 
     """
+    from ivy.functional.ivy.general import is_array, is_native_array
+    if (is_array(x1, True) and is_array(condition, True)) or (
+            is_native_array(x1, True) and is_native_array(condition, True)):
+        return x1
+    else:
+        return x2
     return _cur_backend(x1).where(condition, x1, x2)
-
 
 # Extra #
 # ------#
