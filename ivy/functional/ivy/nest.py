@@ -560,7 +560,7 @@ def nested_multi_map(
     prune_unapplied=False,
     key_chain="",
     config=None,
-    to_ivy=True
+    to_ivy=True,
 ):
     """Apply function to all array values from a collection of identically
     structured ivy arrays.
@@ -595,14 +595,13 @@ def nested_multi_map(
     for index, val in enumerate(nest0):
         values = [nest[index] for nest in nests]
         value0 = values[0]
-        this_key_chain = str(index) if key_chain == "" else (key_chain + "/" + str(index))
+        this_key_chain = (
+            str(index) if key_chain == "" else (key_chain + "/" + str(index))
+        )
         if (
-            ((isinstance(value0, ivy.Array)
-            or isinstance(value0, ivy.NativeArray))
-            and ivy.get_num_dims(value0) > 0)
-            or (isinstance(value0,list)
-            or isinstance(value0,tuple))
-        ):
+            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
+            and ivy.get_num_dims(value0) > 0
+        ) or (isinstance(value0, list) or isinstance(value0, tuple)):
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -634,7 +633,7 @@ def nested_multi_map(
                 return_list.insert(index, ivy.to_list(ret))
             else:
                 return_list.insert(index, ret)
-                
+
     # noinspection PyProtectedMember
     if to_ivy:
         return ivy.array(return_list)
