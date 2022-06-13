@@ -15,45 +15,56 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # linear
-@pytest.mark.parametrize(
-    "x_n_w_n_b_n_res",
-    [
-        (
-            [[1.0, 2.0, 3.0]],
-            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
-            [2.0, 2.0],
-            [[8.0, 8.0]],
-        ),
-        (
-            [[[1.0, 2.0, 3.0]]],
-            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
-            [2.0, 2.0],
-            [[[8.0, 8.0]]],
-        ),
-        (
-            [[[1.0, 2.0, 3.0]], [[4.0, 5.0, 6.0]]],
-            [[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]], [[2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]],
-            [[2.0, 2.0], [4.0, 4.0]],
-            [[[8.0, 8.0]], [[34.0, 34.0]]],
-        ),
-    ],
+@given(
+    outer_batch_shape=helpers.lists(
+        st.integers(2, 5),
+        min_size=1,
+        max_size=3),
+    inner_batch_shape=helpers.lists(
+            st.integers(2, 5),
+            min_size=1,
+            max_size=3),
+    num_out_feats=st.integers(min_value=1, max_value=5),
+    num_in_feats=st.integers(min_value=1, max_value=5),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 3),
+    as_variable=helpers.list_of_length(st.booleans(), 3),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="linear"),
+    native_array=helpers.list_of_length(st.booleans(), 3),
+    container=helpers.list_of_length(st.booleans(), 3),
+    instance_method=st.booleans()
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
-    # smoke test
-    x, weight, bias, true_res = x_n_w_n_b_n_res
-    x = tensor_fn(x, dtype, device)
-    weight = tensor_fn(weight, dtype, device)
-    bias = tensor_fn(bias, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
-    ret = ivy.linear(x, weight, bias)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(call(ivy.linear, x, weight, bias), ivy.to_numpy(true_res))
+def test_linear(outer_batch_shape,
+                inner_batch_shape,
+                num_out_feats,
+                num_in_feats,
+                dtype,
+                as_variable,
+                with_out,
+                num_positional_args,
+                native_array, container,
+                instance_method,
+                fw,
+                device):
+
+    x = np.random.uniform(size=outer_batch_shape+inner_batch_shape+[num_in_feats]).astype(dtype[0])
+    weight = np.random.uniform(size=outer_batch_shape+[num_out_feats]+[num_in_feats]).astype(dtype[1])
+    bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "linear",
+        x=x,
+        weight=weight,
+        bias=bias
+    )
 
 
 # Dropout #
@@ -245,11 +256,11 @@ def test_conv1d_transpose(
     pad=st.sampled_from(['VALID', 'SAME']),
     data_format=st.sampled_from(['NHWC', 'NCHW']),
     dilations=st.integers(min_value=1, max_value=5),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 4),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans()
 
 )
@@ -266,16 +277,16 @@ def test_conv2d(array_shape,
                 instance_method,
                 fw,
                 device):
-    if fw in ['tensorflow', 'torch'] and "cpu" in device:
+    if fw in ['tensorflow'] and "cpu" in device:
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         return
 
-    x = np.random.uniform(size=array_shape).astype(dtype)
+    x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
     filters = np.random.uniform(size=(filter_shape,
                                       filter_shape,
                                       1,
-                                      1)).astype(dtype)
+                                      1)).astype(dtype[1])
     helpers.test_array_function(
         dtype,
         as_variable,
