@@ -225,7 +225,10 @@ def remainder(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> Jax
     return jnp.remainder(x1, x2)
 
 
-def round(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def round(
+    x: JaxArray,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:

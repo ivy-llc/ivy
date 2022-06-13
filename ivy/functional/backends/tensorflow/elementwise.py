@@ -372,7 +372,9 @@ def remainder(x1: Tensor, x2: Tensor) -> Tensor:
     return ret
 
 
-def round(x: Tensor) -> Tensor:
+def round(
+    x: Tensor
+) -> Tensor:
     if "int" in str(x.dtype):
         ret = x
     else:

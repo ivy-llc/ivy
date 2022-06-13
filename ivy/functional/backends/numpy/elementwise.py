@@ -278,7 +278,11 @@ def remainder(
     return np.remainder(x1, x2, out=out)
 
 
-def round(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def round(
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:
