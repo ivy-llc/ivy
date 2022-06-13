@@ -88,19 +88,21 @@ Using miniconda
 
         pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in pycharm.
-   b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
-If you dont find it, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
-You may tick "Make available to all projects" so you will be able to find the interpreter from this environment in any
-future projects.
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
 
 Using venv
 ****
 This is a builtin package and doesn't require explicit installation.
 
-#. Open your teminal/cmd in the directory where you would like to have the folder with the environment files
+#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
 #. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
 
     .. code-block:: none
@@ -115,15 +117,15 @@ This is a builtin package and doesn't require explicit installation.
 
         ivy_dev\Scripts\activate.bat
 
-    (on windows)
+    (on Windows)
 
-    and
+    OR
 
     .. code-block:: none
 
         source ivy_dev/bin/activate
 
-    (on mac/linux)
+    (on Mac/Linux)
 
 #. Now install ivy package from GitHub by running:
 
@@ -131,12 +133,16 @@ This is a builtin package and doesn't require explicit installation.
 
         pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in pycharm.
-   b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
 The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
-You may tick "Make available to all projects" so you will be able to find the interpreter from this environment in any
+
+Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
 future projects.
 
 
@@ -146,16 +152,15 @@ OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-crea
 Docker Interpreter with PyCharm
 -------------------------------
 
-Here we show how to set up a specific python environment, which will make contributing much easier.
 
 Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
-using the same packages, and helps to mitigate any potential version conflicts etc.
+using the same packages (same environment) and helps to mitigate any potential version conflicts etc.
 
 In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as :code:`jaxlib` on a Windows machine.
 
-Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
-which, as mentioned above, is the main IDE of choice for our development team:
+Below, we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
+which, as mentioned above, is the IDE of choice for our development team:
 
 
 Windows
