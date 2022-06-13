@@ -386,6 +386,7 @@ def all_equal(
 
 @inputs_to_native_arrays
 def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
+
     """Converts an array into a numpy array.
 
     Parameters
