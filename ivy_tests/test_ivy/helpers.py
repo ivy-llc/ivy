@@ -400,7 +400,7 @@ def as_lists(dtype, as_variable, native_array, container):
 
 
 def test_array_function(
-    input_dtype,
+    input_dtypes,
     as_variable,
     with_out,
     num_positional_args,
@@ -416,28 +416,15 @@ def test_array_function(
 ):
 
     # convert single values to length 1 lists
-    input_dtype, as_variable, native_array, container = as_lists(
-        input_dtype, as_variable, native_array, container
+    input_dtypes, as_variable, native_array, container = as_lists(
+        input_dtypes, as_variable, native_array, container
     )
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable = [
         v if ivy.is_float_dtype(d) and not with_out else False
-        for v, d in zip(as_variable, input_dtype)
+        for v, d in zip(as_variable, input_dtypes)
     ]
-    # tolerance dict for dtypes
-    tolerance_dict = {
-        "float16": 1e-02,
-        "float32": 1e-05,
-        "float64": 1e-05,
-        "bfloat16": 1e-02,
-        None: 1e-05,
-    }
-    if not rtol:
-        if input_dtype[0] in tolerance_dict:
-            rtol = tolerance_dict[input_dtype[0]]
-        else:
-            rtol = 1e-05
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
@@ -446,14 +433,14 @@ def test_array_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
-    input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtype[:num_arg_vals])
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
     ]
     arg_array_vals = [
         ivy.variable(x) if v else x
@@ -475,7 +462,8 @@ def test_array_function(
     )
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, input_dtype[num_arg_vals:])
+        ivy.array(x, dtype=d)
+        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
     ]
     kwarg_array_vals = [
         ivy.variable(x) if v else x
@@ -529,7 +517,19 @@ def test_array_function(
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
-
+        # tolerance dict for dtypes
+        tolerance_dict = {
+            "float16": 1e-02,
+            "float32": 1e-05,
+            "float64": 1e-05,
+            "bfloat16": 1e-02,
+            None: 1e-05,
+        }
+        if not rtol:
+            if ret.dtype in tolerance_dict:
+                rtol = tolerance_dict[ret.dtype]
+            else:
+                rtol = 1e-05
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
@@ -566,7 +566,7 @@ def test_array_function(
     # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if input_dtype[0] == "bfloat16":
+    if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
