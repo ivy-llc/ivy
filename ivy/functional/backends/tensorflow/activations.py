@@ -42,7 +42,7 @@ def tanh(x: Tensor) -> Tensor:
     return tf.nn.tanh(x)
 
 
-def softmax(x: Tensor, axis: Optional[int] = -1) -> Tensor:
+def softmax(x: Tensor, axis: Optional[int] = None) -> Tensor:
     return tf.nn.softmax(x, axis)
 
 
