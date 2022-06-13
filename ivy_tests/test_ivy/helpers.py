@@ -551,26 +551,34 @@ def test_array_function(
         else:
             assert ret.data is out.data
 
+    # compute the return with a NumPy backend
+    ivy.set_backend("numpy")
+    ret_from_np = ivy.to_native(
+        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
+    )
+    ivy.unset_backend()
+
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret
+        return ret, ret_from_np
 
-    # value test
+    # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
     if input_dtype == "bfloat16":
         return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    ivy.set_backend("numpy")
-    ret_from_np = ivy.to_native(
-        ivy.__dict__[fn_name](*args_np, **kwargs_np), nested=True
-    )
-    ivy.unset_backend()
+
+    # flatten the return from the NumPy backend
     if not isinstance(ret_from_np, tuple):
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+
+    # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
