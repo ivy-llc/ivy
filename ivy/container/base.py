@@ -590,6 +590,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
+        map_sequences=False,
+        assert_identical=False,
     ):
         """Apply function to all array values from a collection of identically
         structured containers.
@@ -612,7 +614,10 @@ class ContainerBase(dict, abc.ABC):
             Chain of keys for this dict entry (Default value = '')
         config
             The configuration for the containers. Default is the same as container0.
-
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        assert_identical
+            Whether to assert that the input containers are identical or not.
         Returns
         -------
             Container
@@ -626,19 +631,12 @@ class ContainerBase(dict, abc.ABC):
             values = [cont[key] for cont in containers]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
-            if isinstance(value0, ivy.Container):
-                ret = ivy.Container.multi_map(
-                    func,
-                    values,
-                    key_chains,
-                    to_apply,
-                    prune_unapplied,
-                    this_key_chain,
-                    config,
-                )
-                if ret:
-                    return_dict[key] = ret
-            else:
+            is_container = [ivy.is_ivy_container(x) for x in values]
+            if (
+                not assert_identical
+                and not all(is_container)
+                and any(is_container)
+            ):
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                         this_key_chain not in key_chains and to_apply
@@ -648,7 +646,37 @@ class ContainerBase(dict, abc.ABC):
                         return_dict[key] = value0
                         continue
                 return_dict[key] = func(values, this_key_chain)
-        # noinspection PyProtectedMember
+            else:
+                if isinstance(value0, ivy.Container):
+                    ret = ivy.Container.multi_map(
+                        func,
+                        values,
+                        key_chains,
+                        to_apply,
+                        prune_unapplied,
+                        this_key_chain,
+                        config,
+                        map_sequences,
+                        assert_identical,
+                    )
+                    if ret:
+                        return_dict[key] = ret
+                elif isinstance(value0, (list, tuple)) and map_sequences:
+                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                    if prune_unapplied and not ret:
+                        continue
+                    return_dict[key] = ret
+                else:
+                    if key_chains is not None:
+                        if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply
+                        ):
+                            if prune_unapplied:
+                                continue
+                            return_dict[key] = value0
+                            continue
+                    return_dict[key] = func(values, this_key_chain)
+            # noinspection PyProtectedMember
         return ivy.Container(return_dict, **config)
 
     @staticmethod

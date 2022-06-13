@@ -191,12 +191,13 @@ def logical_not(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarra
 def divide(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        promoted_type = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    if isinstance(x1, np.ndarray):
+        if not isinstance(x2, np.ndarray):
+            x2 = np.asarray(x2, dtype=x1.dtype)
+        else:
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
     return np.divide(x1, x2, out=out)
 
 
