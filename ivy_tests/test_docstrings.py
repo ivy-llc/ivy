@@ -7,8 +7,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-@pytest.mark.parametrize("backend", ["numpy", "jax", "tensorflow", "mxnet"])
+@pytest.mark.parametrize("backend", ["torch", "numpy", "tensorflow", "jax"])
 def test_docstrings(backend):
+    ivy.set_default_device("cpu")
     ivy.set_backend(backend)
     failures = list()
     success = True
