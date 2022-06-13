@@ -116,34 +116,40 @@ def dropout(x, prob, scale=True, out: Optional[ivy.Array] = None):
 
 
 def scaled_dot_product_attention(
-    q: Union[ivy.Array, ivy.NativeArray], 
+    q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
-    v: Union[ivy.Array, ivy.NativeArray], 
-    scale: float, 
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]]=None) -> Union[ivy.Array, ivy.NativeArray]:
+    v: Union[ivy.Array, ivy.NativeArray],
+    scale: float,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies scaled dot product attention to inputs x using optional mask.
+
     Parameters
     ----------
     q
-        The queries input array. The shape of queries input array should be in *[batch_shape,num_queries,feat_dim]*. 
-        The queries input array should have the same size as keys and values.
+        The queries input array. The shape of queries input array should be in
+        *[batch_shape,num_queries,feat_dim]*. The queries input array should have the
+        same size as keys and values.
     k
-        The keys input array. The shape of keys input array should be in *[batch_shape,num_keys,feat_dim]*. 
-        The keys input array should have the same size as queries and values.
+        The keys input array. The shape of keys input array should be in
+        *[batch_shape,num_keys,feat_dim]*. The keys input array should have the same
+        size as queries and values.
     v
-        The values input array. The shape of values input should be in *[batch_shape,num_keys,feat_dim]*.
-        The values input array should have the same size as queries and keys.
+        The values input array. The shape of values input should be in
+        *[batch_shape,num_keys,feat_dim]*. The values input array should have the same
+        size as queries and keys.
     scale
         The scale float value.
         The scale float value is used to scale the query-key pairs before softmax.
     mask
-        The mask input array. The mask to apply to the query-key values. Default is None.
-        The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
+        The mask input array. The mask to apply to the query-key values. Default is
+        None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
 
     Returns
     -------
     ret
-        The output following application of scaled dot-product attention. 
+        The output following application of scaled dot-product attention.
         The output array is the weighted sum produced by the attention score and value.
         The shape of output array is *[batch_shape,num_queries,feat_dim]* .
 
@@ -152,7 +158,7 @@ def scaled_dot_product_attention(
     instances in place of any of the arguments.
 
     Functional Examples
-    --------
+    -------------------
 
     With :code:`ivy.Array` input:
 
@@ -180,7 +186,7 @@ def scaled_dot_product_attention(
             ]])
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
@@ -203,35 +209,42 @@ def scaled_dot_product_attention(
             [2.3, 3.23],
             [2.3, 3.23]
             ]])
-    
+
     With :code:`ivy.Container` input:
 
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4], 
-                    [4.4, 5.6], 
+        a: ivy.array([[[4.27, 5.4],
+                    [4.4, 5.6],
                     [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54], 
-                    [4.4, 5.6], 
+        b: ivy.array([[[4.35, 5.54],
+                    [4.4, 5.6],
                     [4.4, 5.6]]])
     }
-    
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]], b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])
+
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]],
+    ...                      b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4], 
-                    [4.4, 5.6], 
+        a: ivy.array([[[4.27, 5.4],
+                    [4.4, 5.6],
                     [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54], 
-                    [4.4, 5.6], 
+        b: ivy.array([[[4.35, 5.54],
+                    [4.4, 5.6],
                     [4.4, 5.6]]])
     }
 
@@ -251,28 +264,29 @@ def scaled_dot_product_attention(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
-    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13], 
-                    [4.3, 5.3], 
+        a: ivy.array([[[4.14, 5.13],
+                    [4.3, 5.3],
                     [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08], 
-                    [4.3, 5.3], 
+        b: ivy.array([[[4.09, 5.08],
+                    [4.3, 5.3],
                     [4.3, 5.3]]])
     }
 
     Instance Method Examples
-    --------
+    ------------------------
 
     With :code:`ivy.Array` input:
 
-    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
-    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     ivy.array([[
@@ -283,35 +297,40 @@ def scaled_dot_product_attention(
 
     With :code:`ivy.Container` input:
 
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]], b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
+    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
+    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
+    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]],
+    ...                      b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4], 
-                    [4.4, 5.6], 
+        a: ivy.array([[[4.27, 5.4],
+                    [4.4, 5.6],
                     [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54], 
-                    [4.4, 5.6], 
+        b: ivy.array([[[4.35, 5.54],
+                    [4.4, 5.6],
                     [4.4, 5.6]]])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
+    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-    >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
+    >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13], 
-                    [4.3, 5.3], 
+        a: ivy.array([[[4.14, 5.13],
+                    [4.3, 5.3],
                     [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08], 
-                    [4.3, 5.3], 
+        b: ivy.array([[[4.09, 5.08],
+                    [4.3, 5.3],
                     [4.3, 5.3]]])
     }
 
