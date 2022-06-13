@@ -292,10 +292,11 @@ def docstring_examples_run(fn):
     f = StringIO()
     with redirect_stdout(f):
         for line in executable_lines:
+            # noinspection PyBroadException
             try:
                 exec(line)
-            except RuntimeError:
-                raise Exception("ERROR EXECUTING IN DOCSTRING")
+            except Exception:
+                return False
 
     output = f.getvalue()
     output = output.rstrip()
