@@ -213,20 +213,21 @@ new environment for another project. This makes it very easy to keep track of in
 </pre></div>
 </div>
 </li>
-<li><p>Setup the interpreter from you environment in pycharm.
-b. Going to settings -&gt; project -&gt; Python Interpreter
-c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-d. Choosing “conda environment” from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.</p></li>
+<li><p>Setup the interpreter from you environment in Pycharm by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “conda environment” from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.</p></li>
 </ol>
-<p>If you dont find it, you can run <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> in conda command line while the environment is activate and it should give the path which can be added manually.
-You may tick “Make available to all projects” so you will be able to find the interpreter from this environment in any
-future projects.</p>
+</li>
+</ol>
+<p>If you don’t find path to you created python environment, you can run <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> in conda command line while the environment is activate and it should give the path which can be added manually.</p>
 </section>
 <section id="using-venv">
 <h3>Using venv<a class="headerlink" href="#using-venv" title="Permalink to this heading"></a></h3>
 <p>This is a builtin package and doesn’t require explicit installation.</p>
 <ol class="arabic">
-<li><p>Open your teminal/cmd in the directory where you would like to have the folder with the environment files</p></li>
+<li><p>Open your terminal/cmd in the directory where you would like to have the folder with the environment files</p></li>
 <li><p>Create the environment by running the command below with a new environment name. We named it <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> like above.</p>
 <blockquote>
 <div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m venv ivy_dev
@@ -240,12 +241,12 @@ future projects.</p>
 <div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ivy_dev\Scripts\activate.bat
 </pre></div>
 </div>
-<p>(on windows)</p>
-<p>and</p>
+<p>(on Windows)</p>
+<p>OR</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
 </pre></div>
 </div>
-<p>(on mac/linux)</p>
+<p>(on Mac/Linux)</p>
 </div></blockquote>
 </li>
 <li><p>Now install ivy package from GitHub by running:</p>
@@ -255,13 +256,16 @@ future projects.</p>
 </div>
 </div></blockquote>
 </li>
-<li><p>Setup the interpreter from you environment in pycharm.
-b. Going to settings -&gt; project -&gt; Python Interpreter
-c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-d. Choosing “virtualenv environment” from the left panel. Choose existing environment and add the path to python.</p></li>
+<li><p>Setup the interpreter from you environment in Pycharm by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “virtualenv environment” from the left panel. Choose existing environment and add the path to python.</p></li>
 </ol>
-<p>The path to python can be found by <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> on Windows and <code class="code docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> in Linux/Mac OS.
-You may tick “Make available to all projects” so you will be able to find the interpreter from this environment in any
+</li>
+</ol>
+<p>The path to python can be found by <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> on Windows and <code class="code docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> in Linux/Mac OS.</p>
+<p>Note: You may tick “Make available to all projects” so you will be able to find the interpreter from the conda/venv environment in any
 future projects.</p>
 <p>Here are the visual guides for setting up a <a class="reference external" href="https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0">virtualenv environment</a>
 OR <a class="reference external" href="https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html">conda environment</a> in pycharm from JetBrains.</p>
@@ -269,13 +273,12 @@ OR <a class="reference external" href="https://www.jetbrains.com/help/pycharm/co
 </section>
 <section id="docker-interpreter-with-pycharm">
 <h2>Docker Interpreter with PyCharm<a class="headerlink" href="#docker-interpreter-with-pycharm" title="Permalink to this heading"></a></h2>
-<p>Here we show how to set up a specific python environment, which will make contributing much easier.</p>
 <p>Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
-using the same packages, and helps to mitigate any potential version conflicts etc.</p>
+using the same packages (same environment) and helps to mitigate any potential version conflicts etc.</p>
 <p>In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as <code class="code docutils literal notranslate"><span class="pre">jaxlib</span></code> on a Windows machine.</p>
-<p>Below we provide instructions for setting up a docker interpreter for <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a>,
-which, as mentioned above, is the main IDE of choice for our development team:</p>
+<p>Below, we provide instructions for setting up a docker interpreter for <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a>,
+which, as mentioned above, is the IDE of choice for our development team:</p>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
