@@ -245,11 +245,11 @@ def test_conv1d_transpose(
     pad=st.sampled_from(['VALID', 'SAME']),
     data_format=st.sampled_from(['NHWC', 'NCHW']),
     dilations=st.integers(min_value=1, max_value=5),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 4),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans()
 
 )
@@ -266,16 +266,16 @@ def test_conv2d(array_shape,
                 instance_method,
                 fw,
                 device):
-    if fw in ['tensorflow', 'torch'] and "cpu" in device:
+    if fw in ['tensorflow'] and "cpu" in device:
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         return
 
-    x = np.random.uniform(size=array_shape).astype(dtype)
+    x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
     filters = np.random.uniform(size=(filter_shape,
                                       filter_shape,
                                       1,
-                                      1)).astype(dtype)
+                                      1)).astype(dtype[1])
     helpers.test_array_function(
         dtype,
         as_variable,
