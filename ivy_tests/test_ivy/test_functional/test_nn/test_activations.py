@@ -168,7 +168,7 @@ def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance
 )
 def test_softmax(dtype_and_x,as_variable, num_positional_args,container,instance_method,native_array, fw):
     dtype, x = dtype_and_x
-    axis = -1
+    axis = None
     if fw == "torch" and dtype == "float16":
         return
     x = np.asarray(x, dtype=dtype)
