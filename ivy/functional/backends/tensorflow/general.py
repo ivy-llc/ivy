@@ -301,7 +301,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1, *, device: str,
+    axis: Optional[int] = -1,
+    *,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     if device is None:
