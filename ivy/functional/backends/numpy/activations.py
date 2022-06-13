@@ -5,6 +5,8 @@ from typing import Optional
 # global
 import numpy as np
 
+from ivy.functional import ivy
+
 try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
@@ -24,7 +26,7 @@ def gelu(x, approximate:Optional[bool]=True):
             "scipy must be installed in order to call ivy.gelu with a numpy backend."
         )
     if approximate:
-        return 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x**3)))
+        return 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x ** 3)))
     return 0.5 * x * (1 + _erf(x / np.sqrt(2)))
 
 
@@ -37,9 +39,8 @@ def tanh(x: np.ndarray) -> np.ndarray:
 
 
 def softmax(x: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
-    return np.exp(x)/np.sum(np.exp(x),axis, keepdims=True)
-
-
+    exp_x = np.exp(x)
+    return exp_x / np.sum(exp_x, axis, keepdims=True)
 
 def softplus(x: np.ndarray) -> np.ndarray:
     return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
