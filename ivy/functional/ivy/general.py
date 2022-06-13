@@ -293,19 +293,19 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 
     With :code:`ivy.NativeArray` input:
 
-    >>> m = ivy.NativeArray([1.1, 0.2, 1.3])
-    >>> n = ivy.NativeArray([1.1, 0.2, 1.4])
+    >>> m = ivy.native_array([1.1, 0.2, 1.3])
+    >>> n = ivy.native_array([1.1, 0.2, 1.4])
     >>> o = ivy.arrays_equal([m, n])
     >>> print(o)
     False
 
-    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> a = ivy.native_array([1, 2, 3, 0, -1])
     >>> b = ivy.array([1, 2, 3, 0, -1])
     >>> c = ivy.arrays_equal([a,b])
     >>> print(c)
     True
 
-    >>> a = ivy.NativeArray([1, 2, 3, 0, -1])
+    >>> a = ivy.native_array([1, 2, 3, 0, -1])
     >>> b = ivy.array([1, 2, 3, 0, -2])
     >>> c = ivy.arrays_equal([a,b])
     >>> print(c)
@@ -1637,22 +1637,22 @@ def gather(
     ivy.array([0., 1.])
 
     >>> x = ivy.array([[0., 1., 2.], \
-    ...                [3., 4., 5.]])
+                        [3., 4., 5.]])
     >>> y = ivy.array([[0, 1], \
-    ...                [1, 2]])
+                        [1, 2]])
     >>> z = ivy.array([[0., 0.], \
-    ...                [0., 0.]])
+                        [0., 0.]])
     >>> ivy.gather(x, y, device='cpu', out=z)
     >>> print(z)
     ivy.array([[0., 1.],
                [4., 5.]])
 
     >>> x = ivy.array([[[0., 1.], [2., 3.]], \
-    ...                [[4., 5.], [6., 7.]], \
-    ...                [[8., 9.], [10., 11.]]])
+                        [[4., 5.], [6., 7.]], \
+                        [[8., 9.], [10., 11.]]])
     >>> y = ivy.array([[[0, 1]], \
-    ...                [[1, 2]], \
-    ...                [[2, 0]]])
+                        [[1, 2]], \
+                        [[2, 0]]])
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
     ivy.array([[[ 0.,  5.],
@@ -1679,7 +1679,7 @@ def gather(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-    ...                   b = ivy.array([4., 5., 6.]))
+                          b = ivy.array([4., 5., 6.]))
     >>> y = ivy.array([0, 1])
     >>> print(ivy.gather(x, y))
     {
@@ -1690,9 +1690,9 @@ def gather(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-    ...                   b = ivy.array([4., 5., 6.]))
+                          b = ivy.array([4., 5., 6.]))
     >>> y = ivy.Container(a = ivy.array([0, 1]), \
-    ...                   b = ivy.array([1, 2]))
+                          b = ivy.array([1, 2]))
     >>> print(ivy.gather(x, y))
     {
         a: ivy.array([0., 1.]),
@@ -1712,9 +1712,9 @@ def gather(
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-    ...                   b = ivy.array([4., 5., 6.]))
+                          b = ivy.array([4., 5., 6.]))
     >>> y = ivy.Container(a = ivy.array([0, 1]), \
-    ...                   b = ivy.array([1, 2]))
+                          b = ivy.array([1, 2]))
     >>> print(x.gather(y))
     {
         a: {
