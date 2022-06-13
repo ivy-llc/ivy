@@ -93,9 +93,9 @@ e. Wait for us to review your PR. Once we have reviewed your PR we will either m
 f. Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
+the issue will be closed and the task will be made free for others in the community. Likewise, if we have requested
 changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
+issue will be closed, and the task will be freed for others in the community. Even if you do not make code changes,
 you should request a new code review to flag to us that our attention is again needed to further the discussion.
 
 The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
@@ -165,23 +165,30 @@ or on `discord`_ in the `fork management channel`_!
 Pull Requests
 -------------
 
-Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+Our process for responding to pull requests is quite simple.
+All newly created PRs will be reviewed by a member of the team,
 and then the PR will either be merged or changes will be requested.
 In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
 We will then take another look, and either merge the PR or request further changes.
-This process then will repeat until either the PR is closed by us or yourself, or the PR is merged.
+This process then will repeat until either the PR is closed by us or yourself,
+or the PR is merged.
 
-If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
-This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
+If we request changes, you make those changes, but you do not request a code review,
+then we will likely not check the changes.
+This is the case even if you comment on the PR.
+This simple process makes it much simpler for us to track where and when
 our attention is needed.
 
-Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
-receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!
-Your PR will never be closed until we have provided at least code review on it, even if more than 7 days go by.
+Note that you cannot request a code review until you have already received at least one
+review from us. Therefore, all new PRs will receive a code review,
+so please just wait and we will check out and review your newly created PR
+as soon as possible!
+Your PR will never be closed until we have provided at least code review on it.
 
-Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
-lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+Finally, all PRs must give write access to Ivy maintainers of the branch.
+This can be done by checking a tickbox in the lower right corner of the PR.
+This will enable us to quickly fix conflicts, merge with upstream, and get things moving
 much more quickly without us needing to request very simple fixes from yourself.
 
 The code review process is explained in more detail in the following video.
