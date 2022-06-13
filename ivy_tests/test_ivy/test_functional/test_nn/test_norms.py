@@ -32,6 +32,10 @@ def test_layer_norm(
     shape = data.draw(helpers.get_shape(min_num_dims=1))
     x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
     normalized_idxs = data.draw(helpers.get_axis(shape=shape))
+    if type(normalized_idxs) == int:
+        normalized_idxs = [normalized_idxs]
+    else:
+        normalized_idxs = list(normalized_idxs)
     scale, offset = tuple(data.draw(helpers.array_values(input_dtype, shape=(2,))))
     epsilon, new_std = tuple(
         data.draw(
