@@ -123,13 +123,6 @@ def argmin(
                [1]])
 
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0., 1., -1.])
-    >>> y = ivy.argmin(x)
-    >>> print(y)
-    ivy.array([2])
-    
     
     With :code:`ivy.Container` input:
         
