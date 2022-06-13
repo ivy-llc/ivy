@@ -170,7 +170,7 @@ def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance
     instance_method=st.booleans(),
     
 )
-def test_softmax(dtype_and_x,axis,as_variable, num_positional_args,container,instance_method,native_array, fw):
+def test_softmax(dtype_and_x,as_variable, num_positional_args,container,instance_method,native_array, fw):
     dtype,x = dtype_and_x
     axis = None
     if fw == "torch" and dtype == "float16":
