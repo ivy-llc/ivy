@@ -90,8 +90,7 @@ def ceil(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def floor(x: Union[tf.Tensor, tf.Variable]
-         ) -> Union[tf.Tensor, tf.Variable]:
+def floor(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         ret = x
     else:
