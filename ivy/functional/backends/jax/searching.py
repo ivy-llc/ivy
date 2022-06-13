@@ -28,5 +28,9 @@ def nonzero(x: JaxArray) -> JaxArray:
     return jnp.nonzero(x)
 
 
-def where(condition: JaxArray, x1: JaxArray, x2: JaxArray) -> JaxArray:
+def where(
+    condition: JaxArray, 
+    x1: JaxArray, 
+    x2: JaxArray
+) -> JaxArray:
     return jnp.where(condition, x1, x2)
