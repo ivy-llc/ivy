@@ -15,20 +15,21 @@ def test_docstrings():
             random_normal, random_uniform, shuffle, num_gpus, current_backend,
             get_backend
     """
-    skip_functions = [
+    to_skip = [
         "random_normal",
         "random_uniform",
         "shuffle",
         "num_gpus",
         "current_backend",
         "get_backend",
+        "namedtuple",
+        "DType",
+        "Dtype",
     ]
 
     function_list = ivy.__dict__.items()
     for k, v in function_list:
-        if k in skip_functions:
-            continue
-        if k in ["namedtuple", "DType", "Dtype"] or helpers.docstring_examples_run(v):
+        if k in to_skip or helpers.docstring_examples_run(v):
             continue
         success = False
         failures.append(k)
