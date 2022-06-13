@@ -401,7 +401,6 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
