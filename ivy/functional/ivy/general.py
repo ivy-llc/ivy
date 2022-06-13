@@ -432,14 +432,6 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> print(type(y))
     <class 'numpy.ndarray'>
 
-    >>> x = ivy.array([a, b, c])
-    >>> y = ivy.to_numpy(x)
-    >>> print(y)
-    []
-
-    >>> print(type(y))
-    <NameError: name 'a' is not defined>
-
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-1, 0, 1])
@@ -471,18 +463,11 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> print(type(y))
     <class 'numpy.ndarray'>
 
-    >>> x = ivy.native_array([a, b, c])
-    >>> y = ivy.to_numpy(x)
-    >>> print(y)
-    []
-
-    >>> print(type(y))
-    <NameError: name 'a' is not defined>
-
     """
-    try:
+    if is_native_array(x, True) or is_ivy_array(x, True):
+        x = np.asarray(x)
         return _cur_backend(x).to_numpy(x)
-    except ValueError:
+    else:
         return np.asarray([])
 
 
