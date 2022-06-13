@@ -400,13 +400,123 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [-1 0 1]
+    np.ndarray([-1 0 1])
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
+
+    >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    np.ndarray([[-1 0 1] \
+    [-1 0 1] \
+    [1 0 -1]])
+
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
+
+    >>> x = ivy.array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    np.ndarray([[[-1 0 1] \
+    [1 0 -1]] \
+    [[1 -1 0] \
+    [1 0 -1]]])
+
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1, 0, 1])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    np.ndarray([-1 0 1])
+
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
+
+    >>> x = ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    np.ndarray([[-1 0 1] \
+    [-1 0 1] \
+    [1 0 -1]])
+
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
+
+    >>> x = ivy.native_array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    np.ndarray([[[-1 0 1] \
+    [1 0 -1]] \
+    [[1 -1 0] \
+    [1 0 -1]]])
+
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(ivy.native_array([-1, 0, 1]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([-1 0 1])
+    }
+
+    >>> x = ivy.Container(ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([[-1 0 1] \
+        [-1 0 1] \
+        [1 0 -1]])
+    }
+
+    >>> x = ivy.Container(ivy.native_array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([[[-1 0 1] \
+        [1 0 -1]] \
+        [[1 -1 0] \
+        [1 0 -1]]])
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(ivy.array([-1, 0, 1]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([-1 0 1])
+    }
+
+    >>> x = ivy.Container(ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([[-1 0 1] \
+        [-1 0 1] \
+        [1 0 -1]])
+    }
+
+    >>> x = ivy.Container(ivy.array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]))
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    {
+        np.ndarray([[[-1 0 1] \
+        [1 0 -1]] \
+        [[1 -1 0] \
+        [1 0 -1]]])
+    }
 
     """
     return _cur_backend(x).to_numpy(x)
