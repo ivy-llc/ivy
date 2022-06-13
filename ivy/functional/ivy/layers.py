@@ -147,7 +147,9 @@ def scaled_dot_product_attention(
         The output array is the weighted sum produced by the attention score and value.
         The shape of output array is *[batch_shape,num_queries,feat_dim]* .
 
-    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     --------
