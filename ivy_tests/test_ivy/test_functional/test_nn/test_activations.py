@@ -160,26 +160,23 @@ def test_sigmoid(dtype_and_x,as_variable, num_positional_args,container,instance
     
     
 # softmax
-given(
-array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
-    ),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+# softmax
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
     container=st.booleans(),
     instance_method=st.booleans(),
-    axis=st.integers(-1, 0)
-
+    
 )
-def test_softmax(input_dtype,axis,array_shape,as_variable, num_positional_args,container,instance_method,native_array, fw):
-    shape = tuple(array_shape)
-    x = np.random.uniform(size=shape).astype(input_dtype)
-    if fw == "torch" and input_dtype == "float16":
+def test_softmax(dtype_and_x,axis,as_variable, num_positional_args,container,instance_method,native_array, fw):
+    dtype,x = dtype_and_x
+    axis = None
+    if fw == "torch" and dtype == "float16":
         return
     helpers.test_array_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         native_array,
@@ -188,7 +185,7 @@ def test_softmax(input_dtype,axis,array_shape,as_variable, num_positional_args,c
         container,
         instance_method,
         "softmax",
-        x=x,
+        x=np.asarray(x,dtype=dtype),
         axis = axis,
     )
 
