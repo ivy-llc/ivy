@@ -3,5 +3,6 @@ einops
 psutil
 termcolor
 colorama
+packaging
 nvidia-ml-py3 # mod_name=pynvml
 numba

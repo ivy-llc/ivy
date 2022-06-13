@@ -23,5 +23,9 @@ def nonzero(x: np.ndarray) -> Tuple[np.ndarray]:
     return np.nonzero(x)
 
 
-def where(condition: np.ndarray, x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+def where(
+    condition: np.ndarray, 
+    x1: np.ndarray, 
+    x2: np.ndarray
+) -> np.ndarray:
     return np.where(condition, x1, x2)
