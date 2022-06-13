@@ -6,32 +6,21 @@ from typing import Optional
 
 # global
 import tensorflow as tf
-from tensorflow.python.ops.numpy_ops import pi
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
-def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.nn.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: Tensor) -> Tensor:
+    return tf.nn.relu(x)
 
 
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:
-    if tf.reduce_any(alpha>x):
-        alpha_dtype = ivy.default_dtype(item=alpha)
-        promoted_dtype = tf.experimental.numpy.promote_types(x.dtype,alpha_dtype)
-        x = tf.cast(x,dtype=promoted_dtype)
     return tf.nn.leaky_relu(x, alpha)
 
 
-
-def gelu (x: Tensor, approximate:Optional[bool]=True)->Tensor:
-    return tf.nn.gelu(x,approximate)
-
+def gelu (x: Tensor, approximate:Optional[bool]= True) -> Tensor:
+    return tf.nn.gelu(x, approximate)
 
 
 def sigmoid(x: Tensor) -> Tensor:
@@ -43,7 +32,7 @@ def tanh(x: Tensor) -> Tensor:
 
 
 def softmax(x: Tensor, axis: Optional[int] = None) -> Tensor:
-    return tf.nn.softmax(x, axis)
+    return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
 
 
 def softplus(x: Tensor) -> Tensor:
