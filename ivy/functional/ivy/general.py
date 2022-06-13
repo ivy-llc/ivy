@@ -412,6 +412,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     return _cur_backend(x).to_numpy(x)
 
 
+@inputs_to_native_arrays
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     """Converts an array with a single element into a scalar.
 
@@ -438,6 +439,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 
     """
     return _cur_backend(x).to_scalar(x)
+
 
 @inputs_to_native_arrays
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:

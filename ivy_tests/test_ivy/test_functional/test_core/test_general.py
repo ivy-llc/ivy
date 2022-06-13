@@ -251,12 +251,12 @@ def test_to_scalar(object_in, dtype, device, call, fw):
         # to_scalar() requires eager execution
         return
     # smoke test
-    ret = ivy.to_scalar(ivy.array(object_in, dtype, device))
+    ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
     # type test
     assert isinstance(ret, type(true_val))
     # value test
-    assert ivy.to_scalar(ivy.array(object_in, dtype, device)) == true_val
+    assert ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device)) == true_val
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support scalar conversion
@@ -267,25 +267,21 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 @given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
         return
     # smoke test
-    ret = ivy.to_list(ivy.array(object_in, dtype, device))
-    # type test
-    assert isinstance(ret, list)
+    arr = ivy.array(object_in, dtype=dtype, device=device)
+    ret = ivy.to_list(arr)
+    # type test (result won't be a list if input is 0 dimensional
+    if arr.ndim != 0:
+        assert isinstance(ret, list)
     # cardinality test
     assert _get_shape_of_list(ret) == _get_shape_of_list(object_in)
     # value test
     assert np.allclose(
         np.nan_to_num(
-            np.asarray(ivy.to_list(ivy.array(object_in, dtype, device))),
+            np.asarray(ivy.to_list(ivy.array(object_in, dtype=dtype, device=device))),
             posinf=np.inf,
             neginf=-np.inf,
         ),
