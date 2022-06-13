@@ -42,7 +42,7 @@ def get_referrers_recursive(
     seen_set
          (Default value = None)
     local_set
-         (Default value = None)
+         (Default value = None`)
 
     """
     seen_set = ivy.default(seen_set, set())
@@ -463,7 +463,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     True
 
     """
-    return ivy.currrent_backend(x).to_list(x)
+    return _cur_backend(x).to_list(x)
 
 
 @to_native_arrays_and_back
