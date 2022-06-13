@@ -241,6 +241,40 @@ def where(
         >>> res = ivy.where(condition, x1, x2)
         >>> print(res)
         (array([[1, 6], [7, 4]]))
+    
+    With `ivy.Container` input:
+
+        >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
+        >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
+        >>> res = ivy.where((x1 > x2), x1, x2)
+        >>> print(res)
+        {
+            a: ivy.array([3, 7, 5]),
+            b: ivy.array([3, 8, 6])
+        }
+    
+    Instance Method Examples
+    -------------------
+
+    With `ivy.Array` input:
+
+        >>> condition = [[True, False], [True, True]]
+        >>> x1 = ivy.array([[1, 2], [3, 4]])
+        >>> x2 = ivy.array([[5, 6], [7, 8]])
+        >>> res = x1.where(condition, x2)
+        >>> print(res)
+        (ivy.array([[1, 6], [3, 4]]))
+    
+    With `ivy.Container` input:
+
+        >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
+        >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
+        >>> res = x1.where((x1 > x2), x2)
+        >>> print(res)
+        {
+            a: ivy.array([3, 7, 5]),
+            b: ivy.array([3, 8, 6])
+        }
 
     """
     return _cur_backend(x1).where(condition, x1, x2)
