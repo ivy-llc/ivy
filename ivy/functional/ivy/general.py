@@ -538,14 +538,134 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 
     Examples
     --------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([-1])
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     -1
 
+    >>> print(ivy.is_int_dtype(y))
+    True
+
+    >>> x = ivy.array([3])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    3
 
     >>> print(ivy.is_int_dtype(y))
     True
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    0
+
+    >>> print(ivy.is_int_dtype(y))
+    True
+
+    >>> x = ivy.array([1.2])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    1.2
+
+    >>> print(ivy.is_int_dtype(y))
+    False
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    -1
+
+    >>> print(ivy.is_int_dtype(y))
+    True
+
+    >>> x = ivy.native_array([3])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    3
+
+    >>> print(ivy.is_int_dtype(y))
+    True
+
+    >>> x = ivy.native_array([0])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    0
+
+    >>> print(ivy.is_int_dtype(y))
+    True
+
+    >>> x = ivy.native_array([1.2])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    1.2
+
+    >>> print(ivy.is_int_dtype(y))
+    False
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(ivy.array([-1]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        -1
+    }
+
+    >>> x = ivy.Container(ivy.array([3]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        3
+    }
+
+    >>> x = ivy.Container(ivy.array([0]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        0
+    }
+
+    >>> x = ivy.Container(ivy.array([1.2]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        1.2
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(ivy.native_array([-1]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        -1
+    }
+
+    >>> x = ivy.Container(ivy.native_array([3]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        3
+    }
+
+    >>> x = ivy.Container(ivy.native_array([0]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        0
+    }
+
+    >>> x = ivy.Container(ivy.native_array([1.2]))
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    {
+        1.2
+    }
 
     """
     return _cur_backend(x).to_scalar(x)
