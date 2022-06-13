@@ -15,6 +15,7 @@ class LayerNorm(Module):
         new_std=None,
         device=None,
         v=None,
+        dtype=None,
     ):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
@@ -45,15 +46,17 @@ class LayerNorm(Module):
         self._offset_shape = normalized_shape
         self._scale_init = Ones()
         self._offset_init = Zeros()
-        Module.__init__(self, device, v)
+        Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer"""
         if self._elementwise_affine:
             return {
-                "scale": self._scale_init.create_variables(self._scale_shape, device),
+                "scale": self._scale_init.create_variables(
+                    self._scale_shape, device, dtype=dtype
+                ),
                 "offset": self._offset_init.create_variables(
-                    self._offset_shape, device
+                    self._offset_shape, device, dtype=dtype
                 ),
             }
         return {}

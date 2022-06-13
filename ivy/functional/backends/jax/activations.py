@@ -18,9 +18,10 @@ def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2) -> JaxArray:
     return jnp.where(x > 0, x, x * alpha)
 
 
+
 def gelu(x: JaxArray, approximate:bool = True)\
     -> JaxArray:
-    return jax.nn.gelu
+    return jax.nn.gelu(x, approximate)
 
 
 def sigmoid(x: JaxArray) -> JaxArray:
