@@ -2063,6 +2063,11 @@ def round(
     >>> print(y)
     ivy.array([1., 2., 4.], dtype=float32)
 
+    >>> x = ivy.array([-0, 5, 4.5])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([0., 5., 4.], dtype=float32)
+
     >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
     >>> y = ivy.zeros(4)
     >>> ivy.round(x, out=y)
