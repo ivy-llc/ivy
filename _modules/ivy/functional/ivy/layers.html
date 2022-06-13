@@ -238,31 +238,206 @@
 <span class="c1"># Attention #</span>
 
 
-<div class="viewcode-block" id="scaled_dot_product_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/scaled_dot_product_attention.html#ivy.functional.ivy.layers.scaled_dot_product_attention">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
-    <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="scaled_dot_product_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/scaled_dot_product_attention.html#ivy.functional.ivy.layers.scaled_dot_product_attention">[docs]</a><span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
+    <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+    <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> 
+    <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Applies scaled dot product attention to inputs x using optional mask.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    q</span>
-<span class="sd">        The queries *[batch_shape,num_queries,feat_dim]*.</span>
+<span class="sd">        The queries input array. The shape of queries input array should be in *[batch_shape,num_queries,feat_dim]*. </span>
+<span class="sd">        The queries input array should have the same size as keys and values.</span>
 <span class="sd">    k</span>
-<span class="sd">        The keys *[batch_shape,num_keys,feat_dim]*.</span>
+<span class="sd">        The keys input array. The shape of keys input array should be in *[batch_shape,num_keys,feat_dim]*. </span>
+<span class="sd">        The keys input array should have the same size as queries and values.</span>
 <span class="sd">    v</span>
-<span class="sd">        The values *[batch_shape,num_keys,feat_dim]*.</span>
+<span class="sd">        The values input array. The shape of values input should be in *[batch_shape,num_keys,feat_dim]*.</span>
+<span class="sd">        The values input array should have the same size as queries and keys.</span>
 <span class="sd">    scale</span>
-<span class="sd">        The value by which to scale the query-key pairs before softmax.</span>
+<span class="sd">        The scale float value.</span>
+<span class="sd">        The scale float value is used to scale the query-key pairs before softmax.</span>
 <span class="sd">    mask</span>
-<span class="sd">        The mask to apply to the query-key values. Default is None.</span>
-<span class="sd">        *[batch_shape,num_queries,num_keys]*</span>
+<span class="sd">        The mask input array. The mask to apply to the query-key values. Default is None.</span>
+<span class="sd">        The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The output following application of scaled dot-product attention.</span>
-<span class="sd">        *[batch_shape,num_queries,feat_dim]*</span>
+<span class="sd">        The output following application of scaled dot-product attention. </span>
+<span class="sd">        The output array is the weighted sum produced by the attention score and value.</span>
+<span class="sd">        The shape of output array is *[batch_shape,num_queries,feat_dim]* .</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [4.04, 5.03],</span>
+<span class="sd">            [4.3 , 5.3 ],</span>
+<span class="sd">            [4.3 , 5.3 ]</span>
+<span class="sd">            ]])</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23]</span>
+<span class="sd">            ]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [4.04, 5.03],</span>
+<span class="sd">            [4.3 , 5.3 ],</span>
+<span class="sd">            [4.3 , 5.3 ]</span>
+<span class="sd">            ]])</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23]</span>
+<span class="sd">            ]])</span>
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[[4.27, 5.4], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]]),</span>
+<span class="sd">        b: ivy.array([[[4.35, 5.54], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]], b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[[4.27, 5.4], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]]),</span>
+<span class="sd">        b: ivy.array([[[4.35, 5.54], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [4.04, 5.03],</span>
+<span class="sd">            [4.3 , 5.3 ],</span>
+<span class="sd">            [4.3 , 5.3 ]</span>
+<span class="sd">        ]])</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[[4.14, 5.13], </span>
+<span class="sd">                    [4.3, 5.3], </span>
+<span class="sd">                    [4.3, 5.3]]]),</span>
+<span class="sd">        b: ivy.array([[[4.09, 5.08], </span>
+<span class="sd">                    [4.3, 5.3], </span>
+<span class="sd">                    [4.3, 5.3]]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    ivy.array([[</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23],</span>
+<span class="sd">            [2.3, 3.23]</span>
+<span class="sd">            ]])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.],[4.4, 5.6]]]), b=ivy.array([[[1.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]), b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]], b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[[4.27, 5.4], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]]),</span>
+<span class="sd">        b: ivy.array([[[4.35, 5.54], </span>
+<span class="sd">                    [4.4, 5.6], </span>
+<span class="sd">                    [4.4, 5.6]]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]), b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
+<span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[[4.14, 5.13], </span>
+<span class="sd">                    [4.3, 5.3], </span>
+<span class="sd">                    [4.3, 5.3]]]),</span>
+<span class="sd">        b: ivy.array([[[4.09, 5.08], </span>
+<span class="sd">                    [4.3, 5.3], </span>
+<span class="sd">                    [4.3, 5.3]]])</span>
+<span class="sd">    }</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># BS x Q x K</span>
