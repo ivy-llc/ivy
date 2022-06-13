@@ -587,17 +587,17 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (1,), 'SAME', 'NHWC', (1,))
     >>> print(result)
     ivy.array([[
-              [[2.],[4.],[6.]], \
-              [[3.],[6.],[9.]], \
-              [[2.],[4.],[6.]] \
+              [[2.],[4.],[6.]],
+              [[3.],[6.],[9.]],
+              [[2.],[4.],[6.]]
               ]])
-    
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 32, 32, 3]))
     >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 5, 3, 5])) #HWIO
     >>> result = ivy.conv2d(x, filters, strides = [2, 1], padding = 'VALID') \
-        #non-square filter with unequal stride and valid padding 
+        #non-square filter with unequal stride and valid padding
     >>> print(result.shape)
     [1, 15, 28, 5]
 
@@ -605,7 +605,7 @@ def conv2d(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
-            b = ivy.eye(5, 5).view(1, 5, 5, 1))
+                          b = ivy.eye(5, 5).view(1, 5, 5, 1))
     >>> filters = ivy.array([[2, 0, 1], \
                              [1, 3, 1], \
                              [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
@@ -709,7 +709,7 @@ def depthwise_conv2d(
 
     >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
     >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
-    >>> y = ivy.depthwise_conv2d(x, filters, strides=2, padding='VALID')
+    >>> y = ivy.depthwise_conv2d(x, filters, padding='VALID')
     >>> print(y.shape)
     (1, 13, 13, 3)
 
