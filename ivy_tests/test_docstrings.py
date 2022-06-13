@@ -1,4 +1,5 @@
 # global
+import pytest
 import warnings
 
 # local
@@ -6,7 +7,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-def test_docstrings():
+@pytest.mark.parametrize("backend", ["numpy", "jax", "tensorflow", "torch", "mxnet"])
+def test_docstrings(backend):
+    ivy.set_backend(backend)
     failures = list()
     success = True
 
@@ -39,3 +42,4 @@ def test_docstrings():
                 "\n".join(failures)
             )
         )
+    ivy.unset_backend()
