@@ -168,7 +168,7 @@ The <code class="code docutils literal notranslate"><span class="pre">ivy.Array<
 each of which implement the category-specific instance methods.</p>
 <p>Each instance method simply calls the functional API function internally,
 but passes in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> as the first array argument.
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/63d9c26acced9ef40e34f7b4fc1c1a75017f9c69/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
 <p>Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
 This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
