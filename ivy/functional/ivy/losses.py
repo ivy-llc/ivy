@@ -3,14 +3,13 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -56,11 +55,10 @@ def cross_entropy(
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
+    return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -161,7 +159,6 @@ def binary_cross_entropy(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
