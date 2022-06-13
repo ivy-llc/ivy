@@ -57,6 +57,8 @@ def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None,  
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -85,14 +87,81 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
-    Examples
+    Functional Examples
     --------
-    >>> x = ivy.array([-0., 1., -1.])
+    
+    With :code:`ivy.Array` input:
+        
+    >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    tensor([2])
+    ivy.array([2])
+    
+
+    >>> x=ivy.array([[0., 1., -1.],
+                     [-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis= 1)
+    >>> print(y)
+    ivy.array([2, 0])
+
+    >>> x=ivy.array([[0., 1., -1.], 
+                     [-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis= 1, keepdims= True)
+    >>> print(y)
+    ivy.array([[2],
+              [0]])
+
+    >>> x=ivy.array([[0., 1., -1.], 
+                     [-2., 1., 2.],
+                     [1., -2., 0.]])
+    >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
+    >>> print(y)
+    ivy.array([[2],
+               [0],
+               [1]])
+
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    ivy.array([2])
+
+    
+    With :code:`ivy.Container` input:
+        
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    {
+         a: ivy.array([1]),
+         b: ivy.array([0])
+    }
+        
+    
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., -1.])
+    >>> y = x.argmin()
+    >>> print(y)
+    ivy.array([2])
+        
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.argmin()
+    >>> print(y)
+    {
+         a: ivy.array([1]),
+         b: ivy.array([0])
+    }
     """
-    return _cur_backend(x).argmin(x, axis, keepdims)
+    return _cur_backend(x).argmin(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
