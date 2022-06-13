@@ -144,12 +144,9 @@ def leaky_relu(
     """
     return _cur_backend(x).leaky_relu(x, alpha)
 
-<<<<<<< HEAD
-=======
 
 @to_native_arrays_and_back
 @handle_out_argument
->>>>>>> cde340fc8199e9da5d371eef8cdafcb1f61b866d
 def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     -> ivy.Array:
     """
