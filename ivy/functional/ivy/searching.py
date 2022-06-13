@@ -58,7 +58,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
     
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -122,6 +122,13 @@ def argmin(
                [0],
                [1]])
 
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    ivy.array([2])
 
     
     With :code:`ivy.Container` input:
