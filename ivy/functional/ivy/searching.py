@@ -58,8 +58,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None,
-    
+    out: Optional[ivy.Array] = None,  
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
