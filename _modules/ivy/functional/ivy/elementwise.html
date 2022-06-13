@@ -2924,100 +2924,100 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the min of x1 and x2 (i.e. x1 &lt; x2 ? x1 : x2) element-wise.</span>
 
-<span class="sd">       Parameters</span>
-<span class="sd">       ----------</span>
-<span class="sd">       x1</span>
-<span class="sd">           Input array containing elements to minimum threshold.</span>
-<span class="sd">       x2</span>
-<span class="sd">           Tensor containing minimum values, must be broadcastable to x1.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        Input array containing elements to minimum threshold.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Tensor containing minimum values, must be broadcastable to x1.</span>
 
-<span class="sd">       Returns</span>
-<span class="sd">       -------</span>
-<span class="sd">       ret</span>
-<span class="sd">           An array with the elements of x1, but clipped to not exceed the x2 values.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array with the elements of x1, but clipped to not exceed the x2 values.</span>
 
 
-<span class="sd">       This method conforms to the `Array API Standard</span>
-<span class="sd">       &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">       `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
-<span class="sd">       in the standard. The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">       the method also accepts :code:`ivy.Container` instances in place of</span>
-<span class="sd">       :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">       and also the examples below.</span>
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
+<span class="sd">    the method also accepts :code:`ivy.Container` instances in place of</span>
+<span class="sd">    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints</span>
+<span class="sd">    and also the examples below.</span>
 
-<span class="sd">       Functional Examples</span>
-<span class="sd">       -------------------</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
 
-<span class="sd">       With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 5, 9])</span>
-<span class="sd">       &gt;&gt;&gt; y = ivy.array([2, 6, 8])</span>
-<span class="sd">       &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([1, 5, 8])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([2, 6, 8])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([1, 5, 8])</span>
 
-<span class="sd">       With :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.native_array([2, 6, 8, 5])</span>
-<span class="sd">       &gt;&gt;&gt; y = ivy.native_array([1, 5, 9, 6])</span>
-<span class="sd">       &gt;&gt;&gt; ivy.minimum(x, y)</span>
-<span class="sd">       &gt;&gt;&gt; print(y)</span>
-<span class="sd">       ivy.native_array([1, 5, 8, 5])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([2, 6, 8, 5])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1, 5, 9, 6])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.minimum(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.native_array([1, 5, 8, 5])</span>
 
-<span class="sd">           With :code:`Number` inputs:</span>
+<span class="sd">    With :code:`Number` inputs:</span>
 
-<span class="sd">       &gt;&gt;&gt; z = ivy.zeros(1)</span>
-<span class="sd">       &gt;&gt;&gt; ivy.minimum(1, 5, out=z)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([1])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.minimum(1, 5, out=z)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([1])</span>
 
-<span class="sd">       With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.array([2, 3])</span>
-<span class="sd">       &gt;&gt;&gt; y = ivy.native_array([0, 4])</span>
-<span class="sd">       &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([0, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0, 4])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([0, 3])</span>
 
-<span class="sd">       With a mix of :code:`ivy.Array` and :code:`Number` inputs:</span>
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`Number` inputs:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.array([2, 3, 9])</span>
-<span class="sd">       &gt;&gt;&gt; z = ivy.minimum(x, 5)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([2, 3, 5])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2, 3, 9])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, 5)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([2, 3, 5])</span>
 
-<span class="sd">       With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:</span>
+<span class="sd">    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.native_array([2, 3, 9, 7, 3])</span>
-<span class="sd">       &gt;&gt;&gt; z = ivy.minimum(x, 5)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.native_array([2, 3, 5, 5, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([2, 3, 9, 7, 3])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, 5)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([2, 3, 5, 5, 3])</span>
 
-<span class="sd">       Instance Method Examples</span>
-<span class="sd">       ------------------------</span>
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
 
-<span class="sd">       With :code:`ivy.Array` instance method using :code:`ivy.Array` input:</span>
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.array([4, 7, 3])</span>
-<span class="sd">       &gt;&gt;&gt; y = ivy.array([3, 3, 2])</span>
-<span class="sd">       &gt;&gt;&gt; z = x.minimum(y)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([3, 3, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 7, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([3, 3, 2])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.minimum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([3, 3, 2])</span>
 
-<span class="sd">       With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.array([4, 7])</span>
-<span class="sd">       &gt;&gt;&gt; y = ivy.native_array([6, 0])</span>
-<span class="sd">       &gt;&gt;&gt; x.minimum(y)</span>
-<span class="sd">       &gt;&gt;&gt; print(y)</span>
-<span class="sd">       ivy.native_array([4, 0])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 7])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([6, 0])</span>
+<span class="sd">    &gt;&gt;&gt; x.minimum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.native_array([4, 0])</span>
 
-<span class="sd">       With :code:`ivy.Array` instance method using :code:`Number` input:</span>
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`Number` input:</span>
 
-<span class="sd">       &gt;&gt;&gt; x = ivy.array([1, 4, 8])</span>
-<span class="sd">       &gt;&gt;&gt; z = ivy.zeros(3)</span>
-<span class="sd">       &gt;&gt;&gt; x.minimum(3)</span>
-<span class="sd">       &gt;&gt;&gt; print(z)</span>
-<span class="sd">       ivy.array([1, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 4, 8])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; x.minimum(3)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([1, 4, 5])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
