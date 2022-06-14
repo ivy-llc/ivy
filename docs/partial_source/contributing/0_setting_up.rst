@@ -9,7 +9,8 @@ Setting Up
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
 .. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
-
+.. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
+.. _`venv`: https://docs.python.org/3/library/venv.html
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
@@ -47,19 +48,119 @@ so we thought we would add an explicit reminder here in the setting up guide!
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `pycharm channel`_!
 
+Virtual environments - No Docker
+-------------------------------
+
+Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest
+ivy package from GitHub source, as explained below. This is to ensure the contributors' code and
+examples are as aligned and in accordance with the latest as possible. The stable version of Ivy
+from PyPI maybe used for personal projects and experiments but avoided in development, for now. If you
+want to use the stable version, you are welcome to use the docker container or pip install ivy-core.
+
+Below is a guide to creating your own virtual environment. The benefit of creating a python environment
+is the ability to install certain packages for a project and then other packages (perhaps different versions) in a
+new environment for another project. This makes it very easy to keep track of installed packages and their versions.
+
+Below is a guide for setting up a developing environment for Ivy.
+
+You can either use `miniconda`_ or `venv`_:
+
+Using miniconda
+****
+
+#. Install `miniconda`_
+#. Open conda terminal
+#. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
+
+    .. code-block:: none
+
+        conda create --name ivy_dev python=3.8.10
+
+#. Activate the environment by:
+
+    .. code-block:: none
+
+        conda activate ivy_dev
+
+#.  Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
+
+Using venv
+****
+This is a builtin package and doesn't require explicit installation.
+
+#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
+#. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
+
+    .. code-block:: none
+
+        python -m venv ivy_dev
+
+    Try :code:`python3` if :code:`python` doesn't work.
+
+#. Activate the created environment by running (in the same working directory as the environment folder):
+
+    .. code-block:: none
+
+        ivy_dev\Scripts\activate.bat
+
+    (on Windows)
+
+    OR
+
+    .. code-block:: none
+
+        source ivy_dev/bin/activate
+
+    (on Mac/Linux)
+
+#. Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+
+Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
+future projects.
+
+
+Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_
+OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
+
 Docker Interpreter with PyCharm
 -------------------------------
 
-Here we show how to set up a specific python environment, which will make contributing much easier.
 
 Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
-using the same packages, and helps to mitigate any potential version conflicts etc.
+using the same packages (same environment) and helps to mitigate any potential version conflicts etc.
 
 In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as :code:`jaxlib` on a Windows machine.
 
-Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
-which, as mentioned above, is the main IDE of choice for our development team:
+Below, we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
+which, as mentioned above, is the IDE of choice for our development team:
 
 
 Windows

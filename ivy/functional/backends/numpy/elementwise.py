@@ -1,7 +1,6 @@
 # global
 import numpy as np
 from typing import Optional
-import numpy.array_api as npa
 
 # local
 import ivy
@@ -15,7 +14,7 @@ except (ImportError, ModuleNotFoundError):
 def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+    return np.add(np.asarray(x1), np.asarray(x2))
 
 
 def pow(
@@ -189,12 +188,13 @@ def logical_not(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarra
 def divide(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        promoted_type = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    if isinstance(x1, np.ndarray):
+        if not isinstance(x2, np.ndarray):
+            x2 = np.asarray(x2, dtype=x1.dtype)
+        else:
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
     return np.divide(x1, x2, out=out)
 
 
