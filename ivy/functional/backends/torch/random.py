@@ -16,13 +16,16 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype=None,
     *,
     device: torch.device
 ) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
         shape = []
-    return torch.rand(shape, device=default_device(device)) * rand_range + low
+    return (
+        torch.rand(shape, device=default_device(device), dtype=dtype) * rand_range + low
+    )
 
 
 def random_normal(

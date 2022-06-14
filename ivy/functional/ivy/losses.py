@@ -3,11 +3,13 @@
 # local
 import ivy
 from typing import Optional, Union
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
 
 
+@to_native_arrays_and_back
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -30,6 +32,9 @@ def cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating
         the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -50,16 +55,16 @@ def cross_entropy(
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    # noinspection PyUnresolvedReferences
-    return ivy.negative(ivy.sum(log_pred * true, axis), out=out)
+    return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
 
 
-# noinspection PyUnresolvedReferences
+@to_native_arrays_and_back
 def binary_cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    pred: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
     epsilon: Optional[float] = 1e-7,
-) -> Union[ivy.Array, ivy.Container]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Computes the binary cross entropy loss.
 
     Parameters
@@ -71,16 +76,18 @@ def binary_cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
     ret
         The binary cross entropy between the given distributions.
 
-    """
-    """
+
     Functional Examples
-    --------
+    -------------------
 
     With :code:`ivy.Array` input:
 
@@ -148,15 +155,18 @@ def binary_cross_entropy(
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    # noinspection PyTypeChecker
-    return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
+    return ivy.negative(
+        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out), out=out
+    )
 
 
+@to_native_arrays_and_back
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
 
@@ -172,6 +182,9 @@ def sparse_cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -249,4 +262,4 @@ def sparse_cross_entropy(
 
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon)
+    return cross_entropy(true, pred, axis, epsilon, out=out)
