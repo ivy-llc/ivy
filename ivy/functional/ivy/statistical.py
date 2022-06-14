@@ -141,8 +141,10 @@ def max(
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.max(x)
     >>> print(y)
-    a: ivy.array(2.),
-    b: ivy.array(5.)
+    {
+        a: ivy.array(2.),
+        b: ivy.array(5.)
+    }
 
     >>> x = ivy.array([1, 2, 3])
     >>> z = x.max()
