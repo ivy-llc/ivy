@@ -47,13 +47,17 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
-    Examples
+    Functional Examples
     --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
     >>> print(y)
+    ivy.array([1])
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> ivy.argmax(x,out=x)
+    >>> print(x)
     ivy.array([1])
 
     >>> x=ivy.array([[1., -0., -1.], \
@@ -85,6 +89,16 @@ def argmax(
     >>> y = ivy.argmax(x)
     >>> print(y)
     ivy.array([1])
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.argmax()
+    >>> print(y)
+    ivy.array(2)
 
     """
     return _cur_backend(x).argmax(x, axis, keepdims, out=out)
