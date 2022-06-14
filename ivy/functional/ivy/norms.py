@@ -80,14 +80,6 @@ def layer_norm(
     >>> print(norm)
     ivy.array([[ 0.0707, -0.109 ],
            [ 0.16  ,  0.877 ]])
-<<<<<<< HEAD
-    
-    With :code:`ivy.Container` input:
-
-    >>> container = ivy.Container({'a': ivy.array([2., 3., 4.]), \
-        'b': ivy.array([1.3, 2.11, 0.243])})
-    >>> norm = ivy.layer_norm(container, [0], new_std=1.25, offset=0.2)
-=======
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -137,7 +129,6 @@ def layer_norm(
 
     >>> container = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> norm = container.layer_norm([0], new_std=1.25, offset=0.2)
->>>>>>> master
     >>> print(norm)
     {
         a: ivy.array([-1.33, 0.2, 1.73]),
