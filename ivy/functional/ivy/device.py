@@ -559,7 +559,9 @@ def to_dev(
 # Function Splitting #
 
 
-def split_factor(device=None):
+def split_factor(
+    device=None
+) -> float:
     """Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
     If the global split factor is set for a given device,
