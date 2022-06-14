@@ -18,7 +18,7 @@ xps = make_strategies_namespace(xp)
 
 try:
     import jax.numpy as _jnp
-except ImportError:
+except (ImportError, RuntimeError, AttributeError):
     _jnp = None
 try:
     import tensorflow as _tf
@@ -328,9 +328,7 @@ def docstring_examples_run(fn):
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
         warnings.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(fn_name)
-            )
+            "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
     return True
 
