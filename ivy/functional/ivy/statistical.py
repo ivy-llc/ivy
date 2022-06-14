@@ -1,11 +1,10 @@
 # global
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence
 
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
-from collections.abc import Sequence
 
 # Array API Standard #
 # -------------------#
