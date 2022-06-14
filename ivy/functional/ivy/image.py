@@ -159,7 +159,7 @@ def uint8_img_to_float_img(
 
     Examples
     --------
-    >>> batch_shape = 1
+    >>> batch_size = 1
     >>> h = 2
     >>> w = 2
     >>> d = 4
