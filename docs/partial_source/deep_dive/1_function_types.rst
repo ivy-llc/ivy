@@ -1,8 +1,9 @@
 Function Types
 ==============
 
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
+.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L370
 .. _`at import time`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
 .. _`add_ivy_array_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
 .. _`add_ivy_container_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
@@ -177,8 +178,8 @@ This *nestable* property of Ivy functions means that the same function can be us
 without modification.
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
-is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
-in the :code:`ivy` module during `backend setting`_.
+is applied to every function in the :code:`ivy` module during `backend setting`_. This will add the `handle_nestable`_
+wrapping to the function if it has the :code:`@handle_nestable` decorator.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
 Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
