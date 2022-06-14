@@ -421,21 +421,26 @@ def test_array_function(
     )
 
     # update variable flags to be compatible with float dtype and with_out args
-    as_variable = [
-        v if ivy.is_float_dtype(d) and not with_out else False
-        for v, d in zip(as_variable, input_dtype)
-    ]
+    #as_variable = [
+    #    v if ivy.is_float_dtype(d) and not with_out else False
+    #    for v, d in zip(as_variable, input_dtype)
+    #]
     # tolerance dict for dtypes
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
+    # check for unsupported dtypes
+    function = getattr(ivy, fn_name)
+    if hasattr(function, 'unsupported_dtypes'):
+        for d in input_dtype:
+            if d in ivy.function_unsupported_dtypes(function, fw): return
+    # change all data types so that they are supported by this framework
+    #input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
-
-    # change all data types so that they are supported by this framework
-    input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
@@ -986,3 +991,7 @@ def num_positional_args(draw, fn_name=None):
         if param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
     return draw(integers(min_value=0, max_value=(total - num_keyword_only)))
+
+
+#function = getattr(ivy, fn_name)
+#ivy.function_unsupported_dtypes(ivy., fw)
