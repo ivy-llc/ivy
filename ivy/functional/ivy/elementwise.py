@@ -2069,6 +2069,7 @@ def logaddexp(
     return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+# ToDo: compare the examples against special case for zeros.
 @to_native_arrays_and_back
 @handle_out_argument
 def round(
