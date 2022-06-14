@@ -131,8 +131,10 @@ def _tf_cast(
 
 def _cast_for_binary_op(
     x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
-) -> Tuple[Union[tf.Tensor, tf.Variable, int, float, bool],
-           Union[tf.Tensor, tf.Variable, int, float, bool]]:
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable, int, float, bool],
+    Union[tf.Tensor, tf.Variable, int, float, bool],
+]:
     x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
