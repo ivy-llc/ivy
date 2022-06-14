@@ -437,7 +437,7 @@ def remainder(
 
 
 def round(
-    x: Union[tf.Tensor, tf.Variable])
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         ret = x
