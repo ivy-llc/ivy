@@ -58,6 +58,22 @@ class DefaultDevice:
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -129,16 +145,24 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     return len(get_all_ivy_arrays_on_dev(device))
 
 
-def print_all_ivy_arrays_on_dev(device):
-    """Prints all arrays which are currently alive on the specified device.
+def print_all_ivy_arrays_on_dev(device, attr_only=True):
+    """
+    Prints the shape and dtype for all ivy arrays which are currently alive on the
+    specified device.
 
     Parameters
     ----------
     device
+        The device on which to print the arrays
+    attr_only
+        Whether or not to only print the `shape` and `dtype` attributes of the array
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
-        print(type(arr), arr.shape)
+    arrs = get_all_ivy_arrays_on_dev(device).values()
+    if attr_only:
+        [print((arr.shape, arr.dtype)) for arr in arrs]
+    else:
+        [print(arr) for arr in arrs]
 
 
 # Retrieval
