@@ -525,19 +525,6 @@ def test_array_function(
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
-        # tolerance dict for dtypes
-        tolerance_dict = {
-            "float16": 1e-02,
-            "float32": 1e-05,
-            "float64": 1e-05,
-            "bfloat16": 1e-02,
-            None: 1e-05,
-        }
-        if not rtol:
-            if ret.dtype in tolerance_dict:
-                rtol = tolerance_dict[ret.dtype]
-            else:
-                rtol = 1e-05
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
@@ -570,7 +557,19 @@ def test_array_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_np
-
+    # tolerance dict for dtypes
+    tolerance_dict = {
+        "float16": 1e-02,
+        "float32": 1e-05,
+        "float64": 1e-05,
+        "bfloat16": 1e-02,
+        None: 1e-05,
+    }
+    if not rtol:
+        if ret.dtype in tolerance_dict:
+            rtol = tolerance_dict[ret.dtype]
+        else:
+            rtol = 1e-05
     # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
