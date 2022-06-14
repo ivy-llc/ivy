@@ -6,8 +6,12 @@ from collections import namedtuple
 
 def unique_all(
     x: Union[tf.Tensor, tf.Variable]
-) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable],
-           Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
     UniqueAll = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
