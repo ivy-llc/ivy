@@ -588,9 +588,9 @@ def tensordot(
 
     3. Axes = 2: (default) tensor double contraction
 
-    >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),
+    >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),\
                           b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
-    >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),
+    >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),\
                           b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))
     >>> res = ivy.tensordot(x, y)
     >>> print(res)
@@ -599,20 +599,6 @@ def tensordot(
         b: ivy.array(76.)
     }
 
-
-
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[1., 0., 2.]])
-    >>> y = ivy.native_array([[7., 8., 0.]])
-    >>> res = x.matrix_transpose.tensordot(y, dims = 1)
-    >>> print(res)
-    >>> ivy.array([[ 7.,  8.,  0.],
-                   [ 0.,  0.,  0.],
-                   [14., 16.,  0.]])
 
     """
     return _cur_backend(x1, x2).tensordot(x1, x2, axes)
@@ -875,12 +861,11 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
 
      3. Returns a lower-triangular Cholesky factor
 
-     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),
+     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\
                            b = ivy.array([[2., 1.], [1., 1.]]))
      >>> y = x.cholesky()
      >>> print(y)
-     >>>
-     {
+    {
          a: ivy.array([[1.73, 0.], [-0.57,  1.63]])
          b: ivy.array([[1.41, 0.], [0.70, 0.70]])
      }

@@ -10,7 +10,7 @@ tensorflow
 tensorflow-addons # mod_name=tensorflow_addons
 tensorflow-probability # mod_name=tensorflow_probability
 torch
-torch-scatter
+torch-scatter # mod_name=torch_scatter
 mxnet
 scipy
 dm-haiku # mod_name=haiku
