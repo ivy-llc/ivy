@@ -1,10 +1,8 @@
 Data Types
 ==========
 
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
-.. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
-.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
-.. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
 .. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51
 .. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
@@ -113,8 +111,8 @@ such as :code:`ivy.prod` and :code:`ivy.sum`, but most functions do not include 
 The non-creation functions which do support it are generally functions that involve a compounding reduction across the
 array, which could result in overflows, and so an explicit :code:`dtype` argument is useful to handling such cases.
 
-The :code:`dtype` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
-appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_.
+The :code:`dtype` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator
+:code:`@infer_dtype`.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
 As discussed in the :ref:`Function Wrapping` section,
 this is applied to all applicable functions dynamically during `backend setting`_.
@@ -138,26 +136,28 @@ Overall, `ivy.default_dtype`_ infers the data type as follows:
    then use the global default data type, which can either be an :code:`int` or :code:`float` data type. \
    This is settable via :code:`ivy.set_default_dtype`.
 
-For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the data type,
+For the majority of functions which defer to `infer_dtype`_ for handling the data type,
 these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
 before the backend-specific implementation is even entered into. Therefore, whereas the :code:`dtype` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
 
-Let's take a look at the function :code:`ivy.prod` as an example.
+Let's take a look at the function :code:`ivy.zeros` as an example.
 
-The implementation in :code:`ivy/functional/ivy/statistical.py` has the following signature:
+The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
 
 .. code-block:: python
 
-    def prod(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    @outputs_to_ivy_arrays
+    @handle_out_argument
+    @infer_dtype
+    @infer_device
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
 Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
@@ -167,81 +167,70 @@ Jax:
 
 .. code-block:: python
 
-    def prod(
-        x: JaxArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: jnp.dtype,
-        out: Optional[JaxArray] = None,
+        device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
 MXNet:
 
 .. code-block:: python
 
-    def prod(
-        x: mx.nd.NDArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: type,
-        out: Optional[mx.nd.NDArray] = None,
+        device: mx.context.Context,
     ) -> mx.nd.NDArray:
 
 NumPy:
 
 .. code-block:: python
 
-    def prod(
-        x: np.ndarray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: np.dtype,
-        out: Optional[np.ndarray] = None,
+        device: str,
     ) -> np.ndarray:
 
 TensorFlow:
 
 .. code-block:: python
 
-    def prod(
-        x: Tensor,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: tf.DType,
-        out: Optional[Tensor] = None,
-    ) -> Tensor:
+        device: str,
+    ) -> Union[tf.Tensor, tf.Variable]:
 
 PyTorch:
 
 .. code-block:: python
 
-    def prod(
-        x: torch.Tensor,
-        axis: Optional[Union[int, Tuple[int]]] = None,
-        keepdims: bool = False,
+    def zeros(
+        shape: Union[int, Sequence[int]],
         *,
         dtype: torch.dtype,
-        out: Optional[torch.Tensor] = None,
+        device: torch.device,
     ) -> torch.Tensor:
 
 This makes it clear that these backend-specific functions are only entered into once the correct :code:`dtype`
 has been determined.
 
-However, the :code:`dtype` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DTYPE_WRAPPED_FUNCTIONS`_
-are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
+However, the :code:`dtype` argument for functions which don't have the :code:`@infer_dtype` decorator
+are **not** handled by `infer_dtype`_,
 and so these defaults must be handled by the backend-specific implementations themselves.
 
-One reason for adding a function to `NON_DTYPE_WRAPPED_FUNCTIONS`_ is because it includes *relevant* scalar arguments
-for inferring the data type from. `_function_w_arrays_dtype_n_dev_handled`_ is not able to correctly handle such cases,
-and so such functions are added to `NON_DTYPE_WRAPPED_FUNCTIONS`_ and the dtype handling is delegated to the
-backend-specific implementations.
+One reason for not adding :code:`@infer_dtype` to a function is because it includes *relevant* scalar arguments
+for inferring the data type from. `infer_dtype`_ is not able to correctly handle such cases,
+and so the dtype handling is delegated to the backend-specific implementations.
 
-For example :code:`ivy.full` is listed in `NON_DTYPE_WRAPPED_FUNCTIONS`_ because of the *relevant* :code:`fill_value`
-which cannot be correctly handled by `_function_w_arrays_dtype_n_dev_handled`_.
+For example :code:`ivy.full` doesn't have the :code:`@infer_dtype` decorator even though it has a :code:`dtype` argument
+because of the *relevant* :code:`fill_value` which cannot be correctly handled by `infer_dtype`_.
 
 The PyTorch-specific implementation is as follows:
 
