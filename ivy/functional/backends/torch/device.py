@@ -14,6 +14,7 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 torch_scatter = None
 
+
 # API #
 # ----#
 
@@ -25,7 +26,6 @@ def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.dev
     return as_ivy_dev(dv)
 
 
-
 def to_dev(x, *, device: torch.device) -> torch.Tensor:
     ret = x.to(as_native_dev(device))
     if isinstance(x, torch.nn.Parameter):
@@ -33,10 +33,8 @@ def to_dev(x, *, device: torch.device) -> torch.Tensor:
     return ret
 
 
-
-def as_ivy_dev(device: torch.device)\
+def as_ivy_dev(device: torch.device) \
         -> str:
-
     if isinstance(device, str):
         return ivy.Device(device)
     dev_type, dev_idx = (device.type, device.index)
@@ -49,7 +47,7 @@ def as_ivy_dev(device: torch.device)\
 
 
 def as_native_dev(
-    device: Optional[Union[ivy.Device, torch.device]] = None
+        device: Optional[Union[ivy.Device, torch.device]] = None
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device

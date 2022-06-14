@@ -8,8 +8,6 @@ import tensorflow as tf
 from typing import Union
 from tensorflow.python.types.core import Tensor
 
-from typing import Union
-
 # local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -30,7 +28,6 @@ def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
     return as_ivy_dev(dv)
 
 
-
 def to_dev(x: Tensor, *, device) -> Tensor:
     if device is None:
         return x
@@ -41,10 +38,8 @@ def to_dev(x: Tensor, *, device) -> Tensor:
     return x
 
 
-
-def as_ivy_dev(device: tf.device)\
-                -> str:
-
+def as_ivy_dev(device: tf.device) \
+        -> str:
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
     dev_in_split = device[1:].split(":")[-2:]

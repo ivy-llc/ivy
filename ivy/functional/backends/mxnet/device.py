@@ -16,13 +16,12 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(
-    x: mx.nd.NDArray, as_native: bool = False
+        x: mx.nd.NDArray, as_native: bool = False
 ) -> Union[ivy.Device, mx.context.Context]:
     dv = x.context
     if as_native:
         return dv
     return as_ivy_dev(dv)
-
 
 
 def to_dev(x, device=None, out=None):
@@ -38,11 +37,10 @@ def to_dev(x, device=None, out=None):
 
 def as_ivy_dev(device: Device) \
         -> str:
-
     if isinstance(device, str):
         return ivy.Device(device)
     device_type = device.device_type
-    
+
     if device_type == "cpu":
         return ivy.Device(device_type)
     return ivy.Device(

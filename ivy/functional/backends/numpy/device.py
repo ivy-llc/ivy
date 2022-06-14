@@ -8,7 +8,6 @@ from typing import Union
 
 # local
 import ivy
-from ivy.functional.backends.numpy import Device
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 

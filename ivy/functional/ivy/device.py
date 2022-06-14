@@ -25,7 +25,6 @@ import ivy
 from ivy import Device
 from ivy.backend_handler import current_backend as _cur_backend
 
-
 default_device_stack = list()
 dev_handles = dict()
 split_factors = dict()
@@ -131,7 +130,7 @@ def print_all_ivy_arrays_on_dev(device):
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
+        x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, str]:
     """
     Get the native device handle for input array x.
@@ -162,11 +161,9 @@ def dev(
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, str]\
-              ) -> str:
-
-  
-    """Convert native data type to string representation.
+def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
+    """
+    Convert native data type to string representation.
 
     Parameters
     ----------
@@ -186,7 +183,6 @@ def as_ivy_dev(device: Union[ivy.Device, str]\
     'cuda:0'
     """
     return _cur_backend().as_ivy_dev(device)
-
 
 
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
@@ -250,7 +246,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+        device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -289,7 +285,7 @@ def used_mem_on_dev(
 
 
 def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+        device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
@@ -493,10 +489,10 @@ def unset_default_device():
 
 
 def to_dev(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    device: Union[ivy.Device, ivy.NativeDevice],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+        x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        device: Union[ivy.Device, ivy.NativeDevice],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -570,15 +566,15 @@ def set_split_factor(factor, device=None):
 
 
 def split_func_call(
-    func: Callable,
-    inputs: Union[ivy.Array, ivy.NativeArray],
-    mode: str,
-    max_chunk_size: int = None,
-    chunk_size: int = None,
-    input_axes: Union[int, Iterable[int]] = 0,
-    output_axes: Union[int, Iterable[int]] = None,
-    stop_gradients: bool = False,
-    device=None,
+        func: Callable,
+        inputs: Union[ivy.Array, ivy.NativeArray],
+        mode: str,
+        max_chunk_size: int = None,
+        chunk_size: int = None,
+        input_axes: Union[int, Iterable[int]] = 0,
+        output_axes: Union[int, Iterable[int]] = None,
+        stop_gradients: bool = False,
+        device=None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
