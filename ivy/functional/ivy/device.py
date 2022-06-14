@@ -582,7 +582,7 @@ def split_factor(device=None):
     >>> x = ivy.split_factor()
     >>> print(x)
     0.0
-    >>> y = ivy.split_factors("gpu:0")
+    >>> y = ivy.split_factor("gpu:0")
     >>> print(y)
     1.5
 
