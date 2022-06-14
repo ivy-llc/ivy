@@ -152,6 +152,110 @@
              
   <section id="cross">
 <h1>cross<a class="headerlink" href="#cross" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.cross">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cross" title="Permalink to this definition"></a></dt>
+<dd><p>The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
+of corresponding 3-element vectors is independently computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first input array. Should have a numeric data type.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second input array. Must have the same shape as x1. Should have a numeric data
+type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis (dimension) of x1 and x2 containing the vectors for which to compute (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+the cross product.vIf set to -1, the function computes the cross product for
+vectors defined by the last axis (dimension). Default: -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the cross products. The returned array must have a data
+type determined by Type Promotion Rules.</p>
+</dd>
+</dl>
+<p class="rubric">Functional Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<ol class="arabic simple">
+<li><p>Axis = -1: (default) vector cross product</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([0., 0., 1.])</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([-2., 4., -2.])</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">a: ivy.array([0., 0., 35.]),</span>
+<span class="go">b: ivy.array([0., 6., 0.])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">a: ivy.array([-3., 3., 9.]),</span>
+<span class="go">b: ivy.array([0., -6., 0.])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<ol class="arabic simple" start="2">
+<li><p>Axis = 0: changing vector definition</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                               <span class="p">[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span>                               <span class="p">[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">0.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([[ 0.,  0.],</span>
+<span class="go">           [7.,  8.],</span>
+<span class="go">           [ -4., -5.]])</span>
+</pre></div>
+</div>
+<p class="rubric">Instance Method Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([0., 0., 1.])</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">a: ivy.array([0., 0., 35.]),</span>
+<span class="go">b: ivy.array([0., 6., 0.])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
