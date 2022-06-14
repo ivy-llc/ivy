@@ -19,7 +19,8 @@ def is_variable(x, exclusive=False):
     return isinstance(x, tf.Variable)
 
 
-variable_data = lambda x: x.value()
+def variable_data(x):
+    return x.value()
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
