@@ -300,7 +300,10 @@ def outer(
 @to_native_arrays_and_back
 @handle_out_argument
 def diagonal(
-    x: ivy.Array, offset: int = 0, axis1: int = -2, axis2: int = -1
+        x: Union[ivy.Array, ivy.NativeArray],
+        offset: int = 0,
+        axis1: int = -2,
+        axis2: int = -1
 ) -> ivy.Array:
     """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
@@ -318,10 +321,10 @@ def diagonal(
     axis1
         axis to be used as the first axis of the 2-D sub-arrays from which the diagonals
         should be taken.
-        Defaults to first axis (0).
+        Defaults to first axis (-2).
     axis2
         axis to be used as the second axis of the 2-D sub-arrays from which the
-        diagonals should be taken. Defaults to second axis (1).
+        diagonals should be taken. Defaults to second axis (-1).
 
     Returns
     -------
@@ -342,16 +345,38 @@ def diagonal(
     ivy.array([1.])
 
     A 3-D Example
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([[1.,4.],
+               [5.,8.]])
+
+    Changing the axis arguments:
+
     >>> d = ivy.diagonal(x, 0, 0, 1)
     >>> print(d)
     ivy.array([[1., 7.],
                [2., 8.]])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1., 2.],\
+                       [3., 4.]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([[1.,4.],
+               [5.,8.]])
     """
     return _cur_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+
+
+
 
 
 @to_native_arrays_and_back
