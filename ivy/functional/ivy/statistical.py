@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
-
+from collections.abc import Sequence
 
 # Array API Standard #
 # -------------------#
@@ -115,7 +115,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.tan.html>`
     _ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
