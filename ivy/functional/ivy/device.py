@@ -135,12 +135,62 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     Examples
     --------
-    >>> x = ivy.array([-1,0,5.2])
-    >>> y = ivy.dev(x)
-    >>> z = ivy.num_ivy_arrays_on_dev(y)
-    >>> print(z)
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.dev(ivy.array([-1,0,5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
     2
 
+    >>> x = ivy.dev(ivy.array([-1,0,5.2,6]))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    3
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.dev(ivy.native_array([-1,0,5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    2
+
+    >>> x = ivy.dev(ivy.native_array([-1,0,5.2,6]))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    3
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(ivy.dev(ivy.array([-1,0,5.2])))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    {
+        2
+    }
+
+    >>> x = ivy.Container(ivy.dev(ivy.array([-1,0,5.2,6])))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    {
+        3
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(ivy.dev(ivy.native_array([-1,0,5.2])))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    {
+        2
+    }
+
+    >>> x = ivy.Container(ivy.dev(ivy.native_array([-1,0,5.2,6])))
+    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> print(y)
+    {
+        3
+    }
+    
     """
     return len(get_all_ivy_arrays_on_dev(device))
 
