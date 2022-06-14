@@ -498,6 +498,7 @@ def test_array_function(
         kwargs,
         lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
     )
+
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
