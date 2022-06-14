@@ -1,7 +1,6 @@
 # global
 import numpy as np
-from typing import Optional
-import numpy.array_api as npa
+from typing import Union, Optional
 
 # local
 import ivy
@@ -12,10 +11,8 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+def add(x1: Union[float, np.ndarray], x2: Union[float, np.ndarray]) -> np.ndarray:
+    return np.asarray(np.add(x1, x2))
 
 
 def pow(
