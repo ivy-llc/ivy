@@ -579,21 +579,11 @@ def split_factor(device=None):
 
     Examples
     --------
-    >>> ivy.split_factors()
-    device='cpu'
-    split_factors = {}
+    >>> x = ivy.split_factor()
+    >>> print(x)
     0.0
-    >>> ivy.split_factors()
-    device='cpu'
-    split_factors = {'cpu': 0.5}
-    0.5
-    >>> ivy.split_factors("gpu:0")
-    gpu:0
-    split_factors = {}
-    0.0
-    >>> ivy.split_factors("gpu:0")
-    gpu:0
-    split_factors = {'cpu': 0.5, 'gpu:0': 1.5}
+    >>> x = ivy.split_factors("gpu:0")
+    >>> print(x)
     1.5
 
     """
