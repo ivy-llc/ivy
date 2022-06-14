@@ -407,14 +407,6 @@ def as_lists(dtype, as_variable, native_array, container):
     return dtype, as_variable, native_array, container
 
 
-def calculate_norm(arr: np.ndarray, normalized_shape: int) -> np.ndarray:
-    normalized_idx = [-(i + 1) for i in range(len(normalized_shape))]
-    mean = np.mean(arr, normalized_idx, keepdims=True)
-    var = np.var(arr, normalized_idx, keepdims=True)
-    x = (-mean + arr) / np.power(var, 0.5)
-    return x
-
-
 def test_array_function(
     input_dtype,
     as_variable,

@@ -27,10 +27,9 @@ def test_layer_norm_layer(
     # get data from hypothesis
     normalized_shape = data.draw(helpers.get_shape())
     x = data.draw(helpers.array_values(dtype=dtype, shape=normalized_shape))
-    target = helpers.calculate_norm(np.asarray(x), normalized_shape)
 
     x = ivy.array(x, dtype=dtype, device=device)
-    target = ivy.array(target, dtype=dtype, device=device)
+    target = ivy.asarray(x, dtype=dtype, device=device)
 
     if as_variable:
         x = ivy.variable(x)
@@ -44,6 +43,12 @@ def test_layer_norm_layer(
         )
     else:
         v = None
+    # calculating target with a numpy backend
+    ivy.set_backend("numpy")
+    norm = ivy.LayerNorm(normalized_shape, device=device, v=v)
+    target = norm(x)
+    ivy.unset_backend()
+
     norm_layer = ivy.LayerNorm(normalized_shape, device=device, v=v)
     ret = norm_layer(x)
     # type test
