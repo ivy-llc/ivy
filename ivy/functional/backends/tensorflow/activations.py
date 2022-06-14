@@ -2,53 +2,41 @@
 signature.
 """
 
-from typing import Optional, Union
+from typing import Optional
 
 # global
 import tensorflow as tf
+from tensorflow.python.types.core import Tensor
 
 # local
 
 
-def relu(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
+def relu(x: Tensor) -> Tensor:
     return tf.nn.relu(x)
 
 
-def leaky_relu(
-    x: Union[tf.Tensor, tf.Variable],
-    alpha: Optional[float] = 0.2,
-) -> Union[tf.Tensor, tf.Variable]:
+def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-
-def gelu(x: Tensor, approximate: bool =True)\
+def gelu(x: Tensor, 
+         approximate: bool =True)\
     -> Tensor:
+
     return tf.nn.gelu(x, approximate)
 
 
-def sigmoid(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
+def sigmoid(x: Tensor) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-def tanh(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
+def tanh(x: Tensor) -> Tensor:
     return tf.nn.tanh(x)
 
 
-def softmax(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.nn.softmax(x, axis)
+def softmax(x: Tensor, axis: Optional[int] = None) -> Tensor:
+    return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
 
 
-def softplus(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
+def softplus(x: Tensor) -> Tensor:
     return tf.nn.softplus(x)
