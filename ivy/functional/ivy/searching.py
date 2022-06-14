@@ -49,25 +49,27 @@ def argmax(
 
     Functional Examples
     --------
+    
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
     >>> print(y)
     ivy.array([1])
+    
     >>> x = ivy.array([-0., 1., -1.])
     >>> ivy.argmax(x,out=x)
     >>> print(x)
     ivy.array([1])
 
     >>> x=ivy.array([[1., -0., -1.], \
-             [-2., 3., 2.]])
+                     [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis= 1)
     >>> print(y)
     ivy.array([0, 1])
 
     >>> x=ivy.array([[4., 0., -1.], \
-             [2., -3., 6]])
+                     [2., -3., 6]])
     >>> y = ivy.argmax(x, axis= 1, keepdims= True)
     >>> print(y)
     ivy.array([[0], \
