@@ -1,14 +1,16 @@
 """Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-
 from typing import Optional
 
 # global
 import numpy as np
 import torch
+import torch.nn
 
 # local
+
+
 import ivy
 
 
@@ -39,8 +41,9 @@ def sigmoid(x: torch.Tensor) -> torch.Tensor:
     return torch.sigmoid(x)
 
 
-def softmax(x: torch.Tensor, axis: Optional[int] = -1) -> torch.Tensor:
-    return torch.softmax(x, axis)
+def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
+    exp_x = torch.exp(x)
+    return exp_x / torch.sum(exp_x, axis, keepdims=True)
 
 
 def softplus(x: torch.Tensor) -> torch.Tensor:

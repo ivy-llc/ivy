@@ -81,7 +81,11 @@ def unstack(x, axis, keepdims=False):
     return ret if isinstance(ret, list) else [ret]
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+    ensure_in_backend: bool = False,
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] = val_native
     if ivy.is_ivy_array(x):

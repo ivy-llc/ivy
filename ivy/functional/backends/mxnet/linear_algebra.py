@@ -95,8 +95,11 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
-def det(x: NDArray) -> NDArray:
-    return mx.linalg.det(x)
+def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
+    ret = mx.linalg.det(x)
+    if _ivy.exists(out):
+        return _ivy.inplace_update(out, ret)
+    return ret
 
 
 def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:

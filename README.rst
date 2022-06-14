@@ -61,6 +61,8 @@
 
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
+.. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
 
 Contents
 --------
@@ -76,21 +78,35 @@ Contents
 Overview
 --------
 
-Ivy is an ML framework which currently supports JAX, TensorFlow, PyTorch, MXNet and Numpy. We’re very excited for you to try it out!
+Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+We’re very excited for you to try it out!
 
-Next on our road-map is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊
+Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
+and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
+Read on to learn more 😊
 
-The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our road-map, and how to contribute! Click on the sub-headings to check out these pages!
+The docs are split into a number of sub-pages explaining different aspects of why we created Ivy,
+how to use it, what we’ve got planned on our roadmap, and how to contribute!
+Click on the sub-headings below to check out these pages!
 
-We use 🚧 to indicate that the feature being discussed is in development. We use ✅ to indicate that it is already implemented!
+We use 🚧 to indicate that the feature being discussed is in development.
+We use ✅ to indicate that it is already implemented!
 
-Check out the docs_ for more info, and check out our Google Colabs_ for some interactive demos!
+Check out the docs_ for more info,
+and check out our Google Colabs_ for some interactive demos!
+
+🚨 Ivy is still at a relatively early stage of development.
+Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
+
+If you would like to contribute,
+please check out our `contributor guide`_,
+and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
 
 Quick Start
 -----------
 
 Ivy can be installed like so: ``pip install ivy-core``
-You can immediately use Ivy to train a neural network, using your favourite framework in the background, like so:
+You can immediately use Ivy to train a neural network, using your favorite framework in the background, like so:
 
 .. code-block:: python
 
@@ -106,7 +122,7 @@ You can immediately use Ivy to train a neural network, using your favourite fram
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear1(x))
 
-    ivy.set_framework('torch')  # change to any framework!
+    ivy.set_backend('torch')  # change to any backend!
     model = MyModel()
     optimizer = ivy.Adam(1e-4)
     x_in = ivy.array([1., 2., 3.])
@@ -114,7 +130,7 @@ You can immediately use Ivy to train a neural network, using your favourite fram
 
     def loss_fn(v):
         out = model(x_in, v=v)
-        return ivy.reduce_mean((out - target)**2)[0]
+        return ivy.mean((out - target)**2)
 
     for step in range(100):
         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
@@ -124,7 +140,7 @@ You can immediately use Ivy to train a neural network, using your favourite fram
     print('Finished training!')
 
 This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favourite framework, such as TensorFlow, JAX or MXNet.
+but the backend can easily be changed to your favorite frameworks, such as TensorFlow, JAX, or MXNet.
 
 **Framework Agnostic Functions**
 
@@ -209,7 +225,7 @@ Design
 | 1. Serve as a transpiler between frameworks 🚧
 | 2. Serve as a new ML framework with multi-framework support ✅
 |
-| The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:
+| The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
@@ -233,7 +249,7 @@ Extensions
 ----------
 
 | (a) `Applied Libraries <https://lets-unify.ai/ivy/extensions/applied_libraries.html>`_ ✅
-| Ivy libraries in mechanics, vision, robotics, memory and other areas
+| Ivy libraries in mechanics, vision, robotics, memory, and other areas
 |
 | (b) **Builder [page coming soon!]** ✅
 | :code:`ivy.Trainer`, :code:`ivy.Dataset`, :code:`ivy.Dataloader` and other helpful classes and functions for creating training workflows in only a few lines of code

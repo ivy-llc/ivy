@@ -3,7 +3,7 @@
 # global
 import math as _math
 import torch
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 
 # noinspection PyUnresolvedReferences
@@ -63,13 +63,13 @@ def conv1d_transpose(
 
 # noinspection PyUnresolvedReferences
 def conv2d(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
     dilations: int = 1,
-):
+) -> torch.Tensor:
     filter_shape = list(filters.shape[0:2])
     filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
@@ -91,8 +91,8 @@ def conv2d(
 
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
-    x,
-    filters,
+    x: torch.Tensor,
+    filters: torch.Tensor,
     strides: int,
     padding: str,
     output_shape: Optional[List[int]] = None,
@@ -120,13 +120,13 @@ def conv2d_transpose(
 
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
-    dilations: int = 1,
-):
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+) -> torch.Tensor:
     filter_shape = list(filters.shape[0:2])
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)

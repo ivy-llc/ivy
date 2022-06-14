@@ -210,20 +210,19 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
 
 # Function Splitting #
 
-@given(array_shape=helpers.lists(
-    st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]),
+
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
-    axis=st.integers(0, 1))
-def test_split_func_call(array_shape,
-                         dtype,
-                         as_variable,
-                         chunk_size,
-                         axis,
-                         fw,
-                         device,
-                         call):
+    axis=st.integers(0, 1),
+)
+def test_split_func_call(
+    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -255,27 +254,24 @@ def test_split_func_call(array_shape,
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 3), min_size="num_dims",
-    max_size="num_dims", size_bounds=[2, 3]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
-    axis=st.integers(0, 1))
+    axis=st.integers(0, 1),
+)
 def test_split_func_call_with_cont_input(
-        array_shape,
-        dtype,
-        as_variable,
-        chunk_size,
-        axis,
-        fw,
-        device,
-        call
+    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
-    if (fw == "torch" and "int" in dtype) \
-            or (fw == "numpy" and "float16" in dtype) \
-            or (fw == 'tensorflow' and 'u' in dtype):
+    if (
+        (fw == "torch" and "int" in dtype)
+        or (fw == "numpy" and "float16" in dtype)
+        or (fw == "tensorflow" and "u" in dtype)
+    ):
         return
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
@@ -304,31 +300,23 @@ def test_split_func_call_with_cont_input(
     a_true, b_true, c_true = func(in0, in1)
 
     # value test
-    assert np.allclose(ivy.to_numpy(a.cont_key),
-                       ivy.to_numpy(a_true.cont_key))
-    assert np.allclose(ivy.to_numpy(b.cont_key),
-                       ivy.to_numpy(b_true.cont_key))
-    assert np.allclose(ivy.to_numpy(c.cont_key),
-                       ivy.to_numpy(c_true.cont_key))
+    assert np.allclose(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
+    assert np.allclose(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
+    assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 3),
-    min_size="num_dims",
-    max_size="num_dims",
-    size_bounds=[2, 3]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     axis=st.integers(0, 1),
-    devs_as_dict=st.booleans())
-def test_dist_array(array_shape,
-                    dtype,
-                    as_variable,
-                    axis,
-                    devs_as_dict,
-                    fw,
-                    device,
-                    call):
+    devs_as_dict=st.booleans(),
+)
+def test_dist_array(
+    array_shape, dtype, as_variable, axis, devs_as_dict, fw, device, call
+):
     if fw == "torch" and "int" in dtype:
         return
     # inputs
@@ -361,11 +349,14 @@ def test_dist_array(array_shape,
     assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
-    axis=st.integers(0, 1))
+    axis=st.integers(0, 1),
+)
 def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
     if fw == "torch" and "int" in dtype:
         return
@@ -394,10 +385,13 @@ def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
     assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
-@given(array_shape=helpers.lists(
-    st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]),
+@given(
+    array_shape=helpers.lists(
+        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans())
+    as_variable=st.booleans(),
+)
 def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
     axis = 0
     # TODO: generalise axis
@@ -424,10 +418,9 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
         devices.append(dev1)
 
     # output
-    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x),
-                                    device=dev0,
-                                    mode="concat",
-                                    axis=axis)
+    x_unified = ivy.dev_unify_array(
+        ivy.DevDistItem(x), device=dev0, mode="concat", axis=axis
+    )
 
     # shape test
     expected_size = 0
@@ -591,11 +584,27 @@ def test_profiler(device, call):
     if call is helpers.mx_call:
         time.sleep(1)  # required by MXNet for some reason
 
+
+@given(num=st.integers(0, 5))
+def test_num_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    assert ivy.num_ivy_arrays_on_dev(device) == num
+    # to satisfy lint requirements
+    del arrays
+
+
+@given(num=st.integers(0, 5))
+def test_get_all_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    arrs_on_dev = list(ivy.get_all_ivy_arrays_on_dev(device).values())
+    for arr in arrays:
+        assert arr in arrs_on_dev
+
+
 # Still to Add #
 # ---------------#
 
-# get_all_arrays_on_dev
-# num_arrays_on_dev
+
 # print_all_arrays_on_dev
 # clear_mem_on_dev
 # total_mem_on_dev

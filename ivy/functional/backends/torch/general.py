@@ -58,12 +58,8 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def floormod(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -80,7 +76,11 @@ def container_types():
     return []
 
 
-def inplace_update(x, val):
+def inplace_update(
+    x: Union[ivy.Array, torch.Tensor],
+    val: Union[ivy.Array, torch.Tensor],
+    ensure_in_backend: bool = False,
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native.data = val_native
     if ivy.is_ivy_array(x):
@@ -114,31 +114,19 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
-    if ivy.exists(out):
-        return ivy.inplace_update(out, torch.cumsum(x, axis))
-    else:
-        return torch.cumsum(x, axis)
+def cumsum(x: torch.Tensor, axis: int = 0):
+    return torch.cumsum(x, axis)
 
 
 def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
+    x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False
 ) -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, torch.transpose(res, axis, -1))
-        else:
-            return torch.transpose(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, torch.cumprod(x, axis))
-    else:
-        return torch.cumprod(x, axis)
+        return torch.transpose(res, axis, -1)
+    return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -148,6 +136,7 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
+    *
 ):
     target = tensor
     target_given = ivy.exists(target)
@@ -213,7 +202,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *):
 
     # handle numeric updates
     updates = torch.tensor(
@@ -337,7 +326,7 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    out: Optional[torch.Tensor] = None,
+    *
 ) -> torch.Tensor:
 
     ret = torch.gather(params, axis, indices.type(torch.int64))
@@ -348,7 +337,8 @@ def gather(
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices):
+def gather_nd(params, indices, *):
+  
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -390,9 +380,7 @@ def indices_where(x):
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(
-    indices, depth: int, device: Optional[Union[ivy.Device, torch.device]] = None
-):
+def one_hot(indices, depth: int, *, device: torch.device):
     if device is None:
         device = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
