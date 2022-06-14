@@ -16,7 +16,7 @@ def bitwise_left_shift(x1: Tensor, x2: Tensor) -> Tensor:
     return ret
 
 
-def add(x1: Tensor, x2: Tensor) -> Tensor:
+def add(x1: Union[float, Tensor], x2: Union[float, Tensor]) -> Tensor:
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
