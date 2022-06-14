@@ -538,9 +538,9 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
-    This method conforms to the 
+    This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the 
+    This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.elementwise_functions.floor.html>`_ in the standard.
 
@@ -581,7 +581,7 @@ def floor(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\
-    ... b=ivy.array([3.4, -4.2, -0, -1.2]))
+                          b=ivy.array([3.4, -4.2, -0, -1.2]))
     >>> y = ivy.floor(x)
     >>> print(y)
     {
@@ -1178,23 +1178,15 @@ def cosh(
     >>> x = ivy.array([0.2, -1.7, -5.4, 1.1])
     >>> y = ivy.zeros(4)
     >>> ivy.cosh(x, out=y)
-    >>> print(y)
     ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)
 
     >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2], \
                        [-4.4, -5.5, -6.6, -7.2]])
-    >>> ivy.cosh(x, out=x)
-    >>> print(x)
+    >>> y = ivy.cosh(x)
+    >>> print(y)
     ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],
                [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],
               dtype=float32)
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.NativeArray([1, 2, 3, 4])
-    >>> y = ivy.cosh(x)
-    >>> print(y)
-    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
 
     With :code:`ivy.Container` input:
 
@@ -2834,7 +2826,6 @@ def minimum(
     -------------------
 
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 5, 9])
     >>> y = ivy.array([2, 6, 8])
     >>> z = ivy.minimum(x, y)
@@ -2845,7 +2836,7 @@ def minimum(
 
     >>> x = ivy.native_array([2, 6, 8, 5])
     >>> y = ivy.native_array([1, 5, 9, 6])
-    >>> ivy.minimum(x, y, out=y)
+    >>> ivy.minimum(x, y)
     >>> print(y)
     ivy.native_array([1, 5, 8, 5])
 
@@ -2893,7 +2884,7 @@ def minimum(
 
     >>> x = ivy.array([4, 7])
     >>> y = ivy.native_array([6, 0])
-    >>> x.minimum(y, out=y)
+    >>> x.minimum(y)
     >>> print(y)
     ivy.native_array([4, 0])
 
@@ -2901,32 +2892,9 @@ def minimum(
 
     >>> x = ivy.array([1, 4, 8])
     >>> z = ivy.zeros(3)
-    >>> x.minimum(3, out=z)
+    >>> x.minimum(3)
     >>> print(z)
     ivy.array([1, 4, 5])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3, 2])
-    >>> y = ivy.native_array([1, 9, 2, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 2, 3, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3])
-    >>> y = ivy.array([1, 9, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 6, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([3, 8])
-    >>> z = x.minimum(3)
-    >>> print(z)
-    ivy.native_array([3, 6])
 
     """
     return _cur_backend(x1).minimum(x1, x2, out=out)
@@ -2978,7 +2946,7 @@ def maximum(
 
     >>> x = ivy.native_array([1, 5, 9, 8, 3])
     >>> y = ivy.native_array([9, 3, 2, 0, 7])
-    >>> ivy.maximum(x, y, out=y)
+    >>> ivy.maximum(x, y)
     >>> print(y)
     ivy.native_array([9, 5, 9, 8, 7])
 
@@ -3037,29 +3005,6 @@ def maximum(
     >>> x.maximum(3, out=z)
     >>> print(z)
     ivy.array([3, 7, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 8])
-    >>> y = ivy.native_array([9, 6])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([1, 8, 6, 0, 5])
-    >>> y = ivy.array([9, 6, 2, 5, 8])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8, 6, 5, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([0, 2, 7])
-    >>> z = x.maximum(5)
-    >>> print(z)
-    ivy.native_array([0, 2, 5])
 
     """
     return _cur_backend(x1).maximum(x1, x2, out=out)
