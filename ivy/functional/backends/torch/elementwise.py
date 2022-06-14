@@ -2,14 +2,17 @@
 import torch
 import typing
 from torch import Tensor
-from typing import Optional
+from typing import Union, Optional
 
 # local
 import ivy
 
 
 def add(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
