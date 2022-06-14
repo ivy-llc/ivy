@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Optional
+from typing import Union, Optional
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -13,7 +13,7 @@ def bitwise_left_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.left_shift(x1, x2)
 
 
-def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def add(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.add(x1, x2)
 
 
