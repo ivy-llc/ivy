@@ -434,18 +434,7 @@ def test_array_function(
         for v, d in zip(as_variable, input_dtype)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {
-        "float16": 1e-02,
-        "float32": 1e-05,
-        "float64": 1e-05,
-        "bfloat16": 1e-02,
-        None: 1e-05,
-    }
-    if not rtol:
-        if input_dtype[0] in tolerance_dict:
-            rtol = tolerance_dict[input_dtype[0]]
-        else:
-            rtol = 1e-05
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
