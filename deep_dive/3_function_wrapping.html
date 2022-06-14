@@ -144,19 +144,18 @@
   <section id="function-wrapping">
 <h1>Function Wrapping<a class="headerlink" href="#function-wrapping" title="Permalink to this heading"></a></h1>
 <p>When a backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>,
-then all Ivy functions are <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/framework_handler.py#L206">wrapped</a>. This is achieved by calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L341">_wrap_or_unwrap_functions</a>,
-with <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> as an argument.
-<code class="code docutils literal notranslate"><span class="pre">_wrap_or_unwrap_functions</span></code> is then called recursively,
-and <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> is called on each function <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L408">at the leaves</a> of the ivy module,
-with the returned function replacing the original function.</p>
-<p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> (<code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>)
+then all Ivy functions are <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">wrapped</a>. This is achieved by calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412">_wrap_function</a>, which will apply the appropriate
+wrapping to the given function, based on what decorators it has. For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/functional/ivy/elementwise.py#L2142">abs</a> has the decorators
+<code class="code docutils literal notranslate"><span class="pre">&#64;to_native_arrays_and_back</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code>, and so the backend implementations will also be
+wrapped with the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L237">to_native_arrays_and_back</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L323">handle_out_argument</a> wrappers.</p>
+<p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code>
 is a replacement of the original function with extra code added to support requirements common to many functions
 in the API. This is the main purpose of the wrapping, to avoid code duplication which would exist if we added
-identical logic in every single function independenly.</p>
-<p>Depending on the function being wrapped, the new function <code class="code docutils literal notranslate"><span class="pre">_function_wrapped</span></code>
+identical logic in every single function independently.</p>
+<p>Depending on the function being wrapped, the new function
 might handle <a class="reference internal" href="9_function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>, <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and/or <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a>.</p>
-<p>Each of these topics and each associated piece of logic added by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> are covered in more detail
-in the next sections. For now, suffice it to say that <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code> <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L138">does a quite lot</a>.</p>
+<p>Each of these topics and each associated piece of logic added by the various wrapper functions are covered in more
+detail in the next sections. For now, suffice it to say that they do quite a lot.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

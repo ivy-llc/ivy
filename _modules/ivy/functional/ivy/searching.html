@@ -180,6 +180,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the indices of the minimum values along a specified axis. When the</span>
 <span class="sd">    minimum value occurs multiple times, only the indices corresponding to the first</span>
@@ -208,14 +210,81 @@
 <span class="sd">    ret</span>
 <span class="sd">        Array containing the indices of the minimum values across the specified axis.</span>
 
-<span class="sd">    Examples</span>
+<span class="sd">    Functional Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-0., 1., -1.])</span>
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">        </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., -1.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.argmin(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    tensor([2])</span>
+<span class="sd">    ivy.array([2])</span>
+<span class="sd">    </span>
+
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[0., 1., -1.],</span>
+<span class="sd">                     [-2., 1., 2.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.argmin(x, axis= 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2, 0])</span>
+
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[0., 1., -1.], </span>
+<span class="sd">                     [-2., 1., 2.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.argmin(x, axis= 1, keepdims= True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2],</span>
+<span class="sd">              [0]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x=ivy.array([[0., 1., -1.], </span>
+<span class="sd">                     [-2., 1., 2.],</span>
+<span class="sd">                     [1., -2., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; y= ivy.zeros((1,3), dtype=ivy.int64)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.argmin(x, axis= 1, keepdims= True, out= y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2],</span>
+<span class="sd">               [0],</span>
+<span class="sd">               [1]])</span>
+
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., -1.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.argmin(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2])</span>
+
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">        </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.argmin(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">         a: ivy.array([1]),</span>
+<span class="sd">         b: ivy.array([0])</span>
+<span class="sd">    }</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., -1.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.argmin()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2])</span>
+<span class="sd">        </span>
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.argmin()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">         a: ivy.array([1]),</span>
+<span class="sd">         b: ivy.array([0])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="nonzero"><a class="viewcode-back" href="../../../../functional/ivy/searching/nonzero.html#ivy.functional.ivy.searching.nonzero">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -335,6 +404,81 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array with elements from x1 where condition is True, and elements from x2</span>
 <span class="sd">        elsewhere.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With `ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; condition = [[True, False], [True, True]]</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1, 2], [3, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([[5, 6], [7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.where(condition, x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    ivy.array([[1, 6], [3, 4]])</span>
+
+<span class="sd">    With `ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; condition = [[True, False], [False, True]]</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([[1, 2], [3, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([[5, 6], [7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.where(condition, x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    array([[1, 6], [7, 4]])</span>
+
+<span class="sd">    With a mix of `ivy.Array` and `ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.where(((x1 % 2 == 0) &amp; (x2 % 2 == 1)), x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])</span>
+
+<span class="sd">    With `ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.where((x1 &gt; x2), x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([3, 7, 5]),</span>
+<span class="sd">        b: ivy.array([3, 8, 6])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of `ivy.Array` and `ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]),</span>
+<span class="sd">                           b=ivy.array([3, 8, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.where((x1 &lt; x2), x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0, 2, -3.6]),</span>
+<span class="sd">        b: ivy.array([3, 4, 3.1])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With `ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; condition = [[True, False], [True, True]]</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1, 2], [3, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([[5, 6], [7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; res = x1.where(condition, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    ivy.array([[1, 6], [3, 4]])</span>
+
+<span class="sd">    With `ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; res = x1.where((x1 &gt; x2), x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([3, 7, 5]),</span>
+<span class="sd">        b: ivy.array([3, 8, 6])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>

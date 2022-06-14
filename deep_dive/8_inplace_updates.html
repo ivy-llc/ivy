@@ -287,15 +287,12 @@ However, when <code class="code docutils literal notranslate"><span class="pre">
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.</p>
 <p>In the case of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166">_function_w_arrays_n_out_handled</a>, which as discussed in the <a class="reference internal" href="9_function_arguments.html#arrays"><span class="std std-ref">Arrays</span></a> section,
-is also responsible for converting <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
-instances before calling the backend function, and then back to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances again for returning.
-As explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
-this wrapping is applied to every function (except those appearing in <a class="reference external" href="https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9">NON_WRAPPED_FUNCTIONS</a>)
-dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205">backend setting</a>.</p>
+<a href="#id6"><span class="problematic" id="id7">`handle_out_argument`_</span></a>. As explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
+this wrapping is applied to every function with the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code> decorator
+dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
 <p><strong>Primary Functions</strong></p>
-<p>In the case of <em>primary</em> functions, <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166">_function_w_arrays_n_out_handled</a> does not handle backend-specific functions which support an <code class="code docutils literal notranslate"><span class="pre">out</span></code>
-argument directly, such as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html">torch.tan</a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a>.
+<p>In the case of <em>primary</em> functions, <a href="#id8"><span class="problematic" id="id9">`handle_out_argument`_</span></a> does not handle backend-specific functions which support an
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> argument directly, such as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html">torch.tan</a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a>.
 When implementing backend-specific functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should only be added to functions which wrap a
 function in the backend supporting inplace updates directly.
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.math.tan</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.tan.html?highlight=tan">jax.numpy.tan</a> and <a class="reference external" href="https://mxnet.apache.org/versions/1.6/api/r/docs/api/mx.nd.tan.html">mx.nd.tan</a> for example do <strong>not</strong> support inplace updates,
@@ -327,12 +324,12 @@ and so the <code class="code docutils literal notranslate"><span class="pre">out
 </pre></div>
 </div>
 <p>It’s very important to remove the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument from backend implementations that do not actually handle it,
-as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L154">presence of this argument</a> dictates whether the argument should be handled
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L199">by the backend function</a> or <a href="#id5"><span class="problematic" id="id6">`by the wrapper`_</span></a>.</p>
+as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L324">presence of this argument</a> dictates whether the argument should be handled
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L355">by the backend function</a> or <a href="#id10"><span class="problematic" id="id11">`by the wrapper`_</span></a>.</p>
 <p>This distinction only concerns how the inplace update is applied to the native array,
 which is operated upon directly by the backend.
 If <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, an inplace update is always <strong>also</strong> performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself,
-which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function. This inplace update is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L210">handled by the wrapper</a>.</p>
+which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function. This inplace update is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L356">handled by the wrapper</a>.</p>
 <p>Alternatively, if <code class="code docutils literal notranslate"><span class="pre">out</span></code> is an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, then the inplace update is always handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69">_wrap_fn</a> in
 the container wrapping module.</p>
 <p><strong>Compositional Functions</strong></p>

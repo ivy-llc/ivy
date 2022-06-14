@@ -711,9 +711,9 @@
 
 <span class="sd">    3. Axes = 2: (default) tensor double contraction</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),\</span>
 <span class="sd">                          b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),\</span>
 <span class="sd">                          b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))</span>
 <span class="sd">    &gt;&gt;&gt; res = ivy.tensordot(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
@@ -722,20 +722,6 @@
 <span class="sd">        b: ivy.array(76.)</span>
 <span class="sd">    }</span>
 
-
-
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 0., 2.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([[7., 8., 0.]])</span>
-<span class="sd">    &gt;&gt;&gt; res = x.matrix_transpose.tensordot(y, dims = 1)</span>
-<span class="sd">    &gt;&gt;&gt; print(res)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.array([[ 7.,  8.,  0.],</span>
-<span class="sd">                   [ 0.,  0.,  0.],</span>
-<span class="sd">                   [14., 16.,  0.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
@@ -998,12 +984,11 @@
 
 <span class="sd">     3. Returns a lower-triangular Cholesky factor</span>
 
-<span class="sd">     &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),</span>
+<span class="sd">     &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\</span>
 <span class="sd">                           b = ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="sd">     &gt;&gt;&gt; y = x.cholesky()</span>
 <span class="sd">     &gt;&gt;&gt; print(y)</span>
-<span class="sd">     &gt;&gt;&gt;</span>
-<span class="sd">     {</span>
+<span class="sd">    {</span>
 <span class="sd">         a: ivy.array([[1.73, 0.], [-0.57,  1.63]])</span>
 <span class="sd">         b: ivy.array([[1.41, 0.], [0.70, 0.70]])</span>
 <span class="sd">     }</span>

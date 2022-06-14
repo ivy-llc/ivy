@@ -139,8 +139,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
-    <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -160,6 +160,8 @@
 <span class="sd">        Learnable beta variables for post-addition, default is None.</span>
 <span class="sd">    new_std</span>
 <span class="sd">        The standard deviation of the new normalized values. Default is 1.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -175,38 +177,90 @@
 <span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    ivy.array([[0., 0., 0.],</span>
-<span class="sd">           [0., 0., 0.]], dtype=float32)</span>
+<span class="sd">           [0., 0., 0.]])</span>
 
 <span class="sd">    &gt;&gt;&gt; arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.zeros((2, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.layer_norm(arr, [0], out=norm)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
-<span class="sd">    ivy.array([[-1.4638476 , -0.8783086 , -0.29276952],</span>
-<span class="sd">           [ 0.29276952,  0.8783086 ,  1.4638476 ]], dtype=float32)</span>
+<span class="sd">    ivy.array([[-1., -1., -1.],</span>
+<span class="sd">           [ 1.,  1.,  1.]])</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[ 0.0976, -0.3452,  1.2740], \</span>
-<span class="sd">        [ 0.1047,  0.5886,  1.2732], \</span>
-<span class="sd">        [ 0.7696, -1.7024, -2.2518]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1, 2], epsilon=0.001, \</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
+<span class="sd">        [0.1047,  0.5886,  1.2732], \</span>
+<span class="sd">        [0.7696, -1.7024, -2.2518]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1], epsilon=0.001, \</span>
 <span class="sd">                 new_std=1.5, offset=0.5, scale=0.5)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
-<span class="sd">    ivy.array([[ 0.57629204,  0.29217   ,  1.3311275 ],</span>
-<span class="sd">           [ 0.58084774,  0.89134157,  1.3306142 ],</span>
-<span class="sd">           [ 1.0074799 , -0.5786756 , -0.9311974 ]], dtype=float32)</span>
+<span class="sd">    ivy.array([[ 0.58 ,  0.283,  1.37 ],</span>
+<span class="sd">           [ 0.585,  0.909,  1.37 ],</span>
+<span class="sd">           [ 1.03 , -0.628, -0.997]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; tensor = ivy.native_array([[3.,1.],[4.,12.]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(tensor, [0,1], new_std=1.25, offset=0.25, scale=0.3)</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.native_array([[3., 1.],[4., 12.]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
-<span class="sd">    ivy.array([[ 0.07071576, -0.10856849],</span>
-<span class="sd">           [ 0.16035788,  0.8774949 ]], dtype=float32)</span>
-<span class="sd">    </span>
+<span class="sd">    ivy.array([[ 0.0707, -0.109 ],</span>
+<span class="sd">           [ 0.16  ,  0.877 ]])</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
+<span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, norm_idxs, new_std=1.25, offset=0.2)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[-1.05, -1.05, -1.05],</span>
+<span class="sd">                      [1.45, 1.45, 1.45]]),</span>
+<span class="sd">        b: ivy.array([[-1.33, 0.2, 1.73],</span>
+<span class="sd">                      [-1.33, 0.2, 1.73]])</span>
+<span class="sd">    }</span>
+
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; container = ivy.Container({&#39;a&#39;: ivy.array([2.,3.,4.]),</span>
-<span class="sd">    &#39;b&#39;: ivy.array([1.3, 2.11, 0.243])})</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(container, [0,1], new_std=1.25, offset=0.2)</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                            &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
+<span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, norm_idxs, new_std, offset)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-0.228, 0.0285, 0.199]),</span>
+<span class="sd">        b: ivy.array([[-0.204, 0., 0.204],</span>
+<span class="sd">                      [-0.204, 0., 0.204]])</span>
+<span class="sd">    }</span>
+
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
+<span class="sd">        [0.1047,  0.5886,  1.2732], \</span>
+<span class="sd">        [0.7696, -1.7024, -2.2518]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = arr.layer_norm([0, 1], epsilon=0.001, \</span>
+<span class="sd">                 new_std=1.5, offset=0.5, scale=0.5))</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    ivy.array([[ 0.58 ,  0.283,  1.37 ],</span>
+<span class="sd">           [ 0.585,  0.909,  1.37 ],</span>
+<span class="sd">           [ 1.03 , -0.628, -0.997]])</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; container = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; norm = container.layer_norm([0], new_std=1.25, offset=0.2)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-1.33, 0.2, 1.73]),</span>
+<span class="sd">        b: ivy.array([0.335, 1.66, -1.39])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
