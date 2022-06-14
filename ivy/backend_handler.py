@@ -144,7 +144,6 @@ def current_backend(*args, **kwargs):
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
         implicit_backend = f.current_backend_str()
-        backend_stack.append(f)
         return f
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
