@@ -546,7 +546,8 @@ def test_array_function(
             pass
         else:
             assert ret.data is out.data
-
+    if "bfloat16" in input_dtypes:
+        return  # bfloat16 is not supported by numpy
     # compute the return with a NumPy backend
     ivy.set_backend("numpy")
     ret_from_np = ivy.to_native(
@@ -573,8 +574,6 @@ def test_array_function(
     # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if "bfloat16" in input_dtypes:
-        return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
 
