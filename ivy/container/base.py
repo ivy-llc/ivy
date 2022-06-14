@@ -618,6 +618,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
+
         Returns
         -------
             Container
@@ -632,11 +633,7 @@ class ContainerBase(dict, abc.ABC):
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
-            if (
-                not assert_identical
-                and not all(is_container)
-                and any(is_container)
-            ):
+            if not assert_identical and not all(is_container) and any(is_container):
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                         this_key_chain not in key_chains and to_apply

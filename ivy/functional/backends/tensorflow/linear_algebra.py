@@ -28,7 +28,7 @@ def inv(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    axes: Union[int, Tuple[List[int], List[int]]] = 2
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
 ) -> Union[tf.Tensor, tf.Variable]:
 
     # find type to promote to
