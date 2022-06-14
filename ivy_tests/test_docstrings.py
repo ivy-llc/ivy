@@ -1,6 +1,8 @@
 # global
-import pytest
 import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+import pytest
 
 # local
 import ivy
