@@ -35,6 +35,7 @@ def conv2d(
     data_format: str = "NHWC",
     dilations: int = 1,
 ) -> JaxArray:
+
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     return jlax.conv_general_dilated(

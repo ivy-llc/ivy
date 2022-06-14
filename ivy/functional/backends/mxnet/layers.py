@@ -188,7 +188,13 @@ def depthwise_conv2d(
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
+def conv3d( x: mx.nd.NDArray,
+    filters: mx.nd.NDArray,
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1)->mx.nd.NDArray:
+
     if data_format == "NDHWC":
         x = mx.nd.transpose(x, (0, 4, 1, 2, 3))
     filter_shape = filters.shape[0:-2]

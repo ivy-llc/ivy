@@ -68,7 +68,13 @@ def depthwise_conv2d(
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
+def conv3d(x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: Union[str, List[int]],
+    data_format: str = "NHWC",
+    dilations: int = 1)-> Union[tf.Tensor, tf.Variable]:
+
     strides = [1] * 2 + ([strides] * 3 if isinstance(strides, int) else strides)
     dilations = [1] * 2 + ([dilations] * 3 if isinstance(dilations, int) else dilations)
     return tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
