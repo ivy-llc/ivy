@@ -180,7 +180,7 @@ def svd(
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.outer(x1, x2, out=out)
     if ivy.exists(out):
