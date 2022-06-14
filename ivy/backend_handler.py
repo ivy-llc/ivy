@@ -301,8 +301,6 @@ def unset_backend():
     <class'tensorflow.python.framework.ops.EagerTensor'>
 
     """
-    global implicit_backend
-    implicit_backend = "numpy"
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`
     if backend_stack:
