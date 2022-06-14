@@ -236,11 +236,10 @@ def gather_nd(params, indices, *, device: str):
     return _to_dev(res, device)
 
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 def indices_where(x):
@@ -265,12 +264,9 @@ def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]
         return x.shape
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: np.asarray(len(np.shape(x)))
-    if as_tensor
-    else len(x.shape)
-)
+def get_num_dims(x, as_tensor=False):
+    return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
 
 
-current_backend_str = lambda: "numpy"
-current_backend_str.__name__ = "current_backend_str"
+def current_backend_str():
+    return "numpy"
