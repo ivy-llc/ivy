@@ -30,10 +30,10 @@ def min(
 
 def sum(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    keepdims: bool = False,
     *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    dtype: torch.dtype = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -45,8 +45,13 @@ def sum(
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
 
+    dtype = ivy.as_native_dtype(dtype)
+
     if axis is None:
-        return torch.sum(input=x, dtype=dtype, out=out)
+        if out:
+            return torch.sum(input=x, dtype=dtype, out=out)
+        else:
+            return torch.sum(input=x, dtype=dtype)
     elif type(axis) == list:
         return torch.sum(input=x, dim=axis, out=out)
     elif type(axis) == tuple:
@@ -68,10 +73,10 @@ def sum(
 
 def prod(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: torch.dtype,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    dtype: torch.dtype = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -84,6 +89,8 @@ def prod(
             dtype = torch.int64
         elif x.dtype == torch.bfloat16:
             dtype = torch.float16
+
+    dtype = ivy.as_native_dtype(dtype)
 
     if axis is None:
         axis = x.dim() - 1

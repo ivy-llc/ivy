@@ -1,11 +1,8 @@
 Devices
 =======
 
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
-.. _`_function_w_arrays_dtype_n_dev_handled`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L242
-.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
-.. _`NON_DTYPE_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L103
-.. _`NON_DEV_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L104
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`infer_device`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L286
 .. _`ivy.Device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L42
 .. _`empty class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L34
 .. _`device class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13
@@ -14,6 +11,10 @@ Devices
 .. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L326
 .. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L371
 .. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424
+.. _`devices discussion`: https://github.com/unifyai/ivy/discussions/1317
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
 
 The devices currently supported by Ivy are as follows:
 
@@ -33,7 +34,7 @@ Device Module
 
 The `device.py`_ module provides a variety of functions for working with devices.
 A few examples include
-:code:`ivy.get_all_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
+:code:`ivy.get_all_ivy_arrays_on_dev` which gets all arrays which are currently alive on the specified device,
 :code:`ivy.dev` which gets the device for input array,
 and :code:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
 
@@ -61,21 +62,18 @@ Some other functions outside of the :code:`creation.py` submodule also support t
 such as :code:`ivy.random_uniform` which is located in :code:`random.py`,
 but this is simply because of dual categorization.
 :code:`ivy.random_uniform` is also essentially a creation function,
-despite not being being located in :code:`creation.py`.
+despite not being located in :code:`creation.py`.
 
 The :code:`device` argument is generally not included for functions which accept arrays in the input and perform
 operations on these arrays. In such cases, the device of the output arrays is the same as the device for
 the input arrays. In cases where the input arrays are located on different devices, an error will generally be thrown,
 unless the function is specific to distributed training.
 
-The :code:`device` argument is handled in `_function_w_arrays_dtype_n_dev_handled`_ for all functions except those
-appearing in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_.
-This is similar to how :code:`dtype` is handled,
-with the exception that functions are omitted if they're in `NON_DEV_WRAPPED_FUNCTIONS`_ in this case rather than
-`NON_DTYPE_WRAPPED_FUNCTIONS`_.
-This function calls `ivy.default_device`_ in order to determine the correct data type.
+The :code:`device` argument is handled in `infer_device`_ for all functions which have the :code:`@infer_device`
+decorator, similar to how :code:`dtype` is handled.
+This function calls `ivy.default_device`_ in order to determine the correct device.
 As discussed in the :ref:`Function Wrapping` section,
-this is applied to all applicable function dynamically during `backend setting`_.
+this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_device`_ infers the device as follows:
 
@@ -87,9 +85,9 @@ Overall, `ivy.default_device`_ infers the device as follows:
    which currently can either be :code:`cpu`, :code:`gpu:idx` or :code:`tpu:idx`. \
    The default device is settable via :code:`ivy.set_default_device`.
 
-For the majority of functions which defer to `_function_w_arrays_dtype_n_dev_handled`_ for handling the device,
+For the majority of functions which defer to `infer_device`_ for handling the device,
 these steps will have been followed and the :code:`device` argument will be populated with the correct value
-before the backend-specific implementation is even enterred into. Therefore, whereas the :code:`device` argument is
+before the backend-specific implementation is even entered into. Therefore, whereas the :code:`device` argument is
 listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
 :code:`ivy/functional/backends/backend_name/category_name.py`.
@@ -102,6 +100,10 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
 
 .. code-block:: python
 
+    @outputs_to_ivy_arrays
+    @handle_out_argument
+    @infer_dtype
+    @infer_device
     def zeros(
         shape: Union[int, Tuple[int], List[int]],
         *,
@@ -170,7 +172,15 @@ PyTorch:
 This makes it clear that these backend-specific functions are only enterred into once the correct :code:`device`
 has been determined.
 
-However, the :code:`device` argument for functions listed in `NON_WRAPPED_FUNCTIONS`_ or `NON_DEV_WRAPPED_FUNCTIONS`_
-are **not** handled by `_function_w_arrays_dtype_n_dev_handled`_,
+However, the :code:`device` argument for functions without the :code:`@infer_device` decorator
+is **not** handled by `infer_device`_,
 and so these defaults must be handled by the backend-specific implementations themselves,
 by calling :code:`ivy.default_device` internally.
+
+**Round Up**
+
+This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `devices discussion`_,
+or reach out on `discord`_ in the `devices channel`_!

@@ -1,8 +1,9 @@
 Function Types
 ==============
 
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L137
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/framework_handler.py#L205
+.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
+.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L370
 .. _`at import time`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
 .. _`add_ivy_array_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
 .. _`add_ivy_container_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
@@ -25,10 +26,14 @@ Function Types
 .. _`ivy.dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71
+.. _`function types discussion`: https://github.com/unifyai/ivy/discussions/1312
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**,
-and combined they consitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
+and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/four_function_types.png?raw=true
    :align: center
@@ -61,7 +66,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.current_backend(x).tan(x, out)
+        return ivy.current_backend(x).tan(x, out=out)
 
 The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 :code:`ivy/functional/backends/torch/elementwise.py` is given below:
@@ -116,9 +121,9 @@ Some functions have some backend-specific implementations in
 To support backends that do not have a backend-specific implementation,
 a compositional implementation is also provided in :code:`ivy/functional/ivy/category_name.py`.
 Because these functions include both a compositional implementation and also at least one backend-specific
-implementation, these functions are refered to as *mixed*.
+implementation, these functions are referred to as *mixed*.
 
-When using ivy without a backend set explicitly (for example :code:`ivy.set_framework()` has not been called),
+When using ivy without a backend set explicitly (for example :code:`ivy.set_backend()` has not been called),
 then the function called is always the one implemented in :code:`ivy/functional/ivy/category_name.py`.
 For *primary* functions, then :code:`ivy.current_backend(array_arg).func_name(...)`
 will call the backend-specific implementation in :code:`ivy/functional/backends/backend_name/category_name.py`
@@ -127,7 +132,7 @@ directly. However, as just explained, *mixed* functions implement a compositiona
 Therefore, when no backend is explicitly set,
 then the compositional implementation is always used for *mixed* functions,
 even for backends that have a more efficient backend-specific implementation.
-Typically the backend should always be set explicitly though (using :code:`ivy.set_framework()` for example),
+Typically the backend should always be set explicitly though (using :code:`ivy.set_backend()` for example),
 and in this case the efficient backend-specific implementation will always be used if it exists.
 
 Standalone Functions
@@ -136,7 +141,7 @@ Standalone Functions
 *Standalone* functions are functions which do not reference any other *primary*,
 *compositional* or *mixed* functions whatsoever.
 
-By definition, standalone functions can only reference themselves or other standlone functions.
+By definition, standalone functions can only reference themselves or other standalone functions.
 Most commonly, these functions are *convenience* functions (see below).
 
 As a first example, every function in the `nest.py`_ module is a standalone function.
@@ -154,7 +159,7 @@ Nestable Functions
 
 *Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
-provided that the containers share the same nested structure.
+provided that the containers share a common nested structure.
 If an :code:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :code:`ivy.Container` in the output.
@@ -173,12 +178,14 @@ This *nestable* property of Ivy functions means that the same function can be us
 without modification.
 
 This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
-is applied to every function (except those appearing in `NON_WRAPPED_FUNCTIONS`_)
-in the :code:`ivy` module during `backend setting`_.
+is applied to every function in the :code:`ivy` module during `backend setting`_. This will add the `handle_nestable`_
+wrapping to the function if it has the :code:`@handle_nestable` decorator.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
 Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
-in as inputs to functions in the functional API. This is explained in more detail in the :ref:`Containers` section.
+in as inputs to functions in the functional API.
+
+Nestable functions are explained in more detail in the :ref:`Containers` section.
 
 Convenience Functions
 ---------------------
@@ -211,3 +218,11 @@ and `ivy.index_nest`_ which enables an arbitrary nest to be recursively indexed.
 
 There are many other examples. The convenience functions are not grouped by file or folder.
 Feel free to have a look through all of the `submodules`_, you should be able to spot quite a few!
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different function types.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `function types discussion`_,
+or reach out on `discord`_ in the `function types channel`_!

@@ -102,6 +102,7 @@ def broadcast_to(x, new_shape):
 
 @_handle_flat_arrays_in_out
 def astype(x, dtype):
+    dtype = ivy.as_native_dtype(dtype)
     return x.astype(dtype)
 
 

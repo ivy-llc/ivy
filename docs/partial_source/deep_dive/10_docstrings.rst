@@ -3,11 +3,25 @@ Docstrings
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
+.. _`docstrings discussion`: https://github.com/unifyai/ivy/discussions/1321
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an exemplar.
+All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+In contrast, all backend implementations at
+:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+on account that these are effectively just different instantiations of the functions at
+:code:`ivy/functional/ivy/category_name.py`.
+
+In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
+
+Important: you should open the file in **raw** format.
+If you copy directly from the file preview on GitHub before clicking **raw**,
+then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
@@ -53,7 +67,7 @@ like so:
 .. code-block:: diff
 
     +out
-    +    optional output, for writing the result to. It must have a shape that the inputs
+    +    optional output array, for writing the result to. It must have a shape that the inputs
     +    broadcast to.
 
 Because of this :code:`out` argument in the input, we also need to rename the :code:`out` argument in the return, which
@@ -106,7 +120,7 @@ Following these changes, the new docstring is as follows:
         input array whose elements are expressed in radians. Should have a
         floating-point data type.
     out
-        optional output, for writing the result to. It must have a shape that the inputs
+        optional output array, for writing the result to. It must have a shape that the inputs
         broadcast to.
 
     Returns
@@ -128,3 +142,53 @@ If the function that you are writing a docstring for is **not** in the `Array AP
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
+
+**Classes**
+
+The instance methods in :code:`ivy.Array` and :code:`ivy.Container` which directly wrap
+a function in the functional API do **not** require a docstring, on account that
+these instance methods require no explanation beyond that provided in the docstring
+for the wrapped function.
+A good example is `ivy.Array.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/array/elementwise.py#L13>`_
+which does not require a docstring,
+because `ivy.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/elementwise.py#L2013>`_
+already has one.
+
+However, for all other classes, such as the various layers at
+:code:`ivy/ivy/stateful/layers`, then we **should** add docstrings for both
+the **contstructor** and also **all methods**.
+
+This is the case even when the class directly wraps a function in the functional API.
+For example, the class
+`ivy.Linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13>`_
+wraps the function
+`ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_,
+but does so in a stateful manner
+with the variables stored internally in the instance of the class.
+Even though the :code:`ivy.Linear` class wraps :code:`ivy.linear` in the forward pass
+defined in `ivy.Linear._forward <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84>`_,
+the function signatures of :code:`ivy.linear` and :code:`ivy.Linear._forward` are still
+quite distinct, with the former including all trainable variables explicitly,
+and the latter having these implicit as internal instance attributes of the class.
+
+Therefore, with the exception of the :code:`ivy.Array` and :code:`ivy.Container`
+methods which directly wrap functions in the functional API,
+we should always add docstrings to all methods of all other classes in Ivy,
+including cases where these also directly wrap functions in the functional API.
+
+**Round Up**
+
+These examples should hopefully give you a good understanding of what is required when adding docstings.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `docstrings discussion`_,
+or reach out on `discord`_ in the `docstrings channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
+    </iframe>

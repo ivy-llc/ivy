@@ -2,6 +2,10 @@ Navigating the Code
 ===================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`project structure discussion`: https://github.com/unifyai/ivy/discussions/1311
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
 
 Categorization
 --------------
@@ -82,8 +86,8 @@ look something like the following, (explained in much more detail in the followi
                 *,
                 dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
                 device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-                out: Optional[ivy.Array] = None) \
-            -> ivy.Array:
+                out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         My function does something cool.
 
@@ -114,7 +118,7 @@ look something like the following, (explained in much more detail in the followi
 
         Returns
         -------
-        ret:
+        ret
             a cooler array.
 
         Examples
@@ -142,13 +146,21 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
                 *,
                 dtype: torch.dtype,
                 device: torch.device,
-                out: Optional[torch.Tensor] = None) \
-            -> torch.Tensor:
-        return torch.something_cool(x, dtype, device, out)
+                out: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
+        return torch.something_cool(x, axes, dtype, device, out)
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
-but :code:`dtype` and :code:`device` and now required arguments, rather than optional as they were in the Ivy API.
+but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint :code:`torch.Tensor`,
 rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
+
+**Round Up**
+
+This should have hopefully given you a good feel for how to navigate the Ivy codebase.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `project structure discussion`_,
+or reach out on `discord`_ in the `project structure channel`_!

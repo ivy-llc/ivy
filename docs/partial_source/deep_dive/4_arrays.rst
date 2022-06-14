@@ -1,11 +1,13 @@
 Arrays
 ======
 
+.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149
+.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209
 .. _`empty class`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L8
 .. _`overwritten`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/functional/backends/torch/__init__.py#L11
 .. _`self._data`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89
 .. _`ArrayWithElementwise`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L12
-.. _`ivy.Array.add`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22
+.. _`ivy.Array.add`: https://github.com/unifyai/ivy/blob/63d9c26acced9ef40e34f7b4fc1c1a75017f9c69/ivy/array/elementwise.py#L22
 .. _`programmatically`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148
 .. _`backend type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219
 .. _`Ivy type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342
@@ -17,6 +19,10 @@ Arrays
 .. _`__sub__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L299
 .. _`__mul__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L307
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
+.. _`arrays discussion`: https://github.com/unifyai/ivy/discussions/1315
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -44,7 +50,8 @@ The :code:`ivy.Array` class `inherits`_ from many category-specific array classe
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self` as the first array argument. `ivy.Array.add`_ is a good example.
+but passes in :code:`self._data` as the first array argument.
+`ivy.Array.add`_ is a good example.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
@@ -94,8 +101,8 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
    :code:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handling in the `function wrapping`_,
-as explained in the :ref:`Function Wrapping` section.
+Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and
+`outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
 
 All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
 This is for a couple of reasons.
@@ -105,11 +112,11 @@ Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`,
-whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Type Hints` section.
+whereas the output arrays have type :code:`ivy.Array`. This is further explained in the :ref:`Function Arguments` section.
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
-This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
+This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
 
 As a final point, extra attention is required for *compositional* functions,
@@ -118,5 +125,13 @@ If the first line of code in a compositional function performs operations on the
 then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
+Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
+
+**Round Up**
+
+This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `arrays discussion`_,
+or reach out on `discord`_ in the `arrays channel`_!

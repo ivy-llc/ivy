@@ -1,6 +1,16 @@
 Setting Up
 ==========
 
+.. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
+.. _`repo`: https://github.com/unifyai/ivy
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
+.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
+.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
+.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
+.. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
+.. _`venv`: https://docs.python.org/3/library/venv.html
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
@@ -35,19 +45,122 @@ you should make sure to check whether you are eligible for a
 Many people seem to miss this option,
 so we thought we would add an explicit reminder here in the setting up guide!
 
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `pycharm channel`_!
+
+Virtual environments - No Docker
+-------------------------------
+
+Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest
+ivy package from GitHub source, as explained below. This is to ensure the contributors' code and
+examples are as aligned and in accordance with the latest as possible. The stable version of Ivy
+from PyPI maybe used for personal projects and experiments but avoided in development, for now. If you
+want to use the stable version, you are welcome to use the docker container or pip install ivy-core.
+
+Below is a guide to creating your own virtual environment. The benefit of creating a python environment
+is the ability to install certain packages for a project and then other packages (perhaps different versions) in a
+new environment for another project. This makes it very easy to keep track of installed packages and their versions.
+
+Below is a guide for setting up a developing environment for Ivy.
+
+You can either use `miniconda`_ or `venv`_:
+
+Using miniconda
+****
+
+#. Install `miniconda`_
+#. Open conda terminal
+#. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
+
+    .. code-block:: none
+
+        conda create --name ivy_dev python=3.8.10
+
+#. Activate the environment by:
+
+    .. code-block:: none
+
+        conda activate ivy_dev
+
+#.  Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
+
+Using venv
+****
+This is a builtin package and doesn't require explicit installation.
+
+#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
+#. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
+
+    .. code-block:: none
+
+        python -m venv ivy_dev
+
+    Try :code:`python3` if :code:`python` doesn't work.
+
+#. Activate the created environment by running (in the same working directory as the environment folder):
+
+    .. code-block:: none
+
+        ivy_dev\Scripts\activate.bat
+
+    (on Windows)
+
+    OR
+
+    .. code-block:: none
+
+        source ivy_dev/bin/activate
+
+    (on Mac/Linux)
+
+#. Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+
+Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
+future projects.
+
+
+Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_
+OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
+
 Docker Interpreter with PyCharm
 -------------------------------
 
-Here we show how to set up a specific python environment, which will make contributing much easier.
 
 Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
-using the same packages, and helps to mitigate any potential version conflicts etc.
+using the same packages (same environment) and helps to mitigate any potential version conflicts etc.
 
 In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as :code:`jaxlib` on a Windows machine.
 
-Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
-which, as mentioned above, is the main IDE of choice for our development team:
+Below, we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
+which, as mentioned above, is the IDE of choice for our development team:
 
 
 Windows
@@ -64,15 +177,16 @@ Windows
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   c. Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   b. Going to settings -> project -> Python Interpreter
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
 try using an earlier version by visiting
 `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
-
+For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
 MacOS
 ****
@@ -87,9 +201,10 @@ MacOS
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   c. Choosing Docker from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   b. Going to settings -> project -> Python Interpreter
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error,
@@ -99,7 +214,61 @@ try using an earlier version by visiting
 Ubuntu
 ****
 
-ToDo: write this section
+
+#. Install Docker by running the commands below one by one in the Linux terminal. You may
+   visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
+
+    .. code-block:: none
+
+        sudo apt-get update
+
+    .. code-block:: none
+
+        sudo apt-get install \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
+
+    .. code-block:: none
+
+        sudo mkdir -p /etc/apt/keyrings
+
+    .. code-block:: none
+
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+    .. code-block:: none
+
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    .. code-block:: none
+
+        sudo apt-get update
+
+    .. code-block:: none
+
+        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+#. Get the latest Docker Image for Ivy by:
+
+   a. Opening terminal and running :code:`systemctl start docker`
+   b. Running the command: :code:`docker pull unifyai/ivy:latest`
+
+   Note: If you get permission related errors please visit the simple steps at `Linux post-installation page. <https://docs.docker.com/engine/install/linux-postinstall/>`_
+
+#. Install Pycharm Professional Version. You may use Ubuntu Software for this.
+#. Open pycharm with your cloned Ivy repository. Add the remote python interpreter by:
+
+   a. Going to the settings -> Build, Execution, Deployment -> Docker. Click the "+" on top left and it should add a docker connection.
+   b. Going to settings -> project -> Python Interpreter
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   d. Choosing "Docker" from the left panel. Type python3 (with the number) in python interpreter path and press ok.
+
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `docker channel`_!
 
 Pre-Commit
 ----------
@@ -120,8 +289,22 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 1. Run :code:`python3 -m pip install pre-commit`
 
-2. Enter enter into your cloned ivy folder, for example :code:`cd ~/ivy`
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
 
 3. Run :code:`pre-commit install`
 
-That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
+That's it! Now when you make a commit, the pre-commit hooks will all be run correctly,
+as explained above.
+
+For questions, please reach out on the `setting up discussion`_
+or on `discord`_ in the `pre-commit channel`_!
+
+**Round Up**
+
+This should have hopefully given you a good understanding of how to get things properly set up.
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `setting up discussion`_,
+or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
+`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
+depending on the question!
