@@ -417,7 +417,7 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=None,
+    rtol=1e-03,
     atol=1e-06,
     test_values=True,
     **all_as_kwargs_np
