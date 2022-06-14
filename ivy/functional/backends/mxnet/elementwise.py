@@ -1,7 +1,7 @@
 # global
 import mxnet as mx
 import math
-from typing import Optional
+from typing import Union, Optional
 
 # local
 import ivy
@@ -13,9 +13,13 @@ from ivy.functional.backends.mxnet import (
 
 @_handle_flat_arrays_in_out
 def add(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
+    if not isinstance(x1, mx.nd.NDArray):
+        x1 = mx.nd.array([x1])
+    if not isinstance(x2, mx.nd.NDArray):
+        x2 = mx.nd.array([x2])
     return mx.nd.add(x1, x2)
 
 
