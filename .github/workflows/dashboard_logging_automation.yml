@@ -14,9 +14,15 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+      - name: Generate Token
+        id: generate_token
+        uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
+        with:
+          app_id: ${{ secrets.PR_APP_ID }}
+          private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get Project Data
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: unifyai
           PROJECT_NUMBER: 1
         run: |
@@ -42,7 +48,7 @@ jobs:
 
       - name: Add PR to project
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           PR_ID: ${{ github.event.pull_request.node_id }}
         run: |
           item_id="$( gh api graphql -f query='
@@ -58,7 +64,7 @@ jobs:
 
       - name: Set fields
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           gh api graphql -f query='
             mutation (
