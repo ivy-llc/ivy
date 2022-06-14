@@ -578,7 +578,9 @@ def test_array_function(
 
     # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+        assert_all_close(
+            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
+        )
 
 
 # Hypothesis #
