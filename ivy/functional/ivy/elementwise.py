@@ -49,8 +49,8 @@ def bitwise_left_shift(
 @to_native_arrays_and_back
 @handle_out_argument
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -167,7 +167,7 @@ def add(
     ivy.array([5, 7, 9])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
                         b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
@@ -261,6 +261,10 @@ def add(
     }
 
     """
+    if not ivy.is_array(x1):
+        x1 = ivy.array([x1])
+    if not ivy.is_array(x2):
+        x2 = ivy.array([x2])
     return _cur_backend(x1, x2).add(x1, x2, out=out)
 
 
@@ -2175,7 +2179,7 @@ def tan(
                         [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[1.96, -1.37, 0.16], 
+    ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
