@@ -374,11 +374,6 @@ def diagonal(
     return _cur_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-
-
-
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 def matrix_norm(
