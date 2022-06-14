@@ -208,8 +208,8 @@ otherwise it would be impossible to chain functions together!</p>
 <li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
 <li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
 </ol>
-<p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149">inputs_to_native_arrays</a> and
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170">function wrapping</a>,
+as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>All Ivy functions <em>also</em> accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
 This is for a couple of reasons.
 Firstly, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,

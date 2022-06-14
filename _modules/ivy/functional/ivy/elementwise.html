@@ -661,9 +661,9 @@
 <span class="sd">        an array containing the rounded result for each element in ``x``. The returned</span>
 <span class="sd">        array must have the same data type as ``x``.</span>
 
-<span class="sd">    This method conforms to the</span>
+<span class="sd">    This method conforms to the </span>
 <span class="sd">    `Array API Standard&lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
-<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    This docstring is an extension of the </span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
 <span class="sd">    generated/signatures.elementwise_functions.floor.html&gt;`_ in the standard.</span>
 
@@ -704,7 +704,7 @@
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\</span>
-<span class="sd">                          b=ivy.array([3.4, -4.2, -0, -1.2]))</span>
+<span class="sd">    ... b=ivy.array([3.4, -4.2, -0, -1.2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.floor(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -1301,15 +1301,23 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.2, -1.7, -5.4, 1.1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros(4)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.cosh(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3, 3.2], \</span>
 <span class="sd">                       [-4.4, -5.5, -6.6, -7.2]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.cosh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.cosh(x, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],</span>
 <span class="sd">               [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],</span>
 <span class="sd">              dtype=float32)</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.NativeArray([1, 2, 3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cosh(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
@@ -2949,6 +2957,7 @@
 <span class="sd">    -------------------</span>
 
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 5, 9])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([2, 6, 8])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.minimum(x, y)</span>
@@ -2959,7 +2968,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([2, 6, 8, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1, 5, 9, 6])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.minimum(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.minimum(x, y, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.native_array([1, 5, 8, 5])</span>
 
@@ -3007,7 +3016,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 7])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([6, 0])</span>
-<span class="sd">    &gt;&gt;&gt; x.minimum(y)</span>
+<span class="sd">    &gt;&gt;&gt; x.minimum(y, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.native_array([4, 0])</span>
 
@@ -3015,9 +3024,32 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 4, 8])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.zeros(3)</span>
-<span class="sd">    &gt;&gt;&gt; x.minimum(3)</span>
+<span class="sd">    &gt;&gt;&gt; x.minimum(3, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([1, 4, 5])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([4, 7, 8, 3, 2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1, 9, 2, 6, 0])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.minimum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([1, 7, 2, 3, 0])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([4, 7, 8, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 9, 6, 0])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.minimum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([1, 7, 6, 0])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`Number` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3, 8])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.minimum(3)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([3, 6])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -3069,7 +3101,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 5, 9, 8, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([9, 3, 2, 0, 7])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.maximum(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.maximum(x, y, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.native_array([9, 5, 9, 8, 7])</span>
 
@@ -3128,6 +3160,29 @@
 <span class="sd">    &gt;&gt;&gt; x.maximum(3, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([3, 7, 8])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 8])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([9, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.maximum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([9, 8])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 8, 6, 0, 5])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([9, 6, 2, 5, 8])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.maximum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([9, 8, 6, 5, 8])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` instance method using :code:`Number` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 2, 7])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.maximum(5)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.native_array([0, 2, 5])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
