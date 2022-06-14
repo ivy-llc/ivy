@@ -18,7 +18,7 @@ xps = make_strategies_namespace(xp)
 
 try:
     import jax.numpy as _jnp
-except (ImportError, RuntimeError):
+except (ImportError, RuntimeError, AttributeError):
     _jnp = None
 try:
     import tensorflow as _tf
