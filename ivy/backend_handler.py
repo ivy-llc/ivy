@@ -174,7 +174,6 @@ def set_backend(backend: str):
     """
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
-    global ivy_original_fn_dict
     if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(backend, str):
@@ -187,28 +186,16 @@ def set_backend(backend: str):
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
-    ivy_original_fn_dict.clear()
+
+    # loop through the backend dict, wrap the function and add it to the ivy dict
     for k, v in backend.__dict__.items():
         if k in ivy.__dict__ and not k.startswith("__"):
-            original = ivy.__dict__[k]
-            wrapped_v = _wrap_function(v, original=original)
-            if hasattr(original, "array_spec"):
-                wrapped_v.array_spec = original.array_spec
-            if k == "linalg":
-                for linalg_k, linalg_v in v.__dict__.items():
-                    if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
-                        wrapped_v.__dict__[linalg_k] = _wrap_function(
-                            linalg_v, ivy.__dict__[linalg_k]
-                        )
+            wrapped_v = _wrap_function(k, v, original=ivy.__dict__[k])
             ivy.__dict__[k] = wrapped_v
 
     for dtype in backend.invalid_dtypes:
         del ivy.__dict__[dtype]
-    #     if isinstance(specific_v, collections.Hashable):
-    #         try:
-    #             ivy_original_fn_dict[specific_v] = v
-    #         except TypeError:
-    #             pass
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
@@ -311,7 +298,7 @@ def unset_backend():
         # to ivy namespace
         for k, v in new_backend_dict.items():
             if backend_stack and k in ivy.__dict__:
-                v = _wrap_function(v, ivy.__dict__[k])
+                v = _wrap_function(k, v, ivy.__dict__[k])
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

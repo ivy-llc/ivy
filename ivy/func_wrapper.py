@@ -409,11 +409,12 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(value: Callable, original: Callable) -> Callable:
+def _wrap_function(key: str, value: Callable, original: Callable) -> Callable:
     """Apply wrapping to backend implementation `value` if the original implementation
     `original` is also wrapped, and if `value` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
-    us whether a certain function has been wrapped or not.
+    us whether a certain function has been wrapped or not. Also handles wrapping of the
+    `linalg` namespace.
 
     Parameters
     ----------
@@ -428,6 +429,15 @@ def _wrap_function(value: Callable, original: Callable) -> Callable:
         `value` appropriately wrapped if `value` is a function, otherwise just the
         input is returned.
     """
+    if hasattr(original, "array_spec"):
+        value.array_spec = original.array_spec
+    if key == "linalg":
+        for linalg_k, linalg_v in value.__dict__.items():
+            if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+                value.__dict__[linalg_k] = _wrap_function(
+                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                )
+        return value
     if isinstance(value, FunctionType):
         if (
             hasattr(original, "handle_nestable")
