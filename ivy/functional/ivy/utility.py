@@ -15,7 +15,7 @@ def all(
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether all input array elements evaluate to ``True`` along a specified
     axis.
@@ -59,7 +59,8 @@ def all(
         results. The returned array must have a data type of ``bool``.
 
     Functional Examples
-    -------
+    -------------------
+    
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -72,7 +73,6 @@ def all(
     >>> a = ivy.all(x,out = y,keepdims=True)
     >>> print(a)
     ivy.array([ True])
-
 
     >>> x=ivy.array(False)
     >>> y=ivy.all([-1, 4, 5], out=x)
@@ -116,6 +116,14 @@ def all(
         b: ivy.array(True)
     }
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.all.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
     """
     return _cur_backend(x).all(x, axis, keepdims, out=out)
 
