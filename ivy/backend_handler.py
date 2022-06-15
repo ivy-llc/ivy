@@ -13,7 +13,6 @@ from ivy.func_wrapper import _wrap_function
 
 
 backend_stack = []
-implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
 
@@ -132,7 +131,6 @@ def current_backend(*args, **kwargs):
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
 
     """
-    global implicit_backend
     # if a global backend has been set with set_backend then this will be returned
     if backend_stack:
         f = backend_stack[-1]
@@ -142,12 +140,15 @@ def current_backend(*args, **kwargs):
 
     # if no global backend exists, we try to infer the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
-    if f is not None:
-        implicit_backend = f.current_backend_str()
-        return f
+    if f is None:
+        raise ValueError(
+            "get_backend failed to find a valid library from the inputs: {} {}".format(
+                args, kwargs
+            )
+        )
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
-    return importlib.import_module(_backend_dict[implicit_backend])
+    return f
 
 
 def set_backend(backend: str):
