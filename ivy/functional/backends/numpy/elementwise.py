@@ -13,7 +13,11 @@ except (ImportError, ModuleNotFoundError):
 
 
 def add(x1: Union[float, np.ndarray], x2: Union[float, np.ndarray]) -> np.ndarray:
-    return np.add(x1, x2)
+    if not isinstance(x1, np.ndarray):
+        x1 = np.asarray(x1)
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return np.asarray(np.add(x1, x2))
 
 
 def pow(
