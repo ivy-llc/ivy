@@ -6,7 +6,7 @@ on:
 jobs:
   ongoing_discussion:
     name: Log New Comment to Dashboard
-    if: ${{ github.event.discussion.category.name == "Ongoing" }}
+    if: ${{ github.event.discussion.category.name == 'Ongoing' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checks
