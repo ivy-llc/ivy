@@ -438,8 +438,8 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
 
     # devices
     devices = list()
