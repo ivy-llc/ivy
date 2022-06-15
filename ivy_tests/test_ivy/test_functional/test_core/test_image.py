@@ -6,9 +6,9 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy
-import ivy_tests.test_ivy.helpers as helpers
 import random
+import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # stack_images
@@ -71,7 +71,7 @@ def test_linear_resample(
 ):
     if fw == "torch" and input_dtype == "float16":
         return
-    x = ivy.random_normal(shape=shape)
+    x = ivy_np.random_normal(shape=shape)
     axis = random.randint(0, len(shape) - 1)
     helpers.test_array_function(
         input_dtype,
@@ -142,11 +142,13 @@ def test_bilinear_resample(
     container=st.booleans(),
 )
 def test_gradient_image(
-    shape, input_dtype, as_variable, num_positional_args, native_array, container, fw
+    shape, input_dtype, as_variable, num_positional_args, native_array, container, fw, device
 ):
     if fw == "torch" and input_dtype == "float16":
         return
-    x = ivy.random_normal(shape=shape)
+    # ToDo: remove the random internal generation, which is causing flaky behaviour
+    #  and hypothesis failures
+    x = ivy_np.random_normal(shape=shape, device=device)
     helpers.test_array_function(
         input_dtype,
         as_variable,
