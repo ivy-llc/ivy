@@ -33,6 +33,31 @@ When calling `this function`_ for setting the backend, the following steps are p
    every backend function implementation. This is explained in more detail in the next section:
    :ref:`Function Wrapping`.
 
+It's helpful to look at an example:
+
+.. code-block:: python
+    #no backend set
+    x = ivy.array([[2., 3.]])
+    ivy.get_backend()
+    <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
+
+    #inferring from the inputs
+    y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
+    ivy.get_backend()
+    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
+
+    #setting and unsetting the backend
+    ivy.set_backend('jax)
+    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
+    ivy.get_backend()
+    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
+    ivy.unset_backend()
+    ivy.get_backend()
+    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
+
+In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the backend
+is unset, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
+
 **Round Up**
 
 This should have hopefully given you a good feel for how the backend framework is set.
