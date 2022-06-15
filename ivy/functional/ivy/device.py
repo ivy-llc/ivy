@@ -1057,6 +1057,8 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
 
     Examples
     --------
+    With :code: `ivy.Array` input:
+
     >>> x = ivy.array([4, 5, 6])
     >>> ivy.dev_clone(x, ['cpu'])
     DevClonedItem({'cpu': array([4, 5, 6])})
@@ -1065,9 +1067,31 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
     >>> ivy.dev_clone(x, ['gpu:0'])
     DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
 
-    >>> x = ivy.array([7, 2, 7])
-    >>> ivy.dev_clone(x, ['cpu', 'gpu:0'])
-    DevClonedItem({'cpu': array([7, 2, 7]), 'gpu:0': array([7, 2, 7])})
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 2, 7])
+    >>> ivy.dev_clone(x, ['cpu', 'tpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'tpu:0': array([7, 2, 7])})
+
+    >>> x = ivy.native_array([4, 5])
+    >>> ivy.dev_clone(x, ['cpu', 'gpu:2', 'tpu:1'])
+    DevClonedItem({'cpu': array([4, 5]), 'gpu:2': array([4, 5]), 'tpu:1': array([4, 5])})
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1,2]))
+    >>> ivy.dev_clone(x, ['cpu'])
+    DevClonedItem({'cpu': {
+        a: array([1, 2])
+    }})
+
+    >>> x = ivy.Container({'b': ivy.native_array([3,4])})
+    >>> ivy.dev_clone(x, ['gpu:0', 'tpu:0'])
+    DevClonedItem({'gpu:0': {
+        b: array([3, 4])
+    }, 'tpu:0': {
+        b: array([3, 4])
+    }})
 
     """
     return DevClonedItem(
