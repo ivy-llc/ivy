@@ -157,6 +157,25 @@ every backend function implementation. This is explained in more detail in the n
 <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
 </ol>
 <p>It’s helpful to look at an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.numpy&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/numpy/__init__.py&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mf">3.</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mf">4.</span><span class="p">]))</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.torch&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/torch/__init__.py&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;jax&#39;</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">]]),</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">],[</span><span class="mf">6.</span><span class="p">]]))</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.jax&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/jax/__init__.py&#39;</span><span class="o">&gt;</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.torch&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/torch/__init__.py&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
 <p>In the last example above, the moment any backend is set, it will be used over the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a>. However when the backend is unset using the <code class="code docutils literal notranslate"><span class="pre">ivy.unset_backend</span></code>, the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> will be used as a fallback, which will assume the backend from the last run. While the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> functionality gives more freedom to the user , the recommended way of doing things would be set the backend explicitly.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how the backend framework is set.</p>
