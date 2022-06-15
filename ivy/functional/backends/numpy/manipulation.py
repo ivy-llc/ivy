@@ -30,6 +30,7 @@ def _flat_array_to_1_dim_array(x):
 def flip(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional = None
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:

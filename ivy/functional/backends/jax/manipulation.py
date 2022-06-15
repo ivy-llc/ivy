@@ -35,7 +35,9 @@ def _flat_array_to_1_dim_array(x):
 
 # noinspection PyShadowingBuiltins
 def flip(
-    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: JaxArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional = None
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret

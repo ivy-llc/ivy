@@ -51,7 +51,9 @@ def squeeze(
 
 # noinspection PyShadowingBuiltins
 def flip(
-    x: torch.Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: torch.Tensor,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional = None
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
     if not num_dims:
