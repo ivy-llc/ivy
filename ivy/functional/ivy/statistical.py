@@ -1,11 +1,10 @@
 # global
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence
 
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
-
 
 # Array API Standard #
 # -------------------#
@@ -67,10 +66,10 @@ def min(
 @handle_out_argument
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
+    axis: Union[int, Sequence[int]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
 
@@ -113,6 +112,53 @@ def max(
         containing the maximum values. The returned array must have the same data type
         as ``x``.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.tan.html>`
+    _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array()
+    >>> y = ivy.max(x, out=z)
+    >>> print(z)
+    ivy.array(2)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.max(x, 0, True)
+    >>> print(y)
+    ivy.array([[4, 6, 10]])
+
+    >>> x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
+    >>> y = ivy.max(x, (0, 2), out=x)
+    >>> print(x)
+    >>> ivy.array([6, 7])
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.max(x)
+    >>> print(y)
+    {
+        a: ivy.array(2.),
+        b: ivy.array(5.)
+    }
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.max()
+    >>> print(z)
+    ivy.array(3)
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> z = x.max()
+    >>> print(z)
+    {
+        a: ivy.array(3),
+        b: ivy.array(4)
+    }
     """
     return _cur_backend.max(x, axis, keepdims, out=out)
 
