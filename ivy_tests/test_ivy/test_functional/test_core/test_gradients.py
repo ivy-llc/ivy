@@ -57,8 +57,8 @@ def test_is_variable(object_in, dtype, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    non_var = ivy.array(object_in, dtype, device)
-    var = ivy.variable(ivy.array(object_in, dtype, device))
+    non_var = ivy.array(object_in, dtype=dtype, device=device)
+    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
