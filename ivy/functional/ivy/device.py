@@ -560,7 +560,7 @@ def to_dev(
 
 
 def split_factor(
-    device=None
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None
 ) -> float:
     """Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
