@@ -57,6 +57,8 @@ def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None,  
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -85,14 +87,81 @@ def argmin(
     ret
         Array containing the indices of the minimum values across the specified axis.
 
-    Examples
+    Functional Examples
     --------
-    >>> x = ivy.array([-0., 1., -1.])
+    
+    With :code:`ivy.Array` input:
+        
+    >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    tensor([2])
+    ivy.array([2])
+    
+
+    >>> x=ivy.array([[0., 1., -1.],
+                     [-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis= 1)
+    >>> print(y)
+    ivy.array([2, 0])
+
+    >>> x=ivy.array([[0., 1., -1.], 
+                     [-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis= 1, keepdims= True)
+    >>> print(y)
+    ivy.array([[2],
+              [0]])
+
+    >>> x=ivy.array([[0., 1., -1.], 
+                     [-2., 1., 2.],
+                     [1., -2., 0.]])
+    >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
+    >>> print(y)
+    ivy.array([[2],
+               [0],
+               [1]])
+
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0., 1., -1.])
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    ivy.array([2])
+
+    
+    With :code:`ivy.Container` input:
+        
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.argmin(x)
+    >>> print(y)
+    {
+         a: ivy.array([1]),
+         b: ivy.array([0])
+    }
+        
+    
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., -1.])
+    >>> y = x.argmin()
+    >>> print(y)
+    ivy.array([2])
+        
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.argmin()
+    >>> print(y)
+    {
+         a: ivy.array([1]),
+         b: ivy.array([0])
+    }
     """
-    return _cur_backend(x).argmin(x, axis, keepdims)
+    return _cur_backend(x).argmin(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -212,7 +281,7 @@ def where(
     ret
         An array with elements from x1 where condition is True, and elements from x2
         elsewhere.
-    
+
     Functional Examples
     -------------------
 
@@ -224,7 +293,7 @@ def where(
     >>> res = ivy.where(condition, x1, x2)
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
-    
+
     With `ivy.NativeArray` input:
 
     >>> condition = [[True, False], [False, True]]
@@ -236,14 +305,12 @@ def where(
 
     With a mix of `ivy.Array` and `ivy.NativeArray` inputs:
 
-    >>> x1 = ivy.array([[6, 13, 22, 7, 12], \ 
-                        [7, 11, 16, 32, 9]])
-    >>> x2 = ivy.native_array([[44, 20, 8, 35, 9], \
-                               [98, 23, 43, 6, 13]])
+    >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
+    >>> x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
     >>> res = ivy.where(((x1 % 2 == 0) & (x2 % 2 == 1)), x1, x2)
     >>> print(res)
     ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
-    
+
     With `ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
@@ -254,11 +321,11 @@ def where(
         a: ivy.array([3, 7, 5]),
         b: ivy.array([3, 8, 6])
     }
-    
+
     With a mix of `ivy.Array` and `ivy.Container` inputs:
 
     >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
-    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), 
+    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),
                            b=ivy.array([3, 8, 5]))
     >>> res = ivy.where((x1 < x2), x1, x2)
     >>> print(res)
@@ -266,7 +333,7 @@ def where(
         a: ivy.array([0, 2, -3.6]),
         b: ivy.array([3, 4, 3.1])
     }
-    
+
     Instance Method Examples
     -------------------
 
@@ -278,7 +345,7 @@ def where(
     >>> res = x1.where(condition, x2)
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
-    
+
     With `ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))

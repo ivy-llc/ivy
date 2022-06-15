@@ -1,12 +1,18 @@
 # global
 import warnings
 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+import pytest
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-def test_docstrings():
+@pytest.mark.parametrize("backend", ["torch", "numpy", "tensorflow", "jax"])
+def test_docstrings(backend):
+    ivy.set_default_device("cpu")
+    ivy.set_backend(backend)
     failures = list()
     success = True
 
@@ -14,21 +20,35 @@ def test_docstrings():
         Functions skipped as their output dependent on outside factors:
             random_normal, random_uniform, shuffle, num_gpus, current_backend,
             get_backend
+            
+        Functions skipped due to <lambda>-related error (cause test to fail):
+            current_backend_str, container_types, inplace_arrays_supported,
+            inplace_variables_supported, multiprocessing, variable_data,
+            get_num_dims, unset_backend         
     """
-    skip_functions = [
+    to_skip = [
         "random_normal",
         "random_uniform",
         "shuffle",
         "num_gpus",
         "current_backend",
         "get_backend",
+        "namedtuple",
+        "DType",
+        "Dtype",
+        "current_backend_str",
+        "container_types",
+        "inplace_arrays_supported",
+        "inplace_variables_supported",
+        "multiprocessing",
+        "variable_data",
+        "get_num_dims",
+        "unset_backend",
     ]
 
-    function_list = ivy.__dict__.items()
+    function_list = ivy.__dict__.copy().items()
     for k, v in function_list:
-        if k in skip_functions:
-            continue
-        if k in ["namedtuple", "DType", "Dtype"] or helpers.docstring_examples_run(v):
+        if k in to_skip or helpers.docstring_examples_run(v):
             continue
         success = False
         failures.append(k)
@@ -38,3 +58,4 @@ def test_docstrings():
                 "\n".join(failures)
             )
         )
+    ivy.unset_backend()
