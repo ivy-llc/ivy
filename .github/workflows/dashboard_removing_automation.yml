@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           gh api graphql -f query='
-            mutation($project:ID!, $pr:ID!) {
+            mutation($project:ID!, $item:ID!) {
               deleteProjectNextItem(input: {projectId: $project, itemId: $item}) {
                     deletedItemId
                 }
