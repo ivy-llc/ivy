@@ -57,7 +57,8 @@ It's helpful to look at an example:
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the\
 backend is unset using the :code:`ivy.unset_backend`, the `implicit_backend`_ will be used as a fallback, which will\
-assume the backend from the last run.
+assume the backend from the last run. While the `implicit_backend`_ functionality gives more freedom to the user , the\
+recommended way of doing things would be set the backend explicitly.
 
 **Round Up**
 
