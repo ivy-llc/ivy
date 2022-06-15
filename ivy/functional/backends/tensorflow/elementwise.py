@@ -422,6 +422,7 @@ def pow(
         x2 = tf.cast(x2, tf.float64)
     ret = tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     return ret
+pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
 
 
 def remainder(
