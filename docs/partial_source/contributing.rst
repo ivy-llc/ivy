@@ -8,8 +8,8 @@ Contributing
 We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community,
 regardless of skill-level!
 
-Whether you're a veterned developer or a total beginner, everyone is welcome to create `issues`_, start `discussions`_,
-and create `pull-requests`_.
+Whether you're a veterned developer 🥷 or a total beginner 🤷,
+everyone is welcome to create `issues`_, start `discussions`_, and create `pull-requests`_.
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
 
@@ -26,48 +26,14 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (c) :ref:`Navigating the Code`
-| A quick tour through the codebase 🔍
+| (c) :ref:`Building the Docs`
+| How to build the documentation locally 🏗️
 |
-| (d) :ref:`Function Types`
-| Primary, compositional, mixed and nestable functions  🧮
+| (d) :ref:`Deep Dive`
+| Take a deep dive into the codebase 🤿
 |
-| (e) :ref:`Backend Setting`
-| How the backend is set, and what this means for each function type ⚙️
-|
-| (f) :ref:`Function Wrapping`
-| How functions are dynamically wrapped at runtime  🎁
-|
-| (g) :ref:`Method Types`
-| :code:`ivy.Container` and :code:`ivy.Array` methods 🗜️️
-|
-| (h) :ref:`Native Arrays`
-| How each function converts arrays to :code:`ivy.NativeArray` and back  🔙
-|
-| (i) :ref:`Inplace Updates`
-| How the :code:`out` argument is used to specify the output target  🎯
-|
-| (j) :ref:`Data Types`
-| How functions infer the correct data type  💾
-|
-| (k) :ref:`Devices`
-| How functions infer the correct device  💽
-|
-| (l) :ref:`Array API Tests`
-| How we're borrowing the test suite from the Array API Standard 🤝
-|
-| (m) :ref:`Ivy Tests`
-| How to add new Ivy tests for each function ❓
-|
-| (n) :ref:`Type Hints`
-| How to add the correct type hints 📑
-|
-| (o) :ref:`Docstrings`
-| How to properly write docstrings 📄
-|
-| (p) :ref:`Docstring Examples`
-| How to add useful examples to the docstrings 💯
-|
+| (e) :ref:`Open Tasks`
+| See where you can help us out! 🙋
 
 .. toctree::
    :hidden:
@@ -76,17 +42,14 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 
    contributing/0_setting_up.rst
    contributing/1_the_basics.rst
-   contributing/2_navigating_the_code.rst
-   contributing/3_function_types.rst
-   contributing/4_backend_setting.rst
-   contributing/5_function_wrapping.rst
-   contributing/6_method_types.rst
-   contributing/7_native_arrays.rst
-   contributing/8_inplace_updates.rst
-   contributing/9_data_types.rst
-   contributing/10_devices.rst
-   contributing/11_array_api_tests.rst
-   contributing/12_ivy_tests.rst
-   contributing/13_type_hints.rst
-   contributing/14_docstrings.rst
-   contributing/15_docstring_examples.rst
+   contributing/building_the_docs.rst
+   deep_dive.rst
+   contributing/4_open_tasks.rst
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video">
+    </iframe>

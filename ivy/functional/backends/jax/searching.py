@@ -7,8 +7,9 @@ from typing import Optional
 def argmax(
     x: JaxArray,
     axis: Optional[int] = None,
-    out: Optional[JaxArray] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.argmax(x, axis=axis, out=out, keepdims=keepdims)
 
@@ -16,8 +17,9 @@ def argmax(
 def argmin(
     x: JaxArray,
     axis: Optional[int] = None,
-    out: Optional[JaxArray] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
 

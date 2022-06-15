@@ -1,19 +1,22 @@
 # global
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence
 
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-
+from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 # Array API Standard #
 # -------------------#
 
-# noinspection PyShadowingBuiltins
+
+@to_native_arrays_and_back
+@handle_out_argument
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.
@@ -56,15 +59,17 @@ def min(
         as x.
 
     """
-    return _cur_backend.min(x, axis, keepdims, out)
+    return _cur_backend.min(x, axis, keepdims, out=out)
 
 
-# noinspection PyShadowingBuiltins
+@to_native_arrays_and_back
+@handle_out_argument
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
+    axis: Union[int, Sequence[int]] = None,
     keepdims: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
 
@@ -72,9 +77,9 @@ def max(
        When the number of elements over which to compute the maximum value is zero, the
        maximum value is implementation-defined. Specification-compliant libraries may
        choose to raise an error, return a sentinel value (e.g., if ``x`` is a
-       floating-point input array, return ``NaN``), or return the minimum possible value
-       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
-       return ``-infinity``).
+       floating-point input array, return ``NaN``), or return the minimum possible
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point
+       array, return ``-infinity``).
 
     **Special Cases**
 
@@ -107,15 +112,65 @@ def max(
         containing the maximum values. The returned array must have the same data type
         as ``x``.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.tan.html>`
+    _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array()
+    >>> y = ivy.max(x, out=z)
+    >>> print(z)
+    ivy.array(2)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.max(x, 0, True)
+    >>> print(y)
+    ivy.array([[4, 6, 10]])
+
+    >>> x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
+    >>> y = ivy.max(x, (0, 2), out=x)
+    >>> print(x)
+    >>> ivy.array([6, 7])
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.max(x)
+    >>> print(y)
+    {
+        a: ivy.array(2.),
+        b: ivy.array(5.)
+    }
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.max()
+    >>> print(z)
+    ivy.array(3)
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> z = x.max()
+    >>> print(z)
+    {
+        a: ivy.array(3),
+        b: ivy.array(4)
+    }
     """
     return _cur_backend.max(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the variance of the input array x.
@@ -166,10 +221,13 @@ def var(
     return _cur_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
@@ -208,20 +266,22 @@ def mean(
            While this specification recommends that this function only accept input
            arrays having a floating-point data type, specification-compliant array
            libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input array
-           ``x`` has an integer data type, the returned array must have the default
-           floating-point data type.
+           While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have the
+           default floating-point data type.
 
     """
     return _cur_backend(x).mean(x, axis, keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product of input array x elements.
@@ -264,11 +324,14 @@ def prod(
         parameter above.
 
     """
-    return _cur_backend.prod(x, axis, keepdims, dtype=dtype, out=out)
+    return _cur_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
@@ -338,14 +401,17 @@ def sum(
     ivy.array(1.3)
 
     """
-    return _cur_backend(x).sum(x, axis, dtype, keepdims, out=out)
+    return _cur_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the standard deviation of the input array ``x``.
@@ -412,11 +478,9 @@ def std(
 # ------#
 
 
-def einsum(
-    equation: str,
-    *operands: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
+@to_native_arrays_and_back
+@handle_out_argument
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
@@ -449,6 +513,68 @@ def einsum(
     >>> z = ivy.einsum('ij -> j', x)
     >>> print(z)
     ivy.array([9, 12, 15])
+    
+    Imagine that we have two multi-dimensional arrays, A and B. 
+    Now let's suppose we want to...
+    - multiply A with B in a particular way to create new array 
+    of products; and then maybe
+    - sum this new array along particular axes; and then maybe
+    - transpose the axes of the new array in a particular order.
+    
+    There's a good chance that einsum will help us do this faster 
+    and more memory-efficiently than combinations of the NumPy 
+    functions like multiply, sum and transpose will allow.
+    
+    >>> A = ivy.array([0, 1, 2])
+    >>> B = ivy.array([[ 0,  1,  2,  3],\
+    ...               [ 4,  5,  6,  7],\
+    ...               [ 8,  9, 10, 11]])
+    >>> ivy.einsum('i,ij->i', A, B)
+    ivy.array([ 0, 22, 76])
+    
+    Now lets see a slightly bigger example:
+    
+    >>> A = ivy.array([[1, 1, 1],\
+    ...                [2, 2, 2],\
+    ...                [5, 5, 5]])
+    >>> B = ivy.array([[0, 1, 0],\
+    ...                [1, 1, 0],\
+    ...                [1, 1, 1]])
+    >>> ivy.einsum('ij,jk->ik', A, B)
+    ivy.array([[ 2,  3,  1],
+                [ 4,  6,  2],
+                [10, 15,  5]])
+                
+    
+    Let A and B be two 1D arrays with the same length. For example, 
+    
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    
+    The sum of A can be written:
+    >>> ivy.einsum('i->', A)
+    ivy.array(45, dtype=int32)
+    
+    Element-wise multiplication, A * B, can be written:
+    >>> ivy.einsum('i,i->i', A, B)
+    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126], dtype=int32)
+    
+    The inner product or dot product can be written:
+    >>> ivy.einsum('i,i->', A, B) # or just use 'i,i'
+    ivy.array(510, dtype=int32)
+    
+    The outer product can be written:
+    >>> ivy.einsum('i,j->ij', A, B)
+    ivy.array([[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0],
+                [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
+                [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
+                [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
+                [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
+                [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
+                [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
+                [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
+                [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
+                [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
 
     """
-    return _cur_backend(operands[0]).einsum(equation, *operands, out=out)
+    return _cur_backend(operands[0]).einsum(equation, *operands)

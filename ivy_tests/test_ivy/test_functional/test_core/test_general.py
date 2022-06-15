@@ -1,7 +1,9 @@
 """Collection of tests for unified general functions."""
 
 # global
+import time
 import einops
+import jax.numpy as jnp
 import pytest
 from hypothesis import given, strategies as st
 import numpy as np
@@ -10,6 +12,7 @@ from collections.abc import Sequence
 import torch.multiprocessing as multiprocessing
 
 # local
+import threading
 import ivy
 import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
@@ -98,18 +101,18 @@ def test_get_referrers_recursive(device, call):
     refs = ivy.get_referrers_recursive(some_obj.x)
     ref_keys = refs.keys()
     assert len(ref_keys) == 3
-    assert 'repr' in ref_keys
-    assert refs['repr'] == '[1,2]'
+    assert "repr" in ref_keys
+    assert refs["repr"] == "[1,2]"
     y_id = str(id(some_obj.y))
     y_refs = refs[y_id]
-    assert y_refs['repr'] == '[[1,2]]'
+    assert y_refs["repr"] == "[[1,2]]"
     some_obj_dict_id = str(id(some_obj.__dict__))
-    assert y_refs[some_obj_dict_id] == 'tracked'
+    assert y_refs[some_obj_dict_id] == "tracked"
     dict_refs = refs[some_obj_dict_id]
-    assert dict_refs['repr'] == "{'x':[1,2],'y':[[1,2]]}"
+    assert dict_refs["repr"] == "{'x':[1,2],'y':[[1,2]]}"
     some_obj_id = str(id(some_obj))
     some_obj_refs = dict_refs[some_obj_id]
-    assert some_obj_refs['repr'] == str(some_obj).replace(' ', '')
+    assert some_obj_refs["repr"] == str(some_obj).replace(" ", "")
     assert len(some_obj_refs) == 1
 
 
@@ -248,12 +251,12 @@ def test_to_scalar(object_in, dtype, device, call, fw):
         # to_scalar() requires eager execution
         return
     # smoke test
-    ret = ivy.to_scalar(ivy.array(object_in, dtype, device))
+    ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
     # type test
     assert isinstance(ret, type(true_val))
     # value test
-    assert ivy.to_scalar(ivy.array(object_in, dtype, device)) == true_val
+    assert ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device)) == true_val
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support scalar conversion
@@ -264,25 +267,21 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 @given(x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes))
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
         return
     # smoke test
-    ret = ivy.to_list(ivy.array(object_in, dtype, device))
-    # type test
-    assert isinstance(ret, list)
+    arr = ivy.array(object_in, dtype=dtype, device=device)
+    ret = ivy.to_list(arr)
+    # type test (result won't be a list if input is 0 dimensional
+    if arr.ndim != 0:
+        assert isinstance(ret, list)
     # cardinality test
     assert _get_shape_of_list(ret) == _get_shape_of_list(object_in)
     # value test
     assert np.allclose(
         np.nan_to_num(
-            np.asarray(ivy.to_list(ivy.array(object_in, dtype, device))),
+            np.asarray(ivy.to_list(ivy.array(object_in, dtype=dtype, device=device))),
             posinf=np.inf,
             neginf=-np.inf,
         ),
@@ -1086,38 +1085,36 @@ def test_cache_fn_with_args(device, call):
     assert ret0 is not ret1
 
 
-# def test_framework_setting_with_threading(device, call):
-#
-#     if call is helpers.np_call:
-#         # Numpy is the conflicting framework being tested against
-#         pytest.skip()
-#
-#     def thread_fn():
-#         ivy.set_framework('numpy')
-#         x_ = np.array([0., 1., 2.])
-#         for _ in range(2000):
-#             try:
-#                 ivy.mean(x_)
-#             except TypeError:
-#                 return False
-#         ivy.unset_framework()
-#         return True
-#
-#     # get original framework string and array
-#     fws = ivy.current_framework_str()
-#     x = ivy.array([0., 1., 2.])
-#
-#     # start numpy loop thread
-#     thread = threading.Thread(target=thread_fn)
-#     thread.start()
-#
-#     # start local original framework loop
-#     ivy.set_framework(fws)
-#     for _ in range(2000):
-#         ivy.mean(x)
-#     ivy.unset_framework()
-#
-#     assert not thread.join()
+def test_framework_setting_with_threading(device, call):
+    if call is helpers.jnp_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    def thread_fn():
+        x_ = jnp.array([0.0, 1.0, 2.0])
+        ivy.set_backend("jax")
+        for _ in range(2000):
+            try:
+                ivy.mean(x_)
+            except TypeError:
+                return False
+        ivy.unset_backend()
+        return True
+
+    # get original framework string and array
+    fws = ivy.current_backend_str()
+    x = ivy.array([0.0, 1.0, 2.0])
+
+    # start jax loop thread
+    thread = threading.Thread(target=thread_fn)
+    thread.start()
+    time.sleep(0.01)
+    # start local original framework loop
+    ivy.set_backend(fws)
+    for _ in range(2000):
+        ivy.mean(x)
+    ivy.unset_backend()
+    assert not thread.join()
 
 
 def test_framework_setting_with_multiprocessing(device, call):
