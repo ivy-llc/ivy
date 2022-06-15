@@ -18,7 +18,7 @@ xps = make_strategies_namespace(xp)
 
 try:
     import jax.numpy as _jnp
-except ImportError:
+except (ImportError, RuntimeError, AttributeError):
     _jnp = None
 try:
     import tensorflow as _tf
@@ -328,9 +328,7 @@ def docstring_examples_run(fn):
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
         warnings.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(fn_name)
-            )
+            "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
     return True
 
@@ -408,7 +406,7 @@ def as_lists(dtype, as_variable, native_array, container):
 
 
 def test_array_function(
-    input_dtype,
+    input_dtypes,
     as_variable,
     with_out,
     num_positional_args,
@@ -417,31 +415,29 @@ def test_array_function(
     instance_method,
     fw,
     fn_name,
-    rtol=1e-03,
+    rtol=None,
     atol=1e-06,
     test_values=True,
     **all_as_kwargs_np
 ):
 
     # convert single values to length 1 lists
-    input_dtype, as_variable, native_array, container = as_lists(
-        input_dtype, as_variable, native_array, container
+    input_dtypes, as_variable, native_array, container = as_lists(
+        input_dtypes, as_variable, native_array, container
     )
 
     # update variable flags to be compatible with float dtype and with_out args
-    #as_variable = [
-    #    v if ivy.is_float_dtype(d) and not with_out else False
-    #    for v, d in zip(as_variable, input_dtype)
-    #]
-    # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    as_variable = [
+        v if ivy.is_float_dtype(d) and not with_out else False
+        for v, d in zip(as_variable, input_dtypes)
+    ]
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
-    for d in input_dtype:
+    for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function, fw): return
     # change all data types so that they are supported by this framework
     #input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
@@ -449,12 +445,15 @@ def test_array_function(
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
+    # change all data types so that they are supported by this framework
+    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
+
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtype[:num_arg_vals])
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
     ]
     arg_array_vals = [
         ivy.variable(x) if v else x
@@ -476,7 +475,8 @@ def test_array_function(
     )
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, input_dtype[num_arg_vals:])
+        ivy.array(x, dtype=d)
+        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
     ]
     kwarg_array_vals = [
         ivy.variable(x) if v else x
@@ -530,7 +530,6 @@ def test_array_function(
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
-
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
@@ -552,7 +551,8 @@ def test_array_function(
             pass
         else:
             assert ret.data is out.data
-
+    if "bfloat16" in input_dtypes:
+        return  # bfloat16 is not supported by numpy
     # compute the return with a NumPy backend
     ivy.set_backend("numpy")
     ret_from_np = ivy.to_native(
@@ -563,12 +563,22 @@ def test_array_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_np
-
+    # tolerance dict for dtypes
+    tolerance_dict = {
+        "float16": 1e-02,
+        "float32": 1e-05,
+        "float64": 1e-05,
+        "bfloat16": 1e-02,
+        None: 1e-05,
+    }
+    if not rtol:
+        if ret.dtype in tolerance_dict:
+            rtol = tolerance_dict[ret.dtype]
+        else:
+            rtol = 1e-05
     # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if input_dtype == "bfloat16":
-        return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
 
@@ -582,9 +592,7 @@ def test_array_function(
 
     # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(
-            ret_np, ret_from_np, rtol=tolerance_dict[input_dtype], atol=atol
-        )
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
@@ -955,28 +963,29 @@ def get_probs(draw, dtype):
 
 
 @st.composite
-def get_axis(draw, dtype):
-    shape = draw(get_shape(allow_none=False, min_num_dims=1))
-    res = np.asarray(
-        draw(
-            array_values(
-                dtype=dtype,
-                shape=shape,
-                min_value=np.nextafter(0, 1) * 1e50 if dtype == "float64" else None,
+def get_axis(draw, shape, allow_none=False):
+    axes = len(shape)
+    if allow_none:
+        axis = draw(
+            st.none()
+            | st.integers(-axes, axes - 1)
+            | st.lists(
+                st.integers(-axes, axes - 1),
+                min_size=1,
+                max_size=axes,
+                unique_by=lambda x: shape[x],
             )
         )
-    )
-    axes = len(shape)
-    axis = draw(
-        st.none()
-        | st.integers(-axes, axes - 1)
-        | st.lists(
-            st.integers(-axes, axes - 1),
-            min_size=1,
-            max_size=axes,
-            unique_by=lambda x: shape[x],
+    else:
+        axis = draw(
+            st.integers(-axes, axes - 1)
+            | st.lists(
+                st.integers(-axes, axes - 1),
+                min_size=1,
+                max_size=axes,
+                unique_by=lambda x: shape[x],
+            )
         )
-    )
     if type(axis) == list:
 
         def sort_key(ele, max_len):
@@ -986,7 +995,7 @@ def get_axis(draw, dtype):
 
         axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    return res, axis
+    return axis
 
 
 @st.composite
