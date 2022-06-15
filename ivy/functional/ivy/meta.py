@@ -35,7 +35,7 @@ def _compute_cost_and_update_grads(
             retain_grads=False,
         )
         if batched:
-            inner_grads = inner_grads * num_tasks
+            inner_grads = ivy.multiply(inner_grads, num_tasks)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
@@ -85,7 +85,7 @@ def _train_task(
             retain_grads=order > 1,
         )
         if batched:
-            inner_update_grads = inner_update_grads * num_tasks
+            inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
         # compute the cost to be optimized, and update all_grads if fist order method
         if outer_cost_fn is None and not unique_inner and not unique_outer:
