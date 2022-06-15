@@ -87,7 +87,7 @@ def test_variable_data(object_in, dtype, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    var = ivy.variable(ivy.array(object_in, dtype, device))
+    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
     var_data = ivy.variable_data(var)
     # type test
     if call is not helpers.np_call:
