@@ -893,8 +893,11 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(0 not in x[1])
+    x1 = np.asarray(x[0], dtype=input_dtype[0]),
+    x2 = np.asarray(x[1], dtype=input_dtype[1]),
+    assume(not np.any(x2 == 0))
     if fw in ["tensorflow", "torch"]:
+        # ToDo: get these unit tests passing
         return
     helpers.test_array_function(
         input_dtype,
@@ -906,8 +909,8 @@ def test_floor_divide(
         instance_method,
         fw,
         "floor_divide",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
