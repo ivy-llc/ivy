@@ -333,8 +333,8 @@ def docstring_examples_run(fn):
     return True
 
 
-def var_fn(a, b=None, c=None, dtype=None):
-    return ivy.variable(ivy.array(a, b, c))
+def var_fn(x, *, dtype=None, device=None):
+    return ivy.variable(ivy.array(x, dtype=dtype, device=device))
 
 
 def exclude(exclusion_list):
