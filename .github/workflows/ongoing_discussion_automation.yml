@@ -1,12 +1,12 @@
-name: Ivy Dashboard Remove Reviewed PR
+name: Ivy Dashboard Comment Logging
 on:
-  pull_request_target:
-    types: [converted_to_draft, review_request_removed, closed]
+  discussion_comment:
+    types: [created]
 
 jobs:
-  pr_remove:
-    name: Remove PR from Dashboard
-    if: ${{ github.event.pull_request }}
+  ongoing_discussion:
+    name: Log New Comment to Dashboard
+    if: ${{ github.event.discussion.category.name == "Ongoing" }}
     runs-on: ubuntu-latest
     steps:
       - name: Checks
@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: unifyai
-          PROJECT_NUMBER: 1
+          PROJECT_NUMBER: 4
         run: |
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
@@ -43,30 +43,44 @@ jobs:
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
+          echo 'COMMENT_FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Commented On") | .id' project_data.json) >> $GITHUB_ENV
+          echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
 
-      - name: Get item_id of PR
+      - name: Add Comment to project
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          PR_ID: ${{ github.event.pull_request.node_id }}
+          COMMENT_ID: ${{ github.event.comment.node_id }}
         run: |
           item_id="$( gh api graphql -f query='
-            mutation($project:ID!, $pr:ID!) {
-              addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
+            mutation($project:ID!, $comment:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $comment}) {
                 projectNextItem {
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f pr=$PR_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+            }' -f project=$PROJECT_ID -f comment=$COMMENT_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
 
           echo 'ITEM_ID='$item_id >> $GITHUB_ENV
 
-      - name: Remove PR from Project
+      - name: Set fields
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           gh api graphql -f query='
-            mutation($project:ID!, $item:ID!) {
-              deleteProjectNextItem(input: {projectId: $project, itemId: $item}) {
-                    deletedItemId
+            mutation (
+              $project: ID!
+              $item: ID!
+              $comment_field: ID!
+              $date_value: String!
+            ) {
+              set_commented_on: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $comment_field
+                value: $date_value
+              }) {
+                projectNextItem {
+                  id
                 }
-              }' -f project=$PROJECT_ID -f item=$ITEM_ID --silent
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f comment_field=$COMMENT_FIELD_ID -f date_value=$DATE --silent
