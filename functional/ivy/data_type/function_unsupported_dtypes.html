@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>valid_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>function_unsupported_dtypes &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="invalid_dtype" href="invalid_dtype.html" />
-    <link rel="prev" title="result_type" href="result_type.html" /> 
+    <link rel="next" title="Device" href="../device.html" />
+    <link rel="prev" title="convert_dtype" href="convert_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -79,10 +79,10 @@
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="result_type.html">result_type</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">valid_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="convert_dtype.html">convert_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">function_unsupported_dtypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
@@ -143,9 +143,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>valid_dtype</li>
+      <li>function_unsupported_dtypes</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/valid_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/function_unsupported_dtypes.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -153,21 +153,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="valid-dtype">
-<h1>valid_dtype<a class="headerlink" href="#valid-dtype" title="Permalink to this heading"></a></h1>
+  <section id="function-unsupported-dtypes">
+<h1>function_unsupported_dtypes<a class="headerlink" href="#function-unsupported-dtypes" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.valid_dtype">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">valid_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#valid_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.valid_dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the provided data type is support by the current framework.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.function_unsupported_dtypes">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">function_unsupported_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#function_unsupported_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.function_unsupported_dtypes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the unsupported data type of the current backend’s function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type for which to check for backend support</p>
+<dd class="field-odd"><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the unsupported dtype attribute</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Boolean, whether or not the data-type string is supported.</p>
+<dd class="field-odd"><p><em>ret</em> – The unsupported data types of the function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -183,8 +183,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="result_type.html" class="btn btn-neutral float-left" title="result_type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="invalid_dtype.html" class="btn btn-neutral float-right" title="invalid_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="convert_dtype.html" class="btn btn-neutral float-left" title="convert_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../device.html" class="btn btn-neutral float-right" title="Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
