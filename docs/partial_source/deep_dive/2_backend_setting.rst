@@ -2,6 +2,7 @@ Backend Setting
 ===============
 
 .. _`this function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
+.. _`implicit_backend`:
 .. _`import the backend module`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
 .. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
@@ -10,8 +11,14 @@ Backend Setting
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
 
-The backend framework is set by calling :code:`ivy.set_backend(backend_name)`. When calling `this function`_,
-the following steps are performed:
+The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the \
+arguments. For this a global variable `implicit_backend`_ is located in the file which is initialized as :code:`numpy`\
+, and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` \
+function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then\
+this is always used, and the `implicit_backend`_ is overwritten with the framework inferred. :code:`numpy` will always be\
+the default backend unless it explicitly set or is inferred.\
+
+When calling `this function`_ for setting the backend, the following steps are performed:
 
 #. store a global copy of the original :code:`ivy.__dict__` to :code:`ivy_original_dict`, if this is not already stored.
 #. `import the backend module`_, for example :code:`ivy.functional.backends.torch`, \
