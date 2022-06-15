@@ -67,8 +67,8 @@ def test_acosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
+    #if fw == "torch" and input_dtype == "float16":
+    #    return
     helpers.test_array_function(
         input_dtype,
         as_variable,
