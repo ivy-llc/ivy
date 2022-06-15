@@ -699,12 +699,13 @@ def test_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if any(xi == 0 for xi in x[1]):
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+    # ToDo: remove the checks below, and instead handle this during the
+    #  hypothesis data generation
+    if np.any(x2 == 0):
         return  # don't divide by 0
-    if any(
-        xi > 9223372036854775807 or yi > 9223372036854775807
-        for xi, yi in zip(x[0], x[1])
-    ):
+    elif np.any(x1 > 9223372036854775807):
         return  # np.divide converts to signed int so values can't be too large
     helpers.test_array_function(
         input_dtype,
@@ -716,8 +717,8 @@ def test_divide(
         instance_method,
         fw,
         "divide",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
