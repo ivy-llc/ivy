@@ -136,6 +136,7 @@
 
 
 <span class="n">backend_stack</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">implicit_backend</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
 <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">ivy_original_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -254,6 +255,7 @@
 <span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">implicit_backend</span>
     <span class="c1"># if a global backend has been set with set_backend then this will be returned</span>
     <span class="k">if</span> <span class="n">backend_stack</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">backend_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -263,15 +265,12 @@
 
     <span class="c1"># if no global backend exists, we try to infer the backend from the arguments</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_determine_backend_from_args</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;get_backend failed to find a valid library from the inputs: </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">implicit_backend</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">f</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Using backend from type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">f</span></div>
+    <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">implicit_backend</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="set_backend"><a class="viewcode-back" href="../../backend_handler/set_backend.html#ivy.backend_handler.set_backend">[docs]</a><span class="k">def</span> <span class="nf">set_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
