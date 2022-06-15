@@ -786,8 +786,8 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
     return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
 
 
-def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
-    """Returns the unsupported data type of the current backend's function.
+def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+    """Returns the supported data types of the current backend's function.
 
     Parameters
     ----------
@@ -799,7 +799,52 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     ret
         The unsupported data types of the function
 
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> acosh = getattr(ivy, 'acosh')
+    >>> print(function_supported_dtypes(acosh, 'torch'))
+    ('int8', 'int16', 'int32', 'int64', 'uint8', 'bfloat16', 'float16', 'float32', 'float64', 'bool')
+    """
+    valid = list(ivy.valid_dtypes)
+    for d in list(function_unsupported_dtypes(fn, backend)):
+        if d in valid:
+            valid.remove(d)
+    return ivy.as_native_dtype(tuple(valid))
+
+
+def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+    """Returns the unsupported data types of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> acosh = getattr(ivy, 'acosh')
+    >>> print(function_unsupported_dtypes(acosh, 'torch'))
+    ('float16', 'uint16', 'uint32', 'uint64')
     """
     if hasattr(fn, 'unsupported_dtypes'):
-        return fn.unsupported_dtypes
-    return ivy.as_native_dtype(fn.unsupported_dtypes) in ivy.invalid_dtypes
+        return fn.unsupported_dtypes + ivy.invalid_dtypes
+    else:
+        return ivy.invalid_dtypes
+    return ivy.as_native_dtype(fn.unsupported_dtypes)
+
+
+if __name__ == "__main__":
+    ivy.set_backend('tensorflow')
+    pow = getattr(ivy, 'pow')
+    print(function_supported_dtypes(pow, 'tensorflow'))
+
+    pow = getattr(ivy, 'pow')
+    print(function_unsupported_dtypes(pow, 'tensorflow'))
+
