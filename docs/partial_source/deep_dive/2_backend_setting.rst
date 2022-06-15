@@ -55,8 +55,8 @@ It's helpful to look at an example:
     ivy.get_backend()
     <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
-In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the backend
-is unset, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
+In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the\
+backend is unset, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
 
 **Round Up**
 
