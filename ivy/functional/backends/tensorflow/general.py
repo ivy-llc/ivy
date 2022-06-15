@@ -69,7 +69,8 @@ def unstack(x, axis, keepdims=False):
     return ret
 
 
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def inplace_update(
