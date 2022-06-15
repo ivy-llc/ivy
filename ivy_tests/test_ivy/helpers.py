@@ -438,10 +438,11 @@ def test_array_function(
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
     if hasattr(function, 'unsupported_dtypes'):
-        for d in input_dtype:
-            if d in ivy.function_unsupported_dtypes(function, fw): return
+        for d in input_dtypes:
+            if d in ivy.function_unsupported_dtypes(function, fw): 
+                return
     # change all data types so that they are supported by this framework
-    #input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+    # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -1010,5 +1011,5 @@ def num_positional_args(draw, fn_name=None):
     return draw(integers(min_value=0, max_value=(total - num_keyword_only)))
 
 
-#function = getattr(ivy, fn_name)
-#ivy.function_unsupported_dtypes(ivy., fw)
+# function = getattr(ivy, fn_name)
+# ivy.function_unsupported_dtypes(ivy., fw)
