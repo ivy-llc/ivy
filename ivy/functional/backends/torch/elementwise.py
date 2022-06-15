@@ -74,7 +74,7 @@ def bitwise_and(
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2, out=out)
 
-#bitwise_and.unsupported_dtypes = tuple([ivy.int8],)
+# bitwise_and.unsupported_dtypes = tuple([ivy.int8],)
 
 
 def ceil(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -216,15 +216,17 @@ def logical_or(
 def acosh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.acosh(x, out=out)
 
-acosh.unsupported_dtypes = List(tuple([ivy.float16], [ivy.uint16], [ivy.uint32], [ivy.uint64],)
-#acosh.unsupported_dtypes = tuple([ivy.float16],)
+
+acosh.unsupported_dtypes = List(
+    tuple([ivy.float16], [ivy.uint16], [ivy.uint32], [ivy.uint64],))
+# acosh.unsupported_dtypes = tuple([ivy.float16],)
 if ivy.float16 in acosh.unsupported_dtypes:
     print("yes\n")
     print(acosh.unsupported_dtypes)
     print(list(map(type, acosh.unsupported_dtypes)))
 if hasattr(acosh, 'unsupported_dtypes'):
     print("Has attribute!")
-#tuple([ivy.float16, ivy.int8],)
+# tuple([ivy.float16, ivy.int8],)
 
 
 def sin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
