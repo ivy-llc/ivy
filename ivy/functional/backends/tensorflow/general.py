@@ -69,7 +69,8 @@ def unstack(x, axis, keepdims=False):
     return ret
 
 
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def inplace_update(
@@ -327,14 +328,14 @@ def one_hot(indices, depth, *, device):
     return tf.one_hot(indices, depth)
 
 
-current_backend_str = lambda: "tensorflow"
-current_backend_str.__name__ = "current_backend_str"
+def current_backend_str():
+    return "tensorflow"
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
+
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 def indices_where(x):
@@ -351,8 +352,5 @@ def shape(
         return tuple(x.shape)
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: tf.shape(tf.shape(x))[0]
-    if as_tensor
-    else int(tf.shape(tf.shape(x)))
-)
+def get_num_dims(x, as_tensor=False):
+    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))

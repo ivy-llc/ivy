@@ -74,13 +74,12 @@ def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
         return x.shape
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x)))
-    if as_tensor
-    else len(x.shape)
-)
+def get_num_dims(x, as_tensor=False):
+    return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
-container_types = lambda: [FlatMapping]
+
+def container_types():
+    return [FlatMapping]
 
 
 def floormod(x: JaxArray, y: JaxArray) -> JaxArray:
@@ -275,11 +274,10 @@ def gather_nd(params, indices, *, device: str):
     return _to_dev(ret, device)
 
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 # noinspection PyUnusedLocal
