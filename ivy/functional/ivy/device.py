@@ -135,7 +135,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.dev(ivy.array([-1,0,5.2]))
