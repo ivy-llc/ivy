@@ -706,10 +706,15 @@
 <span class="c1"># Function Splitting #</span>
 
 
-<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the global split factor for a given device, which can be used to scale batch</span>
-<span class="sd">    splitting chunk sizes for the device across the codebase. Default global value for</span>
-<span class="sd">    each device is 1.</span>
+<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get a device&#39;s global split factor, which can be used to scale the device&#39;s</span>
+<span class="sd">    batch splitting chunk sizes across the codebase.</span>
+<span class="sd">    If the global split factor is set for a given device,</span>
+<span class="sd">        returns the split factor value for the device from the split factors dictionary</span>
+<span class="sd">    If the global split factor for a device is not configured,</span>
+<span class="sd">        returns the default value which is 0.0</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -721,13 +726,19 @@
 <span class="sd">    ret</span>
 <span class="sd">        The split factor for the specified device.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.split_factor()</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    0.0</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.split_factor(&quot;gpu:0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    1.5</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">split_factors</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">split_factors</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
-    <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">split_factors</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

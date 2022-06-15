@@ -177,17 +177,36 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.split_factor">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">split_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition"></a></dt>
-<dd><p>Get the global split factor for a given device, which can be used to scale batch
-splitting chunk sizes for the device across the codebase. Default global value for
-each device is 1.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> – The device to query the split factor for. Sets the default device by default.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The split factor for the specified device.</p>
+<dd><p>Get a device’s global split factor, which can be used to scale the device’s
+batch splitting chunk sizes across the codebase.
+If the global split factor is set for a given device,</p>
+<blockquote>
+<div><p>returns the split factor value for the device from the split factors dictionary</p>
+</div></blockquote>
+<dl class="simple">
+<dt>If the global split factor for a device is not configured,</dt><dd><p>returns the default value which is 0.0</p>
 </dd>
 </dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to query the split factor for. Sets the default device by default. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The split factor for the specified device.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="s2">&quot;gpu:0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">1.5</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
