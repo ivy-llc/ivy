@@ -800,7 +800,7 @@ def test_exp(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="exmp1"),
+    num_positional_args=helpers.num_positional_args(fn_name="expm1"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
