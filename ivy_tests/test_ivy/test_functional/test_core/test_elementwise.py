@@ -1658,12 +1658,14 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
     if fw == "jax":
         return
     if fw == "tensorflow" and any(["uint" in d for d in input_dtype]):
         return
     if (
-        any(xi < 0 for xi in x[1])
+        np.any(x2 < 0)
         and ivy.is_int_dtype(input_dtype[1])
         and ivy.is_int_dtype(input_dtype[0])
     ):
@@ -1678,8 +1680,8 @@ def test_pow(
         instance_method,
         fw,
         "pow",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -1706,7 +1708,9 @@ def test_remainder(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(not any(xi == 0 for xi in x[1]))
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+    assume(not np.any(x2 == 0))
     helpers.test_array_function(
         input_dtype,
         [as_variable, False],
@@ -1717,8 +1721,8 @@ def test_remainder(
         instance_method,
         fw,
         "remainder",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
