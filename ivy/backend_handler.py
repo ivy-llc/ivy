@@ -188,33 +188,27 @@ def set_backend(backend: str):
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
     ivy_original_fn_dict.clear()
-    # loop through items in ivy dict and replace ivy's implementations `v` with the
-    # appropriate backend implementation (backend specified by `backend`)
-    for k, v in ivy_original_dict.items():
-        if k not in backend.__dict__:
-            if k in backend.invalid_dtypes:
-                del ivy.__dict__[k]
-                continue
-            backend.__dict__[k] = v
-        specific_v = backend.__dict__[k]
-        if hasattr(v, "array_spec"):
-            specific_v.array_spec = v.array_spec
-        # if appropriate, apply wrapping to the new backend implementation
-        if callable(specific_v):
-            specific_v = _wrap_function(specific_v, v)
-        # wrap the `linalg` namespace eg so we can use ivy.linalg.inv or ivy.inv
-        if k == "linalg":
-            for linalg_k, linalg_v in specific_v.__dict__.items():
-                if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
-                    specific_v.__dict__[linalg_k] = _wrap_function(
-                        linalg_v, ivy.__dict__[linalg_k]
-                    )
-        ivy.__dict__[k] = specific_v
-        if isinstance(specific_v, collections.Hashable):
-            try:
-                ivy_original_fn_dict[specific_v] = v
-            except TypeError:
-                pass
+    for k, v in backend.__dict__.items():
+        if k in ivy.__dict__ and not k.startswith("__"):
+            original = ivy.__dict__[k]
+            wrapped_v = _wrap_function(v, original=original)
+            if hasattr(original, "array_spec"):
+                wrapped_v.array_spec = original.array_spec
+            if k == "linalg":
+                for linalg_k, linalg_v in v.__dict__.items():
+                    if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+                        wrapped_v.__dict__[linalg_k] = _wrap_function(
+                            linalg_v, ivy.__dict__[linalg_k]
+                        )
+            ivy.__dict__[k] = wrapped_v
+
+    for dtype in backend.invalid_dtypes:
+        del ivy.__dict__[dtype]
+    #     if isinstance(specific_v, collections.Hashable):
+    #         try:
+    #             ivy_original_fn_dict[specific_v] = v
+    #         except TypeError:
+    #             pass
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
