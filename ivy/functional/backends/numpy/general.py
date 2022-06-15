@@ -36,7 +36,10 @@ def to_list(x: np.ndarray) -> list:
     return x.tolist()
 
 
-container_types = lambda: []
+def container_types():
+    return []
+
+
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
