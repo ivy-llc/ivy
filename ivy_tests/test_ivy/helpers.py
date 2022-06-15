@@ -333,8 +333,8 @@ def docstring_examples_run(fn):
     return True
 
 
-def var_fn(a, b=None, c=None, dtype=None):
-    return ivy.variable(ivy.array(a, b, c))
+def var_fn(a, dtype=None, device=None):
+    return ivy.variable(ivy.array(a, dtype=dtype, device=device))
 
 
 def exclude(exclusion_list):
@@ -434,6 +434,15 @@ def test_array_function(
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
+
+    # check for unsupported dtypes
+    # function = getattr(ivy, fn_name)
+    # if hasattr(function, "unsupported_dtypes"):
+    #     for d in input_dtype:
+    #         if d in ivy.function_unsupported_dtypes(function, fw):
+    #             return
+    # change all data types so that they are supported by this framework
+    # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -1000,3 +1009,7 @@ def num_positional_args(draw, fn_name=None):
         if param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
     return draw(integers(min_value=0, max_value=(total - num_keyword_only)))
+
+
+# function = getattr(ivy, fn_name)
+# ivy.function_unsupported_dtypes(ivy., fw)
