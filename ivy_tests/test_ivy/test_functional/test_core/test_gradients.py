@@ -26,7 +26,7 @@ def test_variable(object_in, dtype, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    ret = ivy.variable(ivy.array(object_in, dtype, device))
+    ret = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
     # type test
     if call is not helpers.np_call:
         assert ivy.is_variable(ret)
@@ -34,7 +34,7 @@ def test_variable(object_in, dtype, device, call):
     assert ret.shape == np.array(object_in).shape
     # value test
     assert np.allclose(
-        call(ivy.variable, ivy.array(object_in, dtype, device)),
+        call(ivy.variable, ivy.array(object_in, dtype=dtype, device=device)),
         np.array(object_in).astype(dtype),
     )
     # compilation test
@@ -57,8 +57,8 @@ def test_is_variable(object_in, dtype, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    non_var = ivy.array(object_in, dtype, device)
-    var = ivy.variable(ivy.array(object_in, dtype, device))
+    non_var = ivy.array(object_in, dtype=dtype, device=device)
+    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
@@ -87,7 +87,7 @@ def test_variable_data(object_in, dtype, device, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    var = ivy.variable(ivy.array(object_in, dtype, device))
+    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
     var_data = ivy.variable_data(var)
     # type test
     if call is not helpers.np_call:
@@ -110,7 +110,7 @@ def test_variable_data(object_in, dtype, device, call):
 def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
     # smoke test
     fn_name, tensor_fn = tensor_fn
-    x = tensor_fn(x_raw, dtype, device)
+    x = tensor_fn(x_raw, dtype=dtype, device=device)
     ret = ivy.stop_gradient(x)
     # type test
     if fn_name == "array":
@@ -125,7 +125,7 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
         # Tf graph mode cannot create variables as part of the computation graph
         assert np.array_equal(
             call(ivy.stop_gradient, x),
-            ivy.functional.backends.numpy.array(x_raw, dtype),
+            ivy.functional.backends.numpy.array(x_raw, dtype=dtype, device=device),
         )
     # compilation test
     if call in [helpers.torch_call]:
