@@ -524,9 +524,9 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     dev0 = device
     devices.append(dev0)
     args_dict = dict()
-    args_dict[dev0] = tensor_fn(args[0][0], "float32", dev0)
+    args_dict[dev0] = tensor_fn(args[0][0], dtype="float32", device=dev0)
     kwargs_dict = dict()
-    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], "float32", dev0)
+    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], dtype="float32", device=dev0)
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
