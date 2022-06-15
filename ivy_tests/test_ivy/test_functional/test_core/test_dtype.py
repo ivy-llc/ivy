@@ -1,6 +1,7 @@
 """Collection of tests for unified dtype functions."""
 
 # global
+import numpy as np
 from hypothesis import given, strategies as st
 
 
@@ -33,7 +34,8 @@ def test_dtype_instances(device, call):
 
 # astype
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -42,6 +44,7 @@ def test_dtype_instances(device, call):
 )
 def test_astype(
     dtype_and_x,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -50,8 +53,6 @@ def test_astype(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -62,7 +63,8 @@ def test_astype(
         instance_method,
         fw,
         "astype",
-        x=x,
+        x=np.asarray(x, dtype=input_dtype),
+        dtype=dtype,
     )
 
 
