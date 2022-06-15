@@ -247,24 +247,64 @@ propagate).</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which maximum values must be computed. By default, the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which maximum values must be computed. By default, the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 maximum value must be computed over the entire array. If a tuple of integers,
 maximum values must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 singleton dimensions, and, accordingly, the result must be compatible with the
 input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes
 (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – if the maximum value was computed over the entire array, a zero-dimensional
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>ret</em> – if the maximum value was computed over the entire array, a zero-dimensional
 array containing the maximum value; otherwise, a non-zero-dimensional array
 containing the maximum values. The returned array must have the same data type
-as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>This method conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
+<li><p><strong>`docstring &lt;https</strong> (<em>//data-apis.org/array-api/latest/API_specification/generated/</em>)</p></li>
+<li><p>signatures.elementwise_functions.tan.html&gt;`</p></li>
+<li><p><em>_ in the standard.</em></p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.array([0, 1, 2])</em></p></li>
+<li><p><em>&gt;&gt;&gt; z = ivy.array()</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.max(x, out=z)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(z)</em></p></li>
+<li><p><em>ivy.array(2)</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.array([[0, 1, 2], [4, 6, 10]])</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.max(x, 0, True)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
+<li><p><em>ivy.array([[4, 6, 10]])</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.max(x, (0, 2), out=x)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(x)</em></p></li>
+<li><p><em>&gt;&gt;&gt; ivy.array([6, 7])</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.max(x)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
+<li><p><em>{</em> – a: ivy.array(2.),
+b: ivy.array(5.)</p></li>
+<li><p><em>}</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.array([1, 2, 3])</em></p></li>
+<li><p><em>&gt;&gt;&gt; z = x.max()</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(z)</em></p></li>
+<li><p><em>ivy.array(3)</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),                          b=ivy.array([2, 3, 4]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; z = x.max()</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(z)</em></p></li>
+<li><p><em>{</em> – a: ivy.array(3),
+b: ivy.array(4)</p></li>
+<li><p><em>}</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
