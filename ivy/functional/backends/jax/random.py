@@ -7,7 +7,6 @@ import jaxlib.xla_extension
 from typing import Optional, Union, Tuple
 
 # local
-import ivy
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
@@ -22,12 +21,16 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    device: jaxlib.xla_extension.Device,
+    dtype=None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
-        _jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high),
+        _jax.random.uniform(
+            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
+        ),
         device=default_device(device),
     )
 
@@ -36,7 +39,8 @@ def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -56,7 +60,8 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[JaxArray] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
 
     global RNG
@@ -74,7 +79,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _jnp.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / _jnp.sum(probs_flat, -1, keepdims=True)
+    probs_flat = probs_flat / _jnp.sum(probs_flat, -1, keepdims=True, dtype="float64")
     probs_stack = _jnp.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         _jax.random.choice(rng_input, num_classes, (num_samples,), replace, p=prob[0])
@@ -91,16 +96,17 @@ def randint(
     low: int,
     high: int,
     shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    *,
+    device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
-        _jax.random.randint(rng_input, shape, low, high), default_device(device)
+        _jax.random.randint(rng_input, shape, low, high), device=default_device(device)
     )
 
 
-def seed(seed_value=0):
+def seed(seed_value: int = 0) -> None:
     global RNG
     RNG = _jax.random.PRNGKey(seed_value)
     return

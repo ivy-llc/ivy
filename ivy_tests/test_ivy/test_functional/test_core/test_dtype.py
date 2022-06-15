@@ -35,7 +35,7 @@ def test_dtype_instances(device, call):
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(2, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="astype"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -49,11 +49,11 @@ def test_astype(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -71,17 +71,17 @@ def test_astype(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_broadcast_to(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     num_positional_args,
@@ -91,11 +91,11 @@ def test_broadcast_to(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -113,7 +113,7 @@ def test_broadcast_to(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(2, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -127,11 +127,11 @@ def test_can_cast(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -148,7 +148,7 @@ def test_can_cast(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(1, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -162,11 +162,11 @@ def test_dtype_bits(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -197,11 +197,11 @@ def test_dtype_from_str(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -232,11 +232,11 @@ def test_dtype_to_str(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -253,7 +253,7 @@ def test_dtype_to_str(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(1, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="finfo"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -267,11 +267,11 @@ def test_finfo(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -288,7 +288,7 @@ def test_finfo(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy.valid_int_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(1, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="iinfo"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -302,11 +302,11 @@ def test_iinfo(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if (v == [] for v in x):
+    input_dtype, x = dtype_and_x
+    if max(v == [] for v in x):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -324,17 +324,17 @@ def test_iinfo(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="is_float_dtype"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_is_float_dtype(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     num_positional_args,
@@ -344,11 +344,11 @@ def test_is_float_dtype(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,
@@ -366,17 +366,17 @@ def test_is_float_dtype(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="is_int_dtype"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_is_int_dtype(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     num_positional_args,
@@ -386,11 +386,11 @@ def test_is_int_dtype(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         False,
         num_positional_args,

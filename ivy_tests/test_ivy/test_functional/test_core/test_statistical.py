@@ -46,7 +46,7 @@ def statistical_dtype_values(draw, function):
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="min"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -61,10 +61,10 @@ def test_min(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -73,7 +73,7 @@ def test_min(
         instance_method,
         fw,
         "min",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -82,7 +82,7 @@ def test_min(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="max"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -97,10 +97,10 @@ def test_max(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -109,7 +109,7 @@ def test_max(
         instance_method,
         fw,
         "max",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -118,7 +118,7 @@ def test_max(
     dtype_and_x=statistical_dtype_values("mean"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="mean"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -133,9 +133,9 @@ def test_mean(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -145,7 +145,7 @@ def test_mean(
         fw,
         "mean",
         rtol=1e-1,
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -154,7 +154,7 @@ def test_mean(
     dtype_and_x=statistical_dtype_values("var"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="var"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -169,9 +169,9 @@ def test_var(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -180,7 +180,7 @@ def test_var(
         instance_method,
         fw,
         "var",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -189,7 +189,7 @@ def test_var(
     dtype_and_x=statistical_dtype_values("prod"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="prod"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -204,11 +204,11 @@ def test_prod(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and (dtype == "float16" or ivy.is_int_dtype(dtype)):
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -217,7 +217,7 @@ def test_prod(
         instance_method,
         fw,
         "prod",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -226,7 +226,7 @@ def test_prod(
     dtype_and_x=statistical_dtype_values("sum"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="sum"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -241,11 +241,11 @@ def test_sum(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and ivy.is_int_dtype(dtype):
+    input_dtype, x = dtype_and_x
+    if fw == "torch" and ivy.is_int_dtype(input_dtype):
         return
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -255,7 +255,7 @@ def test_sum(
         fw,
         "sum",
         rtol=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -264,7 +264,7 @@ def test_sum(
     dtype_and_x=statistical_dtype_values("std"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="std"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -279,9 +279,9 @@ def test_std(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -292,7 +292,7 @@ def test_std(
         "std",
         rtol=1e-2,
         atol=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 

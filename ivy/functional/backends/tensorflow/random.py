@@ -4,11 +4,9 @@ signature.
 
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from typing import Optional, Union, Tuple
 
 # local
-import ivy
 from ivy.functional.ivy.device import default_device
 
 
@@ -20,18 +18,25 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+    dtype=None,
+    *,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
+    low = tf.cast(low, dtype)
+    high = tf.cast(high, dtype)
     with tf.device(default_device(device)):
-        return tf.random.uniform(shape if shape else (), low, high)
+        return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
 
 
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+    *,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
+    mean = tf.cast(mean, "float32")
+    std = tf.cast(std, "float32")
     with tf.device(default_device(device)):
         return tf.random.normal(shape if shape else (), mean, std)
 
@@ -40,10 +45,11 @@ def multinomial(
     population_size: int,
     num_samples: int,
     batch_size: int = 1,
-    probs: Optional[Tensor] = None,
+    probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+    *,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
     device = default_device(device)
@@ -62,18 +68,18 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, str]] = None,
-) -> Tensor:
+    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
+    low = tf.cast(low, "int64")
+    high = tf.cast(high, "int64")
     with tf.device("/" + device.upper()):
-        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int32)
+        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
 
 
-seed = lambda seed_value=0: tf.random.set_seed(seed_value)
+def seed(seed_value: int = 0) -> None:
+    tf.random.set_seed(seed_value)
 
 
-def shuffle(x: Tensor) -> Tensor:
+def shuffle(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.random.shuffle(x)
