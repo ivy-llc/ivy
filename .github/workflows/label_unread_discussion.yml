@@ -19,7 +19,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORGANIZATION: unifyai
           REPOSITORY: ivy
-          LABEL_NAME: 'Unread Discussion'
+          LABEL_NAME: 'Unread'
         run: |
           gh api -H "Accept: application/vnd.github.v3+json" /repos/$ORGANIZATION/$REPOSITORY/labels/$LABEL_NAME > label_data.json
           echo 'LABEL_ID='$(jq '.data.id' label_data.json) >> $GITHUB_ENV
