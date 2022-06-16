@@ -9,6 +9,7 @@ def argmax(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+
     x = torch.tensor(x)
     ret = torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
     return ret
