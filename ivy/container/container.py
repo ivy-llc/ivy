@@ -119,16 +119,16 @@ class Container(
         return self.static_add(other, self)
 
     def __sub__(self, other):
-        return self.static_sub(self, other)
+        return self.static_subtract(self, other)
 
     def __rsub__(self, other):
-        return self.static_sub(other, self)
+        return self.static_subtract(other, self)
 
     def __mul__(self, other):
-        return self.static_mul(self, other)
+        return self.static_multiply(self, other)
 
     def __rmul__(self, other):
-        return self.static_mul(other, self)
+        return self.static_multiply(other, self)
 
     def __truediv__(self, other):
         return self.static_divide(self, other)

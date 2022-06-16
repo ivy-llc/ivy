@@ -265,8 +265,9 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_backend(state["framework_str"])
-        ivy_array = backend.array(state["data"])
+        ivy.set_backend(state["framework_str"])
+        ivy_array = ivy.array(state["data"])
+        ivy.unset_backend()
 
         self.__dict__ = ivy_array.__dict__
 
