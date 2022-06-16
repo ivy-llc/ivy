@@ -67,7 +67,7 @@ def test_acosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    #if fw == "torch" and input_dtype == "float16":
+    # if fw == "torch" and input_dtype == "float16":
     #    return
     helpers.test_array_function(
         input_dtype,
@@ -893,8 +893,8 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    x1 = np.asarray(x[0], dtype=input_dtype[0]),
-    x2 = np.asarray(x[1], dtype=input_dtype[1]),
+    x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
+    x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
     assume(not np.any(x2 == 0))
     if fw in ["tensorflow", "torch"]:
         # ToDo: get these unit tests passing

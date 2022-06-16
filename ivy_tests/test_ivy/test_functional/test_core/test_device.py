@@ -439,7 +439,10 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
     args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -480,7 +483,10 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
     args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
