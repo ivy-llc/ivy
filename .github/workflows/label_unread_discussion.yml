@@ -27,16 +27,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISCUSSION_ID: ${{ github.event.discussion.node_id }}
-          REPOSITORY_ID: ${{ github.event.repository.node_id }}
         run: |
           gh api graphql -f query='
             mutation (
-              $repo_id: ID!
               $label_id: [ID!]!
               $labelable_id: ID!
             ) {
               set_label: addLabelsToLabelable(input: {
-                repoId: $repo_id
                 labelId: $label_id
                 labelableId: $labelable_id
               }) {
@@ -44,4 +41,4 @@ jobs:
                   labels
                 }
               }
-            }' -f repo_id=$REPOSITORY_ID -f label_id=[$LABEL_ID] -f labelable_id=$DISCUSSION_ID --silent
+            }' -f label_id=[$LABEL_ID] -f labelable_id=$DISCUSSION_ID --silent
