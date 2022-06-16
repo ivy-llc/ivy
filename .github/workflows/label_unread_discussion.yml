@@ -1,0 +1,16 @@
+name: Label Unread Discussion
+on:
+  discussion_comment:
+    types: [created]
+
+jobs:
+  label_discussion:
+    name: Label Unread Discussion
+    if: ${{ github.event.discussion.category.name == 'Ongoing' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label discussion
+        uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90
+        with:
+          add-labels: 'Unread Discussion'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
