@@ -5,7 +5,11 @@ import ivy
 import ivy as _ivy
 from typing import Union
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument, inputs_to_native_arrays
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    inputs_to_native_arrays,
+)
 
 
 # Extra #

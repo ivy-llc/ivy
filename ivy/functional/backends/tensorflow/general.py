@@ -18,7 +18,7 @@ from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_d
 
 
 def is_native_array(x, exclusive=False):
-    if isinstance(x, tf.Tensor):
+    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -69,7 +69,8 @@ def unstack(x, axis, keepdims=False):
     return ret
 
 
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def inplace_update(
