@@ -371,7 +371,7 @@ def test_conv2d_transpose(
         # numpy and jax do not yet support conv2d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     filters = tensor_fn(filters, dtype=dtype, device=device)
     true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
@@ -895,7 +895,8 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, device, call):
         state_c_true_val,
     ) = b_t_ic_hc_otf_sctv
     x = ivy.asarray(
-        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), "float32"
+        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
+        dtype="float32",
     )
     init_h = ivy.ones([b, hidden_channels])
     init_c = ivy.ones([b, hidden_channels])

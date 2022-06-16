@@ -307,10 +307,6 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     ):
         # torch does not support those dtypes
         return
-    # smoke test
-    if len(object_in) == 0 and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
     ret = ivy.shape(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
@@ -343,10 +339,6 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
         or (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
     ):
         # torch does not support those dtypes
-        return
-    # smoke test
-    if len(object_in) == 0 and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
         return
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
@@ -1204,7 +1196,7 @@ def test_class_ivy_handles(device, call):
             self._ivy = ivyh
 
         def get_array(self):
-            return self._ivy.array([0.0, 1.0, 2.0])
+            return self._ivy.array([0.0, 1.0, 2.0], dtype="float32", device=device)
 
     # create instance
     ag = ArrayGen(ivy.get_backend())
