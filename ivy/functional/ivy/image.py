@@ -13,11 +13,10 @@ from typing import Union, List, Tuple, Optional
 # Extra #
 # ------#
 
-
-@to_native_arrays_and_back
 @handle_out_argument
+@to_native_arrays_and_back
 def stack_images(
-    images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
+    images: List[Union[ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
 ) -> ivy.Array:
     """Stacks a group of images into a combined windowed image, fitting the desired
@@ -57,7 +56,10 @@ def stack_images(
 
 @to_native_arrays_and_back
 @handle_out_argument
-def bilinear_resample(x, warp):
+def bilinear_resample(
+    x: Union[ivy.Array, ivy.NativeArray],
+    warp: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """Performs bilinearly re-sampling on input image.
 
     Parameters
@@ -127,6 +129,8 @@ def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
     ----------
     x
         Input float image *[batch_shape,h,w]*.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -151,6 +155,8 @@ def uint8_img_to_float_img(
     ----------
     x
         Input uint8 image *[batch_shape,h,w,4]*.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -199,6 +205,8 @@ def random_crop(
         Shape of batch. Inferred from inputs if None. (Default value = None)
     image_dims
         Image dimensions. Inferred from inputs in None. (Default value = None)
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
