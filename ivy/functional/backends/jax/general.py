@@ -74,13 +74,12 @@ def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
         return x.shape
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x)))
-    if as_tensor
-    else len(x.shape)
-)
+def get_num_dims(x, as_tensor=False):
+    return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
-container_types = lambda: [FlatMapping]
+
+def container_types():
+    return [FlatMapping]
 
 
 def floormod(x: JaxArray, y: JaxArray) -> JaxArray:
@@ -100,13 +99,17 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_update(
-    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+    x: Union[ivy.Array, JaxArray],
+    val: Union[ivy.Array, JaxArray],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    if ensure_in_backend:
+        raise Exception("JAX does not natively support inplace updates")
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data = val_native
     else:
-        x = ivy.Array(val_native)
+        raise Exception("JAX does not natively support inplace updates")
     return x
 
 
@@ -271,11 +274,10 @@ def gather_nd(params, indices, *, device: str):
     return _to_dev(ret, device)
 
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 # noinspection PyUnusedLocal

@@ -39,45 +39,24 @@ def test_linear_layer_training(
     if call is helpers.np_call:
         # NumPy does not support gradients
         return
-    if as_variable:
-        x = ivy.variable(
-            ivy.asarray(
-                ivy.linspace(
-                    ivy.zeros(batch_shape, device=device),
-                    ivy.ones(batch_shape, device=device),
-                    input_channels,
-                    device=device,
-                ),
-                dtype=dtype,
-            )
-        )
-    else:
-        x = ivy.asarray(
-            ivy.linspace(
-                ivy.zeros(batch_shape, device=device),
-                ivy.ones(batch_shape, device=device),
-                input_channels,
-                device=device,
-            ),
-            dtype=dtype,
-        )
+    x = ivy.astype(
+        ivy.linspace(
+            ivy.zeros(batch_shape, device=device),
+            ivy.ones(batch_shape, device=device),
+            input_channels,
+        ),
+        dtype="float32",
+    )
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(
             ivy.asarray(
                 np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype=dtype,
                 device=device,
             )
         )
-        b = ivy.variable(
-            ivy.asarray(
-                ivy.zeros([output_channels], device=device),
-                dtype=dtype,
-                device=device,
-            )
-        )
+        b = ivy.variable(ivy.zeros([1, 1, output_channels]), device=device, dtype=dtype)
         v = ivy.Container({"w": w, "b": b})
     else:
         v = None
@@ -170,10 +149,8 @@ def test_conv1d_layer_training(
         # torch doesn't handle float16
         return
     # smoke test
-    inputs = [batch_size, weight, input_dims]
-    x = ivy.asarray(inputs, dtype=dtype, device=device)
-    if as_variable:
-        x = ivy.variable(x)
+    x = [batch_size, weight, input_dims]
+    x = ivy.asarray(x)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -185,7 +162,7 @@ def test_conv1d_layer_training(
                 np.random.uniform(
                     -wlim, wlim, (filter_size, input_channels, output_channels)
                 ),
-                dtype=dtype,
+                dtype="float32",
                 device=device,
             )
         )

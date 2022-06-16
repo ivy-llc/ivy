@@ -20,8 +20,9 @@ def min(
 
 def sum(
     x: JaxArray,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    dtype: jnp.dtype = None,
     keepdims: bool = False,
 ) -> JaxArray:
 
@@ -42,6 +43,7 @@ def sum(
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -60,10 +62,10 @@ def mean(
 
 def prod(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
     *,
-    dtype: jnp.dtype
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: jnp.dtype = None,
+    keepdims: bool = False,
 ) -> JaxArray:
 
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
@@ -83,6 +85,7 @@ def prod(
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
+    dtype = ivy.as_native_dtype(dtype)
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 

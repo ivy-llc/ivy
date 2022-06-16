@@ -12,6 +12,7 @@ import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 
+
 # Base #
 # -----#
 
@@ -640,6 +641,7 @@ class Module(abc.ABC):
         expected_submod_rets=None,
         **kwargs
     ):
+
         with_grads = ivy.with_grads(with_grads)
         self.submod_rets = ivy.Container(
             alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
@@ -672,8 +674,8 @@ class Module(abc.ABC):
     def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """Build the internal layers and variables for this module."""
         self._dev = ivy.default(device, self._dev)
-
         # return False if not from_call but build_mode is on_call
+
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
@@ -687,7 +689,7 @@ class Module(abc.ABC):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(self._dev, dtype))
+        created = Container(self._create_variables(self._dev, dtype=dtype))
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
@@ -706,13 +708,10 @@ class Module(abc.ABC):
                 self.v = v_from_constructor
         else:
             self.v = created_n_found
-
         # remove duplicates
         self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
-
         # build any child 'on_call' layers
         if not built and from_call:
-
             # update child modules to share the same device
             for k, v in self.__dict__.items():
                 if isinstance(v, ivy.Module):
