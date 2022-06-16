@@ -195,7 +195,7 @@ def multinomial(
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 def randint(
