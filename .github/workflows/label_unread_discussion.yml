@@ -38,7 +38,9 @@ jobs:
                 labelableId: $labelable_id
               }) {
                 labelable {
-                  labels
+                  labels {
+                    ...
+                  }
                 }
               }
             }' -f label_ids=[$LABEL_ID] -f labelable_id=$DISCUSSION_ID --silent
