@@ -231,6 +231,32 @@ def test_conv1d_layer_training(
 
 # conv1d transpose
 @given(
+    batch_size=helpers.lists(
+        st.integers(1, 10),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 10],
+    ),
+    weight=helpers.lists(
+        st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
+    ),
+    input_dims=helpers.lists(
+        st.integers(1, 10),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 10],
+    ),
+    filter_size=st.integers(3),
+    padding=st.sampled_from(("SAME", "VALID")),
+    output_channels=st.integers(1),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    as_variable=st.booleans(),
+)
+@given(
     x_n_fs_n_pad_n_outshp_n_oc=st.sampled_from(
         [
             ([[[0.0], [3.0], [0.0]]], 3, "SAME", (1, 3, 1), 1),
