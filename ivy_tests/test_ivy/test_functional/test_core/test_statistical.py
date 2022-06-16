@@ -312,7 +312,7 @@ def test_std(
 def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype, device) for op in operands]
+    operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
     if with_out:
         out = ivy.zeros(true_shape, dtype=dtype)
         ret = ivy.einsum(eq, *operands, out=out)

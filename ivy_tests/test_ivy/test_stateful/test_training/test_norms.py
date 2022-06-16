@@ -24,7 +24,7 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype, tensor_fn, device, cal
         # NumPy does not support gradients
         pytest.skip()
     x, normalized_shape = x_n_ns
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     if with_v:
         v = ivy.Container(
             {
