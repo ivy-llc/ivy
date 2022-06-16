@@ -46,19 +46,19 @@ jobs:
           echo 'COMMENT_FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Commented On") | .id' project_data.json) >> $GITHUB_ENV
           echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
 
-      - name: Add Comment to project
+      - name: Add Discussion Title to project
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          COMMENT_ID: ${{ github.event.comment.node_id }}
+          DISCUSSION_ID: ${{ github.event.discussion.node_id }}
         run: |
           item_id="$( gh api graphql -f query='
-            mutation($project:ID!, $comment:ID!) {
-              addProjectNextItem(input: {projectId: $project, contentId: $comment}) {
+            mutation($project:ID!, $discussion:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $discussion}) {
                 projectNextItem {
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f comment=$COMMENT_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+            }' -f project=$PROJECT_ID -f discussion=$DISCUSSION_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
 
           echo 'ITEM_ID='$item_id >> $GITHUB_ENV
 
