@@ -9,8 +9,7 @@ def argmax(
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
-    ret_dtype = ret.dtype
-    ret = tf.convert_to_tensor(ret, dtype=ret_dtype)
+    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
 
     return ret
 
