@@ -469,7 +469,6 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
     input_dtype=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -780,16 +779,9 @@ def test_clip(
     max_val = np.maximum(min_val1, max_val1)
     if fw == "torch" and (
         any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or any(np.isnan(max_val))
-        or len(x) == 0
+        or np.isnan(max_val)
+        or np.isscalar(x)
     ):
-        return
-    if (
-        (len(min_val) != 0 and len(min_val) != 1)
-        or (len(max_val) != 0 and len(max_val) != 1)
-    ) and call in [helpers.mx_call]:
-        # mxnet only supports numbers or 0 or 1 dimensional arrays for min
-        # and max while performing clip
         return
     helpers.test_array_function(
         dtype,
@@ -832,7 +824,7 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     ret = ivy.split(x, num_or_size_splits, axis, with_remainder)
     # type test
     assert isinstance(ret, list)

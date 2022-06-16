@@ -67,8 +67,8 @@ def test_acosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
+    #if fw == "torch" and input_dtype == "float16":
+    #    return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -699,12 +699,13 @@ def test_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if any(xi == 0 for xi in x[1]):
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+    # ToDo: remove the checks below, and instead handle this during the
+    #  hypothesis data generation
+    if np.any(x2 == 0):
         return  # don't divide by 0
-    if any(
-        xi > 9223372036854775807 or yi > 9223372036854775807
-        for xi, yi in zip(x[0], x[1])
-    ):
+    elif np.any(x1 > 9223372036854775807):
         return  # np.divide converts to signed int so values can't be too large
     helpers.test_array_function(
         input_dtype,
@@ -716,8 +717,8 @@ def test_divide(
         instance_method,
         fw,
         "divide",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -799,7 +800,7 @@ def test_exp(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="exmp1"),
+    num_positional_args=helpers.num_positional_args(fn_name="expm1"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -892,8 +893,11 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(0 not in x[1])
+    x1 = np.asarray(x[0], dtype=input_dtype[0]),
+    x2 = np.asarray(x[1], dtype=input_dtype[1]),
+    assume(not np.any(x2 == 0))
     if fw in ["tensorflow", "torch"]:
+        # ToDo: get these unit tests passing
         return
     helpers.test_array_function(
         input_dtype,
@@ -905,8 +909,8 @@ def test_floor_divide(
         instance_method,
         fw,
         "floor_divide",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -1654,12 +1658,14 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
     if fw == "jax":
         return
     if fw == "tensorflow" and any(["uint" in d for d in input_dtype]):
         return
     if (
-        any(xi < 0 for xi in x[1])
+        np.any(x2 < 0)
         and ivy.is_int_dtype(input_dtype[1])
         and ivy.is_int_dtype(input_dtype[0])
     ):
@@ -1674,8 +1680,8 @@ def test_pow(
         instance_method,
         fw,
         "pow",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -1702,7 +1708,9 @@ def test_remainder(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(not any(xi == 0 for xi in x[1]))
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+    assume(not np.any(x2 == 0))
     helpers.test_array_function(
         input_dtype,
         [as_variable, False],
@@ -1713,8 +1721,8 @@ def test_remainder(
         instance_method,
         fw,
         "remainder",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
