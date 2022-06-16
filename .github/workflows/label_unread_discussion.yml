@@ -22,7 +22,7 @@ jobs:
           LABEL_NAME: 'Unread'
         run: |
           gh api -H "Accept: application/vnd.github.v3+json" /repos/$ORGANIZATION/$REPOSITORY/labels/$LABEL_NAME > label_data.json
-          echo 'LABEL_ID='$(jq '.data.id' label_data.json) >> $GITHUB_ENV
+          echo 'LABEL_ID='$(jq '.id' label_data.json) >> $GITHUB_ENV
       - name: Add label to discussion
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -39,7 +39,6 @@ jobs:
               }) {
                 labelable {
                   labels {
-                    ...
                   }
                 }
               }
