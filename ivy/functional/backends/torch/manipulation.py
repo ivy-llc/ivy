@@ -189,10 +189,8 @@ def constant_pad(
     return ret
 
 
-def zero_pad(
-    x: torch.Tensor, pad_width: List[List[int]], *, out: Optional[torch.Tensor] = None
-):
-    return constant_pad(x, pad_width, 0.0, out=out)
+def zero_pad(x: torch.Tensor, pad_width: List[List[int]]):
+    return constant_pad(x, pad_width, 0.0)
 
 
 def swapaxes(x: torch.Tensor, axis0: int, axis1: int) -> torch.Tensor:
