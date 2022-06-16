@@ -32,21 +32,23 @@ def min(
 
     For floating-point operands,
 
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+    -   If ``x_i`` is ``NaN``, the maximum value is ``NaN`` (i.e., ``NaN`` values
+        propagate).
+
 
     Parameters
     ----------
     x
-        Input array containing elements to min.
+        Input array containing elements to min. Numeric data type expected always.
     axis
          axis or axes along which minimum values must be computed. By default, the
          minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: None.
+         minimum values must be computed over multiple axes. Default: ``None``.
     keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        optional boolean, if set ``True``, the reduced axes (dimensions) must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
+        with the input array (see :ref: `broadcasting`). Otherwise, if ``False``, the reduced axes
+        (dimensions) must not be included in the result. Default: ``False``.
     out
         optional output array, for writing the result to.
 
@@ -56,7 +58,58 @@ def min(
         if the minimum value was computed over the entire array, a zero-dimensional
         array containing the minimum value; otherwise, a non-zero-dimensional array
         containing the minimum values. The returned array must have the same data type
-        as x.
+        as ``x``.
+        
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.tan.html>`
+    _ in the standard.
+    
+    The following description, examples, and the type hints assumes and ``array`` for simplicity,
+    but this function is *nestable*, and hence supports :code:`ivy.Contained`
+    instances in place of any arguments as per the purpose.
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.array()
+    >>> y = ivy.min(x, out = z)
+    >>> print(z)
+    ivy.array(1)
+    
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.min(x, 0, True)
+    >>> print(y)
+    ivy.array([[1, 2, 3]])
+    
+    >>> x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
+    >>> y = ivy.min(x, (0, 2), out=x)
+    >>> print(x)
+    >>> ivy.array([1, 2])
+    
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.min(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.),
+        b: ivy.array(3.)
+    }
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.min()
+    >>> print(z)
+    ivy.array(1)
+    
+    
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> z = x.min()
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+     
+        
 
     """
     return _cur_backend.min(x, axis, keepdims, out=out)
