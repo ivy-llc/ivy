@@ -270,5 +270,7 @@ array = asarray
 
 
 def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
-    power_seq = linspace(start, stop, num, axis, default_device(device))
+    power_seq = linspace(
+        start, stop, num, axis, dtype=None, device=default_device(device)
+    )
     return base**power_seq
