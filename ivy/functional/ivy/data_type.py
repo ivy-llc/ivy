@@ -3,11 +3,16 @@ import math
 import importlib
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List, Optional, Callable
 
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    inputs_to_native_arrays,
+)
 
 # Array API Standard #
 # -------------------#
@@ -19,6 +24,7 @@ Iinfo = None
 # Dtype Info #
 
 
+@inputs_to_native_arrays
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
 ) -> bool:
@@ -43,7 +49,7 @@ def can_cast(
     return _cur_backend(from_).can_cast(from_, to)
 
 
-# noinspection PyShadowingBuiltins
+@inputs_to_native_arrays
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     """Machine limits for integer data types.
 
@@ -67,7 +73,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     return _cur_backend(None).iinfo(type)
 
 
-# noinspection PyShadowingBuiltins
+@inputs_to_native_arrays
 def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     """Machine limits for floating-point data types.
 
@@ -96,6 +102,8 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     return _cur_backend(None).finfo(type)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
 ) -> ivy.Array:
@@ -119,6 +127,7 @@ def broadcast_to(
     return _cur_backend(x).broadcast_to(x, shape)
 
 
+@to_native_arrays_and_back
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -158,12 +167,12 @@ def dtype(
     return _cur_backend(x).dtype(x, as_native)
 
 
-# noinspection PyShadowingNames
-
-
+@to_native_arrays_and_back
+@handle_out_argument
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
+    *,
     copy: bool = True,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
@@ -204,11 +213,11 @@ def astype(
     --------
     >>> x = ivy.array([1, 2])
     >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype)
+    >>> y = ivy.astype(x, dtype = dtype)
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype, copy)
+    return _cur_backend(x).astype(x, dtype, copy=copy)
 
 
 # Extra #
@@ -534,7 +543,6 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames
 def set_default_dtype(dtype: Union[ivy.Dtype, str]):
     """Summary.
 
@@ -615,6 +623,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
     return _cur_backend(type).closest_valid_dtype(type)
 
 
+@inputs_to_native_arrays
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
@@ -654,6 +663,7 @@ def is_int_dtype(
     return "int" in as_ivy_dtype(dtype_in)
 
 
+@inputs_to_native_arrays
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
@@ -687,6 +697,7 @@ def is_float_dtype(
     return "float" in as_ivy_dtype(dtype_in)
 
 
+@inputs_to_native_arrays
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -773,3 +784,22 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
         )
     ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
     return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
+
+
+def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+    """Returns the unsupported data type of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    """
+    if hasattr(fn, 'unsupported_dtypes'):
+        return fn.unsupported_dtypes
+    return ivy.as_native_dtype(fn.unsupported_dtypes) in ivy.invalid_dtypes

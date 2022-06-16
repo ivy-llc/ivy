@@ -46,7 +46,7 @@ def dev(
 _callable_dev = dev
 
 
-def to_dev(x, *, device):
+def to_dev(x: JaxArray, device: jaxlib.xla_extension.Device):
     if device is not None:
         cur_dev = as_ivy_dev(_callable_dev(x))
         if cur_dev != device:
@@ -87,7 +87,8 @@ def as_native_dev(device):
     return jax.devices(device)[idx]
 
 
-clear_mem_on_dev = lambda device: None
+def clear_mem_on_dev(device):
+    return None
 
 
 def _dev_is_available(base_dev):

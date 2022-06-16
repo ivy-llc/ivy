@@ -2,6 +2,8 @@
 import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
+# local
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
@@ -33,7 +35,7 @@ def _compute_cost_and_update_grads(
             retain_grads=False,
         )
         if batched:
-            inner_grads = inner_grads * num_tasks
+            inner_grads = ivy.multiply(inner_grads, num_tasks)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
@@ -83,7 +85,7 @@ def _train_task(
             retain_grads=order > 1,
         )
         if batched:
-            inner_update_grads = inner_update_grads * num_tasks
+            inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
         # compute the cost to be optimized, and update all_grads if fist order method
         if outer_cost_fn is None and not unique_inner and not unique_outer:
@@ -372,6 +374,7 @@ def _train_tasks(
 # First Order
 
 
+@to_native_arrays_and_back
 def fomaml_step(
     batch,
     inner_cost_fn,
@@ -486,6 +489,7 @@ def fomaml_step(
     return cost, grads
 
 
+@to_native_arrays_and_back
 def reptile_step(
     batch,
     cost_fn,
@@ -571,6 +575,7 @@ def reptile_step(
 # Second Order
 
 
+@to_native_arrays_and_back
 def maml_step(
     batch,
     inner_cost_fn,

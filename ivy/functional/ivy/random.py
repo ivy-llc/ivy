@@ -5,7 +5,12 @@ from typing import Optional, Union, Tuple
 
 # local
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import infer_device
+from ivy.func_wrapper import (
+    infer_device,
+    outputs_to_ivy_arrays,
+    handle_out_argument,
+    to_native_arrays_and_back,
+)
 import ivy
 
 
@@ -13,6 +18,8 @@ import ivy
 # ------#
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
 @infer_device
 def random_uniform(
     low: float = 0.0,
@@ -20,6 +27,7 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype=None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -52,9 +60,12 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    return _cur_backend().random_uniform(low, high, shape, device=device)
+    dtype = ivy.default_dtype(dtype, as_native=True)
+    return _cur_backend().random_uniform(low, high, shape, device=device, dtype=dtype)
 
 
+@outputs_to_ivy_arrays
+@handle_out_argument
 @infer_device
 def random_normal(
     mean: float = 0.0,
@@ -93,6 +104,8 @@ def random_normal(
     return _cur_backend().random_normal(mean, std, shape, device=device)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 @infer_device
 def multinomial(
     population_size: int,
@@ -182,6 +195,8 @@ def multinomial(
     )
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 @infer_device
 def randint(
     low: int,
@@ -262,6 +277,8 @@ def seed(seed_value: int = 0) -> None:
     return _cur_backend().seed(seed_value)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Shuffles the given array along axis 0.
 

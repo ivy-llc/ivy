@@ -1,11 +1,13 @@
 Arrays
 ======
 
+.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149
+.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209
 .. _`empty class`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L8
 .. _`overwritten`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/functional/backends/torch/__init__.py#L11
 .. _`self._data`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89
 .. _`ArrayWithElementwise`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L12
-.. _`ivy.Array.add`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22
+.. _`ivy.Array.add`: https://github.com/unifyai/ivy/blob/63d9c26acced9ef40e34f7b4fc1c1a75017f9c69/ivy/array/elementwise.py#L22
 .. _`programmatically`: https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148
 .. _`backend type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/backends/torch/elementwise.py#L219
 .. _`Ivy type hints`: https://github.com/unifyai/ivy/blob/8605c0a50171bb4818d0fb3e426cec874de46baa/ivy/functional/ivy/elementwise.py#L1342
@@ -99,8 +101,8 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. convert all of the :code:`ivy.NativeArray` instances which are returned from the backend function back into \
    :code:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handling in the `function wrapping`_,
-as explained in the :ref:`Function Wrapping` section.
+Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and
+`outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
 
 All Ivy functions *also* accept :code:`ivy.NativeArray` instances in the input.
 This is for a couple of reasons.
@@ -114,7 +116,7 @@ whereas the output arrays have type :code:`ivy.Array`. This is further explained
 
 However, :code:`ivy.NativeArray` instances are not permitted for the :code:`out` argument,
 which is used in most functions.
-This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
+This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return. This is further explained in the :ref:`Inplace Updates` section.
 
 As a final point, extra attention is required for *compositional* functions,
@@ -123,7 +125,7 @@ If the first line of code in a compositional function performs operations on the
 then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a seperate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
+Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
 
 **Round Up**

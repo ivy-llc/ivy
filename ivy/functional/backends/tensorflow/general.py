@@ -9,7 +9,6 @@ _round = round
 import numpy as _np
 import tensorflow as tf
 import multiprocessing as _multiprocessing
-from tensorflow.python.types.core import Tensor
 from numbers import Number
 
 # local
@@ -19,34 +18,40 @@ from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_d
 
 
 def is_native_array(x, exclusive=False):
-    if isinstance(x, Tensor):
+    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
     return False
 
 
-def copy_array(x: Tensor) -> Tensor:
+def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
 
-def array_equal(x0: Tensor, x1: Tensor) -> bool:
+def array_equal(
+    x0: Union[tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+) -> bool:
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Tensor) -> _np.ndarray:
+def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> _np.ndarray:
     return _np.asarray(tf.convert_to_tensor(x))
 
 
-def to_scalar(x: Tensor) -> Number:
+def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
     return to_numpy(x).item()
 
 
-def to_list(x: Tensor) -> list:
+def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
     return x.numpy().tolist()
 
 
-def floormod(x: tf.Tensor, y: tf.Tensor) -> tf.Tensor:
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
         x = tf.cast(x, promoted_type)
@@ -64,11 +69,14 @@ def unstack(x, axis, keepdims=False):
     return ret
 
 
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def inplace_update(
-    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+    x: Union[ivy.Array, tf.Tensor],
+    val: Union[ivy.Array, tf.Tensor],
+    ensure_in_backend: bool = False,
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
@@ -77,11 +85,12 @@ def inplace_update(
             x.data = x_native
         else:
             x = ivy.Array(x_native)
+    elif ensure_in_backend:
+        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
+    elif ivy.is_ivy_array(x):
+        x.data = val_native
     else:
-        if ivy.is_ivy_array(x):
-            x.data = val_native
-        else:
-            x = ivy.Array(val_native)
+        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
     return x
 
 
@@ -121,13 +130,16 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: tf.Tensor, axis: int = 0) -> tf.Tensor:
+def cumsum(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: tf.Tensor, axis: int = 0, exclusive: Optional[bool] = False
-) -> tf.Tensor:
+    x: Union[tf.Tensor, tf.Variable], axis: int = 0, exclusive: Optional[bool] = False
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumprod(x, axis, exclusive)
 
 
@@ -288,8 +300,12 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
 
 
 def gather(
-    params: tf.Tensor, indices: tf.Tensor, axis: Optional[int] = -1, *, device: str
-) -> tf.Tensor:
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = -1,
+    *,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     if device is None:
         device = _dev_callable(params)
@@ -312,26 +328,29 @@ def one_hot(indices, depth, *, device):
     return tf.one_hot(indices, depth)
 
 
-current_backend_str = lambda: "tensorflow"
-current_backend_str.__name__ = "current_backend_str"
-
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
-indices_where = tf.where
+def current_backend_str():
+    return "tensorflow"
 
 
-def shape(x: tf.Tensor, as_tensor: bool = False) -> Union[tf.Tensor, List[int]]:
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
+
+
+def indices_where(x):
+    return tf.where(x)
+
+
+def shape(
+    x: Union[tf.Tensor, tf.Variable],
+    as_tensor: bool = False,
+) -> Union[tf.Tensor, tf.Variable, List[int]]:
     if as_tensor:
         return tf.shape(x)
     else:
         return tuple(x.shape)
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: tf.shape(tf.shape(x))[0]
-    if as_tensor
-    else int(tf.shape(tf.shape(x)))
-)
+def get_num_dims(x, as_tensor=False):
+    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))

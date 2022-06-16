@@ -15,45 +15,57 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # linear
-@pytest.mark.parametrize(
-    "x_n_w_n_b_n_res",
-    [
-        (
-            [[1.0, 2.0, 3.0]],
-            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
-            [2.0, 2.0],
-            [[8.0, 8.0]],
-        ),
-        (
-            [[[1.0, 2.0, 3.0]]],
-            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
-            [2.0, 2.0],
-            [[[8.0, 8.0]]],
-        ),
-        (
-            [[[1.0, 2.0, 3.0]], [[4.0, 5.0, 6.0]]],
-            [[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]], [[2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]],
-            [[2.0, 2.0], [4.0, 4.0]],
-            [[[8.0, 8.0]], [[34.0, 34.0]]],
-        ),
-    ],
+@given(
+    outer_batch_shape=helpers.lists(st.integers(2, 5), min_size=1, max_size=3),
+    inner_batch_shape=helpers.lists(st.integers(2, 5), min_size=1, max_size=3),
+    num_out_feats=st.integers(min_value=1, max_value=5),
+    num_in_feats=st.integers(min_value=1, max_value=5),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 3),
+    as_variable=helpers.list_of_length(st.booleans(), 3),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="linear"),
+    native_array=helpers.list_of_length(st.booleans(), 3),
+    container=helpers.list_of_length(st.booleans(), 3),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
-    # smoke test
-    x, weight, bias, true_res = x_n_w_n_b_n_res
-    x = tensor_fn(x, dtype, device)
-    weight = tensor_fn(weight, dtype, device)
-    bias = tensor_fn(bias, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
-    ret = ivy.linear(x, weight, bias)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(call(ivy.linear, x, weight, bias), ivy.to_numpy(true_res))
+def test_linear(
+    outer_batch_shape,
+    inner_batch_shape,
+    num_out_feats,
+    num_in_feats,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+
+    x = np.random.uniform(
+        size=outer_batch_shape + inner_batch_shape + [num_in_feats]
+    ).astype(dtype[0])
+    weight = np.random.uniform(
+        size=outer_batch_shape + [num_out_feats] + [num_in_feats]
+    ).astype(dtype[1])
+    bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "linear",
+        x=x,
+        weight=weight,
+        bias=bias,
+    )
 
 
 # Dropout #
@@ -99,10 +111,10 @@ def test_scaled_dot_product_attention(
 ):
     q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
     # smoke test
-    q = tensor_fn(q, dtype, device)
-    k = tensor_fn(k, dtype, device)
-    v = tensor_fn(v, dtype, device)
-    mask = tensor_fn(mask, dtype, device)
+    q = tensor_fn(q, dtype=dtype, device=device)
+    k = tensor_fn(k, dtype=dtype, device=device)
+    v = tensor_fn(v, dtype=dtype, device=device)
+    mask = tensor_fn(mask, dtype=dtype, device=device)
     ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -125,9 +137,9 @@ def test_scaled_dot_product_attention(
 def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
-    x = tensor_fn(x, dtype, device)
-    context = tensor_fn(context, dtype, device)
-    mask = tensor_fn(mask, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    context = tensor_fn(context, dtype=dtype, device=device)
+    mask = tensor_fn(mask, dtype=dtype, device=device)
     fn = lambda x_, v: ivy.tile(x_, (1, 2))
     ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
     # type test
@@ -167,9 +179,9 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv1d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -219,9 +231,9 @@ def test_conv1d_transpose(
         # numpy and jax do not yet support conv1d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -235,107 +247,62 @@ def test_conv1d_transpose(
 
 
 # conv2d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [
-                [
-                    [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                    [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                    [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                    [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                    [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                ]
-            ],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "SAME",
-            [
-                [
-                    [[9.0], [13.0], [17.0], [21.0], [19.0]],
-                    [[25.0], [35.0], [40.0], [45.0], [39.0]],
-                    [[45.0], [60.0], [65.0], [70.0], [59.0]],
-                    [[65.0], [85.0], [90.0], [95.0], [79.0]],
-                    [[59.0], [83.0], [87.0], [91.0], [69.0]],
-                ]
-            ],
-        ),
-        (
-            [
-                [
-                    [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                    [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                    [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                    [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                    [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                ]
-                for _ in range(5)
-            ],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "SAME",
-            [
-                [
-                    [[9.0], [13.0], [17.0], [21.0], [19.0]],
-                    [[25.0], [35.0], [40.0], [45.0], [39.0]],
-                    [[45.0], [60.0], [65.0], [70.0], [59.0]],
-                    [[65.0], [85.0], [90.0], [95.0], [79.0]],
-                    [[59.0], [83.0], [87.0], [91.0], [69.0]],
-                ]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [
-                [
-                    [[1.0], [2.0], [3.0], [4.0], [5.0]],
-                    [[6.0], [7.0], [8.0], [9.0], [10.0]],
-                    [[11.0], [12.0], [13.0], [14.0], [15.0]],
-                    [[16.0], [17.0], [18.0], [19.0], [20.0]],
-                    [[21.0], [22.0], [23.0], [24.0], [25.0]],
-                ]
-            ],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "VALID",
-            [
-                [
-                    [[35.0], [40.0], [45.0]],
-                    [[60.0], [65.0], [70.0]],
-                    [[85.0], [90.0], [95.0]],
-                ]
-            ],
-        ),
-    ],
+@given(
+    array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
+    filter_shape=st.integers(min_value=1, max_value=5),
+    stride=st.integers(min_value=1, max_value=3),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
+    dilations=st.integers(min_value=1, max_value=5),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+def test_conv2d(
+    array_shape,
+    filter_shape,
+    stride,
+    pad,
+    data_format,
+    dilations,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    if fw in ["tensorflow"] and "cpu" in device:
         # tf conv2d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
-    ret = ivy.conv2d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(call(ivy.conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
+        return
+
+    x = np.random.uniform(size=array_shape).astype(dtype[0])
+    x = np.expand_dims(x, (-1))
+    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
+        dtype[1]
+    )
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "conv2d",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
 
 
 # conv2d_transpose
@@ -404,9 +371,9 @@ def test_conv2d_transpose(
         # numpy and jax do not yet support conv2d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -460,9 +427,9 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
         # numpy and jax do not yet support depthwise 2d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.depthwise_conv2d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -649,9 +616,9 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
         # numpy and jax do not yet support 3d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv3d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -883,9 +850,9 @@ def test_conv3d_transpose(
         # mxnet only supports 3d transpose convolutions with CUDNN
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv3d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -928,7 +895,8 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, device, call):
         state_c_true_val,
     ) = b_t_ic_hc_otf_sctv
     x = ivy.asarray(
-        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), "float32"
+        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
+        dtype="float32",
     )
     init_h = ivy.ones([b, hidden_channels])
     init_c = ivy.ones([b, hidden_channels])
