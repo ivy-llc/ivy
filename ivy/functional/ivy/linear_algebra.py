@@ -628,6 +628,8 @@ def svdvals(
     return _cur_backend(x).svdvals(x)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     offset: int = 0,
