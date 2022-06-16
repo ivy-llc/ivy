@@ -7,7 +7,7 @@ from operator import mul
 from functools import reduce
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 
 # Extra #
@@ -119,8 +119,7 @@ def gradient_image(x):
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def float_img_to_uint8_img(x):
+def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
 
@@ -135,16 +134,17 @@ def float_img_to_uint8_img(x):
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
-    xnp = ivy.to_numpy(x).astype("float32")
-    x_shape = xnp.shape
-    x_bytes = xnp.tobytes()
+    x_np = ivy.to_numpy(x).astype("float32")
+    x_shape = x_np.shape
+    x_bytes = x_np.tobytes()
     x_uint8 = np.frombuffer(x_bytes, np.uint8)
     return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def uint8_img_to_float_img(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
     Parameters
@@ -159,7 +159,7 @@ def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Examples
     --------
-    >>> batch_shape = 1
+    >>> batch_size = 1
     >>> h = 2
     >>> w = 2
     >>> d = 4
@@ -171,16 +171,22 @@ def uint8_img_to_float_img(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
                 [2.658462758989161e-32, 7.003653270560797e-30]]])
 
     """
-    xnp = ivy.to_numpy(x).astype("uint8")
-    x_shape = xnp.shape
-    x_bytes = xnp.tobytes()
+    x_np = ivy.to_numpy(x).astype("uint8")
+    x_shape = x_np.shape
+    x_bytes = x_np.tobytes()
     x_float = np.frombuffer(x_bytes, np.float32)
     return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist())
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
+def random_crop(
+    x,
+    crop_size,
+    batch_shape=None,
+    image_dims=None,
+    seed=None,
+    out: Optional[ivy.Array] = None,
+):
     """Randomly crops the input images.
 
     Parameters
@@ -233,7 +239,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None, seed=None):
     flat_cropped = ivy.concat(cropped_list, 0)
 
     # BS x NH x NW x F
-    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels], out=out)
 
 
 @to_native_arrays_and_back

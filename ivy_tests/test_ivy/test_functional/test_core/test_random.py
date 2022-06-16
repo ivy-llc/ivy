@@ -158,7 +158,6 @@ def test_randint(data, shape, dtype, as_variable, device, call):
 )
 def test_seed(seed_val):
     # smoke test
-    seed_val = ivy.array(seed_val)
     ivy.seed(seed_val)
 
 

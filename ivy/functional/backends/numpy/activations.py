@@ -5,6 +5,7 @@ from typing import Optional
 # global
 import numpy as np
 
+
 try:
     from scipy.special import erf
 except (ImportError, ModuleNotFoundError):
@@ -19,7 +20,7 @@ def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2) -> np.ndarray:
     return np.where(x > 0, x, x * alpha)
 
 
-def gelu(x, approximate=True):
+def gelu(x, approximate: Optional[bool] = True):
     if erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.gelu with a numpy backend."
@@ -37,10 +38,10 @@ def tanh(x: np.ndarray) -> np.ndarray:
     return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
 
 
-def softmax(x: np.ndarray, axis: Optional[int] = -1) -> np.ndarray:
+def softmax(x: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
     exp_x = np.exp(x)
     return exp_x / np.sum(exp_x, axis, keepdims=True)
 
 
 def softplus(x: np.ndarray) -> np.ndarray:
-    return np.log(np.exp(x) + 1)
+    return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)

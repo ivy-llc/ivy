@@ -6,13 +6,14 @@ import collections
 import numpy as np
 from ivy import verbosity
 from typing import Optional
+from types import FunctionType
 
 # local
-# noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_functions, _unwrap_functions
+from ivy.func_wrapper import _wrap_function
 
 
 backend_stack = []
+implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
 
@@ -131,6 +132,7 @@ def current_backend(*args, **kwargs):
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
 
     """
+    global implicit_backend
     # if a global backend has been set with set_backend then this will be returned
     if backend_stack:
         f = backend_stack[-1]
@@ -140,14 +142,12 @@ def current_backend(*args, **kwargs):
 
     # if no global backend exists, we try to infer the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
-    if f is None:
-        raise ValueError(
-            "get_backend failed to find a valid library from the inputs: "
-            "{} {}".format(args, kwargs)
-        )
+    if f is not None:
+        implicit_backend = f.current_backend_str()
+        return f
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
-    return f
+    return importlib.import_module(_backend_dict[implicit_backend])
 
 
 def set_backend(backend: str):
@@ -198,13 +198,22 @@ def set_backend(backend: str):
         specific_v = backend.__dict__[k]
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
+        # if appropriate, apply wrapping to the new backend implementation
+        if callable(specific_v):
+            specific_v = _wrap_function(specific_v, v)
+        # wrap the `linalg` namespace eg so we can use ivy.linalg.inv or ivy.inv
+        if k == "linalg":
+            for linalg_k, linalg_v in specific_v.__dict__.items():
+                if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+                    specific_v.__dict__[linalg_k] = _wrap_function(
+                        linalg_v, ivy.__dict__[linalg_k]
+                    )
         ivy.__dict__[k] = specific_v
         if isinstance(specific_v, collections.Hashable):
             try:
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    _wrap_functions()
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
@@ -295,7 +304,6 @@ def unset_backend():
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`
     if backend_stack:
-        _unwrap_functions()
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()
@@ -304,12 +312,14 @@ def unset_backend():
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )
+        # wrap backend functions if there still is a backend, and add functions
+        # to ivy namespace
         for k, v in new_backend_dict.items():
+            if backend_stack and k in ivy.__dict__:
+                v = _wrap_function(v, ivy.__dict__[k])
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
-    if backend_stack:
-        _wrap_functions()
     return backend
 
 

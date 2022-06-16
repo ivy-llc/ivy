@@ -3,7 +3,7 @@ import math
 import importlib
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List, Optional, Callable
 
 # local
 import ivy
@@ -784,3 +784,22 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
         )
     ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
     return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
+
+
+def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+    """Returns the unsupported data type of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    """
+    if hasattr(fn, "unsupported_dtypes"):
+        return fn.unsupported_dtypes
+    return ivy.as_native_dtype(fn.unsupported_dtypes) in ivy.invalid_dtypes

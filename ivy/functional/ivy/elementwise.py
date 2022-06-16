@@ -1,12 +1,11 @@
 # global
 from numbers import Number
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
-
 
 # Array API Standard #
 # -------------------#
@@ -522,8 +521,7 @@ def floor(
 
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
-    - If ``x_i`` is ``+0``, the result is ``+0``.
-    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``0``, the result is ``0``.
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
 
     Parameters
@@ -540,6 +538,76 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    This method conforms to the
+    `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/
+    generated/signatures.elementwise_functions.floor.html>`_ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2,3,4])
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    ivy.array([2, 3, 4])
+
+    >>> x = ivy.array([1.5, -5.5, 0, -1, -0])
+    >>> y = ivy.zeros(5)
+    >>> ivy.floor(x, out=y)
+    >>> print(y)
+    ivy.array([ 1., -6.,  0., -1.,  0.])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+    >>> ivy.floor(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.,  2.,  3.],
+               [-5., -6., -7.]])
+
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, -1.5, -1, 1, 2.5])
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    ivy.array([ 0.,  0., -2., -1.,  1.,  2.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\
+                          b=ivy.array([3.4, -4.2, -0, -1.2]))
+    >>> y = ivy.floor(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., -3.]),
+        b: ivy.array([3., -5., 0., -2.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1.5, -5.5, 0.5, -0])
+    >>> y = x.floor()
+    >>> print(y)
+    ivy.array([ 1., -6.,  0.,  0.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, -2.4]), b=ivy.array([3.4, -4.2, 1.2]))
+    >>> y = x.floor()
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., -3.]),
+        b: ivy.array([3., -5., 1.])
+    }
     """
     return current_backend(x).floor(x, out=out)
 
@@ -1089,6 +1157,64 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
+
+    >>> x = ivy.array([0.2, -1.7, -5.4, 1.1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.cosh(x, out=y)
+    ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2], \
+                       [-4.4, -5.5, -6.6, -7.2]])
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],
+               [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],
+              dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
+    >>> y = ivy.cosh(x)
+    >>> print(y)
+    {
+        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
+        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = x.cosh()
+    >>> print(y)
+    ivy.array([ 1.5430806,  3.7621958, 10.067662 ], dtype=float32)
+
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
+    >>> y = x.cosh()
+    >>> print(y)
+    {
+        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
+        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
+    }
     """
     return current_backend(x).cosh(x, out=out)
 
@@ -2700,7 +2826,6 @@ def minimum(
     -------------------
 
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 5, 9])
     >>> y = ivy.array([2, 6, 8])
     >>> z = ivy.minimum(x, y)
@@ -2711,7 +2836,7 @@ def minimum(
 
     >>> x = ivy.native_array([2, 6, 8, 5])
     >>> y = ivy.native_array([1, 5, 9, 6])
-    >>> ivy.minimum(x, y, out=y)
+    >>> ivy.minimum(x, y)
     >>> print(y)
     ivy.native_array([1, 5, 8, 5])
 
@@ -2759,7 +2884,7 @@ def minimum(
 
     >>> x = ivy.array([4, 7])
     >>> y = ivy.native_array([6, 0])
-    >>> x.minimum(y, out=y)
+    >>> x.minimum(y)
     >>> print(y)
     ivy.native_array([4, 0])
 
@@ -2767,32 +2892,9 @@ def minimum(
 
     >>> x = ivy.array([1, 4, 8])
     >>> z = ivy.zeros(3)
-    >>> x.minimum(3, out=z)
+    >>> x.minimum(3)
     >>> print(z)
     ivy.array([1, 4, 5])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3, 2])
-    >>> y = ivy.native_array([1, 9, 2, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 2, 3, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3])
-    >>> y = ivy.array([1, 9, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 6, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([3, 8])
-    >>> z = x.minimum(3)
-    >>> print(z)
-    ivy.native_array([3, 6])
 
     """
     return current_backend(x1).minimum(x1, x2, out=out)
@@ -2844,7 +2946,7 @@ def maximum(
 
     >>> x = ivy.native_array([1, 5, 9, 8, 3])
     >>> y = ivy.native_array([9, 3, 2, 0, 7])
-    >>> ivy.maximum(x, y, out=y)
+    >>> ivy.maximum(x, y)
     >>> print(y)
     ivy.native_array([9, 5, 9, 8, 7])
 
@@ -2903,29 +3005,6 @@ def maximum(
     >>> x.maximum(3, out=z)
     >>> print(z)
     ivy.array([3, 7, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 8])
-    >>> y = ivy.native_array([9, 6])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([1, 8, 6, 0, 5])
-    >>> y = ivy.array([9, 6, 2, 5, 8])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8, 6, 5, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([0, 2, 7])
-    >>> z = x.maximum(5)
-    >>> print(z)
-    ivy.native_array([0, 2, 5])
 
     """
     return current_backend(x1).maximum(x1, x2, out=out)

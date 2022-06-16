@@ -438,8 +438,11 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -479,8 +482,11 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -524,9 +530,9 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     dev0 = device
     devices.append(dev0)
     args_dict = dict()
-    args_dict[dev0] = tensor_fn(args[0][0], "float32", dev0)
+    args_dict[dev0] = tensor_fn(args[0][0], dtype="float32", device=dev0)
     kwargs_dict = dict()
-    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], "float32", dev0)
+    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], dtype="float32", device=dev0)
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
@@ -585,11 +591,26 @@ def test_profiler(device, call):
         time.sleep(1)  # required by MXNet for some reason
 
 
+@given(num=st.integers(0, 5))
+def test_num_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    assert ivy.num_ivy_arrays_on_dev(device) == num
+    # to satisfy lint requirements
+    del arrays
+
+
+@given(num=st.integers(0, 5))
+def test_get_all_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    arrs_on_dev = list(ivy.get_all_ivy_arrays_on_dev(device).values())
+    for arr in arrays:
+        assert arr in arrs_on_dev
+
+
 # Still to Add #
 # ---------------#
 
-# get_all_arrays_on_dev
-# num_arrays_on_dev
+
 # print_all_arrays_on_dev
 # clear_mem_on_dev
 # total_mem_on_dev

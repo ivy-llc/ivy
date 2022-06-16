@@ -814,8 +814,8 @@ def test_maml_step_shared_vars(
         return cost / batch_size
 
     # numpy
-    variables_np = variables.map(lambda x, kc: ivy.to_numpy(x))
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    variables_np = variables.map(lambda x, kc: ivy.to_ivy(x))
+    batch_np = batch.map(lambda x, kc: ivy.to_ivy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
@@ -890,9 +890,9 @@ def test_maml_step_shared_vars(
                 ]
             ) / len(grads)
         else:
-            true_outer_grad = (
-                update_grad_fn(variables_np, sub_batch, inner_grad_steps)
-                * grads[-1].latent
+            true_outer_grad = ivy.multiply(
+                update_grad_fn(variables_np, sub_batch, inner_grad_steps),
+                grads[-1].latent,
             )
         true_outer_grads.append(true_outer_grad)
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
@@ -947,7 +947,9 @@ def test_maml_step_shared_vars(
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
-    assert np.allclose(ivy.to_numpy(outer_grads.latent), true_outer_grad[0])
+    assert np.allclose(
+        ivy.to_numpy(outer_grads.latent), ivy.to_numpy(true_outer_grad[0])
+    )
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
@@ -1119,4 +1121,3 @@ def test_maml_step_overlapping_vars(
 # _train_tasks_batched
 # _train_tasks_with_for_loop
 # _fomaml_step
-# reptile_step
