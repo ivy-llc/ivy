@@ -170,7 +170,8 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
         1
     }
 
-    >>> x = ivy.Container(x1 = ivy.array([-1,0,5.2]), x2 = ivy.array([-1,0,5.2,6]))
+    >>> x = ivy.Container(x1 = ivy.array([-1,0,5.2]),\
+                          x2 = ivy.array([-1,0,5.2,6]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
@@ -186,7 +187,8 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
         1
     }
 
-    >>> x = ivy.Container(x1 = ivy.native_array([-1,0,5.2]), x2 = ivy.native_array([-1,0,5.2,6]))
+    >>> x = ivy.Container(x1 = ivy.native_array([-1,0,5.2]),\
+                          x2 = ivy.native_array([-1,0,5.2,6]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
