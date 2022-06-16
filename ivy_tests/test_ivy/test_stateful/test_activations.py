@@ -120,7 +120,7 @@ def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
         ivy.linspace(
             ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels * 2
         ),
-        "float32",
+        dtype="float32",
     )
     geglu_layer = ivy.GEGLU()
 
