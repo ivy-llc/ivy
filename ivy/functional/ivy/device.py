@@ -137,58 +137,60 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.dev(ivy.array([-1,0,5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> x = ivy.array([-1,0,5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x = ivy.array([-1,0,5.2])
+    >>> y = ivy.array([-1,0,5.2,6])
+    >>> z = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
-
-    >>> x = ivy.dev(ivy.array([-1,0,5.2,6]))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
-    >>> print(y)
-    3
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.dev(ivy.native_array([-1,0,5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> x = ivy.native_array([-1,0,5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x = ivy.native_array([-1,0,5.2])
+    >>> y = ivy.native_array([-1,0,5.2,6])
+    >>> z = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
 
-    >>> x = ivy.dev(ivy.native_array([-1,0,5.2,6]))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
-    >>> print(y)
-    3
-
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
-    >>> x = ivy.Container(ivy.dev(ivy.array([-1,0,5.2])))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> x = ivy.Container(ivy.array([-1,0,5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    {
+        1
+    }
+
+    >>> x = ivy.Container(x1 = ivy.array([-1,0,5.2]), x2 = ivy.array([-1,0,5.2,6]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         2
-    }
-
-    >>> x = ivy.Container(ivy.dev(ivy.array([-1,0,5.2,6])))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
-    >>> print(y)
-    {
-        3
     }
 
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.Container(ivy.dev(ivy.native_array([-1,0,5.2])))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
+    >>> x = ivy.Container(ivy.native_array([-1,0,5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    {
+        1
+    }
+
+    >>> x = ivy.Container(x1 = ivy.native_array([-1,0,5.2]), x2 = ivy.native_array([-1,0,5.2,6]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         2
-    }
-
-    >>> x = ivy.Container(ivy.dev(ivy.native_array([-1,0,5.2,6])))
-    >>> y = ivy.num_ivy_arrays_on_dev(x)
-    >>> print(y)
-    {
-        3
     }
 
     """
