@@ -172,7 +172,8 @@ should be aggregated as a single count.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>out</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code> whose
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code> whose
 - first element must have the field name <code class="docutils literal notranslate"><span class="pre">values</span></code> and must be an array</p>
 <blockquote>
 <div><p>containing the unique elements of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The array must have the same data
@@ -197,9 +198,152 @@ array index data type.</p></li>
 <p>The order of unique elements is not specified and may vary between
 implementations.</p>
 </div>
+</li>
+<li><p>This method conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of)</p></li>
+<li><p><strong>the `docstring &lt;https</strong> (<em>//data-apis.org/array-api/latest/API_specification/</em>)</p></li>
+<li><p>generated/signatures.elementwise_functions.tan.html&gt;`_</p></li>
+<li><p><em>in the standard. The descriptions above assume an array input for simplicity, but</em></p></li>
+<li><p>the method also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints</p></li>
+<li><p><em>and also the examples below.</em></p></li>
+</ul>
 </p>
 </dd>
 </dl>
+<p class="rubric">Functional Examples</p>
+<p>With :code: ‘ivy.Array’ input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.1141,  0.8101],</span>
+<span class="go">           [-1.2119, -0.3519]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">inverse_indices</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="go">ivy.array([-1.2119, -0.3519,  0.8101,  2.1141])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="go">ivy.array([2, 3, 1, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inverse_indices</span><span class="p">)</span>
+<span class="go">ivy.array([[3, 2],</span>
+<span class="go">           [0, 1]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">ivy.array([1, 1, 1, 1])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[-0.40501155,  1.77361575, -1.97776199],</span>
+<span class="go">           [-0.36831157,  0.89148434, -0.9512272 ],</span>
+<span class="go">           [ 0.67542176, -0.41985657,  0.23478023]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">inverse_indices</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="go">ivy.array([-1.97776199, -0.9512272 , -0.41985657, -0.40501155, -0.36831157,</span>
+<span class="go">            0.23478023,  0.67542176,  0.89148434,  1.77361575])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="go">ivy.array([2, 5, 7, 0, 3, 8, 6, 4, 1])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inverse_indices</span><span class="p">)</span>
+<span class="go">ivy.array([[3, 8, 0],</span>
+<span class="go">           [4, 7, 1],</span>
+<span class="go">           [6, 2, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
+</pre></div>
+</div>
+<p>With :code: ‘ivy.NativeArray’ input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span> <span class="mf">2.1141</span><span class="p">,</span>  <span class="mf">0.8101</span><span class="p">,</span>  <span class="mf">0.9298</span><span class="p">,</span>  <span class="mf">0.8460</span><span class="p">],</span>
+<span class="go">                          [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="go">                          [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="go">                          [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
+<span class="go">           [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="go">           [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="go">           [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nan</span> <span class="c1">#Introduce NaN values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[    nan,  0.8101,  0.9298,  0.8460],</span>
+<span class="go">           [-1.2119,     nan, -0.6252,  0.4033],</span>
+<span class="go">           [ 0.7443,  0.2577,     nan, -0.0545],</span>
+<span class="go">           [-0.3238,  0.5944,  0.0775,     nan]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">inverse_indices</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="go">ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,</span>
+<span class="go">           -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="go">ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inverse_indices</span><span class="p">)</span>
+<span class="go">ivy.array([[ 3, 13, 15, 14],</span>
+<span class="go">           [ 0,  3,  1,  2],</span>
+<span class="go">           [12, 10,  3,  8],</span>
+<span class="go">           [ 7, 11,  9,  3]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
+</pre></div>
+</div>
+<p class="rubric">Instance Method Examples</p>
+<p>With :code: ‘ivy.Array’ input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">2.1141</span><span class="p">,</span>  <span class="mf">0.8101</span><span class="p">,</span>  <span class="mf">0.9298</span><span class="p">,</span>  <span class="mf">0.8460</span><span class="p">],</span>
+<span class="go">                   [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="go">                   [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="go">                   [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
+<span class="go">           [-1.2119, -0.3519, -0.6252,  0.4033],</span>
+<span class="go">           [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
+<span class="go">           [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nan</span> <span class="c1">#Introduce NaN values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[    nan,  0.8101,  0.9298,  0.8460],</span>
+<span class="go">           [-1.2119,     nan, -0.6252,  0.4033],</span>
+<span class="go">           [ 0.7443,  0.2577,     nan, -0.0545],</span>
+<span class="go">           [-0.3238,  0.5944,  0.0775,     nan]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">inverse_indices</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unique_all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="go">ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,</span>
+<span class="go">           -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="go">ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inverse_indices</span><span class="p">)</span>
+<span class="go">ivy.array([[ 3, 13, 15, 14],</span>
+<span class="go">           [ 0,  3,  1,  2],</span>
+<span class="go">           [12, 10,  3,  8],</span>
+<span class="go">           [ 7, 11,  9,  3]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
+</pre></div>
+</div>
+<p>With :code: ‘ivy.NativeArray’ input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="o">-</span><span class="mf">2.176</span><span class="p">,</span>  <span class="mf">0.889</span><span class="p">,</span>  <span class="mf">1.175</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.763</span><span class="p">],</span>
+<span class="go">                          [-0.071,  1.262, -0.456, -2.114],</span>
+<span class="go">                          [-0.349,  0.615, -0.594, -1.335],</span>
+<span class="go">                          [ 0.212,  0.457, -0.827,  0.209]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[-2.176,  0.889,  1.175, -0.763],</span>
+<span class="go">           [-0.071,  1.262, -0.456, -2.114],</span>
+<span class="go">           [-0.349,  0.615, -0.594, -1.335],</span>
+<span class="go">           [ 0.212,  0.457, -0.827,  0.209]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nan</span> <span class="c1">#Introduce NaN values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[   nan,  0.889,  1.175, -0.763],</span>
+<span class="go">           [-0.071,    nan, -0.456, -2.114],</span>
+<span class="go">           [-0.349,  0.615,    nan, -1.335],</span>
+<span class="go">           [ 0.212,  0.457, -0.827,    nan]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">inverse_indices</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unique_all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="go">ivy.array([-2.114, -1.335, -0.827, -0.763, -0.456,</span>
+<span class="go">           -0.349, -0.071,  0.212,  0.457,  0.615,</span>
+<span class="go">            0.889,  1.175,    nan,    nan,    nan,</span>
+<span class="go">              nan])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="go">ivy.array([ 7, 11, 14,  3,  6,  8,  4, 12, 13,  9,  1,  2,  0,  5, 10, 15])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inverse_indices</span><span class="p">)</span>
+<span class="go">ivy.array([[12, 10, 11,  3],</span>
+<span class="go">           [ 6, 12,  4,  0],</span>
+<span class="go">           [ 5,  9, 12,  1],</span>
+<span class="go">           [ 7,  8,  2, 12]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -252,7 +396,7 @@ have the default array index data type.</p></li>
 </li>
 <li><p><em>.. note::</em> – The order of unique elements is not specified and may vary between
 implementations.</p></li>
-<li><p>This method conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p>This method conforms to the <a href="#id3"><span class="problematic" id="id4">`</span></a>Array API Standard</p></li>
 <li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of)</p></li>
 <li><p><strong>the `docstring &lt;https</strong> (<em>//data-apis.org/array-api/latest/API_specification/</em>)</p></li>
 <li><p>generated/signatures.elementwise_functions.tan.html&gt;`_</p></li>
