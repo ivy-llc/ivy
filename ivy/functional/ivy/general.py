@@ -1499,14 +1499,30 @@ def cumprod(
         
     Examples
     --------
-    >>> x = ([a, b, c])
+    >>> x = ivy.array([a, b, c])
     >>> ivy.cumprod(x)
     [a, a * b, a * b * c]
 
-    >>> x = ([a, b, c])
+    >>> y = ivy.array([a, b, c])
     >>> exclusive = True
-    >>> ivy.cumprod(x, exclusive)
+    >>> ivy.cumprod(y, exclusive)
     [1, a, a * b]
+    
+    Example specifying axes
+    
+    >>> z = ivy.array([[2,3],[5,7],[11,13]])
+    >>> exclusive = True
+    >>> ivy.cumprod(z, axis=1, exclusive)
+    [[ 1,  2],
+     [ 1,  5],
+     [ 1, 11]]
+     
+    >>> z = ivy.array([[2,3],[5,7],[11,13]])
+    >>> exclusive = True
+    >>> ivy.cumprod(z, axis=1, exclusive)
+    [[ 1,  2],
+     [ 2,  3],
+     [10, 21]]
 
     """
     return _cur_backend(x).cumprod(x, axis, exclusive, out=out)
