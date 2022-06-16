@@ -438,8 +438,8 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
 
     # devices
     devices = list()
@@ -479,8 +479,8 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
 
     # devices
     devices = list()
@@ -524,9 +524,9 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     dev0 = device
     devices.append(dev0)
     args_dict = dict()
-    args_dict[dev0] = tensor_fn(args[0][0], "float32", dev0)
+    args_dict[dev0] = tensor_fn(args[0][0], dtype="float32", device=dev0)
     kwargs_dict = dict()
-    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], "float32", dev0)
+    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], dtype="float32", device=dev0)
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
