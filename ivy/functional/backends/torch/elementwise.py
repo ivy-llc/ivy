@@ -151,7 +151,10 @@ def multiply(
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
         return torch.multiply(x1, x2, out=out)
-    return torch.multiply(x1, x2)
+    return torch.multiply(
+        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1),
+        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2)
+    )
 
 
 def cos(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -344,9 +347,10 @@ def subtract(
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
         return torch.subtract(x1, x2, out=out)
-    elif not isinstance(x1, torch.Tensor):
-        x1 = torch.tensor(x1, dtype=x2.dtype)
-    return torch.subtract(x1, x2)
+    return torch.subtract(
+        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1),
+        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2)
+    )
 
 
 def remainder(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
