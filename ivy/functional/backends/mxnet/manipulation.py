@@ -210,3 +210,6 @@ def clip(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+def flatten(x):
+    return x.reshape((-1,))

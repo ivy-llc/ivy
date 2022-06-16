@@ -1003,3 +1003,8 @@ def clip(
     ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
     """
     return _cur_backend(x).clip(x, x_min, x_max, out=out)
+
+
+@to_native_arrays_and_back
+def flatten(x):
+    return _cur_backend(x).flatten(x)

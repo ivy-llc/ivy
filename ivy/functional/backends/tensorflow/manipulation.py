@@ -231,3 +231,9 @@ def clip(
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
     return ret
+
+def flatten(x):
+    shape = 1
+    for dim in x.shape:
+        shape *= dim
+    return tf.reshape(x, shape)

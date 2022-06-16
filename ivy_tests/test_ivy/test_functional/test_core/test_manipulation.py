@@ -870,3 +870,52 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
+
+
+
+# flat
+@given(
+    array_shape=helpers.lists(
+        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    ),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="flatten"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans()
+)
+def test_flat(
+    array_shape,
+    input_dtype,
+    data,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+
+    if (fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]) or (
+        fw == "tensorflow" and input_dtype in ["uint16"]
+    ):
+        return
+
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
+
+    helpers.test_array_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        False,
+        False,
+        fw,
+        "flatten",
+        x=x
+    )

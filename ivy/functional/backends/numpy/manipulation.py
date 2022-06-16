@@ -161,3 +161,6 @@ def clip(
 ) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret
+
+def flatten(x):
+    return x.flatten()
