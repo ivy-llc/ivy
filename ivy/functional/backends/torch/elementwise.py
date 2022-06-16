@@ -75,6 +75,9 @@ def bitwise_and(
     return torch.bitwise_and(x1, x2, out=out)
 
 
+# bitwise_and.unsupported_dtypes = tuple([ivy.int8],)
+
+
 def ceil(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
@@ -216,6 +219,9 @@ def logical_or(
 
 def acosh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.acosh(x, out=out)
+
+
+acosh.unsupported_dtypes = [ivy.float16, ivy.uint16, ivy.uint32, ivy.uint64]
 
 
 def sin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
