@@ -167,7 +167,8 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
-    repeats: Union[int, List[int]], axis: int = None,
+    repeats: Union[int, List[int]],
+    axis: int = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.repeat(x, repeats, axis)
     return ret
@@ -231,6 +232,7 @@ def clip(
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
     return ret
+
 
 def flatten(x):
     shape = 1
