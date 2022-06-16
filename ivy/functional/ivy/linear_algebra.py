@@ -628,9 +628,10 @@ def svdvals(
     return _cur_backend(x).svdvals(x)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
+def trace(
+    x: Union[ivy.Array, ivy.NativeArray],
+    offset: int = 0,
+) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
 
@@ -661,13 +662,43 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
 
          The returned array must have the same data type as ``x``.
 
-    Examples
+    Functional Examples
     --------
+
+    With :code:`ivy.Array` inputs:
+
+    1. offset = 0: (default) trace of an array
+    
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-    >>> offset = 0
-    >>> y = ivy.trace(x, offset)
+    >>> y = ivy.trace(x)
     >>> print(y)
-    ivy.array(5.)
+    5.0
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[[1., 2.], [4., 5.]], [[8., 9.], [11., 12.]]])
+    >>> y = ivy.trace(x)
+    >>> print(y)
+    ivy.array([ 6., 20.])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance inputs:
+
+    2. offset = 1: changing the off-diagonal
+
+    >>> x = ivy.array([[1., 0.], [0., 1.], [1., 1.]]) 
+    >>> x.trace(offset=1)
+    0.0
+
+    With :code:`ivy.NativeArray` instance inputs:
+
+    3. offset = -1: changing the off-diagonal
+
+    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]])
+    >>> x.trace(offset=-1)
+    4.0
 
     """
     return _cur_backend(x).trace(x, offset)

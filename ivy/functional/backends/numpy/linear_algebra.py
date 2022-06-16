@@ -122,7 +122,12 @@ def tensordot(
     return ret
 
 
-def trace(x: np.ndarray, offset: int = 0, *, out=None) -> np.ndarray:
+def trace(
+    x: np.ndarray,
+    offset: int = 0,
+    *,
+    out=None
+) -> np.ndarray:
     return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
