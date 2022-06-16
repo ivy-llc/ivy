@@ -138,7 +138,7 @@ def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = np.frombuffer(x_bytes, np.uint8)
-    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist())
+    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist(), out=out)
 
 
 @to_native_arrays_and_back
@@ -175,7 +175,7 @@ def uint8_img_to_float_img(
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = np.frombuffer(x_bytes, np.float32)
-    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist())
+    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist(), out=out)
 
 
 @to_native_arrays_and_back

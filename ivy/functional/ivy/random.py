@@ -61,7 +61,9 @@ def random_uniform(
 
     """
     dtype = ivy.default_dtype(dtype, as_native=True)
-    return current_backend().random_uniform(low, high, shape, device=device)
+    return current_backend().random_uniform(
+        low, high, shape, device=device, dtype=dtype
+    )
 
 
 @outputs_to_ivy_arrays
