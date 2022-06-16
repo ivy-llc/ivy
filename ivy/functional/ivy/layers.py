@@ -180,19 +180,21 @@ def multi_head_attention(
     Parameters
     ----------
     x
-        The array to determine the queries from *[batch_shape,num_queries,x_feat_dim]*.
+        The array to determine the queries. 
+        The shape of x input array should be in *[batch_shape,num_queries,feat_dim]*.
     scale
-        The value by which to scale the query-key similarity measure before softmax.
+        The scale float value.
+        The scale float value is used to scale the query-key similarity measure before softmax.
     num_heads
         The number of attention heads to use.
     context
         The array to determine the keys and values from. Default is None.
-        *[batch_shape,num_keys,cont_feat_dim]*.
+        The shape of context input array should be in *[batch_shape,num_keys,cont_feat_dim]*.
     mask
-        The mask to apply to the query-key values. Default is None.
-        *[batch_shape,num_queries,num_keys]*
+        The mask input array. The mask to apply to the query-key values. Default is None.
+        The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     to_q_fn
-        The function to compute queries from input x, returning queries
+        The function to compute queries from input x, returning queries in shape
         *[batch_shape,num_queries,numheads×feat_dim]*. (Default value = None)
     to_kv_fn
         The function to compute keys and values from the context. (Default value = None)
@@ -210,11 +212,56 @@ def multi_head_attention(
     -------
     ret
         The output following application of multi-head attention.
-        *[batch_shape,num_queries,out_feat_dim]*
-    
-    Examples
+        The shape of output array is *[batch_shape,num_queries,out_feat_dim]*
+
+    Functional Examples
     --------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[0.2, 2., 5.3, 1.2], [2.2, 3., 1.7, 1.2],[4.4, 5.6, 4.1, 6.1],[7.1, 4.2, 1.3, 1.1]]])
+    >>> result = ivy.multi_head_attention(x, scale=1, num_heads=2)
+    >>> print(result)
+    ivy.array([[[1.31, 6.1 ],
+        [1.3 , 6.01],
+        [1.3 , 6.1 ],
+        [1.3 , 5.92]]], dev=gpu:0)
     
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[[0.2, 2., 5.3, 1.2], [2.2, 3., 1.7, 1.2],[4.4, 5.6, 4.1, 6.1],[7.1, 4.2, 1.3, 1.1]]])
+    >>> result = ivy.multi_head_attention(x, scale=1, num_heads=2)
+    >>> print(result)
+    ivy.array([[[1.31, 6.1 ],
+        [1.3 , 6.01],
+        [1.3 , 6.1 ],
+        [1.3 , 5.92]]], dev=gpu:0)
+        
+    Instance Method Examples
+    --------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[0.2, 2., 5.3, 1.2], [2.2, 3., 1.7, 1.2],[4.4, 5.6, 4.1, 6.1],[7.1, 4.2, 1.3, 1.1]]])
+    >>> result = ivy.multi_head_attention(x, scale=1, num_heads=2)
+    >>> print(result)
+    ivy.array([[[1.31, 6.1 ],
+        [1.3 , 6.01],
+        [1.3 , 6.1 ],
+        [1.3 , 5.92]]], dev=gpu:0)
+
+    With :code:`ivy.NativeArray` input:
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.native_array([[[0.2, 2., 5.3, 1.2], [2.2, 3., 1.7, 1.2],[4.4, 5.6, 4.1, 6.1],[7.1, 4.2, 1.3, 1.1]]])
+    >>> result = ivy.multi_head_attention(x, scale=1, num_heads=2)
+    >>> print(result)
+    ivy.array([[[1.31, 6.1 ],
+        [1.3 , 6.01],
+        [1.3 , 6.1 ],
+        [1.3 , 5.92]]], dev=gpu:0)
 
     """
     # BS x Q x (HxF)
