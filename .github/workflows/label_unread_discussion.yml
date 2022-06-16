@@ -30,15 +30,15 @@ jobs:
         run: |
           gh api graphql -f query='
             mutation (
-              $label_id: [ID!]!
+              $label_ids: [ID!]!
               $labelable_id: ID!
             ) {
               set_label: addLabelsToLabelable(input: {
-                labelId: $label_id
+                labelIds: $label_ids
                 labelableId: $labelable_id
               }) {
                 labelable {
                   labels
                 }
               }
-            }' -f label_id=[$LABEL_ID] -f labelable_id=$DISCUSSION_ID --silent
+            }' -f label_ids=[$LABEL_ID] -f labelable_id=$DISCUSSION_ID --silent
