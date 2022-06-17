@@ -1,12 +1,4 @@
-# local
-from ivy.container.base import ContainerBase
-
-# ToDo: implement all methods here as public instance methods
-
-
-# noinspection PyMissingConstructor
-class ContainerWithActivations(ContainerBase):
-    # global
+# global
 from typing import Optional, Union, List, Dict, Tuple
 
 # local
@@ -39,7 +31,7 @@ class ContainerWithActivations(ContainerBase):
 
     def leaky_relu(
             self: ivy.Container,
-            alpha: Optional[float, ivy.Container] = 0.2,
+            alpha: Optional[ivy.Container] = None,
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
