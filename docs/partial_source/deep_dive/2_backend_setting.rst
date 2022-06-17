@@ -36,23 +36,26 @@ When calling `this function`_ for setting the backend, the following steps are p
 It's helpful to look at an example:
 
 .. code-block:: python
-    x = ivy.array([[2., 3.]])
-    ivy.get_backend()
-    <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
+
+   x = ivy.array([[2., 3.]])
+   ivy.get_backend()
+   <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
 
 .. code-block:: python
-    y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
-    ivy.get_backend()
-    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
+
+   y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
+   ivy.get_backend()
+   <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 .. code-block:: python
-    ivy.set_backend('jax)
-    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
-    ivy.get_backend()
-    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
-    ivy.unset_backend()
-    ivy.get_backend()
-    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
+
+   ivy.set_backend('jax')
+   z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
+   ivy.get_backend()
+   <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
+   ivy.unset_backend()
+   ivy.get_backend()
+   <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_. However when the \
 backend is unset using the :code:`ivy.unset_backend`, the `implicit_backend`_ will be used as a fallback, which will \

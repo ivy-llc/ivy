@@ -100,13 +100,28 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
