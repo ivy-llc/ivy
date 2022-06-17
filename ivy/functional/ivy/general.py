@@ -581,7 +581,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     return _cur_backend(x).to_list(x)
 
 
-@to_native_arrays_and_back
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -614,7 +613,7 @@ def clip_vector_norm(
     if ratio < 1:
         ret = ratio * x
     else:
-        ret = ivy.copy_array(x)._data
+        ret = x
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

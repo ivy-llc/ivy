@@ -26,6 +26,8 @@ def add(
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
+    elif not isinstance(x1, tf.Tensor):
+        x1 = tf.constant(x1, dtype=x2.dtype)
     return tf.add(x1, x2)
 
 

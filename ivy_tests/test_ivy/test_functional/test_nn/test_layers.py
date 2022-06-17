@@ -111,10 +111,10 @@ def test_scaled_dot_product_attention(
 ):
     q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
     # smoke test
-    q = tensor_fn(q, dtype, device)
-    k = tensor_fn(k, dtype, device)
-    v = tensor_fn(v, dtype, device)
-    mask = tensor_fn(mask, dtype, device)
+    q = tensor_fn(q, dtype=dtype, device=device)
+    k = tensor_fn(k, dtype=dtype, device=device)
+    v = tensor_fn(v, dtype=dtype, device=device)
+    mask = tensor_fn(mask, dtype=dtype, device=device)
     ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -137,9 +137,9 @@ def test_scaled_dot_product_attention(
 def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
-    x = tensor_fn(x, dtype, device)
-    context = tensor_fn(context, dtype, device)
-    mask = tensor_fn(mask, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    context = tensor_fn(context, dtype=dtype, device=device)
+    mask = tensor_fn(mask, dtype=dtype, device=device)
     fn = lambda x_, v: ivy.tile(x_, (1, 2))
     ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
     # type test
@@ -179,9 +179,9 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv1d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -231,9 +231,9 @@ def test_conv1d_transpose(
         # numpy and jax do not yet support conv1d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -371,9 +371,9 @@ def test_conv2d_transpose(
         # numpy and jax do not yet support conv2d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -427,9 +427,9 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
         # numpy and jax do not yet support depthwise 2d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.depthwise_conv2d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -616,9 +616,9 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
         # numpy and jax do not yet support 3d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv3d(x, filters, 1, padding)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -850,9 +850,9 @@ def test_conv3d_transpose(
         # mxnet only supports 3d transpose convolutions with CUDNN
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, device)
-    filters = tensor_fn(filters, dtype, device)
-    true_res = tensor_fn(true_res, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    filters = tensor_fn(filters, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
     ret = ivy.conv3d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -895,7 +895,8 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, device, call):
         state_c_true_val,
     ) = b_t_ic_hc_otf_sctv
     x = ivy.asarray(
-        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), "float32"
+        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
+        dtype="float32",
     )
     init_h = ivy.ones([b, hidden_channels])
     init_c = ivy.ones([b, hidden_channels])
