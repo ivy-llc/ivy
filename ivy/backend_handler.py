@@ -2,11 +2,9 @@
 import ivy
 import logging
 import importlib
-import collections
 import numpy as np
 from ivy import verbosity
 from typing import Optional
-from types import FunctionType
 
 # local
 from ivy.func_wrapper import _wrap_function
