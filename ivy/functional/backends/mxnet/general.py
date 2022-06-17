@@ -229,13 +229,14 @@ def gather_nd(params, indices, device=None):
     return mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(device))
 
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
-# noinspection PyUnusedLocal
-one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
+
+
+def one_hot(indices, depth, device=None):
+    return mx.nd.one_hot(indices, depth)
 
 
 def shape(x: mx.nd.NDArray, as_tensor: bool = False) -> Union[mx.nd.NDArray, List[int]]:
@@ -245,11 +246,12 @@ def shape(x: mx.nd.NDArray, as_tensor: bool = False) -> Union[mx.nd.NDArray, Lis
         return x.shape
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: mx.nd.shape_array(mx.nd.shape_array(x)).reshape([])
-    if as_tensor
-    else len(x.shape)
-)
+def get_num_dims(x, as_tensor=False):
+    return (
+        mx.nd.shape_array(mx.nd.shape_array(x)).reshape([])
+        if as_tensor
+        else len(x.shape)
+    )
 
 
 def indices_where(x):
