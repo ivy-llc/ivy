@@ -804,8 +804,8 @@ def function_supported_dtypes(fn: Callable, backend: str) -> ivy.Dtype:
     >>> ivy.set_backend('torch')
     >>> acosh = getattr(ivy, 'acosh')
     >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8', 'int16', 'int32', 'int64', 'uint8', 'bfloat16',
-    'float16', 'float32', 'float64', 'bool')
+    ('int8', 'int16', 'int32', 'int64', 'uint8',\
+     'bfloat16', 'float16', 'float32', 'float64', 'bool')
     """
     valid = list(ivy.valid_dtypes)
     for d in list(function_unsupported_dtypes(fn, backend)):

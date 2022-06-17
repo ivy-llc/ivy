@@ -421,29 +421,30 @@ def test_array_function(
     test_values: bool = True,
     **all_as_kwargs_np
 ):
-    """Tests a function that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Tests a function that consumes (or returns) arrays for the current backend
+    by comparing the result with numpy.
 
     Parameters
     ----------
     input_dtypes
         data types of the input arguments in order.
     as_variable_flags
-        dictates whether the corresponding input argument should be treated as an ivy
-        Variable.
+        dictates whether the corresponding input argument should be t
+        reated as an ivy Variable.
     with_out
         if true, the function is also tested with the optional out argument.
     num_positional_args
-        number of input arguments that must be passed as positional arguments.
+        number of input arguments that must be passed as positional
+        arguments.
     native_array_flags
-        dictates whether the corresponding input argument should be treated as a native
-        array.
+        dictates whether the corresponding input argument should be treated
+         as a native array.
     container_flags
-        dictates whether the corresponding input argument should be treated as an ivy
-        Container.
+        dictates whether the corresponding input argument should be treated
+         as an ivy Container.
     instance_method
-        if true, the function is run as an instance method of the first argument
-        (should be an ivy Array or Container).
+        if true, the function is run as an instance method of the first
+         argument (should be an ivy Array or Container).
     fw
         current backend (framework).
     fn_name
@@ -476,9 +477,9 @@ def test_array_function(
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,
-    >>>  num_positional_args, native_array_flags, container_flags,
-    >>>  instance_method, fw, fn_name, x=x)
+    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+                            num_positional_args, native_array_flags,
+    >>> container_flags, instance_method, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
@@ -491,9 +492,10 @@ def test_array_function(
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,
-    >>>  num_positional_args, native_array_flags, container_flags,
-    >>>  instance_method, fw, fn_name, x1=x1, x2=x2)
+    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+                            num_positional_args, native_array_flags,\
+                             container_flags, instance_method,\
+                              fw, fn_name, x1=x1, x2=x2)
     """
     # convert single values to length 1 lists
     input_dtypes, as_variable_flags, native_array_flags, container_flags = as_lists(

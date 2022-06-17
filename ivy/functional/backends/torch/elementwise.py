@@ -99,9 +99,11 @@ def asin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
     return torch.asin(x, out=out)
 asin.unsupported_dtypes = tuple(['float16'])
 
+
 def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.asinh(x, out=out)
 asinh.unsupported_dtypes = tuple(['float16'])
+
 
 def sign(x: Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
     return torch.sign(x, out=out)
@@ -166,6 +168,7 @@ def multiply(
 def cos(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.cos(x, out=out)
 cos.unsupported_dtypes = tuple(['float16'])
+
 
 def logical_not(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool), out=out)
@@ -332,6 +335,7 @@ def atan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
     return torch.atan(x, out=out)
 atan.unsupported_dtypes = tuple(['float16'])
 
+
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -343,6 +347,7 @@ def atan2(
         x2 = x2.to(promoted_type)
     return torch.atan2(x1, x2, out=out)
 atan2.unsupported_dtypes = tuple(['float16'])
+
 
 def log(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.log(x, out=out)
