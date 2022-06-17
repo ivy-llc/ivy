@@ -10,11 +10,7 @@ import warnings
 
 import numpy as np
 import math
-from numpy import array_api as xp
-from hypothesis.extra.array_api import make_strategies_namespace
 from typing import Union, List
-
-xps = make_strategies_namespace(xp)
 
 
 try:
