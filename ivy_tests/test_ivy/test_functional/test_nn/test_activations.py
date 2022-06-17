@@ -32,7 +32,6 @@ def test_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -43,7 +42,7 @@ def test_relu(
         container,
         instance_method,
         "relu",
-        x=x,
+        x=np.asarray(x, dtype=dtype),
     )
 
 
@@ -104,7 +103,6 @@ def test_gelu(
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -115,11 +113,9 @@ def test_gelu(
         container,
         instance_method,
         "gelu",
-        x=x,
+        x = np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
-
-
 # tanh
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -206,9 +202,8 @@ def test_softmax(
 ):
     dtype, x = dtype_and_x
     axis = None
-    x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
+
+
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -219,7 +214,7 @@ def test_softmax(
         container,
         instance_method,
         "softmax",
-        x=x,
+        x = np.asarray(x, dtype=dtype),
         axis=axis,
     )
 
