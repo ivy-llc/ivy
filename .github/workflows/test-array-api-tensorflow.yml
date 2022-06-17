@@ -24,6 +24,15 @@ jobs:
         id: tests
         run: |
           cd ivy
+          
+          # Skip test cases with known issues
+          cat << EOF >> skips.txt
+
+          # Skipped in module too
+          array_api_tests/test_creation_functions.py::test_asarray_arrays
+
+          EOF
+          
           ./test_array_api.sh tensorflow
         continue-on-error: true
         
