@@ -347,7 +347,6 @@ def diagonal(
 
     Functional Examples
     ------------------
-
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -470,7 +469,6 @@ def diagonal(
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([[1,2,3], [4,5,6], [7,8,9]])
