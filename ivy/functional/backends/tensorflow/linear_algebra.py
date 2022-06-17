@@ -4,8 +4,8 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
-from ivy import inf
 import ivy
+from ivy import inf
 
 
 # Array API Standard #
