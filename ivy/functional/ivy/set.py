@@ -290,7 +290,109 @@ def unique_values(
         .. note::
            The order of unique elements is not specified and may vary between
            implementations.
-
+    
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/
+    generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+    
+    Functional Examples
+    -------------------
+    
+    With :code: 'ivy.Array' input:
+    
+    >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))
+    >>> print(x)
+    ivy.array([[ 2.1141,  0.8101],
+               [-1.2119, -0.3519]])
+    >>> values = ivy.unique_values(x)
+    >>> print(values)
+    ivy.array([-1.2119, -0.3519,  0.8101,  2.1141])
+    
+    >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(3, 3))
+    >>> print(x)
+    ivy.array([[-0.40501155,  1.77361575, -1.97776199],
+               [-0.36831157,  0.89148434, -0.9512272 ],
+               [ 0.67542176, -0.41985657,  0.23478023]])
+    >>> values = ivy.unique_values(x)
+    >>> print(values)
+    ivy.array([-1.97776199, -0.9512272 , -0.41985657, -0.40501155, -0.36831157,
+                0.23478023,  0.67542176,  0.89148434,  1.77361575])
+    
+    With :code: 'ivy.NativeArray' input:
+    
+    >>> x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+                              [-1.2119, -0.3519, -0.6252,  0.4033],
+                              [ 0.7443,  0.2577, -0.3707, -0.0545],
+                              [-0.3238,  0.5944,  0.0775, -0.4327]])
+    >>> print(x)
+    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+               [-1.2119, -0.3519, -0.6252,  0.4033],
+               [ 0.7443,  0.2577, -0.3707, -0.0545],
+               [-0.3238,  0.5944,  0.0775, -0.4327]])
+    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
+    >>> print(x)
+    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
+               [-1.2119,     nan, -0.6252,  0.4033],
+               [ 0.7443,  0.2577,     nan, -0.0545],
+               [-0.3238,  0.5944,  0.0775,     nan]])
+    >>> values = ivy.unique_values(x)
+    >>> print(values)
+    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
+               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
+    
+    Instance Method Examples
+    ------------------------
+    
+    With :code: 'ivy.Array' input:
+    
+    >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+                       [-1.2119, -0.3519, -0.6252,  0.4033],
+                       [ 0.7443,  0.2577, -0.3707, -0.0545],
+                       [-0.3238,  0.5944,  0.0775, -0.4327]])
+    >>> print(x)
+    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+               [-1.2119, -0.3519, -0.6252,  0.4033],
+               [ 0.7443,  0.2577, -0.3707, -0.0545],
+               [-0.3238,  0.5944,  0.0775, -0.4327]])
+    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
+    >>> print(x)
+    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
+               [-1.2119,     nan, -0.6252,  0.4033],
+               [ 0.7443,  0.2577,     nan, -0.0545],
+               [-0.3238,  0.5944,  0.0775,     nan]])
+    >>> values = x.unique_values()
+    >>> print(values)
+    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
+               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
+    
+    With :code: 'ivy.NativeArray' input:
+    
+    >>> x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],
+                              [-0.071,  1.262, -0.456, -2.114],
+                              [-0.349,  0.615, -0.594, -1.335],
+                              [ 0.212,  0.457, -0.827,  0.209]])
+    >>> print(x)
+    ivy.array([[-2.176,  0.889,  1.175, -0.763],
+               [-0.071,  1.262, -0.456, -2.114],
+               [-0.349,  0.615, -0.594, -1.335],
+               [ 0.212,  0.457, -0.827,  0.209]])
+    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
+    >>> print(x)
+    ivy.array([[   nan,  0.889,  1.175, -0.763],
+               [-0.071,    nan, -0.456, -2.114],
+               [-0.349,  0.615,    nan, -1.335],
+               [ 0.212,  0.457, -0.827,    nan]])
+    >>> values = x.unique_values()
+    >>> print(values)
+    ivy.array([-2.114, -1.335, -0.827, -0.763, -0.456,
+               -0.349, -0.071,  0.212,  0.457,  0.615,
+                0.889,  1.175,    nan,    nan,    nan,
+                  nan])
     """
     return _cur_backend(x).unique_values(x, out=out)
 
