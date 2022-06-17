@@ -15,6 +15,7 @@ def add(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.add(np.asarray(x1), np.asarray(x2))
+add.unsupported_dtypes = tuple(['float16'])
 
 
 def pow(
@@ -230,6 +231,7 @@ def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 def negative(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.negative(x, out=out)
+negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def not_equal(

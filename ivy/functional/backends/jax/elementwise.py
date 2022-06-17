@@ -15,6 +15,7 @@ def bitwise_left_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.add(x1, x2)
+add.unsupported_dtypes = tuple(['float16'])
 
 
 def bitwise_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
@@ -171,6 +172,7 @@ def sin(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
 
 def negative(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.negative(x)
+negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def not_equal(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:

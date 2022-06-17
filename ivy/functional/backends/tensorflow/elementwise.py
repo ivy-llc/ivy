@@ -29,6 +29,7 @@ def add(
     elif not isinstance(x1, tf.Tensor):
         x1 = tf.constant(x1, dtype=x2.dtype)
     return tf.add(x1, x2)
+add.unsupported_dtypes = tuple(['float16'])
 
 
 def bitwise_xor(
@@ -341,6 +342,7 @@ def negative(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     else:
         ret = tf.negative(x)
     return ret
+negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def not_equal(
@@ -424,7 +426,7 @@ def pow(
         x2 = tf.cast(x2, tf.float64)
     ret = tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     return ret
-pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
+pow.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def remainder(

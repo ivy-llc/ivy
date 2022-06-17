@@ -17,6 +17,7 @@ def add(
     x2: mx.nd.NDArray,
 ) -> mx.nd.NDArray:
     return mx.nd.add(x1, x2)
+add.unsupported_dtypes = tuple(['float16'])
 
 
 @_handle_flat_arrays_in_out
@@ -229,6 +230,7 @@ def negative(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDA
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 @_handle_flat_arrays_in_out
