@@ -13,7 +13,10 @@ def add(
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
+
+
 add.unsupported_dtypes = tuple([ivy.float16])
+
 
 def bitwise_xor(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
@@ -24,6 +27,8 @@ def bitwise_xor(
 
 def expm1(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
     return torch.expm1(x, out=out)
+
+
 expm1.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -85,6 +90,8 @@ def ceil(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
             return ivy.inplace_update(out, x)
         return x
     return torch.ceil(x, out=out)
+
+
 ceil.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -94,16 +101,24 @@ def floor(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
             return ivy.inplace_update(out, x)
         return x
     return torch.floor(x, out=out)
+
+
 floor.unsupported_dtypes = tuple([ivy.float16])
 
 
 def asin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.asin(x, out=out)
+
+
 asin.unsupported_dtypes = tuple([ivy.float16])
+
 
 def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.asinh(x, out=out)
+
+
 asinh.unsupported_dtypes = tuple([ivy.float16])
+
 
 def sign(x: Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
     return torch.sign(x, out=out)
@@ -111,26 +126,36 @@ def sign(x: Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
 
 def sqrt(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sqrt(x, out=out)
+
+
 sqrt.unsupported_dtypes = tuple([ivy.float16])
 
 
 def cosh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.cosh(x, out=out)
+
+
 cosh.unsupported_dtypes = tuple([ivy.float16])
 
 
 def log10(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.log10(x, out=out)
+
+
 log10.unsupported_dtypes = tuple([ivy.float16])
 
 
 def log2(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.log2(x, out=out)
+
+
 log2.unsupported_dtypes = tuple([ivy.float16])
 
 
 def log1p(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.log1p(x, out=out)
+
+
 log1p.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -167,7 +192,10 @@ def multiply(
 
 def cos(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.cos(x, out=out)
+
+
 cos.unsupported_dtypes = tuple([ivy.float16])
+
 
 def logical_not(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool), out=out)
@@ -205,6 +233,8 @@ def greater_equal(
 
 def acos(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.acos(x, out=out)
+
+
 acos.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -228,11 +258,15 @@ def logical_or(
 
 def acosh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.acosh(x, out=out)
+
+
 acosh.unsupported_dtypes = tuple([ivy.float16])
 
 
 def sin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sin(x, out=out)
+
+
 sin.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -247,6 +281,8 @@ def not_equal(x1: Tensor, x2: Tensor, *, out: Optional[torch.Tensor] = None) -> 
 
 def tanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tanh(x, out=out)
+
+
 tanh.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -266,6 +302,8 @@ def bitwise_or(
 
 def sinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sinh(x, out=out)
+
+
 sinh.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -296,6 +334,8 @@ def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
             return ivy.inplace_update(out, x)
         return x
     return torch.round(x, out=out)
+
+
 round.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -306,6 +346,8 @@ def trunc(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
 trunc.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -321,17 +363,24 @@ def logaddexp(
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.logaddexp(x1, x2, out=out)
+
+
 logaddexp.unsupported_dtypes = tuple([ivy.float16])
 
 
 def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tan(x, out=out)
+
+
 tan.unsupported_dtypes = tuple([ivy.float16])
 
 
 def atan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.atan(x, out=out)
+
+
 atan.unsupported_dtypes = tuple([ivy.float16])
+
 
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
@@ -343,15 +392,22 @@ def atan2(
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.atan2(x1, x2, out=out)
+
+
 atan2.unsupported_dtypes = tuple([ivy.float16])
+
 
 def log(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.log(x, out=out)
+
+
 log.unsupported_dtypes = tuple([ivy.float16])
 
 
 def exp(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.exp(x, out=out)
+
+
 exp.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -378,6 +434,8 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
 
 def atanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.atanh(x, out=out)
+
+
 atanh.unsupported_dtypes = tuple([ivy.float16])
 
 
@@ -409,6 +467,8 @@ def bitwise_left_shift(
 
 def erf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.erf(x, out=out)
+
+
 erf.unsupported_dtypes = tuple([ivy.float16])
 
 
