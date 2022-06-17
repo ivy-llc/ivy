@@ -917,7 +917,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     >>> x = ivy.native_array([0., 2., 3.])
     >>> print(ivy.shape_to_tuple(x))
-    (tensor(0., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0'))
+    (tensor(0., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0')) # noqa
 
     >>> x = ivy.native_array([[0., 2., 3.], [4., 5., 6.]])
     >>> print(ivy.shape_to_tuple(x))
