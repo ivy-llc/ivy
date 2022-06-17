@@ -1194,7 +1194,9 @@
         <span class="k">return</span> <span class="s2">&quot;DevClonedNest(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+                    <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DevClonedItem</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Clone an array across the specified devices, returning a list of cloned arrays,</span>
 <span class="sd">    each on a different device.</span>
 
@@ -1209,6 +1211,44 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array cloned to each of the target devices</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code: `ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;cpu&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;cpu&#39;: array([4, 5, 6])})</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 8, 4], [2, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;gpu:0&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;gpu:0&#39;: array([[1, 8, 4], [2, 5, 6]])})</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7, 2, 7])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;cpu&#39;, &#39;tpu:0&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;cpu&#39;: array([7, 2, 7]), &#39;tpu:0&#39;: array([7, 2, 7])})</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;gpu:2&#39;, &#39;tpu:1&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;gpu:2&#39;: array([4, 5]), &#39;tpu:1&#39;: array([4, 5])})</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;cpu&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;cpu&#39;: {</span>
+<span class="sd">        a: array([1, 2])</span>
+<span class="sd">    }})</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;b&#39;: ivy.native_array([3, 4])})</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_clone_array(x, [&#39;gpu:0&#39;, &#39;tpu:0&#39;])</span>
+<span class="sd">    DevClonedItem({&#39;gpu:0&#39;: {</span>
+<span class="sd">        b: array([3, 4])</span>
+<span class="sd">    }, &#39;tpu:0&#39;: {</span>
+<span class="sd">        b: array([3, 4])</span>
+<span class="sd">    }})</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">(</span>
