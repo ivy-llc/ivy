@@ -562,14 +562,6 @@
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">to_wrap</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
-        <span class="p">):</span>
-            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">):</span>
             <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
@@ -586,6 +578,14 @@
             <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
         <span class="p">):</span>
             <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
+        <span class="p">):</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_wrap</span>
 </pre></div>
 
