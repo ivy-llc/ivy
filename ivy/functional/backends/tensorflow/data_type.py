@@ -13,9 +13,11 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)
+    print("from_str:", from_str)
+    print("to_str:", to_str)
     if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
         return False
-    if "'int" in from_str and "uint" in to_str:
+    if ("int" in from_str and "u" not in from_str) and "uint" in to_str:
         return False
     if "bool" in from_str and (("int" in to_str) or ("float" in to_str)):
         return False
@@ -25,7 +27,7 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
         return False
     if "float" in from_str and "int" in to_str:
         return False
-    if "uint" in from_str and "'int" in to_str:
+    if "uint" in from_str and ("int" in to_str and "u" not in to_str):
         if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
             return False
     return True
