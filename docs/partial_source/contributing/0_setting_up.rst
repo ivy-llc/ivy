@@ -300,7 +300,7 @@ Just follow the steps outlined below:
 .. image:: content/open_vscode_desktop.png
    :width: 420
 
-3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process only. Any subsequent connection to your ivy codespace will launch in 10-15 seconds.
+3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process. Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
 
 .. image:: content/building_codespace.png
    :width: 420
@@ -321,7 +321,7 @@ Log of container being built would look like below:
 
 If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
 
-There are 3 ways to connect your existing codespaces, you use either approaches.
+There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.
 
 1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
 
@@ -340,7 +340,7 @@ There are 3 ways to connect your existing codespaces, you use either approaches.
 
 **Troubleshooting**
 
-Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written "Select Python Interpreter". From there, select :code:`Python 3.8.10 usr/bin/python3`.
+Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written "Select Python Interpreter". From there, select :code:`Python 3.8.10 64-bit usr/bin/python3`.
 
 Pre-Commit
 ----------
