@@ -163,5 +163,5 @@ def clip(
     return ret
 
 
-def flatten(x):
+def flatten(x: np.ndarray) -> np.ndarray:
     return x.flatten()

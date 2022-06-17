@@ -186,6 +186,5 @@ def swapaxes(
     return ret
 
 
-def flatten(x):
-    arr = jnp.ravel(x)
-    return arr
+def flatten(x: JaxArray, *, out=None) -> JaxArray:
+    return jnp.reshape(x, -1)

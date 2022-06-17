@@ -235,7 +235,4 @@ def clip(
 
 
 def flatten(x):
-    shape = 1
-    for dim in x.shape:
-        shape *= dim
-    return tf.reshape(x, shape)
+    return tf.reshape(x, -1)

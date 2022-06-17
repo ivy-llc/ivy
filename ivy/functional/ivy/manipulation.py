@@ -1006,5 +1006,55 @@ def clip(
 
 
 @to_native_arrays_and_back
-def flatten(x):
+def flatten(x: Union[ivy.Array, ivy.NativeArray])  -> ivy.Array:
+    """Flattens the array by making it 1-dimensional with length the number of
+    total elements throuhgt all the axes put in one axis.
+
+    Parameters
+    ----------
+    x
+        Input array to be flattened.
+
+    Returns
+    -------
+    ret
+        The flattened array
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[3, 4], [1, 8]])
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    ivy.array([3, 4, 1, 8])
+
+    >>> x = ivy.array([[[[3, 4], [1, 8]], [[10, 0], [2, 0]]]])
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    ivy.array([ 3,  4,  1,  8, 10,  0,  2,  0])
+
+    >>> x = ivy.array([0., 1.,])
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    ivy.array([0., 1.,])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.,], [3., 4., 5.,]])
+    >>> y = ivy.flatten(x)
+    >>> print(y)
+    ivy.array([0., 1., 2., 3., 4., 5.])
+
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([[2], [4]])
+    >>> y = x.flatten()
+    >>> print(y)
+    ivy.array([2, 4])
+    """
     return _cur_backend(x).flatten(x)

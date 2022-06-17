@@ -872,7 +872,7 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
         return
 
 
-# flatteb
+# flatten
 @given(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]

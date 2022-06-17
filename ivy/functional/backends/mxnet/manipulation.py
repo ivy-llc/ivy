@@ -212,5 +212,6 @@ def clip(
     return ret
 
 
-def flatten(x):
+def flatten(x: mx.ndarray.ndarray.NDArray
+            ) -> mx.ndarray.ndarray.NDArray:
     return x.reshape((-1,))

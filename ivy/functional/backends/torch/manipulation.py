@@ -217,5 +217,5 @@ def clip(
     return ret
 
 
-def flatten(x):
+def flatten(x: torch.Tensor) -> torch.Tensor:
     return torch.flatten(x)
