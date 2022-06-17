@@ -1074,7 +1074,6 @@ class DevClonedNest(MultiDevNest):
 def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
                     devices: Union[Iterable[str], Dict[str, int]]
                     ) -> DevClonedItem:
-
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -1129,7 +1128,6 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
     }})
 
     """
-
     return DevClonedItem(
         {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
     )
