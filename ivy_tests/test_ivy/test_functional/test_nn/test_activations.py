@@ -33,9 +33,6 @@ def test_relu(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
-
     helpers.test_array_function(
         dtype,
         as_variable,
