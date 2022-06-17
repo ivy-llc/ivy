@@ -552,7 +552,9 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
 
 
 def unset_default_device():
-    """"""
+    """Unset the default device (if a default device has been set)
+    
+    """
     global default_device_stack
     if default_device_stack:
         default_device_stack.pop(-1)
