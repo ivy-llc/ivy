@@ -574,7 +574,7 @@ def test_array_function(
         None: 1e-05,
     }
     if not rtol:
-        if ret.dtype in tolerance_dict:
+        if hasattr(ret, "dtype") and ret.dtype in tolerance_dict:
             rtol = tolerance_dict[ret.dtype]
         else:
             rtol = 1e-05
