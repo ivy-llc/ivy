@@ -868,6 +868,9 @@ def test_floor_divide(
     x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
     x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
     assume(np.all(x2[0] != 0))
+    # we assume values aren't too close to the boundaries as tf and torch have issues:
+    # https://github.com/pytorch/pytorch/issues/77742#issuecomment-1146026178
+    # https://github.com/tensorflow/tensorflow/issues/56130
     if fw in ["tensorflow", "torch"]:
         if ivy.is_float_dtype(input_dtype[0]):
             low1 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
