@@ -22,7 +22,7 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
 
 default_device_stack = list()
@@ -194,7 +194,7 @@ def dev(
     >>> print(y)
     cpu
     """
-    return _cur_backend(x).dev(x, as_native)
+    return current_backend(x).dev(x, as_native)
 
 
 # Conversions
@@ -214,7 +214,7 @@ def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_backend().as_ivy_dev(device)
+    return current_backend().as_ivy_dev(device)
 
 
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
@@ -231,7 +231,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
         Native device handle.
 
     """
-    return _cur_backend().as_native_dev(device)
+    return current_backend().as_native_dev(device)
 
 
 # Memory
@@ -246,7 +246,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
         The device string to convert to native device handle.
 
     """
-    return _cur_backend(None).clear_mem_on_dev(device)
+    return current_backend(None).clear_mem_on_dev(device)
 
 
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
@@ -400,7 +400,7 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    return _cur_backend().gpu_is_available()
+    return current_backend().gpu_is_available()
 
 
 def num_cpu_cores() -> int:
@@ -434,7 +434,7 @@ def num_gpus() -> int:
     1
 
     """
-    return _cur_backend().num_gpus()
+    return current_backend().num_gpus()
 
 
 def tpu_is_available() -> bool:
@@ -450,7 +450,7 @@ def tpu_is_available() -> bool:
     >>> print(ivy.tpu_is_available())
     False
     """
-    return _cur_backend().tpu_is_available()
+    return current_backend().tpu_is_available()
 
 
 # Default Device #
@@ -577,7 +577,7 @@ def to_device(
     >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return _cur_backend(x).to_device(x, device, out=out)
+    return current_backend(x).to_device(x, device, out=out)
 
 
 # Function Splitting #

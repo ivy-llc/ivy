@@ -7,7 +7,7 @@ from typing import Union, Tuple, List, Optional, Callable
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as current_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
