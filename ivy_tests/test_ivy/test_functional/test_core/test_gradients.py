@@ -125,7 +125,7 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
         # Tf graph mode cannot create variables as part of the computation graph
         assert np.array_equal(
             call(ivy.stop_gradient, x),
-            ivy.functional.backends.numpy.array(x_raw, dtype=dtype, device=device),
+            np.array(x_raw, dtype=dtype),
         )
     # compilation test
     if call in [helpers.torch_call]:

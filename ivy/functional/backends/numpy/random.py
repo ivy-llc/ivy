@@ -27,7 +27,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
