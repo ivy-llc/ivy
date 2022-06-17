@@ -124,7 +124,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Converters from Native Modules to Ivy Modules&quot;&quot;&quot;</span>
 
 <span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span> <span class="k">as</span> <span class="n">_cur_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 
 <div class="viewcode-block" id="to_ivy_module"><a class="viewcode-back" href="../../../stateful/converters/to_ivy_module.html#ivy.stateful.converters.to_ivy_module">[docs]</a><span class="k">def</span> <span class="nf">to_ivy_module</span><span class="p">(</span>
@@ -167,7 +167,7 @@
 <span class="sd">        The new trainable ivy.Module instance.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_backend</span><span class="p">()</span><span class="o">.</span><span class="n">to_ivy_module</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">to_ivy_module</span><span class="p">(</span>
         <span class="n">native_module</span><span class="p">,</span>
         <span class="n">native_module_class</span><span class="p">,</span>
         <span class="n">args</span><span class="p">,</span>
