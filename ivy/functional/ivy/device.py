@@ -1125,8 +1125,6 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
 
     >>> x = ivy.Container({'a': ivy.native_array([3, 4])})
     >>> y = ivy.DevClonedItem({})
-    >>> print(y)
-    DevClonedItem({})
     >>> ivy.dev_clone(x, ['gpu:0', 'tpu:0'], out=y)
     >>> print(y)
     DevClonedItem({'gpu:0': {
