@@ -186,14 +186,14 @@ def set_backend(backend: str):
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
 
-    # loop through the backend dict, wrap the function and add it to the ivy dict
-    for k, v in backend.__dict__.items():
-        if k in ivy.__dict__ and not k.startswith("__"):
-            wrapped_v = _wrap_function(k, v, original=ivy.__dict__[k])
-            ivy.__dict__[k] = wrapped_v
-
-    for dtype in backend.invalid_dtypes:
-        del ivy.__dict__[dtype]
+    for k, v in ivy_original_dict.items():
+        if k not in backend.__dict__:
+            if k in backend.invalid_dtypes:
+                del ivy.__dict__[k]
+                continue
+            backend.__dict__[k] = v
+        specific_v = _wrap_function(k, backend.__dict__[k], v)
+        ivy.__dict__[k] = specific_v
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
