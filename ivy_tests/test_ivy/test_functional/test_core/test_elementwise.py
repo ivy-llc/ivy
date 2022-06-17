@@ -67,8 +67,6 @@ def test_acosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    #if fw == "torch" and input_dtype == "float16":
-    #    return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -104,8 +102,6 @@ def test_acos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -141,8 +137,6 @@ def test_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if any([d == "float16" for d in input_dtype]):
-        return  # numpy array api doesnt support float16
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -179,8 +173,6 @@ def test_asin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -216,8 +208,6 @@ def test_asinh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -253,8 +243,6 @@ def test_atan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -290,8 +278,6 @@ def test_atan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and "float16" in input_dtype:
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -328,8 +314,6 @@ def test_atanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -588,8 +572,6 @@ def test_ceil(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -625,8 +607,6 @@ def test_cos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -662,8 +642,6 @@ def test_cosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -779,8 +757,6 @@ def test_exp(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -816,8 +792,6 @@ def test_expm1(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -853,8 +827,6 @@ def test_floor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1184,8 +1156,6 @@ def test_log(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1221,8 +1191,6 @@ def test_log1p(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1258,8 +1226,6 @@ def test_log2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1295,8 +1261,6 @@ def test_log10(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1332,8 +1296,6 @@ def test_logaddexp(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and "float16" in input_dtype:
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1662,8 +1624,6 @@ def test_pow(
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     if fw == "jax":
         return
-    if fw == "tensorflow" and any(["uint" in d for d in input_dtype]):
-        return
     if (
         np.any(x2 < 0)
         and ivy.is_int_dtype(input_dtype[1])
@@ -1747,8 +1707,6 @@ def test_round(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1819,8 +1777,6 @@ def test_sin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1856,8 +1812,6 @@ def test_sinh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1928,8 +1882,6 @@ def test_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -2001,8 +1953,6 @@ def test_tan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -2038,8 +1988,6 @@ def test_tanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -2075,8 +2023,6 @@ def test_trunc(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -2116,8 +2062,6 @@ def test_erf(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and input_dtype == "float16":
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,

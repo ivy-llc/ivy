@@ -9,8 +9,38 @@ jobs:
     if: ${{ github.event.discussion.category.name == 'Ongoing' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Label discussion
-        uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90
+      - name: Checks
+        uses: actions/checkout@v2
         with:
-          add-labels: 'Unread Discussion'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ivy
+          persist-credentials: false
+      - name: Get label_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORGANIZATION: unifyai
+          REPOSITORY: ivy
+          LABEL_NAME: 'Unread'
+        run: |
+          gh api -H "Accept: application/vnd.github.v3+json" /repos/$ORGANIZATION/$REPOSITORY/labels/$LABEL_NAME > label_data.json
+          echo 'LABEL_ID='$(jq '.node_id' label_data.json) >> $GITHUB_ENV
+      - name: Add label to discussion
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCUSSION_ID: ${{ github.event.discussion.node_id }}
+        run: |
+          gh api graphql -f query='
+            mutation (
+              $label_ids: [ID!]!
+              $labelable_id: ID!
+            ) {
+              set_label: addLabelsToLabelable(input: {
+                labelIds: $label_ids
+                labelableId: $labelable_id
+              }) {
+                labelable {
+                  labels {
+                    totalCount
+                  }
+                }
+              }
+            }' -f label_ids=$LABEL_ID -f labelable_id=$DISCUSSION_ID --silent
