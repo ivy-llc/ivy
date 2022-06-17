@@ -306,83 +306,69 @@ def test_conv2d(
 
 
 # conv2d_transpose
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_outshp_n_res",
-    [
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "SAME",
-            (1, 3, 3, 1),
-            [[[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]],
-        ),
-        (
-            [
-                [[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]
-                for _ in range(5)
-            ],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "SAME",
-            (5, 3, 3, 1),
-            [
-                [[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [
-                [[[0.0]], [[1.0]], [[0.0]]],
-                [[[1.0]], [[1.0]], [[1.0]]],
-                [[[0.0]], [[1.0]], [[0.0]]],
-            ],
-            "VALID",
-            (1, 5, 5, 1),
-            [
-                [
-                    [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                    [[0.0], [0.0], [3.0], [0.0], [0.0]],
-                    [[0.0], [3.0], [3.0], [3.0], [0.0]],
-                    [[0.0], [0.0], [3.0], [0.0], [0.0]],
-                    [[0.0], [0.0], [0.0], [0.0], [0.0]],
-                ]
-            ],
-        ),
-    ],
+@given(
+    array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
+    filter_shape=st.integers(min_value=1, max_value=5),
+    stride=st.integers(min_value=1, max_value=3),
+    pad=st.sampled_from(['VALID', 'SAME']),
+    output_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
+    data_format=st.sampled_from(['NHWC', 'NCHW']),
+    dilations=st.integers(min_value=1, max_value=5),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans()
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv2d_transpose(
-    x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, device, call
+    array_shape,
+    filter_shape,
+    stride,
+    pad,
+    output_shape,
+    data_format,
+    dilations,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array, container,
+    instance_method,
+    fw,
+    device
 ):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if fw == 'tensorflow' and "cpu" in device:
         # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
+        return
+    if fw in ['numpy', 'jax']:
         # numpy and jax do not yet support conv2d_transpose
-        pytest.skip()
-    x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(
-        call(ivy.conv2d_transpose, x, filters, 1, padding, output_shape),
-        ivy.to_numpy(true_res),
+        return
+    if fw == 'torch' and ('16' in dtype[0] or '16' in dtype[1]):
+        # not implemented for Half
+        return
+    x = np.random.uniform(size=array_shape).astype(dtype[0])
+    x = np.expand_dims(x, (-1))
+    filters = np.random.uniform(size=(filter_shape,
+                                      filter_shape,
+                                      1,
+                                      1)).astype(dtype[1])
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "conv2d_transpose",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        output_shape=tuple(output_shape),
+        data_format=data_format,
+        dilations=dilations
     )
 
 
