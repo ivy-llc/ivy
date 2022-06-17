@@ -60,6 +60,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#github-codespaces">GitHub Codespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
 </ul>
 </li>
@@ -386,6 +387,57 @@ $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &
 <p>For questions, please reach out on the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1308">setting up discussion</a>
 or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
 </section>
+</section>
+<section id="github-codespaces">
+<h2>GitHub Codespaces<a class="headerlink" href="#github-codespaces" title="Permalink to this heading"></a></h2>
+<p>It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by <code class="code docutils literal notranslate"><span class="pre">ivy/Dockerfile</span></code>. Since it’s a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!</p>
+<p><strong>Pre-requisites</strong></p>
+<ol class="arabic simple">
+<li><p>Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from <a class="reference external" href="https://code.visualstudio.com/">here</a>).</p></li>
+<li><p>Once Visual Studio Code is installed, head over to the extension page (it’s icon is on the left pane), and search “Codespaces” and then install the extension locally.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/extension_install.png"><img alt="../_images/extension_install.png" src="../_images/extension_install.png" style="width: 420px;" /></a>
+<p>Now we are ready to begin!</p>
+<p><strong>Setting up Codespaces</strong></p>
+<p>Just follow the steps outlined below:</p>
+<ol class="arabic simple">
+<li><p>Go to your fork of <code class="code docutils literal notranslate"><span class="pre">ivy</span></code>, and then click on the green “Code” dropdown, go to Codespaces tab, and then click on “create codespace on master”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/fork_create_codespace.png"><img alt="../_images/fork_create_codespace.png" src="../_images/fork_create_codespace.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="2">
+<li><p>This will open up a new tab, where you click on “Open this codespaces on VS code desktop”. Give the relevant permissions to the browser to open up Visual Studio Code.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/open_vscode_desktop.png"><img alt="../_images/open_vscode_desktop.png" src="../_images/open_vscode_desktop.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="3">
+<li><p>Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on “Building Codespace…” on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it’s a one-time process. Any subsequent connections to your ivy codespace will launch in 10-12 seconds.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/building_codespace.png"><img alt="../_images/building_codespace.png" src="../_images/building_codespace.png" style="width: 420px;" /></a>
+<p>Log of container being built would look like below:</p>
+<a class="reference internal image-reference" href="../_images/log_codespace.png"><img alt="../_images/log_codespace.png" src="../_images/log_codespace.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>Once the container is built, you would see the following output log saying “Finished configuring codespace”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/codespace_built.png"><img alt="../_images/codespace_built.png" src="../_images/codespace_built.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="5">
+<li><p>That’s it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.</p></li>
+</ol>
+<p><strong>Opening an existing Codespaces</strong></p>
+<p>If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.</p>
+<p>There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.</p>
+<ol class="arabic simple">
+<li><p>Go to your fork of ivy, click on the green coloured dropdown “Code”, go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on “Open this codespaces on VS code desktop” to open up visual studio code application and develop from there.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/existing_codespace_fork.png"><img alt="../_images/existing_codespace_fork.png" src="../_images/existing_codespace_fork.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="2">
+<li><p>Other way to connect is to open up visual studio code application. There is a good chance that you would see <code class="code docutils literal notranslate"><span class="pre">ivy</span> <span class="pre">[Codespaces]</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy</span> <span class="pre">[vscode-remote]</span></code> on your recently opened projects. If you click either of those, it will open up your codespace.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/recent_projects.png"><img alt="../_images/recent_projects.png" src="../_images/recent_projects.png" style="width: 420px;" /></a>
+<ol class="arabic simple" start="3">
+<li><p>If in any case it doesn’t show your codespace on recent projects, go to “Remote Connection Explorer” extension tab on the left pane, from there make sure you have selected “Github Codespaces” on the top-left dropdown. Once you find your codespace, right click on it and then select “Connect to codespace in current window”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/connect_existing.png"><img alt="../_images/connect_existing.png" src="../_images/connect_existing.png" style="width: 420px;" /></a>
+<p><strong>Troubleshooting</strong></p>
+<p>Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written “Select Python Interpreter”. From there, select <code class="code docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.8.10</span> <span class="pre">64-bit</span> <span class="pre">usr/bin/python3</span></code>.</p>
 </section>
 <section id="pre-commit">
 <h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading"></a></h2>
