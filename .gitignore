@@ -18,6 +18,6 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
-# *.json # commenting for GitHub Codespaces, will later un-comment
+*.json
 .hypothesis
 .array_api_tests_k_flag*
