@@ -804,7 +804,8 @@ def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     >>> ivy.set_backend('torch')
     >>> acosh = getattr(ivy, 'acosh')
     >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8', 'int16', 'int32', 'int64', 'uint8', 'bfloat16', 'float16', 'float32', 'float64', 'bool')
+    ('int8', 'int16', 'int32', 'int64', 'uint8',\
+     'bfloat16', 'float16', 'float32', 'float64', 'bool')
     """
     valid = list(ivy.valid_dtypes)
     for d in list(function_unsupported_dtypes(fn, backend)):
@@ -833,7 +834,7 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     >>> print(function_unsupported_dtypes(acosh, 'torch'))
     ('float16', 'uint16', 'uint32', 'uint64')
     """
-    if hasattr(fn, 'unsupported_dtypes'):
+    if hasattr(fn, "unsupported_dtypes"):
         return fn.unsupported_dtypes + ivy.invalid_dtypes
     else:
         return ivy.invalid_dtypes
@@ -841,10 +842,9 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
 
 
 if __name__ == "__main__":
-    ivy.set_backend('tensorflow')
-    pow = getattr(ivy, 'pow')
-    print(function_supported_dtypes(pow, 'tensorflow'))
+    ivy.set_backend("tensorflow")
+    pow = getattr(ivy, "pow")
+    print(function_supported_dtypes(pow, "tensorflow"))
 
-    pow = getattr(ivy, 'pow')
-    print(function_unsupported_dtypes(pow, 'tensorflow'))
-
+    pow = getattr(ivy, "pow")
+    print(function_unsupported_dtypes(pow, "tensorflow"))

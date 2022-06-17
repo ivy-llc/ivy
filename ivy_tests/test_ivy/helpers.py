@@ -12,7 +12,7 @@ import numpy as np
 import math
 from numpy import array_api as xp
 from hypothesis.extra.array_api import make_strategies_namespace
-from typing import Optional, Union, List
+from typing import Union, List
 
 xps = make_strategies_namespace(xp)
 
@@ -421,26 +421,30 @@ def test_array_function(
     test_values: bool = True,
     **all_as_kwargs_np
 ):
-    """Tests a function that consumes (or returns) arrays for the current backend by comparing the result
-    with numpy.
+    """Tests a function that consumes (or returns) arrays for the current backend
+    by comparing the result with numpy.
 
     Parameters
     ----------
     input_dtypes
         data types of the input arguments in order.
     as_variable_flags
-        dictates whether the corresponding input argument should be treated as an ivy Variable.
+        dictates whether the corresponding input argument should be t
+        reated as an ivy Variable.
     with_out
         if true, the function is also tested with the optional out argument.
     num_positional_args
-        number of input arguments that must be passed as positional arguments.
+        number of input arguments that must be passed as positional
+        arguments.
     native_array_flags
-        dictates whether the corresponding input argument should be treated as a native array.
+        dictates whether the corresponding input argument should be treated
+         as a native array.
     container_flags
-        dictates whether the corresponding input argument should be treated as an ivy Container.
+        dictates whether the corresponding input argument should be treated
+         as an ivy Container.
     instance_method
-        if true, the function is run as an instance method of the first argument (should be an ivy Array
-        or Container).
+        if true, the function is run as an instance method of the first
+         argument (should be an ivy Array or Container).
     fw
         current backend (framework).
     fn_name
@@ -473,7 +477,8 @@ def test_array_function(
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out, num_positional_args, native_array_flags,
+    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+                            num_positional_args, native_array_flags,
     >>> container_flags, instance_method, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
@@ -487,7 +492,10 @@ def test_array_function(
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out, num_positional_args, native_array_flags, container_flags, instance_method, fw, fn_name, x1=x1, x2=x2)
+    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+                            num_positional_args, native_array_flags,\
+                             container_flags, instance_method,\
+                              fw, fn_name, x1=x1, x2=x2)
     """
     # convert single values to length 1 lists
     input_dtypes, as_variable_flags, native_array_flags, container_flags = as_lists(
@@ -503,14 +511,15 @@ def test_array_function(
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
-    instance_method = instance_method and (not native_array[0] or container[0])
+    instance_method = instance_method and (not ivy.native_array[0] or ivy.Container[0])
 
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function, fw): return
+        if d in ivy.function_unsupported_dtypes(function, fw):
+            return
     # change all data types so that they are supported by this framework
-    #input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+    # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -534,7 +543,8 @@ def test_array_function(
         for x, n in zip(arg_array_vals, native_array_flags[:num_arg_vals])
     ]
     arg_array_vals = [
-        as_cont(x) if c else x for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
+        as_cont(x) if c else x
+        for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
     ]
     args = ivy.copy_nest(args_np, to_mutable=True)
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
@@ -545,7 +555,8 @@ def test_array_function(
     )
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
+        ivy.array(x, dtype=d)
+        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
     ]
     kwarg_array_vals = [
         ivy.variable(x) if v else x
@@ -575,7 +586,9 @@ def test_array_function(
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
-        is_instance = [(not n) or c for n, c in zip(native_array_flags, container_flags)]
+        is_instance = [
+            (not n) or c for n, c in zip(native_array_flags, container_flags)
+        ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
         if arg_is_instance and max(arg_is_instance):
@@ -652,9 +665,7 @@ def test_array_function(
     # value tests, iterating through each array in the flattened returns
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(
-            ret_np, ret_from_np, rtol=rtol, atol=atol
-        )
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
