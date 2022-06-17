@@ -69,7 +69,7 @@ def test_linear_resample(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
+    if input_dtype == "float16":
         return
     x = ivy_np.random_normal(shape=shape, device=ivy.default_device())
     axis = random.randint(0, len(shape) - 1)

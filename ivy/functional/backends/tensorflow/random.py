@@ -18,7 +18,7 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype=None,
+    dtype=float,
     *,
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
