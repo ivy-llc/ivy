@@ -17,18 +17,21 @@ class ArrayWithStatistical(abc.ABC):
     ) -> ivy.Array:
         return ivy.min(self._data, axis, keepdims, out=out)
 
+
     def max(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.max(self._data, axis, keepdims, out=out)
-
+#Ivy
     def mean(
         self: ivy.Array,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.mean(self._data, axis, keepdims, out=out)
@@ -38,6 +41,7 @@ class ArrayWithStatistical(abc.ABC):
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.var(self._data, axis, correction, keepdims, out=out)
@@ -47,6 +51,7 @@ class ArrayWithStatistical(abc.ABC):
         axis: Union[int, Tuple[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.prod(self._data, axis, keepdims, dtype=dtype, out=out)
@@ -56,6 +61,7 @@ class ArrayWithStatistical(abc.ABC):
         axis: Union[int, Tuple[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.sum(self._data, axis, dtype, keepdims, out=out)
@@ -65,6 +71,7 @@ class ArrayWithStatistical(abc.ABC):
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.std(self._data, axis, correction, keepdims, out=out)
@@ -72,6 +79,7 @@ class ArrayWithStatistical(abc.ABC):
     def einsum(
         self: ivy.Array,
         equation: str,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.einsum(equation, self._data, out=out)

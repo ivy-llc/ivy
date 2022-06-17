@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+  <configuration default="false" name="Dockerfile" type="docker-deploy" factoryName="dockerfile">
     <deployment type="dockerfile">
       <settings>
         <option name="imageTag" value="unifyai/ivy:latest" />
