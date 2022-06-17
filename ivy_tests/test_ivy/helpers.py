@@ -426,7 +426,8 @@ def test_array_function(
         input_dtypes, as_variable, native_array, container
     )
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update variable flags to be compatible with float dtype
+    # and with_out args
     as_variable = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable, input_dtypes)
