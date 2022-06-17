@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dtype_bits &mdash; Ivy 1.0 documentation</title>
+  <title>function_supported_dtypes &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="as_ivy_dtype" href="as_ivy_dtype.html" />
-    <link rel="prev" title="astype" href="astype.html" /> 
+    <link rel="next" title="function_unsupported_dtypes" href="function_unsupported_dtypes.html" />
+    <link rel="prev" title="convert_dtype" href="convert_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,7 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="broadcast_arrays.html">broadcast_arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="astype.html">astype</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dtype_bits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_ivy_dtype.html">as_ivy_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_native_dtype.html">as_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
@@ -82,7 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="convert_dtype.html">convert_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_supported_dtypes.html">function_supported_dtypes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">function_supported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
 </ul>
 </li>
@@ -144,9 +144,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>dtype_bits</li>
+      <li>function_supported_dtypes</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/dtype_bits.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/function_supported_dtypes.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -154,23 +154,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dtype-bits">
-<h1>dtype_bits<a class="headerlink" href="#dtype-bits" title="Permalink to this heading"></a></h1>
+  <section id="function-supported-dtypes">
+<h1>function_supported_dtypes<a class="headerlink" href="#function-supported-dtypes" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.dtype_bits">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dtype_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#dtype_bits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype_bits" title="Permalink to this definition"></a></dt>
-<dd><p>Get the number of bits used for representing the input data type.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.function_supported_dtypes">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">function_supported_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#function_supported_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.function_supported_dtypes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the supported data types of the current backend’s function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The data type to determine the number of bits for.</p>
+<dd class="field-odd"><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the unsupported dtype attribute</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The number of bits used to represent the data type.</p>
+<dd class="field-odd"><p><em>ret</em> – The unsupported data types of the function</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acosh</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;acosh&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">function_supported_dtypes</span><span class="p">(</span><span class="n">acosh</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">))</span>
+<span class="go">(&#39;int8&#39;, &#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;uint8&#39;, &#39;bfloat16&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;, &#39;bool&#39;)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
@@ -184,8 +191,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="astype.html" class="btn btn-neutral float-left" title="astype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="as_ivy_dtype.html" class="btn btn-neutral float-right" title="as_ivy_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="convert_dtype.html" class="btn btn-neutral float-left" title="convert_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="function_unsupported_dtypes.html" class="btn btn-neutral float-right" title="function_unsupported_dtypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

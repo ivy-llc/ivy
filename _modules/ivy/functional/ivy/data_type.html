@@ -909,8 +909,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">ivy_backend</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="function_unsupported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_unsupported_dtypes.html#ivy.functional.ivy.data_type.function_unsupported_dtypes">[docs]</a><span class="k">def</span> <span class="nf">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unsupported data type of the current backend&#39;s function.</span>
+<div class="viewcode-block" id="function_supported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_supported_dtypes.html#ivy.functional.ivy.data_type.function_supported_dtypes">[docs]</a><span class="k">def</span> <span class="nf">function_supported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the supported data types of the current backend&#39;s function.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -922,10 +922,55 @@
 <span class="sd">    ret</span>
 <span class="sd">        The unsupported data types of the function</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; acosh = getattr(ivy, &#39;acosh&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(function_supported_dtypes(acosh, &#39;torch&#39;))</span>
+<span class="sd">    (&#39;int8&#39;, &#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;uint8&#39;, &#39;bfloat16&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;, &#39;bool&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">backend</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="n">valid</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">valid</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="function_unsupported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_unsupported_dtypes.html#ivy.functional.ivy.data_type.function_unsupported_dtypes">[docs]</a><span class="k">def</span> <span class="nf">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the unsupported data types of the current backend&#39;s function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to check for the unsupported dtype attribute</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The unsupported data types of the function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; acosh = getattr(ivy, &#39;acosh&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(function_unsupported_dtypes(acosh, &#39;torch&#39;))</span>
+<span class="sd">    (&#39;float16&#39;, &#39;uint16&#39;, &#39;uint32&#39;, &#39;uint64&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;unsupported_dtypes&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span></div>
+        <span class="k">return</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
+    <span class="nb">pow</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;pow&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">function_supported_dtypes</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">))</span>
+
+    <span class="nb">pow</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;pow&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="nb">pow</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">))</span>
+
 </pre></div>
 
            </div>
