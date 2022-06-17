@@ -6,7 +6,7 @@ import os
 _round = round
 import mxnet as mx
 from typing import Union
-from mxnet import profiler as _profiler
+from mxnet import profiler
 
 # local
 import ivy
@@ -62,7 +62,7 @@ def gpu_is_available() -> bool:
 
 
 clear_mem_on_dev = lambda device: None
-_callable_dev = dev
+# _callable_dev = dev
 
 
 def tpu_is_available() -> bool:
@@ -76,7 +76,7 @@ def num_gpus() -> int:
 class Profiler(BaseProfiler):
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
-        self._prof = _profiler
+        self._prof = profiler
         self._prof.set_config(
             profile_all=True,
             aggregate_stats=True,
