@@ -340,9 +340,14 @@ def diagonal(
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
+
     >>> d = ivy.diagonal(x, 1)
     >>> print(d)
     ivy.array([1.])
+
+    Functional Examples
+    ------------------
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -352,16 +357,16 @@ def diagonal(
     ivy.array([[1.,4.],
                [5.,8.]])
 
-    Functional examples
-
     >>> y = ivy.arange(9).reshape((3,3))
     >>>print(y)
     ivy.array([[0, 1, 2],
                [3, 4, 5],
                [6, 7, 8]], dtype=int32)
+
     >>> d = ivy.diagonal(y,-1)
     >>> print(d)
     ivy.array([3, 7], dtype=int32)
+
     >>> y = ivy.arange(27).reshape((3,3,3))
     >>> print(y)
     ivy.array([[[ 0,  1,  2],
@@ -376,15 +381,14 @@ def diagonal(
     >>> d = ivy.diagonal(y)
     >>> print(d)
     ivy.array([[ 0,  4,  8],
-           [ 9, 13, 17],
-           [18, 22, 26]], dtype=int32)
+               [ 9, 13, 17],
+               [18, 22, 26]], dtype=int32)
+
     >>> d = ivy.diagonal(y,1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]], dtype=int32)
-
-    Changing the axis arguments:
 
     >>> x = ivy.arange(8).reshape((2,2,2))
     >>>print(x)
@@ -395,10 +399,12 @@ def diagonal(
     >>> ivy.diagonal(x,0,0,1)
     ivy.array([[0, 6],
                [1, 7]], dtype=int32)
+
     >>> d = ivy.diagonal(x,1,0,1)
     >>> print(d)
     ivy.array([[2],
                [3]], dtype=int32)
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -411,11 +417,12 @@ def diagonal(
     With :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.],\
-                       [3., 4.]])
+                              [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([[1.,4.],
                [5.,8.]])
+
     >>> x = ivy.native_array([[[ 0,  1,  2],\
                                  [ 3,  4,  5],\
                                  [ 6,  7,  8]],\
@@ -429,7 +436,7 @@ def diagonal(
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]])
-    Reverse diagonal can be found by reversing order of elements
+
     >>> x = ivy.arange(9).reshape((3,3))
     >>> print(x)
     ivy.array([[0, 1, 2],
@@ -437,10 +444,29 @@ def diagonal(
                [6, 7, 8]], dtype=int32)
     >>> ivy.diagonal(x)
     ivy.array([0, 4, 8], dtype=int32)
+
     >>> ivy.diagonal(ivy.flip(x,1)) # horizontal flip
     ivy.array([2, 4, 6], dtype=int32)
+
     >>> ivy.diagonal(ivy.flip(x,0)) # vertical flip
     ivy.array([6, 4, 2], dtype=int32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([[ 0,  1,  2],\
+                                         [ 3,  4,  5],\
+                                         [ 6,  7,  8]]))
+    >>> print(x)
+    {
+        a: ivy.array([[0, 1, 2],
+                      [3, 4, 5],
+                      [6, 7, 8]])
+    }
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    {
+        a: ivy.array([0,4,8])
+    }
 
     Instance Method Examples
     ------------------------
@@ -451,9 +477,11 @@ def diagonal(
     >>> d = x.diagonal()
     >>> print(d)
     ivy.array([1, 5, 9])
+
     >>> d = ivy.flip(x,1).diagonal() # horizontal flip
     >>> print(d)
     ivy.array([3, 5, 7])
+
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
@@ -461,6 +489,16 @@ def diagonal(
     >>> d = x.diagonal(0,0,1)
     ivy.array([[1, 7],
                [2, 8]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a = ivy.array([[ 0,  1,  2],\
+                                         [ 3,  4,  5],\
+                                         [ 6,  7,  8]]))
+    >>> d = x.diagonal()
+    {
+        a: ivy.array([0,4,8])
+    }
     """
     return _cur_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
