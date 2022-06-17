@@ -2598,35 +2598,37 @@ def atanh(
     return _cur_backend(x).atanh(x, out=out)
 
 
+
 @to_native_arrays_and_back
 @handle_out_argument
-def subtract(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
+def subtract(x1: Union[ivy.Array, ivy.NativeArray],x2: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
-    with the respective element ``x2_i`` of the input array ``x2``.
+     with the respective element ``x2_i`` of the input array ``x2``.
 
-    Parameters
-    ----------
-    x1
-        first input array. Should have a numeric data type.
-    x2
-        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
-        Should have a numeric data type.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+     Parameters
+     ----------
+     x1
+         first input array. Should have a numeric data type.
+     x2
+         second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
+         Should have a numeric data type.
+     out
+         optional output array, for writing the result to. It must have a shape that the
+         inputs broadcast to.
 
-    Returns
-    -------
-    ret
-        an array containing the element-wise differences.
+     Returns
+     -------
+     ret
+         an array containing the element-wise differences.
 
-    """
-    return _cur_backend(x1).subtract(x1, x2, out=out)
+     """
+
+    if x1.size <= x2.size:
+     arr = ivy.Array
+     for index in range(x1.size):
+        arr[index] = (x1[index] - x2[index])
+
+     return _cur_backend(x1).subtract(x1, x2, arr)
 
 
 @to_native_arrays_and_back
