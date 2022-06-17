@@ -12,7 +12,7 @@ import numpy as np
 import math
 from numpy import array_api as xp
 from hypothesis.extra.array_api import make_strategies_namespace
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 xps = make_strategies_namespace(xp)
 
@@ -407,12 +407,12 @@ def as_lists(dtype, as_variable, native_array, container):
 
 
 def test_array_function(
-    input_dtypes: Union[ivy.Dtype, list[ivy.Dtype]],
-    as_variable_flags: Union[bool, list[bool]],
+    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
     num_positional_args: int,
-    native_array_flags: Union[bool, list[bool]],
-    container_flags: Union[bool, list[bool]],
+    native_array_flags: Union[bool, List[bool]],
+    container_flags: Union[bool, List[bool]],
     instance_method: bool,
     fw: str,
     fn_name: str,
