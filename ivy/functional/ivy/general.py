@@ -901,6 +901,38 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     -------
         The shape in tuple representation
 
+    Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 2., 3.])
+    >>> print(ivy.shape_to_tuple(x))
+    (ivy.array(0., dev=gpu:0), ivy.array(2., dev=gpu:0), ivy.array(3., dev=gpu:0))
+
+    >>> x = ivy.array([[0., 2., 3.], [4., 5., 6.]])
+    >>> print(ivy.shape_to_tuple(x))
+    (ivy.array([0., 2., 3.], dev=gpu:0), ivy.array([4., 5., 6.], dev=gpu:0))
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 2., 3.])
+    >>> print(ivy.shape_to_tuple(x))
+    (tensor(0., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0'))
+
+    >>> x = ivy.native_array([[0., 2., 3.], [4., 5., 6.]])
+    >>> print(ivy.shape_to_tuple(x))
+    (tensor([0., 2., 3.], device='cuda:0'), tensor([4., 5., 6.], device='cuda:0'))
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 2., 3.]))
+    >>> print(ivy.shape_to_tuple(x))
+    ('a',)
+
+    >>> x = ivy.Container(a=ivy.array([0., 2., 3.]), b=ivy.array([4., 5., 6.]))
+    >>> print(ivy.shape_to_tuple(x))
+    ('a', 'b')
+
     """
     if isinstance(shape, int):
         return (shape,)
