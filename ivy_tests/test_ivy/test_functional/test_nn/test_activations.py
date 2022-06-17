@@ -72,10 +72,8 @@ def test_leaky_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
-        return
-    if fw == "torch" and dtype == "float16":
-        return
+
+
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -112,8 +110,7 @@ def test_gelu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+
     x = np.asarray(x, dtype=dtype)
     helpers.test_array_function(
         dtype,
@@ -149,8 +146,7 @@ def test_tanh(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -184,8 +180,7 @@ def test_sigmoid(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -220,8 +215,7 @@ def test_softmax(
 ):
     dtype, x = dtype_and_x
     axis = -1
-    if fw == "torch" and dtype == "float16":
-        return
+
     x = np.asarray(x, dtype=dtype)
     if x.shape == ():
         return
@@ -259,8 +253,7 @@ def test_softplus(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+
     helpers.test_array_function(
         dtype,
         as_variable,
