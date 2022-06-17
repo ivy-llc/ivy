@@ -1006,9 +1006,8 @@ def clip(
 
 
 @to_native_arrays_and_back
-def flatten(x: Union[ivy.Array, ivy.NativeArray])  -> ivy.Array:
-    """Flattens the array by making it 1-dimensional with length the number of
-    total elements throuhgt all the axes put in one axis.
+def flatten(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """Flattens the array by making it 1-dimensional with the same size
 
     Parameters
     ----------
