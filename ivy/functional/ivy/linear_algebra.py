@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 inf = float("inf")
 
@@ -15,6 +19,7 @@ inf = float("inf")
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of

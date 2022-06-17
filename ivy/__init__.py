@@ -187,7 +187,7 @@ add_ivy_container_instance_methods(
     ],
 )
 
-
+"""
 add_ivy_container_instance_methods(
     Container,
     [
@@ -213,6 +213,7 @@ add_ivy_container_instance_methods(
     ],
     static=True,
 )
+"""
 
 # data types
 int8 = IntDtype("int8")

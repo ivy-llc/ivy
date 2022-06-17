@@ -3,6 +3,7 @@ import inspect
 import functools
 from types import FunctionType
 from typing import Callable
+from .container import _wrap_function as _wrap_function_container
 
 NON_WRAPPED_FUNCTIONS = [
     "copy_nest",
@@ -369,6 +370,12 @@ def handle_out_argument(fn: Callable) -> Callable:
 
 def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
+    try:
+        setattr(
+            ivy.Container, "static_" + fn_name, _wrap_function_container(fn_name, True)
+        )
+    except AttributeError:
+        pass
     cont_fn = getattr(ivy.Container, "static_" + fn_name)
 
     @functools.wraps(fn)
