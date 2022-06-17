@@ -152,19 +152,16 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     --------
     With :code:`ivy.Array` input:
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     1
 
-    >>> ivy.set_backend('numpy')
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     2
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.array([2])
@@ -172,7 +169,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> print(y)
     3
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.array([2])
@@ -183,19 +179,16 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     With :code:`ivy.NativeArray` input:
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     0
 
-    >>> ivy.set_backend('numpy')
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     0
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.native_array([2])
@@ -203,7 +196,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> print(y)
     0
 
-    >>> ivy.set_backend("numpy")
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.native_array([2])
@@ -214,24 +206,21 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
-    >>> ivy.set_framework('numpy')
     >>> x = ivy.Container(x1= ivy.array([-1,0,5.2]))
-    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         1
     }
 
-    >>> ivy.set_framework('numpy')
     >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
                         x2=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         2
     }
 
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
                       x2=ivy.array([-1, 0, 5.2, 4, 5]),\
                       x3=ivy.array([2]))
@@ -241,7 +230,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
         3
     }
 
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
                       x2=ivy.array([-1, 0, 5.2, 4, 5]),\
                       x3=ivy.array([2]),\
@@ -254,24 +242,21 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
 
-    >>> ivy.set_framework('numpy')
     >>> x = ivy.Container(x1= ivy.native_array([-1,0,5.2]))
-    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         0
     }
 
-    >>> ivy.set_framework('numpy')
     >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
                         x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         0
     }
 
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
                       x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
                       x3=ivy.native_array([2]))
@@ -281,7 +266,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
         0
     }
 
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
                       x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
                       x3=ivy.native_array([2]),\
