@@ -152,42 +152,45 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([-1,0,5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.dev(ivy.array([-1,0,5.2]))
+    >>> y = ivy.num_arrays_on_dev(x)
     >>> print(y)
-    1
+    2
 
-    >>> x = ivy.array([-1,0,5.2])
-    >>> y = ivy.array([-1,0,5.2,6])
-    >>> z = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.dev(ivy.array([-1,0,5.2,6,5.3]))
+    >>> y = ivy.num_arrays_on_dev(x)
     >>> print(y)
     2
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([-1,0,5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.dev(ivy.native_array([-1,0,5.2]))
+    >>> y = ivy.num_arrays_on_dev(x)
     >>> print(y)
-    1
+    2
 
-    >>> x = ivy.native_array([-1,0,5.2])
-    >>> y = ivy.native_array([-1,0,5.2,6])
-    >>> z = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.dev(ivy.native_array([-1,0,5.2,6,5.3]))
+    >>> y = ivy.num_arrays_on_dev(x)
     >>> print(y)
     2
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
-    >>> x = ivy.Container(ivy.array([-1,0,5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.Container(x1= ivy.array([-1,0,5.2]))
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
-        1
+        2
     }
 
-    >>> x = ivy.Container(x1 = ivy.array([-1,0,5.2]),\
-                          x2 = ivy.array([-1,0,5.2,6]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.Container(x1= ivy.array([-1,0,5.2,6,5.3]))
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         2
@@ -195,16 +198,17 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.Container(ivy.native_array([-1,0,5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.Container(x1= ivy.native_array([-1,0,5.2]))
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
-        1
+        2
     }
 
-    >>> x = ivy.Container(x1 = ivy.native_array([-1,0,5.2]),\
-                          x2 = ivy.native_array([-1,0,5.2,6]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> ivy.set_framework('numpy')
+    >>> x = ivy.Container(x1= ivy.native_array([-1,0,5.2,6,5.3]))
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     {
         2
