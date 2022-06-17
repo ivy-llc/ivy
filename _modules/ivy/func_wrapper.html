@@ -532,51 +532,61 @@
 <span class="c1"># Functions #</span>
 
 
-<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">original</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Apply wrapping to backend implementation `value` if the original implementation</span>
-<span class="sd">    `original` is also wrapped, and if `value` is not already wrapped. Attributes</span>
+<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to_wrap</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">original</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Apply wrapping to backend implementation `to_wrap` if the original implementation</span>
+<span class="sd">    `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes</span>
 <span class="sd">    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to</span>
-<span class="sd">    us whether a certain function has been wrapped or not.</span>
+<span class="sd">    us whether a certain function has been wrapped or not. Also handles wrapping of the</span>
+<span class="sd">    `linalg` namespace.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    value</span>
+<span class="sd">    to_wrap</span>
 <span class="sd">        the new implementation to potentially wrap</span>
 <span class="sd">    original</span>
-<span class="sd">        the original implementation of `value` which tells us which wrappers we need.</span>
+<span class="sd">        the original implementation of `to_wrap` which tells us which wrappers we need.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        `value` appropriately wrapped if `value` is a function, otherwise just the</span>
+<span class="sd">        `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the</span>
 <span class="sd">        input is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;array_spec&quot;</span><span class="p">):</span>
+        <span class="n">to_wrap</span><span class="o">.</span><span class="n">array_spec</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">array_spec</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;linalg&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">linalg_k</span><span class="p">,</span> <span class="n">linalg_v</span> <span class="ow">in</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linalg_v</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">)</span> <span class="ow">and</span> <span class="n">linalg_k</span> <span class="o">!=</span> <span class="s2">&quot;namedtuple&quot;</span><span class="p">:</span>
+                <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">linalg_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_function</span><span class="p">(</span>
+                    <span class="n">linalg_k</span><span class="p">,</span> <span class="n">linalg_v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">linalg_k</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">to_wrap</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
         <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
         <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">infer_dtype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">):</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">infer_dtype</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span>
+            <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span>
         <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span>
+            <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;inputs_to_native_arrays&quot;</span>
         <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
+            <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
         <span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">value</span>
+            <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">to_wrap</span>
 </pre></div>
 
            </div>
