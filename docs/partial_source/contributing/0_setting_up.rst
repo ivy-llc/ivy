@@ -279,10 +279,10 @@ It can be headache to install Docker and setup the PyCharm development environme
 
 1. Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from `here <https://code.visualstudio.com/>`_). 
 
-.. image:: content/create_codespace_begin.png
-   :width: 420
-
 2. Once Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), and search "Codespaces" and then install the extension locally.
+
+.. image:: content/extension_install.png
+   :width: 420
 
 Now we are ready to begin!
 
@@ -292,11 +292,28 @@ Just follow the steps outlined below:
 
 1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
 
+.. image:: content/fork_create_codespace.png
+   :width: 420
+
 2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop". Give the relevant permissions to the browser to open up Visual Studio Code.
+
+.. image:: content/open_vscode_desktop.png
+   :width: 420
 
 3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process only. Any subsequent connection to your ivy codespace will launch in 10-15 seconds.
 
+.. image:: content/building_codespace.png
+   :width: 420
+
+Log of container being built would look like below:
+
+.. image:: content/log_codespace.png
+   :width: 420
+
 4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
+
+.. image:: content/codespace_built.png
+   :width: 420
 
 5. That's it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.
 
@@ -304,11 +321,22 @@ Just follow the steps outlined below:
 
 If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
 
-There are 2 ways to connect your existing codespaces, you use either approaches.
+There are 3 ways to connect your existing codespaces, you use either approaches.
 
 1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
 
-2. Other way to connect is to open up visual studio code application. There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects. If you click either of those, it will open up your codespace. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown. Once you find your codespace, right click on it and then select "Connect to codespace in current window". 
+.. image:: content/existing_codespace_fork.png
+   :width: 420
+
+2. Other way to connect is to open up visual studio code application. There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects. If you click either of those, it will open up your codespace. 
+
+.. image:: content/recent_projects.png
+   :width: 420
+
+3. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown. Once you find your codespace, right click on it and then select "Connect to codespace in current window".
+
+.. image:: content/connect_existing.png
+   :width: 420
 
 **Troubleshooting**
 
