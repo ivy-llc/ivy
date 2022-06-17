@@ -100,13 +100,28 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -583,10 +598,15 @@ def to_dev(
 # Function Splitting #
 
 
-def split_factor(device=None):
-    """Get the global split factor for a given device, which can be used to scale batch
-    splitting chunk sizes for the device across the codebase. Default global value for
-    each device is 1.
+def split_factor(
+    device: Union[ivy.Device, ivy.NativeDevice] = None
+) -> float:
+    """Get a device's global split factor, which can be used to scale the device's
+    batch splitting chunk sizes across the codebase.
+    If the global split factor is set for a given device,
+        returns the split factor value for the device from the split factors dictionary
+    If the global split factor for a device is not configured,
+        returns the default value which is 0.0
 
     Parameters
     ----------
@@ -598,13 +618,19 @@ def split_factor(device=None):
     ret
         The split factor for the specified device.
 
+    Examples
+    --------
+    >>> x = ivy.split_factor()
+    >>> print(x)
+    0.0
+    >>> y = ivy.split_factor("gpu:0")
+    >>> print(y)
+    1.5
+
     """
     global split_factors
     device = ivy.default(device, default_device())
-    if device in split_factors:
-        return split_factors[device]
-    split_factors[device] = 0.0
-    return split_factors[device]
+    return split_factors.setdefault(device, 0.0)
 
 
 def set_split_factor(factor, device=None):

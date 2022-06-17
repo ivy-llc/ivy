@@ -47,6 +47,61 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
+    Functional Examples
+    --------
+    
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> y = ivy.argmax(x)
+    >>> print(y)
+    ivy.array([1])
+    
+    >>> x = ivy.array([-0., 1., -1.])
+    >>> ivy.argmax(x,out=x)
+    >>> print(x)
+    ivy.array([1])
+
+    >>> x=ivy.array([[1., -0., -1.], \
+                     [-2., 3., 2.]])
+    >>> y = ivy.argmax(x, axis= 1)
+    >>> print(y)
+    ivy.array([0, 1])
+
+    >>> x=ivy.array([[4., 0., -1.], \
+                     [2., -3., 6]])
+    >>> y = ivy.argmax(x, axis= 1, keepdims= True)
+    >>> print(y)
+    ivy.array([[0], \
+              [2]])
+
+    >>> x=ivy.array([[4., 0., -1.], \
+                     [2., -3., 6], \
+                     [2., -3., 6]])
+    >>> z= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
+    >>> print(z)
+    ivy.array([[0], \
+               [2], \
+               [2]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-0., 1., -1.])
+    >>> y = ivy.argmax(x)
+    >>> print(y)
+    ivy.array([1])
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.argmax()
+    >>> print(y)
+    ivy.array(2)
+
     """
     return _cur_backend(x).argmax(x, axis, keepdims, out=out)
 

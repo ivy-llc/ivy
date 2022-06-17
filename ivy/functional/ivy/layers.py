@@ -1,7 +1,6 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-import numpy as np
 from typing import Optional, Tuple, Union, List
 
 # local
@@ -344,7 +343,7 @@ def scaled_dot_product_attention(
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
-            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim))).max,
+            -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
             sim,
         )
 
@@ -415,7 +414,7 @@ def multi_head_attention(
     context = ivy.default(context, x)
 
     # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
-    kv = tuple(
+    kv = (
         to_kv_fn(context, v=to_kv_v)
         if ivy.exists(to_kv_fn)
         else ivy.split(context, 2, -1)
