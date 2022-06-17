@@ -43,12 +43,12 @@ def dev(
     return as_ivy_dev(dv)
 
 
-_callable_dev = dev
+# _callable_dev = dev
 
 
 def to_dev(x: JaxArray, device: jaxlib.xla_extension.Device):
     if device is not None:
-        cur_dev = as_ivy_dev(_callable_dev(x))
+        cur_dev = as_ivy_dev(dev(x))
         if cur_dev != device:
             x = jax.device_put(x, as_native_dev(device))
     return x
@@ -56,12 +56,12 @@ def to_dev(x: JaxArray, device: jaxlib.xla_extension.Device):
 
 # this is a non-wrapped function used to place JAX arrays on respective devices,
 # since if we use to_dev, it will return ivy.array which is not desirable
-def _to_dev(x, device=None):
-    if device is not None:
-        cur_dev = as_ivy_dev(_callable_dev(x))
-        if cur_dev != device:
-            x = jax.device_put(x, as_native_dev(device))
-    return x
+# def _to_dev(x, device=None):
+#    if device is not None:
+#        cur_dev = as_ivy_dev(_callable_dev(x))
+#        if cur_dev != device:
+#            x = jax.device_put(x, as_native_dev(device))
+#    return x
 
 
 def as_ivy_dev(device):
