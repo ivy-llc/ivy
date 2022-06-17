@@ -114,7 +114,9 @@ def multinomial(
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
