@@ -1,0 +1,17 @@
+name: Build Dockerfile Schedule
+
+on:
+  schedule:
+    # run at every 5 mins
+    - cron:  '*/5 * * * *'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Dockerfile Schedule
+      run: docker build . --file Dockerfile --tag unifyai/ivy:$(date +%s)
