@@ -1058,7 +1058,7 @@ class DevClonedNest(MultiDevNest):
 
 def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
                     devices: Union[Iterable[str], Dict[str, int]],
-                    out: Optional[DevClonedItem] = None``
+                    out: Optional[DevClonedItem] = None
                     ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
