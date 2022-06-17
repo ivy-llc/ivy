@@ -1057,7 +1057,8 @@ class DevClonedNest(MultiDevNest):
 
 
 def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
-                    devices: Union[Iterable[str], Dict[str, int]]
+                    devices: Union[Iterable[str], Dict[str, int]],
+                    out: Optional[DevClonedItem] = None``
                     ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
@@ -1112,10 +1113,35 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
         b: array([3, 4])
     }})
 
+    With :code: `out` as output:
+
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.DevClonedItem({})
+    >>> print(y)
+    DevClonedItem({})
+    >>> ivy.dev_clone(x, ['cpu'], out=y)
+    >>> print(y)
+    DevClonedItem({'cpu': array([1, 2])})
+
+    >>> x = ivy.Container({'a': ivy.native_array([3, 4])})
+    >>> y = ivy.DevClonedItem({})
+    >>> print(y)
+    DevClonedItem({})
+    >>> ivy.dev_clone(x, ['gpu:0', 'tpu:0'], out=y)
+    >>> print(y)
+    DevClonedItem({'gpu:0': {
+        a: array([3, 4])
+    }, 'tpu:0': {
+        a: array([3, 4])
+    }})
+
     """
-    return DevClonedItem(
-        {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
-    )
+    data = {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
+
+    if out:
+        out._data = data
+    else:
+        return DevClonedItem(data)
 
 
 def dev_clone(x, devices):
