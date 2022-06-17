@@ -439,14 +439,6 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
-        if (
-            hasattr(original, "handle_nestable")
-            and not hasattr(to_wrap, "handle_nestable")
-        ) or (
-            hasattr(ivy.Container, to_wrap.__name__)
-            and to_wrap.__name__ not in FUNCTIONS_W_CONT_SUPPORT + NON_WRAPPED_FUNCTIONS
-        ):
-            to_wrap = handle_nestable(to_wrap)
         if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
             to_wrap = infer_device(to_wrap)
         if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
@@ -463,4 +455,12 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             to_wrap, "handle_out_argument"
         ):
             to_wrap = handle_out_argument(to_wrap)
+        if (
+            hasattr(original, "handle_nestable")
+            and not hasattr(to_wrap, "handle_nestable")
+        ) or (
+            hasattr(ivy.Container, to_wrap.__name__)
+            and to_wrap.__name__ not in FUNCTIONS_W_CONT_SUPPORT + NON_WRAPPED_FUNCTIONS
+        ):
+            to_wrap = handle_nestable(to_wrap)
     return to_wrap
