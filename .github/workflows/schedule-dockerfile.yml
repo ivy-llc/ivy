@@ -1,10 +1,9 @@
-name: Build Dockerfile
+name: Build Dockerfile Schedule
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  schedule:
+    # run at every 5 mins
+    - cron:  '*/5 * * * *'
 
 jobs:
 
@@ -14,5 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Dockerfile
+    - name: Build Dockerfile Schedule
       run: docker build . --file Dockerfile --tag unifyai/ivy:$(date +%s)
