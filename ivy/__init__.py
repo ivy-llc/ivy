@@ -400,7 +400,7 @@ def _sf(x, sig_fig=3):
     if "uint" in type(x).__name__:
         f = np.uint(f)
     elif "int" in type(x).__name__:
-        f = np.int(f)
+        f = int(f)
     x = f
     return x
 

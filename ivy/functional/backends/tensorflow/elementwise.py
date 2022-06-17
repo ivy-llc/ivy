@@ -426,6 +426,9 @@ def pow(
     return ret
 
 
+pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
+
+
 def remainder(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
