@@ -503,7 +503,14 @@ def test_array_function(
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
-    instance_method = instance_method and (not native_array_flags[0] or container_flags[0])
+    instance_method = instance_method and (not native_array[0] or container[0])
+
+    # check for unsupported dtypes
+    function = getattr(ivy, fn_name)
+    for d in input_dtypes:
+        if d in ivy.function_unsupported_dtypes(function, fw): return
+    # change all data types so that they are supported by this framework
+    #input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
