@@ -35,6 +35,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
@@ -51,6 +53,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
         shift: Union[int, Sequence[int]],
@@ -69,6 +73,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def add(
         x1: Union[ivy.Array, ivy.NativeArray, float],
         x2: Union[ivy.Array, ivy.NativeArray, float],
@@ -85,6 +91,10 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @outputs_to_ivy_arrays
+    @handle_out_argument
+    @infer_dtype
+    @infer_device
     def zeros(
         shape: Union[int, Sequence[int]],
         *,

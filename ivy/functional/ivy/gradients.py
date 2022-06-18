@@ -5,7 +5,11 @@ import ivy
 import ivy as _ivy
 from typing import Union
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    inputs_to_native_arrays,
+)
 
 
 # Extra #
@@ -98,6 +102,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     return _cur_backend(x).variable(x)
 
 
+@inputs_to_native_arrays
 def is_variable(x, exclusive=False):
     """Determines whether the input is a variable or not.
 

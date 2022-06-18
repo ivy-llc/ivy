@@ -1,11 +1,11 @@
-name: Ivy Dashboard PR Logging
+name: Ivy Dashboard Remove Reviewed PR
 on:
   pull_request_target:
-    types: [ready_for_review, review_requested]
+    types: [converted_to_draft, review_request_removed, closed]
 
 jobs:
-  pr_logging:
-    name: Log PR to Dashboard
+  pr_remove:
+    name: Remove PR from Dashboard
     if: ${{ github.event.pull_request }}
     runs-on: ubuntu-latest
     steps:
@@ -14,9 +14,15 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+      - name: Generate Token
+        id: generate_token
+        uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
+        with:
+          app_id: ${{ secrets.PR_APP_ID }}
+          private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get Project Data
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: unifyai
           PROJECT_NUMBER: 1
         run: |
@@ -37,12 +43,10 @@ jobs:
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
-          echo 'REVIEW_FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Review Requested") | .id' project_data.json) >> $GITHUB_ENV
-          echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
 
-      - name: Add PR to project
+      - name: Get item_id of PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           PR_ID: ${{ github.event.pull_request.node_id }}
         run: |
           item_id="$( gh api graphql -f query='
@@ -56,25 +60,13 @@ jobs:
 
           echo 'ITEM_ID='$item_id >> $GITHUB_ENV
 
-      - name: Set fields
+      - name: Remove PR from Project
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           gh api graphql -f query='
-            mutation (
-              $project: ID!
-              $item: ID!
-              $review_field: ID!
-              $date_value: String!
-            ) {
-              set_review_requested: updateProjectNextItemField(input: {
-                projectId: $project
-                itemId: $item
-                fieldId: $review_field
-                value: $date_value
-              }) {
-                projectNextItem {
-                  id
+            mutation($project:ID!, $item:ID!) {
+              deleteProjectNextItem(input: {projectId: $project, itemId: $item}) {
+                    deletedItemId
                 }
-              }
-            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f review_field=$REVIEW_FIELD_ID -f date_value=$DATE --silent
+              }' -f project=$PROJECT_ID -f item=$ITEM_ID --silent

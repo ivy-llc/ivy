@@ -69,14 +69,20 @@ def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: tf.DType, device: str,
+    shape: Union[int, Tuple[int], List[int]],
+    *,
+    dtype: tf.DType,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
 
 def ones(
-    shape: Union[int, Tuple[int]], *, dtype: tf.DType, device: str,
+    shape: Union[int, Tuple[int]],
+    *,
+    dtype: tf.DType,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
@@ -183,7 +189,7 @@ def eye(
     k: Optional[int] = 0,
     *,
     dtype: tf.DType,
-    device: str
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
@@ -242,7 +248,7 @@ def full(
     fill_value: Union[int, float],
     *,
     dtype: tf.DType = None,
-    device: str
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
@@ -264,5 +270,7 @@ array = asarray
 
 
 def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
-    power_seq = linspace(start, stop, num, axis, default_device(device))
+    power_seq = linspace(
+        start, stop, num, axis, dtype=None, device=default_device(device)
+    )
     return base**power_seq

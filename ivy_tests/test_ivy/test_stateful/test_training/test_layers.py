@@ -33,7 +33,7 @@ def test_linear_layer_training(
             ivy.ones(batch_shape, device=device),
             input_channels,
         ),
-        "float32",
+        dtype="float32",
     )
     if with_v:
         np.random.seed(0)
@@ -41,7 +41,7 @@ def test_linear_layer_training(
         w = ivy.variable(
             ivy.array(
                 np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -109,7 +109,7 @@ def test_conv1d_layer_training(
         pytest.skip()
     # smoke test
     x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -119,7 +119,7 @@ def test_conv1d_layer_training(
                 np.random.uniform(
                     -wlim, wlim, (filter_size, output_channels, input_channels)
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -188,7 +188,7 @@ def test_conv1d_transpose_layer_training(
         pytest.skip()
     # smoke test
     x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -198,7 +198,7 @@ def test_conv1d_transpose_layer_training(
                 np.random.uniform(
                     -wlim, wlim, (filter_size, output_channels, input_channels)
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -311,7 +311,7 @@ def test_conv2d_layer_training(
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -321,7 +321,7 @@ def test_conv2d_layer_training(
                 np.random.uniform(
                     -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -411,7 +411,7 @@ def test_conv2d_transpose_layer_training(
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -421,7 +421,7 @@ def test_conv2d_transpose_layer_training(
                 np.random.uniform(
                     -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -512,7 +512,7 @@ def test_depthwise_conv2d_layer_training(
         pytest.skip()
     # smoke test
     x, filter_shape, padding = x_n_fs_n_pad
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     num_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -520,7 +520,7 @@ def test_depthwise_conv2d_layer_training(
         w = ivy.variable(
             ivy.array(
                 np.random.uniform(-wlim, wlim, tuple(filter_shape + [num_channels])),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -659,7 +659,7 @@ def test_conv3d_layer_training(
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -669,7 +669,7 @@ def test_conv3d_layer_training(
                 np.random.uniform(
                     -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -811,7 +811,7 @@ def test_conv3d_transpose_layer_training(
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -821,7 +821,7 @@ def test_conv3d_transpose_layer_training(
                 np.random.uniform(
                     -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])
                 ),
-                "float32",
+                dtype="float32",
                 device=device,
             )
         )
@@ -916,7 +916,7 @@ def test_lstm_layer_training(
             ivy.ones([b, t], device=device),
             input_channels,
         ),
-        "float32",
+        dtype="float32",
     )
     if with_v:
         kernel = ivy.variable(
@@ -985,7 +985,8 @@ def test_sequential_layer_training(
         pytest.skip()
     batch_shape, channels = bs_c
     x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), "float32"
+        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
+        dtype="float32",
     )
     if with_v:
         np.random.seed(0)
@@ -997,7 +998,7 @@ def test_sequential_layer_training(
                         "w": ivy.variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
-                                "float32",
+                                dtype="float32",
                                 device=device,
                             )
                         ),
@@ -1007,7 +1008,7 @@ def test_sequential_layer_training(
                         "w": ivy.variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
-                                "float32",
+                                dtype="float32",
                                 device=device,
                             )
                         ),
@@ -1017,7 +1018,7 @@ def test_sequential_layer_training(
                         "w": ivy.variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
-                                "float32",
+                                dtype="float32",
                                 device=device,
                             )
                         ),

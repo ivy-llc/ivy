@@ -26,6 +26,8 @@ def add(
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
+    elif not isinstance(x1, tf.Tensor):
+        x1 = tf.constant(x1, dtype=x2.dtype)
     return tf.add(x1, x2)
 
 
@@ -131,8 +133,10 @@ def _tf_cast(
 
 def _cast_for_binary_op(
     x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
-) -> Tuple[Union[tf.Tensor, tf.Variable, int, float, bool],
-           Union[tf.Tensor, tf.Variable, int, float, bool]]:
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable, int, float, bool],
+    Union[tf.Tensor, tf.Variable, int, float, bool],
+]:
     x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
@@ -420,6 +424,9 @@ def pow(
         x2 = tf.cast(x2, tf.float64)
     ret = tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     return ret
+
+
+pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
 
 
 def remainder(

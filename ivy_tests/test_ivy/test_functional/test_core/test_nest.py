@@ -238,9 +238,10 @@ def test_copy_nest(device, call):
 def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     # without key_chains specification
     dtype = x0_n_x1_n_res[0]
-    ivy.array([1, 2, 3])
     nest0 = ivy.array(x0_n_x1_n_res[1], dtype=dtype)
     nest1 = nest0 * 2
+    if nest0.shape == ():
+        return
     helpers.test_array_function(
         dtype,
         False,
