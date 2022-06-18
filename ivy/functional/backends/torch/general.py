@@ -400,7 +400,10 @@ def one_hot(indices, depth: int, *, device: torch.device):
     )
 
 
-def shape(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, List[int]]:
+def shape(
+    x: torch.Tensor, 
+    as_tensor: bool = False
+) -> Union[torch.Tensor, List[int]]:
     if as_tensor:
         return torch.tensor(x.shape)
     else:

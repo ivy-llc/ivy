@@ -7,7 +7,7 @@ import einops
 import inspect
 import numpy as np
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
+from typing import Callable, Any, Sequence, Union, List, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
@@ -1832,8 +1832,11 @@ def one_hot(
 
 @inputs_to_native_arrays
 def shape(
-    x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
-) -> Iterable[int]:
+    x: Union[ivy.Array, ivy.NativeArray], 
+    as_array: bool = False,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.Array, Sequence[int]]:
     """Returns the shape of the array ``x``.
 
     Parameters
@@ -1841,23 +1844,74 @@ def shape(
     x
         Input array to infer the shape of.
     as_array
-        Whether to return the shape as a array, default False.
+        Whether to return the shape as an array, default False.
+    out
+        Optional output array, for writing result to. Must have shape that the inputs broadcast to.
 
     Returns
     -------
     ret
         Shape of the array ``x``.
 
-    Examples
-    --------
-    >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2])
     >>> y_tuple = ivy.shape(x)
-    >>> y_tensor = ivy.shape(x, as_tensor = True)
+    >>> y_array = ivy.shape(x, as_tensor = True)
     >>> print(y_tuple)
+    (2, )
+
+    >>> print(y_array)
+    ivy.array([2])
+
+    >>> out = ivy.array([0])
+    >>> y_array = ivy.shape(x, as_tensor = True, out = out)
+    >>> print(out)
+    ivy.array([1])
+
+    >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
+    >>> y_tuple = ivy.shape(x)
+    >>> print(y_tuple)
+    ivy.array([2, 3])
+
+    >>> x = ivy.array([[[1, 2], [1, 2], [1, 2]], \
+                       [[3, 4], [3, 4], [3, 4]]])
+    >>> y_tuple = ivy.shape(x)
+    >>> print(y_tuple)
+    (2, 3, 2)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([[-1, 0, 1], [1, 0, -1]])
+    >>> print(ivy.shape(x))
     (2, 3)
 
-    >>> print(y_tensor)
-    ivy.array([2, 3])
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
+                          b = ivy.array([1, 0, -1], [-1, 0, 1]))
+    >>> print(ivy.shape(x))
+    [(3, ), (2, 3)]
+
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
+    >>> print(x.shape())
+    (2, 3)
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
+                          b = ivy.array([1, 0, -1]))
+    >>> print(x.shape())
+    [(3, ), (2, 3)]
 
     """
     return _cur_backend(x).shape(x, as_array)
