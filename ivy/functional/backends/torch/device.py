@@ -25,7 +25,7 @@ def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.dev
     return as_ivy_dev(dv)
 
 
-def to_device(x: torch.Tensor, device: torch.device) -> torch.Tensor:
+def to_dev(x: torch.Tensor, device: torch.device) -> torch.Tensor:
     if device is None:
         return x
     ret = x.to(as_native_dev(device))
@@ -57,9 +57,6 @@ def as_native_dev(
 def clear_mem_on_dev(device):
     if "gpu" in device:
         torch.cuda.empty_cache()
-
-
-# _callable_dev = dev
 
 
 def num_gpus() -> int:

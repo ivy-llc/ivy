@@ -7,7 +7,7 @@ import jaxlib.xla_extension
 from typing import Optional, Union, Tuple
 
 # local
-from ivy.functional.backends.jax.device import to_device
+from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
 
@@ -27,7 +27,7 @@ def random_uniform(
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(
+    return to_dev(
         jax.random.uniform(
             rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
         ),
@@ -45,7 +45,7 @@ def random_normal(
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return (
-        to_device(
+        to_dev(
             jax.random.normal(rng_input, shape if shape else ()),
             device=default_device(device),
         )
@@ -86,7 +86,7 @@ def multinomial(
         for prob in probs_stack
     ]
     samples_flat = jnp.stack(samples_stack)
-    return to_device(
+    return to_dev(
         jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
         device=default_device(device),
     )
@@ -101,7 +101,7 @@ def randint(
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(
+    return to_dev(
         jax.random.randint(rng_input, shape, low, high), device=default_device(device)
     )
 

@@ -30,7 +30,7 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_device(
+def to_dev(
     x: Union[tf.Tensor, tf.Variable],
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -68,9 +68,6 @@ def as_native_dev(device):
 
 def clear_mem_on_dev(device):
     return None
-
-
-# _dev_callable = dev
 
 
 def num_gpus() -> int:

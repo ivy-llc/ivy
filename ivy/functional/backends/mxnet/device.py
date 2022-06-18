@@ -22,7 +22,7 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_device(x, device=None, out=None):
+def to_dev(x, device=None, out=None):
     if device is not None:
         ret = x.as_in_context(as_native_dev(device))
         if ivy.exists(out):
@@ -62,7 +62,6 @@ def gpu_is_available() -> bool:
 
 
 clear_mem_on_dev = lambda device: None
-# _callable_dev = dev
 
 
 def tpu_is_available() -> bool:
