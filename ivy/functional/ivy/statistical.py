@@ -434,7 +434,7 @@ def std(
 
 @to_native_arrays_and_back
 @handle_out_argument
-def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,) -> ivy.Array:
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None,) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
@@ -455,6 +455,8 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
 
     Examples
     --------
+    With :code: 'ivy.Array' input:
+
     The following gives us the sum of the diagonal elements:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
@@ -530,5 +532,11 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
                 [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
                 [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
 
+    With :code:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    ivy.array(12)
     """
     return _cur_backend(operands[0]).einsum(equation, *operands)
