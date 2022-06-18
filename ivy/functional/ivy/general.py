@@ -902,7 +902,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
         The shape in tuple representation
 
     Examples
-    -------------------
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 2., 3.])
