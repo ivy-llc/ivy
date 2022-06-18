@@ -15,10 +15,11 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype=None,
     *,
     device: str
 ) -> np.ndarray:
-    return np.asarray(np.random.uniform(low, high, shape))
+    return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
 def random_normal(
@@ -26,7 +27,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 

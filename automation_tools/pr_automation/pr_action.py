@@ -16,7 +16,7 @@ def main():
     for ivy_intern, assigned_volunteers in interns_assigned_volunteers.items():
         if pr.author() in assigned_volunteers:
             pr.assign_intern(ivy_intern)
-            print(f"[+] {ivy_intern} was assigned to PR {pr.number()}")
+            print(f"[+] {ivy_intern} was assigned to PR {pr.pr_number()}")
             sys.exit(0)
     pr.assign_random_intern(interns)
 

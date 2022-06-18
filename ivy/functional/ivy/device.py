@@ -58,6 +58,22 @@ class DefaultDevice:
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -84,13 +100,28 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -129,16 +160,24 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     return len(get_all_ivy_arrays_on_dev(device))
 
 
-def print_all_ivy_arrays_on_dev(device):
-    """Prints all arrays which are currently alive on the specified device.
+def print_all_ivy_arrays_on_dev(device, attr_only=True):
+    """
+    Prints the shape and dtype for all ivy arrays which are currently alive on the
+    specified device.
 
     Parameters
     ----------
     device
+        The device on which to print the arrays
+    attr_only
+        Whether or not to only print the `shape` and `dtype` attributes of the array
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
-        print(type(arr), arr.shape)
+    arrs = get_all_ivy_arrays_on_dev(device).values()
+    if attr_only:
+        [print((arr.shape, arr.dtype)) for arr in arrs]
+    else:
+        [print(arr) for arr in arrs]
 
 
 # Retrieval
@@ -559,10 +598,15 @@ def to_dev(
 # Function Splitting #
 
 
-def split_factor(device=None):
-    """Get the global split factor for a given device, which can be used to scale batch
-    splitting chunk sizes for the device across the codebase. Default global value for
-    each device is 1.
+def split_factor(
+    device: Union[ivy.Device, ivy.NativeDevice] = None
+) -> float:
+    """Get a device's global split factor, which can be used to scale the device's
+    batch splitting chunk sizes across the codebase.
+    If the global split factor is set for a given device,
+        returns the split factor value for the device from the split factors dictionary
+    If the global split factor for a device is not configured,
+        returns the default value which is 0.0
 
     Parameters
     ----------
@@ -574,13 +618,19 @@ def split_factor(device=None):
     ret
         The split factor for the specified device.
 
+    Examples
+    --------
+    >>> x = ivy.split_factor()
+    >>> print(x)
+    0.0
+    >>> y = ivy.split_factor("gpu:0")
+    >>> print(y)
+    1.5
+
     """
     global split_factors
     device = ivy.default(device, default_device())
-    if device in split_factors:
-        return split_factors[device]
-    split_factors[device] = 0.0
-    return split_factors[device]
+    return split_factors.setdefault(device, 0.0)
 
 
 def set_split_factor(factor, device=None):
@@ -1021,7 +1071,9 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x, devices):
+def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
+                    devices: Union[Iterable[str], Dict[str, int]]
+                    ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -1036,6 +1088,44 @@ def dev_clone_array(x, devices):
     -------
     ret
         array cloned to each of the target devices
+
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': array([4, 5, 6])})
+
+    >>> x = ivy.array([[1, 8, 4], [2, 5, 6]])
+    >>> ivy.dev_clone_array(x, ['gpu:0'])
+    DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 2, 7])
+    >>> ivy.dev_clone_array(x, ['cpu', 'tpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'tpu:0': array([7, 2, 7])})
+
+    >>> x = ivy.native_array([4, 5])
+    >>> ivy.dev_clone_array(x, ['gpu:2', 'tpu:1'])
+    DevClonedItem({'gpu:2': array([4, 5]), 'tpu:1': array([4, 5])})
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]))
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': {
+        a: array([1, 2])
+    }})
+
+    >>> x = ivy.Container({'b': ivy.native_array([3, 4])})
+    >>> ivy.dev_clone_array(x, ['gpu:0', 'tpu:0'])
+    DevClonedItem({'gpu:0': {
+        b: array([3, 4])
+    }, 'tpu:0': {
+        b: array([3, 4])
+    }})
 
     """
     return DevClonedItem(

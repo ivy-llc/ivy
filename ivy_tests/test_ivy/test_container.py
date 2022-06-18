@@ -2669,8 +2669,8 @@ def test_container_shuffle(device, call):
     # without key_chains specification
     container_shuffled = container.shuffle(0)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -2681,8 +2681,8 @@ def test_container_shuffle(device, call):
     # with key_chains to apply
     container_shuffled = container.shuffle(0, ["a", "b/c"])
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -2693,8 +2693,8 @@ def test_container_shuffle(device, call):
     # with key_chains to apply pruned
     container_shuffled = container.shuffle(0, ["a", "b/c"], prune_unapplied=True)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -2706,8 +2706,8 @@ def test_container_shuffle(device, call):
         0, Container({"a": None, "b": {"d": None}}), to_apply=False
     )
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled.a) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -2723,8 +2723,8 @@ def test_container_shuffle(device, call):
         prune_unapplied=True,
     )
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert "a" not in container_shuffled
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.b.c) == shuffled_data).all()
@@ -2738,8 +2738,8 @@ def test_container_shuffle(device, call):
     container = Container(dict_in)
     container_shuffled = container.shuffle(0, map_sequences=True)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"][0]) == shuffled_data).all()
@@ -3013,7 +3013,7 @@ def test_container_multi_map(device, call):
 
     # with key_chains to apply
     container_mapped = ivy.Container.multi_map(
-        lambda x, _: x[0] + x[1], [container0, container1]
+        lambda x, _: x[0] + x[1], [container0, container1], assert_identical=True
     )
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[4]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[4]]))
@@ -3021,6 +3021,47 @@ def test_container_multi_map(device, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.c), np.array([[6]]))
     assert np.allclose(ivy.to_numpy(container_mapped["b"]["d"]), np.array([[8]]))
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
+
+    # with sequences
+    container0 = Container(
+        {
+            "a": ivy.array([1], device=device),
+            "b": [
+                ivy.array([2], device=device),
+                ivy.array([3], device=device),
+            ],
+        }
+    )
+    container1 = Container(
+        {
+            "a": ivy.array([3], device=device),
+            "b": [
+                ivy.array([4], device=device),
+                ivy.array([5], device=device),
+            ],
+        }
+    )
+
+    container_mapped = ivy.Container.multi_map(
+        lambda x, _: x[0] + x[1],
+        [container0, container1],
+        map_sequences=True,
+        assert_identical=True,
+    )
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([4]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][0]), np.array([6]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][1]), np.array([8]))
+
+    # Non identical containers
+    a = ivy.Container(a={"b": 2, "c": 4}, d={"e": 6, "f": 9})
+    b = ivy.Container(a=2, d=3)
+    container_mapped = ivy.Container.multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"].b), 1)
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"]), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped.d.e), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped["d"].f), 3)
 
 
 def test_container_common_key_chains(device, call):
@@ -3497,7 +3538,7 @@ def test_container_pickle(device, call):
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
     # noinspection PyUnresolvedReferences
-    assert cont_again._local_ivy.current_framework_str() is ivy.current_backend_str()
+    assert cont_again._local_ivy.current_backend_str() is ivy.current_backend_str()
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 

@@ -29,7 +29,7 @@ import ivy.functional.backends.numpy as ivy_np
     input_dtype=helpers.array_dtypes(),
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="concat"),
     native_array=helpers.array_bools(),
     container=helpers.array_bools(),
     instance_method=st.booleans(),
@@ -80,7 +80,7 @@ def test_concat(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -131,7 +131,7 @@ def test_expand_dims(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="flip"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -181,7 +181,7 @@ def test_flip(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="permute_dims"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -235,7 +235,7 @@ def test_permute_dims(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="reshape"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -285,7 +285,7 @@ def test_reshape(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="roll"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -357,7 +357,7 @@ def test_roll(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="squeeze"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -416,7 +416,7 @@ def test_squeeze(
     data=st.data(),
     as_variable=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     native_array=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     container=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     instance_method=st.booleans(),
@@ -469,11 +469,10 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
     input_dtype=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="repeat"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -532,7 +531,7 @@ def test_repeat(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="tile"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -592,7 +591,7 @@ def test_tile(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -645,7 +644,7 @@ def test_constant_pad(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -696,7 +695,7 @@ def test_zero_pad(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="swapaxes"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -743,7 +742,7 @@ def test_swapaxes(
     x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=3),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(2, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="clip"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -780,16 +779,9 @@ def test_clip(
     max_val = np.maximum(min_val1, max_val1)
     if fw == "torch" and (
         any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or any(np.isnan(max_val))
-        or len(x) == 0
+        or np.isnan(max_val)
+        or np.isscalar(x)
     ):
-        return
-    if (
-        (len(min_val) != 0 and len(min_val) != 1)
-        or (len(max_val) != 0 and len(max_val) != 1)
-    ) and call in [helpers.mx_call]:
-        # mxnet only supports numbers or 0 or 1 dimensional arrays for min
-        # and max while performing clip
         return
     helpers.test_array_function(
         dtype,
@@ -832,7 +824,7 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     ret = ivy.split(x, num_or_size_splits, axis, with_remainder)
     # type test
     assert isinstance(ret, list)

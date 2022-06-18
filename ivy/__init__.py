@@ -105,15 +105,6 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from . import backend_handler, func_wrapper
-from .debugger import (
-    set_debug_mode,
-    set_breakpoint_debug_mode,
-    set_exception_debug_mode,
-    unset_debug_mode,
-    debug_mode,
-    debug_mode_val,
-)
-from . import debugger
 from . import functional
 from .functional import *
 from . import stateful
@@ -409,7 +400,7 @@ def _sf(x, sig_fig=3):
     if "uint" in type(x).__name__:
         f = np.uint(f)
     elif "int" in type(x).__name__:
-        f = np.int(f)
+        f = int(f)
     x = f
     return x
 
