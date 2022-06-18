@@ -13,18 +13,20 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     to_str = str(to)
     if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
         return False
-    if ".int" in from_str and "uint" in to_str:
+    if ("int" in from_str and "u" not in from_str) and "uint" in to_str:
         return False
-    if "uint" in from_str and ".int" in to_str:
-        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
-            return False
-        else:
-            return True
     if "bool" in from_str and (("int" in to_str) or ("float" in to_str)):
         return False
-    if "int" in from_str and "float" in to_str:
+    if "int" in from_str and (("float" in to_str) or ("bool" in to_str)):
         return False
-    return torch.can_cast(from_, to)
+    if "float" in from_str and "bool" in to_str:
+        return False
+    if "float" in from_str and "int" in to_str:
+        return False
+    if "uint" in from_str and ("int" in to_str and "u" not in to_str):
+        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
+            return False
+    return True
 
 
 # noinspection PyShadowingBuiltins
