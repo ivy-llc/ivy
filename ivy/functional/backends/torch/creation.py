@@ -170,7 +170,10 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
         start_shape = list(start.shape)
         sos_shape = start_shape
         if num == 1:
-            return start.unsqueeze(axis).to(as_native_dev(device))
+            if axis is not None:
+                return start.unsqueeze(axis).to(as_native_dev(device))
+            else:
+                return start.to(as_native_dev(device))
         start = start.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if start.requires_grad else torch.linspace

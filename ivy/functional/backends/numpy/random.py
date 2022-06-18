@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # localf
 
@@ -65,7 +65,11 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[int, Sequence[int]],
+    *,
+    device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
