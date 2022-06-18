@@ -1499,14 +1499,14 @@ def cumprod(
         
     Examples
     --------
-    >>> x = ivy.array([a, b, c])
+    >>> x = ivy.array([2, 3, 4])
     >>> ivy.cumprod(x)
-    [a, a * b, a * b * c]
+    [2, 6, 24]
 
-    >>> y = ivy.array([a, b, c])
+    >>> y = ivy.array([2, 3, 4])
     >>> exclusive = True
     >>> ivy.cumprod(y, exclusive)
-    [1, a, a * b]
+    [1, 2, 6]
     
     Example specifying axes
     
@@ -1519,7 +1519,7 @@ def cumprod(
      
     >>> z = ivy.array([[2,3],[5,7],[11,13]])
     >>> exclusive = True
-    >>> ivy.cumprod(z, axis=1, exclusive)
+    >>> ivy.cumprod(z, axis=0, exclusive)
     [[ 1,  2],
      [ 2,  3],
      [10, 21]]
