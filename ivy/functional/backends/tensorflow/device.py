@@ -30,7 +30,7 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_dev(
+def to_device(
     x: Union[tf.Tensor, tf.Variable],
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
