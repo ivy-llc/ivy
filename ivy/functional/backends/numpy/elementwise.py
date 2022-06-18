@@ -340,6 +340,7 @@ def remainder(
         x2 = x2.astype(dtype)
     return np.remainder(x1, x2, out=out)
 
+
 @_handle_0_dim_output
 def round(
     x: np.ndarray,
