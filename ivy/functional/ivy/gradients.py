@@ -9,7 +9,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     inputs_to_native_arrays,
-    handle_nestable,
 )
 
 
@@ -247,7 +246,6 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
     """Update weights ws of some function, given the true or effective derivatives of
     some cost c with respect to ws, [dc/dw for w in ws].
