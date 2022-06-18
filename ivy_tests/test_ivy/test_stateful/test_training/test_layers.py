@@ -103,46 +103,70 @@ def test_linear_layer_training(
 
 
 # conv1d
-@pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_oc",
-    [
-        ([[[0.0], [3.0], [0.0]]], 3, "SAME", 1),
-        ([[[0.0], [3.0], [0.0]] for _ in range(5)], 3, "SAME", 1),
-        ([[[0.0], [3.0], [0.0]]], 3, "VALID", 1),
-    ],
+@given(
+    batch_size=st.integers(1, 10),
+    width=st.integers(1, 3),
+    input_channels=st.integers(1, 4),
+    filter_size=st.integers(1, 7),
+    padding=st.sampled_from(("SAME", "VALID")),
+    output_channels=st.integers(1, 5),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    as_variable=st.booleans(),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d_layer_training(
-    x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, device, compile_graph, call
+    batch_size,
+    width,
+    input_channels,
+    filter_size,
+    padding,
+    output_channels,
+    with_v,
+    dtype,
+    as_variable,
+    device,
+    fw,
+    compile_graph,
+    call,
 ):
     if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
+        return
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d
-        pytest.skip()
+        return
+    if call in [helpers.torch_call] and (dtype == "float16"):
+        # torch.nn.functional.conv1d doesn't handle float16
+        return
     # smoke test
-    x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype=dtype, device=device)
-    input_channels = x.shape[-1]
+    output_shape = (batch_size, width, input_channels)
+    x = ivy.asarray(
+        ivy.random_normal(shape=output_shape),
+        dtype=dtype,
+        device=device,
+    )
+    if as_variable:
+        x = ivy.variable(x)
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
+        print(wlim)
+
         w = ivy.variable(
-            ivy.array(
+            ivy.asarray(
                 np.random.uniform(
-                    -wlim, wlim, (filter_size, output_channels, input_channels)
+                    -wlim, wlim, (filter_size, input_channels, output_channels)
                 ),
-                dtype="float32",
+                dtype=dtype,
                 device=device,
             )
         )
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+
+        b = ivy.variable(ivy.zeros([1, 1, output_channels]), device=device, dtype=dtype)
         v = ivy.Container({"w": w, "b": b})
     else:
         v = None
+
     conv1d_layer = ivy.Conv1D(
         input_channels, output_channels, filter_size, 1, padding, device=device, v=v
     )
