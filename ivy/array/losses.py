@@ -15,7 +15,7 @@ class ArrayWithLosses(abc.ABC):
         *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        return ivy.cross_entropy(self, pred, axis=axis, epsilon=epsilon, out=out)
+        return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
 
     def binary_cross_entropy(
         self: ivy.Array,
@@ -23,7 +23,7 @@ class ArrayWithLosses(abc.ABC):
         epsilon: Optional[float] = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.binary_cross_entropy(self, pred, epsilon=epsilon, out=out)
+        return ivy.binary_cross_entropy(self._data, pred, epsilon=epsilon, out=out)
 
     def sparse_cross_entropy(
         self: ivy.Array,
@@ -32,6 +32,6 @@ class ArrayWithLosses(abc.ABC):
         epsilon: Optional[float] = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.sparse_cross_entropy(self, pred, axis=axis, epsilon=epsilon, out=out)
-
-    pass
+        return ivy.sparse_cross_entropy(
+            self._data, pred, axis=axis, epsilon=epsilon, out=out
+        )
