@@ -2,6 +2,8 @@ name: Ivy Dashboard Remove Reviewed PR
 on:
   pull_request_target:
     types: [converted_to_draft, review_request_removed, closed]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   pr_remove:
