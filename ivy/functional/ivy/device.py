@@ -100,13 +100,28 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -1054,7 +1069,9 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x, devices):
+def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
+                    devices: Union[Iterable[str], Dict[str, int]]
+                    ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -1069,6 +1086,44 @@ def dev_clone_array(x, devices):
     -------
     ret
         array cloned to each of the target devices
+
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': array([4, 5, 6])})
+
+    >>> x = ivy.array([[1, 8, 4], [2, 5, 6]])
+    >>> ivy.dev_clone_array(x, ['gpu:0'])
+    DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 2, 7])
+    >>> ivy.dev_clone_array(x, ['cpu', 'tpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'tpu:0': array([7, 2, 7])})
+
+    >>> x = ivy.native_array([4, 5])
+    >>> ivy.dev_clone_array(x, ['gpu:2', 'tpu:1'])
+    DevClonedItem({'gpu:2': array([4, 5]), 'tpu:1': array([4, 5])})
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]))
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': {
+        a: array([1, 2])
+    }})
+
+    >>> x = ivy.Container({'b': ivy.native_array([3, 4])})
+    >>> ivy.dev_clone_array(x, ['gpu:0', 'tpu:0'])
+    DevClonedItem({'gpu:0': {
+        b: array([3, 4])
+    }, 'tpu:0': {
+        b: array([3, 4])
+    }})
 
     """
     return DevClonedItem(
