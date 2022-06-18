@@ -23,7 +23,11 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 default_device_stack = list()
 dev_handles = dict()
@@ -100,6 +104,7 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
+@handle_nestable
 def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
@@ -135,6 +140,7 @@ def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
+@handle_nestable
 def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
@@ -160,6 +166,7 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     return len(get_all_ivy_arrays_on_dev(device))
 
 
+@handle_nestable
 def print_all_ivy_arrays_on_dev(device, attr_only=True):
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -252,6 +259,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
 # Memory
 
 
+@handle_nestable
 def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
@@ -264,6 +272,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     return _cur_backend(None).clear_mem_on_dev(device)
 
 
+@handle_nestable
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
@@ -292,6 +301,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
         )
 
 
+@handle_nestable
 def used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
@@ -331,6 +341,7 @@ def used_mem_on_dev(
         )
 
 
+@handle_nestable
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
 ) -> float:
@@ -373,6 +384,7 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
+@handle_nestable
 def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
@@ -418,6 +430,7 @@ def gpu_is_available() -> bool:
     return _cur_backend().gpu_is_available()
 
 
+@handle_nestable
 def num_cpu_cores() -> int:
     """Determine the number of cores available in the cpu.
 
@@ -563,6 +576,7 @@ def unset_default_device():
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def to_dev(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -598,9 +612,8 @@ def to_dev(
 # Function Splitting #
 
 
-def split_factor(
-    device: Union[ivy.Device, ivy.NativeDevice] = None
-) -> float:
+@handle_nestable
+def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     """Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
     If the global split factor is set for a given device,
@@ -633,6 +646,7 @@ def split_factor(
     return split_factors.setdefault(device, 0.0)
 
 
+@handle_nestable
 def set_split_factor(factor, device=None):
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -925,6 +939,7 @@ class DevDistNest(MultiDevNest):
         return "DevDistNest(" + self._data.__repr__() + ")"
 
 
+@handle_nestable
 def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
@@ -958,6 +973,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     )
 
 
+@handle_nestable
 def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute the input item across the specified devices, returning a list of sub-
     items, each on a different device.
@@ -987,6 +1003,7 @@ def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return x
 
 
+@handle_nestable
 def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute elements of the iterable xs across the specified devices.
 
@@ -1013,6 +1030,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
 
 
+@handle_nestable
 def dev_dist_nest(
     args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1
 ):
@@ -1071,9 +1089,10 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray], 
-                    devices: Union[Iterable[str], Dict[str, int]]
-                    ) -> DevClonedItem:
+@handle_nestable
+def dev_clone_array(
+    x: Union[ivy.Array, ivy.NativeArray], devices: Union[Iterable[str], Dict[str, int]]
+) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -1133,6 +1152,7 @@ def dev_clone_array(x: Union[ivy.Array, ivy.NativeArray],
     )
 
 
+@handle_nestable
 def dev_clone(x, devices):
     """Clone the input item to each of the specified devices, returning a list of cloned
     items, each on a different device.
@@ -1157,6 +1177,7 @@ def dev_clone(x, devices):
     return x
 
 
+@handle_nestable
 def dev_clone_iter(xs, devices):
     """Clone elements of the iterable xs to each of the specified devices.
 
@@ -1178,6 +1199,7 @@ def dev_clone_iter(xs, devices):
     return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
+@handle_nestable
 def dev_clone_nest(args, kwargs, devices, max_depth=1):
     """Clone the input arguments across the specified devices.
 
@@ -1229,6 +1251,7 @@ def _mean_unify_array(xs, device, _=None):
     return _sum_unify_array(xs, device=device) / len(xs)
 
 
+@handle_nestable
 def dev_unify_array(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
@@ -1258,6 +1281,7 @@ def dev_unify_array(xs, device, mode, axis=0):
     }[mode](xs, device, axis)
 
 
+@handle_nestable
 def dev_unify(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single concatenated array
     on the specified device.
@@ -1293,6 +1317,7 @@ def dev_unify(xs, device, mode, axis=0):
     return xs
 
 
+@handle_nestable
 def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     """Unify elements of the iterable xs to a single target device.
 
@@ -1329,6 +1354,7 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     return dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
+@handle_nestable
 def dev_unify_nest(
     args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
 ):
