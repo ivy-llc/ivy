@@ -1,7 +1,7 @@
 """Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
@@ -15,8 +15,9 @@ from ivy.functional.backends import tensorflow as _ivy
 
 
 def stack_images(
-    images: List[tf.Tensor], desired_aspect_ratio: Tuple[int, int] = (1, 1)
-) -> tf.Tensor:
+    images: List[Union[tf.Tensor, tf.Variable]],
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+) -> Union[tf.Tensor, tf.Variable]:
     num_images = len(images)
     if num_images == 0:
         raise Exception("At least 1 image must be provided")

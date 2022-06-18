@@ -9,7 +9,8 @@ Setting Up
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
 .. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
-
+.. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
+.. _`venv`: https://docs.python.org/3/library/venv.html
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
@@ -47,19 +48,119 @@ so we thought we would add an explicit reminder here in the setting up guide!
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `pycharm channel`_!
 
+Virtual environments - No Docker
+-------------------------------
+
+Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest
+ivy package from GitHub source, as explained below. This is to ensure the contributors' code and
+examples are as aligned and in accordance with the latest as possible. The stable version of Ivy
+from PyPI maybe used for personal projects and experiments but avoided in development, for now. If you
+want to use the stable version, you are welcome to use the docker container or pip install ivy-core.
+
+Below is a guide to creating your own virtual environment. The benefit of creating a python environment
+is the ability to install certain packages for a project and then other packages (perhaps different versions) in a
+new environment for another project. This makes it very easy to keep track of installed packages and their versions.
+
+Below is a guide for setting up a developing environment for Ivy.
+
+You can either use `miniconda`_ or `venv`_:
+
+Using miniconda
+****
+
+#. Install `miniconda`_
+#. Open conda terminal
+#. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
+
+    .. code-block:: none
+
+        conda create --name ivy_dev python=3.8.10
+
+#. Activate the environment by:
+
+    .. code-block:: none
+
+        conda activate ivy_dev
+
+#.  Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
+
+Using venv
+****
+This is a builtin package and doesn't require explicit installation.
+
+#. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
+#. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
+
+    .. code-block:: none
+
+        python -m venv ivy_dev
+
+    Try :code:`python3` if :code:`python` doesn't work.
+
+#. Activate the created environment by running (in the same working directory as the environment folder):
+
+    .. code-block:: none
+
+        ivy_dev\Scripts\activate.bat
+
+    (on Windows)
+
+    OR
+
+    .. code-block:: none
+
+        source ivy_dev/bin/activate
+
+    (on Mac/Linux)
+
+#. Now install ivy package from GitHub by running:
+
+    .. code-block:: none
+
+        pip install git+https://github.com/unifyai/ivy.git
+
+#. Setup the interpreter from you environment in Pycharm by:
+
+   a. Going to settings -> project -> Python Interpreter
+
+   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+
+   c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
+The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+
+Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
+future projects.
+
+
+Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_
+OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
+
 Docker Interpreter with PyCharm
 -------------------------------
 
-Here we show how to set up a specific python environment, which will make contributing much easier.
 
 Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all
-using the same packages, and helps to mitigate any potential version conflicts etc.
+using the same packages (same environment) and helps to mitigate any potential version conflicts etc.
 
 In addition, it makes it possible to use modules not yet available for a particular operating system,
 such as :code:`jaxlib` on a Windows machine.
 
-Below we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
-which, as mentioned above, is the main IDE of choice for our development team:
+Below, we provide instructions for setting up a docker interpreter for `Pycharm <https://www.jetbrains.com/pycharm/>`_,
+which, as mentioned above, is the IDE of choice for our development team:
 
 
 Windows
@@ -168,6 +269,78 @@ Ubuntu
 
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
+
+GitHub Codespaces
+-----------------
+
+It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
+
+**Pre-requisites**
+
+1. Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from `here <https://code.visualstudio.com/>`_). 
+
+2. Once Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), and search "Codespaces" and then install the extension locally.
+
+.. image:: content/extension_install.png
+   :width: 420
+
+Now we are ready to begin!
+
+**Setting up Codespaces**
+
+Just follow the steps outlined below:
+
+1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
+
+.. image:: content/fork_create_codespace.png
+   :width: 420
+
+2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop". Give the relevant permissions to the browser to open up Visual Studio Code.
+
+.. image:: content/open_vscode_desktop.png
+   :width: 420
+
+3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process. Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
+
+.. image:: content/building_codespace.png
+   :width: 420
+
+Log of container being built would look like below:
+
+.. image:: content/log_codespace.png
+   :width: 420
+
+4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
+
+.. image:: content/codespace_built.png
+   :width: 420
+
+5. That's it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.
+
+**Opening an existing Codespaces**
+
+If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
+
+There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.
+
+1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
+
+.. image:: content/existing_codespace_fork.png
+   :width: 420
+
+2. Other way to connect is to open up visual studio code application. There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects. If you click either of those, it will open up your codespace. 
+
+.. image:: content/recent_projects.png
+   :width: 420
+
+3. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown. Once you find your codespace, right click on it and then select "Connect to codespace in current window".
+
+.. image:: content/connect_existing.png
+   :width: 420
+
+**Troubleshooting**
+
+Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written "Select Python Interpreter". From there, select :code:`Python 3.8.10 64-bit usr/bin/python3`.
 
 Pre-Commit
 ----------

@@ -6,7 +6,6 @@ signature.
 _round = round
 import tensorflow as tf
 from typing import Union
-from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
@@ -21,14 +20,20 @@ def _same_device(dev_a, dev_b):
     )
 
 
-def dev(x: Tensor, as_native: bool = False) -> Union[ivy.Device, str]:
+def dev(
+    x: Union[tf.Tensor, tf.Variable],
+    as_native: bool = False,
+) -> Union[ivy.Device, str]:
     dv = x.device
     if as_native:
         return dv
     return as_ivy_dev(dv)
 
 
-def to_dev(x: Tensor, device: str) -> Tensor:
+def to_dev(
+    x: Union[tf.Tensor, tf.Variable],
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
     device = as_native_dev(device)
@@ -61,7 +66,10 @@ def as_native_dev(device):
     return ret
 
 
-clear_mem_on_dev = lambda device: None
+def clear_mem_on_dev(device):
+    return None
+
+
 _dev_callable = dev
 
 
