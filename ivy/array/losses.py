@@ -1,8 +1,37 @@
 # global
 import abc
+from typing import Optional, Union
 
-# ToDo: implement all methods here as public instance methods
+# local
+import ivy
 
 
 class ArrayWithLosses(abc.ABC):
-    pass
+    def cross_entropy(
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
+
+    def binary_cross_entropy(
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        epsilon: Optional[float] = 1e-7,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.binary_cross_entropy(self._data, pred, epsilon=epsilon, out=out)
+
+    def sparse_cross_entropy(
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.sparse_cross_entropy(
+            self._data, pred, axis=axis, epsilon=epsilon, out=out
+        )
