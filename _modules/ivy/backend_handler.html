@@ -154,7 +154,7 @@
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jax.interpreters.xla&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;tensorflow.python.backend.ops&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;tensorflow.python.framework.ops&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;mxnet.ndarray.ndarray&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mxnet&quot;</span>
 
@@ -222,19 +222,19 @@
 
 
 <div class="viewcode-block" id="current_backend"><a class="viewcode-back" href="../../backend_handler/current_backend.html#ivy.backend_handler.current_backend">[docs]</a><span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the current backend backend. Priorities:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the current backend. Priorities:</span>
 <span class="sd">    global_backend &gt; argument&#39;s backend.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    *args/**kwargs</span>
-<span class="sd">        the arguments from which to try to infer the backend backend, when there is</span>
+<span class="sd">        the arguments from which to try to infer the backend, when there is</span>
 <span class="sd">        no globally set backend.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Ivy&#39;s current backend backend.</span>
+<span class="sd">        Ivy&#39;s current backend.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
