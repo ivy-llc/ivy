@@ -29,7 +29,7 @@ jobs:
           cat << EOF >> skips.txt
 
           # Skipped in module too
-          array_api_tests/test_creation_functions.py::test_asarray_arrays
+          ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_asarray_arrays
 
           EOF
           
