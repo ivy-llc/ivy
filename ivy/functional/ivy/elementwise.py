@@ -5,12 +5,17 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def bitwise_left_shift(
@@ -45,6 +50,7 @@ def bitwise_left_shift(
     return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def add(

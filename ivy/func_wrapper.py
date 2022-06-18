@@ -369,7 +369,6 @@ def handle_out_argument(fn: Callable) -> Callable:
 
 def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
-    cont_fn = getattr(ivy.Container, "static_" + fn_name)
 
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -393,6 +392,7 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
+        cont_fn = getattr(ivy.Container, "static_" + fn_name)
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
