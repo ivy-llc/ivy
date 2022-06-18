@@ -4,7 +4,7 @@
 import jax as _jax
 import jax.numpy as _jnp
 import jaxlib.xla_extension
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 from ivy.functional.backends.jax.device import to_dev
@@ -95,7 +95,7 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[int, Sequence[int]],
     *,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:

@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 from ivy.functional.ivy.device import default_device
@@ -68,7 +68,11 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+    low: int, 
+    high: int, 
+    shape: Union[int, Sequence[int]], 
+    *, 
+    device: str
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")
