@@ -1,13 +1,13 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import jax as jax
+import jax
 import numpy as np
 import jax.numpy as jnp
-import jaxlib as jaxlib
+import jaxlib
 from numbers import Number
-from operator import mul as _mul
-from functools import reduce as _reduce
+from operator import mul
+from functools import reduce
 from jaxlib.xla_extension import Buffer
 from typing import List, Iterable, Optional, Union
 import multiprocessing as _multiprocessing
@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.jax.device import _to_dev, _to_array, dev as callable_dev
+from ivy.functional.backends.jax.device import _to_dev, _to_array, dev
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -140,7 +140,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
     if device is None:
-        device = callable_dev(updates)
+        device = dev(updates)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -205,7 +205,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if device is None:
-        device = callable_dev(updates)
+        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     if reduction == "sum":
         if not target_given:
@@ -240,18 +240,18 @@ def gather(
     params: JaxArray, indices: JaxArray, axis: Optional[int] = -1, *, device: str
 ) -> JaxArray:
     if device is None:
-        device = callable_dev(params)
+        device = dev(params)
     return _to_dev(jnp.take_along_axis(params, indices, axis), device)
 
 
 def gather_nd(params, indices, *, device: str):
     if device is None:
-        device = callable_dev(params)
+        device = dev(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [
-        _reduce(_mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())

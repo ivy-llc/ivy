@@ -6,7 +6,7 @@ import importlib
 import torch
 from typing import Optional, Union
 from torch.profiler import ProfilerActivity
-from torch.profiler import profile as _profile
+from torch.profiler import profile
 
 # local
 import ivy
@@ -25,7 +25,7 @@ def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.dev
     return as_ivy_dev(dv)
 
 
-def to_dev(x: torch.Tensor, device: torch.device) -> torch.Tensor:
+def to_device(x: torch.Tensor, device: torch.device) -> torch.Tensor:
     if device is None:
         return x
     ret = x.to(as_native_dev(device))
@@ -59,9 +59,6 @@ def clear_mem_on_dev(device):
         torch.cuda.empty_cache()
 
 
-_callable_dev = dev
-
-
 def num_gpus() -> int:
     return torch.cuda.device_count()
 
@@ -80,7 +77,7 @@ def tpu_is_available() -> bool:
 class Profiler(BaseProfiler):
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
-        self._prof = _profile(
+        self._prof = profile(
             activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True
         )
 
