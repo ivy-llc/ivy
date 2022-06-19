@@ -1,7 +1,7 @@
 """Collection of image Ivy functions."""
 
 # local
-import ivy as ivy
+import ivy
 import numpy as np
 from operator import mul
 from functools import reduce

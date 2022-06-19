@@ -28,8 +28,7 @@ def main():
     for i in unique_names:
         count[i] = int(all_names.count(i) * 100 / len(all_names))
 
-    # Assigning an intern evenly based on it's percentage.
-    # The lower the percentage, the bigger the chance to get assigned.
+    # Assigning an intern evenly based on it's percentage. The lower the percentage, the bigger the chance to get assigned.
     # This way the workload is spread evenly.
     max_percentage = max(count.values())
     interns = [

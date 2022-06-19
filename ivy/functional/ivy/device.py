@@ -674,7 +674,7 @@ def unset_default_device():
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def to_dev(
+def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
     *,
