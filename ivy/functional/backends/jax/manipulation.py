@@ -37,7 +37,7 @@ def _flat_array_to_1_dim_array(x):
 def flip(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional = None
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret

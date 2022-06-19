@@ -53,7 +53,7 @@ def squeeze(
 def flip(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional = None
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
     if not num_dims:
