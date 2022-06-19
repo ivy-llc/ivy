@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     inputs_to_native_arrays,
+    handle_nestable,
 )
 
 
@@ -37,6 +38,7 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
+@handle_nestable
 def with_grads(with_grads=None):
     """Summary.
 
@@ -60,6 +62,7 @@ def with_grads(with_grads=None):
 
 
 # noinspection PyShadowingNames
+@handle_nestable
 def set_with_grads(with_grads):
     """Summary.
 
@@ -73,6 +76,7 @@ def set_with_grads(with_grads):
     with_grads_stack.append(with_grads)
 
 
+@handle_nestable
 def unset_with_grads():
     """"""
     global with_grads_stack
@@ -85,6 +89,7 @@ def unset_with_grads():
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
 
@@ -127,6 +132,7 @@ def is_variable(x, exclusive=False):
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def variable_data(x):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
@@ -148,6 +154,7 @@ def variable_data(x):
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def stop_gradient(x, preserve_type=True):
     """Stops gradient computation.
 

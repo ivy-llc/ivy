@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
+    handle_nestable,
 )
 import ivy
 
@@ -21,6 +22,7 @@ import ivy
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@handle_nestable
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
@@ -67,6 +69,7 @@ def random_uniform(
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@handle_nestable
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
@@ -107,6 +110,7 @@ def random_normal(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@handle_nestable
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -198,6 +202,7 @@ def multinomial(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@handle_nestable
 def randint(
     low: int,
     high: int,
@@ -257,6 +262,7 @@ def randint(
     return _cur_backend().randint(low, high, shape, device=device)
 
 
+@handle_nestable
 def seed(seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
@@ -276,6 +282,7 @@ def seed(seed_value: int = 0) -> None:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
