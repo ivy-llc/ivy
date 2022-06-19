@@ -10,11 +10,7 @@ import warnings
 
 import numpy as np
 import math
-from numpy import array_api as xp
-from hypothesis.extra.array_api import make_strategies_namespace
 from typing import Union, List
-
-xps = make_strategies_namespace(xp)
 
 
 try:
@@ -511,7 +507,9 @@ def test_array_function(
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
-    instance_method = instance_method and (not ivy.native_array[0] or ivy.Container[0])
+    instance_method = instance_method and (
+        not native_array_flags[0] or container_flags[0]
+    )
 
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
