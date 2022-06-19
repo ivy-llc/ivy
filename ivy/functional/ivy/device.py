@@ -150,11 +150,116 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     Examples
     --------
-    >>> x = ivy.array([-1,0,5.2])
-    >>> y = ivy.dev(x)
-    >>> z = ivy.num_ivy_arrays_on_dev(y)
-    >>> print(z)
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     2
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    2
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]),\
+                      x4=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]),\
+                      x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
 
     """
     return len(get_all_ivy_arrays_on_dev(device))
