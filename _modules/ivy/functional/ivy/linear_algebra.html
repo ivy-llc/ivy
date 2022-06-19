@@ -403,11 +403,11 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x1</span>
 <span class="sd">        first one-dimensional input array of size N. Should have a numeric data type.</span>
-<span class="sd">        a(M,) array_like</span>
+<span class="sd">        a(N,) array_like</span>
 <span class="sd">        First input vector. Input is flattened if not already 1-dimensional.</span>
 <span class="sd">    x2</span>
 <span class="sd">        second one-dimensional input array of size M. Should have a numeric data type.</span>
-<span class="sd">        b(N,) array_like</span>
+<span class="sd">        b(M,) array_like</span>
 <span class="sd">        Second input vector. Input is flattened if not already 1-dimensional.</span>
 
 <span class="sd">    Returns</span>
@@ -416,6 +416,45 @@
 <span class="sd">        a two-dimensional array containing the outer product and whose shape is (N, M).</span>
 <span class="sd">        The returned array must have a data type determined by Type Promotion Rules.</span>
 
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],\</span>
+<span class="sd">                       [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[5., 6.],\</span>
+<span class="sd">                       [7., 8.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[ 5.,  6.,  7.,  8.],</span>
+<span class="sd">                [10., 12., 14., 16.],</span>
+<span class="sd">                [15., 18., 21., 24.],</span>
+<span class="sd">                [20., 24., 28., 32.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1.],</span>
+<span class="sd">                [2.],</span>
+<span class="sd">                [3.],</span>
+<span class="sd">                [4.]])</span>
+
+<span class="sd">    A 3-D Example</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],\</span>
+<span class="sd">                        [3., 4.]],\</span>
+<span class="sd">                       [[5., 6.],\</span>
+<span class="sd">                        [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[[9., 10.],\</span>
+<span class="sd">                        [11., 12.]],\</span>
+<span class="sd">                       [[13., 14.],\</span>
+<span class="sd">                        [15., 16.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],</span>
+<span class="sd">                [ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],</span>
+<span class="sd">                [ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],</span>
+<span class="sd">                [ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],</span>
+<span class="sd">                [ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],</span>
+<span class="sd">                [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],</span>
+<span class="sd">                [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],</span>
+<span class="sd">                [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 

@@ -160,10 +160,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first one-dimensional input array of size N. Should have a numeric data type.
-a(M,) array_like
+a(N,) array_like
 First input vector. Input is flattened if not already 1-dimensional.</p></li>
 <li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second one-dimensional input array of size M. Should have a numeric data type.
-b(N,) array_like
+b(M,) array_like
 Second input vector. Input is flattened if not already 1-dimensional.</p></li>
 </ul>
 </dd>
@@ -175,6 +175,38 @@ Second input vector. Input is flattened if not already 1-dimensional.</p></li>
 The returned array must have a data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">ivy.array([[ 5.,  6.,  7.,  8.],</span>
+<span class="go">            [10., 12., 14., 16.],</span>
+<span class="go">            [15., 18., 21., 24.],</span>
+<span class="go">            [20., 24., 28., 32.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">ivy.array([[1.],</span>
+<span class="go">            [2.],</span>
+<span class="go">            [3.],</span>
+<span class="go">            [4.]])</span>
+</pre></div>
+</div>
+<p>A 3-D Example
+&gt;&gt;&gt; x = ivy.array([[[1., 2.],                        [3., 4.]],                       [[5., 6.],                        [7., 8.]]])
+&gt;&gt;&gt; y = ivy.array([[[9., 10.],                        [11., 12.]],                       [[13., 14.],                        [15., 16.]]])
+&gt;&gt;&gt; d = ivy.outer(x, y)
+&gt;&gt;&gt; print(d)
+ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],</p>
+<blockquote>
+<div><p>[ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],
+[ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],
+[ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],
+[ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],
+[ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
+[ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
+[ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])</p>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
