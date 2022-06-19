@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Union, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -494,7 +494,9 @@ def conv1d(
     ivy.array([[[0.], [3.], [0.]]])
 
     """
-    return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv1d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -528,7 +530,7 @@ def conv1d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv1d_transpose(
+    return current_backend(x).conv1d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -629,7 +631,9 @@ def conv2d(
     }
 
     """
-    return _cur_backend(x).conv2d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv2d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -663,7 +667,7 @@ def conv2d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv2d_transpose(
+    return current_backend(x).conv2d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -760,7 +764,7 @@ def depthwise_conv2d(
     }
 
     """
-    return _cur_backend(x).depthwise_conv2d(
+    return current_backend(x).depthwise_conv2d(
         x, filters, strides, padding, data_format, dilations
     )
 
@@ -816,7 +820,9 @@ def conv3d(
             ]])
 
     """
-    return _cur_backend(x).conv3d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv3d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -850,7 +856,7 @@ def conv3d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv3d_transpose(
+    return current_backend(x).conv3d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 

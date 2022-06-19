@@ -5,8 +5,8 @@ from typing import Union, Tuple, Optional, List
 from numbers import Number
 
 # local
-from ivy.functional.backends.jax import JaxArray
 import ivy
+from ivy.functional.backends.jax import JaxArray
 
 
 def roll(
