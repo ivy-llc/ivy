@@ -79,7 +79,9 @@ def bilinear_resample(
 
 
 @to_native_arrays_and_back
-def gradient_image(x):
+def gradient_image(
+        x: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """Computes image gradients (dy, dx) for each channel.
 
     Parameters
@@ -121,7 +123,10 @@ def gradient_image(x):
 
 
 @to_native_arrays_and_back
-def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
+def float_img_to_uint8_img(
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
 
@@ -147,7 +152,8 @@ def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
 
 @to_native_arrays_and_back
 def uint8_img_to_float_img(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
@@ -186,13 +192,13 @@ def uint8_img_to_float_img(
 
 @to_native_arrays_and_back
 def random_crop(
-    x,
-    crop_size,
-    batch_shape=None,
-    image_dims=None,
-    seed=None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    crop_size: List[int],
+    batch_shape: Optional[List[int]] = None,
+    image_dims: Optional[List[int]] = None,
+    seed: int = None,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """Randomly crops the input images.
 
     Parameters
@@ -205,6 +211,8 @@ def random_crop(
         Shape of batch. Inferred from inputs if None. (Default value = None)
     image_dims
         Image dimensions. Inferred from inputs in None. (Default value = None)
+    seed
+        Required for random number generator
     out
         optional output array, for writing the result to.
 
@@ -253,7 +261,9 @@ def random_crop(
 @to_native_arrays_and_back
 @handle_out_argument
 def linear_resample(
-    x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1
+    x: Union[ivy.Array, ivy.NativeArray],
+    num_samples: int,
+    axis: int = -1
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 
