@@ -485,13 +485,32 @@ def conv1d(
     ret
         The result of the convolution operation.
 
-    Examples
+    Functional Examples
     --------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
-    ivy.array([[[0.], [3.], [0.]]])
+    ivy.array([[[0.],
+            [3.],
+            [0.]]], dtype=float32)
+
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([[[1.0], [4.0], [2.0]]])
+    >>> filters = ivy.NativeArray([[[1.0]], [[0.0]], [[1.0]]])
+    >>> result = ivy.conv1d(x, filters, (1,), 'VALID')
+    >>> print(result)
+    ivy.array([[[3.]]], dtype=float32)
+
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    
 
     """
     return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
