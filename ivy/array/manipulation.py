@@ -19,35 +19,35 @@ class ArrayWithManipulation(abc.ABC):
         axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.concat([self] + xs, axis, out=out)
+        return ivy.concat([self._data] + xs, axis, out=out)
 
     def flip(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.flip(self, axis, out=out)
+        return ivy.flip(self._data, axis, out=out)
 
     def expand_dims(
         self: ivy.Array,
         axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.expand_dims(self, axis, out=out)
+        return ivy.expand_dims(self._data, axis, out=out)
 
     def reshape(
         self: ivy.Array,
         shape: Tuple[int, ...],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.reshape(self, shape, out=out)
+        return ivy.reshape(self._data, shape, out=out)
 
     def permute_dims(
         self: ivy.Array,
         axes: Tuple[int, ...],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.permute_dims(self, axes, out=out)
+        return ivy.permute_dims(self._data, axes, out=out)
 
     def roll(
         self: ivy.Array,
@@ -56,14 +56,14 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.roll(self, shift=shift, axis=axis, out=out)
+        return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 
     def squeeze(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.squeeze(self, axis=axis, out=out)
+        return ivy.squeeze(self._data, axis=axis, out=out)
 
     def stack(
         self: ivy.Array,
@@ -74,7 +74,7 @@ class ArrayWithManipulation(abc.ABC):
         axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.stack([self] + x, axis, out=out)
+        return ivy.stack([self._data] + x, axis, out=out)
 
     def repeats(
         self: ivy.Array,
@@ -82,14 +82,14 @@ class ArrayWithManipulation(abc.ABC):
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.repeat(self, repeats=repeats, axis=axis, out=out)
+        return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
     def tile(
         self: ivy.Array,
         reps: Iterable[int],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.tile(self, reps=reps, out=out)
+        return ivy.tile(self._data, reps=reps, out=out)
 
     def constant_pad(
         self: ivy.Array,
@@ -97,14 +97,14 @@ class ArrayWithManipulation(abc.ABC):
         value: Number = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.constant_pad(self, pad_width=pad_width, value=value, out=out)
+        return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 
     def zero_pad(
         self: ivy.Array,
         pad_width: Iterable[Tuple[int]],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.zero_pad(self, pad_width=pad_width, out=out)
+        return ivy.zero_pad(self._data, pad_width=pad_width, out=out)
 
     def swapaxes(
         self: ivy.Array,
@@ -112,4 +112,4 @@ class ArrayWithManipulation(abc.ABC):
         axis1: int,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.swapaxes(self, axis0=axis0, axis1=axis1, out=out)
+        return ivy.swapaxes(self._data, axis0=axis0, axis1=axis1, out=out)

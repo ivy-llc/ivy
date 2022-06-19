@@ -4,13 +4,18 @@ from typing import Optional, Union
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def bitwise_left_shift(
@@ -42,9 +47,10 @@ def bitwise_left_shift(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def add(
@@ -260,7 +266,7 @@ def add(
     }
 
     """
-    return _cur_backend(x1, x2).add(x1, x2, out=out)
+    return current_backend(x1, x2).add(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -272,8 +278,12 @@ def bitwise_xor(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
-    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
-    array ``x2``.
+    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input   
+    array ``x2``.   
+
+    **Special cases**   
+
+    This function does not take floating point operands
 
     Parameters
     ----------
@@ -292,8 +302,140 @@ def bitwise_xor(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([2, 0, 2])
+
+    >>> a = ivy.array([78, 91, 23])
+    >>> b = ivy.array([66, 77, 88])
+    >>> ivy.bitwise_xor(a, b, out=y)
+    >>> print(y)
+    ivy.array([12, 22, 79])
+ 
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> ivy.bitwise_xor(a, b, out = a)
+    >>> print(a)
+    ivy.array([2, 0, 2])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> a = ivy.native_array([0, 1, 3, 67, 91])
+    >>> b = ivy.native_array([4, 7, 90, 89, 98])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([[ 4, 6, 89, 26, 57]])
+   
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:  
+
+    >>> a = ivy.array([0, 1, 3, 67, 91])
+    >>> a = ivy.native_array([4, 7, 90, 89, 98])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([[4, 6, 89, 26, 57]])
+
+    With :code: `ivy.Container` input:  
+
+    >>> x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>> z = ivy.bitwise_xor(x, y)
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
+    b = ivy.array([78, 34]))
+    >>> y = ivy.array([12, 13]])
+    >>> z = ivy.bitwise_xor(x, y)
+    >>> print(z)
+    {
+    a: ivy.array([-79, 24])
+    b: ivy.array([6, 74])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code: `ivy.Array` instance method:
+
+    >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
+    >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
+    >>> y = a.bitwise_xor(b)
+    >>> print(y)
+    ivy.array([[74, 41, 59], 
+    [24, 5, 7]])
+    
+    Using :code:`ivy.Container` instance method:
+
+    >>>x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>>z = x.bitwise_xor(y)
+    >>>print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    } 
+    
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:  
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> y = a ^ b
+    >>> print(y)
+    ivy.array([2, 0, 2])
+
+    With :code:`ivy.Container` instances:   
+
+    >>> x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>> z = x ^ y
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }   
+    
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
+    b = ivy.array([78, 34]))
+    >>> y = ivy.array([12, 13]])
+    >>> z = x ^ y
+    >>> print(z)
+    {
+    a: ivy.array([-79, 24])
+    b: ivy.array([6, 74])
+    }   
     """
-    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -341,7 +483,7 @@ def exp(
     ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
-    return _cur_backend(x).exp(x, out=out)
+    return current_backend(x).exp(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -387,7 +529,7 @@ def expm1(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).expm1(x, out=out)
+    return current_backend(x).expm1(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -421,7 +563,7 @@ def bitwise_invert(
     ivy.array([-2, -7, -10])
 
     """
-    return _cur_backend(x).bitwise_invert(x, out=out)
+    return current_backend(x).bitwise_invert(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -454,7 +596,7 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_and(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -500,7 +642,7 @@ def ceil(
     >>> print(y)
     ivy.array([1., 0., -0.])
     """
-    return _cur_backend(x).ceil(x, out=out)
+    return current_backend(x).ceil(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -538,9 +680,9 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
-    This method conforms to the 
+    This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the 
+    This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.elementwise_functions.floor.html>`_ in the standard.
 
@@ -581,7 +723,7 @@ def floor(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),\
-    ... b=ivy.array([3.4, -4.2, -0, -1.2]))
+                          b=ivy.array([3.4, -4.2, -0, -1.2]))
     >>> y = ivy.floor(x)
     >>> print(y)
     {
@@ -609,7 +751,7 @@ def floor(
         b: ivy.array([3., -5., 1.])
     }
     """
-    return _cur_backend(x).floor(x, out=out)
+    return current_backend(x).floor(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -638,7 +780,7 @@ def isfinite(
         ``bool``.
 
     """
-    return _cur_backend(x).isfinite(x, out=out)
+    return current_backend(x).isfinite(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -678,7 +820,7 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asin(x, out=out)
+    return current_backend(x).asin(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -707,7 +849,7 @@ def isinf(
         a data type of bool.
 
     """
-    return _cur_backend(x).isinf(x, out=out)
+    return current_backend(x).isinf(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -743,7 +885,7 @@ def greater(
     ivy.array([False, False,  True])
 
     """
-    return _cur_backend(x1, x2).greater(x1, x2, out=out)
+    return current_backend(x1, x2).greater(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -907,7 +1049,7 @@ def greater_equal(
     }
 
     """
-    return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
+    return current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -936,7 +1078,7 @@ def less_equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).less_equal(x1, x2, out=out)
+    return current_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1003,7 +1145,7 @@ def multiply(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).multiply(x1, x2, out=out)
+    return current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1044,7 +1186,7 @@ def asinh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asinh(x, out=out)
+    return current_backend(x).asinh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1078,7 +1220,7 @@ def sign(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).sign(x, out=out)
+    return current_backend(x).sign(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1118,7 +1260,7 @@ def sqrt(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sqrt(x, out=out)
+    return current_backend(x).sqrt(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1178,23 +1320,15 @@ def cosh(
     >>> x = ivy.array([0.2, -1.7, -5.4, 1.1])
     >>> y = ivy.zeros(4)
     >>> ivy.cosh(x, out=y)
-    >>> print(y)
     ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)
 
     >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2], \
                        [-4.4, -5.5, -6.6, -7.2]])
-    >>> ivy.cosh(x, out=x)
-    >>> print(x)
+    >>> y = ivy.cosh(x)
+    >>> print(y)
     ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],
                [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],
               dtype=float32)
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.NativeArray([1, 2, 3, 4])
-    >>> y = ivy.cosh(x)
-    >>> print(y)
-    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
 
     With :code:`ivy.Container` input:
 
@@ -1224,7 +1358,7 @@ def cosh(
         b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
     }
     """
-    return _cur_backend(x).cosh(x, out=out)
+    return current_backend(x).cosh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1264,7 +1398,7 @@ def log(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log(x, out=out)
+    return current_backend(x).log(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1304,7 +1438,7 @@ def log2(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log2(x, out=out)
+    return current_backend(x).log2(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1344,7 +1478,7 @@ def log10(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log10(x, out=out)
+    return current_backend(x).log10(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1371,7 +1505,7 @@ def log1p(
         a new array containing the evaluated result for each element in x.
 
     """
-    return _cur_backend(x).log1p(x, out=out)
+    return current_backend(x).log1p(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1400,7 +1534,7 @@ def isnan(
         ``bool``.
 
     """
-    return _cur_backend(x).isnan(x, out=out)
+    return current_backend(x).isnan(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1438,7 +1572,7 @@ def less(
     ivy.array([True, False, False])
 
     """
-    return _cur_backend(x1).less(x1, x2, out=out)
+    return current_backend(x1).less(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1485,7 +1619,7 @@ def cos(
     ivy.array([1., 0.54, -0.416])
 
     """
-    return _cur_backend(x).cos(x, out=out)
+    return current_backend(x).cos(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1523,7 +1657,7 @@ def acos(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acos(x, out=out)
+    return current_backend(x).acos(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1557,7 +1691,7 @@ def logical_not(
         data type of ``bool``.
 
     """
-    return _cur_backend(x).logical_not(x, out=out)
+    return current_backend(x).logical_not(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1590,7 +1724,7 @@ def logical_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logical_xor(x1, x2, out=out)
+    return current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1629,7 +1763,7 @@ def logical_or(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).logical_or(x1, x2, out=out)
+    return current_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1661,7 +1795,7 @@ def logical_and(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).logical_and(x1, x2, out=out)
+    return current_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1701,7 +1835,7 @@ def acosh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acosh(x, out=out)
+    return current_backend(x).acosh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1740,7 +1874,7 @@ def sin(
         have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sin(x, out=out)
+    return current_backend(x).sin(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1850,7 +1984,7 @@ def negative(
     }
 
     """
-    return _cur_backend(x).negative(x, out=out)
+    return current_backend(x).negative(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1882,7 +2016,7 @@ def not_equal(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).not_equal(x1, x2, out=out)
+    return current_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1912,7 +2046,7 @@ def floor_divide(
         numeric data type.
 
     """
-    return _cur_backend(x1, x2).floor_divide(x1, x2, out=out)
+    return current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1945,7 +2079,7 @@ def bitwise_or(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_or(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -1985,7 +2119,7 @@ def sinh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sinh(x, out=out)
+    return current_backend(x).sinh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2008,7 +2142,7 @@ def positive(
         A new array with the positive value of each element in ``x``.
 
     """
-    return _cur_backend(x).positive(x, out=out)
+    return current_backend(x).positive(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2031,7 +2165,7 @@ def square(
         an array containing the evaluated result for each element in ``x``.
 
     """
-    return _cur_backend(x).square(x, out=out)
+    return current_backend(x).square(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2074,7 +2208,7 @@ def logaddexp(
         floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
+    return current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2097,7 +2231,7 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
     """
-    return _cur_backend(x).round(x, out=out)
+    return current_backend(x).round(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2134,7 +2268,7 @@ def trunc(
         The returned array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).trunc(x, out=out)
+    return current_backend(x).trunc(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2175,7 +2309,7 @@ def abs(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).abs(x, out=out)
+    return current_backend(x).abs(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2325,7 +2459,7 @@ def atan(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).atan(x, out=out)
+    return current_backend(x).atan(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2412,7 +2546,7 @@ def atan2(
         array must have a floating-point data type.
 
     """
-    return _cur_backend(x1).atan2(x1, x2, out=out)
+    return current_backend(x1).atan2(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2435,7 +2569,7 @@ def tanh(
         A new array with the hyperbolic tangent of the elements of x.
 
     """
-    return _cur_backend(x).tanh(x, out=out)
+    return current_backend(x).tanh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2467,7 +2601,7 @@ def atanh(
     ivy.array([0., -0.549])
 
     """
-    return _cur_backend(x).atanh(x, out=out)
+    return current_backend(x).atanh(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2498,7 +2632,7 @@ def subtract(
         an array containing the element-wise differences.
 
     """
-    return _cur_backend(x1).subtract(x1, x2, out=out)
+    return current_backend(x1).subtract(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2527,7 +2661,7 @@ def divide(
         floating-point data type determined by Type Promotion Rules.
 
     """
-    return _cur_backend(x1, x2).divide(x1, x2, out=out)
+    return current_backend(x1, x2).divide(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2615,7 +2749,7 @@ def pow(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).pow(x1, x2, out=out)
+    return current_backend(x1, x2).pow(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2696,7 +2830,7 @@ def remainder(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).remainder(x1, x2, out=out)
+    return current_backend(x1, x2).remainder(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2740,7 +2874,7 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 0, 0, 0])
     """
-    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2769,7 +2903,7 @@ def equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).equal(x1, x2, out=out)
+    return current_backend(x1, x2).equal(x1, x2, out=out)
 
 
 # Extra #
@@ -2796,7 +2930,7 @@ def erf(
         The Gauss error function of x.
 
     """
-    return _cur_backend(x).erf(x, out=out)
+    return current_backend(x).erf(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2834,7 +2968,6 @@ def minimum(
     -------------------
 
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 5, 9])
     >>> y = ivy.array([2, 6, 8])
     >>> z = ivy.minimum(x, y)
@@ -2845,7 +2978,7 @@ def minimum(
 
     >>> x = ivy.native_array([2, 6, 8, 5])
     >>> y = ivy.native_array([1, 5, 9, 6])
-    >>> ivy.minimum(x, y, out=y)
+    >>> ivy.minimum(x, y)
     >>> print(y)
     ivy.native_array([1, 5, 8, 5])
 
@@ -2893,7 +3026,7 @@ def minimum(
 
     >>> x = ivy.array([4, 7])
     >>> y = ivy.native_array([6, 0])
-    >>> x.minimum(y, out=y)
+    >>> x.minimum(y)
     >>> print(y)
     ivy.native_array([4, 0])
 
@@ -2901,35 +3034,12 @@ def minimum(
 
     >>> x = ivy.array([1, 4, 8])
     >>> z = ivy.zeros(3)
-    >>> x.minimum(3, out=z)
+    >>> x.minimum(3)
     >>> print(z)
     ivy.array([1, 4, 5])
 
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3, 2])
-    >>> y = ivy.native_array([1, 9, 2, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 2, 3, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([4, 7, 8, 3])
-    >>> y = ivy.array([1, 9, 6, 0])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.native_array([1, 7, 6, 0])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([3, 8])
-    >>> z = x.minimum(3)
-    >>> print(z)
-    ivy.native_array([3, 6])
-
     """
-    return _cur_backend(x1).minimum(x1, x2, out=out)
+    return current_backend(x1).minimum(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2978,7 +3088,7 @@ def maximum(
 
     >>> x = ivy.native_array([1, 5, 9, 8, 3])
     >>> y = ivy.native_array([9, 3, 2, 0, 7])
-    >>> ivy.maximum(x, y, out=y)
+    >>> ivy.maximum(x, y)
     >>> print(y)
     ivy.native_array([9, 5, 9, 8, 7])
 
@@ -3038,28 +3148,5 @@ def maximum(
     >>> print(z)
     ivy.array([3, 7, 8])
 
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 8])
-    >>> y = ivy.native_array([9, 6])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`ivy.Array` input:
-
-    >>> x = ivy.native_array([1, 8, 6, 0, 5])
-    >>> y = ivy.array([9, 6, 2, 5, 8])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.native_array([9, 8, 6, 5, 8])
-
-    With :code:`ivy.NativeArray` instance method using :code:`Number` input:
-
-    >>> x = ivy.native_array([0, 2, 7])
-    >>> z = x.maximum(5)
-    >>> print(z)
-    ivy.native_array([0, 2, 5])
-
     """
-    return _cur_backend(x1).maximum(x1, x2, out=out)
+    return current_backend(x1).maximum(x1, x2, out=out)

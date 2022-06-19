@@ -3,7 +3,7 @@
 # global
 import jax
 import jax.lax as jlax
-import jaxlib as jaxlib
+import jaxlib
 from jaxlib.xla_extension import Buffer
 
 
@@ -25,7 +25,8 @@ def is_variable(x, exclusive=False):
     )
 
 
-variable_data = lambda x: x
+def variable_data(x):
+    return x
 
 
 def execute_with_gradients(func, xs, retain_grads=False):

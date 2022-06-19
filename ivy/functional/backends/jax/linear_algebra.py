@@ -4,9 +4,9 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
+import ivy
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-import ivy
 
 
 # Array API Standard #

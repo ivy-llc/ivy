@@ -3,14 +3,14 @@
 # global
 from typing import List, Optional, Union
 import numpy as np
-from operator import mul as _mul
-from functools import reduce as _reduce
+from operator import mul
+from functools import reduce
 import multiprocessing as _multiprocessing
 from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
+from ivy.functional.backends.numpy.device import dev, _to_dev
 
 # Helpers #
 # --------#
@@ -36,7 +36,10 @@ def to_list(x: np.ndarray) -> list:
     return x.tolist()
 
 
-container_types = lambda: []
+def container_types():
+    return []
+
+
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
@@ -124,7 +127,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
     if device is None:
-        device = _dev_callable(updates)
+        device = dev(updates)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -163,7 +166,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if device is None:
-        device = _dev_callable(updates)
+        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -202,18 +205,18 @@ def gather(
     params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
 ) -> np.ndarray:
     if device is None:
-        device = _dev_callable(params)
+        device = dev(params)
     return _to_dev(np.take_along_axis(params, indices, axis), device)
 
 
 def gather_nd(params, indices, *, device: str):
     if device is None:
-        device = _dev_callable(params)
+        device = dev(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        _reduce(_mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = np.array(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -236,11 +239,10 @@ def gather_nd(params, indices, *, device: str):
     return _to_dev(res, device)
 
 
-multiprocessing = (
-    lambda context=None: _multiprocessing
-    if context is None
-    else _multiprocessing.get_context(context)
-)
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 def indices_where(x):
@@ -265,12 +267,9 @@ def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]
         return x.shape
 
 
-get_num_dims = (
-    lambda x, as_tensor=False: np.asarray(len(np.shape(x)))
-    if as_tensor
-    else len(x.shape)
-)
+def get_num_dims(x, as_tensor=False):
+    return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
 
 
-current_backend_str = lambda: "numpy"
-current_backend_str.__name__ = "current_backend_str"
+def current_backend_str():
+    return "numpy"
