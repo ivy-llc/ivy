@@ -284,7 +284,8 @@ def copy_array(
         c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
     }
 
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` and :code:`ivy.NativeArray` input:
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array`\
+                                        and :code:`ivy.NativeArray` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
                           b=ivy.native_array([-1, 0, 1]))
