@@ -192,6 +192,7 @@ def copy_array(
 
     Functional Examples
     --------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -200,12 +201,12 @@ def copy_array(
     ivy.array([-1, 0, 1])
 
     >>> x = ivy.array([1, 0, 1, 1])
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
 
@@ -217,19 +218,19 @@ def copy_array(
     ivy.array([-1, 0, 1])
 
     >>> x = ivy.native_array([1, 0, 1, 1])
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.native_array([1, 0, 1, -1])
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1])
@@ -247,7 +248,7 @@ def copy_array(
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
                           b=ivy.array([-1, 0, 1, 1, 1, 0]),\
                           c=ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1]),
@@ -258,7 +259,7 @@ def copy_array(
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
 
     >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1])
@@ -276,7 +277,7 @@ def copy_array(
     >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
                           b=ivy.native_array([-1, 0, 1, 1, 1, 0]),\
                           c=ivy.native_array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.ivy.copy_array(x)
+    >>> y = ivy.copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1]),
@@ -310,6 +311,135 @@ def copy_array(
                           c=ivy.native_array([1, 0, 1, -1, 1, 1, 0]),\
                           d=ivy.array([1, 0, 1, -1, 0, 1]))
     >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 1, -1]),
+        b: ivy.array([1, 0, 1, -1]),
+        c: ivy.array([1, 0, 1, -1, 1, 1, 0]),
+        d: ivy.array([1, 0, 1, -1, 0, 1])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.array([1, 0, 1, -1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, -1])
+
+    With :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.native_array([-1, 0, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.native_array([1, 0, 1, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.native_array([1, 0, 1, -1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, -1])
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]),\
+                          c=ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0]),
+        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
+                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
+                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]),\
+                          c=ivy.native_array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0]),
+        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array`\
+                                        and :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.native_array([-1, 0, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.native_array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                          b=ivy.native_array([1, 0, 1, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 1, 1]),
+        b: ivy.array([1, 0, 1, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1, -1]),\
+                          b=ivy.native_array([1, 0, 1, -1]),\
+                          c=ivy.native_array([1, 0, 1, -1, 1, 1, 0]),\
+                          d=ivy.array([1, 0, 1, -1, 0, 1]))
+    >>> y = x.copy_array()
     >>> print(y)
     {
         a: ivy.array([1, 0, 1, -1]),
