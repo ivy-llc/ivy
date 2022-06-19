@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-
+from typing import Optional
 # local
 from ivy.functional.backends.jax import JaxArray
 
@@ -224,7 +224,10 @@ def remainder(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.remainder(x1, x2)
 
 
-def round(x: JaxArray) -> JaxArray:
+def round(
+    x: JaxArray,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:

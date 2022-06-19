@@ -342,7 +342,11 @@ def remainder(
 
 
 @_handle_0_dim_output
-def round(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def round(
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:
