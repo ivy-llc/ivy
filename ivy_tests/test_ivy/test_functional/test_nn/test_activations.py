@@ -202,8 +202,9 @@ def test_softmax(
 ):
     dtype, x = dtype_and_x
     axis = None
-
-
+    x = np.asarray(x, dtype=dtype)
+    if x.shape == ():
+        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -214,7 +215,7 @@ def test_softmax(
         container,
         instance_method,
         "softmax",
-        x = np.asarray(x, dtype=dtype),
+        x = x,
         axis=axis,
     )
 
