@@ -274,7 +274,10 @@ def square(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArr
 
 
 @_handle_flat_arrays_in_out
-def round(x: mx.nd.NDArray, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
+def round(
+    x: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
     ret = mx.nd.round(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

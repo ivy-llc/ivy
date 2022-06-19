@@ -413,7 +413,9 @@ def remainder(
     return tf.math.floormod(x1, x2)
 
 
-def round(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def round(
+    x: Union[tf.Tensor, tf.Variable]
+) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
     else:
