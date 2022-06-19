@@ -181,7 +181,7 @@ def is_ivy_container(x: Any) -> bool:
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Copy an array.
 
