@@ -184,7 +184,7 @@ def test_sigmoid(
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.all_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
