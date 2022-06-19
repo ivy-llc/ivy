@@ -1,6 +1,6 @@
 # global
 torch_scatter = None
-import torch as torch
+import torch
 from typing import Tuple, Union, Optional
 
 # local
