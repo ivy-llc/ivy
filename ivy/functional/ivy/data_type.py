@@ -7,7 +7,7 @@ from typing import Union, Tuple, List, Optional, Callable
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
@@ -48,7 +48,7 @@ def can_cast(
         otherwise, ``False``.
 
     """
-    return _cur_backend(from_).can_cast(from_, to)
+    return current_backend(from_).can_cast(from_, to)
 
 
 @inputs_to_native_arrays
@@ -73,7 +73,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
           smallest representable number.
 
     """
-    return _cur_backend(None).iinfo(type)
+    return current_backend(None).iinfo(type)
 
 
 @inputs_to_native_arrays
@@ -103,7 +103,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
           smallest positive floating-point number with full precision.
 
     """
-    return _cur_backend(None).finfo(type)
+    return current_backend(None).finfo(type)
 
 
 @to_native_arrays_and_back
@@ -129,7 +129,7 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-    return _cur_backend(x).broadcast_to(x, shape)
+    return current_backend(x).broadcast_to(x, shape)
 
 
 @to_native_arrays_and_back
@@ -149,7 +149,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
         corresponding input array.
 
     """
-    return _cur_backend(arrays[0]).broadcast_arrays(*arrays)
+    return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
 
 def dtype(
@@ -170,7 +170,7 @@ def dtype(
         Data type of the array
 
     """
-    return _cur_backend(x).dtype(x, as_native)
+    return current_backend(x).dtype(x, as_native)
 
 
 @to_native_arrays_and_back
@@ -224,7 +224,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype, copy=copy)
+    return current_backend(x).astype(x, dtype, copy=copy)
 
 
 # Extra #
@@ -283,7 +283,6 @@ class DefaultIntDtype:
         return self
 
 
-@handle_nestable
 def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     """Get the number of bits used for representing the input data type.
 
@@ -298,7 +297,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
         The number of bits used to represent the data type.
 
     """
-    return _cur_backend(dtype_in).dtype_bits(dtype_in)
+    return current_backend(dtype_in).dtype_bits(dtype_in)
 
 
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
@@ -315,7 +314,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
         data type string 'float32'
 
     """
-    return _cur_backend(None).as_ivy_dtype(dtype_in)
+    return current_backend(None).as_ivy_dtype(dtype_in)
 
 
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDtype:
@@ -332,11 +331,10 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
         data type e.g. ivy.float32.
 
     """
-    return _cur_backend(None).as_native_dtype(dtype_in)
+    return current_backend(None).as_native_dtype(dtype_in)
 
 
 # noinspection PyShadowingNames,PyShadowingBuiltins
-@handle_nestable
 def default_int_dtype(
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
@@ -566,7 +564,6 @@ def set_default_dtype(dtype: Union[ivy.Dtype, str]):
     default_dtype_stack.append(dtype)
 
 
-@handle_nestable
 def unset_default_dtype():
     """"""
     global default_dtype_stack
@@ -575,7 +572,8 @@ def unset_default_dtype():
 
 
 # noinspection PyShadowingNames
-@handle_nestable
+
+
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     """Summary.
 
@@ -589,7 +587,6 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     default_int_dtype_stack.append(int_dtype)
 
 
-@handle_nestable
 def unset_default_int_dtype():
     """"""
     global default_int_dtype_stack
@@ -598,7 +595,8 @@ def unset_default_int_dtype():
 
 
 # noinspection PyShadowingNames
-@handle_nestable
+
+
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
     """Summary.
 
@@ -612,7 +610,6 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
     default_float_dtype_stack.append(float_dtype)
 
 
-@handle_nestable
 def unset_default_float_dtype():
     """"""
     global default_float_dtype_stack
@@ -635,7 +632,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
         The closest valid data type as a native ivy.Dtype
 
     """
-    return _cur_backend(type).closest_valid_dtype(type)
+    return current_backend(type).closest_valid_dtype(type)
 
 
 @handle_nestable
@@ -737,10 +734,9 @@ def result_type(
         the dtype resulting from an operation involving the input arrays and dtypes.
 
     """
-    return _cur_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
 
-@handle_nestable
 def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """Determines whether the provided data type is support by the current framework.
 
@@ -760,7 +756,6 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
-@handle_nestable
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     """Determines whether the provided data type is not support by the current
     framework.
@@ -781,7 +776,6 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-@handle_nestable
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
     """Converts a data type from one backend framework representation to another.
 

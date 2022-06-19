@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -108,7 +108,7 @@ def argmax(
     ivy.array(2)
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
+    return current_backend(x).argmax(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -222,7 +222,7 @@ def argmin(
          b: ivy.array([0])
     }
     """
-    return _cur_backend(x).argmin(x, axis, keepdims, out=out)
+    return current_backend(x).argmin(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -317,7 +317,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return _cur_backend(x).nonzero(x)
+    return current_backend(x).nonzero(x)
 
 
 @to_native_arrays_and_back
@@ -421,7 +421,7 @@ def where(
     }
 
     """
-    return _cur_backend(x1).where(condition, x1, x2)
+    return current_backend(x1).where(condition, x1, x2)
 
 
 # Extra #

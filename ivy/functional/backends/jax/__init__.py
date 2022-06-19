@@ -2,7 +2,7 @@
 import sys
 from jax.config import config
 import jaxlib
-import jax as jax
+import jax
 import jax.numpy as jnp
 from typing import Union
 

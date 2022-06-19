@@ -4,7 +4,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -137,7 +137,7 @@ def roll(
     }
 
     """
-    return _cur_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -178,7 +178,7 @@ def squeeze(
     (2, 2)
 
     """
-    return _cur_backend(x).squeeze(x, axis, out=out)
+    return current_backend(x).squeeze(x, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -317,7 +317,7 @@ def flip(
     }
 
     """
-    return _cur_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -460,7 +460,7 @@ def expand_dims(
     }
 
     """
-    return _cur_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -492,7 +492,7 @@ def permute_dims(
         data type as x.
 
     """
-    return _cur_backend(x).permute_dims(x, axes, out=out)
+    return current_backend(x).permute_dims(x, axes, out=out)
 
 
 @to_native_arrays_and_back
@@ -539,7 +539,7 @@ def stack(
            ``intxx`` and ``floatxx``) unspecified.
 
     """
-    return _cur_backend(arrays).stack(arrays, axis, out=out)
+    return current_backend(arrays).stack(arrays, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -578,7 +578,7 @@ def reshape(
                [5, 6]])
 
     """
-    return _cur_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -617,7 +617,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return _cur_backend(xs[0]).concat(xs, axis, out=out)
+    return current_backend(xs[0]).concat(xs, axis, out=out)
 
 
 # Extra #
@@ -702,7 +702,7 @@ def split(
         a: ivy.array([[2], [5], [9]])
     }
     """
-    return _cur_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
 @to_native_arrays_and_back
@@ -824,7 +824,7 @@ def repeat(
     }
 
     """
-    return _cur_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -851,7 +851,7 @@ def tile(
         The tiled output array.
 
     """
-    return _cur_backend(x).tile(x, reps, out=out)
+    return current_backend(x).tile(x, reps, out=out)
 
 
 @to_native_arrays_and_back
@@ -883,7 +883,7 @@ def constant_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_backend(x).constant_pad(x, pad_width, value, out=out)
+    return current_backend(x).constant_pad(x, pad_width, value, out=out)
 
 
 @to_native_arrays_and_back
@@ -911,7 +911,7 @@ def zero_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_backend(x).zero_pad(x, pad_width, out=out)
+    return current_backend(x).zero_pad(x, pad_width, out=out)
 
 
 @to_native_arrays_and_back
@@ -941,7 +941,7 @@ def swapaxes(
         x with its axes permuted.
 
     """
-    return _cur_backend(x).swapaxes(x, axis0, axis1, out=out)
+    return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
 
 @to_native_arrays_and_back
@@ -1021,4 +1021,4 @@ def clip(
     >>> print(y)
     ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
     """
-    return _cur_backend(x).clip(x, x_min, x_max, out=out)
+    return current_backend(x).clip(x, x_min, x_max, out=out)
