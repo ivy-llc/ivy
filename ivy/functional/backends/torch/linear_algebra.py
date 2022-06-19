@@ -91,8 +91,6 @@ def outer(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.outer(x1, x2, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
