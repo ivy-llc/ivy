@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-
+from typing import Optional
 # local
 from ivy.functional.backends.jax import JaxArray
 
