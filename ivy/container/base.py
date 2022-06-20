@@ -291,12 +291,15 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _concat_unify(containers, device, axis=0):
-        return ivy.concat([cont.to_device(device) for cont in containers.values()], axis)
+        return ivy.concat(
+            [cont.to_device(device) for cont in containers.values()], axis
+        )
 
     @staticmethod
     def _sum_unify(containers, device, _=None, _1=None):
         return sum(
-            [cont.to_device(device) for cont in containers.values()], start=ivy.zeros([])
+            [cont.to_device(device) for cont in containers.values()],
+            start=ivy.zeros([]),
         )
 
     @staticmethod
