@@ -83,9 +83,8 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
 # Dropout #
 
 
-@to_native_arrays_and_back
 @handle_nestable
-def dropout(x, prob, scale=True, out: Optional[ivy.Array] = None):
+def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
 
@@ -106,7 +105,7 @@ def dropout(x, prob, scale=True, out: Optional[ivy.Array] = None):
     """
     # noinspection PyUnresolvedReferences
     x = ivy.where(
-        ivy.random_uniform(shape=x.shape, device=ivy.dev(x)) < prob,
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
         ivy.zeros_like(x),
         x,
     )

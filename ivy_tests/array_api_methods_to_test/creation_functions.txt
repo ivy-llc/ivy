@@ -1,4 +1,4 @@
-arange
+#arange # failing sporadically for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796
 #asarray
 empty
 empty_like
