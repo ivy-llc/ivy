@@ -3,8 +3,8 @@
 # local
 import ivy
 import numpy as np
-from operator import mul as _mul
-from functools import reduce as _reduce
+import operator
+import functools
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 from typing import Union, List, Tuple, Optional
@@ -212,7 +212,7 @@ def random_crop(
     if image_dims is None:
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
-    flat_batch_size = _reduce(_mul, batch_shape, 1)
+    flat_batch_size = functools.reduce(operator.mul, batch_shape, 1)
     crop_size[0] = min(crop_size[-2], x_shape[-3])
     crop_size[1] = min(crop_size[-1], x_shape[-2])
 
