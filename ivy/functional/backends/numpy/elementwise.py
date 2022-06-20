@@ -29,7 +29,7 @@ def add(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 + x2
@@ -45,7 +45,7 @@ def pow(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1**x2
@@ -61,7 +61,7 @@ def bitwise_xor(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 ^ x2
@@ -86,7 +86,7 @@ def expm1(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def bitwise_invert(
-    x: Union[float, np.ndarray], *, out: Optional[Union[float, np.ndarray]] = None
+    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x, np.ndarray):
         return ~x
@@ -98,7 +98,7 @@ def bitwise_and(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 & x2
@@ -116,7 +116,7 @@ def equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[bool, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 == x2
@@ -128,7 +128,7 @@ def greater(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[bool, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 > x2
@@ -140,7 +140,7 @@ def greater_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[bool, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 >= x2
@@ -152,7 +152,7 @@ def less_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[bool, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 <= x2
@@ -164,7 +164,7 @@ def multiply(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 * x2
@@ -284,7 +284,7 @@ def divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 / x2
@@ -336,7 +336,7 @@ def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def negative(
-    x: Union[float, np.ndarray], *, out: Optional[Union[float, np.ndarray]] = None
+    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x, np.ndarray):
         return -x
@@ -348,7 +348,7 @@ def not_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[bool, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 != x2
@@ -365,7 +365,7 @@ def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 // x2
@@ -385,7 +385,7 @@ def sinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def positive(
-    x: Union[float, np.ndarray], *, out: Optional[Union[float, np.ndarray]] = None
+    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x, np.ndarray):
         return +x
@@ -402,7 +402,7 @@ def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 % x2
@@ -429,7 +429,7 @@ def bitwise_or(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 | x2
@@ -455,7 +455,7 @@ def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def abs(
-    x: Union[float, np.ndarray], *, out: Optional[Union[float, np.ndarray]] = None
+    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x, np.ndarray):
         return operator.abs(x)
@@ -467,7 +467,7 @@ def subtract(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 - x2
@@ -496,7 +496,7 @@ def bitwise_right_shift(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 >> x2
@@ -514,7 +514,7 @@ def bitwise_left_shift(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[float, np.ndarray]] = None
+    out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
         return x1 << x2
