@@ -1679,32 +1679,61 @@ def cumprod(
     ret
         Input array with cumulatively multiplied elements along axis.
         
-    Examples
+    Functional Examples
     --------
+    
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([2, 3, 4])
-    >>> ivy.cumprod(x)
-    [2, 6, 24]
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    ivy.array([2, 6, 24])
 
-    >>> y = ivy.array([2, 3, 4])
+    >>> x = ivy.array([2, 3, 4])
     >>> exclusive = True
-    >>> ivy.cumprod(y, exclusive)
-    [1, 2, 6]
+    >>> y = ivy.cumprod(x, exclusive)
+    >>> print(y)
+    ivy.array([1, 2, 6])
     
     Example specifying axes
     
-    >>> z = ivy.array([[2,3],[5,7],[11,13]])
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
     >>> exclusive = True
-    >>> ivy.cumprod(z, axis=1, exclusive)
-    [[ 1,  2],
-     [ 1,  5],
-     [ 1, 11]]
+    >>> ivy.cumprod(x, axis=1, exclusive, out=y)
+    >>> print(y)
+    ivy.array([[1,  2], 
+               [1,  5], 
+               [1, 11]])
      
-    >>> z = ivy.array([[2,3],[5,7],[11,13]])
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
     >>> exclusive = True
-    >>> ivy.cumprod(z, axis=0, exclusive)
-    [[ 1,  2],
-     [ 2,  3],
-     [10, 21]]
+    >>> ivy.cumprod(x, axis=0, exclusive, out=x)
+    >>> print(x)
+    ivy.array([[1,  2], 
+               [2,  3], 
+               [10, 21]])
+     
+     
+     With :code:`ivy.NativeArray` input:
+     
+     >>> x = ivy.Native_array([2, 3, 4])
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     ivy.array([2, 6, 24])
+     
+     
+     With :code:`ivy.Container` input:
+     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     {
+         a: ivy.array([2, 6, 24])
+         b: ivy.array([3, 12, 60])
+     }
 
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
