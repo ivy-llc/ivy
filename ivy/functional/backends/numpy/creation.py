@@ -26,7 +26,9 @@ def asarray(object_in, *, copy=None, dtype: np.dtype = None, device: str):
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
+            return _to_device(
+                np.copy(np.asarray(object_in, dtype=dtype)), device=device
+            )
         else:
             return _to_device(np.asarray(object_in, dtype=dtype), device=device)
     else:
@@ -179,4 +181,6 @@ array = asarray
 def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
     if axis is None:
         axis = -1
-    return _to_device(np.logspace(start, stop, num, base=base, axis=axis), device=device)
+    return _to_device(
+        np.logspace(start, stop, num, base=base, axis=axis), device=device
+    )
