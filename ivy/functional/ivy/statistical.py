@@ -4,7 +4,11 @@ from typing import Union, Tuple, Optional, Sequence
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
@@ -12,6 +16,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
@@ -64,6 +69,7 @@ def min(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Sequence[int]] = None,
@@ -165,6 +171,7 @@ def max(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
@@ -223,6 +230,7 @@ def var(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -276,6 +284,7 @@ def mean(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -329,6 +338,7 @@ def prod(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -406,6 +416,7 @@ def sum(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -480,6 +491,7 @@ def std(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
