@@ -284,7 +284,9 @@ def multiprocessing(context=None):
 def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
-    return _to_device(res.reshape(list(indices.shape) + [depth]), default_device(device))
+    return _to_device(
+        res.reshape(list(indices.shape) + [depth]), default_device(device)
+    )
 
 
 def indices_where(x):

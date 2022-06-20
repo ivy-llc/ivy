@@ -161,7 +161,7 @@ def test_default_device(device, call):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    stream=st.integers(0, 50)
+    stream=st.integers(0, 50),
 )
 def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
     if fw == "torch" and "int" in dtype:
