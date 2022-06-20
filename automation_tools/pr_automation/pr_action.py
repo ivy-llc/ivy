@@ -21,16 +21,25 @@ def main():
             sys.exit(0)
 
     # Get all PRs, count how many times each Ivy Team Member has been assigned
-    all_prs = pr.command(f'{"gh pr list --json assignees"}')
-    all_names = [i["assignees"][0]["login"] for i in all_prs[1:]]
+    all_prs = pr.command("gh pr list --json assignees")
+    all_names = []
+    
+    for pr in all_prs:
+        try:
+            # Save the name of the assignee
+            all_names.append(pr['assignees'][0]['login'])
+        except IndexError:
+            # Skip any PRs that don't have anyone assigned.
+            pass
+    
     unique_names = set(all_names)
     count = {}
-    for i in unique_names:
-        count[i] = int(all_names.count(i) * 100 / len(all_names))
+    for name in unique_names:
+        count[name] = int(all_names.count(name) * 100 / len(all_names))
 
     # Assigning an intern evenly based on it's percentage. The lower the percentage,
     # the bigger the chance to get assigned. This way the workload is spread evenly.
-    max_percentage = max(count.values())
+    max_percentage = max(count.values()) - min(count.values())
     interns = [
         name for name, percentage in count.items() if percentage < max_percentage
     ]
