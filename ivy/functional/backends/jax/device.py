@@ -43,7 +43,9 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_device(x: JaxArray, device: jaxlib.xla_extension.Device, stream: Optional[int] = None):
+def to_device(
+    x: JaxArray, device: jaxlib.xla_extension.Device, stream: Optional[int] = None
+):
     if device is not None:
         cur_dev = as_ivy_dev(dev(x))
         if cur_dev != device:
