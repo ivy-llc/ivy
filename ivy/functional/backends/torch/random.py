@@ -2,7 +2,7 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Tuple
+from typing import Optional, List, Union, Tuple, Sequence
 
 # local
 from ivy.functional.ivy.device import default_device
@@ -69,7 +69,12 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: torch.device
+    low: int,
+    high: int,
+    shape: Union[int, Sequence[int]],
+    *,
+    device: torch.device,
+    out: torch.Tensor,
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 

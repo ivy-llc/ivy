@@ -14,7 +14,6 @@ import torch.multiprocessing as multiprocessing
 # local
 import threading
 import ivy
-import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch

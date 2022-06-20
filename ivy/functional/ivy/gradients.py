@@ -2,9 +2,9 @@
 
 # local
 import ivy
-import ivy as _ivy
 from typing import Union
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
+
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -50,7 +50,7 @@ def with_grads(with_grads=None):
     ret
 
     """
-    if _ivy.exists(with_grads):
+    if ivy.exists(with_grads):
         assert with_grads in [True, False]
         return with_grads
     global with_grads_stack
@@ -99,7 +99,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
         An ivy variable, supporting gradient computation.
 
     """
-    return _cur_backend(x).variable(x)
+    return current_backend(x).variable(x)
 
 
 @inputs_to_native_arrays
@@ -122,7 +122,7 @@ def is_variable(x, exclusive=False):
         Boolean, true if x is a trainable variable, false otherwise.
 
     """
-    return _cur_backend(x).is_variable(x, exclusive)
+    return current_backend(x).is_variable(x, exclusive)
 
 
 @to_native_arrays_and_back
@@ -143,7 +143,7 @@ def variable_data(x):
         The internal data stored by the variable
 
     """
-    return _cur_backend(x).variable_data(x)
+    return current_backend(x).variable_data(x)
 
 
 @to_native_arrays_and_back
@@ -167,7 +167,7 @@ def stop_gradient(x, preserve_type=True):
         The same array x, but with no gradient information.
 
     """
-    return _cur_backend(x).stop_gradient(x, preserve_type)
+    return current_backend(x).stop_gradient(x, preserve_type)
 
 
 # AutoGrad #
@@ -196,7 +196,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         extra function outputs
 
     """
-    return _cur_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 
 # Optimizer Steps #
@@ -232,7 +232,7 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
         The adam step delta.
 
     """
-    step = float(_ivy.to_scalar(step))
+    step = float(ivy.to_scalar(step))
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw[kc] + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws**2
     vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw[kc] + (1 - beta2) * dcdw_sqrd)
@@ -276,13 +276,13 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
         The new function weights ws_new, following the optimizer updates.
 
     """
-    inplace = _ivy.default(inplace, _ivy.inplace_variables_supported())
-    layerwise_lr = isinstance(lr, _ivy.Container)
+    inplace = ivy.default(inplace, ivy.inplace_variables_supported())
+    layerwise_lr = isinstance(lr, ivy.Container)
     deltas = effective_grads.map(
         lambda eff_grad, kc: ((lr[kc] if layerwise_lr else lr) * eff_grad)
     )
     if inplace:
-        ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
+        ws = ws.map(lambda w, kc: ivy.inplace_decrement(w, deltas[kc]))
     else:
         ws = ws.map(lambda w, kc: -deltas[kc] + w)
     if stop_gradients:
@@ -357,7 +357,7 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True
 
     """
     ws_norm = ws.vector_norm()
-    lr = _ivy.stable_divide(ws_norm * lr, dcdws.vector_norm())
+    lr = ivy.stable_divide(ws_norm * lr, dcdws.vector_norm())
     if decay_lambda > 0:
         lr /= ws_norm * decay_lambda
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
@@ -492,6 +492,6 @@ def lamb_update(
         r2 = (eff_grads + decay_lambda * ws).norm()
     else:
         r2 = eff_grads.vector_norm()
-    r = _ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
+    r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
     return optimizer_update(ws, eff_grads, lr, inplace, stop_gradients), mw, vw

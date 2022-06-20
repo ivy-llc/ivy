@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -76,7 +76,7 @@ def unique_all(
         .. note::
            The order of unique elements is not specified and may vary between
            implementations.
-   
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
@@ -85,12 +85,12 @@ def unique_all(
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
-    
+
     Functional Examples
     -------------------
-    
+
     With :code: 'ivy.Array' input:
-    
+
     >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))
     >>> print(x)
     ivy.array([[ 2.1141,  0.8101],
@@ -105,8 +105,8 @@ def unique_all(
                [0, 1]])
     >>> print(counts)
     ivy.array([1, 1, 1, 1])
-    
-    
+
+
     >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(3, 3))
     >>> print(x)
     ivy.array([[-0.40501155,  1.77361575, -1.97776199],
@@ -124,9 +124,9 @@ def unique_all(
                [6, 2, 5]])
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
-    
+
     With :code: 'ivy.NativeArray' input:
-    
+
     >>> x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],
                               [-1.2119, -0.3519, -0.6252,  0.4033],
                               [ 0.7443,  0.2577, -0.3707, -0.0545],
@@ -155,12 +155,12 @@ def unique_all(
                [ 7, 11,  9,  3]])
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-    
+
     Instance Method Examples
     ------------------------
-    
+
     With :code: 'ivy.Array' input:
-    
+
     >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
                        [-1.2119, -0.3519, -0.6252,  0.4033],
                        [ 0.7443,  0.2577, -0.3707, -0.0545],
@@ -189,9 +189,9 @@ def unique_all(
                [ 7, 11,  9,  3]])
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-    
+
     With :code: 'ivy.NativeArray' input:
-    
+
     >>> x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],
                               [-0.071,  1.262, -0.456, -2.114],
                               [-0.349,  0.615, -0.594, -1.335],
@@ -223,7 +223,7 @@ def unique_all(
     >>> print(counts)
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
     """
-    return _cur_backend(x).unique_all(x)
+    return current_backend(x).unique_all(x)
 
 
 @to_native_arrays_and_back
@@ -242,7 +242,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         tuple of two arrays (values, inverse_indices)
 
     """
-    return _cur_backend(x).unique_inverse(x)
+    return current_backend(x).unique_inverse(x)
 
 
 @to_native_arrays_and_back
@@ -292,7 +292,7 @@ def unique_values(
            implementations.
 
     """
-    return _cur_backend(x).unique_values(x, out=out)
+    return current_backend(x).unique_values(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -384,4 +384,4 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
     >>> print(y)
     Tuple([0., 1., 2., 3.],[2,2,1,1])
     """
-    return _cur_backend(x).unique_counts(x)
+    return current_backend(x).unique_counts(x)
