@@ -98,8 +98,13 @@ def bitwise_and(
 
 @_handle_0_dim_output
 def equal(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[bool, np.ndarray]] = None
+) -> Union[bool, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 == x2
     return np.equal(x1, x2, out=out)
 
 
@@ -119,8 +124,13 @@ def greater_equal(
 
 @_handle_0_dim_output
 def less_equal(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[bool, np.ndarray]] = None
+) -> Union[bool, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 <= x2
     return np.less_equal(x1, x2, out=out)
 
 
@@ -224,8 +234,13 @@ def isnan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def less(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[bool, np.ndarray]] = None
+) -> Union[bool, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 < x2
     return np.less(x1, x2, out=out)
 
 
@@ -305,8 +320,13 @@ def negative(
 
 @_handle_0_dim_output
 def not_equal(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[bool, np.ndarray]] = None
+) -> Union[bool, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 != x2
     return np.not_equal(x1, x2, out=out)
 
 
