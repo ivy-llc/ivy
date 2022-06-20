@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.jax.device import _to_dev, _to_array, dev
+from ivy.functional.backends.jax.device import _to_device, _to_array, dev
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -167,7 +167,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_device(target, device)
 
 
 # noinspection PyShadowingNames
@@ -233,7 +233,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_device(target, device)
 
 
 def gather(
@@ -241,7 +241,7 @@ def gather(
 ) -> JaxArray:
     if device is None:
         device = dev(params)
-    return _to_dev(jnp.take_along_axis(params, indices, axis), device)
+    return _to_device(jnp.take_along_axis(params, indices, axis), device)
 
 
 def gather_nd(params, indices, *, device: str):
@@ -271,7 +271,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
-    return _to_dev(ret, device)
+    return _to_device(ret, device)
 
 
 def multiprocessing(context=None):
@@ -284,7 +284,7 @@ def multiprocessing(context=None):
 def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
-    return _to_dev(res.reshape(list(indices.shape) + [depth]), default_device(device))
+    return _to_device(res.reshape(list(indices.shape) + [depth]), default_device(device))
 
 
 def indices_where(x):
