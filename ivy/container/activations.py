@@ -40,7 +40,7 @@ class ContainerWithActivations(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_,_: ivy.leaky_relu(x_,alpha) if ivy.is_array(x_) else x_,
+                lambda x_ , _: ivy.leaky_relu(x_,alpha) if ivy.is_array(x_) else x_, 
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -60,7 +60,7 @@ class ContainerWithActivations(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.gelu(x_,approximate) if ivy.is_array(x_) else x_,
+                lambda x_ , _: ivy.gelu(x_,approximate) if ivy.is_array(x_) else x_ ,
                 key_chains,
                 to_apply,
                 prune_unapplied,
