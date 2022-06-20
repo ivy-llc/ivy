@@ -213,7 +213,7 @@ def test_softmax(
         instance_method,
         "softmax",
         x = np.asarray(x, dtype=dtype),
-        axis=axis,
+        axis = axis
     )
 
 
