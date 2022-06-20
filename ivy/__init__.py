@@ -73,6 +73,7 @@ class Node(str):
 
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
+warning_level_stack = list()
 
 
 # global constants
@@ -105,15 +106,6 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from . import backend_handler, func_wrapper
-from .debugger import (
-    set_debug_mode,
-    set_breakpoint_debug_mode,
-    set_exception_debug_mode,
-    unset_debug_mode,
-    debug_mode,
-    debug_mode_val,
-)
-from . import debugger
 from . import functional
 from .functional import *
 from . import stateful
@@ -409,7 +401,7 @@ def _sf(x, sig_fig=3):
     if "uint" in type(x).__name__:
         f = np.uint(f)
     elif "int" in type(x).__name__:
-        f = np.int(f)
+        f = int(f)
     x = f
     return x
 
@@ -514,3 +506,39 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+
+
+def warning_level():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current warning level, default is "ivy_only"
+    """
+    global warning_level_stack
+    if not warning_level_stack:
+        ret = "ivy_only"
+    else:
+        ret = warning_level_stack[-1]
+    return ret
+
+
+def set_warning_level(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    warn_level
+        string for the warning level to be set, one of "none", "ivy_only", "all"
+
+    """
+    global warning_level_stack
+    warning_level_stack.append(warn_level)
+
+
+def unset_warning_level():
+    """"""
+    global warning_level_stack
+    if warning_level_stack:
+        warning_level_stack.pop(-1)
