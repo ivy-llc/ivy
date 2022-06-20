@@ -31,7 +31,7 @@ _array_types = dict()
 _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
-_array_types["tensorflow.python.backend.ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
@@ -99,19 +99,19 @@ def _determine_backend_from_args(args):
 
 
 def current_backend(*args, **kwargs):
-    """Returns the current backend backend. Priorities:
+    """Returns the current backend. Priorities:
     global_backend > argument's backend.
 
     Parameters
     ----------
     *args/**kwargs
-        the arguments from which to try to infer the backend backend, when there is
+        the arguments from which to try to infer the backend, when there is
         no globally set backend.
 
     Returns
     -------
     ret
-        Ivy's current backend backend.
+        Ivy's current backend.
 
     Examples
     --------

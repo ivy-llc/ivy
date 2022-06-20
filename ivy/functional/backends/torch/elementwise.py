@@ -328,7 +328,11 @@ def pow(
     return ret
 
 
-def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def round(
+    x: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
@@ -420,8 +424,8 @@ def subtract(
         x2 = x2.to(promoted_type)
         return torch.subtract(x1, x2, out=out)
     return torch.subtract(
-        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1),
-        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2),
+        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1, dtype=x2.dtype),
+        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2, dtype=x1.dtype),
     )
 
 

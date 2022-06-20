@@ -1,7 +1,7 @@
 """Converters from Native Modules to Ivy Modules"""
 
 # local
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 
 
 def to_ivy_module(
@@ -44,7 +44,7 @@ def to_ivy_module(
         The new trainable ivy.Module instance.
 
     """
-    return _cur_backend().to_ivy_module(
+    return current_backend().to_ivy_module(
         native_module,
         native_module_class,
         args,
