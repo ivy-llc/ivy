@@ -5,7 +5,6 @@ from collections import namedtuple
 
 # local
 from ivy import inf
-import ivy
 
 
 # Array API Standard #
@@ -87,9 +86,12 @@ def svd(
 
 
 def outer(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, 
+    x2: torch.Tensor, 
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.outer(x1, x2, out=out)
+    ret = torch.outer(x1, x2, out=out)
+    return ret
 
 
 def diagonal(
@@ -126,9 +128,7 @@ def matmul(
     return torch.matmul(x1, x2, out=out).type(dtype_from)
 
 
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray]
-) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+def slogdet(x: torch.Tensor) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)

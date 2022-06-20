@@ -560,6 +560,7 @@ def nested_multi_map(
     prune_unapplied=False,
     key_chain="",
     config=None,
+    to_ivy=True,
 ):
     """Apply function to all array values from a collection of identically
     structured ivy arrays.
@@ -582,7 +583,8 @@ def nested_multi_map(
         Chain of keys for this dict entry (Default value = '')
     config
         The configuration for the nests. Default is the same as nest0.
-
+    to_ivy
+        convert the output to ivy_arrays. Default is True
     Returns
     -------
         nest containing the result of the funciton.
@@ -593,12 +595,13 @@ def nested_multi_map(
     for index, val in enumerate(nest0):
         values = [nest[index] for nest in nests]
         value0 = values[0]
-        this_key_chain = index if key_chain == "" else (key_chain + "/" + index)
+        this_key_chain = (
+            str(index) if key_chain == "" else (key_chain + "/" + str(index))
+        )
         if (
-            isinstance(value0, ivy.Array)
-            or isinstance(value0, ivy.NativeArray)
+            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
             and ivy.get_num_dims(value0) > 0
-        ):
+        ) or (isinstance(value0, list) or isinstance(value0, tuple)):
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -609,7 +612,10 @@ def nested_multi_map(
                 config,
             )
             if ret:
-                return_list.insert(index, ret)
+                if ivy.is_array(ret):
+                    return_list.insert(index, ivy.to_list(ret))
+                else:
+                    return_list.insert(index, ret)
         else:
             if key_chains is not None:
                 if (this_key_chain in key_chains and not to_apply) or (
@@ -617,8 +623,19 @@ def nested_multi_map(
                 ):
                     if prune_unapplied:
                         continue
-                    return_list.insert(index, ivy.to_list(value0))
+                    if ivy.is_array(value0):
+                        return_list.insert(index, ivy.to_list(value0))
+                    else:
+                        return_list.insert(index, value0)
                     continue
-            return_list.insert(index, ivy.to_list(func(values, this_key_chain)))
+            ret = func(values, this_key_chain)
+            if ivy.is_array(ret):
+                return_list.insert(index, ivy.to_list(ret))
+            else:
+                return_list.insert(index, ret)
+
     # noinspection PyProtectedMember
-    return ivy.array(return_list)
+    if to_ivy:
+        return ivy.array(return_list)
+    else:
+        return return_list

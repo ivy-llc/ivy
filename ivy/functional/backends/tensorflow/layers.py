@@ -4,17 +4,15 @@
 import tensorflow as tf
 from typing import Union, List, Tuple
 
-from tensorflow.python.types.core import Tensor
-
 
 def conv1d(
-    x: Tensor,
-    filters: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
     strides: int,
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
         x = tf.transpose(x, (0, 1, 2))
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
@@ -32,13 +30,13 @@ def conv1d_transpose(
 
 
 def conv2d(
-    x: Tensor,
-    filters: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
     dilations: int = 1,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -56,13 +54,13 @@ def conv2d_transpose(
 
 
 def depthwise_conv2d(
-    x: Tensor,
-    filters: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
     strides: int,
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
     dilations: int = 1,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     filters = tf.expand_dims(filters, -1)
     strides = [1, strides, strides, 1]
     dilations = [dilations, dilations]

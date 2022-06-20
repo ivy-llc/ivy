@@ -14,4 +14,4 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
-        return ivy.matmul(self, x2, out=out)
+        return ivy.matmul(self._data, x2, out=out)

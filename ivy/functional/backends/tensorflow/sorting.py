@@ -1,13 +1,16 @@
 # global
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
+from typing import Union
 
 # local
 
 
 def argsort(
-    x: Tensor, axis: int = -1, descending: bool = False, stable: bool = True
-) -> Tensor:
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
             ret = tf.argsort(
@@ -39,8 +42,11 @@ def argsort(
 
 
 def sort(
-    x: tf.Tensor, axis: int = -1, descending: bool = False, stable: bool = True
-) -> tf.Tensor:
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
             res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="DESCENDING")

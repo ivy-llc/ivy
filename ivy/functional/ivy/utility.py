@@ -3,8 +3,12 @@ from typing import Union, Optional, Tuple, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,12 +17,13 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether all input array elements evaluate to ``True`` along a specified
     axis.
@@ -120,17 +125,18 @@ def all(
     }
 
     """
-    return _cur_backend(x).all(x, axis, keepdims, out=out)
+    return current_backend(x).all(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether any input array element evaluates to ``True`` along a specified
     axis.
@@ -174,7 +180,7 @@ def any(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return _cur_backend(x).any(x, axis, keepdims, out=out)
+    return current_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #

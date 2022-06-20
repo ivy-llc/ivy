@@ -4,8 +4,12 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -14,6 +18,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def roll(
     x: Union[ivy.Array, ivy.NativeArray],
     shift: Union[int, Tuple[int, ...]],
@@ -132,11 +137,12 @@ def roll(
     }
 
     """
-    return _cur_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
@@ -172,11 +178,12 @@ def squeeze(
     (2, 2)
 
     """
-    return _cur_backend(x).squeeze(x, axis, out=out)
+    return current_backend(x).squeeze(x, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -310,11 +317,12 @@ def flip(
     }
 
     """
-    return _cur_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -452,11 +460,12 @@ def expand_dims(
     }
 
     """
-    return _cur_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
@@ -483,11 +492,12 @@ def permute_dims(
         data type as x.
 
     """
-    return _cur_backend(x).permute_dims(x, axes, out=out)
+    return current_backend(x).permute_dims(x, axes, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def stack(
     arrays: Union[
         Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
@@ -529,11 +539,12 @@ def stack(
            ``intxx`` and ``floatxx``) unspecified.
 
     """
-    return _cur_backend(arrays).stack(arrays, axis, out=out)
+    return current_backend(arrays).stack(arrays, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int, ...],
@@ -567,11 +578,12 @@ def reshape(
                [5, 6]])
 
     """
-    return _cur_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -605,7 +617,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return _cur_backend(xs[0]).concat(xs, axis, out=out)
+    return current_backend(xs[0]).concat(xs, axis, out=out)
 
 
 # Extra #
@@ -614,6 +626,7 @@ def concat(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
@@ -689,11 +702,12 @@ def split(
         a: ivy.array([[2], [5], [9]])
     }
     """
-    return _cur_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     repeats: Union[int, Iterable[int]],
@@ -810,11 +824,12 @@ def repeat(
     }
 
     """
-    return _cur_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
@@ -836,11 +851,12 @@ def tile(
         The tiled output array.
 
     """
-    return _cur_backend(x).tile(x, reps, out=out)
+    return current_backend(x).tile(x, reps, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
@@ -867,11 +883,12 @@ def constant_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_backend(x).constant_pad(x, pad_width, value, out=out)
+    return current_backend(x).constant_pad(x, pad_width, value, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
@@ -894,11 +911,12 @@ def zero_pad(
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
-    return _cur_backend(x).zero_pad(x, pad_width, out=out)
+    return current_backend(x).zero_pad(x, pad_width, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -923,11 +941,12 @@ def swapaxes(
         x with its axes permuted.
 
     """
-    return _cur_backend(x).swapaxes(x, axis0, axis1, out=out)
+    return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
@@ -1002,4 +1021,4 @@ def clip(
     >>> print(y)
     ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
     """
-    return _cur_backend(x).clip(x, x_min, x_max, out=out)
+    return current_backend(x).clip(x, x_min, x_max, out=out)
