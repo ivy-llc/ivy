@@ -96,7 +96,7 @@ def cosh(x: JaxArray) -> JaxArray:
     return jnp.cosh(x)
 
 
-def divide(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.divide(x1, x2)
 
 
@@ -121,9 +121,9 @@ def floor(x: JaxArray) -> JaxArray:
         return jnp.floor(x)
 
 
-def floor_divide(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.floor_divide(x1, x2)
 
 
@@ -252,7 +252,7 @@ def square(x: JaxArray) -> JaxArray:
     return jnp.square(x)
 
 
-def subtract(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(promoted_type)
