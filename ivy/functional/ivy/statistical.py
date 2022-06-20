@@ -4,8 +4,11 @@ from typing import Union, Tuple, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend 
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
-
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
@@ -434,7 +437,7 @@ def std(
 
 @to_native_arrays_and_back
 @handle_out_argument
-def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None,) -> ivy.Array:
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
