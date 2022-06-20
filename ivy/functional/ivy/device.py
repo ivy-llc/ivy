@@ -678,6 +678,7 @@ def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
     *,
+    stream: Optional[Union[int, Any]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
@@ -688,6 +689,10 @@ def to_device(
        input array to be moved to the desired device
     device
         device to move the input array `x` to
+    stream
+        stream object to use during copy. In addition to the types supported in array.__dlpack__(),
+        implementations may choose to support any library-specific stream object with the caveat that
+        any code using such an object would not be portable.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

@@ -18,7 +18,7 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype=None,
     *,
-    device: torch.device
+    device: torch.device,
 ) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
@@ -33,7 +33,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[List[int]] = None,
     *,
-    device: torch.device
+    device: torch.device,
 ) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
@@ -51,7 +51,7 @@ def multinomial(
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
     *,
-    device: torch.device
+    device: torch.device,
 ) -> torch.Tensor:
     if probs is None:
         probs = (
