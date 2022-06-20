@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    handle_nestable,
 )
 
 
@@ -22,6 +23,7 @@ from ivy.func_wrapper import (
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@handle_nestable
 def arange(
     start: Number,
     stop: Optional[Number] = None,
@@ -74,6 +76,7 @@ def arange(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@handle_nestable
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     *,
@@ -106,6 +109,7 @@ def asarray(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
     *,
@@ -146,6 +150,7 @@ def zeros(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def ones(
     shape: Union[int, Tuple[int], List[int]],
     *,
@@ -185,6 +190,7 @@ def ones(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     fill_value: Union[int, float],
@@ -230,6 +236,7 @@ def full_like(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -270,6 +277,7 @@ def ones_like(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -309,6 +317,7 @@ def zeros_like(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -335,6 +344,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -363,6 +373,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def empty(
     shape: Union[int, Tuple[int], List[int]],
     *,
@@ -394,6 +405,7 @@ def empty(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -426,6 +438,7 @@ def empty_like(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -465,6 +478,7 @@ def eye(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@handle_nestable
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, int, float],
     stop: Union[ivy.Array, ivy.NativeArray, int, float],
@@ -506,6 +520,7 @@ def linspace(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
@@ -603,6 +618,7 @@ def meshgrid(
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@handle_nestable
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
@@ -648,6 +664,7 @@ def full(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
@@ -712,6 +729,7 @@ def native_array(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@handle_nestable
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
