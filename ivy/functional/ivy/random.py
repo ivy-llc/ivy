@@ -1,12 +1,13 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
+    infer_dtype,
     outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
@@ -21,6 +22,7 @@ import ivy
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@infer_dtype
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
@@ -60,8 +62,9 @@ def random_uniform(
     ivy.array(1.89150229)
 
     """
-    dtype = ivy.default_dtype(dtype, as_native=True)
-    return _cur_backend().random_uniform(low, high, shape, device=device, dtype=dtype)
+    return current_backend().random_uniform(
+        low, high, shape, device=device, dtype=dtype
+    )
 
 
 @outputs_to_ivy_arrays
@@ -101,7 +104,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return _cur_backend().random_normal(mean, std, shape, device=device)
+    return current_backend().random_normal(mean, std, shape, device=device)
 
 
 @to_native_arrays_and_back
@@ -190,7 +193,7 @@ def multinomial(
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
-    return _cur_backend().multinomial(
+    return current_backend().multinomial(
         population_size, num_samples, batch_size, probs, replace, device=device
     )
 
@@ -201,26 +204,28 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[int, Sequence[int]],
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-) -> ivy.array:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
     low (inclusive) and high (exclusive).
-
 
     Parameters
     ----------
     low
-        Lowest integer to be drawn from the distribution.
+        Lowest integer that can be drawn from the distribution.
     high
-        One above the highest integer to be drawn from the distribution.
+        One above the highest integer that can be drawn from the distribution.
     shape
-        a tuple defining the shape of the output array.
+        a Sequence defining the shape of the output array.
     device
-        device on which to create the array 'cuda:0',
+        device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
-
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -234,30 +239,25 @@ def randint(
     >>> print(y)
     ivy.array([3])
 
-    >>> y = ivy.randint(0, 10, (3,))
-    >>> print(y)
-    ivy.array([2, 6, 7])
-
-    >>> y = ivy.randint(2, 20, (3, 2))
+    >>> y = ivy.randint(2, 20, (2, 2), 'cpu')
     >>> print(y)
     ivy.array([[ 7,  5],
-       [16,  5],
-       [15, 15]])
+               [15, 15]])
 
-    >>> y = ivy.randint(3, 15, (3, 3), 'cpu')
-    >>> print(y)
-    ivy.array([[13,  5, 12],
-       [10,  9, 13],
-       [ 6, 14, 11]])
+    >>> x = ivy.Array([1, 2, 3])
+    >>> ivy.randint(0, 10, (3,), out=x)
+    >>> print(x)
+    ivy.array([2, 6, 7])
 
-    >>> y = ivy.randint(3, 15, (3, 3), 'gpu:1')
+    >>> y = ivy.zeros(3, 3)
+    >>> ivy.randint(3, 15, (3, 3), 'gpu:1', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
-       [12,  8,  8],
-       [ 8, 11,  3]])
+               [12,  8,  8],
+               [ 8, 11,  3]])
 
     """
-    return _cur_backend().randint(low, high, shape, device=device)
+    return current_backend().randint(low, high, shape, device=device)
 
 
 def seed(seed_value: int = 0) -> None:
@@ -274,7 +274,7 @@ def seed(seed_value: int = 0) -> None:
     >>> ivy.seed(42)
 
     """
-    return _cur_backend().seed(seed_value)
+    return current_backend().seed(seed_value)
 
 
 @to_native_arrays_and_back
@@ -300,4 +300,4 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return _cur_backend(x).shuffle(x)
+    return current_backend(x).shuffle(x)

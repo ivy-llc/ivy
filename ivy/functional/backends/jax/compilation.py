@@ -1,7 +1,7 @@
 """Collection of Jax compilation functions."""
 
 # global
-import jax as jax
+import jax
 
 
 def compile(
