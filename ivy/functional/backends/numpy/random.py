@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # localf
 
@@ -27,7 +27,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
@@ -65,7 +65,11 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[int, Sequence[int]],
+    *,
+    device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 

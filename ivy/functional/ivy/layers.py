@@ -1,12 +1,11 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-import numpy as np
 from typing import Optional, Tuple, Union, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
@@ -344,7 +343,7 @@ def scaled_dot_product_attention(
         # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
-            -ivy.ones_like(sim) * np.finfo(np.dtype(ivy.dtype(sim))).max,
+            -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
             sim,
         )
 
@@ -415,7 +414,7 @@ def multi_head_attention(
     context = ivy.default(context, x)
 
     # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
-    kv = tuple(
+    kv = (
         to_kv_fn(context, v=to_kv_v)
         if ivy.exists(to_kv_fn)
         else ivy.split(context, 2, -1)
@@ -495,7 +494,9 @@ def conv1d(
     ivy.array([[[0.], [3.], [0.]]])
 
     """
-    return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv1d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -529,7 +530,7 @@ def conv1d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv1d_transpose(
+    return current_backend(x).conv1d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -630,7 +631,9 @@ def conv2d(
     }
 
     """
-    return _cur_backend(x).conv2d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv2d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -664,7 +667,7 @@ def conv2d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv2d_transpose(
+    return current_backend(x).conv2d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 
@@ -761,7 +764,7 @@ def depthwise_conv2d(
     }
 
     """
-    return _cur_backend(x).depthwise_conv2d(
+    return current_backend(x).depthwise_conv2d(
         x, filters, strides, padding, data_format, dilations
     )
 
@@ -817,7 +820,9 @@ def conv3d(
             ]])
 
     """
-    return _cur_backend(x).conv3d(x, filters, strides, padding, data_format, dilations)
+    return current_backend(x).conv3d(
+        x, filters, strides, padding, data_format, dilations
+    )
 
 
 @to_native_arrays_and_back
@@ -851,7 +856,7 @@ def conv3d_transpose(
         The result of the transpose convolution operation.
 
     """
-    return _cur_backend(x).conv3d_transpose(
+    return current_backend(x).conv3d_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations
     )
 

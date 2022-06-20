@@ -2,6 +2,8 @@ name: Ivy Dashboard Remove Reviewed PR
 on:
   pull_request_target:
     types: [converted_to_draft, review_request_removed, closed]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   pr_remove:
@@ -16,8 +18,8 @@ jobs:
           persist-credentials: false
       - name: Generate Token
         id: generate_token
-        uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
-        with:
+        uses: tibdex/github-app-token@v1
+        with: 
           app_id: ${{ secrets.PR_APP_ID }}
           private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get Project Data
@@ -65,7 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           gh api graphql -f query='
-            mutation($project:ID!, $pr:ID!) {
+            mutation($project:ID!, $item:ID!) {
               deleteProjectNextItem(input: {projectId: $project, itemId: $item}) {
                     deletedItemId
                 }

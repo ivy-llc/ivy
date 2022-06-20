@@ -6,8 +6,8 @@ from typing import Union, Optional, Tuple, Literal
 
 
 # local
+import ivy
 from ivy import inf
-import ivy as _ivy
 
 DET_THRESHOLD = 1e-12
 
@@ -33,11 +33,11 @@ def pinv(x):
         return inv(x)
     else:
         xT = mx.nd.swapaxes(x, -1, -2)
-        xT_x = _ivy.to_native(matmul(xT, x))
+        xT_x = ivy.to_native(matmul(xT, x))
         if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
             return matmul(inv(xT_x), xT)
         else:
-            x_xT = _ivy.to_native(matmul(x, xT))
+            x_xT = ivy.to_native(matmul(x, xT))
             if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
                 return matmul(xT, inv(x_xT))
             else:
@@ -69,8 +69,13 @@ def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,
     return mx.np.linalg.svd(x)
 
 
-def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    return mx.outer(x1, x2)
+def outer(
+    x1: mx.nd.NDArray, 
+    x2: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
+    ret = mx.nd.linalg.outer(x1, x2, out=out)
+    return ret
 
 
 def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> NDArray:
@@ -78,8 +83,8 @@ def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> N
 
 
 def slogdet(
-    x: Union[_ivy.Array, _ivy.NativeArray], full_matrices: bool = True
-) -> Union[_ivy.Array, Tuple[_ivy.Array, ...]]:
+    x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = mx.linalg.slogdet(x)
     res = results(sign, logabsdet)
@@ -97,8 +102,8 @@ def qr(x, mode):
 
 def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
     ret = mx.linalg.det(x)
-    if _ivy.exists(out):
-        return _ivy.inplace_update(out, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
