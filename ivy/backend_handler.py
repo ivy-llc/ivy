@@ -198,7 +198,7 @@ def set_backend(backend: str):
         if hasattr(v, "array_spec"):
             specific_v.array_spec = v.array_spec
         ivy.__dict__[k] = specific_v
-        if isinstance(specific_v, collections.Hashable):
+        if isinstance(specific_v, collections.abc.Hashable):
             try:
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
