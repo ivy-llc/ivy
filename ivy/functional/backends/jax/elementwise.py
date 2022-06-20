@@ -47,37 +47,41 @@ def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
-def bitwise_and(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_and(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_and(x1, x2)
 
 
-def bitwise_invert(x: JaxArray) -> JaxArray:
+def bitwise_invert(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.bitwise_not(x)
 
 
-def bitwise_left_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_left_shift(
+    x1: Union[float, JaxArray], x2: Union[float, JaxArray]
+) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.left_shift(x1, x2)
 
 
-def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_or(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_or(x1, x2)
 
 
-def bitwise_right_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_right_shift(
+    x1: Union[float, JaxArray], x2: Union[float, JaxArray]
+) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.right_shift(x1, x2)
 
 
-def bitwise_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_xor(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_xor(x1, x2)
 
 
