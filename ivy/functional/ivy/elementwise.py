@@ -538,6 +538,7 @@ def bitwise_and(
                       [False, False]])
 
     Using :code:`ivy.Container` instance method:
+    
     >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
     >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
     >>> x.bitwise_and(y, out=y)
