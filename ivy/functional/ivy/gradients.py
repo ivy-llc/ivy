@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from typing import Union
+from typing import Union, List
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -11,7 +11,6 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
 )
-
 
 # Extra #
 # ------#
@@ -210,7 +209,16 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 @to_native_arrays_and_back
-def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
+@handle_nestable
+def adam_step(
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    mw: Union[ivy.Array, ivy.NativeArray],
+    vw: Union[ivy.Array, ivy.NativeArray],
+    step: int,
+    beta1=0.9,
+    beta2=0.999,
+    epsilon=1e-7,
+) -> ivy.Array:
     """Compute adam step delta, given the derivatives of some cost c with respect to ws,
     using ADAM update. `[reference]
 
@@ -240,13 +248,13 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
     """
     step = float(ivy.to_scalar(step))
-    mw = dcdws.map(lambda dcdw, kc: beta1 * mw[kc] + (1 - beta1) * dcdw)
+    mw = beta1 * mw + (1 - beta1) * dcdws
     dcdws_sqrd = dcdws**2
-    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw[kc] + (1 - beta2) * dcdw_sqrd)
+    vw = beta2 * vw + (1 - beta2) * dcdws_sqrd
     beta1_pow = beta1**step
     beta2_pow = beta2**step
     alpha = (1 - beta2_pow) ** 0.5 / (1 - beta1_pow + epsilon)
-    return mw.map(lambda m, kc: (alpha * m / (vw[kc] ** 0.5 + epsilon))), mw, vw
+    return ((alpha * mw) / (vw**0.5 + epsilon)), mw, vw
 
 
 # Optimizer Updates #
@@ -254,7 +262,13 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 @to_native_arrays_and_back
 @handle_nestable
-def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
+def optimizer_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    effective_grads: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, ivy.Array],
+    inplace=None,
+    stop_gradients=True,
+) -> ivy.Array:
     """Update weights ws of some function, given the true or effective derivatives of
     some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -285,21 +299,26 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
 
     """
     inplace = ivy.default(inplace, ivy.inplace_variables_supported())
-    layerwise_lr = isinstance(lr, ivy.Container)
-    deltas = effective_grads.map(
-        lambda eff_grad, kc: ((lr[kc] if layerwise_lr else lr) * eff_grad)
-    )
+    deltas = effective_grads * lr
     if inplace:
-        ws = ws.map(lambda w, kc: ivy.inplace_decrement(w, deltas[kc]))
+        ws = ivy.inplace_decrement(ws, deltas)
     else:
-        ws = ws.map(lambda w, kc: -deltas[kc] + w)
+        ws = ws - deltas
+
     if stop_gradients:
-        return ws.stop_gradients(preserve_type=True)
+        return stop_gradient(ws, preserve_type=True)
     return ws
 
 
 @to_native_arrays_and_back
-def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
+@handle_nestable
+def gradient_descent_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, List[int]],
+    inplace=None,
+    stop_gradients=True,
+) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws].
 
@@ -332,7 +351,15 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
 
 
 @to_native_arrays_and_back
-def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
+@handle_nestable
+def lars_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, List[int]],
+    decay_lambda=0,
+    inplace=None,
+    stop_gradients=True,
+) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
     (LARS) method.
@@ -364,27 +391,28 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True
         The new function weights ws_new, following the LARS updates.
 
     """
-    ws_norm = ws.vector_norm()
-    lr = ivy.stable_divide(ws_norm * lr, dcdws.vector_norm())
+    ws_norm = ivy.vector_norm(ws)
+    lr = ivy.stable_divide(ws_norm * lr, ivy.vector_norm(dcdws))
     if decay_lambda > 0:
         lr /= ws_norm * decay_lambda
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def adam_update(
-    ws,
-    dcdws,
-    lr,
-    mw_tm1,
-    vw_tm1,
-    step,
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, List[int]],
+    mw_tm1: Union[ivy.Array, ivy.NativeArray],
+    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    step: int,
     beta1=0.9,
     beta2=0.999,
     epsilon=1e-7,
     inplace=None,
     stop_gradients=True,
-):
+) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, using ADAM update. `[reference]
 
@@ -435,13 +463,14 @@ def adam_update(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def lamb_update(
-    ws,
-    dcdws,
-    lr,
-    mw_tm1,
-    vw_tm1,
-    step,
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, List[int]],
+    mw_tm1: Union[ivy.Array, ivy.NativeArray],
+    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    step: int,
     beta1=0.9,
     beta2=0.999,
     epsilon=1e-7,
@@ -449,7 +478,7 @@ def lamb_update(
     decay_lambda=0,
     inplace=None,
     stop_gradients=True,
-):
+) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
@@ -494,12 +523,12 @@ def lamb_update(
         The new function weights ws_new, following the LARS updates.
 
     """
-    r1 = ws.vector_norm()
+    r1 = ivy.vector_norm(ws)
     eff_grads, mw, vw = adam_step(dcdws, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
     if decay_lambda > 0:
-        r2 = (eff_grads + decay_lambda * ws).norm()
+        r2 = ivy.vector_norm(eff_grads + decay_lambda * ws)
     else:
-        r2 = eff_grads.vector_norm()
+        r2 = ivy.vector_norm(eff_grads)
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
     return optimizer_update(ws, eff_grads, lr, inplace, stop_gradients), mw, vw
