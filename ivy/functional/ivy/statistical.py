@@ -615,6 +615,7 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
     ivy.array(12)
 
     Using :code: 'ivy.Container' instance method:
+    
     >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
                           b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = x.einsum(ii)
