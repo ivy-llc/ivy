@@ -37,25 +37,36 @@ def random_uniform(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
-        
+
     Returns
     -------
     ret
         Drawn samples from the parameterized uniform distribution.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
     >>> y = ivy.random_uniform()
     >>> print(y)
     ivy.array(0.26431865)
+
     >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
     >>> print(y)
     ivy.array(1.89150229)
+    
     >>> y = ivy.random_uniform(shape=(2,2))
     >>> print(y)
     ivy.array([[0.89629126, 0.94198485],
         [0.91405606, 0.72848724]])
 
+    Instance Method Examples
+    ------------------------
+    >>> y = ivy.Container(a=ivy.random_uniform(),\
+                        b=ivy.random_uniform(shape=2))
+    >>> print(y)
+    {
+    a: ivy.array(0.7550739),
+    b: ivy.array([0.624, 0.00109])
+    }
     """
     return _cur_backend().random_uniform(low, high, shape, device=device)
 
