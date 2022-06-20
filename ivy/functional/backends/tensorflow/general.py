@@ -6,7 +6,7 @@ signature.
 from typing import List, Optional, Union
 
 _round = round
-import numpy as _np
+import numpy as np
 import tensorflow as tf
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -14,7 +14,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import _dev_callable, as_native_dev
+from ivy.functional.backends.tensorflow.device import dev, as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -36,8 +36,8 @@ def array_equal(
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> _np.ndarray:
-    return _np.asarray(tf.convert_to_tensor(x))
+def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> np.ndarray:
+    return np.asarray(tf.convert_to_tensor(x))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
@@ -150,7 +150,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
     if device is None:
-        device = _dev_callable(updates)
+        device = dev(updates)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -265,7 +265,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if device is None:
-        device = _dev_callable(updates)
+        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -308,14 +308,14 @@ def gather(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     if device is None:
-        device = _dev_callable(params)
+        device = dev(params)
     with tf.device(as_native_dev(device)):
         return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
 def gather_nd(params, indices, *, device: str):
     if device is None:
-        device = _dev_callable(params)
+        device = dev(params)
     with tf.device(as_native_dev(device)):
         return tf.gather_nd(params, indices)
 
