@@ -527,16 +527,6 @@ def bitwise_and(
                [8],
                [8]])
 
-    Using :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([[True, False]])
-    >>> y = ivy.native_array([[True], \
-                              [False]])
-    >>> z = x.bitwise_and(y)
-    >>> print(z)
-    ivy.native_array([[ True, False],
-                      [False, False]])
-
     Using :code:`ivy.Container` instance method:
     
     >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
