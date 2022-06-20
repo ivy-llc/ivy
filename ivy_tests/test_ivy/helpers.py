@@ -14,13 +14,13 @@ from typing import Union, List
 
 
 try:
-    import jax.numpy as _jnp
+    import jax.numpy as jnp
 except (ImportError, RuntimeError, AttributeError):
-    _jnp = None
+    jnp = None
 try:
-    import tensorflow as _tf
+    import tensorflow as tf
 
-    _tf_version = float(".".join(_tf.__version__.split(".")[0:2]))
+    _tf_version = float(".".join(tf.__version__.split(".")[0:2]))
     if _tf_version >= 2.3:
         # noinspection PyPep8Naming,PyUnresolvedReferences
         from tensorflow.python.types.core import Tensor as tensor_type
@@ -28,21 +28,21 @@ try:
         # noinspection PyPep8Naming
         # noinspection PyProtectedMember,PyUnresolvedReferences
         from tensorflow.python.framework.tensor_like import _TensorLike as tensor_type
-    physical_devices = _tf.config.list_physical_devices("GPU")
+    physical_devices = tf.config.list_physical_devices("GPU")
     for device in physical_devices:
-        _tf.config.experimental.set_memory_growth(device, True)
+        tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
-    _tf = None
+    tf = None
 try:
-    import torch as _torch
+    import torch
 except ImportError:
-    _torch = None
+    torch = None
 try:
-    import mxnet as _mx
-    import mxnet.ndarray as _mx_nd
+    import mxnet as mx
+    import mxnet.ndarray as mx_nd
 except ImportError:
-    _mx = None
-    _mx_nd = None
+    mx = None
+    mx_nd = None
 from hypothesis import strategies as st
 import hypothesis.extra.numpy as nph
 
@@ -138,19 +138,19 @@ def np_call(func, *args, **kwargs):
 
 
 def jnp_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, np.ndarray, _jnp.asarray)
-    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _jnp.asarray)
+    new_args = _convert_vars(args, np.ndarray, jnp.asarray)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, jnp.asarray)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, (_jnp.ndarray, ivy.Array), ivy.to_numpy))
+        return tuple(_convert_vars(output, (jnp.ndarray, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], (_jnp.ndarray, ivy.Array), ivy.to_numpy)[0]
+        return _convert_vars([output], (jnp.ndarray, ivy.Array), ivy.to_numpy)[0]
 
 
 def tf_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _tf.convert_to_tensor)
+    new_args = _convert_vars(args, np.ndarray, tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, tf.convert_to_tensor)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
@@ -160,11 +160,11 @@ def tf_call(func, *args, **kwargs):
 
 
 def tf_graph_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _tf.convert_to_tensor)
+    new_args = _convert_vars(args, np.ndarray, tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, tf.convert_to_tensor)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
 
-    @_tf.function
+    @tf.function
     def tf_func(*local_args, **local_kwargs):
         return func(*local_args, **local_kwargs)
 
@@ -177,28 +177,28 @@ def tf_graph_call(func, *args, **kwargs):
 
 
 def torch_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, np.ndarray, _torch.from_numpy)
-    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _torch.from_numpy)
+    new_args = _convert_vars(args, np.ndarray, torch.from_numpy)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, torch.from_numpy)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, (_torch.Tensor, ivy.Array), ivy.to_numpy))
+        return tuple(_convert_vars(output, (torch.Tensor, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], (_torch.Tensor, ivy.Array), ivy.to_numpy)[0]
+        return _convert_vars([output], (torch.Tensor, ivy.Array), ivy.to_numpy)[0]
 
 
 def mx_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, np.ndarray, _mx_nd.array)
-    new_kw_items = _convert_vars(kwargs.values(), np.ndarray, _mx_nd.array)
+    new_args = _convert_vars(args, np.ndarray, mx_nd.array)
+    new_kw_items = _convert_vars(kwargs.values(), np.ndarray, mx_nd.array)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
         return tuple(
-            _convert_vars(output, (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy)
+            _convert_vars(output, (mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy)
         )
     else:
         return _convert_vars(
-            [output], (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy
+            [output], (mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy
         )[0]
 
 

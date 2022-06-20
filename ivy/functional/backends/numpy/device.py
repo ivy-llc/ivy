@@ -4,7 +4,7 @@
 import os
 import time
 import numpy as np
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -15,9 +15,6 @@ def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
     if as_native:
         return "cpu"
     return as_ivy_dev("cpu")
-
-
-_dev_callable = dev
 
 
 def as_ivy_dev(device):
@@ -44,9 +41,9 @@ def gpu_is_available() -> bool:
     return False
 
 
-# private version of to_dev to be used in backend implementations
-def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
-    """Private version of `to_dev` to be used in backend implementations"""
+# private version of to_device to be used in backend implementations
+def _to_device(x: np.ndarray, device=None) -> np.ndarray:
+    """Private version of `to_device` to be used in backend implementations"""
     if device is not None:
         if "gpu" in device:
             raise Exception(
@@ -63,7 +60,7 @@ def _to_dev(x: np.ndarray, device=None) -> np.ndarray:
     return x
 
 
-def to_dev(x: np.ndarray, device: str) -> np.ndarray:
+def to_device(x: np.ndarray, device: str) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
         if "gpu" in device:
