@@ -2580,7 +2580,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def to_dev(
+    def to_device(
         self,
         device,
         key_chains=None,
@@ -2612,7 +2612,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device=device))
+            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,

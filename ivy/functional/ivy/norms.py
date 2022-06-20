@@ -4,7 +4,7 @@
 # local
 from typing import List, Union, Optional
 import ivy
-from ivy.func_wrapper import to_native_arrays_and_back
+from ivy.func_wrapper import to_native_arrays_and_back, handle_nestable
 
 
 # Extra #
@@ -12,6 +12,7 @@ from ivy.func_wrapper import to_native_arrays_and_back
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
