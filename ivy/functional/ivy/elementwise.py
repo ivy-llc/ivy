@@ -474,6 +474,21 @@ def bitwise_and(
     >>> print(z)
     ivy.array([2, 1, 7])
 
+    >>> x = ivy.array([[True], \
+                       [False]])
+    >>> y = ivy.array([[True], \
+                       [True]])
+    >>> ivy.bitwise_and(x, y, out=x)
+    >>> print(x)
+    ivy.array([[ True],
+               [False]])
+
+    >>> x = ivy.array([1])
+    >>> y = ivy.array([3])
+    >>> ivy.bitwise_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([1])
+
     With :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([True, True, False, False])
@@ -481,6 +496,14 @@ def bitwise_and(
     >>> ivy.bitwise_and(x, y, out=y)
     >>> print(y)
     ivy.native_array([ True, False, False, False])
+
+    >>> x = ivy.native_array([[True, False]])
+    >>> y = ivy.native_array([[True], \
+                              [False]])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([[ True, False],
+               [False, False]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
