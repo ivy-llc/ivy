@@ -328,11 +328,7 @@ def pow(
     return ret
 
 
-def round(
-    x: torch.Tensor,
-    *,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
