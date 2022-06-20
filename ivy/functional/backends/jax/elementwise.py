@@ -1,7 +1,8 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Optional
+from typing import Union, Optional
+
 # local
 from ivy.functional.backends.jax import JaxArray
 
@@ -18,7 +19,7 @@ def acosh(x: JaxArray) -> JaxArray:
     return jnp.arccosh(x)
 
 
-def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def add(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.add(x1, x2)
 
 
@@ -224,10 +225,7 @@ def remainder(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.remainder(x1, x2)
 
 
-def round(
-    x: JaxArray,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def round(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
