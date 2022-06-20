@@ -4,7 +4,11 @@ from typing import Union, Tuple, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -12,6 +16,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
@@ -227,6 +232,7 @@ def unique_all(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns a tuple of two arrays, one being the unique elements of an input array x
     and the other one the indices from the set of uniques elements that reconstruct x.
@@ -247,6 +253,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -296,6 +303,7 @@ def unique_values(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
