@@ -7,9 +7,9 @@ import functools
 import ivy
 
 try:
-    from scipy.special import erf
+    from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
-    erf = None
+    _erf = None
 
 
 # when inputs are 0 dimensional, numpy's functions return scalars
@@ -477,8 +477,8 @@ def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
 
 @_handle_0_dim_output
 def erf(x, *, out: Optional[np.ndarray] = None):
-    if erf is None:
+    if _erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.erf with a numpy backend."
         )
-    return erf(x, out=out)
+    return _erf(x, out=out)

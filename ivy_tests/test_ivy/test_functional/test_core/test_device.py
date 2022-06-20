@@ -162,7 +162,7 @@ def test_default_device(device, call):
     as_variable=st.booleans(),
     with_out=st.booleans(),
 )
-def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
+def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -179,7 +179,7 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, device=device, out=out)
+    x_on_dev = ivy.to_device(x, device=device, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
