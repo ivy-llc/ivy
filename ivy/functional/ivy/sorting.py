@@ -4,7 +4,11 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,6 +17,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
@@ -94,6 +99,7 @@ def argsort(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,

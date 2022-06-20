@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 inf = float("inf")
 
@@ -15,6 +19,7 @@ inf = float("inf")
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -59,6 +64,7 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -97,6 +103,7 @@ def pinv(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Transposes a matrix (or a stack of matrices) ``x``.
 
@@ -118,6 +125,7 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
@@ -197,6 +205,7 @@ def vector_norm(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def svd(
     x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
@@ -271,6 +280,7 @@ def svd(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
@@ -338,6 +348,7 @@ def outer(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def diagonal(
     x: ivy.Array, offset: int = 0, axis1: int = -2, axis2: int = -1
 ) -> ivy.Array:
@@ -395,6 +406,7 @@ def diagonal(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
@@ -426,6 +438,7 @@ def matrix_norm(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
@@ -467,6 +480,7 @@ def qr(x: ivy.Array, mode: str = "reduced") -> NamedTuple:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
@@ -525,6 +539,7 @@ def matmul(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
@@ -534,6 +549,7 @@ def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
@@ -560,6 +576,7 @@ def slogdet(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -645,6 +662,7 @@ def tensordot(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
@@ -669,6 +687,7 @@ def svdvals(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
@@ -714,6 +733,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -758,6 +778,7 @@ def vecdot(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def det(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
@@ -848,6 +869,7 @@ def det(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
@@ -915,6 +937,7 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -937,6 +960,7 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -974,6 +998,7 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -1018,6 +1043,7 @@ def matrix_rank(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1138,6 +1164,7 @@ def cross(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
@@ -1162,6 +1189,7 @@ def vector_to_skew_symmetric_matrix(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
