@@ -21,8 +21,8 @@ def main():
             sys.exit(0)
 
     # Get all PRs, count how many times each Ivy Team Member has been assigned
-    all_prs = pr.command(f'gh pr list --json assignees')
-    all_names = [i['assignees'][0]['login'] for i in all_prs[1:]]
+    all_prs = pr.command(f"gh pr list --json assignees")
+    all_names = [i["assignees"][0]["login"] for i in all_prs[1:]]
     unique_names = set(all_names)
     count = {}
     for i in unique_names:
