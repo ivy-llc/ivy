@@ -690,9 +690,10 @@ def to_device(
     device
         device to move the input array `x` to
     stream
-        stream object to use during copy. In addition to the types supported in array.__dlpack__(),
-        implementations may choose to support any library-specific stream object with the caveat that
-        any code using such an object would not be portable.
+        stream object to use during copy. In addition to the types supported in
+        array.__dlpack__(), implementations may choose to support any library-specific
+        stream object with the caveat that any code using such an object would not be
+        portable.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
