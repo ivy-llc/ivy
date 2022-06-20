@@ -455,6 +455,7 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
 
     Functional Examples
     -------------------
+
     With :code: 'ivy.Array' input:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
@@ -548,6 +549,7 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
     ------------------------
 
     Using :code: 'ivy.Array' instance method:
+    
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = ivy.x.einsum(ii)
     ivy.array(12)
