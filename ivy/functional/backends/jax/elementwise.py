@@ -100,9 +100,9 @@ def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.divide(x1, x2)
 
 
-def equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.equal(x1, x2)
 
 
@@ -127,11 +127,11 @@ def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxA
     return jnp.floor_divide(x1, x2)
 
 
-def greater(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater(x1, x2)
 
 
-def greater_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def greater_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater_equal(x1, x2)
 
 
@@ -147,11 +147,11 @@ def isnan(x: JaxArray) -> JaxArray:
     return jnp.isnan(x)
 
 
-def less(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def less(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less(x1, x2)
 
 
-def less_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def less_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less_equal(x1, x2)
 
 
@@ -201,9 +201,9 @@ def negative(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.negative(x)
 
 
-def not_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.not_equal(x1, x2)
 
 
