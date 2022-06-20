@@ -1863,28 +1863,28 @@ def shape(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2])
-    >>> y_tuple = ivy.shape(x)
-    >>> y_array = ivy.shape(x, as_tensor = True)
-    >>> print(y_tuple)
+    >>> shape_tuple = ivy.shape(x)
+    >>> shape_array = ivy.shape(x, as_tensor = True)
+    >>> print(shape_tuple)
     (2, )
 
-    >>> print(y_array)
+    >>> print(shape_array)
     ivy.array([2])
 
     >>> out = ivy.array([0])
-    >>> y_array = ivy.shape(x, as_tensor = True, out = out)
+    >>> shape_array = ivy.shape(x, as_tensor = True, out = out)
     >>> print(out)
     ivy.array([1])
 
     >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
-    >>> y_tuple = ivy.shape(x)
-    >>> print(y_tuple)
-    ivy.array([2, 3])
+    >>> x_shape = ivy.shape(x)
+    >>> print(x_shape)
+    (2, 3)
 
     >>> x = ivy.array([[[1, 2], [1, 2], [1, 2]], \
                        [[3, 4], [3, 4], [3, 4]]])
-    >>> y_tuple = ivy.shape(x)
-    >>> print(y_tuple)
+    >>> x_shape = ivy.shape(x)
+    >>> print(x_shape)
     (2, 3, 2)
 
     With :code:`ivy.NativeArray` input:
@@ -1898,7 +1898,10 @@ def shape(
     >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
                           b = ivy.array([1, 0, -1], [-1, 0, 1]))
     >>> print(ivy.shape(x))
-    [(3, ), (2, 3)]
+    {
+        a = (3, ), 
+        b = (2, 3)
+    }
 
     Instance Method Examples
     ------------------------
@@ -1909,9 +1912,12 @@ def shape(
 
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
-                          b = ivy.array([1, 0, -1]))
+                          b = ivy.array([1, 0, -1], [-1, 0, 1]))
     >>> print(x.shape())
-    [(3, ), (2, 3)]
+    {
+        a = (3, ), 
+        b = (2, 3)
+    }
 
     """
     return _cur_backend(x).shape(x, as_array)

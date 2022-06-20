@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
 
 _round = round
 import numpy as _np
@@ -347,7 +347,7 @@ def shape(
     as_tensor: bool = False,
     *,
     out: Optional[tf.dtypes] = None
-) -> Union[tf.Tensor, tf.Variable, List[int]]:
+) -> Union[tf.Tensor, tf.Variable, Tuple[int]]:
     if as_tensor:
         return tf.shape(x)
     else:

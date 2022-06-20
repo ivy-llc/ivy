@@ -6,7 +6,7 @@ import numpy as np
 import torch as torch
 from operator import mul
 from functools import reduce as _reduce
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
 from numbers import Number
 
 # local
@@ -403,7 +403,7 @@ def one_hot(indices, depth: int, *, device: torch.device):
 def shape(
     x: torch.Tensor, 
     as_tensor: bool = False
-) -> Union[torch.Tensor, List[int]]:
+) -> Union[torch.Tensor, Tuple[int]]:
     if as_tensor:
         return torch.tensor(x.shape)
     else:

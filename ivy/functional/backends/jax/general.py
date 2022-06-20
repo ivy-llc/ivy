@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
-from typing import List, Iterable, Optional, Union
+from typing import List, Iterable, Optional, Union, Tuple
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -70,7 +70,7 @@ def to_list(x: JaxArray) -> list:
 def shape(
     x: JaxArray, 
     as_tensor: bool = False
-) -> Union[JaxArray, List[int]]:
+) -> Union[JaxArray, Tuple[int]]:
     if as_tensor:
         return jnp.asarray(jnp.shape(x))
     else:
