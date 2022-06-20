@@ -2580,7 +2580,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def to_dev(
+    def to_device(
         self,
         device,
         key_chains=None,
