@@ -125,7 +125,9 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(jnp.array(object_in, dtype=dtype, copy=True), device=device)
+            return _to_device(
+                jnp.array(object_in, dtype=dtype, copy=True), device=device
+            )
         else:
             return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
     else:
@@ -220,4 +222,6 @@ def logspace(
 ):
     if axis is None:
         axis = -1
-    return _to_device(jnp.logspace(start, stop, num, base=base, axis=axis), device=device)
+    return _to_device(
+        jnp.logspace(start, stop, num, base=base, axis=axis), device=device
+    )
