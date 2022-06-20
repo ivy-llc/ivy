@@ -1,5 +1,5 @@
-#arange #fails for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796
-asarray
+arange
+#asarray
 empty
 empty_like
 #eye #fails for jax non deterministically, possibly due to +0 vs -0 inconsistencies
