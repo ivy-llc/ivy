@@ -1,15 +1,15 @@
 # global
 import copy
-from operator import lt as _lt
-from operator import le as _le
-from operator import eq as _eq
-from operator import ne as _ne
-from operator import gt as _gt
-from operator import ge as _ge
-from operator import pow as _pow
-from operator import not_ as _not
-from functools import reduce as _reduce
-from operator import floordiv as _floordiv
+from operator import lt
+from operator import le
+from operator import eq
+from operator import ne
+from operator import gt
+from operator import ge
+from operator import pow
+from operator import not_
+from functools import reduce
+from operator import floordiv
 
 # local
 import ivy
@@ -106,7 +106,7 @@ class Container(
 
     def __pow__(self, power):
         if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda x: _reduce(_pow, x))
+            return self.reduce([self, power], lambda x: reduce(pow, x))
         return self.map(lambda x, kc: x**power)
 
     def __rpow__(self, power):
@@ -138,7 +138,7 @@ class Container(
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+            return self.reduce([self, other], lambda x: reduce(floordiv, x))
         return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):
@@ -149,32 +149,32 @@ class Container(
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_lt, x))
+            return self.reduce([self, other], lambda x: reduce(lt, x))
         return self.map(lambda x, kc: x < other)
 
     def __le__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_le, x))
+            return self.reduce([self, other], lambda x: reduce(le, x))
         return self.map(lambda x, kc: x <= other)
 
     def __eq__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_eq, x))
+            return self.reduce([self, other], lambda x: reduce(eq, x))
         return self.map(lambda x, kc: x == other)
 
     def __ne__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ne, x))
+            return self.reduce([self, other], lambda x: reduce(ne, x))
         return self.map(lambda x, kc: x != other)
 
     def __gt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_gt, x))
+            return self.reduce([self, other], lambda x: reduce(gt, x))
         return self.map(lambda x, kc: x > other)
 
     def __ge__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ge, x))
+            return self.reduce([self, other], lambda x: reduce(ge, x))
         return self.map(lambda x, kc: x >= other)
 
     def __and__(self, other):
@@ -194,7 +194,7 @@ class Container(
         return self.map(lambda x, kc: other or x)
 
     def __invert__(self):
-        return self.map(lambda x, kc: _not(x))
+        return self.map(lambda x, kc: not_(x))
 
     def __xor__(self, other):
         if isinstance(other, ivy.Container):
