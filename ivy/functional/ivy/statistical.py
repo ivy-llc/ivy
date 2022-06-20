@@ -525,6 +525,7 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
     ivy.array([ 0, 22, 76])
 
     With :code: 'ivy.Container' input:
+    
     >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
                           b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
     >>> y = ivy.einsum('i,ij->i', x)
@@ -535,6 +536,7 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Opt
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                           b=ivy.array([[5.], [6.], [7.]]))                                                           
