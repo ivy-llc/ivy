@@ -124,15 +124,17 @@ def less_equal(
 
 @_handle_0_dim_output
 def multiply(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[float, np.ndarray]] = None
+) -> Union[float, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 * x2
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = np.promote_types(x1.dtype, x2.dtype)
-        x1, x2 = np.asarray(x1), np.asarray(x2)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    elif not hasattr(x2, "dtype"):
-        x2 = np.array(x2, dtype=x1.dtype)
+        return np.multiply(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
     return np.multiply(x1, x2, out=out)
 
 
@@ -339,14 +341,17 @@ def square(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def remainder(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[Union[float, np.ndarray]] = None
+) -> Union[float, np.ndarray]:
+    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+        return x1 % x2
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        return np.remainder(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
     return np.remainder(x1, x2, out=out)
 
 
