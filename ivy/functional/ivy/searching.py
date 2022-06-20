@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,6 +17,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -108,6 +113,7 @@ def argmax(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -220,6 +226,7 @@ def argmin(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -315,6 +322,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
