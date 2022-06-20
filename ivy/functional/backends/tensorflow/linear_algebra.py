@@ -4,8 +4,8 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
-from ivy import inf
 import ivy
+from ivy import inf
 
 
 # Array API Standard #
@@ -180,8 +180,11 @@ def svd(
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.outer(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
