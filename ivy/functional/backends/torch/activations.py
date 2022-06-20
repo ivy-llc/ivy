@@ -42,8 +42,8 @@ def sigmoid(x: torch.Tensor) -> torch.Tensor:
 
 
 def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
-    exp_x = torch.exp(x)
-    return exp_x / torch.sum(exp_x, axis, keepdims=True)
+    return torch.nn.functional.softmax(x,axis)
+
 
 
 def softplus(x: torch.Tensor) -> torch.Tensor:
