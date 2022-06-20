@@ -127,94 +127,6 @@
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="n">NON_WRAPPED_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;copy_nest&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;current_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;current_backend_str&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unset_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_referrers_recursive&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_debug_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_breakpoint_debug_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_exception_debug_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unset_debug_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;debug_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;nested_map&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;to_ivy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;args_to_ivy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;to_native&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;args_to_native&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;exists&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_min_base&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_min_base&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_min_denominator&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_min_denominator&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;split_func_call_across_gpus&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cache_fn&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;split_func_call&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;compile&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;compile_graph&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dev&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;as_ivy_dev&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;as_native_dev&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;memory_on_dev&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;gpu_is_available&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;num_gpus&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tpu_is_available&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;as_ivy_dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cprint&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;to_ivy_module&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tree_flatten&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tree_unflatten&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;start_compiling&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;stop_compiling&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_compiled&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_nest&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_nest_at_index&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;map_nest_at_index&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;multi_index_nest&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_nest_at_indices&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;map_nest_at_indices&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;nested_indices_where&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;map&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_default_device&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unset_default_device&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;closest_valid_dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_default_dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;default_dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;default_device&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;as_native_dtype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;is_ivy_array&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;is_ivy_container&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;inplace_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;inplace_increment&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;inplace_decrement&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;prune_nest_at_index&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;prune_nest_at_indices&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;is_array&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;is_native_array&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;nested_any&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;fn_array_spec&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;insert_into_nest_at_index&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;insert_into_nest_at_indices&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;vec_sig_fig&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;native_array&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;multi_head_attention&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;execute_with_gradients&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;adam_step&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;optimizer_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;gradient_descent_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lars_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;adam_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lamb_update&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;stable_divide&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;stable_pow&quot;</span><span class="p">,</span>
-<span class="p">]</span>
 <span class="n">FW_FN_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">[],</span>
     <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -552,8 +464,6 @@
 <span class="sd">        `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the</span>
 <span class="sd">        input is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;array_spec&quot;</span><span class="p">):</span>
-        <span class="n">to_wrap</span><span class="o">.</span><span class="n">array_spec</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">array_spec</span>
     <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;linalg&quot;</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">linalg_k</span><span class="p">,</span> <span class="n">linalg_v</span> <span class="ow">in</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linalg_v</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">)</span> <span class="ow">and</span> <span class="n">linalg_k</span> <span class="o">!=</span> <span class="s2">&quot;namedtuple&quot;</span><span class="p">:</span>
@@ -562,6 +472,8 @@
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">to_wrap</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;array_spec&quot;</span><span class="p">):</span>
+            <span class="n">to_wrap</span><span class="o">.</span><span class="n">array_spec</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">array_spec</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_device&quot;</span><span class="p">):</span>
             <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">infer_device</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;infer_dtype&quot;</span><span class="p">):</span>
@@ -578,12 +490,8 @@
             <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_out_argument&quot;</span>
         <span class="p">):</span>
             <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_out_argument</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span>
-        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FUNCTIONS_W_CONT_SUPPORT</span> <span class="o">+</span> <span class="n">NON_WRAPPED_FUNCTIONS</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
+            <span class="n">to_wrap</span><span class="p">,</span> <span class="s2">&quot;handle_nestable&quot;</span>
         <span class="p">):</span>
             <span class="n">to_wrap</span> <span class="o">=</span> <span class="n">handle_nestable</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_wrap</span>
