@@ -7,7 +7,7 @@ from typing import Union, Optional
 from ivy.functional.backends.jax import JaxArray
 
 
-def abs(x: JaxArray) -> JaxArray:
+def abs(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.absolute(x)
 
 
@@ -191,13 +191,13 @@ def logical_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.logical_xor(x1, x2)
 
 
-def multiply(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def multiply(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.multiply(x1, x2)
 
 
-def negative(x: JaxArray) -> JaxArray:
+def negative(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.negative(x)
 
 
@@ -207,11 +207,11 @@ def not_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.not_equal(x1, x2)
 
 
-def positive(x: JaxArray) -> JaxArray:
+def positive(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.positive(x)
 
 
-def pow(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(promoted_type)
@@ -219,9 +219,9 @@ def pow(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.power(x1, x2)
 
 
-def remainder(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    # if isinstance(x2, int):
+    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.remainder(x1, x2)
 
 
