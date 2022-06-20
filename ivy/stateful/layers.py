@@ -46,6 +46,10 @@ class Linear(Module):
         v
             the variables for the linear layer, as a container, constructed internally
             by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
+
 
         """
         self._input_channels = input_channels
@@ -57,13 +61,18 @@ class Linear(Module):
         self._with_bias = with_bias
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """
         Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
 
 
@@ -120,24 +129,35 @@ class Dropout(Module):
             The probability of zeroing out each array element.
         scale
             Whether to scale the output by 1/(1-prob), default is True.
-
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created.
+            Default is None.
         """
         self._prob = prob
         self._scale = scale
         Module.__init__(self, None, None, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """
         Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created .
+            Default is None.
+
 
         """
         return {}
 
-    def _forward(self, inputs):
+    def _forward(self, inputs, dtype=None):
         """
         Perform forward pass of the Linear layer.
 
@@ -145,14 +165,16 @@ class Dropout(Module):
         ----------
         inputs
             Inputs to process *[batch_shape, in]*.
-
+        dtype
+            the desired data type of the internal variables to be created .
+            Default is None.
         Returns
         -------
         ret
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.dropout(inputs, self._prob, self._scale)
+        return ivy.dropout(inputs, self._prob, self._scale, dtype=dtype)
 
 
 # Attention #
@@ -217,6 +239,10 @@ class MultiHeadAttention(Module):
             explicitly by the user by calling
             build(), or the first time the __call__ method is run.
             Default is on initialization.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
+
         """
         v_exists = ivy.exists(v)
         v = ivy.default(v, ivy.Container({"to_q": None, "to_kv": None, "to_out": None}))
@@ -285,6 +311,11 @@ class MultiHeadAttention(Module):
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         return ivy.Container(to_kv={"k": self._to_k.v, "v": self._to_v.v})
 
@@ -376,6 +407,9 @@ class Conv1D(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -394,13 +428,18 @@ class Conv1D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """
         Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created.
+             Default is None.
 
         """
         return {
@@ -493,6 +532,9 @@ class Conv1DTranspose(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -512,13 +554,17 @@ class Conv1DTranspose(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
         ----------
         device
-
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         return {
             "w": self._w_init.create_variables(
@@ -606,6 +652,9 @@ class Conv2D(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -624,12 +673,17 @@ class Conv2D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created.
+            Default is None.
 
         """
         return {
@@ -720,6 +774,9 @@ class Conv2DTranspose(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -739,12 +796,17 @@ class Conv2DTranspose(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         return {
@@ -831,6 +893,9 @@ class DepthwiseConv2D(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._num_channels = num_channels
         self._filter_shape = filter_shape
@@ -854,6 +919,11 @@ class DepthwiseConv2D(Module):
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         return {
@@ -941,6 +1011,9 @@ class Conv3D(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -959,12 +1032,17 @@ class Conv3D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer
 
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         return {
@@ -1055,6 +1133,9 @@ class Conv3DTranspose(Module):
         v
             the variables for each of the linear layer, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -1081,6 +1162,11 @@ class Conv3DTranspose(Module):
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         return {
@@ -1165,6 +1251,9 @@ class LSTM(Module):
         v
             the variables for each of the lstm cells, as a container,
             constructed internally by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
@@ -1183,6 +1272,9 @@ class LSTM(Module):
         Parameters
         ----------
         batch_shape
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         batch_shape = list(batch_shape)
@@ -1205,6 +1297,11 @@ class LSTM(Module):
         Parameters
         ----------
         device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is None.
 
         """
         input_weights = dict(
