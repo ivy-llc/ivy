@@ -2,6 +2,7 @@
 import numpy as np
 from typing import Union, Optional, Callable
 import functools
+import operator
 
 # local
 import ivy
@@ -457,9 +458,7 @@ def abs(
     x: Union[float, np.ndarray], *, out: Optional[Union[float, np.ndarray]] = None
 ) -> Union[float, np.ndarray]:
     if not isinstance(x, np.ndarray):
-        if x < 0:
-            return -x
-        return x
+        return operator.abs(x)
     return np.absolute(x, out=out)
 
 
