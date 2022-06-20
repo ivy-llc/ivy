@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 
 # local
-from ivy import inf, exists, inplace_update
+from ivy import inf
 from collections import namedtuple
 
 # Array API Standard #
@@ -81,14 +81,9 @@ def svd(
 
 
 def outer(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.outer(x1, x2, out=out)
-    if exists(out):
-        return inplace_update(out, ret)
-    return ret
+    return np.outer(x1, x2, out=out)
 
 
 def diagonal(

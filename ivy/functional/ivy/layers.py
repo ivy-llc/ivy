@@ -6,7 +6,11 @@ from typing import Optional, Tuple, Union, List
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Extra #
@@ -17,6 +21,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
@@ -78,7 +83,7 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
 # Dropout #
 
 
-@to_native_arrays_and_back
+@handle_nestable
 def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
@@ -114,6 +119,7 @@ def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
 # Attention #
 
 
+@handle_nestable
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -454,6 +460,7 @@ def multi_head_attention(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -501,6 +508,7 @@ def conv1d(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv1d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
 ):
@@ -537,6 +545,7 @@ def conv1d_transpose(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -638,6 +647,7 @@ def conv2d(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv2d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
 ):
@@ -674,6 +684,7 @@ def conv2d_transpose(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -771,6 +782,7 @@ def depthwise_conv2d(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -827,6 +839,7 @@ def conv3d(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def conv3d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
 ):
@@ -865,6 +878,7 @@ def conv3d_transpose(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def lstm_update(
     x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
 ):
