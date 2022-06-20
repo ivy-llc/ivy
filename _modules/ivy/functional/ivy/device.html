@@ -146,7 +146,11 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_out_argument</span><span class="p">,</span> <span class="n">to_native_arrays_and_back</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">default_device_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">dev_handles</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -388,7 +392,8 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">attr_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">attr_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the shape and dtype for all ivy arrays which are currently alive on the</span>
 <span class="sd">    specified device.</span>
@@ -791,6 +796,7 @@
 
 <div class="viewcode-block" id="to_device"><a class="viewcode-back" href="../../../../functional/ivy/device/to_device.html#ivy.functional.ivy.device.to_device">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
@@ -1151,7 +1157,8 @@
         <span class="k">return</span> <span class="s2">&quot;DevDistNest(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_array.html#ivy.functional.ivy.device.dev_dist_array">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_array.html#ivy.functional.ivy.device.dev_dist_array">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute an array across the specified devices, returning a list of sub-arrays,</span>
 <span class="sd">    each on a different device.</span>
 
@@ -1184,7 +1191,8 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_dist"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist.html#ivy.functional.ivy.device.dev_dist">[docs]</a><span class="k">def</span> <span class="nf">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist.html#ivy.functional.ivy.device.dev_dist">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute the input item across the specified devices, returning a list of sub-</span>
 <span class="sd">    items, each on a different device.</span>
 
@@ -1213,7 +1221,8 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_iter.html#ivy.functional.ivy.device.dev_dist_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_iter.html#ivy.functional.ivy.device.dev_dist_iter">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_dist_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute elements of the iterable xs across the specified devices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1239,7 +1248,8 @@
     <span class="k">return</span> <span class="n">DevDistIter</span><span class="p">([</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_nest.html#ivy.functional.ivy.device.dev_dist_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_nest</span><span class="p">(</span>
+<div class="viewcode-block" id="dev_dist_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_nest.html#ivy.functional.ivy.device.dev_dist_nest">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_dist_nest</span><span class="p">(</span>
     <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute the nested input arguments across the specified devices.</span>
@@ -1297,7 +1307,8 @@
         <span class="k">return</span> <span class="s2">&quot;DevClonedNest(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span>
+<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DevClonedItem</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Clone an array across the specified devices, returning a list of cloned arrays,</span>
@@ -1359,7 +1370,8 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone the input item to each of the specified devices, returning a list of cloned</span>
 <span class="sd">    items, each on a different device.</span>
 
@@ -1383,7 +1395,8 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_iter.html#ivy.functional.ivy.device.dev_clone_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_iter.html#ivy.functional.ivy.device.dev_clone_iter">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_clone_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone elements of the iterable xs to each of the specified devices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1404,7 +1417,8 @@
     <span class="k">return</span> <span class="n">DevClonedIter</span><span class="p">([</span><span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_nest.html#ivy.functional.ivy.device.dev_clone_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_nest.html#ivy.functional.ivy.device.dev_clone_nest">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_clone_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone the input arguments across the specified devices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1458,7 +1472,8 @@
     <span class="k">return</span> <span class="n">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="dev_unify_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_array.html#ivy.functional.ivy.device.dev_unify_array">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_array.html#ivy.functional.ivy.device.dev_unify_array">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single array on the</span>
 <span class="sd">    specified device.</span>
 
@@ -1487,7 +1502,8 @@
     <span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_unify"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify.html#ivy.functional.ivy.device.dev_unify">[docs]</a><span class="k">def</span> <span class="nf">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify.html#ivy.functional.ivy.device.dev_unify">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single concatenated array</span>
 <span class="sd">    on the specified device.</span>
 
@@ -1522,7 +1538,8 @@
     <span class="k">return</span> <span class="n">xs</span></div>
 
 
-<div class="viewcode-block" id="dev_unify_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_iter.html#ivy.functional.ivy.device.dev_unify_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_iter.html#ivy.functional.ivy.device.dev_unify_iter">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify elements of the iterable xs to a single target device.</span>
 
 <span class="sd">    Parameters</span>
@@ -1558,7 +1575,8 @@
     <span class="k">return</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_unify_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_nest.html#ivy.functional.ivy.device.dev_unify_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_nest</span><span class="p">(</span>
+<div class="viewcode-block" id="dev_unify_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_nest.html#ivy.functional.ivy.device.dev_unify_nest">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dev_unify_nest</span><span class="p">(</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify the input nested arguments, which consist of sub-arrays spread across</span>
