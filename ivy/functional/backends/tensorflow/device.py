@@ -5,7 +5,7 @@ signature.
 # global
 _round = round
 import tensorflow as tf
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -33,6 +33,7 @@ def dev(
 def to_device(
     x: Union[tf.Tensor, tf.Variable],
     device: str,
+    stream: Optional[int] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
