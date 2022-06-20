@@ -5,7 +5,7 @@ import os
 
 _round = round
 import mxnet as mx
-from typing import Union
+from typing import Union, Optional
 from mxnet import profiler
 
 # local
@@ -22,7 +22,7 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_device(x, device=None, out=None):
+def to_device(x, device=None, out=None, stream: Optional[int] = None):
     if device is not None:
         ret = x.as_in_context(as_native_dev(device))
         if ivy.exists(out):
