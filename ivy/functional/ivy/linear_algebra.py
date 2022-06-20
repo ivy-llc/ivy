@@ -383,8 +383,11 @@ def diagonal(
         last two dimensions and appending a dimension equal to the size of the resulting
         diagonals. The returned array must have the same data type as ``x``.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` inputs:
+    
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
     >>> d = ivy.diagonal(x)
@@ -395,11 +398,6 @@ def diagonal(
     >>> print(d)
     ivy.array([1.])
 
-    Functional Examples
-    ------------------
-    
-    With :code:`ivy.Array` inputs:
-    
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
