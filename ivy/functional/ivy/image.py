@@ -6,7 +6,11 @@ import numpy as np
 import operator
 import functools
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 from typing import Union, List, Tuple, Optional
 
 
@@ -16,6 +20,7 @@ from typing import Union, List, Tuple, Optional
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def stack_images(
     images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
@@ -57,6 +62,7 @@ def stack_images(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bilinear_resample(x, warp):
     """Performs bilinearly re-sampling on input image.
 
@@ -77,6 +83,7 @@ def bilinear_resample(x, warp):
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def gradient_image(x):
     """Computes image gradients (dy, dx) for each channel.
 
@@ -119,6 +126,7 @@ def gradient_image(x):
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
@@ -142,6 +150,7 @@ def float_img_to_uint8_img(x, out: Optional[ivy.Array] = None):
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def uint8_img_to_float_img(
     x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -179,6 +188,7 @@ def uint8_img_to_float_img(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def random_crop(
     x,
     crop_size,
@@ -244,6 +254,7 @@ def random_crop(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def linear_resample(
     x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1
 ) -> Union[ivy.Array, ivy.NativeArray]:
