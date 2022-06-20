@@ -35,7 +35,6 @@ def add(
     elif not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.add(np.asarray(x1), np.asarray(x2), out=out)
-add.unsupported_dtypes = tuple(['float16'])
 
 
 @_handle_0_dim_output
@@ -144,6 +143,9 @@ def ceil(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+ceil.unsupported_dtypes = tuple(['float16'])
 
 
 @_handle_0_dim_output
@@ -287,7 +289,6 @@ def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 @_handle_0_dim_output
 def negative(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.negative(x, out=out)
-negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 @_handle_0_dim_output

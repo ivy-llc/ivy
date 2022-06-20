@@ -512,7 +512,7 @@ def test_array_function(
         not native_array_flags[0] or container_flags[0]
     )
 
-    # change all data types so that they are supported by this framework
+    # check for unsupported dtypes
     fn = getattr(ivy, fn_name)
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(fn, fw):

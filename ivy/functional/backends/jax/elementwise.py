@@ -20,7 +20,6 @@ def acosh(x: JaxArray) -> JaxArray:
 
 def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.add(x1, x2)
-add.unsupported_dtypes = tuple(['float16'])
 
 
 def asin(x: JaxArray) -> JaxArray:
@@ -199,7 +198,6 @@ def multiply(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
-negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def not_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:

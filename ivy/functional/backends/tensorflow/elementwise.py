@@ -83,7 +83,7 @@ def atan2(
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
     return tf.math.atan2(x1, x2)
-add.unsupported_dtypes = tuple(['float16'])
+atan2.unsupported_dtypes = tuple(['float16'])
 
 
 def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
@@ -367,7 +367,9 @@ def negative(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     else:
         return tf.negative(x)
-negative.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
+
+
+negative.unsupported_dtypes = tuple(['uint64'])
 
 
 def not_equal(
@@ -399,7 +401,6 @@ def pow(
     if x2.dtype.is_unsigned:
         x2 = tf.cast(x2, tf.float64)
     return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
-pow.unsupported_dtypes = tuple(['uint8', 'uint16', 'uint32', 'uint64'])
 
 
 def remainder(
