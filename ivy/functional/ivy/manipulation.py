@@ -5,7 +5,11 @@ from numbers import Number
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -14,6 +18,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def roll(
     x: Union[ivy.Array, ivy.NativeArray],
     shift: Union[int, Tuple[int, ...]],
@@ -137,6 +142,7 @@ def roll(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
@@ -177,6 +183,7 @@ def squeeze(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -315,6 +322,7 @@ def flip(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -457,6 +465,7 @@ def expand_dims(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
@@ -488,6 +497,7 @@ def permute_dims(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def stack(
     arrays: Union[
         Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
@@ -534,6 +544,7 @@ def stack(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int, ...],
@@ -572,6 +583,7 @@ def reshape(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -614,6 +626,7 @@ def concat(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
@@ -694,6 +707,7 @@ def split(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     repeats: Union[int, Iterable[int]],
@@ -815,6 +829,7 @@ def repeat(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
@@ -841,6 +856,7 @@ def tile(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
@@ -872,6 +888,7 @@ def constant_pad(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
@@ -899,6 +916,7 @@ def zero_pad(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -928,6 +946,7 @@ def swapaxes(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
