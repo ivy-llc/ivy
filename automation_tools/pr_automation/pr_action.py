@@ -24,10 +24,10 @@ def main():
     all_prs = pr.command("gh pr list --json assignees")
     all_names = []
     
-    for pr in all_prs:
+    for pr_data in all_prs:
         try:
             # Save the name of the assignee
-            all_names.append(pr['assignees'][0]['login'])
+            all_names.append(pr_data['assignees'][0]['login'])
         except IndexError:
             # Skip any PRs that don't have anyone assigned.
             pass
