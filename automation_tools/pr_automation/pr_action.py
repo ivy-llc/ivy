@@ -23,15 +23,15 @@ def main():
     # Get all PRs, count how many times each Ivy Team Member has been assigned
     all_prs = pr.command("gh pr list --json assignees")
     all_names = []
-    
+
     for pr_data in all_prs:
         try:
             # Save the name of the assignee
-            all_names.append(pr_data['assignees'][0]['login'])
+            all_names.append(pr_data["assignees"][0]["login"])
         except IndexError:
             # Skip any PRs that don't have anyone assigned.
             pass
-    
+
     unique_names = set(all_names)
     count = {}
     for name in unique_names:
