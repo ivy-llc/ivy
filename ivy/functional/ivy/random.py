@@ -7,6 +7,7 @@ from typing import Optional, Union, Tuple
 from ivy.backend_handler import current_backend as _cur_backend
 from ivy.func_wrapper import (
     infer_device,
+    infer_dtype,
     outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
@@ -21,6 +22,7 @@ import ivy
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
+@infer_dtype
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
