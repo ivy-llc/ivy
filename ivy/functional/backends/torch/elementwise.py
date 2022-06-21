@@ -43,8 +43,8 @@ add.unsupported_dtypes = tuple([ivy.float16])
 
 
 def bitwise_xor(
-    x1: Union[float, torch.Tensor],
-    x2: Union[float, torch.Tensor],
+    x1: Union[int, bool, torch.Tensor],
+    x2: Union[int, bool, torch.Tensor],
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -60,8 +60,9 @@ expm1.unsupported_dtypes = tuple([ivy.float16])
 
 
 def bitwise_invert(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: Union[int, bool, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.bitwise_not(x, out=out)
 
 
@@ -94,7 +95,10 @@ def less_equal(
 
 
 def bitwise_and(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[int, bool, torch.Tensor],
+    x2: Union[int, bool, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2, out=out)
@@ -320,7 +324,10 @@ def floor_divide(
 
 
 def bitwise_or(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[int, bool, torch.Tensor],
+    x2: Union[int, bool, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_or(x1, x2, out=out)
@@ -471,25 +478,35 @@ atanh.unsupported_dtypes = tuple([ivy.float16])
 
 
 def bitwise_right_shift(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[int, bool, torch.Tensor],
+    x2: Union[int, bool, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_right_shift(x1, x2, out=out)
+
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    #     x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+    #     x1 = x1.to(promoted_type)
+    #     x2 = x2.to(promoted_type)
 
 
 def bitwise_left_shift(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[int, bool, torch.Tensor],
+    x2: Union[int, bool, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_left_shift(x1, x2, out=out)
+
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    #     x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+    #     x1 = x1.to(promoted_type)
+    #     x2 = x2.to(promoted_type)
 
 
 # Extra #
