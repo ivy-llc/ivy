@@ -397,10 +397,7 @@ def abs(
 def logaddexp(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.logaddexp(x1, x2, out=out)
 
 
@@ -424,12 +421,7 @@ atan.unsupported_dtypes = tuple([ivy.float16])
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if not isinstance(x2, torch.Tensor):
-        x2 = torch.tensor(x2, dtype=x1.dtype)
-    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.atan2(x1, x2, out=out)
 
 
