@@ -17,7 +17,7 @@ from typing import Union, List, Tuple, Optional
 @to_native_arrays_and_back
 def stack_images(
     images: List[Union[ivy.Array, ivy.NativeArray]],
-    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+    desired_aspect_ratio: Tuple[int, int] = (1, 1)
 ) -> ivy.Array:
     """Stacks a group of images into a combined windowed image, fitting the desired
     aspect ratio as closely as possible.
@@ -34,9 +34,11 @@ def stack_images(
     ret
         an array containing the stacked images in a specified aspect ratio/dimensions
 
-    Examples
-    --------
-    >>> import ivy
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> shape, num = (1, 2, 3), 2
     >>> data = [ivy.ones(shape)] * num
     >>> stacked = ivy.stack_images(data, (2, 1))
@@ -50,6 +52,66 @@ def stack_images(
             [0., 0., 0.],
             [0., 0., 0.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> shape, num = (1, 1, 2), 2
+    >>> data = [ivy.native_array(([[[1,2]]]))] * num
+    >>> stacked = ivy.stack_images(data, (4,1))
+    >>> print(stacked)
+    ivy.array([[[1., 2.],
+        [1., 2.],
+        [0., 0.]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> shape, num = (1, 1, 2), 2
+    >>> data = [ivy.array(([[[3,4]]]))] * num
+    >>> d = ivy.Container({'a': data, 'b': data})
+    >>> stacked = ivy.stack_images(d, (2,3))
+    >>> print(stacked)
+    {
+    a: ivy.array([[[3., 4.],
+                   [0., 0.]],
+                  [[3., 4.],
+                   [0., 0.]]]),
+    b: ivy.array([[[3., 4.],
+                   [0., 0.]],
+                  [[3., 4.],
+                   [0., 0.]]])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> shape, num = (1, 1, 2), 2
+    >>> data = [ivy.array(([[[1,2]]]))* num-1, ivy.native_array(([[[3,4]]]))]
+    >>> stacked = ivy.stack_images(data, (2,3))
+    >>> print(stacked)
+    ivy.array([[[1., 3.],
+        [0., 0.]],
+
+       [[3., 4.],
+        [0., 0.]]])
+
+    With a mix of :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+
+    >>> shape, num = (1, 1, 2), 2
+    >>> data = [ivy.native_array(([[[1,2]]]))* num-1, ivy.Container({'a':ivy.array([[[5,4]]])})]
+    >>> print(len(data))
+    >>> stacked = ivy.stack_images(data, (2,3))
+    >>> print(stacked)
+    {
+    a: ivy.array([[[1., 3.],
+                   [0., 0.]],
+                  [[5., 4.],
+                   [0., 0.]]])
+    }
+
+    #instance methods not suitable here
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(images[0]).stack_images(images, desired_aspect_ratio)
 
@@ -58,7 +120,7 @@ def stack_images(
 @handle_out_argument
 def bilinear_resample(
     x: Union[ivy.Array, ivy.NativeArray],
-    warp: Union[ivy.Array, ivy.NativeArray],
+    warp: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
     """Performs bilinearly re-sampling on input image.
 
@@ -73,6 +135,26 @@ def bilinear_resample(
     -------
     ret
         Image after bilinear re-sampling.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[[0.34820361],\
+         [0.10818656]],\
+        [[0.2018713 ],\
+         [0.73314588]]]])
+    >>> warp = ivy.array([[[[0.11129423, 0.09569724],\
+         [0.32680186, 0.34083896]],\
+        [[0.28126204, 0.29169936],\
+         [0.26754953, 0.08126624]]]])
+    >>> y = ivy.bilinear_resample(x,warp)
+    >>> print(y)
+    ivy.array([[[0.316],
+        [0.306],
+        [0.301],
+        [0.289]]])
 
     """
     return current_backend(x).bilinear_resample(x, warp)
@@ -94,13 +176,16 @@ def gradient_image(
     ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> batch_size = 1
     >>> h = 3
     >>> w = 3
     >>> d = 1
-    >>> x = ivy.arange(h * w * d, dtype=ivy.float32)
+    >>> x = ivy.arange(batch_size * h * w * d, dtype=ivy.float32)
     >>> image = ivy.reshape(x,shape=(batch_size, h, w, d))
     >>> dy, dx = ivy.gradient_image(image)
     >>> print(image[0, :,:,0])
@@ -118,6 +203,20 @@ def gradient_image(
                [1., 1., 0.],
                [1., 1., 0.]])
 
+    With :code:`ivy.Container` input:
+
+    >>> batch_size = 1
+    >>> h = 3
+    >>> w = 3
+    >>> d = 1
+    >>> a = ivy.arange(batch_size * h * w * d, dtype=ivy.float32)
+    >>> x = ivy.Container({'a': a})
+    >>> image = ivy.reshape(x, shape=(batch_size, h, w, d))
+    >>> res = ivy.gradient_image(image)
+    >>> dx = res['a'][0]
+    >>> print(dx)
+    >>> dy = res['a'][1]
+    >>> print(dy)
     """
     return current_backend(x).gradient_image(x)
 
@@ -125,7 +224,6 @@ def gradient_image(
 @to_native_arrays_and_back
 def float_img_to_uint8_img(
         x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
@@ -134,60 +232,85 @@ def float_img_to_uint8_img(
     ----------
     x
         Input float image *[batch_shape,h,w]*.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
     ret
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> batch_size = 1
+    >>> h = 1
+    >>>  = 2
+    >>> x = ivy.arange(batch_size * h * w, dtype=ivy.float32)
+    >>> image = ivy.reshape(x, shape=(batch_size, h, w))
+    >>> res = ivy.float_img_to_uint8_img(image)
+    >>> print(res)
+    ivy.array([[[[  0,   0,   0,   0],
+         [  0,   0, 128,  63]]]])
+
     """
     x_np = ivy.to_numpy(x).astype("float32")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = np.frombuffer(x_bytes, np.uint8)
-    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist(), out=out)
+    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
 @to_native_arrays_and_back
 def uint8_img_to_float_img(
-    x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
     Parameters
     ----------
     x
-        Input uint8 image *[batch_shape,h,w,4]*.
-    out
-        optional output array, for writing the result to.
+        Input uint8 image *[batch_shape,h,w,4]*
 
     Returns
     -------
     ret
         The new float image *[batch_shape,h,w]*
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> batch_size = 1
     >>> h = 2
-    >>> w = 2
+    >>> w = 3
     >>> d = 4
-    >>> x = ivy.arange(h * w * d)
+    >>> x = ivy.arange(batch_size * h * w * d)
     >>> image = ivy.reshape(x,(batch_size, h, w, d))
     >>> y = ivy.uint8_img_to_float_img(image)
     >>> print(y)
-    ivy.array([[[3.820471434542632e-37, 1.0082513512365273e-34],
-                [2.658462758989161e-32, 7.003653270560797e-30]]])
+    ivy.array([[[3.82e-37, 1.01e-34, 2.66e-32],
+        [7.00e-30, 1.84e-27, 4.85e-25]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> batch_size = 1
+    >>> h = 1
+    >>> w = 2
+    >>> d = 4
+    >>> x = ivy.native_array([[[[1,2,3,4], [4,5,2,1]]]])
+    >>> image = ivy.reshape(x,(batch_size,h, w, d))
+    >>> y = ivy.uint8_img_to_float_img(image)
+    >>> print(y)
+    ivy.array([[[1.54e-36, 2.39e-38]]])
 
     """
     x_np = ivy.to_numpy(x).astype("uint8")
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = np.frombuffer(x_bytes, np.float32)
-    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist(), out=out)
+    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist())
 
 
 @to_native_arrays_and_back
@@ -196,8 +319,7 @@ def random_crop(
     crop_size: List[int],
     batch_shape: Optional[List[int]] = None,
     image_dims: Optional[List[int]] = None,
-    seed: int = None,
-    out: Optional[ivy.Array] = None,
+    seed: int = None
 ) -> ivy.Array:
     """Randomly crops the input images.
 
@@ -213,14 +335,26 @@ def random_crop(
         Image dimensions. Inferred from inputs in None. (Default value = None)
     seed
         Required for random number generator
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
     ret
         The new cropped image *[batch_shape,nh,nw,f]*
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[[1,2,3,4], [4,5,2,1]]]])
+    >>> print(x.shape)
+    (1, 1, 2, 4)
+    >>> crop_size = [1,1]
+    >>> res = ivy.random_crop(x,crop_size)
+    >>> print(res)
+    ivy.array([[[[4, 5, 2, 1]]]])
+    >>> print(res.shape)
+    (1, 1, 1, 4)
     """
     x_shape = x.shape
     if batch_shape is None:
@@ -255,7 +389,7 @@ def random_crop(
     flat_cropped = ivy.concat(cropped_list, 0)
 
     # BS x NH x NW x F
-    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels], out=out)
+    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
 
 
 @to_native_arrays_and_back
@@ -281,11 +415,26 @@ def linear_resample(
     ret
         The array after the linear resampling.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
     >>> data = ivy.array([[1, 2],[3, 4]])
-    >>> y = linear_resample(data, 5)
+    >>> y = ivy.linear_resample(data, 5)
     >>> print(y)
     ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
+
+    With :code:`ivy.Container` input:
+
+    >>> data = ivy.Container({'a':ivy.array([[0.0976, -0.3452,  1.2740], \
+        [0.1047,  0.5886,  1.2732], \
+        [0.7696, -1.7024, -2.2518]])})
+    >>> y = ivy.linear_resample(data, 3, 0)
+    >>> print(y)
+    {
+    a: ivy.array([[0.0976, -0.345, 1.27],
+                  [0.105, 0.589, 1.27],
+                  [0.77, -1.7, -2.25]])
+    }
     """
     return current_backend(x).linear_resample(x, num_samples, axis)

@@ -73,8 +73,7 @@ def randint(
     high: int,
     shape: Union[int, Sequence[int]],
     *,
-    device: torch.device,
-    out: torch.Tensor,
+    device: torch.device
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 

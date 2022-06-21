@@ -9,45 +9,6 @@ import ivy
 
 # noinspection PyMissingConstructor
 class ContainerWithImage(ContainerBase):
-
-    @staticmethod
-    def static_stack_images(
-            images: List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-            desired_aspect_ratio: Tuple[int, int] = (1, 1),
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-    ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
-            "stack_images",
-            images,
-            desired_aspect_ratio,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
-        )
-
-    def stack_images(
-        self: ivy.Container,
-        images: List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-        desired_aspect_ratio: Tuple[int, int] = (1, 1),
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        return self.static_stack_images(
-            self,
-            images,
-            desired_aspect_ratio,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences
-        )
-
     @staticmethod
     def static_bilinear_resample(
             x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -69,7 +30,6 @@ class ContainerWithImage(ContainerBase):
 
     def bilinear_resample(
         self: ivy.Container,
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         warp: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -78,7 +38,6 @@ class ContainerWithImage(ContainerBase):
     ) -> ivy.Container:
         return self.static_bilinear_resample(
             self,
-            x,
             warp,
             key_chains,
             to_apply,
@@ -88,7 +47,7 @@ class ContainerWithImage(ContainerBase):
 
     @staticmethod
     def static_gradient_image(
-            x: Union[ivy.Array, ivy.NativeArray],
+            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
@@ -105,16 +64,13 @@ class ContainerWithImage(ContainerBase):
 
     def gradient_image(
             self: ivy.Container,
-            x: Union[ivy.Array, ivy.NativeArray],
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
             map_sequences: bool = False
     ) -> ivy.Container:
-
         return self.static_gradient_image(
             self,
-            x,
             key_chains,
             to_apply,
             prune_unapplied,
@@ -127,9 +83,7 @@ class ContainerWithImage(ContainerBase):
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "float_img_to_uint8_img",
@@ -137,29 +91,22 @@ class ContainerWithImage(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     def float_img_to_uint8_img(
             self: ivy.Container,
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
-
         return self.static_float_img_to_uint8_img(
             self,
-            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     @staticmethod
@@ -168,9 +115,7 @@ class ContainerWithImage(ContainerBase):
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "uint8_img_to_float_img",
@@ -178,29 +123,22 @@ class ContainerWithImage(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     def uint8_img_to_float_img(
             self: ivy.Container,
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
-
         return self.static_uint8_img_to_float_img(
             self,
-            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     @staticmethod
@@ -213,9 +151,7 @@ class ContainerWithImage(ContainerBase):
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "random_crop",
@@ -227,13 +163,11 @@ class ContainerWithImage(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     def random_crop(
             self: ivy.Container,
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             crop_size: List[int],
             batch_shape: Optional[List[int]] = None,
             image_dims: Optional[List[int]] = None,
@@ -241,14 +175,10 @@ class ContainerWithImage(ContainerBase):
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+            map_sequences: bool = False
     ) -> ivy.Container:
-
         return self.static_random_crop(
             self,
-            x,
             crop_size,
             batch_shape,
             image_dims,
@@ -256,8 +186,7 @@ class ContainerWithImage(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out
+            map_sequences=map_sequences
         )
 
     @staticmethod
@@ -268,7 +197,7 @@ class ContainerWithImage(ContainerBase):
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
+            map_sequences: bool = False
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "linear_resample",
@@ -283,17 +212,15 @@ class ContainerWithImage(ContainerBase):
 
     def linear_resample(
             self: ivy.Container,
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             num_samples: int,
             axis: int = -1,
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
-            map_sequences: bool = False,
+            map_sequences: bool = False
     ) -> ivy.Container:
-        return self.static_bilinear_resample(
+        return self.static_linear_resample(
             self,
-            x,
             num_samples,
             axis,
             key_chains,

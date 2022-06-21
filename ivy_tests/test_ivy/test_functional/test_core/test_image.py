@@ -31,8 +31,6 @@ def test_stack_images(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     images = [img for img in ivy.random_normal(shape=shape)]
     helpers.test_array_function(
         input_dtype,
@@ -69,6 +67,7 @@ def test_linear_resample(
     container,
     fw,
 ):
+    # float16 not supported
     if input_dtype == "float16":
         return
     x = ivy_np.random_normal(shape=shape, device=ivy.default_device())
@@ -87,7 +86,6 @@ def test_linear_resample(
         num_samples=num_samples,
         axis=axis,
     )
-
 
 # bilinear_resample
 @given(
@@ -113,8 +111,6 @@ def test_bilinear_resample(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy.random_normal(shape=batch_shape + h_w + [n_dims])
     warp = ivy.random_uniform(shape=batch_shape + [n_samples, 2])
     helpers.test_array_function(
@@ -130,7 +126,6 @@ def test_bilinear_resample(
         x=x,
         warp=warp,
     )
-
 
 # gradient_image
 @given(
@@ -151,8 +146,6 @@ def test_gradient_image(
     fw,
     device,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     # ToDo: remove the random internal generation, which is causing flaky behaviour
     #  and hypothesis failures
     x = ivy_np.random_normal(shape=shape, device=device)
@@ -168,7 +161,6 @@ def test_gradient_image(
         "gradient_image",
         x=x,
     )
-
 
 # float_img_to_uint8_img
 @given(
@@ -188,8 +180,6 @@ def test_float_img_to_uint8_img(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy.random_normal(shape=shape)
     helpers.test_array_function(
         input_dtype,
@@ -203,7 +193,6 @@ def test_float_img_to_uint8_img(
         "float_img_to_uint8_img",
         x=x,
     )
-
 
 # uint8_img_to_float_img
 @given(
@@ -223,8 +212,6 @@ def test_uint8_img_to_float_img(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy.randint(0, 256, shape=shape + [4])
     helpers.test_array_function(
         input_dtype,
@@ -238,7 +225,6 @@ def test_uint8_img_to_float_img(
         "uint8_img_to_float_img",
         x=x,
     )
-
 
 # random_crop
 @given(
@@ -260,8 +246,6 @@ def test_random_crop(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy.random_normal(shape=[3] + shape)
     crop_size = [random.randint(1, shape[-3] * 2), random.randint(1, shape[-2] * 2)]
     helpers.test_array_function(
