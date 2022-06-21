@@ -511,82 +511,138 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
     ret
         The array with sums computed.
 
-    Examples
-    --------
-    The following gives us the sum of the diagonal elements:
+    Functional Examples
+    -------------------
+
+    With :code: 'ivy.Array' input:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = ivy.einsum('ii', x)
     >>> print(y)
     ivy.array(12)
 
-    Or we can use einsum to sum columns:
-
+    >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> z = ivy.einsum('ij -> j', x)
     >>> print(z)
-    ivy.array([9, 12, 15])
-    
-    Imagine that we have two multi-dimensional arrays, A and B. 
-    Now let's suppose we want to...
-    - multiply A with B in a particular way to create new array 
-    of products; and then maybe
-    - sum this new array along particular axes; and then maybe
-    - transpose the axes of the new array in a particular order.
-    
-    There's a good chance that einsum will help us do this faster 
-    and more memory-efficiently than combinations of the NumPy 
-    functions like multiply, sum and transpose will allow.
-    
+    ivy.array([ 9, 12, 15])
+
     >>> A = ivy.array([0, 1, 2])
     >>> B = ivy.array([[ 0,  1,  2,  3],\
-    ...               [ 4,  5,  6,  7],\
-    ...               [ 8,  9, 10, 11]])
-    >>> ivy.einsum('i,ij->i', A, B)
+                       [ 4,  5,  6,  7],\
+                       [ 8,  9, 10, 11]])
+    >>> C = ivy.einsum('i,ij->i', A, B)
+    >>> print(C)
     ivy.array([ 0, 22, 76])
-    
-    Now lets see a slightly bigger example:
-    
+
     >>> A = ivy.array([[1, 1, 1],\
-    ...                [2, 2, 2],\
-    ...                [5, 5, 5]])
+                       [2, 2, 2],\
+                       [5, 5, 5]])
     >>> B = ivy.array([[0, 1, 0],\
-    ...                [1, 1, 0],\
-    ...                [1, 1, 1]])
-    >>> ivy.einsum('ij,jk->ik', A, B)
+                       [1, 1, 0],\
+                       [1, 1, 1]])
+    >>> C = ivy.einsum('ij,jk->ik', A, B)
+    >>> print(C)
     ivy.array([[ 2,  3,  1],
-                [ 4,  6,  2],
-                [10, 15,  5]])
-                
-    
-    Let A and B be two 1D arrays with the same length. For example, 
-    
+           [ 4,  6,  2],
+           [10, 15,  5]])
+
     >>> A = ivy.arange(10)
     >>> B = ivy.arange(5, 15)
-    
-    The sum of A can be written:
-    >>> ivy.einsum('i->', A)
-    ivy.array(45, dtype=int32)
-    
-    Element-wise multiplication, A * B, can be written:
-    >>> ivy.einsum('i,i->i', A, B)
-    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126], dtype=int32)
-    
-    The inner product or dot product can be written:
-    >>> ivy.einsum('i,i->', A, B) # or just use 'i,i'
-    ivy.array(510, dtype=int32)
-    
-    The outer product can be written:
-    >>> ivy.einsum('i,j->ij', A, B)
+    >>> C = ivy.einsum('i->', A)
+    >>> print(C)
+    ivy.array(45)
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,i->i', A, B)
+    >>> print(C)
+    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,i->', A, B) # or just use 'i,i'
+    >>> print(C)
+    ivy.array(510)
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,j->ij', A, B)
+    >>> print(C)
     ivy.array([[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0],
-                [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
-                [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
-                [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
-                [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
-                [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
-                [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
-                [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
-                [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
-                [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
+           [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
+           [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
+           [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
+           [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
+           [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
+           [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
+           [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
+           [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
+           [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]])
+
+    With :code:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    ivy.array(12)
+
+    With a mix of code: 'ivy.Array' and code: 'ivy.NativeArray' inputs:
+
+    >>> A = ivy.array([0, 1, 2])
+    >>> B = ivy.native_array([[ 0, 1, 2, 3],\
+                              [ 4, 5, 6, 7],\
+                              [ 8, 9, 10, 11]])
+    >>> C = ivy.einsum('i,ij->i', A, B)
+    >>> print(C)
+    ivy.array([ 0, 22, 76])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\
+                                       [ 4,  5,  6,  7],\
+                                       [ 8,  9, 10, 11]]),\
+                          b=ivy.array([[ 0,  1,  2],\
+                                       [ 4,  5,  6],\
+                                       [ 8,  9, 10]]))
+    >>> z = ivy.einsum('i,ij->i', x, y)
+    >>> print(z)
+    {
+        a: ivy.array([0, 22, 76]),
+        b: ivy.array([0, 15, 54])
+    }
+
+    With :code: 'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
+                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(15)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code: 'ivy.Array' instance method:
+
+    >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    >>> y = x.einsum('ii')
+    >>> print(y)
+    ivy.array(12)
+
+    Using :code: 'ivy.Container' instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
+                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> y = x.einsum('ii')
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(15)
+    }
 
     """
     return current_backend(operands[0]).einsum(equation, *operands)
