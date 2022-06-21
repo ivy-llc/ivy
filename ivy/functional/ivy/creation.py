@@ -688,6 +688,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return current_backend(x).from_dlpack(x)
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
