@@ -29,7 +29,7 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     image_rows = list()
     for i in range(stack_width_int):
         images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
-        images_to_concat += [ivy.zeros_like(images[0])] * (
+        images_to_concat += [ivy.zeros_like(images[0], dtype=ivy.dtype(images[0]), device=ivy.dev(images[0]))] * (
             stack_height_int - len(images_to_concat)
         )
         image_rows.append(ivy.concat(images_to_concat, num_batch_dims))

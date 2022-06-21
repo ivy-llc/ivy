@@ -67,8 +67,8 @@ def test_linear_resample(
     container,
     fw,
 ):
-    # float16 not supported
-    if input_dtype == "float16":
+    # only float32 is supported
+    if input_dtype == "float16" or input_dtype == "float64":
         return
     x = ivy_np.random_normal(shape=shape, device=ivy.default_device())
     axis = random.randint(0, len(shape) - 1)
