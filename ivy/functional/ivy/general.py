@@ -1081,21 +1081,21 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     >>> x = ivy.array([1., 2., 3.])
     >>> print(ivy.shape_to_tuple(x))
-    (ivy.array(1., dev=gpu:0), ivy.array(2., dev=gpu:0), ivy.array(3., dev=gpu:0))
+    (1.0, 2.0, 3.0)
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> print(ivy.shape_to_tuple(x))
-    (ivy.array([1., 2., 3.], dev=gpu:0), ivy.array([4., 5., 6.], dev=gpu:0))
+    (ivy.array([1., 2., 3.]), ivy.array([4., 5., 6.]))
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1., 2., 3.])
     >>> print(ivy.shape_to_tuple(x))
-    (tensor(1., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0')) # noqa
+    (1.0, 2.0, 3.0)
 
     >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]])
     >>> print(ivy.shape_to_tuple(x))
-    (tensor([1., 2., 3.], device='cuda:0'), tensor([4., 5., 6.], device='cuda:0'))
+    (array([1., 2., 3.], dtype=float32), array([4., 5., 6.], dtype=float32))
 
     With :code:`ivy.Container` input:
 
