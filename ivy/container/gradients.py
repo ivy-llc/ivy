@@ -35,7 +35,6 @@ class ContainerWithGradients(ContainerBase):
 
     def optimizer_update(
         self: ivy.Container,
-        ws,
         effective_grads,
         lr,
         inplace=None,
@@ -47,7 +46,6 @@ class ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         return self.static_optimizer_update(
             self,
-            ws,
             effective_grads,
             lr,
             inplace,
@@ -86,7 +84,6 @@ class ContainerWithGradients(ContainerBase):
 
     def gradient_descent_update(
         self,
-        ws,
         dcdws,
         lr,
         inplace=None,
@@ -98,7 +95,6 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_gradient_descent_update(
             self,
-            ws,
             dcdws,
             lr,
             inplace,
@@ -138,7 +134,6 @@ class ContainerWithGradients(ContainerBase):
 
     def lars_update(
         self,
-        ws,
         dcdws,
         lr,
         decay_lambda=0,
@@ -151,7 +146,6 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_lars_update(
             self,
-            ws,
             dcdws,
             lr,
             decay_lambda,
@@ -202,7 +196,6 @@ class ContainerWithGradients(ContainerBase):
 
     def adam_update(
         self,
-        ws,
         dcdws,
         lr,
         mw_tm1,
@@ -220,7 +213,6 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_adam_update(
             self,
-            ws,
             dcdws,
             lr,
             mw_tm1,
@@ -280,7 +272,6 @@ class ContainerWithGradients(ContainerBase):
 
     def lamb_update(
         self,
-        ws,
         dcdws,
         lr,
         mw_tm1,
@@ -300,7 +291,6 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_lamb_update(
             self,
-            ws,
             dcdws,
             lr,
             mw_tm1,
