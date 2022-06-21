@@ -1,11 +1,23 @@
 # global
 import torch
-import typing
-from torch import Tensor
 from typing import Union, Optional
 
 # local
 import ivy
+
+
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, torch.Tensor):
+        if isinstance(x2, torch.Tensor):
+            promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.to(promoted_type)
+            x2 = x2.to(promoted_type)
+        else:
+            x2 = torch.tensor(x2, dtype=x1.dtype)
+    else:
+        if isinstance(x2, torch.Tensor):
+            x1 = torch.tensor(x1, dtype=x2.dtype)
+    return x1, x2
 
 
 def add(
@@ -25,7 +37,7 @@ def bitwise_xor(
     return torch.bitwise_xor(x1, x2, out=out)
 
 
-def expm1(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
+def expm1(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.expm1(x, out=out)
 
 
@@ -38,7 +50,7 @@ def bitwise_invert(
     return torch.bitwise_not(x, out=out)
 
 
-def isfinite(x: Tensor) -> Tensor:
+def isfinite(x: torch.Tensor) -> torch.Tensor:
     return torch.isfinite(x)
 
 
@@ -46,30 +58,16 @@ def isinf(x: torch.Tensor) -> torch.Tensor:
     return torch.isinf(x)
 
 
-def _cast_for_binary_op(
-    x1: Tensor, x2: Tensor
-) -> typing.Tuple[
-    typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]
-]:
-    if isinstance(x1, (int, float, bool)):
-        return x1, x2
-    x1_bits = ivy.functional.backends.torch.dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1, x2
-    x2_bits = ivy.functional.backends.torch.dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.type(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.type(x2.dtype)
-    return x1, x2
-
-
-def equal(x1: Tensor, x2: Tensor, *, out: Optional[Tensor] = None) -> Tensor:
+def equal(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.eq(x1, x2, out=out)
 
 
-def less_equal(x1: Tensor, x2: Tensor, *, out: Optional[Tensor] = None) -> Tensor:
+def less_equal(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.less_equal(x1, x2, out=out)
 
@@ -120,7 +118,7 @@ def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
 asinh.unsupported_dtypes = tuple([ivy.float16])
 
 
-def sign(x: Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
+def sign(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sign(x, out=out)
 
 
@@ -280,7 +278,9 @@ def negative(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Te
     return torch.neg(x, out=out)
 
 
-def not_equal(x1: Tensor, x2: Tensor, *, out: Optional[torch.Tensor] = None) -> Tensor:
+def not_equal(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.not_equal(x1, x2, out=out)
 
@@ -327,7 +327,7 @@ def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 def pow(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if not isinstance(x2, Tensor):
+    if not isinstance(x2, torch.Tensor):
         x2 = torch.tensor(x2, dtype=x1.dtype)
         return torch.pow(x1, x2, out=out)
     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
@@ -337,11 +337,7 @@ def pow(
     return ret
 
 
-def round(
-    x: torch.Tensor,
-    *,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
