@@ -58,8 +58,8 @@ def bitwise_invert(x: Union[int, JaxArray]) -> JaxArray:
 
 
 def bitwise_left_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.left_shift(x1, x2)
 
 
@@ -101,8 +101,8 @@ def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
 
 
 def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.equal(x1, x2)
 
 
@@ -122,8 +122,8 @@ def floor(x: JaxArray) -> JaxArray:
 
 
 def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.floor_divide(x1, x2)
 
 
