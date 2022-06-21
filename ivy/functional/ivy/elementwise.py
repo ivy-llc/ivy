@@ -678,9 +678,9 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard.
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>
+    `_ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -688,7 +688,7 @@ def asin(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([-2.4, -0, +0, 3.2, nan])
+    >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
     >>> y = ivy.asin(x)
     >>> print(y)
     ivy.array([nan,  0.,  0., nan, nan], dtype=float32)
@@ -704,7 +704,7 @@ def asin(
                        [-0.4, -0.5, -0.6]])
     >>> ivy.asin(x, out=x)
     >>> print(x)
-    ivy.array([[ 0.10016742,  0.20135793,  0.30469266],
+    ivy.array([[ 0.10016742,  0.20135793,  0.30469266], \
                [-0.41151685, -0.5235988 , -0.64350116]], dtype=float32)
 
     With :code:`ivy.NativeArray` input:
