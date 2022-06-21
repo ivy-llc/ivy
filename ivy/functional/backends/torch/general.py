@@ -5,7 +5,7 @@ import ivy
 import numpy as np
 import torch as torch
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 from typing import List, Optional, Tuple, Union
 from numbers import Number
 
