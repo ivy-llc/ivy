@@ -30,14 +30,20 @@ def add(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 + x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        return np.add(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-    if not isinstance(x2, np.ndarray):
+) -> np.ndarray:
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            return np.add(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.add(x1, x2, out=out)
+
+    # if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+    #     return np.add(x1, x2, out=out)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     return np.add(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
+    # if not isinstance(x2, np.ndarray):
+    #     x2 = np.asarray(x2, dtype=x1.dtype)
+    # return np.add(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -165,12 +171,12 @@ def multiply(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 * x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        return np.multiply(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-    if not isinstance(x2, np.ndarray):
+) -> np.ndarray:
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            return np.multiply(
+                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
+            )
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.multiply(x1, x2, out=out)
 
@@ -285,17 +291,26 @@ def divide(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 / x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-        return np.divide(x1, x2, out=out)
-    if not isinstance(x2, np.ndarray):
+) -> np.ndarray:
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+            return np.divide(x1, x2, out=out)
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.divide(x1, x2, out=out)
+
+    # if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+    #     return np.divide(x1, x2, out=out)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     promoted_type = np.promote_types(x1.dtype, x2.dtype)
+    #     x1 = x1.astype(promoted_type)
+    #     x2 = x2.astype(promoted_type)
+    #     return np.divide(x1, x2, out=out)
+    # if not isinstance(x2, np.ndarray):
+    #     x2 = np.asarray(x2, dtype=x1.dtype)
+    # return np.divide(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -366,16 +381,24 @@ def floor_divide(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 // x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        return np.floor_divide(
-            x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-        )
-    if not isinstance(x2, np.ndarray):
+) -> np.ndarray:
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            return np.floor_divide(
+                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
+            )
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.floor_divide(x1, x2, out=out)
+
+    # if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+    #     return np.floor_divide(x1, x2, out=out)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     return np.floor_divide(
+    #         x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
+    #     )
+    # if not isinstance(x2, np.ndarray):
+    #     x2 = np.asarray(x2, dtype=x1.dtype)
+    # return np.floor_divide(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -404,13 +427,23 @@ def remainder(
     *,
     out: Optional[np.ndarray] = None
 ) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 % x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        return np.remainder(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-    if not isinstance(x2, np.ndarray):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            return np.remainder(
+                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
+            )
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.remainder(x1, x2, out=out)
+
+    # if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+    #     return x1 % x2
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     return np.remainder(x1, x2, dtype=np.promote_types(
+    #         x1.dtype, x2.dtype), out=out
+    # )
+    # if not isinstance(x2, np.ndarray):
+    #     x2 = np.asarray(x2, dtype=x1.dtype)
+    # return np.remainder(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -468,14 +501,22 @@ def subtract(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 - x2
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        return np.subtract(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-    if not isinstance(x2, np.ndarray):
+) -> np.ndarray:
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            return np.subtract(
+                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
+            )
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.subtract(x1, x2, out=out)
+    # if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
+    #     return np.subtract(x1, x2, out=out)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     return np.subtract(x1, x2, dtype=np.promote_types(
+    # x1.dtype, x2.dtype), out=out)
+    # if not isinstance(x2, np.ndarray):
+    #     x2 = np.asarray(x2, dtype=x1.dtype)
+    # return np.subtract(x1, x2, out=out)
 
 
 @_handle_0_dim_output
