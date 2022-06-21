@@ -10,61 +10,9 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
+
 # Array API Standard #
 # -------------------#
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def min(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
-
-    .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
-
-    **Special Cases**
-
-    For floating-point operands,
-
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        Input array containing elements to min.
-    axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: None.
-    keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the minimum value was computed over the entire array, a zero-dimensional
-        array containing the minimum value; otherwise, a non-zero-dimensional array
-        containing the minimum values. The returned array must have the same data type
-        as x.
-
-    """
-    return current_backend.min(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -120,9 +68,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.tan.html>`
-    _ in the standard.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.max.html>`_  # noqa
+    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -167,65 +114,6 @@ def max(
     }
     """
     return current_backend.max(x, axis, keepdims, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def var(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the variance of the input array x.
-
-    **Special Cases**
-
-    Let N equal the number of elements over which to compute the variance.
-
-    If N - correction is less than or equal to 0, the variance is NaN.
-
-    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        input array. Should have a floating-point data type.
-    axis
-        axis or axes along which variances must be computed. By default, the variance
-        must be computed over the entire array. If a tuple of integers, variances must
-        be computed over multiple axes. Default: None.
-    correction
-        degrees of freedom adjustment. Setting this parameter to a value other than 0
-        has the effect of adjusting the divisor during the calculation of the variance
-        according to N-c where N corresponds to the total number of elements over which
-        the variance is computed and c corresponds to the provided degrees of freedom
-        adjustment. When computing the variance of a population, setting this parameter
-        to 0 is the standard choice (i.e., the provided array contains data constituting
-        an entire population). When computing the unbiased sample variance, setting this
-        parameter to 1 is the standard choice (i.e., the provided array contains data
-        sampled from a larger population; this is commonly referred to as Bessel's
-        correction). Default: 0.
-    keepdims
-        if True, the reduced axes (dimensions) must be included in the result as
-        singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the variance was computed over the entire array, a zero-dimensional array
-        containing the variance; otherwise, a non-zero-dimensional array containing the
-        variances. The returned array must have the same data type as x.
-
-    """
-    return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -285,6 +173,59 @@ def mean(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def min(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Calculates the minimum value of the input array x.
+
+    .. note::
+    When the number of elements over which to compute the minimum value is zero, the
+    minimum value is implementation-defined. Specification-compliant libraries may
+    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
+    input array, return NaN), or return the maximum possible value for the input array x
+    data type (e.g., if x is a floating-point array, return +infinity).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+
+    Parameters
+    ----------
+    x
+        Input array containing elements to min.
+    axis
+         axis or axes along which minimum values must be computed. By default, the
+         minimum value must be computed over the entire array. If a tuple of integers,
+         minimum values must be computed over multiple axes. Default: None.
+    keepdims
+        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        result as singleton dimensions, and, accordingly, the result must be compatible
+        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as x.
+
+    """
+    return current_backend.min(x, axis, keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -334,6 +275,77 @@ def prod(
 
     """
     return current_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def std(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    correction: Union[int, float] = 0.0,
+    keepdims: bool = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Calculates the standard deviation of the input array ``x``.
+
+    **Special Cases**
+
+    Let ``N`` equal the number of elements over which to compute the standard deviation.
+
+    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
+        deviation).
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
+        propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type
+
+    axis
+        axis or axes along which standard deviations must be computed. By default, the
+        standard deviation must be computed over the entire array. If a tuple of
+        integers, standard deviations must be computed over multiple axes.
+        Default: None.
+    correction
+        degrees of freedom adjustment. Setting this parameter to a value other than 0
+        has the effect of adjusting the divisor during the calculation of the standard
+        deviation according to N-c where N corresponds to the total number of elements
+        over which the standard deviation is computed and c corresponds to the provided
+        degrees of freedom adjustment. When computing the standard deviation of a
+        population, setting this parameter to ``0`` is the standard choice (i.e., the
+        provided array contains data constituting an entire population). When computing
+        the corrected sample standard deviation, setting this parameter to ``1`` is the
+        standard choice (i.e., the provided array contains data sampled from a larger
+        population; this is commonly referred to as Bessel's correction).
+        Default: ``0``.
+    keepdims
+        if ``True``, the reduced axes (dimensions) must be included in the result as
+        singleton dimensions, and, accordingly, the result must be compatible with the
+        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
+        (dimensions) must not be included in the result. Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the sum was computed over the entire array, a zero-dimensional array
+        containing the standard deviation; otherwise, an array containing the standard
+        deviations. The returned array must have a data type as described by the
+        ``dtype`` parameter above.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.std(x)
+    >>> print(y)
+    ivy.array(0.8164966)
+
+    """
+    return current_backend(x).std(x, axis, correction, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -417,72 +429,60 @@ def sum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def std(
+def var(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculates the variance of the input array x.
 
     **Special Cases**
 
-    Let ``N`` equal the number of elements over which to compute the standard deviation.
+    Let N equal the number of elements over which to compute the variance.
 
-    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
-        deviation).
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
-        propagate).
+    If N - correction is less than or equal to 0, the variance is NaN.
+
+    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
 
     Parameters
     ----------
     x
-        input array. Should have a floating-point data type
-
+        input array. Should have a floating-point data type.
     axis
-        axis or axes along which standard deviations must be computed. By default, the
-        standard deviation must be computed over the entire array. If a tuple of
-        integers, standard deviations must be computed over multiple axes.
-        Default: None.
+        axis or axes along which variances must be computed. By default, the variance
+        must be computed over the entire array. If a tuple of integers, variances must
+        be computed over multiple axes. Default: None.
     correction
         degrees of freedom adjustment. Setting this parameter to a value other than 0
-        has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to N-c where N corresponds to the total number of elements
-        over which the standard deviation is computed and c corresponds to the provided
-        degrees of freedom adjustment. When computing the standard deviation of a
-        population, setting this parameter to ``0`` is the standard choice (i.e., the
-        provided array contains data constituting an entire population). When computing
-        the corrected sample standard deviation, setting this parameter to ``1`` is the
-        standard choice (i.e., the provided array contains data sampled from a larger
-        population; this is commonly referred to as Bessel's correction).
-        Default: ``0``.
+        has the effect of adjusting the divisor during the calculation of the variance
+        according to N-c where N corresponds to the total number of elements over which
+        the variance is computed and c corresponds to the provided degrees of freedom
+        adjustment. When computing the variance of a population, setting this parameter
+        to 0 is the standard choice (i.e., the provided array contains data constituting
+        an entire population). When computing the unbiased sample variance, setting this
+        parameter to 1 is the standard choice (i.e., the provided array contains data
+        sampled from a larger population; this is commonly referred to as Bessel's
+        correction). Default: 0.
     keepdims
-        if ``True``, the reduced axes (dimensions) must be included in the result as
+        if True, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
-        (dimensions) must not be included in the result. Default: ``False``.
+        input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        if the sum was computed over the entire array, a zero-dimensional array
-        containing the standard deviation; otherwise, an array containing the standard
-        deviations. The returned array must have a data type as described by the
-        ``dtype`` parameter above.
-
-    Examples
-    --------
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.std(x)
-    >>> print(y)
-    ivy.array(0.8164966)
+        if the variance was computed over the entire array, a zero-dimensional array
+        containing the variance; otherwise, a non-zero-dimensional array containing the
+        variances. The returned array must have the same data type as x.
 
     """
-    return current_backend(x).std(x, axis, correction, keepdims, out=out)
+    return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 # Extra #
