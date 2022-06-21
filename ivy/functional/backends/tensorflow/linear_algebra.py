@@ -178,14 +178,9 @@ def svd(
 
 
 def outer(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    out: Optional[tf.Tensor] = None,
+    x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.outer(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.outer(x1, x2)
 
 
 def diagonal(

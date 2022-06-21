@@ -80,15 +80,8 @@ def svd(
     return ret
 
 
-def outer(
-    x1: JaxArray,
-    x2: JaxArray,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
-    ret = jnp.outer(x1, x2, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def outer(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.outer(x1, x2)
 
 
 def diagonal(
