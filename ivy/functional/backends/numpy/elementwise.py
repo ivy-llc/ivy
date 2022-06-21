@@ -106,9 +106,7 @@ def equal(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 == x2
+) -> np.ndarray:
     return np.equal(x1, x2, out=out)
 
 
@@ -118,9 +116,7 @@ def greater(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 > x2
+) -> np.ndarray:
     return np.greater(x1, x2, out=out)
 
 
@@ -130,9 +126,7 @@ def greater_equal(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 >= x2
+) -> np.ndarray:
     return np.greater_equal(x1, x2, out=out)
 
 
@@ -142,9 +136,7 @@ def less_equal(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 <= x2
+) -> np.ndarray:
     return np.less_equal(x1, x2, out=out)
 
 
@@ -251,10 +243,8 @@ def less(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[Union[bool, np.ndarray]] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 < x2
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.less(x1, x2, out=out)
 
 
@@ -334,9 +324,7 @@ def not_equal(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[bool, np.ndarray]:
-    if not isinstance(x1, np.ndarray) and not isinstance(x2, np.ndarray):
-        return x1 != x2
+) -> np.ndarray:
     return np.not_equal(x1, x2, out=out)
 
 
