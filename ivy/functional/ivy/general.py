@@ -1077,35 +1077,21 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     Examples
     --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
-    (1.0, 2.0, 3.0)
+    (3,)
 
-    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
+    >>> x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape
     >>> print(ivy.shape_to_tuple(x))
-    (ivy.array([1., 2., 3.]), ivy.array([4., 5., 6.]))
+    (2, 3)
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1., 2., 3.])
+    >>> x = ivy.array([1., 2., 3.]).shape
     >>> print(ivy.shape_to_tuple(x))
-    (1.0, 2.0, 3.0)
+    (3,)
 
-    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]])
+    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape
     >>> print(ivy.shape_to_tuple(x))
-    (array([1., 2., 3.], dtype=float32), array([4., 5., 6.], dtype=float32))
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]))
-    >>> print(ivy.shape_to_tuple(x))
-    ('a',)
-
-    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
-    >>> print(ivy.shape_to_tuple(x))
-    ('a', 'b')
+    (2, 3)
 
     """
     if ivy.is_array(shape):
