@@ -688,6 +688,29 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return current_backend(x).from_dlpack(x)
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def from_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """Creates Tensor with values from a numpy array. 
+
+    .. note::
+        The returned Tensor and NumPy array share the same memory.
+        Using a read-only NumPy array will result in undefined behavior.
+
+    Parameters
+    ----------
+    x
+        input NumPy array.
+    
+    Returns
+    -------
+    ret
+        a Tensor containing the data in x.
+
+    """
+    return current_backend(x).from_numpy(x)
+
 
 # Extra #
 # ------#

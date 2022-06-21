@@ -373,6 +373,9 @@ def full(
 def from_dlpack(x):
     return torch.utils.dlpack.from_dlpack(x)
 
+def from_numpy(x):
+    return torch.from_numpy(x)
+
 
 # Extra #
 # ------#
