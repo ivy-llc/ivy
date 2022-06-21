@@ -17,7 +17,7 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype=None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
@@ -39,7 +39,7 @@ def multinomial(
     probs: Optional[np.ndarray] = None,
     replace=True,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -65,11 +65,7 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[int, Sequence[int]],
-    *,
-    device: str
+    low: int, high: int, shape: Union[int, Sequence[int]], *, device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
