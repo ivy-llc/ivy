@@ -13,28 +13,28 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
-   linear_algebra/eigh.rst
-   linear_algebra/pinv.rst
-   linear_algebra/matrix_transpose.rst
-   linear_algebra/vector_norm.rst
-   linear_algebra/svd.rst
-   linear_algebra/outer.rst
-   linear_algebra/diagonal.rst
-   linear_algebra/matrix_norm.rst
-   linear_algebra/qr.rst
-   linear_algebra/matmul.rst
-   linear_algebra/matrix_power.rst
-   linear_algebra/slogdet.rst
-   linear_algebra/tensordot.rst
-   linear_algebra/svdvals.rst
-   linear_algebra/trace.rst
-   linear_algebra/vecdot.rst
-   linear_algebra/det.rst
    linear_algebra/cholesky.rst
+   linear_algebra/cross.rst
+   linear_algebra/det.rst
+   linear_algebra/diagonal.rst
+   linear_algebra/eigh.rst
    linear_algebra/eigvalsh.rst
    linear_algebra/inv.rst
+   linear_algebra/matmul.rst
+   linear_algebra/matrix_norm.rst
+   linear_algebra/matrix_power.rst
    linear_algebra/matrix_rank.rst
-   linear_algebra/cross.rst
-   linear_algebra/vector_to_skew_symmetric_matrix.rst
+   linear_algebra/matrix_transpose.rst
+   linear_algebra/outer.rst
+   linear_algebra/pinv.rst
+   linear_algebra/qr.rst
+   linear_algebra/slogdet.rst
    linear_algebra/solve.rst
+   linear_algebra/svd.rst
+   linear_algebra/svdvals.rst
+   linear_algebra/tensordot.rst
+   linear_algebra/trace.rst
+   linear_algebra/vecdot.rst
+   linear_algebra/vector_norm.rst
+   linear_algebra/vector_to_skew_symmetric_matrix.rst
 

@@ -13,63 +13,63 @@ Elementwise
    :maxdepth: -1
    :caption: Elementwise
 
-   elementwise/bitwise_left_shift.rst
-   elementwise/add.rst
-   elementwise/bitwise_xor.rst
-   elementwise/exp.rst
-   elementwise/expm1.rst
-   elementwise/bitwise_invert.rst
-   elementwise/bitwise_and.rst
-   elementwise/ceil.rst
-   elementwise/floor.rst
-   elementwise/isfinite.rst
-   elementwise/asin.rst
-   elementwise/isinf.rst
-   elementwise/greater.rst
-   elementwise/greater_equal.rst
-   elementwise/less_equal.rst
-   elementwise/multiply.rst
-   elementwise/asinh.rst
-   elementwise/sign.rst
-   elementwise/sqrt.rst
-   elementwise/cosh.rst
-   elementwise/log.rst
-   elementwise/log2.rst
-   elementwise/log10.rst
-   elementwise/log1p.rst
-   elementwise/isnan.rst
-   elementwise/less.rst
-   elementwise/cos.rst
-   elementwise/acos.rst
-   elementwise/logical_not.rst
-   elementwise/logical_xor.rst
-   elementwise/logical_or.rst
-   elementwise/logical_and.rst
-   elementwise/acosh.rst
-   elementwise/sin.rst
-   elementwise/negative.rst
-   elementwise/not_equal.rst
-   elementwise/floor_divide.rst
-   elementwise/bitwise_or.rst
-   elementwise/sinh.rst
-   elementwise/positive.rst
-   elementwise/square.rst
-   elementwise/logaddexp.rst
-   elementwise/round.rst
-   elementwise/trunc.rst
    elementwise/abs.rst
-   elementwise/tan.rst
+   elementwise/acos.rst
+   elementwise/acosh.rst
+   elementwise/add.rst
+   elementwise/asin.rst
+   elementwise/asinh.rst
    elementwise/atan.rst
    elementwise/atan2.rst
-   elementwise/tanh.rst
    elementwise/atanh.rst
-   elementwise/subtract.rst
+   elementwise/bitwise_and.rst
+   elementwise/bitwise_invert.rst
+   elementwise/bitwise_left_shift.rst
+   elementwise/bitwise_or.rst
+   elementwise/bitwise_right_shift.rst
+   elementwise/bitwise_xor.rst
+   elementwise/ceil.rst
+   elementwise/cos.rst
+   elementwise/cosh.rst
    elementwise/divide.rst
+   elementwise/equal.rst
+   elementwise/exp.rst
+   elementwise/expm1.rst
+   elementwise/floor.rst
+   elementwise/floor_divide.rst
+   elementwise/greater.rst
+   elementwise/greater_equal.rst
+   elementwise/isfinite.rst
+   elementwise/isinf.rst
+   elementwise/isnan.rst
+   elementwise/less.rst
+   elementwise/less_equal.rst
+   elementwise/log.rst
+   elementwise/log10.rst
+   elementwise/log1p.rst
+   elementwise/log2.rst
+   elementwise/logaddexp.rst
+   elementwise/logical_and.rst
+   elementwise/logical_not.rst
+   elementwise/logical_or.rst
+   elementwise/logical_xor.rst
+   elementwise/multiply.rst
+   elementwise/negative.rst
+   elementwise/not_equal.rst
+   elementwise/positive.rst
    elementwise/pow.rst
    elementwise/remainder.rst
-   elementwise/bitwise_right_shift.rst
-   elementwise/equal.rst
+   elementwise/round.rst
+   elementwise/sign.rst
+   elementwise/sin.rst
+   elementwise/sinh.rst
+   elementwise/sqrt.rst
+   elementwise/square.rst
+   elementwise/subtract.rst
+   elementwise/tan.rst
+   elementwise/tanh.rst
+   elementwise/trunc.rst
    elementwise/erf.rst
-   elementwise/minimum.rst
    elementwise/maximum.rst
+   elementwise/minimum.rst
 
