@@ -201,6 +201,8 @@ def negative(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.not_equal(x1, x2)
 
 
