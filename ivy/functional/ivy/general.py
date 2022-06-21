@@ -706,6 +706,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 
     Functional Examples
     -------------------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1])
