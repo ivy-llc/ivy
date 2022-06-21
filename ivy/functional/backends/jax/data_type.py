@@ -9,22 +9,6 @@ from typing import Union, Tuple, List
 import ivy
 from ivy.functional.backends.jax import JaxArray
 
-
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
-    if type(from_) in [
-        jax.interpreters.xla._DeviceArray,
-        jaxlib.xla_extension.DeviceArray,
-    ]:
-        from_ = str(from_.dtype)
-    from_ = str(from_)
-    to = str(to)
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
-    return jnp.can_cast(from_, to)
-
-
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
     jnp.dtype("int16"): "int16",
@@ -71,11 +55,6 @@ native_dtype_dict = {
 }
 
 
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
-    return jnp.iinfo(ivy.as_native_dtype(type))
-
-
 class Finfo:
     def __init__(self, jnp_finfo):
         self._jnp_finfo = jnp_finfo
@@ -101,30 +80,10 @@ class Finfo:
         return float(self._jnp_finfo.tiny)
 
 
-# noinspection PyShadowingBuiltins
-def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
-    return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
+# Array API Standard #
+# -------------------#
 
 
-def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
-    if len(arrays_and_dtypes) <= 1:
-        return jnp.result_type(arrays_and_dtypes)
-
-    result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
-    for i in range(2, len(arrays_and_dtypes)):
-        result = jnp.result_type(result, arrays_and_dtypes[i])
-    return result
-
-
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
-    return jnp.broadcast_to(x, shape)
-
-
-def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
-    return jnp.broadcast_arrays(*arrays)
-
-
-# noinspection PyShadowingNames
 def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
@@ -138,6 +97,51 @@ def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
             new_tensor = jnp.array(x)
             return new_tensor.astype(dtype)
     return x.astype(dtype)
+
+
+def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
+    return jnp.broadcast_arrays(*arrays)
+
+
+def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+    return jnp.broadcast_to(x, shape)
+
+
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+    if type(from_) in [
+        jax.interpreters.xla._DeviceArray,
+        jaxlib.xla_extension.DeviceArray,
+    ]:
+        from_ = str(from_.dtype)
+    from_ = str(from_)
+    to = str(to)
+    if "bool" in from_ and (("int" in to) or ("float" in to)):
+        return False
+    if "int" in from_ and "float" in to:
+        return False
+    return jnp.can_cast(from_, to)
+
+
+def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
+    return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
+
+
+def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
+    return jnp.iinfo(ivy.as_native_dtype(type))
+
+
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return jnp.result_type(arrays_and_dtypes)
+
+    result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = jnp.result_type(result, arrays_and_dtypes[i])
+    return result
+
+
+# Extra #
+# ------#
 
 
 def dtype_bits(dtype_in):
