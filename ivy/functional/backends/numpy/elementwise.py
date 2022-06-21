@@ -12,6 +12,17 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = np.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+    
+    
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
 def _handle_0_dim_output(function: Callable) -> Callable:
@@ -30,10 +41,7 @@ def add(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.add(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.add(x1, x2, out=out)
 
 
