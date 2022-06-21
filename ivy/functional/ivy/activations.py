@@ -5,7 +5,11 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.backend_handler import current_backend
-from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 
 # Extra #
@@ -14,6 +18,7 @@ from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -81,6 +86,7 @@ def relu(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2
 ) -> ivy.Array:
@@ -146,6 +152,7 @@ def leaky_relu(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def gelu(x, approximate=True):
     """Applies the Gaussian error linear unit (GELU) activation function.
 
@@ -167,6 +174,7 @@ def gelu(x, approximate=True):
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the Hyperbolic tangent activation function element-wise.
 
@@ -214,6 +222,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
@@ -260,6 +269,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1
 ) -> ivy.Array:
@@ -319,6 +329,7 @@ def softmax(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the softplus function element-wise.
 

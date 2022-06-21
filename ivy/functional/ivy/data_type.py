@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_arrays,
+    handle_nestable,
 )
 
 # Array API Standard #
@@ -25,6 +26,7 @@ Iinfo = None
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
 ) -> bool:
@@ -50,6 +52,7 @@ def can_cast(
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     """Machine limits for integer data types.
 
@@ -74,6 +77,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     """Machine limits for floating-point data types.
 
@@ -104,6 +108,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
 ) -> ivy.Array:
@@ -128,6 +133,7 @@ def broadcast_to(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -169,6 +175,7 @@ def dtype(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -424,6 +431,7 @@ def _check_float64(input):
 
 
 # noinspection PyShadowingNames,PyShadowingBuiltins
+@handle_nestable
 def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -564,6 +572,8 @@ def unset_default_dtype():
 
 
 # noinspection PyShadowingNames
+
+
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     """Summary.
 
@@ -585,6 +595,8 @@ def unset_default_int_dtype():
 
 
 # noinspection PyShadowingNames
+
+
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
     """Summary.
 
@@ -623,6 +635,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
     return current_backend(type).closest_valid_dtype(type)
 
 
+@handle_nestable
 @inputs_to_native_arrays
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
@@ -664,6 +677,7 @@ def is_int_dtype(
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
@@ -698,6 +712,7 @@ def is_float_dtype(
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -786,6 +801,7 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
     return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
 
 
+@handle_nestable
 def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     """Returns the supported data types of the current backend's function.
 
@@ -814,6 +830,7 @@ def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     return ivy.as_native_dtype(tuple(valid))
 
 
+@handle_nestable
 def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     """Returns the unsupported data types of the current backend's function.
 
