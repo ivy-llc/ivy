@@ -4,7 +4,78 @@ import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List
 
-# local
+
+# Array API Standard #
+# -------------------#
+
+
+def concat(xs: List[tf.Tensor], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
+    is_tuple = type(xs) is tuple
+    is_axis_none = axis is None
+    if is_tuple:
+        xs = list(xs)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+
+    for i in range(len(xs)):
+        if is_axis_none:
+            xs[i] = tf.reshape(xs[i], -1)
+        xs[i] = tf.cast(xs[i], highest_dtype)
+    if is_axis_none:
+        axis = 0
+        if is_tuple:
+            xs = tuple(xs)
+    ret = tf.concat(xs, axis)
+    return ret
+
+
+def expand_dims(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    try:
+        ret = tf.expand_dims(x, axis)
+        return ret
+    except tf.errors.InvalidArgumentError as error:
+        raise IndexError(error)
+
+
+def flip(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    num_dims = len(x.shape)
+    if not num_dims:
+        ret = x
+    else:
+        if axis is None:
+            new_axis = list(range(num_dims))
+        else:
+            new_axis = axis
+        if type(new_axis) is int:
+            new_axis = [new_axis]
+        else:
+            new_axis = new_axis
+        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+        ret = tf.reverse(x, new_axis)
+    return ret
+
+
+def permute_dims(
+    x: Union[tf.Tensor, tf.Variable],
+    axes: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.transpose(x, perm=axes)
+    return ret
+
+
+def reshape(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.reshape(x, shape)
+    return ret
 
 
 def roll(
@@ -61,80 +132,11 @@ def squeeze(
     return ret
 
 
-def flip(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    num_dims = len(x.shape)
-    if not num_dims:
-        ret = x
-    else:
-        if axis is None:
-            new_axis = list(range(num_dims))
-        else:
-            new_axis = axis
-        if type(new_axis) is int:
-            new_axis = [new_axis]
-        else:
-            new_axis = new_axis
-        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-        ret = tf.reverse(x, new_axis)
-    return ret
-
-
-def expand_dims(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-) -> Union[tf.Tensor, tf.Variable]:
-    try:
-        ret = tf.expand_dims(x, axis)
-        return ret
-    except tf.errors.InvalidArgumentError as error:
-        raise IndexError(error)
-
-
-def permute_dims(
-    x: Union[tf.Tensor, tf.Variable],
-    axes: Tuple[int, ...],
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.transpose(x, perm=axes)
-    return ret
-
-
 def stack(
     x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     axis: Optional[int] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.stack(x, axis)
-    return ret
-
-
-def reshape(
-    x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.reshape(x, shape)
-    return ret
-
-
-def concat(xs: List[tf.Tensor], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    ret = tf.concat(xs, axis)
     return ret
 
 
