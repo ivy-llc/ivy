@@ -164,6 +164,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -197,6 +202,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -229,6 +239,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -262,6 +277,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -294,6 +314,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -327,6 +352,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -358,6 +388,11 @@ list indicating the per-dimension paddings.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the linear layer, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -379,6 +414,10 @@ tensor with probability p using samples from a Bernoull distribution.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>prob</strong> – The probability of zeroing out each array element.</p></li>
 <li><p><strong>scale</strong> – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>dtype</strong> – the desired data type of the internal variables to be created.
+Default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -409,6 +448,11 @@ Default is True.</p></li>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for each of the lstm cells, as a container,
 constructed internally by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -421,7 +465,14 @@ constructed internally by default.</p></li>
 explicitly</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>batch_shape</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_shape</strong> – </p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -451,6 +502,11 @@ weight matrix and addition with the bias vector.</p>
 etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> – the variables for the linear layer, as a container, constructed internally
 by default.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -493,6 +549,11 @@ constructed internally by default.</p></li>
 explicitly by the user by calling
 build(), or the first time the __call__ method is run.
 Default is on initialization.</p></li>
+<li><p><strong>dtype</strong> – <dl class="simple">
+<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is None.</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 </dl>

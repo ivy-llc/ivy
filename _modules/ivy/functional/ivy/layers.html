@@ -206,9 +206,8 @@
 <span class="c1"># Dropout #</span>
 
 
-<div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../../functional/ivy/layers/dropout.html#ivy.functional.ivy.layers.dropout">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../../functional/ivy/layers/dropout.html#ivy.functional.ivy.layers.dropout">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Randomly zeroes some elements of the input tensor with probability p using</span>
 <span class="sd">    samples from a Bernoulli distribution.</span>
 
@@ -229,7 +228,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyUnresolvedReferences</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
         <span class="n">x</span><span class="p">,</span>
     <span class="p">)</span>
