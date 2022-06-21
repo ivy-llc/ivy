@@ -48,8 +48,8 @@ def atanh(x: JaxArray) -> JaxArray:
 
 
 def bitwise_and(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x2, JaxArray):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -74,8 +74,8 @@ def bitwise_or(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArr
 def bitwise_right_shift(
     x1: Union[float, JaxArray], x2: Union[float, JaxArray]
 ) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x2, JaxArray):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.right_shift(x1, x2)
 
 
@@ -224,8 +224,8 @@ def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
 
 
 def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x2, JaxArray):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.remainder(x1, x2)
 
 
