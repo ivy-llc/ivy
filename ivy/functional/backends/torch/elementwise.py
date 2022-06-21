@@ -17,11 +17,17 @@ def _cast_for_binary_op(x1, x2):
     else:
         if isinstance(x2, torch.Tensor):
             x1 = torch.tensor(x1, dtype=x2.dtype)
+        else:
+            x1 = torch.tensor(x1)
+            x2 = torch.tensor(x2)
     return x1, x2
 
 
 def add(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
@@ -31,7 +37,10 @@ add.unsupported_dtypes = tuple([ivy.float16])
 
 
 def bitwise_xor(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2, out=out)
@@ -178,17 +187,8 @@ def multiply(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if not hasattr(x2, "dtype"):
-        x2 = torch.tensor(x2, dtype=x1.dtype)
-    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
-        return torch.multiply(x1, x2, out=out)
-    return torch.multiply(
-        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1),
-        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2),
-    )
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.multiply(x1, x2, out=out)
 
 
 def cos(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -208,10 +208,7 @@ def divide(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if not isinstance(x2, torch.Tensor):
-        return torch.div(x1, x2)
     return torch.div(x1, x2, out=out)
 
 
@@ -274,7 +271,9 @@ def sin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
 sin.unsupported_dtypes = tuple([ivy.float16])
 
 
-def negative(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def negative(
+    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.neg(x, out=out)
 
 
@@ -316,8 +315,10 @@ def sinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
 sinh.unsupported_dtypes = tuple([ivy.float16])
 
 
-def positive(x: torch.Tensor) -> torch.Tensor:
-    return torch.positive(x)
+def positive(
+    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.positive(x, out=out)
 
 
 def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -325,16 +326,13 @@ def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 
 def pow(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if not isinstance(x2, torch.Tensor):
-        x2 = torch.tensor(x2, dtype=x1.dtype)
-        return torch.pow(x1, x2, out=out)
-    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    ret = torch.pow(x1, x2).type(promoted_type)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.pow(x1, x2, out=out)
 
 
 def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -360,7 +358,9 @@ def trunc(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
 trunc.unsupported_dtypes = tuple([ivy.float16])
 
 
-def abs(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def abs(
+    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.abs(x, out=out)
 
 
@@ -421,24 +421,23 @@ exp.unsupported_dtypes = tuple([ivy.float16])
 
 
 def subtract(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
-        return torch.subtract(x1, x2, out=out)
-    return torch.subtract(
-        x1 if isinstance(x1, torch.Tensor) else torch.tensor(x1, dtype=x2.dtype),
-        x2 if isinstance(x2, torch.Tensor) else torch.tensor(x2, dtype=x1.dtype),
-    )
-
-
-def remainder(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = torch.remainder(x1, x2)
-    ret[torch.isnan(ret)] = 0
-    return ret
+    return torch.subtract(x1, x2, out=out)
+
+
+def remainder(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.remainder(x1, x2, out=out)
 
 
 def atanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
