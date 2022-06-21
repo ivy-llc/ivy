@@ -2,10 +2,7 @@
 import tensorflow as tf
 from typing import Union, Tuple, Optional, List
 
-# local
 
-
-# noinspection PyShadowingBuiltins
 def all(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -20,7 +17,6 @@ def all(
     return ret
 
 
-# noinspection PyShadowingBuiltins
 def any(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
