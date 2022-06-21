@@ -11,7 +11,6 @@ from hypothesis import strategies as st, given
 
 # local
 import ivy
-import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -162,8 +161,9 @@ def test_default_device(device, call):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
+    stream=st.integers(0, 50),
 )
-def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
+def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -180,7 +180,7 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, device=device, out=out)
+    x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
@@ -439,7 +439,10 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
     args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -480,7 +483,10 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
     args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], dtype="float32", device=device), "b": kwargs["b"]}
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()

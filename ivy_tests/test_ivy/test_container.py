@@ -1519,7 +1519,7 @@ def test_container_einops_repeat(device, call):
     )
 
 
-def test_container_to_dev(device, call):
+def test_container_to_device(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
         "b": {
@@ -1529,7 +1529,7 @@ def test_container_to_dev(device, call):
     }
     container = Container(dict_in)
 
-    container_to_cpu = container.to_dev(device)
+    container_to_cpu = container.to_device(device)
     assert ivy.dev(container_to_cpu["a"]) == device
     assert ivy.dev(container_to_cpu.a) == device
     assert ivy.dev(container_to_cpu["b"]["c"]) == device

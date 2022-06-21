@@ -4,13 +4,13 @@ import ivy
 
 _round = round
 import mxnet as mx
-import numpy as _np
+import numpy as np
 from numbers import Number
 import multiprocessing as _multiprocessing
 
 # local
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.mxnet.device import _callable_dev
+from ivy.functional.backends.mxnet.device import dev
 from ivy.functional.backends.mxnet import (
     _handle_flat_arrays_in_out,
     _mxnet_init_context,
@@ -38,11 +38,11 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
 
 
 def to_numpy(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    if isinstance(x, _np.ndarray):
+    if isinstance(x, np.ndarray):
         return x
     else:
         if isinstance(x, (int, float)):
-            return _np.array(x)
+            return np.array(x)
         else:
             return x.asnumpy()
 
@@ -177,12 +177,12 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", devic
             "an pre-existing tensor."
         )
     if device is None:
-        device = _callable_dev(indices)
+        device = dev(indices)
     shape = list(shape)
     num_idx_dims = len(indices.shape)
     transpose_order = [num_idx_dims - 1] + list(range(num_idx_dims - 1))
     indices = mx.nd.transpose(indices, transpose_order)
-    shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
+    shape = shape if type(shape) is list else shape.asnumpy().astype(np.int32).tolist()
     if reduction == "replace":
         return mx.nd.scatter_nd(updates, indices, shape).copyto(
             _mxnet_init_context(device)
@@ -202,7 +202,7 @@ def gather(
     out: mx.nd.NDArray = None,
 ) -> mx.nd.NDArray:
     if device is None:
-        device = _callable_dev(params)
+        device = dev(params)
     index_slices = unstack(indices, -1)
     res = mx.nd.concat(
         *[
@@ -221,7 +221,7 @@ def gather(
 
 def gather_nd(params, indices, device=None):
     if device is None:
-        device = _callable_dev(params)
+        device = dev(params)
     indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims - 1] + list(range(num_idx_dims - 1))
