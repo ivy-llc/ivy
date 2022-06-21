@@ -1940,4 +1940,4 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
         Shape of the array
 
     """
-    return _cur_backend(x).get_num_dims(x, as_array)
+    return current_backend(x).get_num_dims(x, as_array)
