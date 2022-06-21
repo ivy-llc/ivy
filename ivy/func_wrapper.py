@@ -4,94 +4,6 @@ import functools
 from types import FunctionType
 from typing import Callable
 
-NON_WRAPPED_FUNCTIONS = [
-    "copy_nest",
-    "current_backend",
-    "current_backend_str",
-    "set_backend",
-    "get_backend",
-    "unset_backend",
-    "get_referrers_recursive",
-    "set_debug_mode",
-    "set_breakpoint_debug_mode",
-    "set_exception_debug_mode",
-    "unset_debug_mode",
-    "debug_mode",
-    "nested_map",
-    "to_ivy",
-    "args_to_ivy",
-    "to_native",
-    "args_to_native",
-    "default",
-    "exists",
-    "set_min_base",
-    "get_min_base",
-    "set_min_denominator",
-    "get_min_denominator",
-    "split_func_call_across_gpus",
-    "cache_fn",
-    "split_func_call",
-    "compile",
-    "compile_graph",
-    "dev",
-    "as_ivy_dev",
-    "as_native_dev",
-    "memory_on_dev",
-    "gpu_is_available",
-    "num_gpus",
-    "tpu_is_available",
-    "dtype",
-    "as_ivy_dtype",
-    "cprint",
-    "to_ivy_module",
-    "tree_flatten",
-    "tree_unflatten",
-    "start_compiling",
-    "stop_compiling",
-    "get_compiled",
-    "index_nest",
-    "set_nest_at_index",
-    "map_nest_at_index",
-    "multi_index_nest",
-    "set_nest_at_indices",
-    "map_nest_at_indices",
-    "nested_indices_where",
-    "map",
-    "set_default_device",
-    "unset_default_device",
-    "closest_valid_dtype",
-    "set_default_dtype",
-    "default_dtype",
-    "default_device",
-    "as_native_dtype",
-    "is_ivy_array",
-    "is_ivy_container",
-    "inplace_update",
-    "inplace_increment",
-    "inplace_decrement",
-    "prune_nest_at_index",
-    "prune_nest_at_indices",
-    "is_array",
-    "is_native_array",
-    "nested_any",
-    "fn_array_spec",
-    "insert_into_nest_at_index",
-    "insert_into_nest_at_indices",
-    "vec_sig_fig",
-    "native_array",
-]
-FUNCTIONS_W_CONT_SUPPORT = [
-    "multi_head_attention",
-    "execute_with_gradients",
-    "adam_step",
-    "optimizer_update",
-    "gradient_descent_update",
-    "lars_update",
-    "adam_update",
-    "lamb_update",
-    "stable_divide",
-    "stable_pow",
-]
 FW_FN_KEYWORDS = {
     "numpy": [],
     "jax": [],
@@ -369,7 +281,6 @@ def handle_out_argument(fn: Callable) -> Callable:
 
 def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
-    cont_fn = getattr(ivy.Container, "static_" + fn_name)
 
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -393,6 +304,7 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
+        cont_fn = getattr(ivy.Container, "static_" + fn_name)
         if ivy.nested_any(
             args, ivy.is_ivy_container, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
@@ -409,48 +321,54 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(value: Callable, original: Callable) -> Callable:
-    """Apply wrapping to backend implementation `value` if the original implementation
-    `original` is also wrapped, and if `value` is not already wrapped. Attributes
+def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
+    """Apply wrapping to backend implementation `to_wrap` if the original implementation
+    `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
-    us whether a certain function has been wrapped or not.
+    us whether a certain function has been wrapped or not. Also handles wrapping of the
+    `linalg` namespace.
 
     Parameters
     ----------
-    value
+    to_wrap
         the new implementation to potentially wrap
     original
-        the original implementation of `value` which tells us which wrappers we need.
+        the original implementation of `to_wrap` which tells us which wrappers we need.
 
     Returns
     -------
     ret
-        `value` appropriately wrapped if `value` is a function, otherwise just the
+        `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the
         input is returned.
     """
-    if isinstance(value, FunctionType):
-        if (
-            hasattr(original, "handle_nestable")
-            and not hasattr(value, "handle_nestable")
-        ) or (
-            hasattr(ivy.Container, value.__name__)
-            and value.__name__ not in FUNCTIONS_W_CONT_SUPPORT + NON_WRAPPED_FUNCTIONS
-        ):
-            value = handle_nestable(value)
-        if hasattr(original, "infer_device") and not hasattr(value, "infer_device"):
-            value = infer_device(value)
-        if hasattr(original, "infer_dtype") and not hasattr(value, "infer_dtype"):
-            value = infer_dtype(value)
+    if key == "linalg":
+        for linalg_k, linalg_v in to_wrap.__dict__.items():
+            if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+                to_wrap.__dict__[linalg_k] = _wrap_function(
+                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                )
+        return to_wrap
+    if isinstance(to_wrap, FunctionType):
+        if hasattr(original, "array_spec"):
+            to_wrap.array_spec = original.array_spec
+        if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
+            to_wrap = infer_device(to_wrap)
+        if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
+            to_wrap = infer_dtype(to_wrap)
         if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
-            value, "outputs_to_ivy_arrays"
+            to_wrap, "outputs_to_ivy_arrays"
         ):
-            value = outputs_to_ivy_arrays(value)
+            to_wrap = outputs_to_ivy_arrays(to_wrap)
         if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-            value, "inputs_to_native_arrays"
+            to_wrap, "inputs_to_native_arrays"
         ):
-            value = inputs_to_native_arrays(value)
+            to_wrap = inputs_to_native_arrays(to_wrap)
         if hasattr(original, "handle_out_argument") and not hasattr(
-            value, "handle_out_argument"
+            to_wrap, "handle_out_argument"
         ):
-            value = handle_out_argument(value)
-    return value
+            to_wrap = handle_out_argument(to_wrap)
+        if hasattr(original, "handle_nestable") and not hasattr(
+            to_wrap, "handle_nestable"
+        ):
+            to_wrap = handle_nestable(to_wrap)
+    return to_wrap

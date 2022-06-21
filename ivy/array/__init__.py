@@ -265,14 +265,15 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        backend = ivy.get_backend(state["framework_str"])
-        ivy_array = backend.array(state["data"])
+        ivy.set_backend(state["framework_str"])
+        ivy_array = ivy.array(state["data"])
+        ivy.unset_backend()
 
         self.__dict__ = ivy_array.__dict__
 
         # TODO: what about placement of the array on the right device ?
         # device = backend.as_native_dev(state["device_str"])
-        # backend.to_dev(self, device)
+        # backend.to_device(self, device)
 
     @_native_wrapper
     def __pos__(self):

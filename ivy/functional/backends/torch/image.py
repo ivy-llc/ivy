@@ -8,7 +8,7 @@ from functools import reduce
 from typing import List, Optional
 
 # local
-from ivy.functional.backends import torch as _ivy
+from ivy.functional.backends import torch as ivy
 
 
 def stack_images(
@@ -98,11 +98,11 @@ def gradient_image(
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # noinspection PyTypeChecker
-    dy = _ivy.concat(
+    dy = ivy.concat(
         (dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
     )
     # noinspection PyTypeChecker
-    dx = _ivy.concat(
+    dx = ivy.concat(
         (dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
     )
     # BS x H x W x D,    BS x H x W x D
