@@ -47,41 +47,37 @@ def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
-def bitwise_and(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x2, JaxArray):
+def bitwise_and(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    if not isinstance(x1, int) and isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_and(x1, x2)
 
 
-def bitwise_invert(x: Union[float, JaxArray]) -> JaxArray:
+def bitwise_invert(x: Union[int, JaxArray]) -> JaxArray:
     return jnp.bitwise_not(x)
 
 
-def bitwise_left_shift(
-    x1: Union[float, JaxArray], x2: Union[float, JaxArray]
-) -> JaxArray:
+def bitwise_left_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     # if isinstance(x2, int):
     #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.left_shift(x1, x2)
 
 
-def bitwise_or(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_or(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_or(x1, x2)
 
 
-def bitwise_right_shift(
-    x1: Union[float, JaxArray], x2: Union[float, JaxArray]
-) -> JaxArray:
-    if not isinstance(x2, JaxArray):
+def bitwise_right_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    if not isinstance(x1, int) and isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.right_shift(x1, x2)
 
 
-def bitwise_xor(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_xor(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -216,15 +212,15 @@ def positive(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+    #     x1 = x1.astype(promoted_type)
+    #     x2 = x2.astype(promoted_type)
     return jnp.power(x1, x2)
 
 
 def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x2, JaxArray):
+    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.remainder(x1, x2)
 
@@ -257,10 +253,10 @@ def square(x: JaxArray) -> JaxArray:
 
 
 def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+    #     promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+    #     x1 = x1.astype(promoted_type)
+    #     x2 = x2.astype(promoted_type)
     return jnp.subtract(x1, x2)
 
 
