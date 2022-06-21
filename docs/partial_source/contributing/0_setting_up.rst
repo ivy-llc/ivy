@@ -24,15 +24,15 @@ Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    git clone git@github.com:unifyai/ivy.git
+    git clone --recurse-submodules git@github.com:unifyai/ivy.git
 
 .. code-block:: none
 
-    git clone https://github.com/unifyai/ivy.git
+    git clone --recurse-submodules https://github.com/unifyai/ivy.git
 
 .. code-block:: none
 
-    gh repo clone unifyai/ivy your_folder
+    gh repo clone --recurse-submodules unifyai/ivy your_folder
 
 PyCharm
 -------
@@ -145,6 +145,14 @@ The path to python can be found by :code:`where python` on Windows and :code:`wh
 Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
 future projects.
 
+To make sure you have all the packages for running tests available change the directory to :code:`ivy\ivy_tests\test_array_api` in your
+cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+    .. code-block:: none
+
+        pip install -r requirements.txt
+
+This will install packages required for running the tests in Array API suite.
 
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_
 OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
