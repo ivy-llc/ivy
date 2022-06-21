@@ -7,6 +7,12 @@ from typing import Union, Optional
 from ivy.functional.backends.jax import JaxArray
 
 
+def _cast_for_bitwise_op(x1, x2):
+    if not isinstance(x1, int) and isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
+
 def abs(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.absolute(x)
 
@@ -50,8 +56,7 @@ def atanh(x: JaxArray) -> JaxArray:
 def bitwise_and(
     x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
 ) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -62,32 +67,28 @@ def bitwise_invert(x: Union[int, bool, JaxArray]) -> JaxArray:
 def bitwise_left_shift(
     x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
 ) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.left_shift(x1, x2)
 
 
 def bitwise_or(
     x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
 ) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_or(x1, x2)
 
 
 def bitwise_right_shift(
     x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
 ) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.right_shift(x1, x2)
 
 
 def bitwise_xor(
     x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
 ) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -111,7 +112,7 @@ def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
 
 
 def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
+    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.equal(x1, x2)
 
@@ -132,7 +133,7 @@ def floor(x: JaxArray) -> JaxArray:
 
 
 def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, int) and isinstance(x2, int):
+    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.floor_divide(x1, x2)
 
