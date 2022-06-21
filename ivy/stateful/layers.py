@@ -168,6 +168,7 @@ class Dropout(Module):
         dtype
             the desired data type of the internal variables to be created .
             Default is None.
+
         Returns
         -------
         ret
