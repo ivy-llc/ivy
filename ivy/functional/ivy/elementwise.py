@@ -527,6 +527,17 @@ def bitwise_and(
         b: ivy.array([0, 1, 2])
     }
 
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs: 
+
+    >>> x = ivy.array([True, True])
+    >>> y = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, False]),
+        b: ivy.array([False, True])
+    }
+
     Instance Method Examples
     ------------------------
 
