@@ -369,9 +369,6 @@ def negative(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
         return tf.negative(x)
 
 
-negative.unsupported_dtypes = tuple(['uint64'])
-
-
 def not_equal(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
