@@ -550,7 +550,7 @@ def unset_warning_level():
         warning_level_stack.pop(-1)
 
 
-def generate_warning(warning_message, stacklevel=0):
+def warn(warning_message, stacklevel=0):
     warn_level = warning_level()
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
