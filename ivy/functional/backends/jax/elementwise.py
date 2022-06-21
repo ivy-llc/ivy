@@ -8,8 +8,24 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def _cast_for_bitwise_op(x1, x2):
-    if not isinstance(x1, int) and isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    if not isinstance(x1, int):
+        if not isinstance(x2, int):
+            promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
+
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, (int, float)):
+        if not isinstance(x2, (int, float)):
+            promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
     return x1, x2
 
 
@@ -42,10 +58,7 @@ def atan(x: JaxArray) -> JaxArray:
 
 
 def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
@@ -102,8 +115,7 @@ def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
 
 
 def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.equal(x1, x2)
 
 
@@ -123,8 +135,7 @@ def floor(x: JaxArray) -> JaxArray:
 
 
 def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.floor_divide(x1, x2)
 
 
@@ -193,6 +204,7 @@ def logical_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 
 def multiply(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.multiply(x1, x2)
 
 
@@ -201,8 +213,7 @@ def negative(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
@@ -211,12 +222,12 @@ def positive(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.power(x1, x2)
 
 
 def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    if not isinstance(x1, (int, float)) and isinstance(x2, (int, float)):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.remainder(x1, x2)
 
 
@@ -248,6 +259,7 @@ def square(x: JaxArray) -> JaxArray:
 
 
 def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.subtract(x1, x2)
 
 
