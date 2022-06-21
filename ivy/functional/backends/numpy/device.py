@@ -4,7 +4,7 @@
 import os
 import time
 import numpy as np
-from typing import Union, Optional
+from typing import Union
 
 # local
 import ivy
