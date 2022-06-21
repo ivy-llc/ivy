@@ -92,16 +92,18 @@ def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
-    arrays_and_dtypes = list(arrays_and_dtypes)
-    for i in range(len(arrays_and_dtypes)):
-        if type(arrays_and_dtypes[i]) == torch.dtype:
-            arrays_and_dtypes[i] = torch.tensor([], dtype=arrays_and_dtypes[i])
-    if len(arrays_and_dtypes) == 1:
-        return arrays_and_dtypes[0].dtype
-    result = torch.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
-    for i in range(2, len(arrays_and_dtypes)):
-        result = torch.result_type(torch.tensor([], dtype=result), arrays_and_dtypes[i])
-    return result
+    input = []
+    for val in arrays_and_dtypes:
+        torch_val = as_native_dtype(val)
+        if isinstance(torch_val, torch.dtype):
+            torch_val = torch.tensor(1, dtype=torch_val)
+        input.append(torch_val)
+
+    result = torch.tensor(1, dtype=torch.result_type(input[0], input[1]))
+
+    for i in range(2, len(input)):
+        result = torch.tensor(1, dtype=torch.result_type(result, input[i]))
+    return as_ivy_dtype(result.dtype)
 
 
 # Extra #
