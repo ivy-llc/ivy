@@ -53,8 +53,8 @@ def pow(
 
 @_handle_0_dim_output
 def bitwise_xor(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: Union[int, np.ndarray],
+    x2: Union[int, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -79,15 +79,15 @@ def expm1(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def bitwise_invert(
-    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
+    x: Union[int, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.invert(x, out=out)
 
 
 @_handle_0_dim_output
 def bitwise_and(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: Union[int, np.ndarray],
+    x2: Union[int, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -407,8 +407,8 @@ def round(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def bitwise_or(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: Union[int, np.ndarray],
+    x2: Union[int, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -468,8 +468,8 @@ def logaddexp(
 
 @_handle_0_dim_output
 def bitwise_right_shift(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: Union[int, np.ndarray],
+    x2: Union[int, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -484,8 +484,8 @@ def bitwise_right_shift(
 
 @_handle_0_dim_output
 def bitwise_left_shift(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: Union[int, np.ndarray],
+    x2: Union[int, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
