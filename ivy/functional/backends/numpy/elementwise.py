@@ -409,12 +409,7 @@ def subtract(
 def logaddexp(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.logaddexp(x1, x2, out=out)
 
 
@@ -459,12 +454,7 @@ def atanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def atan2(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.arctan2(x1, x2, out=out)
 
 
