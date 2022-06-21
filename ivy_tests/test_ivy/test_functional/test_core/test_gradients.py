@@ -4,17 +4,23 @@
 from numbers import Number
 import pytest
 import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.container import Container
+import ivy.functional.backends.numpy as ivy_np
 
 
 # variable
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
+@given(
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+)
+# @pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
+# @pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
 def test_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph

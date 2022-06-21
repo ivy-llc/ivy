@@ -1,4 +1,5 @@
 # global
+import sys
 import math
 import importlib
 import numpy as np
@@ -413,6 +414,10 @@ def default_int_dtype(
         return ivy.as_native_dtype(ret)
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
+def float_to_int(x):
+    if x == float('inf') or x == float('-inf'):
+        return int(sys.maxsize)
+    return int(x)
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
@@ -420,7 +425,7 @@ def _check_float64(input):
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(tmp[0])).replace("0b", "")
+        mant = bin(float_to_int(float(tmp[0]))).replace("0b", "")
         return (
             (input > 3.4028235 * 10**38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
