@@ -74,14 +74,20 @@ def isinf(x: torch.Tensor) -> torch.Tensor:
 
 
 def equal(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.eq(x1, x2, out=out)
 
 
 def less_equal(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.less_equal(x1, x2, out=out)
@@ -179,11 +185,13 @@ def isnan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tenso
     return ret
 
 
-def less(x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None):
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+def less(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.lt(x1, x2, out=out)
 
 
@@ -219,22 +227,22 @@ def divide(
 
 
 def greater(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater(x1, x2, out=out)
 
 
 def greater_equal(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.to(promoted_type)
-        x2 = x2.to(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater_equal(x1, x2, out=out)
 
 
@@ -285,7 +293,10 @@ def negative(
 
 
 def not_equal(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.not_equal(x1, x2, out=out)
