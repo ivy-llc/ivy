@@ -43,7 +43,7 @@ def pow(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
+) -> np.ndarray:
     if isinstance(x1, np.ndarray):
         if isinstance(x2, np.ndarray):
             return np.power(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
@@ -330,7 +330,7 @@ def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 @_handle_0_dim_output
 def negative(
     x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
+) -> np.ndarray:
     return np.negative(x, out=out)
 
 
@@ -375,7 +375,7 @@ def sinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 @_handle_0_dim_output
 def positive(
     x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
+) -> np.ndarray:
     return np.positive(x, out=out)
 
 
@@ -390,7 +390,7 @@ def remainder(
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
+) -> np.ndarray:
     if isinstance(x1, np.ndarray):
         if isinstance(x2, np.ndarray):
             return np.remainder(
@@ -441,9 +441,7 @@ def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def abs(
-    x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
-) -> Union[float, np.ndarray]:
+def abs(x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.absolute(x, out=out)
 
 
