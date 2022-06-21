@@ -262,9 +262,9 @@ def one_hot(indices, depth, *, device):
 
 def shape(
     x: np.ndarray, 
-    as_tensor: bool = False
+    as_array: bool = False
 ) -> Union[np.ndarray, Tuple[int]]:
-    if as_tensor:
+    if as_array:
         return np.asarray(np.shape(x))
     else:
         return x.shape

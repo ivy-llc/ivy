@@ -1835,7 +1835,7 @@ def shape(
     x: Union[ivy.Array, ivy.NativeArray], 
     as_array: bool = False,
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None
 ) -> Union[ivy.Array, Sequence[int]]:
     """Returns the shape of the array ``x``.
 
@@ -1864,7 +1864,7 @@ def shape(
 
     >>> x = ivy.array([1, 2])
     >>> shape_tuple = ivy.shape(x)
-    >>> shape_array = ivy.shape(x, as_tensor = True)
+    >>> shape_array = ivy.shape(x, as_array = True)
     >>> print(shape_tuple)
     (2, )
 
@@ -1872,7 +1872,7 @@ def shape(
     ivy.array([2])
 
     >>> out = ivy.array([0])
-    >>> shape_array = ivy.shape(x, as_tensor = True, out = out)
+    >>> shape_array = ivy.shape(x, as_array = True, out = out)
     >>> print(out)
     ivy.array([1])
 
@@ -1896,11 +1896,11 @@ def shape(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
-                          b = ivy.array([1, 0, -1], [-1, 0, 1]))
+                          b = ivy.array([[1, 0, -1], [-1, 0, 1]]))
     >>> print(ivy.shape(x))
     {
-        a = (3, ), 
-        b = (2, 3)
+        a: (3, ), 
+        b: (2, 3)
     }
 
     Instance Method Examples
@@ -1912,11 +1912,11 @@ def shape(
 
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a = ivy.array([-1, 0, 1]), \
-                          b = ivy.array([1, 0, -1], [-1, 0, 1]))
+                          b = ivy.array([[1, 0, -1], [-1, 0, 1]]))
     >>> print(x.shape())
     {
-        a = (3, ), 
-        b = (2, 3)
+        a: (3, ), 
+        b: (2, 3)
     }
 
     """
