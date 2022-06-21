@@ -337,7 +337,10 @@ def positive(
     x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.positive(x)
+    ret = torch.positive(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
