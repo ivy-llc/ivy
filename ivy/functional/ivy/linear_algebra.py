@@ -404,20 +404,20 @@ def diagonal(
                         [7., 8.]]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
-    ivy.array([[1.,4.],
-               [5.,8.]])
+    ivy.array([[1., 4.],
+               [5., 8.]])
 
-    >>> y = ivy.arange(9).reshape((3,3))
+    >>> y = ivy.arange(9).reshape((3, 3))
     >>>print(y)
     ivy.array([[0, 1, 2],
                [3, 4, 5],
                [6, 7, 8]], dtype=int32)
 
-    >>> d = ivy.diagonal(y,-1)
+    >>> d = ivy.diagonal(y, -1)
     >>> print(d)
     ivy.array([3, 7], dtype=int32)
 
-    >>> y = ivy.arange(27).reshape((3,3,3))
+    >>> y = ivy.arange(27).reshape((3, 3, 3))
     >>> print(y)
     ivy.array([[[ 0,  1,  2],
                 [ 3,  4,  5],
@@ -425,32 +425,32 @@ def diagonal(
                [[ 9, 10, 11],
                 [12, 13, 14],
                 [15, 16, 17]],
-              [[18, 19, 20],
-               [21, 22, 23],
-               [24, 25, 26]]], dtype=int32)
+               [[18, 19, 20],
+                [21, 22, 23],
+                [24, 25, 26]]], dtype=int32)
     >>> d = ivy.diagonal(y)
     >>> print(d)
     ivy.array([[ 0,  4,  8],
                [ 9, 13, 17],
                [18, 22, 26]], dtype=int32)
 
-    >>> d = ivy.diagonal(y,1)
+    >>> d = ivy.diagonal(y, 1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]], dtype=int32)
 
-    >>> x = ivy.arange(8).reshape((2,2,2))
+    >>> x = ivy.arange(8).reshape((2, 2, 2))
     >>>print(x)
     ivy.array([[[0, 1],
                 [2, 3]],
                [[4, 5],
                 [6, 7]]], dtype=int32)
-    >>> ivy.diagonal(x,0,0,1)
+    >>> ivy.diagonal(x, 0, 0, 1)
     ivy.array([[0, 6],
                [1, 7]], dtype=int32)
 
-    >>> d = ivy.diagonal(x,1,0,1)
+    >>> d = ivy.diagonal(x, 1, 0, 1)
     >>> print(d)
     ivy.array([[2],
                [3]], dtype=int32)
@@ -459,7 +459,7 @@ def diagonal(
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
-    >>> d = ivy.diagonal(x,1,0,1)
+    >>> d = ivy.diagonal(x, 1, 0, 1)
     >>> print(d)
     ivy.array([[3],
                [4]])
@@ -474,15 +474,15 @@ def diagonal(
                [5.,8.]])
 
     >>> x = ivy.native_array([[[ 0,  1,  2],\
-                                 [ 3,  4,  5],\
-                                 [ 6,  7,  8]],\
-                                [[ 9, 10, 11],\
-                                 [12, 13, 14],\
-                                 [15, 16, 17]],\
-                                [[18, 19, 20],\
-                                 [21, 22, 23],\
-                                 [24, 25, 26]]])
-    >>> d = ivy.diagonal(x,1,1,-1)
+                               [ 3,  4,  5],\
+                               [ 6,  7,  8]],\
+                              [[ 9, 10, 11],\
+                               [12, 13, 14],\
+                               [15, 16, 17]],\
+                              [[18, 19, 20],\
+                               [21, 22, 23],\
+                               [24, 25, 26]]])
+    >>> d = ivy.diagonal(x, 1, 1, -1)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]])
@@ -495,10 +495,10 @@ def diagonal(
     >>> ivy.diagonal(x)
     ivy.array([0, 4, 8], dtype=int32)
 
-    >>> ivy.diagonal(ivy.flip(x,1)) # horizontal flip
+    >>> ivy.diagonal(ivy.flip(x, 1)) # horizontal flip
     ivy.array([2, 4, 6], dtype=int32)
 
-    >>> ivy.diagonal(ivy.flip(x,0)) # vertical flip
+    >>> ivy.diagonal(ivy.flip(x, 0)) # vertical flip
     ivy.array([6, 4, 2], dtype=int32)
 
     With :code:`ivy.Container` input:
@@ -515,19 +515,19 @@ def diagonal(
     >>> d = ivy.diagonal(x)
     >>> print(d)
     {
-        a: ivy.array([0,4,8])
+        a: ivy.array([0, 4, 8])
     }
 
     Instance Method Examples
     ------------------------
     Using :code:`ivy.Array` instance method:
 
-    >>> x = ivy.array([[1,2,3], [4,5,6], [7,8,9]])
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     >>> d = x.diagonal()
     >>> print(d)
     ivy.array([1, 5, 9])
 
-    >>> d = ivy.flip(x,1).diagonal() # horizontal flip
+    >>> d = ivy.flip(x, 1).diagonal() # horizontal flip
     >>> print(d)
     ivy.array([3, 5, 7])
 
@@ -535,18 +535,18 @@ def diagonal(
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
-    >>> d = x.diagonal(0,0,1)
+    >>> d = x.diagonal(0, 0, 1)
     ivy.array([[1, 7],
                [2, 8]])
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a = ivy.array([[ 0,  1,  2],\
-                                         [ 3,  4,  5],\
-                                         [ 6,  7,  8]]))
+    >>> x = ivy.Container(a = ivy.array([[0, 1, 2],\
+                                         [3, 4, 5],\
+                                         [6, 7, 8]]))
     >>> d = x.diagonal()
     {
-        a: ivy.array([0,4,8])
+        a: ivy.array([0, 4, 8])
     }
     """
     return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
