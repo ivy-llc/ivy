@@ -581,10 +581,10 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     True
     
     >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                   [-4.4, -5.5, -6.6]])
+                       [-4.4, -5.5, -6.6]])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    ivy.to_list([ 1.1, 2.2, 3.3], [-4.4, -5.5, -6.6])
+    ivy.to_list([1.1, 2.2, 3.3], [-4.4, -5.5, -6.6])
     
     >>> print(isinstance(y, list))
     True
@@ -595,7 +595,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
                         [1, 0, -1]]])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    ivy.to_list([[[-1 0 1], [1 0 -1]], [[1 -1 0], [1 0 -1]]])
+    ivy.to_list([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
     
     >>> print(isinstance(y, list))
     True
@@ -605,24 +605,25 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.native_array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    ivy.to_list([-1 0 1])
+    ivy.to_list([-1, 0, 1])
     
     >>> print(isinstance(y, list))
     True
     
     >>> x = ivy.native_array([[-1, 0, 1], \
                                [-1, 0, 1], \
-                               [1,0,-1]])
+                               [1,0, -1]])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    ivy.list([[-1 0 1], [-1 0 1], [1 0 -1]])
+    ivy.list([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]])
+
     >>> print(isinstance(y, list))
     True
     
-    >>> x = ivy.native_array([[[-1 0 1], \
-                               [1 0 -1]], \
-                              [[1 -1 0], \
-                               [1 0 -1]]])
+    >>> x = ivy.native_array([[[-1, 0, 1], \
+                               [1, 0, -1]], \
+                              [[1, -1, 0], \
+                               [1, 0, -1]]])
     >>> y = ivy.to_list(x)
     >>> print(y)
     ivy.list([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
@@ -636,22 +637,22 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
-        a: ivy.to_list([-1 0 1])
+        a: ivy.to_list([-1, 0, 1])
     }
     
-    >>> x = ivy.Container(a=ivy.array([[-1 0 1], \
-                                     [-1 0 1], \
-                                     [1 0 -1]]))
+    >>> x = ivy.Container(a=ivy.array([[-1, 0, 1], \
+                                     [-1, 0, 1], \
+                                     [1, 0, -1]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: ivy.to_list([[-1, 0, 1], [-1, 0, 1], [1,0,-1]])
     }
     
-    >>> x = ivy.Container(a=ivy.array([[[-1 0 1], \
-                                      [1 0 -1]], \
-                                     [[1 -1 0], \
-                                    [1 0 -1]]])
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1], \
+                                      [1, 0, -1]], \
+                                     [[1, -1, 0], \
+                                    [1, 0, -1]]])
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
@@ -664,7 +665,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
-        a: ivy.to_list([-1 0 1])
+        a: ivy.to_list([-1, 0, 1])
     }
     
     >>> x = ivy.Container(a=ivy.native_array([[-1 0 1], \
@@ -673,7 +674,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
-        a: ivy.to_list([[-1, 0, 1], [-1, 0, 1], [1,0,-1]]))
+        a: ivy.to_list([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]))
     }
     
     >>> x = ivy.Container(a=ivy.native_array([[[-1 0 1], \
@@ -718,7 +719,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = x.to_list()
     >>> print(y)
     {
-        a: ivy.to_list([-1 0 1])
+        a: ivy.to_list([-1, 0, 1])
     }
 
     """
