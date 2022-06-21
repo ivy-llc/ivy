@@ -394,6 +394,8 @@ def diagonal(
     >>> print(d)
     ivy.array([1., 4.])
 
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.]])
     >>> d = ivy.diagonal(x, 1)
     >>> print(d)
     ivy.array([1.])
