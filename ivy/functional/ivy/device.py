@@ -559,10 +559,10 @@ def unset_default_device() -> None:
     
     >>> ivy.set_default_device("gpu:0")
     >>> ivy.default_device()
-    device(type="gpu:0")
+    "gpu:0"
     >>> ivy.unset_default_device()
     >>> ivy.default_device()
-    device(type="cpu")
+    "cpu"
 
     """
     global default_device_stack
