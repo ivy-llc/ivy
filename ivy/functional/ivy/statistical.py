@@ -611,14 +611,14 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
     Using :code: 'ivy.Array' instance method:
     
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-    >>> y = ivy.x.einsum(ii)
+    >>> y = x.einsum('ii')
     ivy.array(12)
 
     Using :code: 'ivy.Container' instance method:
     
     >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
                           b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
-    >>> y = x.einsum(ii)
+    >>> y = x.einsum('ii')
     >>> print(y)
     {
         a: ivy.array(2, dtype=float32),
