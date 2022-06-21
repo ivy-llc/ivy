@@ -6,6 +6,12 @@ from typing import Union, Optional
 import ivy
 
 
+def _cast_for_unary_op(x):
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x)
+    return x
+
+
 def _cast_for_binary_op(x1, x2):
     if isinstance(x1, torch.Tensor):
         if isinstance(x2, torch.Tensor):
@@ -274,6 +280,7 @@ sin.unsupported_dtypes = tuple([ivy.float16])
 def negative(
     x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.neg(x, out=out)
 
 
@@ -318,7 +325,8 @@ sinh.unsupported_dtypes = tuple([ivy.float16])
 def positive(
     x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.positive(x, out=out)
+    x = _cast_for_unary_op(x)
+    return torch.positive(x)
 
 
 def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -361,6 +369,7 @@ trunc.unsupported_dtypes = tuple([ivy.float16])
 def abs(
     x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.abs(x, out=out)
 
 
