@@ -53,41 +53,31 @@ def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
-def bitwise_and(
-    x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
-) -> JaxArray:
+def bitwise_and(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_and(x1, x2)
 
 
-def bitwise_invert(x: Union[int, bool, JaxArray]) -> JaxArray:
+def bitwise_invert(x: Union[int, JaxArray]) -> JaxArray:
     return jnp.bitwise_not(x)
 
 
-def bitwise_left_shift(
-    x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
-) -> JaxArray:
+def bitwise_left_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.left_shift(x1, x2)
 
 
-def bitwise_or(
-    x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
-) -> JaxArray:
+def bitwise_or(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_or(x1, x2)
 
 
-def bitwise_right_shift(
-    x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
-) -> JaxArray:
+def bitwise_right_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.right_shift(x1, x2)
 
 
-def bitwise_xor(
-    x1: Union[int, bool, JaxArray], x2: Union[int, bool, JaxArray]
-) -> JaxArray:
+def bitwise_xor(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_xor(x1, x2)
 
