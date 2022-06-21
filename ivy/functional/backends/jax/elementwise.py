@@ -202,8 +202,6 @@ def logical_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 
 def multiply(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.multiply(x1, x2)
 
 
@@ -212,8 +210,6 @@ def negative(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if isinstance(x2, int):
-    #     x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.not_equal(x1, x2)
 
 
@@ -222,10 +218,6 @@ def positive(x: Union[float, JaxArray]) -> JaxArray:
 
 
 def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-    #     promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-    #     x1 = x1.astype(promoted_type)
-    #     x2 = x2.astype(promoted_type)
     return jnp.power(x1, x2)
 
 
@@ -263,10 +255,6 @@ def square(x: JaxArray) -> JaxArray:
 
 
 def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-    #     promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-    #     x1 = x1.astype(promoted_type)
-    #     x2 = x2.astype(promoted_type)
     return jnp.subtract(x1, x2)
 
 
