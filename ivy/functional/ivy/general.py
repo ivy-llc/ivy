@@ -1079,31 +1079,31 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0., 2., 3.])
+    >>> x = ivy.array([1., 2., 3.])
     >>> print(ivy.shape_to_tuple(x))
-    (ivy.array(0., dev=gpu:0), ivy.array(2., dev=gpu:0), ivy.array(3., dev=gpu:0))
+    (ivy.array(1., dev=gpu:0), ivy.array(2., dev=gpu:0), ivy.array(3., dev=gpu:0))
 
-    >>> x = ivy.array([[0., 2., 3.], [4., 5., 6.]])
+    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> print(ivy.shape_to_tuple(x))
-    (ivy.array([0., 2., 3.], dev=gpu:0), ivy.array([4., 5., 6.], dev=gpu:0))
+    (ivy.array([1., 2., 3.], dev=gpu:0), ivy.array([4., 5., 6.], dev=gpu:0))
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0., 2., 3.])
+    >>> x = ivy.native_array([1., 2., 3.])
     >>> print(ivy.shape_to_tuple(x))
-    (tensor(0., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0')) # noqa
+    (tensor(1., device='cuda:0'), tensor(2., device='cuda:0'), tensor(3., device='cuda:0')) # noqa
 
-    >>> x = ivy.native_array([[0., 2., 3.], [4., 5., 6.]])
+    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]])
     >>> print(ivy.shape_to_tuple(x))
-    (tensor([0., 2., 3.], device='cuda:0'), tensor([4., 5., 6.], device='cuda:0'))
+    (tensor([1., 2., 3.], device='cuda:0'), tensor([4., 5., 6.], device='cuda:0'))
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 2., 3.]))
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]))
     >>> print(ivy.shape_to_tuple(x))
     ('a',)
 
-    >>> x = ivy.Container(a=ivy.array([0., 2., 3.]), b=ivy.array([4., 5., 6.]))
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
     >>> print(ivy.shape_to_tuple(x))
     ('a', 'b')
 
