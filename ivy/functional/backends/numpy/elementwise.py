@@ -21,8 +21,8 @@ def _cast_for_binary_op(x1, x2):
         else:
             x2 = np.asarray(x2, dtype=x1.dtype)
     return x1, x2
-    
-    
+
+
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
 def _handle_0_dim_output(function: Callable) -> Callable:
@@ -52,26 +52,18 @@ def pow(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.power(x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out)
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.power(x1, x2, out=out)
 
 
 @_handle_0_dim_output
 def bitwise_xor(
-    x1: Union[int, np.ndarray],
-    x2: Union[int, np.ndarray],
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.bitwise_xor(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_xor(x1, x2, out=out)
 
 
@@ -87,24 +79,19 @@ def expm1(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def bitwise_invert(
-    x: Union[int, np.ndarray], *, out: Optional[np.ndarray] = None
+    x: Union[int, bool, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.invert(x, out=out)
 
 
 @_handle_0_dim_output
 def bitwise_and(
-    x1: Union[int, np.ndarray],
-    x2: Union[int, np.ndarray],
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.bitwise_and(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_and(x1, x2, out=out)
 
 
@@ -155,12 +142,7 @@ def multiply(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.multiply(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.multiply(x1, x2, out=out)
 
 
@@ -273,13 +255,7 @@ def divide(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            promoted_type = np.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
-            return np.divide(x1, x2, out=out)
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.divide(x1, x2, out=out)
 
 
@@ -348,12 +324,7 @@ def floor_divide(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.floor_divide(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.floor_divide(x1, x2, out=out)
 
 
@@ -381,12 +352,7 @@ def remainder(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.remainder(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.remainder(x1, x2, out=out)
 
 
@@ -403,17 +369,12 @@ def round(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 @_handle_0_dim_output
 def bitwise_or(
-    x1: Union[int, np.ndarray],
-    x2: Union[int, np.ndarray],
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.bitwise_or(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_or(x1, x2, out=out)
 
 
@@ -440,12 +401,7 @@ def subtract(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.subtract(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.subtract(x1, x2, out=out)
 
 
@@ -464,33 +420,23 @@ def logaddexp(
 
 @_handle_0_dim_output
 def bitwise_right_shift(
-    x1: Union[int, np.ndarray],
-    x2: Union[int, np.ndarray],
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.right_shift(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
 
 @_handle_0_dim_output
 def bitwise_left_shift(
-    x1: Union[int, np.ndarray],
-    x2: Union[int, np.ndarray],
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            return np.left_shift(
-                x1, x2, dtype=np.promote_types(x1.dtype, x2.dtype), out=out
-            )
-        x2 = np.asarray(x2, dtype=x1.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
 
