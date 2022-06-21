@@ -75,7 +75,7 @@ def all(
     ivy.array([ False])
 
     >>> x=ivy.array((False,False))
-    >>> y=ivy.all(ivy.array([[0, 4],[1, 5]]) axis=(0,1), out=x, keepdims=False)
+    >>> y=ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
 
