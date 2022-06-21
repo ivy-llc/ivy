@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
@@ -177,76 +176,6 @@ def test_dtype_bits(
         instance_method,
         fw,
         "dtype_bits",
-        x=x,
-    )
-
-
-# dtype_from_str
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(1, 1),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
-)
-def test_dtype_from_str(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "dtype_from_str",
-        x=x,
-    )
-
-
-# dtype_to_str
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    num_positional_args=st.integers(1, 1),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
-)
-def test_dtype_to_str(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "dtype_to_str",
         x=x,
     )
 

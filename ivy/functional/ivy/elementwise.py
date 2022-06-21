@@ -4,13 +4,18 @@ from typing import Optional, Union
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import handle_out_argument, to_native_arrays_and_back
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def bitwise_left_shift(
@@ -42,9 +47,10 @@ def bitwise_left_shift(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def add(
@@ -260,11 +266,12 @@ def add(
     }
 
     """
-    return _cur_backend(x1, x2).add(x1, x2, out=out)
+    return current_backend(x1, x2).add(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bitwise_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -272,8 +279,12 @@ def bitwise_xor(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
-    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
-    array ``x2``.
+    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input   
+    array ``x2``.   
+
+    **Special cases**   
+
+    This function does not take floating point operands
 
     Parameters
     ----------
@@ -292,12 +303,145 @@ def bitwise_xor(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([2, 0, 2])
+
+    >>> a = ivy.array([78, 91, 23])
+    >>> b = ivy.array([66, 77, 88])
+    >>> ivy.bitwise_xor(a, b, out=y)
+    >>> print(y)
+    ivy.array([12, 22, 79])
+ 
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> ivy.bitwise_xor(a, b, out = a)
+    >>> print(a)
+    ivy.array([2, 0, 2])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> a = ivy.native_array([0, 1, 3, 67, 91])
+    >>> b = ivy.native_array([4, 7, 90, 89, 98])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([[ 4, 6, 89, 26, 57]])
+   
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:  
+
+    >>> a = ivy.array([0, 1, 3, 67, 91])
+    >>> a = ivy.native_array([4, 7, 90, 89, 98])
+    >>> y = ivy.bitwise_xor(a, b)
+    >>> print(y)
+    ivy.array([[4, 6, 89, 26, 57]])
+
+    With :code: `ivy.Container` input:  
+
+    >>> x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>> z = ivy.bitwise_xor(x, y)
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
+    b = ivy.array([78, 34]))
+    >>> y = ivy.array([12, 13]])
+    >>> z = ivy.bitwise_xor(x, y)
+    >>> print(z)
+    {
+    a: ivy.array([-79, 24])
+    b: ivy.array([6, 74])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code: `ivy.Array` instance method:
+
+    >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
+    >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
+    >>> y = a.bitwise_xor(b)
+    >>> print(y)
+    ivy.array([[74, 41, 59], 
+    [24, 5, 7]])
+    
+    Using :code:`ivy.Container` instance method:
+
+    >>>x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>>z = x.bitwise_xor(y)
+    >>>print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    } 
+    
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:  
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([3, 2, 1])
+    >>> y = a ^ b
+    >>> print(y)
+    ivy.array([2, 0, 2])
+
+    With :code:`ivy.Container` instances:   
+
+    >>> x = ivy.Container(a = ivy.array([89]), \
+    b = ivy.array([90]))
+    >>> y = ivy.container(a = ivy.array([12])), \
+    b = ivy.array([78]))
+    >>> z = x ^ y
+    >>> print(z)
+    {
+    a:ivy.array([20])
+    b:ivy.array([85])
+    }   
+    
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
+    b = ivy.array([78, 34]))
+    >>> y = ivy.array([12, 13]])
+    >>> z = x ^ y
+    >>> print(z)
+    {
+    a: ivy.array([-79, 24])
+    b: ivy.array([6, 74])
+    }   
     """
-    return _cur_backend(x1, x2).bitwise_xor(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -341,11 +485,12 @@ def exp(
     ivy.array([2.7182817, 7.389056, 20.085537])
 
     """
-    return _cur_backend(x).exp(x, out=out)
+    return current_backend(x).exp(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -387,11 +532,12 @@ def expm1(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).expm1(x, out=out)
+    return current_backend(x).expm1(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -421,11 +567,12 @@ def bitwise_invert(
     ivy.array([-2, -7, -10])
 
     """
-    return _cur_backend(x).bitwise_invert(x, out=out)
+    return current_backend(x).bitwise_invert(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bitwise_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -454,11 +601,12 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_and(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -500,11 +648,12 @@ def ceil(
     >>> print(y)
     ivy.array([1., 0., -0.])
     """
-    return _cur_backend(x).ceil(x, out=out)
+    return current_backend(x).ceil(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -609,11 +758,12 @@ def floor(
         b: ivy.array([3., -5., 1.])
     }
     """
-    return _cur_backend(x).floor(x, out=out)
+    return current_backend(x).floor(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -638,11 +788,12 @@ def isfinite(
         ``bool``.
 
     """
-    return _cur_backend(x).isfinite(x, out=out)
+    return current_backend(x).isfinite(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -678,11 +829,12 @@ def asin(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asin(x, out=out)
+    return current_backend(x).asin(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -707,11 +859,12 @@ def isinf(
         a data type of bool.
 
     """
-    return _cur_backend(x).isinf(x, out=out)
+    return current_backend(x).isinf(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def greater(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -743,11 +896,12 @@ def greater(
     ivy.array([False, False,  True])
 
     """
-    return _cur_backend(x1, x2).greater(x1, x2, out=out)
+    return current_backend(x1, x2).greater(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -907,11 +1061,12 @@ def greater_equal(
     }
 
     """
-    return _cur_backend(x1, x2).greater_equal(x1, x2, out=out)
+    return current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -936,11 +1091,12 @@ def less_equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).less_equal(x1, x2, out=out)
+    return current_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1003,11 +1159,12 @@ def multiply(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).multiply(x1, x2, out=out)
+    return current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1044,11 +1201,12 @@ def asinh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).asinh(x, out=out)
+    return current_backend(x).asinh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1078,11 +1236,12 @@ def sign(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).sign(x, out=out)
+    return current_backend(x).sign(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1118,11 +1277,12 @@ def sqrt(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sqrt(x, out=out)
+    return current_backend(x).sqrt(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1216,11 +1376,12 @@ def cosh(
         b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
     }
     """
-    return _cur_backend(x).cosh(x, out=out)
+    return current_backend(x).cosh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1256,11 +1417,12 @@ def log(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log(x, out=out)
+    return current_backend(x).log(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1296,11 +1458,12 @@ def log2(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log2(x, out=out)
+    return current_backend(x).log2(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1336,11 +1499,12 @@ def log10(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).log10(x, out=out)
+    return current_backend(x).log10(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1363,11 +1527,12 @@ def log1p(
         a new array containing the evaluated result for each element in x.
 
     """
-    return _cur_backend(x).log1p(x, out=out)
+    return current_backend(x).log1p(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1392,11 +1557,12 @@ def isnan(
         ``bool``.
 
     """
-    return _cur_backend(x).isnan(x, out=out)
+    return current_backend(x).isnan(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def less(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1430,11 +1596,12 @@ def less(
     ivy.array([True, False, False])
 
     """
-    return _cur_backend(x1).less(x1, x2, out=out)
+    return current_backend(x1).less(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1477,11 +1644,12 @@ def cos(
     ivy.array([1., 0.54, -0.416])
 
     """
-    return _cur_backend(x).cos(x, out=out)
+    return current_backend(x).cos(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1515,11 +1683,12 @@ def acos(
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acos(x, out=out)
+    return current_backend(x).acos(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1549,11 +1718,12 @@ def logical_not(
         data type of ``bool``.
 
     """
-    return _cur_backend(x).logical_not(x, out=out)
+    return current_backend(x).logical_not(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1582,11 +1752,12 @@ def logical_xor(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logical_xor(x1, x2, out=out)
+    return current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1621,11 +1792,12 @@ def logical_or(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).logical_or(x1, x2, out=out)
+    return current_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def logical_and(
     x1: ivy.Array,
     x2: ivy.Array,
@@ -1653,11 +1825,12 @@ def logical_and(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).logical_and(x1, x2, out=out)
+    return current_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1693,11 +1866,12 @@ def acosh(
         :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).acosh(x, out=out)
+    return current_backend(x).acosh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1732,11 +1906,12 @@ def sin(
         have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sin(x, out=out)
+    return current_backend(x).sin(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def negative(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1842,11 +2017,12 @@ def negative(
     }
 
     """
-    return _cur_backend(x).negative(x, out=out)
+    return current_backend(x).negative(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def not_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1874,11 +2050,12 @@ def not_equal(
         data type of ``bool``.
 
     """
-    return _cur_backend(x1, x2).not_equal(x1, x2, out=out)
+    return current_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def floor_divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1904,11 +2081,12 @@ def floor_divide(
         numeric data type.
 
     """
-    return _cur_backend(x1, x2).floor_divide(x1, x2, out=out)
+    return current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bitwise_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1937,11 +2115,12 @@ def bitwise_or(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).bitwise_or(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1977,11 +2156,12 @@ def sinh(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).sinh(x, out=out)
+    return current_backend(x).sinh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def positive(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2000,11 +2180,12 @@ def positive(
         A new array with the positive value of each element in ``x``.
 
     """
-    return _cur_backend(x).positive(x, out=out)
+    return current_backend(x).positive(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2023,11 +2204,12 @@ def square(
         an array containing the evaluated result for each element in ``x``.
 
     """
-    return _cur_backend(x).square(x, out=out)
+    return current_backend(x).square(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2066,34 +2248,126 @@ def logaddexp(
         floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).logaddexp(x1, x2, out=out)
+    return current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+# ToDo: compare the examples against special case for zeros.
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds the values of an array to the nearest integer, element-wise.
+    """Rounds each element ``x_i`` of the input array ``x`` to the nearest integer-valued number.
+
+    **Special cases**
+
+    - If ``x_i`` is already an integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If two integers are equally close to ``x_i``, the result is
+      the even integer closest to ``x_i``.
 
     Parameters
     ----------
     x
-        Input array containing elements to round.
+        input array containing elements to round.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([1.2, 2.4, 3.6])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([1., 2., 4.], dtype=float32)
+
+    >>> x = ivy.array([-0, 5, 4.5])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([0., 5., 4.], dtype=float32)
+
+    >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.round(x, out=y)
+    >>> print(y)
+    ivy.array([ 2.,  2., 15., -5.], dtype=float32)
+
+    >>> x = ivy.array([[0, 5.433, -343.3, 1.5], \
+                      [-5.5, 44.2, 11.5, 12.01]])
+    >>> ivy.round(x, out=x)
+    >>> print(x)
+    ivy.array([[   0.,    5., -343.,    2.],
+               [  -6.,   44.,   12.,   12.]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.NativeArray([20.2, 30.5, -5.81])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([20., 30., -6.], dtype=float32)
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                  b=ivy.array([-300.9, -527.3, 4.5]))
+    >>> y = ivy.round(x)
+    >>> print(y)
+    {
+        a: ivy.array([4., 9., 7., 0.], dtype=float32),
+        b: ivy.array([-301., -527., 4.], dtype=float32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([5.4, 1.2, 2.3])
+    >>> y = x.round()
+    >>> print(y)
+    ivy.array([5., 1., 2.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0.3, 1.5, 201.5]), b=ivy.array([3.6, 4.4, -5.2]))
+    >>> y = x.round()
+    >>> print(y)
+    {
+        a: ivy.array([0., 2., 202.]),
+        b: ivy.array([4., 4., -5.])
+    }
+
     """
-    return _cur_backend(x).round(x, out=out)
+    return current_backend(x).round(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2126,11 +2400,12 @@ def trunc(
         The returned array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).trunc(x, out=out)
+    return current_backend(x).trunc(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def abs(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2167,11 +2442,12 @@ def abs(
         array must have the same data type as ``x``.
 
     """
-    return _cur_backend(x).abs(x, out=out)
+    return current_backend(x).abs(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2280,6 +2556,7 @@ def tan(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2317,11 +2594,12 @@ def atan(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x).atan(x, out=out)
+    return current_backend(x).atan(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2404,11 +2682,12 @@ def atan2(
         array must have a floating-point data type.
 
     """
-    return _cur_backend(x1).atan2(x1, x2, out=out)
+    return current_backend(x1).atan2(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2427,11 +2706,12 @@ def tanh(
         A new array with the hyperbolic tangent of the elements of x.
 
     """
-    return _cur_backend(x).tanh(x, out=out)
+    return current_backend(x).tanh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2459,11 +2739,12 @@ def atanh(
     ivy.array([0., -0.549])
 
     """
-    return _cur_backend(x).atanh(x, out=out)
+    return current_backend(x).atanh(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def subtract(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2490,11 +2771,12 @@ def subtract(
         an array containing the element-wise differences.
 
     """
-    return _cur_backend(x1).subtract(x1, x2, out=out)
+    return current_backend(x1).subtract(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def divide(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2519,11 +2801,12 @@ def divide(
         floating-point data type determined by Type Promotion Rules.
 
     """
-    return _cur_backend(x1, x2).divide(x1, x2, out=out)
+    return current_backend(x1, x2).divide(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2607,11 +2890,12 @@ def pow(
         data type determined by :ref:`type-promotion`.
 
     """
-    return _cur_backend(x1, x2).pow(x1, x2, out=out)
+    return current_backend(x1, x2).pow(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def remainder(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2688,11 +2972,12 @@ def remainder(
         data type determined by :ref:`Type Promotion Rules`.
 
     """
-    return _cur_backend(x1, x2).remainder(x1, x2, out=out)
+    return current_backend(x1, x2).remainder(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def bitwise_right_shift(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2732,11 +3017,12 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 0, 0, 0])
     """
-    return _cur_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
+    return current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2761,7 +3047,7 @@ def equal(
         data type of bool.
 
     """
-    return _cur_backend(x1, x2).equal(x1, x2, out=out)
+    return current_backend(x1, x2).equal(x1, x2, out=out)
 
 
 # Extra #
@@ -2770,6 +3056,7 @@ def equal(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2788,11 +3075,12 @@ def erf(
         The Gauss error function of x.
 
     """
-    return _cur_backend(x).erf(x, out=out)
+    return current_backend(x).erf(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2897,11 +3185,12 @@ def minimum(
     ivy.array([1, 4, 5])
 
     """
-    return _cur_backend(x1).minimum(x1, x2, out=out)
+    return current_backend(x1).minimum(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -3007,4 +3296,4 @@ def maximum(
     ivy.array([3, 7, 8])
 
     """
-    return _cur_backend(x1).maximum(x1, x2, out=out)
+    return current_backend(x1).maximum(x1, x2, out=out)

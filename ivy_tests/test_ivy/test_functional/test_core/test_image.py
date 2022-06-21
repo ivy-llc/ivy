@@ -53,7 +53,7 @@ def test_stack_images(
 @given(
     shape=helpers.list_of_length(st.integers(min_value=2, max_value=8), 2),
     num_samples=st.integers(min_value=2, max_value=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="linear_resample"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -71,7 +71,7 @@ def test_linear_resample(
 ):
     if fw == "torch" and input_dtype == "float16":
         return
-    x = ivy_np.random_normal(shape=shape)
+    x = ivy_np.random_normal(shape=shape, device=ivy.default_device())
     axis = random.randint(0, len(shape) - 1)
     helpers.test_array_function(
         input_dtype,
@@ -142,7 +142,14 @@ def test_bilinear_resample(
     container=st.booleans(),
 )
 def test_gradient_image(
-    shape, input_dtype, as_variable, num_positional_args, native_array, container, fw, device
+    shape,
+    input_dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+    device,
 ):
     if fw == "torch" and input_dtype == "float16":
         return

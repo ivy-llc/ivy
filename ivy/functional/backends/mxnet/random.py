@@ -2,7 +2,7 @@
 
 # global
 import mxnet as mx
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 import ivy
@@ -83,8 +83,10 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    shape: Union[int, Sequence[int]],
+    *,
+    device: mx.context.Context,
+    out: Optional[mx.nd.NDArray],
 ) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = int(low.asscalar())
