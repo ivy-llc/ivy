@@ -372,6 +372,7 @@ def zeros_like(
         return torch.zeros_like(x, dtype=dtype, device=as_native_dev(device))
     return torch.zeros_like(x, device=as_native_dev(device))
 
+
 def from_numpy(x):
     return torch.from_numpy(x)
 
