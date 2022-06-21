@@ -9,6 +9,63 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+def _flat_array_to_1_dim_array(x):
+    return x.reshape((1,)) if x.shape == () else x
+
+
+# Array API Standard #
+# -------------------#
+
+
+def concat(
+    xs: List[JaxArray], axis: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    is_tuple = type(xs) is tuple
+
+    if axis is None:
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            if xs[i].shape == ():
+                xs[i] = jnp.ravel(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+
+    ret = jnp.concatenate(xs, axis)
+    return ret
+
+
+def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+    try:
+        ret = jnp.expand_dims(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    except ValueError as error:
+        raise IndexError(error)
+
+
+def flip(
+    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+) -> JaxArray:
+    ret = jnp.flip(x, axis=axis)
+    return ret
+
+
+def permute_dims(
+    x: JaxArray, axes: Tuple[int, ...], out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.transpose(x, axes)
+    return ret
+
+
+def reshape(
+    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+) -> JaxArray:
+    ret = jnp.reshape(x, shape)
+    return ret
+
+
 def roll(
     x: JaxArray,
     shift: Union[int, Tuple[int, ...]],
@@ -29,66 +86,12 @@ def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxA
     return ret
 
 
-def _flat_array_to_1_dim_array(x):
-    return x.reshape((1,)) if x.shape == () else x
-
-
-# noinspection PyShadowingBuiltins
-def flip(
-    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
-) -> JaxArray:
-    ret = jnp.flip(x, axis=axis)
-    return ret
-
-
-def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    try:
-        ret = jnp.expand_dims(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
-    except ValueError as error:
-        raise IndexError(error)
-
-
 def stack(
     x: Union[Tuple[JaxArray], List[JaxArray]], axis: Optional[int] = None
 ) -> JaxArray:
     if axis is None:
         axis = 0
     ret = jnp.stack(x, axis=axis)
-    return ret
-
-
-def permute_dims(
-    x: JaxArray, axes: Tuple[int, ...], out: Optional[JaxArray] = None
-) -> JaxArray:
-    ret = jnp.transpose(x, axes)
-    return ret
-
-
-def reshape(
-    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
-) -> JaxArray:
-    ret = jnp.reshape(x, shape)
-    return ret
-
-
-def concat(
-    xs: List[JaxArray], axis: int = 0, out: Optional[JaxArray] = None
-) -> JaxArray:
-    is_tuple = type(xs) is tuple
-
-    if axis is None:
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            if xs[i].shape == ():
-                xs[i] = jnp.ravel(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-
-    ret = jnp.concatenate(xs, axis)
     return ret
 
 
