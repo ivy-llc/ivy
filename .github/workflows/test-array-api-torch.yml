@@ -1,10 +1,5 @@
 name: test-array-api-torch
-on:
-  push:
-  pull_request:
-    types: [unlabeled, opened, reopened, edited]
-  workflow_dispatch:
-
+on: [push, pull_request, workflow_dispatch]
 jobs:
   run-torch-array-api-tests:
     runs-on: ubuntu-latest
