@@ -1,16 +1,9 @@
 name: test-numpy-style-docstrings
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    types: [opened, labeled]
-
+on: [push, pull_request]
 
 jobs:
   run-docstring-tests:
-    if: ${{ github.event.label.name == 'Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
