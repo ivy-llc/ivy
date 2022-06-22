@@ -498,10 +498,10 @@ def reptile_step(
     inner_grad_steps,
     inner_learning_rate,
     inner_optimization_step=gradient_descent_update,
-    batched=True,
-    return_inner_v=False,
+    batched: Optional[bool] = True,
+    return_inner_v: Optional[bool] = False,
     num_tasks=None,
-    stop_gradients=True,
+    stop_gradients: Optional[bool] = True,
 ):
     """Perform step of Reptile.
 
@@ -587,15 +587,15 @@ def maml_step(
     inner_optimization_step=gradient_descent_update,
     inner_batch_fn=None,
     outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
+    average_across_steps: Optional[bool] = False,
+    batched: Optional[bool] = True,
     inner_v=None,
-    keep_inner_v=True,
+    keep_inner_v: Optional[bool] = True,
     outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
+    keep_outer_v: Optional[bool] = True,
+    return_inner_v: Optional[bool] = False,
     num_tasks=None,
-    stop_gradients=True,
+    stop_gradients: Optional[bool] = True,
 ):
     """Perform step of vanilla second order MAML.
 
