@@ -566,7 +566,7 @@ def conv3d_transpose(
     ret
         The result of the transpose convolution operation.
 
-    Examples
+    Functional Examples
     --------
     With :code:`ivy.Array` input:
 
@@ -584,6 +584,18 @@ def conv3d_transpose(
     >>> print(y.shape)
     (1, 9, 258, 258, 32)
 
+    With :code: `ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
+    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
+    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
+    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
+    >>> y = ivy.conv3d_transpose(x, filters, strides=2, padding='SAME')
+    >>> print(y['a'].shape)
+    (1, 5, 55, 55, 6)
+    >>> print(y['b'].shape)
+    (1, 5, 55, 55, 6)
+
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
@@ -596,7 +608,7 @@ def conv3d_transpose(
     >>> print(y['b'].shape)
     (1, 10, 10, 10, 32)
 
-    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray` \
+    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
@@ -608,6 +620,29 @@ def conv3d_transpose(
     (1, 10, 10, 10, 64)
     >>> print(y['b'].shape)
     (1, 10, 10, 10, 128)
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])
+    >>> y = x.conv3d_transpose(filters, strides=2, padding='SAME')
+    >>> print(y.shape)
+    (1, 5, 55, 55, 6)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
+    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
+    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
+    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
+    >>> y = x.conv3d_transpose(filters, strides=2, padding='SAME')
+    >>> print(y['a'].shape)
+    (1, 5, 55, 55, 6)
+    >>> print(y['b'].shape)
+    (1, 5, 55, 55, 6)
 
     """
     return _cur_backend(x).conv3d_transpose(
