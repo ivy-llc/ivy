@@ -325,7 +325,7 @@ def floor_divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.floor_divide(x1, x2, out=out)
+    return np.floor(np.divide(x1, x2, out=out))
 
 
 @_handle_0_dim_output
