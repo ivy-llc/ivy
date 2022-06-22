@@ -2,7 +2,7 @@ name: test-array-api-jax
 on:
   push:
   pull_request:
-    types: [opened, reopened, edited,  unlabeled]
+    types: [unlabeled, opened, reopened, edited]
   workflow_dispatch:
 jobs:
   run-jax-array-api-tests:
