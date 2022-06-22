@@ -2,7 +2,7 @@ name: test-ivy
 on:
   push:
   pull_request:
-    types: [opened, reopened, edited,  unlabeled]
+    types: [unlabeled,opened, reopened, edited]
 
 jobs:
   run-nightly-tests:
