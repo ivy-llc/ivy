@@ -22,7 +22,9 @@ from typing import Union, List, Tuple, Optional
 @handle_nestable
 def stack_images(
     images: List[Union[ivy.Array, ivy.NativeArray]],
-    desired_aspect_ratio: Tuple[int, int] = (1, 1)
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Stacks a group of images into a combined windowed image, fitting the desired
     aspect ratio as closely as possible.
@@ -33,6 +35,9 @@ def stack_images(
         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
     desired_aspect_ratio:
         desired aspect ratio of the stacked image
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -118,7 +123,7 @@ def stack_images(
     instances in place of any of the arguments.
 
     """
-    return current_backend(images[0]).stack_images(images, desired_aspect_ratio)
+    return current_backend(images[0]).stack_images(images, desired_aspect_ratio, out=out)
 
 
 @to_native_arrays_and_back
@@ -126,7 +131,9 @@ def stack_images(
 @handle_nestable
 def bilinear_resample(
     x: Union[ivy.Array, ivy.NativeArray],
-    warp: Union[ivy.Array, ivy.NativeArray]
+    warp: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Performs bilinearly re-sampling on input image.
 
@@ -136,6 +143,9 @@ def bilinear_resample(
         Input image *[batch_shape,h,w,dims]*.
     warp
         Warp array *[batch_shape,num_samples,2]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -163,13 +173,16 @@ def bilinear_resample(
         [0.289]]])
 
     """
-    return current_backend(x).bilinear_resample(x, warp)
+    return current_backend(x).bilinear_resample(x, warp, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def gradient_image(
         x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+
 ) -> ivy.Array:
 
     """Computes image gradients (dy, dx) for each channel.
@@ -178,6 +191,9 @@ def gradient_image(
     ----------
     x
         Input image *[batch_shape, h, w, d]* .
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -226,13 +242,15 @@ def gradient_image(
     >>> dy = res['a'][1]
     >>> print(dy)
     """
-    return current_backend(x).gradient_image(x)
+    return current_backend(x).gradient_image(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def float_img_to_uint8_img(
         x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can
     be saved to disk.
@@ -241,6 +259,9 @@ def float_img_to_uint8_img(
     ----------
     x
         Input float image *[batch_shape,h,w]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -267,13 +288,15 @@ def float_img_to_uint8_img(
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = np.frombuffer(x_bytes, np.uint8)
-    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist())
+    return ivy.array(np.reshape(x_uint8, list(x_shape) + [4]).tolist(), out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def uint8_img_to_float_img(
-    x: Union[ivy.Array, ivy.NativeArray]
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Converts an image of uint8 values into a bit-cast float image.
 
@@ -281,6 +304,9 @@ def uint8_img_to_float_img(
     ----------
     x
         Input uint8 image *[batch_shape,h,w,4]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -320,7 +346,7 @@ def uint8_img_to_float_img(
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = np.frombuffer(x_bytes, np.float32)
-    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist())
+    return ivy.array(np.reshape(x_float, x_shape[:-1]).tolist(), out=out)
 
 
 @to_native_arrays_and_back
@@ -330,7 +356,9 @@ def random_crop(
     crop_size: List[int],
     batch_shape: Optional[List[int]] = None,
     image_dims: Optional[List[int]] = None,
-    seed: int = None
+    seed: int = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Randomly crops the input images.
 
@@ -346,6 +374,9 @@ def random_crop(
         Image dimensions. Inferred from inputs in None. (Default value = None)
     seed
         Required for random number generator
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -373,12 +404,11 @@ def random_crop(
     if image_dims is None:
         image_dims = x_shape[-3:-1]
     num_channels = x_shape[-1]
-    flat_batch_size = functools.reduce(operator.mul, batch_shape)
+    flat_batch_size = functools.reduce(operator.mul, [batch_shape], 1)
     crop_size[0] = min(crop_size[-2], x_shape[-3])
     crop_size[1] = min(crop_size[-1], x_shape[-2])
 
     # shapes as list
-    batch_shape = list(batch_shape)
     image_dims = list(image_dims)
     margins = [img_dim - cs for img_dim, cs in zip(image_dims, crop_size)]
 
@@ -400,7 +430,7 @@ def random_crop(
     flat_cropped = ivy.concat(cropped_list, 0)
 
     # BS x NH x NW x F
-    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+    return ivy.reshape(flat_cropped, [batch_shape] + crop_size + [num_channels], out=out)
 
 
 @to_native_arrays_and_back
@@ -409,7 +439,9 @@ def random_crop(
 def linear_resample(
     x: Union[ivy.Array, ivy.NativeArray],
     num_samples: int,
-    axis: int = -1
+    axis: int = -1,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 
@@ -421,6 +453,9 @@ def linear_resample(
         The number of interpolated samples to take.
     axis
         The axis along which to perform the resample. Default is last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -449,4 +484,4 @@ def linear_resample(
                   [0.77, -1.7, -2.25]])
     }
     """
-    return current_backend(x).linear_resample(x, num_samples, axis)
+    return current_backend(x).linear_resample(x, num_samples, axis, out=out)

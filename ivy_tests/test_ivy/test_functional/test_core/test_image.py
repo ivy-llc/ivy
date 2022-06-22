@@ -15,7 +15,7 @@ import ivy.functional.backends.numpy as ivy_np
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
     ratio=st.lists(st.integers(min_value=1, max_value=8), min_size=2, max_size=2),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="stack_images"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -93,7 +93,7 @@ def test_linear_resample(
     h_w=helpers.list_of_length(st.integers(min_value=2, max_value=8), 2),
     n_dims=st.integers(min_value=1, max_value=8),
     n_samples=st.integers(min_value=1, max_value=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="bilinear_resample"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -130,7 +130,7 @@ def test_bilinear_resample(
 # gradient_image
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=4, max_size=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gradient_image"),
     native_array=st.booleans(),
