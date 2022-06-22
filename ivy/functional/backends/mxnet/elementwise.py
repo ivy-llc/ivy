@@ -1,6 +1,7 @@
 # global
 import mxnet as mx
 import math
+from typing import Union
 
 # local
 from ivy.functional.backends.mxnet import (
@@ -9,11 +10,20 @@ from ivy.functional.backends.mxnet import (
 )
 
 
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, mx.nd.NDArray):
+        x1 = mx.nd.array([x1])
+    if not isinstance(x2, mx.nd.NDArray):
+        x2 = mx.nd.array([x2])
+    return x1, x2
+
+
 @_handle_flat_arrays_in_out
 def add(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.add(x1, x2)
 
 
@@ -40,11 +50,11 @@ def floor(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def divide(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.divide(x1, x2)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.divide(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -133,9 +143,12 @@ def logical_or(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.N
 
 
 @_handle_flat_arrays_in_out
-def multiply(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.multiply(x1, x2)
-    return ret
+def multiply(
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
+) -> mx.nd.NDArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.multiply(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -209,11 +222,11 @@ def trunc(x: mx.nd.NDArray) -> mx.nd.ndarray.NDArray:
 
 @_handle_flat_arrays_in_out
 def subtract(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.subtract(x1, x2)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.subtract(x1, x2)
 
 
 @_handle_flat_arrays_in_out
