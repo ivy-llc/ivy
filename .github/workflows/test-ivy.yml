@@ -2,10 +2,11 @@ name: test-ivy
 on:
   push:
   pull_request:
-    types: [unlabeled,opened, reopened, edited]
-
+    types: [labeled, opened, reopened, edited]
+  workflow_dispatch:
 jobs:
   run-nightly-tests:
+    if: ${{ github.event.label.name!='Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

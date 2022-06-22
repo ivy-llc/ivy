@@ -1,4 +1,4 @@
-name: test-docstrings
+name: test-numpy-style-docstrings
 on:
   push:
   pull_request:
