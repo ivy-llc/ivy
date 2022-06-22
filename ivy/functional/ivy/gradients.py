@@ -264,7 +264,7 @@ def adam_step(
 @handle_nestable
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
-    effective_grads: Union[ivy.Array, ivy.NativeArray],
+    effective_grad: Union[ivy.Array, ivy.NativeArray],
     lr: Union[float, ivy.Array, ivy.NativeArray],
     inplace=None,
     stop_gradients=True,
@@ -276,7 +276,7 @@ def optimizer_update(
     ----------
     w
         Weights of the function to be updated.
-    effective_grads
+    effective_grad
         Effective gradients of the cost c with respect to the weights ws,
         [dc/dw for w in ws].
     lr
@@ -299,7 +299,7 @@ def optimizer_update(
 
     """
     inplace = ivy.default(inplace, ivy.inplace_variables_supported())
-    deltas = effective_grads * lr
+    deltas = effective_grad * lr
     if inplace:
         w = ivy.inplace_decrement(w, deltas)
     else:

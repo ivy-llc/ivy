@@ -10,7 +10,7 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_optimizer_update(
         w,
-        effective_grads,
+        effective_grad,
         lr,
         inplace=None,
         stop_gradients=True,
@@ -23,7 +23,7 @@ class ContainerWithGradients(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "optimizer_update",
             w,
-            effective_grads,
+            effective_grad,
             lr,
             inplace=inplace,
             stop_gradients=stop_gradients,
@@ -35,7 +35,7 @@ class ContainerWithGradients(ContainerBase):
 
     def optimizer_update(
         self: ivy.Container,
-        effective_grads,
+        effective_grad,
         lr,
         inplace=None,
         stop_gradients=True,
@@ -46,7 +46,7 @@ class ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         return self.static_optimizer_update(
             self,
-            effective_grads,
+            effective_grad,
             lr,
             inplace,
             stop_gradients,
