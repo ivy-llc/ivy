@@ -1,5 +1,7 @@
 #!/bin/bash
 # file to setup documentation building pipeline without docker
+# 1$ : Path to the doc-builder folder relative to the ivy/docs folder
+# $2 : Path to the ivy folder relative to the ivy/docs folder i.e. ../ivy
 
 # install libraries for the doc-builder
 cat $1/requirements.txt | xargs -n 1 pip3 install;
