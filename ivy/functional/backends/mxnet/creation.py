@@ -14,6 +14,29 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 # -------------------#
 
 
+def _linspace(start, stop, num, cont):
+    if num == 1:
+        return start
+    start = mx.nd.array(start).reshape((1,)).astype("float32")
+    stop = mx.nd.array(stop).reshape((1,)).astype("float32")
+    n_m_1 = mx.nd.array(num - 1).reshape((1,)).astype("float32")
+    increment = (stop - start) / n_m_1
+    increment_tiled = mx.nd.tile(increment, num - 1)
+    increments = increment_tiled * mx.nd.array(
+        mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont
+    )
+    ret = mx.nd.concat(start, start + increments, dim=0)
+    return ret
+
+
+def arange(stop, start=0, step=1, dtype=None, device=None):
+    cont = _mxnet_init_context(default_device(device))
+    stop = stop if isinstance(stop, Number) else stop.asscalar()
+    start = start if isinstance(start, Number) else start.asscalar()
+    step = step if isinstance(step, Number) else step.asscalar()
+    return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+
+
 def asarray(
     object_in,
     dtype: Optional[Union[ivy.Dtype, type]] = None,
@@ -42,45 +65,6 @@ def asarray(
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-def zeros(
-    shape: Union[int, Tuple[int], List[int]],
-    *,
-    dtype: type,
-    device: mx.context.Context,
-) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(device)
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(mx.nd.zeros((1,), ctx=cont).astype(dtype))
-    return mx.nd.zeros(shape, ctx=cont).astype(dtype)
-
-
-def ones(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
-) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(default_device(device))
-    shape = [shape] if shape is not isinstance(shape, Iterable) else shape
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
-    return mx.nd.ones(shape, ctx=cont).astype(dtype)
-
-
-def ones_like(
-    x: mx.nd.NDArray,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
-) -> mx.nd.NDArray:
-    if x.shape == ():
-        return mx.nd.array(1.0, ctx=_mxnet_init_context(default_device(device)))
-    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(device)))
-    return mx_ones if dtype is None else mx_ones.astype(dtype)
-
-
-def tril(x: mx.nd.NDArray, k: int = 0) -> mx.nd.NDArray:
-    return mx.np.tril(x, k)
-
-
 def empty(
     shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
@@ -90,19 +74,37 @@ def empty(
     return mx.nd.empty(shape, as_native_dtype(default_dtype(dtype)), cont)
 
 
-def _linspace(start, stop, num, cont):
-    if num == 1:
-        return start
-    start = mx.nd.array(start).reshape((1,)).astype("float32")
-    stop = mx.nd.array(stop).reshape((1,)).astype("float32")
-    n_m_1 = mx.nd.array(num - 1).reshape((1,)).astype("float32")
-    increment = (stop - start) / n_m_1
-    increment_tiled = mx.nd.tile(increment, num - 1)
-    increments = increment_tiled * mx.nd.array(
-        mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont
+def eye(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
+
+# noinspection PyUnresolvedReferences
+def from_dlpack(x):
+    return mx.nd.from_dlpack(x)
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    shape = ivy.shape_to_tuple(shape)
+    cont = _mxnet_init_context(default_device(device))
+    if len(shape) == 0 or 0 in shape:
+        return _1_dim_array_to_flat_array(
+            mx.nd.full(
+                (1,),
+                fill_value,
+                cont,
+                as_native_dtype(default_dtype(dtype, fill_value)),
+            )
+        )
+    return mx.nd.full(
+        shape, fill_value, cont, as_native_dtype(default_dtype(dtype, fill_value))
     )
-    ret = mx.nd.concat(start, start + increments, dim=0)
-    return ret
 
 
 def linspace(start, stop, num, axis=None, device=None):
@@ -132,24 +134,49 @@ def linspace(start, stop, num, axis=None, device=None):
     return res
 
 
-def eye(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+def meshgrid(*xs: mx.nd.NDArray, indexing: Optional[str] = "xy") -> List[mx.nd.NDArray]:
+    # ToDo: implement this without reliance on NumPy backend
+    xs_np = [x.as_np_ndarray() for x in xs]
+    return [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
+
+
+def ones(
+    shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
-    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+    shape = [shape] if shape is not isinstance(shape, Iterable) else shape
+    if len(shape) == 0 or 0 in shape:
+        return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
+    return mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
-# noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype=None, device=None):
-    cont = _mxnet_init_context(default_device(device))
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
-    return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+def ones_like(
+    x: mx.nd.NDArray,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+) -> mx.nd.NDArray:
+    if x.shape == ():
+        return mx.nd.array(1.0, ctx=_mxnet_init_context(default_device(device)))
+    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(device)))
+    return mx_ones if dtype is None else mx_ones.astype(dtype)
+
+
+def tril(x: mx.nd.NDArray, k: int = 0) -> mx.nd.NDArray:
+    return mx.np.tril(x, k)
+
+
+def zeros(
+    shape: Union[int, Tuple[int], List[int]],
+    *,
+    dtype: type,
+    device: mx.context.Context,
+) -> mx.nd.NDArray:
+    cont = _mxnet_init_context(device)
+    if len(shape) == 0 or 0 in shape:
+        return _1_dim_array_to_flat_array(mx.nd.zeros((1,), ctx=cont).astype(dtype))
+    return mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
 
 def zeros_like(x, dtype=None, device=None):
@@ -159,35 +186,9 @@ def zeros_like(x, dtype=None, device=None):
     return mx_zeros if not dtype else mx_zeros.astype(dtype)
 
 
-def full(shape, fill_value, dtype=None, device=None):
-    shape = ivy.shape_to_tuple(shape)
-    cont = _mxnet_init_context(default_device(device))
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(
-            mx.nd.full(
-                (1,),
-                fill_value,
-                cont,
-                as_native_dtype(default_dtype(dtype, fill_value)),
-            )
-        )
-    return mx.nd.full(
-        shape, fill_value, cont, as_native_dtype(default_dtype(dtype, fill_value))
-    )
-
-
-def meshgrid(*xs: mx.nd.NDArray, indexing: Optional[str] = "xy") -> List[mx.nd.NDArray]:
-    # ToDo: implement this without reliance on NumPy backend
-    xs_np = [x.as_np_ndarray() for x in xs]
-    return [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
-
-
-def from_dlpack(x):
-    return mx.nd.from_dlpack(x)
-
-
 # Extra #
 # ------#
+
 
 array = asarray
 
