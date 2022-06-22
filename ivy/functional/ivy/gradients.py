@@ -226,7 +226,7 @@ def adam_step(
 
     Parameters
     ----------
-    dcdw(s)
+    dcdw
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     mw
         running average of the gradients
@@ -274,7 +274,7 @@ def optimizer_update(
 
     Parameters
     ----------
-    w(s)
+    w
         Weights of the function to be updated.
     effective_grads
         Effective gradients of the cost c with respect to the weights ws,
@@ -324,9 +324,9 @@ def gradient_descent_update(
 
     Parameters
     ----------
-    w(s)
+    w
         Weights of the function to be updated.
-    dcdw(s)
+    dcdw
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
         Learning rate(s), the rate(s) at which the weights should be updated relative to
@@ -366,9 +366,9 @@ def lars_update(
 
     Parameters
     ----------
-    w(s)
+    w
         Weights of the function to be updated.
-    dcdw(s)
+    dcdw
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
         Learning rate, the rate at which the weights should be updated relative to the
@@ -420,9 +420,9 @@ def adam_update(
 
     Parameters
     ----------
-    w(s)
+    w
         Weights of the function to be updated.
-    dcdw(s)
+    dcdw
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
         Learning rate(s), the rate(s) at which the weights should be updated relative to
@@ -484,9 +484,9 @@ def lamb_update(
 
     Parameters
     ----------
-    w(s)
+    w
         Weights of the function to be updated.
-    dcdw(s)
+    dcdw
         Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     lr
         Learning rate(s), the rate(s) at which the weights should be updated relative to

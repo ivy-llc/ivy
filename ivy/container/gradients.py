@@ -9,7 +9,7 @@ from ivy.container.base import ContainerBase
 class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_optimizer_update(
-        ws,
+        w,
         effective_grads,
         lr,
         inplace=None,
@@ -22,7 +22,7 @@ class ContainerWithGradients(ContainerBase):
 
         return ContainerBase.multi_map_in_static_method(
             "optimizer_update",
-            ws,
+            w,
             effective_grads,
             lr,
             inplace=inplace,
@@ -58,8 +58,8 @@ class ContainerWithGradients(ContainerBase):
 
     @staticmethod
     def static_gradient_descent_update(
-        ws,
-        dcdws,
+        w,
+        dcdw,
         lr,
         inplace=None,
         stop_gradients=True,
@@ -71,8 +71,8 @@ class ContainerWithGradients(ContainerBase):
 
         return ContainerBase.multi_map_in_static_method(
             "gradient_descent_update",
-            ws,
-            dcdws,
+            w,
+            dcdw,
             lr,
             inplace=inplace,
             stop_gradients=stop_gradients,
@@ -84,7 +84,7 @@ class ContainerWithGradients(ContainerBase):
 
     def gradient_descent_update(
         self,
-        dcdws,
+        dcdw,
         lr,
         inplace=None,
         stop_gradients=True,
@@ -95,7 +95,7 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_gradient_descent_update(
             self,
-            dcdws,
+            dcdw,
             lr,
             inplace,
             stop_gradients,
@@ -107,8 +107,8 @@ class ContainerWithGradients(ContainerBase):
 
     @staticmethod
     def static_lars_update(
-        ws,
-        dcdws,
+        w,
+        dcdw,
         lr,
         decay_lambda=0,
         inplace=None,
@@ -120,8 +120,8 @@ class ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "lars_update",
-            ws,
-            dcdws,
+            w,
+            dcdw,
             lr,
             decay_lambda=decay_lambda,
             inplace=inplace,
@@ -134,7 +134,7 @@ class ContainerWithGradients(ContainerBase):
 
     def lars_update(
         self,
-        dcdws,
+        dcdw,
         lr,
         decay_lambda=0,
         inplace=None,
@@ -146,7 +146,7 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_lars_update(
             self,
-            dcdws,
+            dcdw,
             lr,
             decay_lambda,
             inplace,
@@ -159,8 +159,8 @@ class ContainerWithGradients(ContainerBase):
 
     @staticmethod
     def static_adam_update(
-        ws,
-        dcdws,
+        w,
+        dcdw,
         lr,
         mw_tm1,
         vw_tm1,
@@ -177,8 +177,8 @@ class ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
-            ws,
-            dcdws,
+            w,
+            dcdw,
             lr,
             mw_tm1=mw_tm1,
             vw_tm1=vw_tm1,
@@ -196,7 +196,7 @@ class ContainerWithGradients(ContainerBase):
 
     def adam_update(
         self,
-        dcdws,
+        dcdw,
         lr,
         mw_tm1,
         vw_tm1,
@@ -213,7 +213,7 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_adam_update(
             self,
-            dcdws,
+            dcdw,
             lr,
             mw_tm1,
             vw_tm1,
@@ -231,8 +231,8 @@ class ContainerWithGradients(ContainerBase):
 
     @staticmethod
     def static_lamb_update(
-        ws,
-        dcdws,
+        w,
+        dcdw,
         lr,
         mw_tm1,
         vw_tm1,
@@ -251,8 +251,8 @@ class ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "lamb_update",
-            ws,
-            dcdws,
+            w,
+            dcdw,
             lr,
             mw_tm1=mw_tm1,
             vw_tm1=vw_tm1,
@@ -272,7 +272,7 @@ class ContainerWithGradients(ContainerBase):
 
     def lamb_update(
         self,
-        dcdws,
+        dcdw,
         lr,
         mw_tm1,
         vw_tm1,
@@ -291,7 +291,7 @@ class ContainerWithGradients(ContainerBase):
     ):
         return self.static_lamb_update(
             self,
-            dcdws,
+            dcdw,
             lr,
             mw_tm1,
             vw_tm1,
