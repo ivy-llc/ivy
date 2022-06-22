@@ -81,23 +81,19 @@ def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def bitwise_and(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[int, tf.Tensor, tf.Variable],
+    x2: Union[int, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(x2, tf.Tensor):
-        x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
-
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_and(x1, x2)
     else:
         return tf.bitwise.bitwise_and(x1, x2)
 
 
-def bitwise_invert(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def bitwise_invert(
+    x: Union[int, tf.Tensor, tf.Variable]
+) -> Union[tf.Tensor, tf.Variable]:
     if "int" not in str(x.dtype):
         return tf.logical_not(x)
     else:
@@ -105,27 +101,18 @@ def bitwise_invert(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Vari
 
 
 def bitwise_left_shift(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[int, tf.Tensor, tf.Variable],
+    x2: Union[int, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.left_shift(x1, x2)
 
 
 def bitwise_or(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[int, tf.Tensor, tf.Variable],
+    x2: Union[int, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(x2, tf.Tensor):
-        x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
-
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_or(x1, x2)
     else:
@@ -133,26 +120,18 @@ def bitwise_or(
 
 
 def bitwise_right_shift(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[int, tf.Tensor, tf.Variable],
+    x2: Union[int, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
 
 
 def bitwise_xor(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[int, tf.Tensor, tf.Variable],
+    x2: Union[int, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(x2, tf.Tensor):
-        x2 = tf.constant(x2, dtype=x1.dtype)
-    elif hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_xor(x1, x2)
     else:
