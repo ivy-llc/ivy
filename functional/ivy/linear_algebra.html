@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="cholesky" href="linear_algebra/cholesky.html" />
+    <link rel="next" title="eigh" href="linear_algebra/eigh.html" />
     <link rel="prev" title="lstm_update" href="layers/lstm_update.html" /> 
 </head>
 
@@ -64,30 +64,30 @@
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Linear algebra</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/cross.html">cross</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/eigh.html">eigh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/eigvalsh.html">eigvalsh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/inv.html">inv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matmul.html">matmul</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_norm.html">matrix_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_power.html">matrix_power</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_rank.html">matrix_rank</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_transpose.html">matrix_transpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/pinv.html">pinv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/qr.html">qr</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/slogdet.html">slogdet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/solve.html">solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_transpose.html">matrix_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/outer.html">outer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_norm.html">matrix_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/qr.html">qr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_power.html">matrix_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/tensordot.html">tensordot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vecdot.html">vecdot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/eigvalsh.html">eigvalsh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/inv.html">inv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_rank.html">matrix_rank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/solve.html">solve</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
@@ -210,20 +210,18 @@ With <code class="code docutils literal notranslate"><span class="pre">ivy.Array
 <ol class="arabic simple" start="3">
 <li><p>Returns a lower-triangular Cholesky factor</p></li>
 </ol>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]),</span>                           <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]),</span>
+<span class="go">                      b = ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cholesky</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1.73, 0.], [-0.57,  1.63]])</span>
+<span class="go">    b: ivy.array([[1.41, 0.], [0.70, 0.70]])</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 </p>
-</dd>
-</dl>
-<dl>
-<dt>{</dt><dd><blockquote>
-<div><p>a: ivy.array([[1.73, 0.], [-0.57,  1.63]])
-b: ivy.array([[1.41, 0.], [0.70, 0.70]])</p>
-</div></blockquote>
-<p>}</p>
 </dd>
 </dl>
 </dd></dl>
@@ -718,10 +716,10 @@ data type determined by <span class="xref std std-ref">type-promotion</span> and
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first one-dimensional input array of size N. Should have a numeric data type.
-a(N,) array_like
+a(M,) array_like
 First input vector. Input is flattened if not already 1-dimensional.</p></li>
 <li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second one-dimensional input array of size M. Should have a numeric data type.
-b(M,) array_like
+b(N,) array_like
 Second input vector. Input is flattened if not already 1-dimensional.</p></li>
 </ul>
 </dd>
@@ -733,38 +731,6 @@ Second input vector. Input is flattened if not already 1-dimensional.</p></li>
 The returned array must have a data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span>                       <span class="p">[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go">ivy.array([[ 5.,  6.,  7.,  8.],</span>
-<span class="go">            [10., 12., 14., 16.],</span>
-<span class="go">            [15., 18., 21., 24.],</span>
-<span class="go">            [20., 24., 28., 32.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go">ivy.array([[1.],</span>
-<span class="go">            [2.],</span>
-<span class="go">            [3.],</span>
-<span class="go">            [4.]])</span>
-</pre></div>
-</div>
-<p>A 3-D Example
-&gt;&gt;&gt; x = ivy.array([[[1., 2.],                        [3., 4.]],                       [[5., 6.],                        [7., 8.]]])
-&gt;&gt;&gt; y = ivy.array([[[9., 10.],                        [11., 12.]],                       [[13., 14.],                        [15., 16.]]])
-&gt;&gt;&gt; d = ivy.outer(x, y)
-&gt;&gt;&gt; print(d)
-ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],</p>
-<blockquote>
-<div><p>[ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],
-[ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],
-[ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],
-[ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],
-[ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
-[ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
-[ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])</p>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -851,8 +817,8 @@ dimensions must have the same size as those of the input x.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.slogdet">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">slogdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#slogdet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.slogdet" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.slodget">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">slodget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#slodget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.slodget" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the sign and natural logarithm of the determinant of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1070,14 +1036,27 @@ Should have a numeric data type.</p></li>
 <ol class="arabic simple" start="3">
 <li><p>Axes = 2: (default) tensor double contraction</p></li>
 </ol>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]),</span>
+<span class="go">                      b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]),</span>
+<span class="go">                      b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    a: ivy.array(89.)</span>
 <span class="go">    b: ivy.array(76.)</span>
 <span class="go">}</span>
+</pre></div>
+</div>
+<p class="rubric">Instance Method Examples</p>
+<p>Using <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">7.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+<span class="go">               [ 0.,  0.,  0.],</span>
+<span class="go">               [14., 16.,  0.]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1286,7 +1265,7 @@ matrix <span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="layers/lstm_update.html" class="btn btn-neutral float-left" title="lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="linear_algebra/cholesky.html" class="btn btn-neutral float-right" title="cholesky" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="linear_algebra/eigh.html" class="btn btn-neutral float-right" title="eigh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
