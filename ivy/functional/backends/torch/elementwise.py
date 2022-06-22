@@ -12,10 +12,12 @@ def _cast_for_unary_op(x):
     return x
 
 
-def _cast_for_binary_op(x1, x2):
+def _cast_for_binary_op(x1, x2, clamp=False):
     if isinstance(x1, torch.Tensor):
         if isinstance(x2, torch.Tensor):
             promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+            if clamp:
+                x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
             x1 = x1.to(promoted_type)
             x2 = x2.to(promoted_type)
         else:
@@ -479,14 +481,8 @@ def bitwise_right_shift(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return torch.bitwise_right_shift(x1, x2, out=out)
-
-    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-    #     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    #     x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
-    #     x1 = x1.to(promoted_type)
-    #     x2 = x2.to(promoted_type)
 
 
 def bitwise_left_shift(
@@ -495,14 +491,8 @@ def bitwise_left_shift(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return torch.bitwise_left_shift(x1, x2, out=out)
-
-    # if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-    #     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    #     x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
-    #     x1 = x1.to(promoted_type)
-    #     x2 = x2.to(promoted_type)
 
 
 # Extra #
