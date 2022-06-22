@@ -10,61 +10,9 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
+
 # Array API Standard #
 # -------------------#
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def min(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
-
-    .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
-
-    **Special Cases**
-
-    For floating-point operands,
-
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        Input array containing elements to min.
-    axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: None.
-    keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the minimum value was computed over the entire array, a zero-dimensional
-        array containing the minimum value; otherwise, a non-zero-dimensional array
-        containing the minimum values. The returned array must have the same data type
-        as x.
-
-    """
-    return current_backend.min(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -120,9 +68,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.tan.html>`
-    _ in the standard.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.max.html>`_  # noqa
+    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -167,65 +114,6 @@ def max(
     }
     """
     return current_backend.max(x, axis, keepdims, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def var(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the variance of the input array x.
-
-    **Special Cases**
-
-    Let N equal the number of elements over which to compute the variance.
-
-    If N - correction is less than or equal to 0, the variance is NaN.
-
-    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        input array. Should have a floating-point data type.
-    axis
-        axis or axes along which variances must be computed. By default, the variance
-        must be computed over the entire array. If a tuple of integers, variances must
-        be computed over multiple axes. Default: None.
-    correction
-        degrees of freedom adjustment. Setting this parameter to a value other than 0
-        has the effect of adjusting the divisor during the calculation of the variance
-        according to N-c where N corresponds to the total number of elements over which
-        the variance is computed and c corresponds to the provided degrees of freedom
-        adjustment. When computing the variance of a population, setting this parameter
-        to 0 is the standard choice (i.e., the provided array contains data constituting
-        an entire population). When computing the unbiased sample variance, setting this
-        parameter to 1 is the standard choice (i.e., the provided array contains data
-        sampled from a larger population; this is commonly referred to as Bessel's
-        correction). Default: 0.
-    keepdims
-        if True, the reduced axes (dimensions) must be included in the result as
-        singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the variance was computed over the entire array, a zero-dimensional array
-        containing the variance; otherwise, a non-zero-dimensional array containing the
-        variances. The returned array must have the same data type as x.
-
-    """
-    return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -285,6 +173,59 @@ def mean(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def min(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Calculates the minimum value of the input array x.
+
+    .. note::
+    When the number of elements over which to compute the minimum value is zero, the
+    minimum value is implementation-defined. Specification-compliant libraries may
+    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
+    input array, return NaN), or return the maximum possible value for the input array x
+    data type (e.g., if x is a floating-point array, return +infinity).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+
+    Parameters
+    ----------
+    x
+        Input array containing elements to min.
+    axis
+         axis or axes along which minimum values must be computed. By default, the
+         minimum value must be computed over the entire array. If a tuple of integers,
+         minimum values must be computed over multiple axes. Default: None.
+    keepdims
+        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        result as singleton dimensions, and, accordingly, the result must be compatible
+        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as x.
+
+    """
+    return current_backend.min(x, axis, keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -334,6 +275,77 @@ def prod(
 
     """
     return current_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def std(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    correction: Union[int, float] = 0.0,
+    keepdims: bool = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Calculates the standard deviation of the input array ``x``.
+
+    **Special Cases**
+
+    Let ``N`` equal the number of elements over which to compute the standard deviation.
+
+    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
+        deviation).
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
+        propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type
+
+    axis
+        axis or axes along which standard deviations must be computed. By default, the
+        standard deviation must be computed over the entire array. If a tuple of
+        integers, standard deviations must be computed over multiple axes.
+        Default: None.
+    correction
+        degrees of freedom adjustment. Setting this parameter to a value other than 0
+        has the effect of adjusting the divisor during the calculation of the standard
+        deviation according to N-c where N corresponds to the total number of elements
+        over which the standard deviation is computed and c corresponds to the provided
+        degrees of freedom adjustment. When computing the standard deviation of a
+        population, setting this parameter to ``0`` is the standard choice (i.e., the
+        provided array contains data constituting an entire population). When computing
+        the corrected sample standard deviation, setting this parameter to ``1`` is the
+        standard choice (i.e., the provided array contains data sampled from a larger
+        population; this is commonly referred to as Bessel's correction).
+        Default: ``0``.
+    keepdims
+        if ``True``, the reduced axes (dimensions) must be included in the result as
+        singleton dimensions, and, accordingly, the result must be compatible with the
+        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
+        (dimensions) must not be included in the result. Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the sum was computed over the entire array, a zero-dimensional array
+        containing the standard deviation; otherwise, an array containing the standard
+        deviations. The returned array must have a data type as described by the
+        ``dtype`` parameter above.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.std(x)
+    >>> print(y)
+    ivy.array(0.8164966)
+
+    """
+    return current_backend(x).std(x, axis, correction, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -417,72 +429,60 @@ def sum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def std(
+def var(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculates the variance of the input array x.
 
     **Special Cases**
 
-    Let ``N`` equal the number of elements over which to compute the standard deviation.
+    Let N equal the number of elements over which to compute the variance.
 
-    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard
-        deviation).
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values
-        propagate).
+    If N - correction is less than or equal to 0, the variance is NaN.
+
+    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
 
     Parameters
     ----------
     x
-        input array. Should have a floating-point data type
-
+        input array. Should have a floating-point data type.
     axis
-        axis or axes along which standard deviations must be computed. By default, the
-        standard deviation must be computed over the entire array. If a tuple of
-        integers, standard deviations must be computed over multiple axes.
-        Default: None.
+        axis or axes along which variances must be computed. By default, the variance
+        must be computed over the entire array. If a tuple of integers, variances must
+        be computed over multiple axes. Default: None.
     correction
         degrees of freedom adjustment. Setting this parameter to a value other than 0
-        has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to N-c where N corresponds to the total number of elements
-        over which the standard deviation is computed and c corresponds to the provided
-        degrees of freedom adjustment. When computing the standard deviation of a
-        population, setting this parameter to ``0`` is the standard choice (i.e., the
-        provided array contains data constituting an entire population). When computing
-        the corrected sample standard deviation, setting this parameter to ``1`` is the
-        standard choice (i.e., the provided array contains data sampled from a larger
-        population; this is commonly referred to as Bessel's correction).
-        Default: ``0``.
+        has the effect of adjusting the divisor during the calculation of the variance
+        according to N-c where N corresponds to the total number of elements over which
+        the variance is computed and c corresponds to the provided degrees of freedom
+        adjustment. When computing the variance of a population, setting this parameter
+        to 0 is the standard choice (i.e., the provided array contains data constituting
+        an entire population). When computing the unbiased sample variance, setting this
+        parameter to 1 is the standard choice (i.e., the provided array contains data
+        sampled from a larger population; this is commonly referred to as Bessel's
+        correction). Default: 0.
     keepdims
-        if ``True``, the reduced axes (dimensions) must be included in the result as
+        if True, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
-        input array (see Broadcasting). Otherwise, if ``False``, the reduced axes
-        (dimensions) must not be included in the result. Default: ``False``.
+        input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        if the sum was computed over the entire array, a zero-dimensional array
-        containing the standard deviation; otherwise, an array containing the standard
-        deviations. The returned array must have a data type as described by the
-        ``dtype`` parameter above.
-
-    Examples
-    --------
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.std(x)
-    >>> print(y)
-    ivy.array(0.8164966)
+        if the variance was computed over the entire array, a zero-dimensional array
+        containing the variance; otherwise, a non-zero-dimensional array containing the
+        variances. The returned array must have the same data type as x.
 
     """
-    return current_backend(x).std(x, axis, correction, keepdims, out=out)
+    return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
 
 # Extra #
@@ -511,82 +511,138 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
     ret
         The array with sums computed.
 
-    Examples
-    --------
-    The following gives us the sum of the diagonal elements:
+    Functional Examples
+    -------------------
+
+    With :code: 'ivy.Array' input:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> y = ivy.einsum('ii', x)
     >>> print(y)
     ivy.array(12)
 
-    Or we can use einsum to sum columns:
-
+    >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
     >>> z = ivy.einsum('ij -> j', x)
     >>> print(z)
-    ivy.array([9, 12, 15])
-    
-    Imagine that we have two multi-dimensional arrays, A and B. 
-    Now let's suppose we want to...
-    - multiply A with B in a particular way to create new array 
-    of products; and then maybe
-    - sum this new array along particular axes; and then maybe
-    - transpose the axes of the new array in a particular order.
-    
-    There's a good chance that einsum will help us do this faster 
-    and more memory-efficiently than combinations of the NumPy 
-    functions like multiply, sum and transpose will allow.
-    
+    ivy.array([ 9, 12, 15])
+
     >>> A = ivy.array([0, 1, 2])
     >>> B = ivy.array([[ 0,  1,  2,  3],\
-    ...               [ 4,  5,  6,  7],\
-    ...               [ 8,  9, 10, 11]])
-    >>> ivy.einsum('i,ij->i', A, B)
+                       [ 4,  5,  6,  7],\
+                       [ 8,  9, 10, 11]])
+    >>> C = ivy.einsum('i,ij->i', A, B)
+    >>> print(C)
     ivy.array([ 0, 22, 76])
-    
-    Now lets see a slightly bigger example:
-    
+
     >>> A = ivy.array([[1, 1, 1],\
-    ...                [2, 2, 2],\
-    ...                [5, 5, 5]])
+                       [2, 2, 2],\
+                       [5, 5, 5]])
     >>> B = ivy.array([[0, 1, 0],\
-    ...                [1, 1, 0],\
-    ...                [1, 1, 1]])
-    >>> ivy.einsum('ij,jk->ik', A, B)
+                       [1, 1, 0],\
+                       [1, 1, 1]])
+    >>> C = ivy.einsum('ij,jk->ik', A, B)
+    >>> print(C)
     ivy.array([[ 2,  3,  1],
-                [ 4,  6,  2],
-                [10, 15,  5]])
-                
-    
-    Let A and B be two 1D arrays with the same length. For example, 
-    
+           [ 4,  6,  2],
+           [10, 15,  5]])
+
     >>> A = ivy.arange(10)
     >>> B = ivy.arange(5, 15)
-    
-    The sum of A can be written:
-    >>> ivy.einsum('i->', A)
-    ivy.array(45, dtype=int32)
-    
-    Element-wise multiplication, A * B, can be written:
-    >>> ivy.einsum('i,i->i', A, B)
-    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126], dtype=int32)
-    
-    The inner product or dot product can be written:
-    >>> ivy.einsum('i,i->', A, B) # or just use 'i,i'
-    ivy.array(510, dtype=int32)
-    
-    The outer product can be written:
-    >>> ivy.einsum('i,j->ij', A, B)
+    >>> C = ivy.einsum('i->', A)
+    >>> print(C)
+    ivy.array(45)
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,i->i', A, B)
+    >>> print(C)
+    ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,i->', A, B) # or just use 'i,i'
+    >>> print(C)
+    ivy.array(510)
+
+    >>> A = ivy.arange(10)
+    >>> B = ivy.arange(5, 15)
+    >>> C = ivy.einsum('i,j->ij', A, B)
+    >>> print(C)
     ivy.array([[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0],
-                [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
-                [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
-                [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
-                [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
-                [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
-                [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
-                [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
-                [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
-                [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]], dtype=int32)
+           [  5,   6,   7,   8,   9,  10,  11,  12,  13,  14],
+           [ 10,  12,  14,  16,  18,  20,  22,  24,  26,  28],
+           [ 15,  18,  21,  24,  27,  30,  33,  36,  39,  42],
+           [ 20,  24,  28,  32,  36,  40,  44,  48,  52,  56],
+           [ 25,  30,  35,  40,  45,  50,  55,  60,  65,  70],
+           [ 30,  36,  42,  48,  54,  60,  66,  72,  78,  84],
+           [ 35,  42,  49,  56,  63,  70,  77,  84,  91,  98],
+           [ 40,  48,  56,  64,  72,  80,  88,  96, 104, 112],
+           [ 45,  54,  63,  72,  81,  90,  99, 108, 117, 126]])
+
+    With :code:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    ivy.array(12)
+
+    With a mix of code: 'ivy.Array' and code: 'ivy.NativeArray' inputs:
+
+    >>> A = ivy.array([0, 1, 2])
+    >>> B = ivy.native_array([[ 0, 1, 2, 3],\
+                              [ 4, 5, 6, 7],\
+                              [ 8, 9, 10, 11]])
+    >>> C = ivy.einsum('i,ij->i', A, B)
+    >>> print(C)
+    ivy.array([ 0, 22, 76])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\
+                                       [ 4,  5,  6,  7],\
+                                       [ 8,  9, 10, 11]]),\
+                          b=ivy.array([[ 0,  1,  2],\
+                                       [ 4,  5,  6],\
+                                       [ 8,  9, 10]]))
+    >>> z = ivy.einsum('i,ij->i', x, y)
+    >>> print(z)
+    {
+        a: ivy.array([0, 22, 76]),
+        b: ivy.array([0, 15, 54])
+    }
+
+    With :code: 'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
+                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(15)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code: 'ivy.Array' instance method:
+
+    >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    >>> y = x.einsum('ii')
+    >>> print(y)
+    ivy.array(12)
+
+    Using :code: 'ivy.Container' instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),\
+                          b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+    >>> y = x.einsum('ii')
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(15)
+    }
 
     """
     return current_backend(operands[0]).einsum(equation, *operands)
