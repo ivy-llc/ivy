@@ -4,4 +4,4 @@ broadcast_to
 can_cast
 finfo
 iinfo
-#result_type # failing for torch
+result_type
