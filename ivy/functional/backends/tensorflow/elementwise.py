@@ -17,16 +17,6 @@ def _cast_for_binary_op(x1, x2):
     return x1, x2
 
 
-def _tf_cast(
-    x: Union[tf.Tensor, tf.Variable],
-    dtype: tf.dtypes.DType,
-) -> Union[tf.Tensor, tf.Variable]:
-    try:
-        return tf.cast(x, dtype)
-    except ValueError:
-        return x
-
-
 def abs(x: Union[float, tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     if "uint" in ivy.dtype(x):
         return x
@@ -47,8 +37,6 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    # elif not isinstance(x1, tf.Tensor):
-    #     x1 = tf.constant(x1, dtype=x2.dtype)
     return tf.add(x1, x2)
 
 
@@ -322,6 +310,14 @@ def pow(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
+        if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
+            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+            if x1.dtype.is_unsigned:
+                x1 = tf.cast(x1, tf.float64)
+            if x2.dtype.is_unsigned:
+                x2 = tf.cast(x2, tf.float64)
+            return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     return tf.experimental.numpy.power(x1, x2)
 
 
