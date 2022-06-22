@@ -168,7 +168,7 @@ The <code class="code docutils literal notranslate"><span class="pre">ivy.Array<
 each of which implement the category-specific instance methods.</p>
 <p>Each instance method simply calls the functional API function internally,
 but passes in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> as the first array argument.
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/63d9c26acced9ef40e34f7b4fc1c1a75017f9c69/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.</p>
 <p>Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
 This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
@@ -208,8 +208,8 @@ otherwise it would be impossible to chain functions together!</p>
 <li><p>call the backend-specific function, passing in these <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances</p></li>
 <li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
 </ol>
-<p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/0f131178be50ea08ec818c73078e6e4c88948ab3/ivy/func_wrapper.py#L170">function wrapping</a>,
-as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149">inputs_to_native_arrays</a> and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>All Ivy functions <em>also</em> accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
 This is for a couple of reasons.
 Firstly, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,

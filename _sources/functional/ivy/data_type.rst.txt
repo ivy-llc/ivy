@@ -39,6 +39,8 @@ Data type
    data_type/valid_dtype.rst
    data_type/invalid_dtype.rst
    data_type/convert_dtype.rst
+   data_type/function_supported_dtypes.rst
+   data_type/function_unsupported_dtypes.rst
    data_type/DefaultDtype:
     """"""
 
