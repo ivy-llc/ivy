@@ -30,7 +30,10 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
 | How to build the documentation locally 🏗️
 |
 | (d) :ref:`Deep Dive`
-| Take a deep dive into the codebase, and see where you can help out 🤿
+| Take a deep dive into the codebase 🤿
+|
+| (e) :ref:`Open Tasks`
+| See where you can help us out! 🙋
 
 .. toctree::
    :hidden:
@@ -41,6 +44,7 @@ but you can also dive in at any stage! We're excited for you to get involved!  �
    contributing/1_the_basics.rst
    contributing/building_the_docs.rst
    deep_dive.rst
+   contributing/4_open_tasks.rst
 
 **Video**
 
