@@ -18,4 +18,4 @@ jobs:
     - name: Run Docstring Tests
       run: |
         cd ivy
-        docker run --rm -v `pwd`:/ivy -v unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_docstrings.py
+        docker run --rm -it -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_docstrings.py
