@@ -1,7 +1,13 @@
 name: test-ivy
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [unlabeled]
+
 jobs:
-  run-nightly-tests:
+  run-docstring-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
