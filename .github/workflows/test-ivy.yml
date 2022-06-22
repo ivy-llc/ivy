@@ -1,8 +1,6 @@
 name: test-ivy
 on:
   push:
-    branches:
-      - master
   pull_request:
     types: [unlabeled]
 
