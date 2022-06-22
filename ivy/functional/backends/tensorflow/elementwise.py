@@ -69,10 +69,7 @@ def atan2(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.atan2(x1, x2)
 
 
@@ -265,10 +262,7 @@ def logaddexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
@@ -412,18 +406,10 @@ def erf(x) -> Union[tf.Tensor, tf.Variable]:
 
 
 def maximum(x1, x2) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x2, "dtype"):
-        if x1.dtype != x2.dtype:
-            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-            x1 = tf.cast(x1, promoted_type)
-            x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.maximum(x1, x2)
 
 
 def minimum(x1, x2) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x2, "dtype"):
-        if x1.dtype != x2.dtype:
-            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-            x1 = tf.cast(x1, promoted_type)
-            x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.minimum(x1, x2)
