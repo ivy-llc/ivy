@@ -1825,8 +1825,8 @@ def cumprod(
     ivy.array([2, 6, 24])
 
     >>> x = ivy.array([2, 3, 4])
-    >>> exclusive = True
-    >>> y = ivy.cumprod(x, exclusive)
+    >>> exclusivity = True
+    >>> y = ivy.cumprod(x, exclusive=exclusivity)
     >>> print(y)
     ivy.array([1, 2, 6])
     
@@ -1835,8 +1835,8 @@ def cumprod(
     >>> x = ivy.array([[2, 3], \
                        [5, 7], \
                        [11, 13]])
-    >>> exclusive = True
-    >>> ivy.cumprod(x, axis=1, exclusive, out=y)
+    >>> exclusivity = True
+    >>> ivy.cumprod(x, axis=1, exclusive=exclusivity, out=y)
     >>> print(y)
     ivy.array([[1,  2], 
                [1,  5], 
@@ -1845,8 +1845,8 @@ def cumprod(
     >>> x = ivy.array([[2, 3], \
                        [5, 7], \
                        [11, 13]])
-    >>> exclusive = True
-    >>> ivy.cumprod(x, axis=0, exclusive, out=x)
+    >>> exclusivity = True
+    >>> ivy.cumprod(x, axis=0, exclusive=exclusivity, out=x)
     >>> print(x)
     ivy.array([[1,  2], 
                [2,  3], 
@@ -1855,7 +1855,7 @@ def cumprod(
      
      With :code:`ivy.NativeArray` input:
      
-     >>> x = ivy.Native_array([2, 3, 4])
+     >>> x = ivy.native_array([2, 3, 4])
      >>> y = ivy.cumprod(x)
      >>> print(y)
      ivy.array([2, 6, 24])
@@ -1866,7 +1866,7 @@ def cumprod(
      >>> y = ivy.cumprod(x)
      >>> print(y)
      {
-         a: ivy.array([2, 6, 24])
+         a: ivy.array([2, 6, 24]),
          b: ivy.array([3, 12, 60])
      }
 
