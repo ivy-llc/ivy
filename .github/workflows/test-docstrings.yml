@@ -2,7 +2,6 @@ name: test-docstrings
 on: [push, pull_request]
 jobs:
   run-docstring-tests:
-    if: ${{ github.event.label.name == 'Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
