@@ -65,20 +65,20 @@ def divide(
 
 @_handle_flat_arrays_in_out
 def greater(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.greater(x1, x2)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.greater(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def greater_equal(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.greater_equal(x1, x2)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.greater_equal(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -110,9 +110,12 @@ def isnan(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def less(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.lesser(x1, x2).astype("bool")
-    return ret
+def less(
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
+) -> mx.nd.NDArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return mx.nd.lesser(x1, x2).astype("bool")
 
 
 @_handle_flat_arrays_in_out
