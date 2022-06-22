@@ -2,6 +2,7 @@ name: test-ivy
 on:
   push:
   pull_request:
+    types: [opened, reopened, unlabeled]
 
 jobs:
   run-docstring-tests:
