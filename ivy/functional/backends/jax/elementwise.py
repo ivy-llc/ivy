@@ -9,22 +9,14 @@ from ivy.functional.backends.jax import JaxArray
 
 def _cast_for_bitwise_op(x1, x2):
     if not isinstance(x1, int):
-        if not isinstance(x2, int):
-            promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
-        else:
+        if isinstance(x2, int):
             x2 = jnp.asarray(x2, dtype=x1.dtype)
     return x1, x2
 
 
 def _cast_for_binary_op(x1, x2):
     if not isinstance(x1, (int, float)):
-        if not isinstance(x2, (int, float)):
-            promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
-        else:
+        if isinstance(x2, (int, float)):
             x2 = jnp.asarray(x2, dtype=x1.dtype)
     return x1, x2
 
