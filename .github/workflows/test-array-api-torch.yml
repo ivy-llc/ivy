@@ -2,7 +2,7 @@ name: test-array-api-torch
 on:
   push:
   pull_request:
-    types: [labeled, opened, reopened, edited]
+    types: [unlabeled, opened, reopened, edited]
 jobs:
   run-torch-array-api-tests:
     if: ${{ github.event.label.name!='Function Reformatting' }}
