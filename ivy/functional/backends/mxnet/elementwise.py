@@ -20,11 +20,10 @@ def add(
 
 @_handle_flat_arrays_in_out
 def bitwise_and(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[int, mx.nd.NDArray],
+    x2: Union[int, mx.nd.NDArray],
 ) -> mx.nd.ndarray.NDArray:
-    ret = mx.numpy.bitwise_and(x1, x2)
-    return ret
+    return mx.numpy.bitwise_and(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -174,11 +173,10 @@ def tanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def bitwise_or(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[int, mx.nd.NDArray],
+    x2: Union[int, mx.nd.NDArray],
 ) -> mx.nd.ndarray.NDArray:
-    ret = mx.numpy.bitwise_or(x1, x2)
-    return ret
+    return mx.numpy.bitwise_or(x1, x2)
 
 
 @_handle_flat_arrays_in_out
