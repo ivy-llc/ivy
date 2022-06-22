@@ -183,13 +183,10 @@ def divide(
 
 
 def equal(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.equal(x1, x2)
 
 
@@ -217,24 +214,18 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
 
 
 def greater_equal(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater_equal(x1, x2)
 
 
@@ -260,24 +251,18 @@ def isnan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def less(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less(x1, x2)
 
 
 def less_equal(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less_equal(x1, x2)
 
 
@@ -348,13 +333,10 @@ def negative(x: Union[float, tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Var
 
 
 def not_equal(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.not_equal(x1, x2)
 
 
