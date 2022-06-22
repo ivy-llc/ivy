@@ -27,7 +27,7 @@ def _tf_cast(
         return x
 
 
-def abs(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def abs(x: Union[float, tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     if "uint" in ivy.dtype(x):
         return x
     else:
@@ -43,15 +43,12 @@ def acosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def add(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
-    elif not isinstance(x1, tf.Tensor):
-        x1 = tf.constant(x1, dtype=x2.dtype)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    # elif not isinstance(x1, tf.Tensor):
+    #     x1 = tf.constant(x1, dtype=x2.dtype)
     return tf.add(x1, x2)
 
 
@@ -178,13 +175,10 @@ def cosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def divide(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.divide(x1, x2)
 
 
@@ -215,15 +209,10 @@ def floor(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def floor_divide(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(x2, tf.Tensor):
-        x2 = tf.constant(x2, dtype=x1.dtype)
-    else:
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.floordiv(x1, x2)
 
 
@@ -345,21 +334,17 @@ def logical_xor(
 
 
 def multiply(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.multiply(x1, x2)
 
 
-def negative(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def negative(x: Union[float, tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
-    else:
-        return tf.negative(x)
+    return tf.negative(x)
 
 
 def not_equal(
@@ -373,37 +358,26 @@ def not_equal(
     return tf.math.not_equal(x1, x2)
 
 
-def positive(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def positive(x: Union[float, tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.positive(x)
 
 
 def pow(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(x2, tf.Tensor):
-        x2 = tf.constant(x2, dtype=x1.dtype)
-    promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-    x1 = tf.cast(x1, promoted_type)
-    x2 = tf.cast(x2, promoted_type)
-    if x1.dtype.is_unsigned:
-        x1 = tf.cast(x1, tf.float64)
-    if x2.dtype.is_unsigned:
-        x2 = tf.cast(x2, tf.float64)
-    return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.power(x1, x2)
 
 
 pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
 
 
 def remainder(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.floormod(x1, x2)
 
 
@@ -441,13 +415,10 @@ def square(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 
 
 def subtract(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-        x1 = tf.cast(x1, promoted_type)
-        x2 = tf.cast(x2, promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.subtract(x1, x2)
 
 
