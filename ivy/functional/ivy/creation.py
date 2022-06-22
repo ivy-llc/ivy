@@ -114,12 +114,18 @@ def zeros(
 
     Examples
     --------
+    >>> shape = (3)
+    >>> x = ivy.zeros(shape)
+    >>> print(x)
+    ivy.array([0., 0., 0.])
+    
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
     ivy.array([[0., 0., 0., 0., 0.],
                [0., 0., 0., 0., 0.],
-               [0., 0., 0., 0., 0.]])
+               [0., 0., 0., 0., 0.]]) 
+   
 
     """
     return _cur_backend().zeros(shape, dtype=dtype, device=device)
