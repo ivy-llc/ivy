@@ -693,7 +693,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def from_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def from_numpy(x: np.ndarray) -> torch.Tensor:
     """Creates Tensor with values from a numpy array. 
 
     .. note::
