@@ -190,13 +190,23 @@
 </section>
 <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h1>
-<p>Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy. We’re very excited for you to try it out!</p>
-<p>Next on our roadmap is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊</p>
-<p>The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our roadmap, and how to contribute! Click on the sub-headings to check out these pages!</p>
-<p>We use 🚧 to indicate that the feature being discussed is in development. We use ✅ to indicate that it is already implemented!</p>
-<p>Check out the <a class="reference external" href="https://lets-unify.ai/ivy">docs</a> for more info, and check out our Google <a class="reference external" href="https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing">Colabs</a> for some interactive demos!</p>
+<p>Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+We’re very excited for you to try it out!</p>
+<p>Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
+and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
+Read on to learn more 😊</p>
+<p>The docs are split into a number of sub-pages explaining different aspects of why we created Ivy,
+how to use it, what we’ve got planned on our roadmap, and how to contribute!
+Click on the sub-headings below to check out these pages!</p>
+<p>We use 🚧 to indicate that the feature being discussed is in development.
+We use ✅ to indicate that it is already implemented!</p>
+<p>Check out the <a class="reference external" href="https://lets-unify.ai/ivy">docs</a> for more info,
+and check out our Google <a class="reference external" href="https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing">Colabs</a> for some interactive demos!</p>
 <p>🚨 Ivy is still at a relatively early stage of development.
 Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!</p>
+<p>If you would like to contribute,
+please check out our <a class="reference external" href="https://lets-unify.ai/ivy/contributing.html">contributor guide</a>,
+and take a look at the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/4_open_tasks.html">open tasks</a> if you’d like to dive straight in! 🧑‍💻</p>
 </section>
 <section id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h1>
@@ -214,7 +224,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
         <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>  <span class="c1"># change to any framework!</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>  <span class="c1"># change to any backend!</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
 <span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
@@ -222,7 +232,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
 
 <span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>

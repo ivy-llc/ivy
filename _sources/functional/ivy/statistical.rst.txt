@@ -13,12 +13,12 @@ Statistical
    :maxdepth: -1
    :caption: Statistical
 
-   statistical/min.rst
    statistical/max.rst
-   statistical/var.rst
    statistical/mean.rst
+   statistical/min.rst
    statistical/prod.rst
-   statistical/sum.rst
    statistical/std.rst
+   statistical/sum.rst
+   statistical/var.rst
    statistical/einsum.rst
 

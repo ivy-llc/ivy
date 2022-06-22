@@ -20,7 +20,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="roll" href="manipulation/roll.html" />
+    <link rel="next" title="concat" href="manipulation/concat.html" />
     <link rel="prev" title="sparse_cross_entropy" href="losses/sparse_cross_entropy.html" /> 
 </head>
 
@@ -65,21 +65,21 @@
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Manipulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/concat.html">concat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/flip.html">flip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/reshape.html">reshape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/roll.html">roll</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/squeeze.html">squeeze</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/flip.html">flip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/expand_dims.html">expand_dims</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/stack.html">stack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/reshape.html">reshape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/concat.html">concat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/split.html">split</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/constant_pad.html">constant_pad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/zero_pad.html">zero_pad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/clip.html">clip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/constant_pad.html">constant_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/zero_pad.html">zero_pad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
@@ -588,10 +588,6 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – The repeated output array.</p>
 </dd>
 </dl>
-<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. The descriptions above assume an array
-input for simplicity, but the method also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in
-place of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the
-type hints and also the examples below.</p>
 <p class="rubric">Functional Examples</p>
 <p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
@@ -1030,7 +1026,7 @@ the output array must have the same data type as the input arrays.
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="losses/sparse_cross_entropy.html" class="btn btn-neutral float-left" title="sparse_cross_entropy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="manipulation/roll.html" class="btn btn-neutral float-right" title="roll" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="manipulation/concat.html" class="btn btn-neutral float-right" title="concat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -13,19 +13,19 @@ Manipulation
    :maxdepth: -1
    :caption: Manipulation
 
+   manipulation/concat.rst
+   manipulation/expand_dims.rst
+   manipulation/flip.rst
+   manipulation/permute_dims.rst
+   manipulation/reshape.rst
    manipulation/roll.rst
    manipulation/squeeze.rst
-   manipulation/flip.rst
-   manipulation/expand_dims.rst
-   manipulation/permute_dims.rst
    manipulation/stack.rst
-   manipulation/reshape.rst
-   manipulation/concat.rst
-   manipulation/split.rst
-   manipulation/repeat.rst
-   manipulation/tile.rst
-   manipulation/constant_pad.rst
-   manipulation/zero_pad.rst
-   manipulation/swapaxes.rst
    manipulation/clip.rst
+   manipulation/constant_pad.rst
+   manipulation/repeat.rst
+   manipulation/split.rst
+   manipulation/swapaxes.rst
+   manipulation/tile.rst
+   manipulation/zero_pad.rst
 
