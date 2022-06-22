@@ -10,26 +10,11 @@ from ivy.functional.backends.mxnet import (
 )
 
 
-def _cast_for_unary_op(x):
-    if not isinstance(x, mx.nd.NDArray):
-        x = mx.nd.array([x])
-    return x
-
-
-def _cast_for_binary_op(x1, x2):
-    if not isinstance(x1, mx.nd.NDArray):
-        x1 = mx.nd.array([x1])
-    if not isinstance(x2, mx.nd.NDArray):
-        x2 = mx.nd.array([x2])
-    return x1, x2
-
-
 @_handle_flat_arrays_in_out
 def add(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.add(x1, x2)
 
 
@@ -59,7 +44,6 @@ def divide(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.divide(x1, x2)
 
 
@@ -68,7 +52,6 @@ def greater(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.greater(x1, x2)
 
 
@@ -77,7 +60,6 @@ def greater_equal(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.greater_equal(x1, x2)
 
 
@@ -114,7 +96,6 @@ def less(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.lesser(x1, x2).astype("bool")
 
 
@@ -156,7 +137,6 @@ def multiply(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.multiply(x1, x2)
 
 
@@ -180,7 +160,6 @@ def sin(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def negative(x: Union[float, mx.nd.NDArray]) -> mx.nd.NDArray:
-    x = _cast_for_unary_op(x)
     return mx.np.negative(x)
 
 
@@ -234,13 +213,11 @@ def subtract(
     x1: Union[float, mx.nd.NDArray],
     x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return mx.nd.subtract(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def abs(x: Union[float, mx.nd.NDArray]) -> mx.nd.ndarray.NDArray:
-    x = _cast_for_unary_op(x)
     return mx.nd.abs(x)
 
 
