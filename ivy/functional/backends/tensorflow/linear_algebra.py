@@ -12,8 +12,46 @@ from ivy import inf
 # -------------------#
 
 
+def cholesky(
+    x: Union[tf.Tensor, tf.Variable],
+    upper: bool = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not upper:
+        ret = tf.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        ret = tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)), perm=axes)
+    return ret
+
+
+def cross(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
+    return ret
+
+
+def det(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.linalg.det(x)
+    return ret
+
+
+def diagonal(
+    x: Union[tf.Tensor, tf.Variable], offset: int = 0, axis1: int = -2, axis2: int = -1
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return ret
+
+
 def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.eigh(x)
+    return ret
+
+
+def eigvalsh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.linalg.eigvalsh(x)
     return ret
 
 
@@ -25,78 +63,65 @@ def inv(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
-def tensordot(
+def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dtype_from = tf.experimental.numpy.promote_types(
+        x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
+    )
+    dtype_from = tf.as_dtype(dtype_from)
+    if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
+        x1 = tf.cast(x1, tf.int64)
+        x2 = tf.cast(x2, tf.int64)
+    if x1.dtype != x2.dtype:
+        x1 = tf.cast(x1, dtype_from)
+        x2 = tf.cast(x2, dtype_from)
 
-    # find type to promote to
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    if (
+        x1.shape == ()
+        or x2.shape == ()
+        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
+        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
+        or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
+        or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
+        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
+    ):
+        raise Exception("Error,shapes not compatible")
 
-    # type casting to float32 which is acceptable for tf.tensordot
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    x1_padded = False
+    x1_padded_2 = False
+    x2_padded = False
 
-    ret = tf.cast(tf.tensordot(x1, x2, axes), dtype)
-    return ret
+    if len(x1.shape) == len(x2.shape) == 1:
+        if x1.shape == 0:
+            ret = tf.constant(0)
+        else:
 
-
-def vecdot(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    axis: int = -1,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
-    return ret
-
-
-def pinv(
-    x: Union[tf.Tensor, tf.Variable],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.pinv(x)
-    else:
-        ret = tf.linalg.pinv(tf.cast(x != 0, "float32"), tf.cast(rtol != 0, "float32"))
-    return ret
-
-
-def matrix_transpose(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.swapaxes(x, -1, -2)
-    return ret
-
-
-# noinspection PyUnusedLocal,PyShadowingBuiltins
-def vector_norm(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
-) -> Union[tf.Tensor, tf.Variable]:
-
-    if ord == -float("inf"):
-        tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord == -1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord
-        )
-
-    elif ord == 0:
-        tn_normalized_vector = tf.reduce_sum(
-            tf.cast(x != 0, "float32"), axis, keepdims
-        ).numpy()
+            ret = tf.math.multiply(x1, x2)[0]
+        ret = tf.cast(ret, dtype=dtype_from)  # return ret
 
     else:
-        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
+        if len(x1.shape) == 1:
+            if len(x2.shape) == 2:
+                x1_padded_2 = True
+            elif len(x2.shape) > 2:
+                x1_padded = True
+            x1 = tf.expand_dims(x1, axis=0)
 
-    if tn_normalized_vector.shape == tuple():
-        ret = tf.expand_dims(tn_normalized_vector, 0)
-    else:
-        ret = tn_normalized_vector
+        elif len(x2.shape) == 1 and len(x1.shape) >= 2:
+            x2 = tf.expand_dims(x2, axis=1)
+            x2_padded = True
+
+        ret = tf.matmul(x1, x2)
+
+    ret = tf.cast(ret, dtype=dtype_from)
+    if x1_padded_2:
+        ret = ret[0]
+    elif x1_padded:
+        ret = tf.squeeze(ret, axis=-2)
+    elif x2_padded:
+        ret = tf.squeeze(ret, axis=-1)
     return ret
 
 
@@ -162,159 +187,6 @@ def matrix_power(
 
 
 # noinspection PyPep8Naming
-def svd(
-    x: Union[tf.Tensor, tf.Variable],
-    full_matrices: bool = True,
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("svd", "U S Vh")
-
-    batch_shape = tf.shape(x)[:-2]
-    num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
-    VT = tf.transpose(V, transpose_dims)
-    ret = results(U, D, VT)
-    return ret
-
-
-def outer(
-    x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.outer(x1, x2)
-
-
-def diagonal(
-    x: Union[tf.Tensor, tf.Variable], offset: int = 0, axis1: int = -2, axis2: int = -1
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
-    return ret
-
-
-def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
-    res = namedtuple("qr", ["Q", "R"])
-    if mode == "reduced":
-        q, r = tf.linalg.qr(x, full_matrices=False)
-        ret = res(q, r)
-    elif mode == "complete":
-        q, r = tf.linalg.qr(x, full_matrices=True)
-        ret = res(q, r)
-    else:
-        raise Exception(
-            "Only 'reduced' and 'complete' qr modes are allowed "
-            "for the tensorflow backend."
-        )
-    return ret
-
-
-def matmul(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype_from = tf.experimental.numpy.promote_types(
-        x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
-    )
-    dtype_from = tf.as_dtype(dtype_from)
-    if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
-        x1 = tf.cast(x1, tf.int64)
-        x2 = tf.cast(x2, tf.int64)
-    if x1.dtype != x2.dtype:
-        x1 = tf.cast(x1, dtype_from)
-        x2 = tf.cast(x2, dtype_from)
-
-    if (
-        x1.shape == ()
-        or x2.shape == ()
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
-        or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
-        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
-    ):
-        raise Exception("Error,shapes not compatible")
-
-    x1_padded = False
-    x1_padded_2 = False
-    x2_padded = False
-
-    if len(x1.shape) == len(x2.shape) == 1:
-        if x1.shape == 0:
-            ret = tf.constant(0)
-        else:
-
-            ret = tf.math.multiply(x1, x2)[0]
-        ret = tf.cast(ret, dtype=dtype_from)
-        # return ret
-
-    else:
-        if len(x1.shape) == 1:
-            if len(x2.shape) == 2:
-                x1_padded_2 = True
-            elif len(x2.shape) > 2:
-                x1_padded = True
-            x1 = tf.expand_dims(x1, axis=0)
-
-        elif len(x2.shape) == 1 and len(x1.shape) >= 2:
-            x2 = tf.expand_dims(x2, axis=1)
-            x2_padded = True
-
-        ret = tf.matmul(x1, x2)
-
-    ret = tf.cast(ret, dtype=dtype_from)
-    if x1_padded_2:
-        ret = ret[0]
-    elif x1_padded:
-        ret = tf.squeeze(ret, axis=-2)
-    elif x2_padded:
-        ret = tf.squeeze(ret, axis=-1)
-    return ret
-
-
-def svdvals(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.svd(x, compute_uv=False)
-    return ret
-
-
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = tf.linalg.slogdet(x)
-    ret = results(sign, logabsdet)
-    return ret
-
-
-def trace(
-    x: Union[tf.Tensor, tf.Variable],
-    offset: int = 0,
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.trace(
-        x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
-    )
-    return ret
-
-
-def det(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.det(x)
-    return ret
-
-
-def cholesky(
-    x: Union[tf.Tensor, tf.Variable],
-    upper: bool = False,
-) -> Union[tf.Tensor, tf.Variable]:
-    if not upper:
-        ret = tf.linalg.cholesky(x)
-    else:
-        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)), perm=axes)
-    return ret
-
-
-def eigvalsh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.eigvalsh(x)
-    return ret
-
-
 def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -339,37 +211,53 @@ def matrix_rank(
     return ret
 
 
-def cross(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    axis: int = -1,
+def matrix_transpose(
+    x: Union[tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
+    ret = tf.experimental.numpy.swapaxes(x, -1, -2)
     return ret
 
 
-# Extra #
-# ------#
-
-
-def vector_to_skew_symmetric_matrix(
-    vector: Union[tf.Tensor, tf.Variable],
+# noinspection PyUnusedLocal,PyShadowingBuiltins
+def outer(
+    x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
-    batch_shape = list(vector.shape[:-1])
-    # BS x 3 x 1
-    vector_expanded = tf.expand_dims(vector, -1)
-    # BS x 1 x 1
-    a1s = vector_expanded[..., 0:1, :]
-    a2s = vector_expanded[..., 1:2, :]
-    a3s = vector_expanded[..., 2:3, :]
-    # BS x 1 x 1
-    zs = tf.zeros(batch_shape + [1, 1])
-    # BS x 1 x 3
-    row1 = tf.concat((zs, -a3s, a2s), -1)
-    row2 = tf.concat((a3s, zs, -a1s), -1)
-    row3 = tf.concat((-a2s, a1s, zs), -1)
-    # BS x 3 x 3
-    ret = tf.concat((row1, row2, row3), -2)
+    return tf.experimental.numpy.outer(x1, x2)
+
+
+def pinv(
+    x: Union[tf.Tensor, tf.Variable],
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if rtol is None:
+        ret = tf.linalg.pinv(x)
+    else:
+        ret = tf.linalg.pinv(tf.cast(x != 0, "float32"), tf.cast(rtol != 0, "float32"))
+    return ret
+
+
+def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
+    res = namedtuple("qr", ["Q", "R"])
+    if mode == "reduced":
+        q, r = tf.linalg.qr(x, full_matrices=False)
+        ret = res(q, r)
+    elif mode == "complete":
+        q, r = tf.linalg.qr(x, full_matrices=True)
+        ret = res(q, r)
+    else:
+        raise Exception(
+            "Only 'reduced' and 'complete' qr modes are allowed "
+            "for the tensorflow backend."
+        )
+    return ret
+
+
+def slogdet(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = tf.linalg.slogdet(x)
+    ret = results(sign, logabsdet)
     return ret
 
 
@@ -407,4 +295,113 @@ def solve(
 
     if expanded_last:
         ret = tf.squeeze(ret, axis=-1)
+    return ret
+
+
+def svd(
+    x: Union[tf.Tensor, tf.Variable],
+    full_matrices: bool = True,
+) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
+    results = namedtuple("svd", "U S Vh")
+
+    batch_shape = tf.shape(x)[:-2]
+    num_batch_dims = len(batch_shape)
+    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
+    D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
+    VT = tf.transpose(V, transpose_dims)
+    ret = results(U, D, VT)
+    return ret
+
+
+def svdvals(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.linalg.svd(x, compute_uv=False)
+    return ret
+
+
+def tensordot(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+) -> Union[tf.Tensor, tf.Variable]:
+    # find type to promote to
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+
+    # type casting to float32 which is acceptable for tf.tensordot
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+
+    ret = tf.cast(tf.tensordot(x1, x2, axes), dtype)
+    return ret
+
+
+def trace(
+    x: Union[tf.Tensor, tf.Variable],
+    offset: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.experimental.numpy.trace(
+        x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype
+    )
+    return ret
+
+
+def vecdot(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    axis: int = -1,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    return ret
+
+
+def vector_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+) -> Union[tf.Tensor, tf.Variable]:
+    if ord == -float("inf"):
+        tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
+    elif ord == -1:
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+            1.0 / ord
+        )
+
+    elif ord == 0:
+        tn_normalized_vector = tf.reduce_sum(
+            tf.cast(x != 0, "float32"), axis, keepdims
+        ).numpy()
+
+    else:
+        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
+
+    if tn_normalized_vector.shape == tuple():
+        ret = tf.expand_dims(tn_normalized_vector, 0)
+    else:
+        ret = tn_normalized_vector
+    return ret
+
+
+# Extra #
+# ------#
+
+
+def vector_to_skew_symmetric_matrix(
+    vector: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = tf.expand_dims(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = tf.zeros(batch_shape + [1, 1])
+    # BS x 1 x 3
+    row1 = tf.concat((zs, -a3s, a2s), -1)
+    row2 = tf.concat((a3s, zs, -a1s), -1)
+    row3 = tf.concat((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    ret = tf.concat((row1, row2, row3), -2)
     return ret

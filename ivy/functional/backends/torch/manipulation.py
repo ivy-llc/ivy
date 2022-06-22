@@ -5,12 +5,66 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
+# Array API Standard #
+# -------------------#
+
+
+def concat(
+    xs: List[torch.Tensor], axis: int = 0, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    if axis is None:
+        is_tuple = type(xs) is tuple
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            xs[i] = torch.flatten(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+        axis = 0
+    return torch.cat(xs, dim=axis, out=out)
+
+
+def expand_dims(x: torch.Tensor, axis: int = 0) -> torch.Tensor:
+    ret = torch.unsqueeze(x, axis)
+    return ret
+
+
+def flip(
+    x: torch.Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+) -> torch.Tensor:
+    num_dims: int = len(x.shape)
+    if not num_dims:
+        return x
+    if axis is None:
+        new_axis: List[int] = list(range(num_dims))
+    else:
+        new_axis: List[int] = axis
+    if isinstance(new_axis, int):
+        new_axis = [new_axis]
+    else:
+        new_axis = new_axis
+    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+    ret = torch.flip(x, new_axis)
+    return ret
+
+
+def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
+    ret = torch.permute(x, axes)
+    return ret
+
+
+def reshape(
+    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
+) -> torch.Tensor:
+    ret = torch.reshape(x, shape)
+    return ret
+
+
 def roll(
     x: torch.Tensor,
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
 ) -> torch.Tensor:
-
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
@@ -49,36 +103,6 @@ def squeeze(
     return x
 
 
-# noinspection PyShadowingBuiltins
-def flip(
-    x: torch.Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None
-) -> torch.Tensor:
-    num_dims: int = len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        new_axis: List[int] = list(range(num_dims))
-    else:
-        new_axis: List[int] = axis
-    if isinstance(new_axis, int):
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    ret = torch.flip(x, new_axis)
-    return ret
-
-
-def expand_dims(x: torch.Tensor, axis: int = 0) -> torch.Tensor:
-    ret = torch.unsqueeze(x, axis)
-    return ret
-
-
-def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
-    ret = torch.permute(x, axes)
-    return ret
-
-
 def stack(
     x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     axis: Optional[int] = 0,
@@ -87,28 +111,6 @@ def stack(
 ) -> torch.Tensor:
     ret = torch.stack(x, axis, out=out)
     return ret
-
-
-def reshape(
-    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
-) -> torch.Tensor:
-    ret = torch.reshape(x, shape)
-    return ret
-
-
-def concat(
-    xs: List[torch.Tensor], axis: int = 0, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    if axis is None:
-        is_tuple = type(xs) is tuple
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            xs[i] = torch.flatten(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-        axis = 0
-    return torch.cat(xs, dim=axis, out=out)
 
 
 # Extra #

@@ -15,13 +15,12 @@ from ivy.functional.backends.mxnet import (
 # -------------------#
 
 
-def sum(
+def max(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Union[int, Tuple[int, ...]] = None,
     keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
-
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -31,7 +30,51 @@ def sum(
         axis = tuple(axis)
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
-    ret = mx.nd.sum(x, axis=axis, keepdims=keepdims)
+    ret = mx.nd.max(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
+
+
+def mean(
+    x: mx.nd.NDArray,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        x = _flat_array_to_1_dim_array(x)
+    ret = mx.nd.mean(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
+
+
+def min(
+    x: mx.nd.NDArray,
+    axis: Union[int, Tuple[int, ...]] = None,
+    keepdims: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        x = _flat_array_to_1_dim_array(x)
+    ret = mx.nd.min(x, axis=axis, keepdims=keepdims)
     if ivy.exists(out):
         return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
     else:
@@ -62,7 +105,29 @@ def prod(
         return _handle_output(x, axis, keepdims, ret)
 
 
-def mean(
+def std(
+    x: mx.nd.NDArray,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    red_var = var(x, axis, keepdims)
+    is_flat = red_var.shape == ()
+    if is_flat:
+        red_var = _flat_array_to_1_dim_array(red_var)
+    red_std = red_var**0.5
+    if is_flat:
+        if ivy.exists(out):
+            return ivy.inplace_update(out, _1_dim_array_to_flat_array(red_std))
+        else:
+            return _1_dim_array_to_flat_array(red_std)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, red_std)
+    else:
+        return red_std
+
+
+def sum(
     x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
@@ -77,7 +142,7 @@ def mean(
         axis = tuple(axis)
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
-    ret = mx.nd.mean(x, axis=axis, keepdims=keepdims)
+    ret = mx.nd.sum(x, axis=axis, keepdims=keepdims)
     if ivy.exists(out):
         return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
     else:
@@ -106,72 +171,6 @@ def var(
         return ivy.inplace_update(out, ret)
     else:
         return ret
-
-
-def std(
-    x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    red_var = var(x, axis, keepdims)
-    is_flat = red_var.shape == ()
-    if is_flat:
-        red_var = _flat_array_to_1_dim_array(red_var)
-    red_std = red_var**0.5
-    if is_flat:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, _1_dim_array_to_flat_array(red_std))
-        else:
-            return _1_dim_array_to_flat_array(red_std)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, red_std)
-    else:
-        return red_std
-
-
-def min(
-    x: mx.nd.NDArray,
-    axis: Union[int, Tuple[int, ...]] = None,
-    keepdims: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, Number):
-        axis = (axis,)
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    if x.shape == ():
-        x = _flat_array_to_1_dim_array(x)
-    ret = mx.nd.min(x, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
-    else:
-        return _handle_output(x, axis, keepdims, ret)
-
-
-def max(
-    x: mx.nd.NDArray,
-    axis: Union[int, Tuple[int, ...]] = None,
-    keepdims: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, Number):
-        axis = (axis,)
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    if x.shape == ():
-        x = _flat_array_to_1_dim_array(x)
-    ret = mx.nd.max(x, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
-    else:
-        return _handle_output(x, axis, keepdims, ret)
 
 
 # Extra #
