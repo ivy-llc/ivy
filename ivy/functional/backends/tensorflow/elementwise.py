@@ -1,25 +1,19 @@
 # global
 import tensorflow as tf
-from typing import Tuple, Union
+from typing import Union
 
 # local
 import ivy
 
 
-def _cast_for_binary_op(
-    x1: Union[tf.Tensor, tf.Variable], x2: Union[tf.Tensor, tf.Variable]
-) -> Tuple[
-    Union[tf.Tensor, tf.Variable, int, float, bool],
-    Union[tf.Tensor, tf.Variable, int, float, bool],
-]:
-    x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1, x2
-    x2_bits = ivy.functional.backends.tensorflow.dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = _tf_cast(x2, x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = _tf_cast(x1, x2.dtype)
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, tf.Tensor):
+        if isinstance(x2, tf.Tensor):
+            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+            x1 = tf.cast(x1, promoted_type)
+            x2 = tf.cast(x2, promoted_type)
+        else:
+            x2 = tf.constant(x2, dtype=x1.dtype)
     return x1, x2
 
 
