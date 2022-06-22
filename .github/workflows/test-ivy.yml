@@ -2,7 +2,6 @@ name: test-ivy
 on:
   push:
   pull_request:
-    types: [unlabeled]
 
 jobs:
   run-docstring-tests:
