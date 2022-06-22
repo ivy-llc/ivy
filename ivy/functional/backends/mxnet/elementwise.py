@@ -10,6 +10,12 @@ from ivy.functional.backends.mxnet import (
 )
 
 
+def _cast_for_unary_op(x):
+    if not isinstance(x, mx.nd.NDArray):
+        x = mx.nd.array([x])
+    return x
+
+
 def _cast_for_binary_op(x1, x2):
     if not isinstance(x1, mx.nd.NDArray):
         x1 = mx.nd.array([x1])
@@ -170,9 +176,9 @@ def sin(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def negative(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.np.negative(x)
-    return ret
+def negative(x: Union[float, mx.nd.NDArray]) -> mx.nd.NDArray:
+    x = _cast_for_unary_op(x)
+    return mx.np.negative(x)
 
 
 @_handle_flat_arrays_in_out
@@ -230,9 +236,9 @@ def subtract(
 
 
 @_handle_flat_arrays_in_out
-def abs(x: mx.nd.NDArray) -> mx.nd.ndarray.NDArray:
-    ret = mx.nd.abs(x)
-    return ret
+def abs(x: Union[float, mx.nd.NDArray]) -> mx.nd.ndarray.NDArray:
+    x = _cast_for_unary_op(x)
+    return mx.nd.abs(x)
 
 
 def cos(x: mx.nd.NDArray) -> mx.nd.NDArray:
