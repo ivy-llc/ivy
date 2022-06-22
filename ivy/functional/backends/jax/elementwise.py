@@ -1,13 +1,27 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Optional
+from typing import Union, Optional
 
 # local
 from ivy.functional.backends.jax import JaxArray
 
 
-def abs(x: JaxArray) -> JaxArray:
+def _cast_for_bitwise_op(x1, x2):
+    if not isinstance(x1, int):
+        if isinstance(x2, int):
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
+
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, (int, float)):
+        if isinstance(x2, (int, float)):
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
+
+def abs(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.absolute(x)
 
 
@@ -19,7 +33,7 @@ def acosh(x: JaxArray) -> JaxArray:
     return jnp.arccosh(x)
 
 
-def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def add(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.add(x1, x2)
 
 
@@ -36,10 +50,7 @@ def atan(x: JaxArray) -> JaxArray:
 
 
 def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
@@ -47,37 +58,32 @@ def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
-def bitwise_and(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_and(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_and(x1, x2)
 
 
-def bitwise_invert(x: JaxArray) -> JaxArray:
+def bitwise_invert(x: Union[int, JaxArray]) -> JaxArray:
     return jnp.bitwise_not(x)
 
 
-def bitwise_left_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_left_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.left_shift(x1, x2)
 
 
-def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_or(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_or(x1, x2)
 
 
-def bitwise_right_shift(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_right_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.right_shift(x1, x2)
 
 
-def bitwise_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def bitwise_xor(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_xor(x1, x2)
 
 
@@ -96,13 +102,12 @@ def cosh(x: JaxArray) -> JaxArray:
     return jnp.cosh(x)
 
 
-def divide(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.divide(x1, x2)
 
 
-def equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.equal(x1, x2)
 
 
@@ -121,17 +126,16 @@ def floor(x: JaxArray) -> JaxArray:
         return jnp.floor(x)
 
 
-def floor_divide(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.floor_divide(x1, x2)
 
 
-def greater(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater(x1, x2)
 
 
-def greater_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def greater_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater_equal(x1, x2)
 
 
@@ -147,11 +151,11 @@ def isnan(x: JaxArray) -> JaxArray:
     return jnp.isnan(x)
 
 
-def less(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def less(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less(x1, x2)
 
 
-def less_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def less_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less_equal(x1, x2)
 
 
@@ -191,37 +195,31 @@ def logical_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.logical_xor(x1, x2)
 
 
-def multiply(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def multiply(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.multiply(x1, x2)
 
 
-def negative(x: JaxArray) -> JaxArray:
+def negative(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.negative(x)
 
 
-def not_equal(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
-def positive(x: JaxArray) -> JaxArray:
+def positive(x: Union[float, JaxArray]) -> JaxArray:
     return jnp.positive(x)
 
 
-def pow(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.power(x1, x2)
 
 
-def remainder(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
+def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.remainder(x1, x2)
 
 
@@ -252,11 +250,8 @@ def square(x: JaxArray) -> JaxArray:
     return jnp.square(x)
 
 
-def subtract(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
+def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.subtract(x1, x2)
 
 
