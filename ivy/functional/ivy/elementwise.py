@@ -608,8 +608,8 @@ def atanh(
 @handle_out_argument
 @handle_nestable
 def bitwise_and(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -642,7 +642,7 @@ def bitwise_and(
 @handle_out_argument
 @handle_nestable
 def bitwise_invert(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -677,8 +677,8 @@ def bitwise_invert(
 @handle_out_argument
 @handle_nestable
 def bitwise_left_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -712,8 +712,8 @@ def bitwise_left_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_or(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -746,8 +746,8 @@ def bitwise_or(
 @handle_out_argument
 @handle_nestable
 def bitwise_right_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -791,8 +791,8 @@ def bitwise_right_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_xor(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
