@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
+from typing import Optional, Union, Callable
 from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
@@ -376,24 +377,24 @@ def _train_tasks(
 
 @to_native_arrays_and_back
 def fomaml_step(
-    batch,
-    inner_cost_fn,
-    outer_cost_fn,
+    batch: Union[ivy.Array, ivy.NativeArray],
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
     variables,
     inner_grad_steps,
     inner_learning_rate,
     inner_optimization_step=gradient_descent_update,
-    inner_batch_fn=None,
-    outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: Optional[bool] = False,
+    batched: Optional[bool] = True,
     inner_v=None,
-    keep_inner_v=True,
+    keep_inner_v: Optional[bool] = True,
     outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
+    keep_outer_v: Optional[bool] = True,
+    return_inner_v: Optional[bool] = False,
     num_tasks=None,
-    stop_gradients=True,
+    stop_gradients: Optional[bool] = True,
 ):
     """Perform step of first order MAML.
 
