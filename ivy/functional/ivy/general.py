@@ -1836,6 +1836,7 @@ def cumprod(
                        [5, 7], \
                        [11, 13]])
     >>> exclusivity = True
+    >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=exclusivity, out=y)
     >>> print(y)
     ivy.array([[1,  2], 
