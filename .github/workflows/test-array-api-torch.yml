@@ -3,9 +3,9 @@ on:
   push:
   pull_request:
     types: [unlabeled, opened, reopened, edited]
+  workflow_dispatch:
 jobs:
   run-torch-array-api-tests:
-    if: ${{ github.event.label.name!='Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
