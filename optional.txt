@@ -9,7 +9,7 @@ jaxlib
 tensorflow
 tensorflow-addons # mod_name=tensorflow_addons
 tensorflow-probability # mod_name=tensorflow_probability
-torch==1.10.0+cpu
+torch==1.11.0+cpu
 torch-scatter==2.0.9 # mod_name=torch_scatter
 functorch
 mxnet
