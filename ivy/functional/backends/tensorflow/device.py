@@ -5,7 +5,7 @@ signature.
 # global
 _round = round
 import tensorflow as tf
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -30,14 +30,15 @@ def dev(
     return as_ivy_dev(dv)
 
 
-def to_dev(
+def to_device(
     x: Union[tf.Tensor, tf.Variable],
     device: str,
+    stream: Optional[int] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
     device = as_native_dev(device)
-    current_dev = _dev_callable(x)
+    current_dev = dev(x)
     if not _same_device(current_dev, device):
         with tf.device("/" + device.upper()):
             return tf.identity(x)
@@ -68,9 +69,6 @@ def as_native_dev(device):
 
 def clear_mem_on_dev(device):
     return None
-
-
-_dev_callable = dev
 
 
 def num_gpus() -> int:
