@@ -52,6 +52,14 @@ def unique_all(
     )
 
 
+def unique_counts(
+    x: Union[tf.Tensor, tf.Variable],
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+    uc = namedtuple("uc", ["values", "counts"])
+    v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
+    return uc(v, c)
+
+
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
 ) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
@@ -64,11 +72,3 @@ def unique_inverse(
 def unique_values(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
     return ret
-
-
-def unique_counts(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
-    uc = namedtuple("uc", ["values", "counts"])
-    v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
-    return uc(v, c)

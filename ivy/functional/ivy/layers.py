@@ -427,7 +427,7 @@ def multi_head_attention(
     )
 
     # BS x K x (HxF),  BS x K x (HxF)
-    if isinstance(kv, tuple):
+    if isinstance(kv, list):
         k, v = kv
     else:
         k, v = ivy.split(kv, 2, -1)
