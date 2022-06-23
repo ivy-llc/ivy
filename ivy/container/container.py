@@ -114,8 +114,10 @@ class Container(
         return self.map(lambda x, kc: power**x)
 
     def __add__(self, other):
-        return ivy.Container.multi_map(lambda xs,_: sum(xs),[self,other],map_sequences=True)
-        
+        return ivy.Container.multi_map(
+            lambda xs, _: sum(xs), [self, other], map_sequences=True
+        )
+
     def __radd__(self, other):
         return self.static_add(other, self)
 
