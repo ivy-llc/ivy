@@ -6,7 +6,6 @@ from typing import Optional, Tuple
 def argmax(
     x: np.ndarray,
     axis: Optional[int] = None,
-    out: Optional[int] = None,
     keepdims: bool = False,
 ) -> np.ndarray:
     return np.argmax(x, axis=axis, keepdims=keepdims)
@@ -15,10 +14,9 @@ def argmax(
 def argmin(
     x: np.ndarray,
     axis: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
     keepdims: bool = False,
 ) -> np.ndarray:
-    return np.argmin(x, axis=axis, out=out, keepdims=keepdims)
+    return np.argmin(x, axis=axis, keepdims=keepdims)
 
 
 def nonzero(x: np.ndarray) -> Tuple[np.ndarray]:

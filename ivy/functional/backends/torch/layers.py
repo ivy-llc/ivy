@@ -1,7 +1,7 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import math as _math
+import math
 import torch
 from typing import List, Optional, Tuple, Union
 
@@ -22,7 +22,7 @@ def conv1d(
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -49,7 +49,7 @@ def conv1d_transpose(
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -63,13 +63,13 @@ def conv1d_transpose(
 
 # noinspection PyUnresolvedReferences
 def conv2d(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
     dilations: int = 1,
-):
+) -> torch.Tensor:
     filter_shape = list(filters.shape[0:2])
     filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
@@ -77,7 +77,7 @@ def conv2d(
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [int(_math.floor(item / 2)) for item in filter_shape]
+        padding_list: List[int] = [int(math.floor(item / 2)) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -106,7 +106,7 @@ def conv2d_transpose(
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -136,7 +136,7 @@ def depthwise_conv2d(
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -165,7 +165,7 @@ def conv3d(
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
@@ -192,7 +192,7 @@ def conv3d_transpose(
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
