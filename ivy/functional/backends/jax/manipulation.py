@@ -5,94 +5,16 @@ from typing import Union, Tuple, Optional, List
 from numbers import Number
 
 # local
-from ivy.functional.backends.jax import JaxArray
 import ivy
-
-
-def roll(
-    x: JaxArray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-) -> JaxArray:
-    return jnp.roll(x, shift, axis)
-
-
-def squeeze(
-    x: JaxArray,
-    axis: Union[int, Tuple[int], List[int]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            ret = x
-        raise ValueError(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
-        )
-    else:
-        ret = jnp.squeeze(x, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+from ivy.functional.backends.jax import JaxArray
 
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
-# noinspection PyShadowingBuiltins
-def flip(
-    x: JaxArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    ret = jnp.flip(x, axis=axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    try:
-        ret = jnp.expand_dims(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
-    except ValueError as error:
-        raise IndexError(error)
-
-
-def stack(
-    x: Union[Tuple[JaxArray], List[JaxArray]],
-    axis: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if axis is None:
-        axis = 0
-    ret = jnp.stack(x, axis=axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def permute_dims(
-    x: JaxArray, axes: Tuple[int, ...], out: Optional[JaxArray] = None
-) -> JaxArray:
-    ret = jnp.transpose(x, axes)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def reshape(
-    x: JaxArray,
-    shape: Tuple[int, ...],
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    ret = jnp.reshape(x, shape)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+# Array API Standard #
+# -------------------#
 
 
 def concat(
@@ -110,8 +32,66 @@ def concat(
             xs = tuple(xs)
 
     ret = jnp.concatenate(xs, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+    try:
+        ret = jnp.expand_dims(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    except ValueError as error:
+        raise IndexError(error)
+
+
+def flip(
+    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+) -> JaxArray:
+    ret = jnp.flip(x, axis=axis)
+    return ret
+
+
+def permute_dims(
+    x: JaxArray, axes: Tuple[int, ...], out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.transpose(x, axes)
+    return ret
+
+
+def reshape(
+    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+) -> JaxArray:
+    ret = jnp.reshape(x, shape)
+    return ret
+
+
+def roll(
+    x: JaxArray,
+    shift: Union[int, Tuple[int, ...]],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+) -> JaxArray:
+    return jnp.roll(x, shift, axis)
+
+
+def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxArray:
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            ret = x
+        raise ValueError(
+            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
+    else:
+        ret = jnp.squeeze(x, axis)
+    return ret
+
+
+def stack(
+    x: Union[Tuple[JaxArray], List[JaxArray]], axis: Optional[int] = None
+) -> JaxArray:
+    if axis is None:
+        axis = 0
+    ret = jnp.stack(x, axis=axis)
     return ret
 
 
@@ -143,30 +123,18 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return jnp.split(x, num_or_size_splits, axis)
 
 
-def repeat(
-    x: JaxArray,
-    repeats: Union[int, List[int]],
-    axis: int = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
+def repeat(x: JaxArray, repeats: Union[int, List[int]], axis: int = None) -> JaxArray:
     ret = jnp.repeat(x, repeats, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.tile(x, reps)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def clip(
-    x: JaxArray,
-    x_min: Union[Number, JaxArray],
-    x_max: Union[Number, JaxArray],
-    out: Optional[JaxArray] = None,
+    x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
     if (
         hasattr(x_min, "dtype")
@@ -199,27 +167,18 @@ def clip(
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
     ret = jnp.clip(x, x_min, x_max)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def constant_pad(
-    x: JaxArray,
-    pad_width: List[List[int]],
-    value: Number = 0.0,
-    out: Optional[JaxArray] = None,
+    x: JaxArray, pad_width: List[List[int]], value: Number = 0.0
 ) -> JaxArray:
     ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 def zero_pad(x: JaxArray, pad_width: List[List[int]], out: Optional[JaxArray] = None):
     ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -227,6 +186,4 @@ def swapaxes(
     x: JaxArray, axis0: int, axis1: int, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.swapaxes(x, axis0, axis1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret

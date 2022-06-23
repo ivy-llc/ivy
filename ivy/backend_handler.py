@@ -2,17 +2,16 @@
 import ivy
 import logging
 import importlib
-import collections
 import numpy as np
 from ivy import verbosity
 from typing import Optional
 
 # local
-# noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_functions, _unwrap_functions
+from ivy.func_wrapper import _wrap_function
 
 
 backend_stack = []
+implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
 
@@ -32,7 +31,7 @@ _array_types = dict()
 _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
-_array_types["tensorflow.python.backend.ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
@@ -100,19 +99,19 @@ def _determine_backend_from_args(args):
 
 
 def current_backend(*args, **kwargs):
-    """Returns the current backend backend. Priorities:
+    """Returns the current backend. Priorities:
     global_backend > argument's backend.
 
     Parameters
     ----------
     *args/**kwargs
-        the arguments from which to try to infer the backend backend, when there is
+        the arguments from which to try to infer the backend, when there is
         no globally set backend.
 
     Returns
     -------
     ret
-        Ivy's current backend backend.
+        Ivy's current backend.
 
     Examples
     --------
@@ -131,6 +130,7 @@ def current_backend(*args, **kwargs):
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
 
     """
+    global implicit_backend
     # if a global backend has been set with set_backend then this will be returned
     if backend_stack:
         f = backend_stack[-1]
@@ -140,14 +140,12 @@ def current_backend(*args, **kwargs):
 
     # if no global backend exists, we try to infer the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
-    if f is None:
-        raise ValueError(
-            "get_backend failed to find a valid library from the inputs: "
-            "{} {}".format(args, kwargs)
-        )
+    if f is not None:
+        implicit_backend = f.current_backend_str()
+        return f
     if verbosity.level > 0:
         verbosity.cprint("Using backend from type: {}".format(f))
-    return f
+    return importlib.import_module(_backend_dict[implicit_backend])
 
 
 def set_backend(backend: str):
@@ -171,8 +169,8 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+    ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
-    global ivy_original_fn_dict
     if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(backend, str):
@@ -185,27 +183,19 @@ def set_backend(backend: str):
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
-    ivy_original_fn_dict.clear()
-    # loop through items in ivy dict and replace ivy's implementations `v` with the
-    # appropriate backend implementation (backend specified by `backend`)
+
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        specific_v = backend.__dict__[k]
-        if hasattr(v, "array_spec"):
-            specific_v.array_spec = v.array_spec
-        ivy.__dict__[k] = specific_v
-        if isinstance(specific_v, collections.abc.Hashable):
-            try:
-                ivy_original_fn_dict[specific_v] = v
-            except TypeError:
-                pass
-    _wrap_functions()
+
+        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
+    ivy.locks["backend_setter"].release()
 
 
 def get_backend(backend: Optional[str] = None):
@@ -287,13 +277,12 @@ def unset_backend():
     >>> ivy.unset_backend()
     >>> x = ivy.native_array([1])
     >>> print(type(x))
-    <class 'tensorflow.python.backend.ops.EagerTensor'>
+    <class'tensorflow.python.framework.ops.EagerTensor'>
 
     """
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`
     if backend_stack:
-        _unwrap_functions()
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()
@@ -302,12 +291,14 @@ def unset_backend():
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )
+        # wrap backend functions if there still is a backend, and add functions
+        # to ivy namespace
         for k, v in new_backend_dict.items():
+            if backend_stack and k in ivy.__dict__:
+                v = _wrap_function(k, v, ivy.__dict__[k])
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
-    if backend_stack:
-        _wrap_functions()
     return backend
 
 

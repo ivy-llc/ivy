@@ -1,3 +1,8 @@
+# global
+import warnings
+
+warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
 # class placeholders
 
 
@@ -73,6 +78,8 @@ class Node(str):
 
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
+warning_level_stack = list()
+warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
 # global constants
@@ -81,6 +88,7 @@ _MIN_BASE = 1e-5
 
 
 # local
+import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
 from .container import (
@@ -104,15 +112,6 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from . import backend_handler, func_wrapper
-from .debugger import (
-    set_debug_mode,
-    set_breakpoint_debug_mode,
-    set_exception_debug_mode,
-    unset_debug_mode,
-    debug_mode,
-    debug_mode_val,
-)
-from . import debugger
 from . import functional
 from .functional import *
 from . import stateful
@@ -382,6 +381,8 @@ promotion_table = {
     (bool, bool): bool,
 }
 
+locks = {"backend_setter": threading.Lock()}
+
 backend = "none"
 
 if "IVY_BACKEND" in os.environ:
@@ -403,10 +404,10 @@ def _sf(x, sig_fig=3):
             x, precision=sig_fig, unique=False, fractional=False, trim="k"
         )
     )
-    if np.issubdtype(type(x), np.uint):
+    if "uint" in type(x).__name__:
         f = np.uint(f)
-    if np.issubdtype(type(x), np.int):
-        f = np.int(f)
+    elif "int" in type(x).__name__:
+        f = int(f)
     x = f
     return x
 
@@ -511,3 +512,45 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+
+
+def warning_level():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current warning level, default is "ivy_only"
+    """
+    global warning_level_stack
+    if not warning_level_stack:
+        ret = "ivy_only"
+    else:
+        ret = warning_level_stack[-1]
+    return ret
+
+
+def set_warning_level(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    warn_level
+        string for the warning level to be set, one of "none", "ivy_only", "all"
+
+    """
+    global warning_level_stack
+    warning_level_stack.append(warn_level)
+
+
+def unset_warning_level():
+    """"""
+    global warning_level_stack
+    if warning_level_stack:
+        warning_level_stack.pop(-1)
+
+
+def warn(warning_message, stacklevel=0):
+    warn_level = warning_level()
+    warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
+    warnings.warn(warning_message, stacklevel=stacklevel)

@@ -26,10 +26,10 @@ import ivy.functional.backends.numpy as ivy_np
         max_size="num_arrays",
         size_bounds=[2, 3],
     ),
-    dtype=helpers.array_dtypes(),
+    input_dtype=helpers.array_dtypes(),
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args(fn_name="concat"),
     native_array=helpers.array_bools(),
     container=helpers.array_bools(),
     instance_method=st.booleans(),
@@ -39,7 +39,7 @@ def test_concat(
     common_shape,
     unique_idx,
     unique_dims,
-    dtype,
+    input_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -54,10 +54,10 @@ def test_concat(
         np.random.uniform(
             size=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:]
         ).astype(dt)
-        for ud, dt in zip(unique_dims, dtype)
+        for ud, dt in zip(unique_dims, input_dtype)
     ]
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -77,10 +77,10 @@ def test_concat(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
     ),
     unique_idx=helpers.integers(0, "num_dims"),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -89,7 +89,7 @@ def test_concat(
 def test_expand_dims(
     array_shape,
     unique_idx,
-    dtype,
+    input_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -100,15 +100,15 @@ def test_expand_dims(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     np.random.seed(seed)
 
-    x = np.random.uniform(size=array_shape).astype(dtype)
+    x = np.random.uniform(size=array_shape).astype(input_dtype)
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -128,10 +128,10 @@ def test_expand_dims(
         st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
     ),
     axis=helpers.valid_axes(ndim="num_dims", size_bounds=[1, 3]),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="flip"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -140,7 +140,7 @@ def test_expand_dims(
 def test_flip(
     array_shape,
     axis,
-    dtype,
+    input_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -151,15 +151,15 @@ def test_flip(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     np.random.seed(seed)
 
-    x = np.random.uniform(size=array_shape).astype(dtype)
+    x = np.random.uniform(size=array_shape).astype(input_dtype)
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -178,10 +178,10 @@ def test_flip(
     array_shape=helpers.lists(
         st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="permute_dims"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -189,7 +189,7 @@ def test_flip(
 )
 def test_permute_dims(
     array_shape,
-    dtype,
+    input_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -200,16 +200,16 @@ def test_permute_dims(
     fw,
 ):
     # smoke this for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     np.random.seed(seed)
 
-    x = np.random.uniform(size=array_shape).astype(dtype)
+    x = np.random.uniform(size=array_shape).astype(input_dtype)
     axes = np.random.permutation(len(array_shape)).tolist()
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -231,18 +231,18 @@ def test_permute_dims(
     array_shape=helpers.lists(
         st.integers(1, 10), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="reshape"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_reshape(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -253,16 +253,16 @@ def test_reshape(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # draw a valid reshape shape
     shape = data.draw(helpers.reshape_shapes(x.shape))
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -281,18 +281,18 @@ def test_reshape(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="roll"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_roll(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -303,10 +303,10 @@ def test_roll(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     ndim = len(x.shape)
 
     valid_shifts = st.integers(-5, 5) | st.lists(
@@ -333,7 +333,7 @@ def test_roll(
     axis = data.draw(valid_axis)
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -353,18 +353,18 @@ def test_roll(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ).filter(lambda s: 1 in s),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="squeeze"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_squeeze(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -375,10 +375,10 @@ def test_squeeze(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     squeezable_axes = [i for i, side in enumerate(x.shape) if side == 1]
 
     valid_axis = st.sampled_from(squeezable_axes) | helpers.subsets(squeezable_axes)
@@ -392,7 +392,7 @@ def test_squeeze(
             return
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -412,11 +412,11 @@ def test_squeeze(
         st.integers(0, 3), min_size="num_dims", max_size="num_dims", size_bounds=[0, 3]
     ),
     num_arrays=st.shared(st.integers(1, 3), key="num_arrays"),
-    dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    input_dtype=helpers.array_dtypes(na=st.shared(st.integers(1, 3), key="num_arrays")),
     data=st.data(),
     as_variable=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     native_array=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     container=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
     instance_method=st.booleans(),
@@ -424,7 +424,7 @@ def test_squeeze(
 def test_stack(
     array_shape,
     num_arrays,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -435,18 +435,18 @@ def test_stack(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     xs = [
-        data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype[i]))
+        data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype[i]))
         for i in range(num_arrays)
     ]
     ndim = len(xs[0].shape)
     axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -469,18 +469,17 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    input_dtype=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="repeat"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_repeat(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -494,12 +493,12 @@ def test_repeat(
     # smoke for torch
     # smoke for tensorflow as well, since it was throwing an error
     # as unint16 not implemented in Tile or something
-    if (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]) or (
-        fw == "tensorflow" and dtype in ["uint16"]
+    if (fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]) or (
+        fw == "tensorflow" and input_dtype in ["uint16"]
     ):
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     ndim = len(x.shape)
 
     valid_axis = st.none() | st.integers(-ndim, ndim - 1)
@@ -508,7 +507,7 @@ def test_repeat(
     repeats = data.draw(st.integers(1, 3))
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -528,18 +527,18 @@ def test_repeat(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="tile"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_tile(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -550,10 +549,10 @@ def test_tile(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # tensorflow needs that reps is exactly of same dimensions as the input
     # other frameworks can broadcast the results
@@ -569,7 +568,7 @@ def test_tile(
         )
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -588,18 +587,18 @@ def test_tile(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_constant_pad(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -610,10 +609,10 @@ def test_constant_pad(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     pads = [
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
         for _ in range(len(x.shape))
@@ -621,7 +620,7 @@ def test_constant_pad(
     constant = data.draw(st.integers(0, 10))
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -641,18 +640,18 @@ def test_constant_pad(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_zero_pad(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -663,17 +662,17 @@ def test_zero_pad(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     pads = [
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
         for _ in range(len(x.shape))
     ]
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -692,18 +691,18 @@ def test_zero_pad(
     array_shape=helpers.lists(
         st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="swapaxes"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_swapaxes(
     array_shape,
-    dtype,
+    input_dtype,
     data,
     as_variable,
     with_out,
@@ -714,16 +713,16 @@ def test_swapaxes(
     fw,
 ):
     # smoke for torch
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=dtype))
+    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     valid_axes = st.integers(0, len(x.shape) - 1)
     axis0 = data.draw(valid_axes)
     axis1 = data.draw(valid_axes)
 
     helpers.test_array_function(
-        dtype,
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -743,7 +742,7 @@ def test_swapaxes(
     x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=3),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(2, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="clip"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -780,16 +779,9 @@ def test_clip(
     max_val = np.maximum(min_val1, max_val1)
     if fw == "torch" and (
         any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or any(np.isnan(max_val))
-        or len(x) == 0
+        or np.isnan(max_val)
+        or np.isscalar(x)
     ):
-        return
-    if (
-        (len(min_val) != 0 and len(min_val) != 1)
-        or (len(max_val) != 0 and len(max_val) != 1)
-    ) and call in [helpers.mx_call]:
-        # mxnet only supports numbers or 0 or 1 dimensional arrays for min
-        # and max while performing clip
         return
     helpers.test_array_function(
         dtype,
@@ -832,7 +824,7 @@ def test_split(x_n_noss_n_axis_n_wr, dtype, data, tensor_fn, device, call, fw):
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    x = tensor_fn(x, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
     ret = ivy.split(x, num_or_size_splits, axis, with_remainder)
     # type test
     assert isinstance(ret, list)
