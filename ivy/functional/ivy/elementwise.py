@@ -404,6 +404,9 @@ def asin(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
@@ -412,7 +415,7 @@ def asin(
     ivy.array([nan,  0.,  0., nan, nan], dtype=float32)
 
     >>> x = ivy.array([-1, -0.5, 0.6, 1])
-    >>> y = ivy.zeros(3)
+    >>> y = ivy.zeros(4)
     >>> ivy.asin(x, out=y)
     >>> print(y)
     ivy.array([-1.5707964 , -0.5235988 ,
@@ -435,7 +438,8 @@ def asin(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), b=ivy.array([0.3, 0.4, 0.5]))
+    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \
+                          b=ivy.array([0.3, 0.4, 0.5]))
     >>> y = ivy.asin(x)
     >>> print(y)
     {
@@ -456,7 +460,8 @@ def asin(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), b=ivy.array([0.3, 0.4, 0.5]))
+    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \
+                          b=ivy.array([0.3, 0.4, 0.5]))
     >>> y = x.asin()
     >>> print(y)
     {
