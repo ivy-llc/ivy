@@ -20,6 +20,7 @@ import ivy_tests.test_ivy.helpers as helpers
 def test_cross_entropy(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -34,7 +35,7 @@ def test_cross_entropy(
     helpers.test_array_function(
         input_dtype,
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
@@ -59,6 +60,7 @@ def test_cross_entropy(
 def test_binary_cross_entropy(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -73,7 +75,7 @@ def test_binary_cross_entropy(
     helpers.test_array_function(
         input_dtype,
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
@@ -98,6 +100,7 @@ def test_binary_cross_entropy(
 def test_sparse_cross_entropy(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -112,7 +115,7 @@ def test_sparse_cross_entropy(
     helpers.test_array_function(
         input_dtype,
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
