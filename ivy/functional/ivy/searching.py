@@ -19,11 +19,11 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def argmax(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
@@ -54,14 +54,14 @@ def argmax(
 
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
     >>> print(y)
     ivy.array([1])
-    
+
     >>> x = ivy.array([-0., 1., -1.])
     >>> ivy.argmax(x,out=x)
     >>> print(x)
@@ -115,11 +115,11 @@ def argmax(
 @handle_out_argument
 @handle_nestable
 def argmin(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -265,7 +265,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    (array([0, 0, 1]), array([0, 1, 0]))
+    (ivy.array([0, 0, 1]), ivy.array([0, 1, 0]))
 
     >>> x = ivy.native_array([[0], [1], [1], [0], [1]])
     >>> y = ivy.nonzero(x)
@@ -281,8 +281,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[2], <class ivy.array.Array> shape=[2])
     }
+
     >>> print(y.a)
     (ivy.array([1, 2, 3]),)
+
     >>> print(y.b)
     (ivy.array([0, 0]), ivy.array([0, 1]))
 
@@ -301,7 +303,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
     >>> y = x.nonzero()
     >>> print(y)
-    (array([0, 0, 2, 2]), array([0, 1, 0, 1]))
+    tensor([[0,0],[0,1],[2,0],[2,1]])
 
     Using :code:`ivy.Container` instance method:
 
@@ -312,8 +314,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[1], <class ivy.array.Array> shape=[0])
     }
+
     >>> print(y.a)
     (ivy.array([0, 1, 2]),)
+
     >>> print(y.b)
     (ivy.array([]),)
     """
@@ -324,9 +328,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 @handle_out_argument
 @handle_nestable
 def where(
-    condition: Union[ivy.Array, ivy.NativeArray],
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+        condition: Union[ivy.Array, ivy.NativeArray],
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -422,7 +426,6 @@ def where(
 
     """
     return current_backend(x1).where(condition, x1, x2)
-
 
 # Extra #
 # ------#

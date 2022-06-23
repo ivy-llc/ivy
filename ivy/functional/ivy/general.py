@@ -2097,12 +2097,7 @@ def gather(
                         [[2, 0]]])
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
-    ivy.array([[[ 0.,  5.],
-                [ 2.,  7.]],
-               [[ 4.,  9.],
-                [ 6., 11.]],
-               [[ 8.,  1.],
-                [10.,  3.]]])
+    ivy.array([[[0.,5.]],[[4.,9.]],[[8.,1.]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2299,7 +2294,7 @@ def shape(
     --------
     >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
     >>> y_tuple = ivy.shape(x)
-    >>> y_tensor = ivy.shape(x, as_tensor = True)
+    >>> y_tensor = ivy.shape(x, as_array = True)
     >>> print(y_tuple)
     (2, 3)
 
