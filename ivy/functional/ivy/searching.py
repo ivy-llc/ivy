@@ -19,11 +19,11 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def argmax(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = None,
+    keepdims: Optional[bool] = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
@@ -115,11 +115,11 @@ def argmax(
 @handle_out_argument
 @handle_nestable
 def argmin(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = None,
+    keepdims: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -328,9 +328,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 @handle_out_argument
 @handle_nestable
 def where(
-        condition: Union[ivy.Array, ivy.NativeArray],
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
+    condition: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -426,6 +426,7 @@ def where(
 
     """
     return current_backend(x1).where(condition, x1, x2)
+
 
 # Extra #
 # ------#
