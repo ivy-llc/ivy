@@ -1879,6 +1879,63 @@ def cumprod(
     -------
     ret
         Input array with cumulatively multiplied elements along axis.
+        
+    Functional Examples
+    --------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    ivy.array([2, 6, 24])
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> exclusive = True
+    >>> y = ivy.cumprod(x, exclusive=exclusive)
+    >>> print(y)
+    ivy.array([1, 2, 6])
+    
+    Example specifying axes
+    
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
+    >>> print(y)
+    ivy.array([[1,  2], 
+               [1,  5], 
+               [1, 11]])
+     
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
+    >>> print(x)
+    ivy.array([[1,  2], 
+               [2,  3], 
+               [10, 21]])
+     
+     
+     With :code:`ivy.NativeArray` input:
+     
+     >>> x = ivy.native_array([2, 3, 4])
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     ivy.array([2, 6, 24])
+     
+     
+     With :code:`ivy.Container` input:
+     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     {
+         a: ivy.array([2, 6, 24]),
+         b: ivy.array([3, 12, 60])
+     }
 
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
