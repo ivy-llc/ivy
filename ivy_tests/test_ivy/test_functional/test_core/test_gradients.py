@@ -19,8 +19,6 @@ import ivy.functional.backends.numpy as ivy_np
     object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
 )
-# @pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-# @pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
 def test_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
@@ -50,8 +48,12 @@ def test_variable(object_in, dtype, device, call):
 
 
 # is_variable
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
+@given(
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+)
+# @pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
+# @pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
 def test_is_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
@@ -110,9 +112,14 @@ def test_variable_data(object_in, dtype, device, call):
 
 
 # stop_gradient
-@pytest.mark.parametrize("x_raw", [[0.0]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [("array", ivy.array), ("var", helpers.var_fn)])
+@given(
+    x_raw=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([("array", ivy.array), ("var", helpers.var_fn)])
+)
+# @pytest.mark.parametrize("x_raw", [[0.0]])
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [("array", ivy.array), ("var", helpers.var_fn)])
 def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
     # smoke test
     fn_name, tensor_fn = tensor_fn
@@ -140,34 +147,35 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
 
 
 # execute_with_gradients
-@pytest.mark.parametrize(
-    "func_n_xs_n_ty_n_te_n_tg",
-    [
-        (
+@given(
+    func_n_xs_n_ty_n_te_n_tg=st.sampled_from(
+        [
+            (
             lambda xs_in: (xs_in["w"] * xs_in["w"])[0],
             Container({"w": [3.0]}),
             np.array(9.0),
             None,
             {"w": np.array([6.0])},
-        ),
-        (
+            ),
+            (
             lambda xs_in: ((xs_in["w"] * xs_in["w"])[0], xs_in["w"] * 1.5),
             Container({"w": [3.0]}),
             np.array(9.0),
             np.array([4.5]),
             {"w": np.array([6.0])},
-        ),
-        (
+            ),
+            (
             lambda xs_in: (xs_in["w1"] * xs_in["w2"])[0],
             Container({"w1": [3.0], "w2": [5.0]}),
             np.array(15.0),
             None,
             {"w1": np.array([5.0]), "w2": np.array([3.0])},
-        ),
-    ],
+            ),
+        ]
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array])
 def test_execute_with_gradients(
     func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, device, compile_graph, call
 ):
@@ -210,12 +218,13 @@ def test_execute_with_gradients(
 
 
 # gradient_descent_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
-    [(Container({"w": [3.0]}), Container({"w": [6.0]}), 0.1, Container({"w": [2.4]}))],
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
+        [(Container({"w": [3.0]}), Container({"w": [6.0]}), 0.1, Container({"w": [2.4]}))]
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_gradient_descent_update(
     ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call
 ):
@@ -240,8 +249,8 @@ def test_gradient_descent_update(
 
 
 # layerwise_gradient_descent_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
             Container({"a": [3.0], "b": [3.0]}),
@@ -250,9 +259,10 @@ def test_gradient_descent_update(
             Container({"a": [2.4], "b": [1.8]}),
         )
     ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layerwise_gradient_descent_update(
     ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call
 ):

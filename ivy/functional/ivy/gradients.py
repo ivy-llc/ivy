@@ -1,8 +1,10 @@
 """Collection of gradient Ivy functions."""
 
 # local
+from typing import Any, Callable, Optional, Iterable, Union, Tuple
+
+from pyparsing import Opt
 import ivy
-from typing import Union
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -90,7 +92,11 @@ def unset_with_grads():
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
+def variable(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Variable]
+) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
 
     Parameters
@@ -104,11 +110,14 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
         An ivy variable, supporting gradient computation.
 
     """
-    return current_backend(x).variable(x)
+    return current_backend(x).variable(x, out=out)
 
 
 @inputs_to_native_arrays
-def is_variable(x, exclusive=False):
+def is_variable(
+    x: Union[ivy.Array, ivy.NativeArray], 
+    exclusive=False
+) -> bool:
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -133,7 +142,7 @@ def is_variable(x, exclusive=False):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def variable_data(x):
+def variable_data(x: Optional[ivy.Variable]) -> Any:
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
     dedicated variable class, the function returns the data passed in.
@@ -155,7 +164,10 @@ def variable_data(x):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+    x: Union[ivy.Array, ivy.NativeArray],
+    preserve_type=True
+) -> bool:
     """Stops gradient computation.
 
     Parameters
@@ -181,7 +193,11 @@ def stop_gradient(x, preserve_type=True):
 
 
 @to_native_arrays_and_back
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(
+    func: Callable,
+    xs: Optional[ivy.Variable],
+    retain_grads=False
+)-> Tuple[Union[ivy.Array, ivy.NativeArray, Iterable], Any, Tuple[Any]]:
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
     y value.
@@ -210,7 +226,15 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 @to_native_arrays_and_back
-def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
+def adam_step(
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    mw: Union[ivy.Array, ivy.NativeArray],
+    vw: Union[ivy.Array, ivy.NativeArray],
+    step: Optional[float],
+    beta1: Optional[float]=0.9,
+    beta2: Optional[float]=0.999,
+    epsilon: Optional[float]=1e-7
+) -> Tuple[Union[ivy.Array, ivy.NativeArray],Union[ivy.Array, ivy.NativeArray]]:
     """Compute adam step delta, given the derivatives of some cost c with respect to ws,
     using ADAM update. `[reference]
 
@@ -253,7 +277,13 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 
 @to_native_arrays_and_back
-def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
+def optimizer_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    effective_grads: Union[ivy.Array, ivy.NativeArray],
+    lr: Optional[float], 
+    inplace: Optional[bool]=None,
+    stop_gradients: Optional[bool]=True
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Update weights ws of some function, given the true or effective derivatives of
     some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -298,7 +328,13 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
 
 
 @to_native_arrays_and_back
-def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
+def gradient_descent_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Optional[float],
+    inplace: Optional[bool]=None,
+    stop_gradients: Optional[bool]=True
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws].
 
@@ -331,7 +367,14 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
 
 
 @to_native_arrays_and_back
-def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
+def lars_update(
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray], 
+    lr: Optional[float], 
+    decay_lambda: Optional[float]=0.,
+    inplace: Optional[bool]=None,
+    stop_gradients=True
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
     (LARS) method.
@@ -372,18 +415,18 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True
 
 @to_native_arrays_and_back
 def adam_update(
-    ws,
-    dcdws,
-    lr,
-    mw_tm1,
-    vw_tm1,
-    step,
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
-    inplace=None,
-    stop_gradients=True,
-):
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Optional[float],
+    mw_tm1: Union[ivy.Array, ivy.NativeArray],
+    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    step: Optional[float],
+    beta1: Optional[float]=0.9,
+    beta2: Optional[float]=0.999,
+    epsilon: Optional[float]=1e-7,
+    inplace: Optional[bool]=None,
+    stop_gradients: Optional[bool]=True,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, using ADAM update. `[reference]
 
@@ -435,20 +478,20 @@ def adam_update(
 
 @to_native_arrays_and_back
 def lamb_update(
-    ws,
-    dcdws,
-    lr,
-    mw_tm1,
-    vw_tm1,
-    step,
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
-    max_trust_ratio=10,
-    decay_lambda=0,
-    inplace=None,
-    stop_gradients=True,
-):
+    ws: Union[ivy.Array, ivy.NativeArray],
+    dcdws: Union[ivy.Array, ivy.NativeArray],
+    lr: Optional[float],
+    mw_tm1: Union[ivy.Array, ivy.NativeArray],
+    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    step: Optional[float],
+    beta1: Optional[float]=0.9,
+    beta2: Optional[float]=0.999,
+    epsilon: Optional[float]=1e-7,
+    max_trust_ratio: Optional[float]=10.,
+    decay_lambda: Optional[float]=0.,
+    inplace: Optional[bool]=None,
+    stop_gradients: Optional[bool]=True,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
