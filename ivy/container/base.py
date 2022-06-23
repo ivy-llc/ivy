@@ -626,6 +626,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
+        
         Returns
         -------
             Container
