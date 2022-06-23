@@ -292,8 +292,8 @@ def docstring_examples_run(fn):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
-                exec(line,ivy.__dict__)
-            except Exception as e:
+                exec(line, ivy.__dict__)
+            except Exception:
                 return False
 
     output = f.getvalue()

@@ -35,7 +35,7 @@ def test_docstrings(backend):
         "multinomial",
         "num_cpu_cores",
         "get_all_ivy_arrays_on_dev",
-        "num_ivy_arrays_on_dev"
+        "num_ivy_arrays_on_dev",
     ]
 
     for k, v in ivy.__dict__.copy().items():
