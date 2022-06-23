@@ -1190,7 +1190,6 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-
 @handle_nestable
 def dev_clone_array(
     x: Union[ivy.Array, ivy.NativeArray], devices: Union[Iterable[str], Dict[str, int]]
