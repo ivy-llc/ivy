@@ -3,13 +3,13 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 
 
 # cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
@@ -49,7 +49,7 @@ def test_cross_entropy(
 
 # binary_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
@@ -89,7 +89,7 @@ def test_binary_cross_entropy(
 
 # sparse_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
