@@ -13,5 +13,5 @@ torch==1.11.0+cpu
 torch-scatter==2.0.9 # mod_name=torch_scatter
 functorch
 mxnet
-scipy
+scipy==1.8.1
 dm-haiku # mod_name=haiku
