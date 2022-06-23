@@ -154,47 +154,46 @@ def multinomial(
     --------
     >>> y = ivy.multinomial(10, 5)
     >>> print(y)
-    ivy.array([[1, 8, 7, 8, 3]])
+    ivy.array([[6,8,3,8,6]])
 
     >>> y = ivy.multinomial(10, 5, batch_size=2)
     >>> print(y)
-    ivy.array([[9, 7, 9, 0, 7],
-       [7, 3, 8, 5, 4]])
+    ivy.array([[1,6,3,6,0],[8,4,4,5,3]])
 
     >>> y = ivy.multinomial(10, 5, replace=False)
     >>> print(y)
-    ivy.array([[2, 6, 4, 7, 0]])
+    ivy.array([[4,7,5,9,3]])
 
     With :code:`ivy.Array` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.array([1/10]*10))
     >>> print(y)
-    ivy.array([5, 2, 7, 6, 9])
+    ivy.array([4,5,9,9,3])
 
     >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]))
     >>> print(y)
-    ivy.array([[0, 4, 3, 4, 5], [1, 1, 0, 3, 2]])
+    ivy.array([[2,1,4,0,6],[3,1,6,5,6]])
 
     >>> y = ivy.multinomial(7, 5, batch_size=2, probs=ivy.array([[1/7]*7, [1/7]*7]),\
                             replace=False)
     >>> print(y)
-    ivy.array([[2, 6, 1, 0, 3], [1, 0, 2, 5, 6]])
+    ivy.array([[5,6,0,2,4],[4,0,1,2,6]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> y = ivy.multinomial(10, 5, probs=ivy.native_array([1/10]*10))
     >>> print(y)
-    ivy.array([5, 7, 4, 2, 1])
+    ivy.array([5,2,4,0,2])
 
     >>> y = ivy.multinomial(10, 5, batch_size=2,\
                             probs=ivy.native_array([[1/10]*10, [1/10]*10]))
     >>> print(y)
-    ivy.array([[8, 0, 4, 1, 7], [2, 3, 4, 9, 3]])
+    ivy.array([[2,3,9,8,1],[5,5,6,3,4]])
 
     >>> y = ivy.multinomial(10, 5, batch_size=2,\
                      probs=ivy.native_array([[1/10]*10, [1/10]*10]), replace=False)
     >>> print(y)
-    ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
+    ivy.array([[7,6,0,9,5],[0,9,6,7,8]])
 
     """
     return current_backend().multinomial(

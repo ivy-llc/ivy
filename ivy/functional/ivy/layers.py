@@ -609,7 +609,7 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, strides = [2, 1], padding = 'VALID') \
         #non-square filter with unequal stride and valid padding
     >>> print(result.shape)
-    [1, 15, 28, 5]
+    (1, 15, 28, 5)
 
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
@@ -622,21 +622,8 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
-        a: ivy.array([[[[4.],
-                        [0.]],
-                       [[1.],
-                        [5.]]]]),
-        b: ivy.array([[[[4.],
-                        [0.],
-                        [0.]],
-
-                       [[1.],
-                        [6.],
-                        [0.]],
-
-                       [[0.],
-                        [1.],
-                        [5.]]]])
+        a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+        b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
     }
 
     """

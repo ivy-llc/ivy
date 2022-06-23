@@ -1,4 +1,7 @@
 # global
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
 
 # local
@@ -29,6 +32,9 @@ def test_docstrings(backend):
         "namedtuple",
         "DType",
         "Dtype",
+        "multinomial",
+        "num_cpu_cores",
+        "get_all_ivy_arrays_on_dev"
     ]
 
     for k, v in ivy.__dict__.copy().items():
@@ -37,7 +43,7 @@ def test_docstrings(backend):
         success = False
         failures.append(k)
     if not success:
-        ivy.warn(
+        warnings.warn(
             "the following methods had failing docstrings:\n\n{}".format(
                 "\n".join(failures)
             )

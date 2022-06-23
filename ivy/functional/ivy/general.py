@@ -704,149 +704,16 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     ret
         a scalar copying the element of the array ``x``.
 
-    Functional Examples
-    -------------------
-
-    With :code:`ivy.Array` input:
-
+    Examples
+    --------
     >>> x = ivy.array([-1])
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     -1
 
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.array([3])
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    3
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1])
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    -1
 
     >>> print(ivy.is_int_dtype(y))
     True
-
-    >>> x = ivy.native_array([3])
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    3
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    {
-        a: -1,
-        b: 3
-    }
-
-    >>> print(ivy.is_int_dtype(y))
-    {
-        a: true,
-        b: true
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
-                          c=ivy.array[-1])
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    {
-        a: 1,
-        b: 0,
-        c: -1
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(a=ivy.native_array([-1]), b=ivy.native_array([3]))
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    {
-        a: -1,
-        b: 3
-    }
-
-    >>> print(ivy.is_int_dtype(y))
-    {
-        a: true,
-        b: true
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([1]), b=ivy.native_array([0]),\
-                          c=ivy.native_array[-1])
-    >>> y = ivy.to_scalar(x)
-    >>> print(y)
-    {
-        a: 1,
-        b: 0,
-        c: -1
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    -1
-
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.array([3])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    3
-
-    With :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    -1
-
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.native_array([3])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    3
-
-    With a mix of :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.native_array([3]))
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: -1,
-        b: 3
-    }
-
-    >>> print(ivy.is_int_dtype(y))
-    {
-        a: true,
-        b: true
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([0]),\
-                          c=ivy.array[-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: 1,
-        b: 0,
-        c: -1
-    }
 
     """
     return current_backend(x).to_scalar(x)
@@ -1209,10 +1076,8 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
         The shape in tuple representation
 
     """
-    if ivy.is_array(shape):
-        raise Exception("shape_to_tuple does not accept arrays as input")
     if isinstance(shape, int):
-        return shape
+        return (shape,)
     else:
         return tuple(shape)
 
@@ -1974,12 +1839,7 @@ def gather(
                         [[2, 0]]])
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
-    ivy.array([[[ 0.,  5.],
-                [ 2.,  7.]],
-               [[ 4.,  9.],
-                [ 6., 11.]],
-               [[ 8.,  1.],
-                [10.,  3.]]])
+    ivy.array([[[0.,5.]],[[4.,9.]],[[8.,1.]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2153,7 +2013,8 @@ def one_hot(
     return current_backend(indices).one_hot(indices, depth, device=device)
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
@@ -2176,7 +2037,7 @@ def shape(
     --------
     >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
     >>> y_tuple = ivy.shape(x)
-    >>> y_tensor = ivy.shape(x, as_tensor = True)
+    >>> y_tensor = ivy.shape(x, as_array = True)
     >>> print(y_tuple)
     (2, 3)
 

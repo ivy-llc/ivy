@@ -265,7 +265,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    (array([0, 0, 1]), array([0, 1, 0]))
+    (ivy.array([0, 0, 1]), ivy.array([0, 1, 0]))
 
     >>> x = ivy.native_array([[0], [1], [1], [0], [1]])
     >>> y = ivy.nonzero(x)
@@ -281,8 +281,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[2], <class ivy.array.Array> shape=[2])
     }
+
     >>> print(y.a)
     (ivy.array([1, 2, 3]),)
+
     >>> print(y.b)
     (ivy.array([0, 0]), ivy.array([0, 1]))
 
@@ -301,7 +303,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
     >>> y = x.nonzero()
     >>> print(y)
-    (array([0, 0, 2, 2]), array([0, 1, 0, 1]))
+    tensor([[0,0],[0,1],[2,0],[2,1]])
 
     Using :code:`ivy.Container` instance method:
 
@@ -312,8 +314,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[1], <class ivy.array.Array> shape=[0])
     }
+
     >>> print(y.a)
     (ivy.array([0, 1, 2]),)
+
     >>> print(y.b)
     (ivy.array([]),)
     """

@@ -351,14 +351,14 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    ivy.array([0.5349962, 0.4203641])
+    ivy.array([0.535,0.42])
 
     With :code: `ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    ivy.array([0.5349962, 0.4203641])
+    ivy.array([0.535,0.42])
 
     Instance Method Example
     ------------------------
@@ -368,7 +368,7 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = x.softplus()
     >>> print(y)
-    ivy.array([0.5349962, 0.4203641])
+    ivy.array([0.535,0.42])
 
     """
     return current_backend(x).softplus(x)
