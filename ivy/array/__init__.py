@@ -273,7 +273,7 @@ class Array(
 
         # TODO: what about placement of the array on the right device ?
         # device = backend.as_native_dev(state["device_str"])
-        # backend.to_dev(self, device)
+        # backend.to_device(self, device)
 
     @_native_wrapper
     def __pos__(self):

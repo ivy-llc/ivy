@@ -159,7 +159,7 @@ def test_conv1d_layer_training(
             )
         )
 
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]), device=device, dtype=dtype)
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], device=device, dtype=dtype))
         v = ivy.Container({"w": w, "b": b})
     else:
         v = None
@@ -471,7 +471,7 @@ def test_conv2d_transpose_layer_training(
             )
         )
         b = ivy.variable(
-            ivy.zeros([1, 1, 1, output_channels]), dtype=dtype, device=device
+            ivy.zeros([1, 1, 1, output_channels], dtype=dtype, device=device)
         )
         v = ivy.Container({"w": w, "b": b})
     else:
@@ -683,7 +683,7 @@ def test_conv3d_layer_training(
             )
         )
         b = ivy.variable(
-            ivy.zeros([1, 1, 1, 1, output_channels]), dtype=dtype, device=device
+            ivy.zeros([1, 1, 1, 1, output_channels], dtype=dtype, device=device)
         )
         v = ivy.Container({"w": w, "b": b})
     else:
