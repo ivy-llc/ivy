@@ -49,13 +49,22 @@
 <li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Building the Docs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#make-docs-sh">make_docs.sh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#entrypoint-sh">entrypoint.sh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">_make_docs.sh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-src-rst-files-py">generate_src_rst_files.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sphinx-build-py">sphinx-build.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#correct-built-html-files-py">correct_built_html_files.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#remove-files-sh">remove_files.sh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-the-docs-with-docker">Building the Docs with Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dockerless-doc-building">Dockerless Doc-building</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-miniconda">Using miniconda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-venv">Using venv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#working-of-the-documentation-building-pipeline">Working of the Documentation Building Pipeline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#make-docs-sh">make_docs.sh:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#entrypoint-sh">entrypoint.sh:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">_make_docs.sh:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generate-src-rst-files-py">generate_src_rst_files.py:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sphinx-build-py">sphinx-build.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#correct-built-html-files-py">correct_built_html_files.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remove-files-sh">remove_files.sh</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
@@ -142,23 +151,170 @@
              
   <section id="building-the-docs">
 <h1>Building the Docs<a class="headerlink" href="#building-the-docs" title="Permalink to this heading"></a></h1>
+<section id="building-the-docs-with-docker">
+<h2>Building the Docs with Docker<a class="headerlink" href="#building-the-docs-with-docker" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Build the docker image using the doc-builder Dockerfile</p></li>
+<li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/doc-builder</span></code> repository</p></li>
+<li><p>Build the docker image using the following command</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For Windows and MacOS users:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker build -t unifyai/doc-builder:latest -f Dockerfile .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker build --build-arg user=&lt;your-user-name&gt; --build-arg uid=&lt;your-uid&gt;  -t unifyai/doc-builder:latest -f Dockerfile .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Build the docs using the image:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy</span></code> repository.</p></li>
+<li><p>Change to the docs folder</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd docs
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Build the docs using <code class="code docutils literal notranslate"><span class="pre">make_docs.sh</span></code></p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For Windows users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sh make_docs.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For MacOS users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs.sh root
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./make_docs.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="dockerless-doc-building">
+<h2>Dockerless Doc-building<a class="headerlink" href="#dockerless-doc-building" title="Permalink to this heading"></a></h2>
+<p>First, change to the <cite>docs</cite> folder. Now, we need to create a virtual environment using either <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a> or <a class="reference external" href="https://docs.python.org/3/library/venv.html">venv</a>:</p>
+<section id="using-miniconda">
+<h3>Using miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a></p></li>
+<li><p>Open conda terminal</p></li>
+<li><p>Create the environment by running the command (<code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> is the name of the environment)</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda create --name ivy_dev python=3.8.10
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Activate the environment by:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda activate ivy_dev
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="using-venv">
+<h3>Using venv<a class="headerlink" href="#using-venv" title="Permalink to this heading"></a></h3>
+<p>This is a builtin package and doesn’t require explicit installation.</p>
+<ol class="arabic">
+<li><p>Open your terminal/cmd in the directory where you would like to have the folder with the environment files</p></li>
+<li><p>Create the environment by running the command below with a new environment name. We named it <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> like above.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m venv ivy_dev
+</pre></div>
+</div>
+<p>Try <code class="code docutils literal notranslate"><span class="pre">python3</span></code> if <code class="code docutils literal notranslate"><span class="pre">python</span></code> doesn’t work.</p>
+</div></blockquote>
+</li>
+<li><p>Activate the created environment by running (in the same working directory as the environment folder)</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ivy_dev\Scripts\activate.bat
+</pre></div>
+</div>
+<p>(on Windows)</p>
+<p>OR</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
+</pre></div>
+</div>
+<p>(on Mac/Linux)</p>
+</div></blockquote>
+</li>
+</ol>
+<p>Next, execute the following command to build the docs from inside the virtual environment</p>
+<ol class="arabic">
+<li><p>For Windows users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sh make_docs_without_docker.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For MacOS users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh &lt;path to doc-builder folder relative to current folder i.e. ivy/docs&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh &lt;path to doc-builder folder relative to current folder i.e. ivy/docs&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</section>
+</section>
+<section id="working-of-the-documentation-building-pipeline">
+<h2>Working of the Documentation Building Pipeline<a class="headerlink" href="#working-of-the-documentation-building-pipeline" title="Permalink to this heading"></a></h2>
 <p>Following are the files involved in the documentation building pipeline:</p>
 <section id="make-docs-sh">
-<h2>make_docs.sh<a class="headerlink" href="#make-docs-sh" title="Permalink to this heading"></a></h2>
+<h3>make_docs.sh:<a class="headerlink" href="#make-docs-sh" title="Permalink to this heading"></a></h3>
 <p>This file exists in the docs folder of the project for which documentation is to be generated.
 It uses the unifyai/doc-builder:latest image and creates a container for documentation building.</p>
 </section>
 <section id="entrypoint-sh">
-<h2>entrypoint.sh<a class="headerlink" href="#entrypoint-sh" title="Permalink to this heading"></a></h2>
+<h3>entrypoint.sh:<a class="headerlink" href="#entrypoint-sh" title="Permalink to this heading"></a></h3>
 <p>This is the first file involved in the documentation building pipeline.
 It installs the requirements, synchronizes the container’s folder with the project’s build folder.
 It is responsible for executing the rest of the pipeline as it runs the <code class="code docutils literal notranslate"><span class="pre">_make_docs.sh</span></code> and <code class="code docutils literal notranslate"><span class="pre">remove_docs.sh</span></code> files.</p>
 </section>
 <section id="id1">
-<h2>_make_docs.sh<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<h3>_make_docs.sh:<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <div class="line-block">
 <div class="line">This file contains commands for executing files involved in generation of the documentation. _ at the start is to indicate that this is a privately accessed file.</div>
-<div class="line">This file fulfils the following purpose:</div>
+<div class="line">This file fulfils the following purpose</div>
 <div class="line">1. It deletes any previously generated documentation in the <code class="code docutils literal notranslate"><span class="pre">autogenerated_source</span></code> folder and the <code class="code docutils literal notranslate"><span class="pre">build</span></code> folder.</div>
 <div class="line">2. Then it executes the <code class="code docutils literal notranslate"><span class="pre">generate_src_rst_files.py`</span></code> file, followed by the <code class="code docutils literal notranslate"><span class="pre">sphinx-build.py</span></code> file.</div>
 <div class="line">3. Then it deletes all files of format <code class="code docutils literal notranslate"><span class="pre">X.png</span></code> from the <code class="code docutils literal notranslate"><span class="pre">build/_images`</span></code> folder.</div>
@@ -166,7 +322,7 @@ It is responsible for executing the rest of the pipeline as it runs the <code cl
 </div>
 </section>
 <section id="generate-src-rst-files-py">
-<h2>generate_src_rst_files.py<a class="headerlink" href="#generate-src-rst-files-py" title="Permalink to this heading"></a></h2>
+<h3>generate_src_rst_files.py:<a class="headerlink" href="#generate-src-rst-files-py" title="Permalink to this heading"></a></h3>
 <div class="line-block">
 <div class="line">This file is the first stage of documentation generation. It involves the use of code docstrings and project structure to generate rst files for the project.</div>
 <div class="line"><br /></div>
@@ -191,16 +347,16 @@ It is responsible for executing the rest of the pipeline as it runs the <code cl
 </div>
 </section>
 <section id="sphinx-build-py">
-<h2>sphinx-build.py<a class="headerlink" href="#sphinx-build-py" title="Permalink to this heading"></a></h2>
+<h3>sphinx-build.py<a class="headerlink" href="#sphinx-build-py" title="Permalink to this heading"></a></h3>
 <p>This file is used to generate the HTML files for the documentation using the rst files generated previously.</p>
 </section>
 <section id="correct-built-html-files-py">
-<h2>correct_built_html_files.py<a class="headerlink" href="#correct-built-html-files-py" title="Permalink to this heading"></a></h2>
+<h3>correct_built_html_files.py<a class="headerlink" href="#correct-built-html-files-py" title="Permalink to this heading"></a></h3>
 <p>This file is used for further processing on the HTML files generated by Sphinx.
 This involves replacing 3.14 with π, updating paths according to current folder, and updating namespaces in the code in the documentation.</p>
 </section>
 <section id="remove-files-sh">
-<h2>remove_files.sh<a class="headerlink" href="#remove-files-sh" title="Permalink to this heading"></a></h2>
+<h3>remove_files.sh<a class="headerlink" href="#remove-files-sh" title="Permalink to this heading"></a></h3>
 <p>All files involved in the generation of documentation are removed by executing these commands.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good understanding of the basics for
@@ -208,6 +364,7 @@ building the docs locally.</p>
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1310">doc building discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982733967998484520">doc building channel</a>!</p>
+</section>
 </section>
 </section>
 
