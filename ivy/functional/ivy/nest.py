@@ -601,7 +601,11 @@ def nested_multi_map(
         if (
             (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
             and ivy.get_num_dims(value0) > 0
-        ) or (isinstance(value0, list) or isinstance(value0, tuple)):
+        ) or (
+            isinstance(value0, list)
+            or isinstance(value0, tuple)
+            or isinstance(value0, dict)
+        ):
             ret = ivy.nested_multi_map(
                 func,
                 values,
