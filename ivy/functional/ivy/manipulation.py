@@ -94,61 +94,54 @@ def expand_dims(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     >>> x = ivy.array([0, 1, 2])
     >>> print(x.shape)
     (3,)
+
     >>> y = ivy.expand_dims(x)
     >>> print(y.shape)
     (1, 3)
+
     >>> print(y)
     ivy.array([[0, 1, 2]])
-
 
     >>> x = ivy.array([[0.5, -0.7, 2.4], [1, 2, 3]])
     >>> print(x.shape)
     (2, 3)
+
     >>> y = ivy.zeros((2, 1, 3))
     >>> print(y)
     ivy.array([[[0., 0., 0.]],
+           [[0., 0., 0.]]])
 
-           [[0., 0., 0.]]], dtype=float32)
     >>> ivy.expand_dims(x, axis=1, out=y)
     >>> print(y)
-    ivy.array([[[ 0.5, -0.7,  2.4]],
-
-           [[ 1. ,  2. ,  3. ]]], dtype=float32)
-
+    ivy.array([[[0.5,-0.7,2.4]],[[1.,2.,3.]]])
 
     >>> x = ivy.array([[-1, -2], [3, 4]])
     >>> print(x)
     ivy.array([[-1, -2],
            [ 3,  4]])
+
     >>> ivy.expand_dims(x, out=x)
     >>> print(x)
-    ivy.array([[[-1],
-            [-2]],
-
-           [[ 3],
-            [ 4]]])
-
+    ivy.array([[[-1,-2],[3,4]]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, 1, 2])
-    >>> print(x.shape)
-    (3,)
+    >>> print(x)
+    tensor([0,1,2],dtype=torch.int32)
+
     >>> y = ivy.expand_dims(x)
-    >>> print(y.shape)
-    (1, 3)
+    >>> print(y)
+    ivy.array([[0,1,2]])
+
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.expand_dims(x, axis=-1)
     >>> print(y)
@@ -161,21 +154,18 @@ def expand_dims(
                       [5.]])
     }
 
-
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.expand_dims()
     >>> print(x.shape, y.shape)
     (3,) (1, 3)
+
     >>> print(y)
     ivy.array([[0., 1., 2.]])
 
     Using :code:`ivy.Container` instance method:
-
     >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \
                             b=ivy.array([[4., 5.], [6., 7.]]))
     >>> print(x)
@@ -185,6 +175,7 @@ def expand_dims(
         b: ivy.array([[4., 5.],
                       [6., 7.]])
     }
+
     >>> y = x.expand_dims(axis=1)
     >>> print(y)
     {
@@ -240,9 +231,7 @@ def flip(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.flip(x)
     >>> print(y)
@@ -251,8 +240,6 @@ def flip(
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.zeros((3, 3))
     >>> ivy.flip(x, out=y)
-    ivy.array([[6, 5, 4],
-               [3, 2, 1]])
     >>> print(y)
     ivy.array([[6, 5, 4],
                [3, 2, 1]])
@@ -260,52 +247,32 @@ def flip(
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.zeros((3, 3))
     >>> ivy.flip(x, axis=0, out=y)
-    ivy.array([[4, 5, 6],
-               [1, 2, 3]])
     >>> print(y)
     ivy.array([[4, 5, 6],
                [1, 2, 3]])
 
     >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
     >>> ivy.flip(x, axis=[0, 1], out=x)
-    ivy.array([[[10, 11, 12],
-                [ 7,  8,  9]],
-
-               [[ 4,  5,  6],
-                [ 1,  2,  3]]])
     >>> print(x)
-    ivy.array([[[10, 11, 12],
-                [ 7,  8,  9]],
-
-               [[ 4,  5,  6],
-                [ 1,  2,  3]]])
+    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
 
     >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
     >>> ivy.flip(x, axis=(2, 1), out=x)
-    ivy.array([[[ 6,  5,  4],
-                [ 3,  2,  1]],
-
-               [[12, 11, 10],
-                [ 9,  8,  7]]])
     >>> print(x)
     ivy.array([[[ 6,  5,  4],
                 [ 3,  2,  1]],
-
                [[12, 11, 10],
                 [ 9,  8,  7]]])
 
     With :code:`ivy.NativeArray` input:
-
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.flip(x)
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
-
     >>> y = ivy.flip(x)
     >>> print(y)
     {
@@ -315,16 +282,13 @@ def flip(
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.flip()
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     Using :code:`ivy.Container` instance method:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.flip()
     >>> print(y)
@@ -771,81 +735,69 @@ def repeat(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3, 4])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.flip(x)
     >>> print(y)
-    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+    ivy.array([5, 4, 3])
 
-    >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4]])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, out=y)
     >>> print(y)
-    ivy.array([1.1, 1.1, 2.2, 2.2, 3.3, 3.3, 4.4, 4.4])
+    ivy.array([[6, 5, 4],
+               [3, 2, 1]])
 
-    >>> x = ivy.array([[-1, -2], [-3, -4]])
-    >>> y = ivy.zeros((4, 2))
-    >>> ivy.repeat(x, repeats=2, axis=0, out=y)
-    ivy.array([[-1, -2],
-           [-1, -2],
-           [-3, -4],
-           [-3, -4]])
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, axis=0, out=y)
     >>> print(y)
-    ivy.array([[-1, -2],
-           [-1, -2],
-           [-3, -4],
-           [-3, -4]])
+    ivy.array([[4, 5, 6],
+               [1, 2, 3]])
 
-    >>> x = ivy.array([[1.2, 2.5, 3.4], [4.6, 5.1, 6.4], \
-                        [-7, 0.8, 19], [10.5, 1.1, -12]])
-    >>> ivy.repeat(x, repeats=ivy.array([1,2,3]), axis=1, out=x)
-    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
-           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
-           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
-           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=[0, 1], out=x)
     >>> print(x)
-    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
-           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
-           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
-           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
+
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=(2, 1), out=x)
+    >>> print(x)
+    ivy.array([[[ 6,  5,  4],
+                [ 3,  2,  1]],
+               [[12, 11, 10],
+                [ 9,  8,  7]]])
 
     With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.NativeArray([1, 2, 3, 4])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.flip(x)
     >>> print(y)
-    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+    ivy.array([2., 1., 0.])
 
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> y = ivy.flip(x)
     >>> print(y)
     {
-        a: ivy.array([0., 0., 1., 1., 2., 2.]),
-        b: ivy.array([3., 3., 4., 4., 5., 5.])
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
     }
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[0., 1.],[ 2.,3.]])
-    >>> y = x.repeat(2,axis=1)
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.flip()
     >>> print(y)
-    ivy.array([[0., 0., 1., 1.],
-           [2., 2., 3., 3.]])
+    ivy.array([2., 1., 0.])
 
     Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([10., 11., 12.]), \
-                          b=ivy.array([13., 14., 15.]))
-    >>> y = x.repeat(2)
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.flip()
     >>> print(y)
     {
-    a: ivy.array([10., 10., 11., 11., 12., 12.]),
-    b: ivy.array([13., 13., 14., 14., 15., 15.])
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
     }
 
     """
