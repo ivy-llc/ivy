@@ -296,12 +296,15 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _concat_unify(containers, device, axis=0):
-        return ivy.concat([cont.to_dev(device) for cont in containers.values()], axis)
+        return ivy.concat(
+            [cont.to_device(device) for cont in containers.values()], axis
+        )
 
     @staticmethod
     def _sum_unify(containers, device, _=None, _1=None):
         return sum(
-            [cont.to_dev(device) for cont in containers.values()], start=ivy.zeros([])
+            [cont.to_device(device) for cont in containers.values()],
+            start=ivy.zeros([]),
         )
 
     @staticmethod
@@ -623,6 +626,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
+        
         Returns
         -------
             Container
@@ -2216,7 +2220,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self._ivy.DevClonedItem(
-            {device: self.to_dev(device=device) for device in devices}
+            {device: self.to_device(device=device) for device in devices}
         )
 
     def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -2240,7 +2244,7 @@ class ContainerBase(dict, abc.ABC):
         )
         return self._ivy.DevDistItem(
             {
-                device: cont.to_dev(device)
+                device: cont.to_device(device)
                 for cont, device in zip(
                     self.split(split_arg, axis, with_remainder=True), devices
                 )

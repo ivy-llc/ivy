@@ -4,7 +4,6 @@ import torch
 from typing import Union, Optional, Tuple, List
 
 
-# noinspection PyShadowingBuiltins
 def all(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -26,7 +25,6 @@ def all(
     return x
 
 
-# noinspection PyShadowingBuiltins
 def any(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,

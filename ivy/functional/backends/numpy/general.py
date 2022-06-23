@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import dev, _to_dev
+from ivy.functional.backends.numpy.device import dev, _to_device
 
 # Helpers #
 # --------#
@@ -156,7 +156,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_device(target, device)
 
 
 # noinspection PyShadowingNames
@@ -198,7 +198,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    return _to_dev(target, device)
+    return _to_device(target, device)
 
 
 def gather(
@@ -206,7 +206,7 @@ def gather(
 ) -> np.ndarray:
     if device is None:
         device = dev(params)
-    return _to_dev(np.take_along_axis(params, indices, axis), device)
+    return _to_device(np.take_along_axis(params, indices, axis), device)
 
 
 def gather_nd(params, indices, *, device: str):
@@ -236,7 +236,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_dev(res, device)
+    return _to_device(res, device)
 
 
 def multiprocessing(context=None):
