@@ -11,7 +11,7 @@ import time
 import numpy as np
 from numbers import Number
 from hypothesis import strategies as st, given
-
+import multiprocessing
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -624,16 +624,27 @@ def test_gpu_is_availble(fw):
     if ivy.gpu_is_available():
         try:
             nvidia_smi.nvmlInit()
-        except nvidia_smi.NVMLError_DriverNotLoaded:
+        except (nvidia_smi.NVMLError_LibraryNotFound,
+                nvidia_smi.NVMLError_DriverNotLoaded):
             assert False
 
     # if gpu is returned not available but can be somehow initialised it must fail
-    elif ivy.gpu_is_available is False:
+    elif ivy.gpu_is_available() is False:
         try:
             nvidia_smi.nvmlInit()
             assert False
-        except nvidia_smi.NVMLError_DriverNotLoaded:
+        except (nvidia_smi.NVMLError_LibraryNotFound,
+                nvidia_smi.NVMLError_DriverNotLoaded):
             pass
+
+
+def test_num_cpu_cores():
+    # using multiprocessing module too because ivy uses psutil as basis.
+    p_cpu_cores = psutil.cpu_count()
+    m_cpu_cores = multiprocessing.cpu_count()
+    assert type(ivy.num_cpu_cores()) == int
+    assert ivy.num_cpu_cores() == p_cpu_cores
+    assert ivy.num_cpu_cores() == m_cpu_cores
 
 
 # Still to Add #
