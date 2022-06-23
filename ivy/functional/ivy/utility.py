@@ -3,18 +3,27 @@ from typing import Union, Optional, Tuple, List
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
 # -------------------#
 
-# noinspection PyShadowingBuiltins
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether all input array elements evaluate to ``True`` along a specified
     axis.
@@ -56,7 +65,7 @@ def all(
         array must be a zero-dimensional array containing the test result; otherwise,
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
-        
+
     Functional Examples
     -------
     With :code:`ivy.Array` input:
@@ -79,7 +88,7 @@ def all(
     ivy.array(True)
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([1, 2, 3])
     >>> y = ivy.all(x)
     >>> print(y)
@@ -116,15 +125,18 @@ def all(
     }
 
     """
-    return _cur_backend(x).all(x, axis, keepdims, out=out)
+    return current_backend(x).all(x, axis, keepdims, out=out)
 
 
-# noinspection PyShadowingBuiltins
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether any input array element evaluates to ``True`` along a specified
     axis.
@@ -168,7 +180,7 @@ def any(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return _cur_backend(x).any(x, axis, keepdims, out=out)
+    return current_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #

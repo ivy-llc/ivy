@@ -16,6 +16,32 @@ then many more questions and answers will no doubt be added!
 We are all incredibly grateful to everyone in the community who has put in the time and effort to ask so many important
 and probing questions! We hope these Q&As are a useful reference!
 
+Manaing Backend Versions
+------------------------
+
+**Q:** Isn't it complex to maintain support for all backend versions,
+particularly as they undergo constant changes?
+How are you going to handle this,
+will you have an option to select any version for any backend?
+
+**A:** Ivy **only** wraps the functional APIs of each backend framework.
+The last 2 years of Ivy development have shown us how remarkably stable the functional
+APIs are for each backend framework.
+**Not once** have we needed to change an implementation or a unit test as a result of a
+version update of a backend framework. This is not entirely surprising,
+each framework has strong backward compatibility requirements,
+and the functional API is generally one of the lower level building blocks upon
+which everything else in the framework depends.
+Our CI always tests against the latest version available on PyPI,
+and this has been the case since we started development.
+We do not lock-in any versions during our continuous testing,
+and we will contunue to always pull the latest version.
+
+In future, we hope to add explicit testing also for previous versions,
+so we can guaranteed backward compatibility for each backend.
+We will also add an option to select backend versions for the small minority of cases
+where changes in the backend functional APIs do cause breaking changes for Ivy.
+
 Dynamic Sizes
 -------------
 

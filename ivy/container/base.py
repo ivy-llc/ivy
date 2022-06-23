@@ -5,20 +5,20 @@ import re
 import abc
 import copy
 import termcolor
-import numpy as _np
-import json as _json
+import numpy as np
+import json
 
 try:
     # noinspection PyPackageRequirements
-    import h5py as _h5py
+    import h5py
 except ModuleNotFoundError:
-    _h5py = None
-import pickle as _pickle
-import random as _random
-from operator import mul as _mul
-from functools import reduce as _reduce
+    h5py = None
+import pickle
+import random
+from operator import mul
+from functools import reduce
 from typing import Union, Iterable, Dict
-from builtins import set as _set
+from builtins import set
 
 # local
 import ivy
@@ -29,7 +29,7 @@ ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
 def _is_jsonable(x):
     try:
-        _json.dumps(x)
+        json.dumps(x)
         return True
     except (TypeError, OverflowError):
         return False
@@ -123,7 +123,7 @@ class ContainerBase(dict, abc.ABC):
                     "concat": lambda conts: self.concat(conts, 0),
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
-            self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
+            self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
         if dict_in is None:
             if kwargs:
@@ -291,11 +291,16 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _concat_unify(containers, device, axis=0):
-        return ivy.concat([cont.to_dev(device) for cont in containers.values()], axis)
+        return ivy.concat(
+            [cont.to_device(device) for cont in containers.values()], axis
+        )
 
     @staticmethod
     def _sum_unify(containers, device, _=None, _1=None):
-        return sum([cont.to_dev(device) for cont in containers.values()])
+        return sum(
+            [cont.to_device(device) for cont in containers.values()],
+            start=ivy.zeros([]),
+        )
 
     @staticmethod
     def _mean_unify(containers, device, _=None, _1=None):
@@ -367,7 +372,7 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = _set(
+        all_keys = set(
             [
                 item
                 for sublist in [list(cont.keys()) for cont in containers]
@@ -483,7 +488,7 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = _set(
+        all_keys = set(
             [
                 item
                 for sublist in [list(cont.keys()) for cont in containers]
@@ -588,6 +593,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
+        map_sequences=False,
+        assert_identical=False,
     ):
         """Apply function to all array values from a collection of identically
         structured containers.
@@ -610,6 +617,10 @@ class ContainerBase(dict, abc.ABC):
             Chain of keys for this dict entry (Default value = '')
         config
             The configuration for the containers. Default is the same as container0.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        assert_identical
+            Whether to assert that the input containers are identical or not.
 
         Returns
         -------
@@ -624,19 +635,8 @@ class ContainerBase(dict, abc.ABC):
             values = [cont[key] for cont in containers]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
-            if isinstance(value0, ivy.Container):
-                ret = ivy.Container.multi_map(
-                    func,
-                    values,
-                    key_chains,
-                    to_apply,
-                    prune_unapplied,
-                    this_key_chain,
-                    config,
-                )
-                if ret:
-                    return_dict[key] = ret
-            else:
+            is_container = [ivy.is_ivy_container(x) for x in values]
+            if not assert_identical and not all(is_container) and any(is_container):
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                         this_key_chain not in key_chains and to_apply
@@ -646,7 +646,37 @@ class ContainerBase(dict, abc.ABC):
                         return_dict[key] = value0
                         continue
                 return_dict[key] = func(values, this_key_chain)
-        # noinspection PyProtectedMember
+            else:
+                if isinstance(value0, ivy.Container):
+                    ret = ivy.Container.multi_map(
+                        func,
+                        values,
+                        key_chains,
+                        to_apply,
+                        prune_unapplied,
+                        this_key_chain,
+                        config,
+                        map_sequences,
+                        assert_identical,
+                    )
+                    if ret:
+                        return_dict[key] = ret
+                elif isinstance(value0, (list, tuple)) and map_sequences:
+                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                    if prune_unapplied and not ret:
+                        continue
+                    return_dict[key] = ret
+                else:
+                    if key_chains is not None:
+                        if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply
+                        ):
+                            if prune_unapplied:
+                                continue
+                            return_dict[key] = value0
+                            continue
+                    return_dict[key] = func(values, this_key_chain)
+            # noinspection PyProtectedMember
         return ivy.Container(return_dict, **config)
 
     @staticmethod
@@ -665,7 +695,7 @@ class ContainerBase(dict, abc.ABC):
         """
         if len(containers) == 1:
             return containers[0].all_key_chains()
-        sets = [_set(cont.all_key_chains()) for cont in containers]
+        sets = [set(cont.all_key_chains()) for cont in containers]
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
@@ -719,9 +749,7 @@ class ContainerBase(dict, abc.ABC):
             if not common_key_chains:
                 return False
             containers = [cont.at_key_chains(common_key_chains) for cont in containers]
-        keys = _set(
-            [i for sl in [list(cont.keys()) for cont in containers] for i in sl]
-        )
+        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
         # noinspection PyProtectedMember
         for key in keys:
             if not min([key in cont for cont in containers]):
@@ -982,23 +1010,23 @@ class ContainerBase(dict, abc.ABC):
             Container loaded from disk
 
         """
-        if not ivy.exists(_h5py):
+        if not ivy.exists(h5py):
             raise Exception(
                 "You must install python package h5py in order to load hdf5 files from "
                 "disk into a container."
             )
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
-            h5_obj = _h5py.File(h5_obj_or_filepath, "r")
+            h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
         items = sorted(h5_obj.items()) if alphabetical_keys else h5_obj.items()
         for key, value in items:
-            if isinstance(value, _h5py.Group):
+            if isinstance(value, h5py.Group):
                 container_dict[key] = ivy.Container.from_disk_as_hdf5(
                     value, slice_obj, ivyh
                 )
-            elif isinstance(value, _h5py.Dataset):
+            elif isinstance(value, h5py.Dataset):
                 container_dict[key] = ivy.default(ivyh, ivy).array(
                     list(value[slice_obj])
                 )
@@ -1026,7 +1054,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return ivy.Container(
-            _pickle.load(open(pickle_filepath, "rb")),
+            pickle.load(open(pickle_filepath, "rb")),
             rebuild_child_containers=True,
             ivyh=ivyh,
         ).to_ivy()
@@ -1050,7 +1078,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         with open(json_filepath) as json_data_file:
-            return ivy.Container(_json.load(json_data_file), ivyh=ivyh)
+            return ivy.Container(json.load(json_data_file), ivyh=ivyh)
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
@@ -1066,25 +1094,25 @@ class ContainerBase(dict, abc.ABC):
             Size of h5 file contents, and batch size.
 
         """
-        if not ivy.exists(_h5py):
+        if not ivy.exists(h5py):
             raise Exception(
                 "You must install python package h5py in order to determine the size "
                 "of hdf5 files."
             )
         if type(h5_obj_or_filepath) is str:
-            h5_obj = _h5py.File(h5_obj_or_filepath, "r")
+            h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
 
         size = 0
         batch_size = 0
         for key, value in h5_obj.items():
-            if isinstance(value, _h5py.Group):
+            if isinstance(value, h5py.Group):
                 size_to_add, batch_size = ivy.Container.h5_file_size(value)
                 size += size_to_add
-            elif isinstance(value, _h5py.Dataset):
+            elif isinstance(value, h5py.Dataset):
                 value_shape = value.shape
-                size += _reduce(_mul, value_shape, 1) * value.dtype.itemsize
+                size += reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
                 raise Exception(
@@ -1105,30 +1133,30 @@ class ContainerBase(dict, abc.ABC):
             random seed to use for array shuffling (Default value = 0)
 
         """
-        if not ivy.exists(_h5py):
+        if not ivy.exists(h5py):
             raise Exception(
                 "You must install python package h5py in order to "
                 "shuffle hdf5 files on disk."
             )
         if seed_value is None:
-            seed_value = _random.randint(0, 1000)
+            seed_value = random.randint(0, 1000)
         if type(h5_obj_or_filepath) is str:
-            h5_obj = _h5py.File(h5_obj_or_filepath, "a")
+            h5_obj = h5py.File(h5_obj_or_filepath, "a")
         else:
             h5_obj = h5_obj_or_filepath
 
         for key, value in h5_obj.items():
-            if isinstance(value, _h5py.Group):
+            if isinstance(value, h5py.Group):
                 ivy.Container.shuffle_h5_file(value, seed_value)
-            elif isinstance(value, _h5py.Dataset):
-                _random.seed(seed_value)
+            elif isinstance(value, h5py.Dataset):
+                random.seed(seed_value)
                 # noinspection PyTypeChecker
-                _random.shuffle(value)
+                random.shuffle(value)
             else:
                 raise Exception(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
-        if isinstance(h5_obj, _h5py.File):
+        if isinstance(h5_obj, h5py.File):
             h5_obj.close()
 
     @staticmethod
@@ -1226,12 +1254,12 @@ class ContainerBase(dict, abc.ABC):
         if not ivy.exists(max_length) or key_len <= max_length:
             return key
         idxs = (
-            _np.round(
+            np.round(
                 (key_len - 1)
                 / (max_length - 1)
-                * _np.linspace(0, max_length - 1, max_length)
+                * np.linspace(0, max_length - 1, max_length)
             )
-            .astype(_np.int32)
+            .astype(np.int32)
             .tolist()
         )
         return "".join([key[idx] for idx in idxs])
@@ -1321,16 +1349,16 @@ class ContainerBase(dict, abc.ABC):
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
-        sub_shapes_array = _np.asarray(
+        sub_shapes_array = np.asarray(
             [sub_shape[0:min_num_dims] for sub_shape in sub_shapes]
         )
-        sub_shapes_array = _np.where(sub_shapes_array == 0, -1, sub_shapes_array)
-        mask = _np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
+        sub_shapes_array = np.where(sub_shapes_array == 0, -1, sub_shapes_array)
+        mask = np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
         # noinspection PyTypeChecker
         return [
-            None if _np.isnan(i) else int(i)
-            for i in _np.where(
-                mask, sub_shapes_array[0], _np.ones(min_num_dims) * float("nan")
+            None if np.isnan(i) else int(i)
+            for i in np.where(
+                mask, sub_shapes_array[0], np.ones(min_num_dims) * float("nan")
             ).tolist()
         ]
 
@@ -1348,7 +1376,7 @@ class ContainerBase(dict, abc.ABC):
             ).to_iterator()
             if v
         ]
-        if len(_set(sub_devs)) <= 1:
+        if len(set(sub_devs)) <= 1:
             return sub_devs[0]
         return None
 
@@ -1420,7 +1448,9 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(self, dict_in, **config):
+    def inplace_update(
+        self, dict_in: Union[ivy.Container, dict], **config
+    ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
         container.
 
@@ -1509,7 +1539,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return bool(
-            _np.prod(
+            np.prod(
                 [
                     v
                     for k, v in self.as_bools(
@@ -1555,7 +1585,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return not bool(
-            _np.sum(
+            np.sum(
                 [
                     v
                     for k, v in self.as_bools(
@@ -2185,7 +2215,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self._ivy.DevClonedItem(
-            {device: self.to_dev(device) for device in devices}
+            {device: self.to_device(device=device) for device in devices}
         )
 
     def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -2209,7 +2239,7 @@ class ContainerBase(dict, abc.ABC):
         )
         return self._ivy.DevDistItem(
             {
-                device: cont.to_dev(device)
+                device: cont.to_device(device)
                 for cont, device in zip(
                     self.split(split_arg, axis, with_remainder=True), devices
                 )
@@ -2553,7 +2583,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def to_dev(
+    def to_device(
         self,
         device,
         key_chains=None,
@@ -2585,7 +2615,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device))
+            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2742,7 +2772,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(
             dict(
                 sorted(
-                    array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1)
+                    array_dict.items(), key=lambda item: reduce(mul, item[1].shape, 1)
                 )
             ),
             alphabetical_keys=False,
@@ -2818,7 +2848,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         ret = self.map(
-            lambda x, kc: self._ivy.array(x) if isinstance(x, _np.ndarray) else x,
+            lambda x, kc: self._ivy.array(x) if isinstance(x, np.ndarray) else x,
             key_chains,
             to_apply,
             prune_unapplied,
@@ -2880,13 +2910,13 @@ class ContainerBase(dict, abc.ABC):
             appending to file. (Default value = None)
 
         """
-        if not ivy.exists(_h5py):
+        if not ivy.exists(h5py):
             raise Exception(
                 "You must install python package h5py in order to save containers "
                 "to disk as hdf5 files."
             )
         if type(h5_obj_or_filepath) is str:
-            h5_obj = _h5py.File(h5_obj_or_filepath, mode)
+            h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath
         for key, value in self.items():
@@ -2923,7 +2953,7 @@ class ContainerBase(dict, abc.ABC):
             Filepath for where to save the container to disk.
 
         """
-        _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, "wb"))
+        pickle.dump(self.to_native().to_dict(), open(pickle_filepath, "wb"))
 
     def to_jsonable(self, return_dict=None):
         """
@@ -2954,7 +2984,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         with open(json_filepath, "w+") as json_data_file:
-            _json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
+            json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
     def to_list(self):
         return_list = list()
@@ -4667,7 +4697,7 @@ class ContainerBase(dict, abc.ABC):
                     (self._ivy.is_native_array(v) or isinstance(v, ivy.Array))
                     and len(list(v.shape)) > 0
                     and ivy.exists(self._print_limit)
-                    and _reduce(_mul, v.shape) > self._print_limit
+                    and reduce(mul, v.shape) > self._print_limit
                 ):
                     rep = (type(v), "shape=", list(v.shape))
                 elif (
@@ -4686,7 +4716,7 @@ class ContainerBase(dict, abc.ABC):
             new_dict[k] = rep
         if as_repr:
             json_dumped_str = _align_arrays(
-                _json.dumps(
+                json.dumps(
                     ivy.Container(new_dict, **self._config)
                     .map(
                         lambda x, kc: x
@@ -4809,8 +4839,8 @@ class ContainerBase(dict, abc.ABC):
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )
-        queue_idxs = _set(
-            [_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries]
+        queue_idxs = set(
+            [np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries]
         )
         conts = list()
         for i in queue_idxs:

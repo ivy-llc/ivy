@@ -9,5 +9,5 @@
    extensions.rst
    roadmap.rst
    contributing.rst
+   deep_dive.rst
    faq.rst
-   building_the_docs.rst
