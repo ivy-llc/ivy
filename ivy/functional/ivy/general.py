@@ -1144,7 +1144,6 @@ def exists(x: Any) -> bool:
 
     Examples
     --------
-
     With :code:`Any` input:
 
     >>> x = None
