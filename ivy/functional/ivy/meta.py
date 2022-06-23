@@ -381,8 +381,8 @@ def fomaml_step(
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables,
-    inner_grad_steps,
-    inner_learning_rate,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
     inner_optimization_step: Optional[Callable] = gradient_descent_update,
     inner_batch_fn: Optional[Callable] = None,
     outer_batch_fn: Optional[Callable] = None,
@@ -393,7 +393,7 @@ def fomaml_step(
     outer_v=None,
     keep_outer_v: Optional[bool] = True,
     return_inner_v: Optional[str, bool] = False,
-    num_tasks=None,
+    num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
 ):
     """Perform step of first order MAML.
@@ -495,12 +495,12 @@ def reptile_step(
     batch: Union[ivy.Array, ivy.NativeArray],
     cost_fn: Callable,
     variables,
-    inner_grad_steps,
-    inner_learning_rate,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
     inner_optimization_step: Optional[Callable] = gradient_descent_update,
     batched: Optional[bool] = True,
     return_inner_v: Optional[str, bool] = False,
-    num_tasks=None,
+    num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
 ):
     """Perform step of Reptile.
@@ -582,8 +582,8 @@ def maml_step(
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables,
-    inner_grad_steps,
-    inner_learning_rate,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
     inner_optimization_step: Optional[Callable] = gradient_descent_update,
     inner_batch_fn: Optional[Callable] = None,
     outer_batch_fn: Optional[Callable] = None,
@@ -594,7 +594,7 @@ def maml_step(
     outer_v=None,
     keep_outer_v: Optional[bool] = True,
     return_inner_v: Optional[str, bool] = False,
-    num_tasks=None,
+    num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
 ):
     """Perform step of vanilla second order MAML.
