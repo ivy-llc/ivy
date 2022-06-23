@@ -165,7 +165,7 @@ def test_gradient_image(
 # float_img_to_uint8_img
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="float_img_to_uint8_img"),
     native_array=st.booleans(),
@@ -197,7 +197,7 @@ def test_float_img_to_uint8_img(
 # uint8_img_to_float_img
 @given(
     shape=st.lists(st.integers(min_value=1, max_value=8), min_size=3, max_size=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="uint8_img_to_float_img"),
     native_array=st.booleans(),
@@ -230,7 +230,7 @@ def test_uint8_img_to_float_img(
 @given(
     shape=st.lists(st.integers(min_value=2, max_value=8), min_size=3, max_size=3),
     seed=st.integers(min_value=1, max_value=8),
-    input_dtype=st.sampled_from(ivy.valid_float_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="random_crop"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -246,7 +246,7 @@ def test_random_crop(
     container,
     fw,
 ):
-    x = ivy.random_normal(shape=[3] + shape)
+    x = ivy.random_uniform(shape=shape+[3])
     crop_size = [random.randint(1, shape[-3] * 2), random.randint(1, shape[-2] * 2)]
     helpers.test_array_function(
         input_dtype,
@@ -260,5 +260,7 @@ def test_random_crop(
         "random_crop",
         x=x,
         crop_size=crop_size,
-        seed=seed,
+        batch_shape=x.shape[0],
+        image_dims=x.shape[1:3],
+        seed=seed
     )
