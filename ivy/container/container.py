@@ -115,7 +115,7 @@ class Container(
 
     def __add__(self, other):
         return ivy.Container.multi_map(
-            lambda xs, _: reduce(add,xs), [self, other], map_nests=True
+            lambda xs, _: reduce(add, xs), [self, other], map_nests=True
         )
 
     def __radd__(self, other):
