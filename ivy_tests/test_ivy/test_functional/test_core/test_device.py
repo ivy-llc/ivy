@@ -3,6 +3,9 @@
 # global
 import os
 import math
+
+import psutil
+import nvidia_smi
 import pytest
 import time
 import numpy as np
@@ -607,17 +610,41 @@ def test_get_all_arrays_on_dev(num, device):
         assert arr in arrs_on_dev
 
 
+def test_total_mem_on_dev(device):
+    if 'cpu' in device:
+        assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
+    elif 'gpu' in device:
+        gpu_mem = nvidia_smi.nvmlDeviceGetMemoryInfo(device)
+        assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
+
+
+def test_gpu_is_availble(fw):
+
+    # If gpu is available but cannot be initialised it will fail the test
+    if ivy.gpu_is_available():
+        try:
+            nvidia_smi.nvmlInit()
+        except:
+            assert False
+
+    # if gpu is returned not available but can be somehow initilised it must fail
+    elif ivy.gpu_is_available == False:
+        try:
+            nvidia_smi.nvmlInit()
+            assert False
+        except:
+            pass
+
+
 # Still to Add #
 # ---------------#
 
 
 # print_all_arrays_on_dev
 # clear_mem_on_dev
-# total_mem_on_dev
-# used_mem_on_dev
-# percent_used_mem_on_dev
-# dev_util
-# gpu_is_available
+# used_mem_on_dev # working fine for cpu
+# percent_used_mem_on_dev # working fine for cpu
+# dev_util # working fine for cpu
 # num_cpu_cores
 # num_gpus
 # tpu_is_available
