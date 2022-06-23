@@ -420,14 +420,14 @@ def multi_head_attention(
     context = ivy.default(context, x)
 
     # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
-    kv = (
+    kv = tuple(
         to_kv_fn(context, v=to_kv_v)
         if ivy.exists(to_kv_fn)
         else ivy.split(context, 2, -1)
     )
 
     # BS x K x (HxF),  BS x K x (HxF)
-    if isinstance(kv, list):
+    if isinstance(kv, tuple):
         k, v = kv
     else:
         k, v = ivy.split(kv, 2, -1)
@@ -576,12 +576,12 @@ def conv2d(
     -------
     ret
         The result of the convolution operation.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    
+
     Functional Examples
     -------------------
 
@@ -609,7 +609,7 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, strides = [2, 1], padding = 'VALID') \
         #non-square filter with unequal stride and valid padding
     >>> print(result.shape)
-    [1, 15, 28, 5]
+    (1, 15, 28, 5)
 
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
@@ -622,21 +622,8 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
-        a: ivy.array([[[[4.],
-                        [0.]],
-                       [[1.],
-                        [5.]]]]),
-        b: ivy.array([[[[4.],
-                        [0.],
-                        [0.]],
-
-                       [[1.],
-                        [6.],
-                        [0.]],
-
-                       [[0.],
-                        [1.],
-                        [5.]]]])
+        a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+        b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
     }
 
     """

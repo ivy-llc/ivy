@@ -6,6 +6,7 @@ from io import StringIO
 import sys
 import re
 import inspect
+import warnings
 
 import numpy as np
 import math
@@ -291,8 +292,8 @@ def docstring_examples_run(fn):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
-                exec(line)
-            except Exception:
+                exec(line,ivy.__dict__)
+            except Exception as e:
                 return False
 
     output = f.getvalue()
@@ -318,12 +319,20 @@ def docstring_examples_run(fn):
 
     output = ansi_escape.sub("", output)
 
-    print("Output: ", output)
-    print("Putput: ", parsed_output)
+    # print("Output: ", output)
+    # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
-        ivy.warn(
+        print(
+            "output for ",
+            fn_name,
+            "on run: ",
+            output,
+            "\noutput in docs :",
+            parsed_output,
+        )
+        warnings.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
     return True
