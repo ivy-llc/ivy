@@ -492,7 +492,7 @@ def fomaml_step(
 
 @to_native_arrays_and_back
 def reptile_step(
-    batch,
+    batch: Union[ivy.Array, ivy.NativeArray],
     cost_fn: Callable,
     variables,
     inner_grad_steps,
@@ -578,7 +578,7 @@ def reptile_step(
 
 @to_native_arrays_and_back
 def maml_step(
-    batch,
+    batch: Union[ivy.Array, ivy.NativeArray],
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables,
