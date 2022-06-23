@@ -392,7 +392,7 @@ def fomaml_step(
     keep_inner_v: Optional[bool] = True,
     outer_v=None,
     keep_outer_v: Optional[bool] = True,
-    return_inner_v: Optional[bool] = False,
+    return_inner_v: Optional[str, bool] = False,
     num_tasks=None,
     stop_gradients: Optional[bool] = True,
 ):
@@ -499,7 +499,7 @@ def reptile_step(
     inner_learning_rate,
     inner_optimization_step: Optional[Callable] = gradient_descent_update,
     batched: Optional[bool] = True,
-    return_inner_v: Optional[bool] = False,
+    return_inner_v: Optional[str, bool] = False,
     num_tasks=None,
     stop_gradients: Optional[bool] = True,
 ):
@@ -593,7 +593,7 @@ def maml_step(
     keep_inner_v: Optional[bool] = True,
     outer_v=None,
     keep_outer_v: Optional[bool] = True,
-    return_inner_v: Optional[bool] = False,
+    return_inner_v: Optional[str, bool] = False,
     num_tasks=None,
     stop_gradients: Optional[bool] = True,
 ):
