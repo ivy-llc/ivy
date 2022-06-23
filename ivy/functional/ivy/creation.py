@@ -564,7 +564,8 @@ def meshgrid(
 
         This method conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        the `docstring <https://data-apis.org/array-api/latest/API_specification
+        /generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
         in the standard. The descriptions above assume an array input for simplicity,
         but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
         instances, as shown in the type hints and also the examples below.
@@ -655,8 +656,7 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10., 10.],
-               [10., 10.]])
+    ivy.array([[10,10],[10,10]])
 
     """
     return current_backend().full(shape, fill_value, dtype=dtype, device=device)
