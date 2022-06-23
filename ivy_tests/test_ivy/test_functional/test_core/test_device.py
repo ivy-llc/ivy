@@ -624,15 +624,15 @@ def test_gpu_is_availble(fw):
     if ivy.gpu_is_available():
         try:
             nvidia_smi.nvmlInit()
-        except:
+        except nvidia_smi.NVMLError_DriverNotLoaded:
             assert False
 
-    # if gpu is returned not available but can be somehow initilised it must fail
-    elif ivy.gpu_is_available == False:
+    # if gpu is returned not available but can be somehow initialised it must fail
+    elif ivy.gpu_is_available is False:
         try:
             nvidia_smi.nvmlInit()
             assert False
-        except:
+        except nvidia_smi.NVMLError_DriverNotLoaded:
             pass
 
 
@@ -653,7 +653,6 @@ def test_gpu_is_availble(fw):
 # unset_default_device
 # split_factor
 # set_split_factor
-# isinstance
 # Class MultiDev
 # class MultiDevItem
 # class MultiDevIter
