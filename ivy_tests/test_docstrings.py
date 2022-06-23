@@ -1,4 +1,7 @@
 # global
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
 
 # local
@@ -17,7 +20,7 @@ def test_docstrings(backend):
         Functions skipped as their output dependent on outside factors:
             random_normal, random_uniform, shuffle, num_gpus, current_backend,
             get_backend
-                 
+
     """
     to_skip = [
         "random_normal",
@@ -29,6 +32,10 @@ def test_docstrings(backend):
         "namedtuple",
         "DType",
         "Dtype",
+        "multinomial",
+        "num_cpu_cores",
+        "get_all_ivy_arrays_on_dev",
+        "num_ivy_arrays_on_dev"
     ]
 
     for k, v in ivy.__dict__.copy().items():
@@ -37,7 +44,7 @@ def test_docstrings(backend):
         success = False
         failures.append(k)
     if not success:
-        ivy.warn(
+        warnings.warn(
             "the following methods had failing docstrings:\n\n{}".format(
                 "\n".join(failures)
             )
