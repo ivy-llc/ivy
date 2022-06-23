@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def abs(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -142,8 +142,8 @@ def acosh(
 @handle_out_argument
 @handle_nestable
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -260,7 +260,7 @@ def add(
     ivy.array([5, 7, 9])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
                         b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
@@ -683,8 +683,8 @@ def atanh(
 @handle_out_argument
 @handle_nestable
 def bitwise_and(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -717,7 +717,7 @@ def bitwise_and(
 @handle_out_argument
 @handle_nestable
 def bitwise_invert(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -752,8 +752,8 @@ def bitwise_invert(
 @handle_out_argument
 @handle_nestable
 def bitwise_left_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -787,8 +787,8 @@ def bitwise_left_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_or(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -821,8 +821,8 @@ def bitwise_or(
 @handle_out_argument
 @handle_nestable
 def bitwise_right_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -866,17 +866,17 @@ def bitwise_right_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_xor(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
-    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the 
-    input   
-    array ``x2``.   
+    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
+    input
+    array ``x2``.
 
-    **Special cases**   
+    **Special cases**
 
     This function does not take floating point operands
 
@@ -921,7 +921,7 @@ def bitwise_xor(
     >>> ivy.bitwise_xor(a, b, out=y)
     >>> print(y)
     ivy.array([12, 22, 79])
- 
+
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
     >>> ivy.bitwise_xor(a, b, out = a)
@@ -935,8 +935,8 @@ def bitwise_xor(
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
     ivy.array([[ 4, 6, 89, 26, 57]])
-   
-    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:  
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([0, 1, 3, 67, 91])
     >>> a = ivy.native_array([4, 7, 90, 89, 98])
@@ -944,7 +944,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([[4, 6, 89, 26, 57]])
 
-    With :code: `ivy.Container` input:  
+    With :code: `ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([89]), \
     b = ivy.array([90]))
@@ -958,7 +958,7 @@ def bitwise_xor(
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.Container(a = ivy.array([-67, 21]), \
     b = ivy.array([78, 34]))
     >>> y = ivy.array([12, 13]])
@@ -978,9 +978,9 @@ def bitwise_xor(
     >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
     >>> y = a.bitwise_xor(b)
     >>> print(y)
-    ivy.array([[74, 41, 59], 
+    ivy.array([[74, 41, 59],
     [24, 5, 7]])
-    
+
     Using :code:`ivy.Container` instance method:
 
     >>>x = ivy.Container(a = ivy.array([89]), \
@@ -992,12 +992,12 @@ def bitwise_xor(
     {
     a:ivy.array([20])
     b:ivy.array([85])
-    } 
-    
+    }
+
     Operator Examples
     -----------------
 
-    With :code:`ivy.Array` instances:  
+    With :code:`ivy.Array` instances:
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
@@ -1005,7 +1005,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([2, 0, 2])
 
-    With :code:`ivy.Container` instances:   
+    With :code:`ivy.Container` instances:
 
     >>> x = ivy.Container(a = ivy.array([89]), \
     b = ivy.array([90]))
@@ -1016,8 +1016,8 @@ def bitwise_xor(
     {
     a:ivy.array([20])
     b:ivy.array([85])
-    }   
-    
+    }
+
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
     >>> x = ivy.Container(a = ivy.array([-67, 21]), \
@@ -1028,7 +1028,7 @@ def bitwise_xor(
     {
     a: ivy.array([-79, 24])
     b: ivy.array([6, 74])
-    }   
+    }
     """
     return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -1231,8 +1231,8 @@ def cosh(
 @handle_out_argument
 @handle_nestable
 def divide(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1261,8 +1261,8 @@ def divide(
 @handle_out_argument
 @handle_nestable
 def equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1497,8 +1497,8 @@ def floor(
 @handle_out_argument
 @handle_nestable
 def floor_divide(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1532,8 +1532,8 @@ def floor_divide(
 @handle_out_argument
 @handle_nestable
 def greater(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1569,8 +1569,8 @@ def greater(
 @handle_out_argument
 @handle_nestable
 def greater_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1828,8 +1828,8 @@ def isnan(
 @handle_out_argument
 @handle_nestable
 def less(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1867,8 +1867,8 @@ def less(
 @handle_out_argument
 @handle_nestable
 def less_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2237,8 +2237,8 @@ def logical_xor(
 @handle_out_argument
 @handle_nestable
 def multiply(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2305,7 +2305,7 @@ def multiply(
 @handle_out_argument
 @handle_nestable
 def negative(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2416,8 +2416,8 @@ def negative(
 @handle_out_argument
 @handle_nestable
 def not_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2449,7 +2449,7 @@ def not_equal(
 @handle_out_argument
 @handle_nestable
 def positive(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2473,8 +2473,8 @@ def positive(
 @handle_out_argument
 @handle_nestable
 def pow(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2562,8 +2562,8 @@ def pow(
 @handle_out_argument
 @handle_nestable
 def remainder(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2648,7 +2648,7 @@ def round(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the nearest 
+    """Rounds each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
 
     **Special cases**
@@ -2939,8 +2939,8 @@ def square(
 @handle_out_argument
 @handle_nestable
 def subtract(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -3033,7 +3033,7 @@ def tan(
                         [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[1.96, -1.37, 0.16], 
+    ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
 
     With :code:`ivy.NativeArray` input:
