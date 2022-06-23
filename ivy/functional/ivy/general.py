@@ -1210,6 +1210,16 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     Examples
     --------
+    With :code:`ivy.Array.shape` input:
+
+    >>> x = ivy.array([1., 2., 3.]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
     >>> x = ivy.array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
@@ -1218,11 +1228,21 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
-    >>> x = ivy.array([1., 2., 3.]).shape
+    With :code:`ivy.NativeArray.shape` input:
+
+    >>> x = ivy.native_array([1., 2., 3.]).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
 
-    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape
+    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
+    >>> x = ivy.native_array((1., 2., 3.)).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.native_array(((1., 2., 3.), (4., 5., 6.))).shape
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
