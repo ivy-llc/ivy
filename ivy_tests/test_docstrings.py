@@ -38,7 +38,7 @@ def test_docstrings(backend):
     ]
 
     for k, v in ivy.__dict__.copy().items():
-        if k in to_skip or helpers.docstring_examples_run(v):
+        if k in to_skip or helpers.docstring_examples_run(k):
             continue
         success = False
         failures.append(k)
