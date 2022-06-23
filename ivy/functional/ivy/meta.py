@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
-from typing import Optional, Union, Callable
+from typing import Optional, Union, Callable, List, Tuple
 from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
@@ -377,7 +377,12 @@ def _train_tasks(
 
 @to_native_arrays_and_back
 def fomaml_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        List[Union[ivy.Array, ivy.NativeArray]],
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+    ],
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables,
@@ -492,7 +497,12 @@ def fomaml_step(
 
 @to_native_arrays_and_back
 def reptile_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        List[Union[ivy.Array, ivy.NativeArray]],
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+    ],
     cost_fn: Callable,
     variables,
     inner_grad_steps: int,
@@ -578,7 +588,12 @@ def reptile_step(
 
 @to_native_arrays_and_back
 def maml_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        List[Union[ivy.Array, ivy.NativeArray]],
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+    ],
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables,
