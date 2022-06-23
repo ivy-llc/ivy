@@ -1,3 +1,8 @@
+# global
+import warnings
+
+warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
 # class placeholders
 
 
@@ -73,6 +78,8 @@ class Node(str):
 
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
+warning_level_stack = list()
+warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
 # global constants
@@ -505,3 +512,45 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+
+
+def warning_level():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current warning level, default is "ivy_only"
+    """
+    global warning_level_stack
+    if not warning_level_stack:
+        ret = "ivy_only"
+    else:
+        ret = warning_level_stack[-1]
+    return ret
+
+
+def set_warning_level(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    warn_level
+        string for the warning level to be set, one of "none", "ivy_only", "all"
+
+    """
+    global warning_level_stack
+    warning_level_stack.append(warn_level)
+
+
+def unset_warning_level():
+    """"""
+    global warning_level_stack
+    if warning_level_stack:
+        warning_level_stack.pop(-1)
+
+
+def warn(warning_message, stacklevel=0):
+    warn_level = warning_level()
+    warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
+    warnings.warn(warning_message, stacklevel=stacklevel)
