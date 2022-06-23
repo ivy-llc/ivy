@@ -24,6 +24,9 @@ We try to explain these tasks are clearly as possible, but in cases where things
 clear, then please feel free to engage with the `open tasks discussion`_,
 or reach out on `discord`_ in the `open tasks channel`_!
 
+Please always use the latest commit on GitHub when working on any of these tasks,
+**DO NOT** develop your code using the latest PyPI release of :code:`ivy-core`.
+
 Function Formatting
 -------------------
 

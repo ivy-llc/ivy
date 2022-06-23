@@ -1142,6 +1142,72 @@ def exists(x: Any) -> bool:
     ret
         True if x is not None, else False.
 
+    Examples
+    --------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    False
+
+    >>> x = ""
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = []
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = 1
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = "abc"
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = [1, 0, -1, 1]
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    With a mix of :code:`ivy.Container` and :code:`Any` input:
+
+    >>> x = ivy.Container(a=None, b=None)
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=None, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=123, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array[1, 2, 3], b=ivy.native_array([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
     """
     return x is not None
 
@@ -1831,6 +1897,63 @@ def cumprod(
     -------
     ret
         Input array with cumulatively multiplied elements along axis.
+        
+    Functional Examples
+    --------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    ivy.array([2, 6, 24])
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> exclusive = True
+    >>> y = ivy.cumprod(x, exclusive=exclusive)
+    >>> print(y)
+    ivy.array([1, 2, 6])
+    
+    Example specifying axes
+    
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
+    >>> print(y)
+    ivy.array([[1,  2], 
+               [1,  5], 
+               [1, 11]])
+     
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
+    >>> print(x)
+    ivy.array([[1,  2], 
+               [2,  3], 
+               [10, 21]])
+     
+     
+     With :code:`ivy.NativeArray` input:
+     
+     >>> x = ivy.native_array([2, 3, 4])
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     ivy.array([2, 6, 24])
+     
+     
+     With :code:`ivy.Container` input:
+     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     {
+         a: ivy.array([2, 6, 24]),
+         b: ivy.array([3, 12, 60])
+     }
 
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
