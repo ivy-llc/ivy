@@ -1142,6 +1142,72 @@ def exists(x: Any) -> bool:
     ret
         True if x is not None, else False.
 
+    Examples
+    --------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    False
+
+    >>> x = ""
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = []
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = 1
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = "abc"
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = [1, 0, -1, 1]
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    With a mix of :code:`ivy.Container` and :code:`Any` input:
+
+    >>> x = ivy.Container(a=None, b=None)
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=None, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=123, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array[1, 2, 3], b=ivy.native_array([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
     """
     return x is not None
 
