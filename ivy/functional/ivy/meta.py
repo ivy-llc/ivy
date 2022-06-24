@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
-from typing import Optional, Union, Callable, Tuple
+from typing import Optional, Union, Callable, Tuple, Any
 from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
@@ -377,7 +377,7 @@ def _train_tasks(
 
 @to_native_arrays_and_back
 def fomaml_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: ivy.Container,
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables: ivy.Container,
@@ -395,8 +395,8 @@ def fomaml_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple(ivy.Array)] = None,
-) -> Tuple(ivy.Array):
+    out: Optional[Tuple[ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of first order MAML.
 
     Parameters
@@ -497,7 +497,7 @@ def fomaml_step(
 
 @to_native_arrays_and_back
 def reptile_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: ivy.Container,
     cost_fn: Callable,
     variables: ivy.Container,
     inner_grad_steps: int,
@@ -507,8 +507,8 @@ def reptile_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple(ivy.Array)] = None,
-) -> Tuple(ivy.Array):
+    out: Optional[Tuple[ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of Reptile.
 
     Parameters
@@ -588,7 +588,7 @@ def reptile_step(
 
 @to_native_arrays_and_back
 def maml_step(
-    batch: Union[ivy.Array, ivy.NativeArray],
+    batch: ivy.Container,
     inner_cost_fn: Callable,
     outer_cost_fn: Callable,
     variables: ivy.Container,
@@ -606,8 +606,8 @@ def maml_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple(ivy.Array)] = None,
-) -> Tuple(ivy.Array):
+    out: Optional[Tuple[ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of vanilla second order MAML.
 
     Parameters
