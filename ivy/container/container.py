@@ -1,5 +1,6 @@
 # global
 import copy
+from operator import add
 from operator import lt
 from operator import le
 from operator import eq
@@ -113,7 +114,9 @@ class Container(
         return self.map(lambda x, kc: power**x)
 
     def __add__(self, other):
-        return self.static_add(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: reduce(add, xs), [self, other], map_nests=True
+        )
 
     def __radd__(self, other):
         return self.static_add(other, self)
