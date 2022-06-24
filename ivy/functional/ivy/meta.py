@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
-from typing import Optional, Union, Callable
+from typing import Optional, Union, Callable, Tuple
 from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
@@ -395,7 +395,8 @@ def fomaml_step(
     return_inner_v: Optional[str, bool] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-) -> ivy.Array:
+    out: Optional[Tuple(ivy.Array)] = None,
+) -> Tuple(ivy.Array):
     """Perform step of first order MAML.
 
     Parameters
@@ -486,8 +487,12 @@ def fomaml_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1]
     if return_inner_v:
-        return cost, grads, rets[2]
-    return cost, grads
+        ret = (cost, grads, rets[2])
+    else:
+        ret = (cost, grads)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_native_arrays_and_back
@@ -502,7 +507,8 @@ def reptile_step(
     return_inner_v: Optional[str, bool] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-) -> ivy.Array:
+    out: Optional[Tuple(ivy.Array)] = None,
+) -> Tuple(ivy.Array):
     """Perform step of Reptile.
 
     Parameters
@@ -569,8 +575,12 @@ def reptile_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
-        return cost, grads, rets[2]
-    return cost, grads
+        ret = (cost, grads, rets[2])
+    else:
+        ret = (cost, grads)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # Second Order
@@ -596,7 +606,8 @@ def maml_step(
     return_inner_v: Optional[str, bool] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-) -> ivy.Array:
+    out: Optional[Tuple(ivy.Array)] = None,
+) -> Tuple(ivy.Array):
     """Perform step of vanilla second order MAML.
 
     Parameters
@@ -691,4 +702,7 @@ def maml_step(
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
     # noinspection PyRedundantParentheses
-    return (cost, grads.sum(0), *rets)
+    ret = (cost, grads.sum(0), *rets)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
