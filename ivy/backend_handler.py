@@ -190,7 +190,6 @@ def set_backend(backend: str):
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-
         ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
 
     if verbosity.level > 0:
