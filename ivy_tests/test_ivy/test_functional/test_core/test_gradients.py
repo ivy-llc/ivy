@@ -52,8 +52,6 @@ def test_variable(object_in, dtype, device, call):
     object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
 )
-# @pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-# @pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
 def test_is_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
@@ -82,8 +80,10 @@ def test_is_variable(object_in, dtype, device, call):
 
 
 # variable data
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
+@given(
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+)
 def test_variable_data(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
@@ -117,9 +117,6 @@ def test_variable_data(object_in, dtype, device, call):
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([("array", ivy.array), ("var", helpers.var_fn)])
 )
-# @pytest.mark.parametrize("x_raw", [[0.0]])
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [("array", ivy.array), ("var", helpers.var_fn)])
 def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
     # smoke test
     fn_name, tensor_fn = tensor_fn
