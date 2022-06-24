@@ -6,7 +6,6 @@ from io import StringIO
 import sys
 import re
 import inspect
-import warnings
 
 import numpy as np
 import math
@@ -324,7 +323,7 @@ def docstring_examples_run(fn):
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
-        warnings.warn(
+        ivy.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
     return True
