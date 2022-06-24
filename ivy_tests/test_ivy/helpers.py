@@ -401,6 +401,170 @@ def as_lists(dtype, as_variable, native_array, container):
     return dtype, as_variable, native_array, container
 
 
+def create_args(input_dtypes, num_positional_args, as_variable_flags, all_as_kwargs_np):
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
+    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    num_arg_vals = len(arg_np_vals)
+    arg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(arg_array_vals, as_variable_flags[:num_arg_vals])
+    ]
+    args = ivy.copy_nest(args_np, to_mutable=True)
+    ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
+
+    # create kwargs
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+    kwarg_array_vals = [
+        ivy.array(x, dtype=d)
+        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(kwarg_array_vals, as_variable_flags[num_arg_vals:])
+    ]
+
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
+
+    # create numpy args
+    args_np = ivy.nested_map(
+        args,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
+    kwargs_np = ivy.nested_map(
+        kwargs,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
+    return args, kwargs, args_np, kwargs_np
+
+
+def test_array_method(
+    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags: Union[bool, List[bool]],
+    all_as_kwargs_np,
+    num_positional_args: int,
+    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags_constructor: Union[bool, List[bool]],
+    constructor_kwargs,
+    num_positional_args_constructor: int,
+    fw: str,
+    class_name: str,
+    rtol: float = 1e-03,
+    atol: float = 1e-06,
+    test_values: bool = True,
+):
+    """Tests a class-method that consumes (or returns) arrays for the current backend
+    by comparing the result with numpy.
+
+    Parameters
+    ----------
+    input_dtypes
+        data types of the input arguments in order.
+    as_variable_flags
+        dictates whether the corresponding input argument should be treated as an ivy Variable.
+    all_as_kwargs_np:
+        input arguments to the function as keyword arguments.
+    num_positional_args
+        number of input arguments that must be passed as positional
+        arguments.
+    input_dtypes_constructor
+        data types of the input arguments for the constructor in order.
+    as_variable_flags_constructor
+        dictates whether the corresponding input argument should be treated as an ivy Variable for the constructor
+    constructor_kwargs:
+        input arguments to the constructor as keyword arguments.
+    num_positional_args_constructor
+        number of input arguments that must be passed as positional
+        arguments to the constructor.
+    fw
+        current backend (framework).
+    class_name
+        name of the class to test.
+    rtol
+        relative tolerance value.
+    atol
+        absolute tolerance value.
+    test_values
+        if true, test for the correctness of the resulting values.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_np
+        optional, return value from the Numpy function
+    """
+    # convert single values to length 1 lists
+    if not isinstance(input_dtypes, list):
+        input_dtypes = [input_dtypes]
+    if not isinstance(as_variable_flags, list):
+        as_variable_flags = [as_variable_flags]
+
+
+    # update variable flags to be compatible with float dtype
+    as_variable_flags = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags, input_dtypes)
+    ]
+    # tolerance dict for dtypes
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+
+    # change all data types so that they are supported by this framework
+    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
+
+    # create args
+    calling_args, calling_kwargs, calling_args_np, calling_kwargs_np = create_args(input_dtypes, num_positional_args,
+                                                                                   as_variable_flags, all_as_kwargs_np)
+    constructor_args, constructor_kwargs, constructor_args_np, constructor_kwargs_np = \
+        create_args(input_dtypes_constructor, num_positional_args_constructor, as_variable_flags_constructor,
+                    constructor_kwargs)
+
+    # run
+    ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
+    ret = ins(*calling_args, **calling_kwargs)
+
+    # assert idx of return if the idx of the out array provided
+
+    if "bfloat16" in input_dtypes:
+        return  # bfloat16 is not supported by numpy
+    # compute the return with a NumPy backend
+    ivy.set_backend("numpy")
+    ins_np = ivy.__dict__[class_name](*constructor_args_np, **constructor_kwargs_np)
+    ret_from_np = ivy.to_native(ins_np(*calling_args_np, **calling_kwargs_np), nested=True)
+    ivy.unset_backend()
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret, ret_from_np
+
+    # flatten the return
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+
+    # flatten the return from the NumPy backend
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
+    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+
+    # value tests, iterating through each array in the flattened returns
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
 def test_array_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
