@@ -661,8 +661,19 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     default_device_stack.append(device)
 
 
-def unset_default_device():
-    """"""
+def unset_default_device() -> None:
+    """Resets the default device to "cpu".
+
+    Examples
+    --------
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device()
+    "gpu:0"
+    >>> ivy.unset_default_device()
+    >>> ivy.default_device()
+    "cpu"
+
+    """
     global default_device_stack
     if default_device_stack:
         default_device_stack.pop(-1)
