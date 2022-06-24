@@ -331,7 +331,7 @@ def floor_divide(
     #    and `x2_i` is `-infinity`, the result is `-0`.
     # 2) If `x1_i` is a negative (i.e., less than `0`) finite number
     #    and `x2_i` is `+infinity`, the result is `-0`.
-    if (x1.any() == float("inf") or x1.any() == -float("inf")) and isfinite(x2).all():
+    if isinf(x1).any() and isfinite(x2).any():
         return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
     return ret
 
