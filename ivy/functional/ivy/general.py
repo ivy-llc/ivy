@@ -623,7 +623,7 @@ def all_equal(
     >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
-    False
+    True
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
