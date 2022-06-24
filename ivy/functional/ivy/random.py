@@ -65,6 +65,10 @@ def random_uniform(
     >>> print(y)
     ivy.array(0.26431865)
 
+    >>> y = ivy.random_uniform(shape=3)
+    >>> print(y)
+    ivy.array([0.475, 0.878, 0.861])
+
     >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
     >>> print(y)
     ivy.array(1.89150229)
