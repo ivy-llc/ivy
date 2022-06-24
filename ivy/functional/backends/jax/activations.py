@@ -37,3 +37,7 @@ def softmax(x: JaxArray, axis: Optional[int] = None) -> JaxArray:
 
 def softplus(x: JaxArray) -> JaxArray:
     return jnp.log(jnp.exp(x) + 1)
+
+
+def swish(x: JaxArray) -> JaxArray:
+    return x * (1 / (1 + jnp.exp(-x)))
