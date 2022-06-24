@@ -35,7 +35,7 @@ def add(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
@@ -48,7 +48,7 @@ def bitwise_xor(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2, out=out)
@@ -80,7 +80,7 @@ def equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.eq(x1, x2, out=out)
@@ -90,7 +90,7 @@ def less_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.less_equal(x1, x2, out=out)
@@ -100,7 +100,7 @@ def bitwise_and(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2, out=out)
@@ -195,7 +195,7 @@ def less(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.lt(x1, x2, out=out)
@@ -205,7 +205,7 @@ def multiply(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.multiply(x1, x2, out=out)
@@ -226,7 +226,7 @@ def divide(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.div(x1, x2, out=out)
@@ -236,7 +236,7 @@ def greater(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater(x1, x2, out=out)
@@ -246,7 +246,7 @@ def greater_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater_equal(x1, x2, out=out)
@@ -302,13 +302,17 @@ def not_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.not_equal(x1, x2, out=out)
 
 
-def tanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tanh(
+    x: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     return torch.tanh(x, out=out)
 
 
@@ -319,7 +323,7 @@ def floor_divide(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.floor(torch.divide(x1, x2, out=out))
@@ -329,7 +333,7 @@ def bitwise_or(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_or(x1, x2, out=out)
@@ -360,7 +364,7 @@ def pow(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.pow(x1, x2, out=out)
@@ -448,7 +452,7 @@ def subtract(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.subtract(x1, x2, out=out)
@@ -458,7 +462,7 @@ def remainder(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = torch.remainder(x1, x2, out=out)
@@ -479,7 +483,7 @@ def bitwise_right_shift(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return torch.bitwise_right_shift(x1, x2, out=out)
@@ -489,7 +493,7 @@ def bitwise_left_shift(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return torch.bitwise_left_shift(x1, x2, out=out)
