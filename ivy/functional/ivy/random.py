@@ -60,28 +60,33 @@ def random_uniform(
 
     Functional Examples
     -------------------
+    
     >>> y = ivy.random_uniform()
     >>> print(y)
     ivy.array(0.26431865)
 
-    >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
+    >>> y = ivy.random_uniform(0, 2, device="cpu")
     >>> print(y)
     ivy.array(1.89150229)
     
-    >>> y = ivy.random_uniform(shape=(2,2))
+    >>> y = ivy.random_uniform(0.7, 1, device="cpu", shape=(2, 2))
     >>> print(y)
     ivy.array([[0.89629126, 0.94198485],
-        [0.91405606, 0.72848724]])
+               [0.91405606, 0.72848724]])
 
     Instance Method Examples
     ------------------------
-    >>> y = ivy.Container(a=ivy.random_uniform(),\
-                        b=ivy.random_uniform(shape=2))
+    
+    With :code:`ivy.Container` input:
+    
+    >>> y = ivy.Container(a=ivy.random_uniform(), \
+                          b=ivy.random_uniform(shape=2))
     >>> print(y)
     {
     a: ivy.array(0.7550739),
     b: ivy.array([0.624, 0.00109])
     }
+    
     """
     return current_backend().random_uniform(
         low, high, shape, device=device, dtype=dtype
