@@ -59,7 +59,6 @@ def atan2(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.atan2(x1, x2)
-atan2.unsupported_dtypes = tuple(['float16'])
 
 
 def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:

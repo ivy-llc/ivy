@@ -802,7 +802,7 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
 
 
 @handle_nestable
-def function_supported_dtypes(fn: Callable, backend: str) -> ivy.Dtype:
+def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     """Returns the supported data types of the current backend's function.
 
     Parameters
@@ -818,20 +818,20 @@ def function_supported_dtypes(fn: Callable, backend: str) -> ivy.Dtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8', 'int16', 'int32', 'int64', 'uint8',\
+    >>> acosh_valid_types = ivy.function_supported_dtypes(ivy.acosh)
+    >>> print(acosh_valid_types)
+    ('int8', 'int16', 'int32', 'int64', 'uint8', \
      'bfloat16', 'float32', 'float64', 'bool')
     """
     valid = list(ivy.valid_dtypes)
-    for d in list(function_unsupported_dtypes(fn, backend)):
+    for d in list(function_unsupported_dtypes(fn)):
         if d in valid:
             valid.remove(d)
-    return ivy.as_native_dtype(tuple(valid))
+    return ivy.as_native_dtype(valid)
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.Dtype:
+def function_unsupported_dtypes(fn: Callable) -> ivy.Dtype:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -847,7 +847,8 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.Dtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> print(function_unsupported_dtypes(acosh, 'torch'))
+    >>> acosh_invalid_types = ivy.function_unsupported_dtypes(ivy.acosh)
+    >>> print(acosh_invalid_types)
     ('float16', 'uint16', 'uint32', 'uint64')
     """
     if hasattr(fn, "unsupported_dtypes"):

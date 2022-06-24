@@ -514,7 +514,7 @@ def test_array_function(
     # check for unsupported dtypes
     fn = getattr(ivy, fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(fn, fw):
+        if d in ivy.function_unsupported_dtypes(fn):
             return
 
     # split the arguments into their positional and keyword components
