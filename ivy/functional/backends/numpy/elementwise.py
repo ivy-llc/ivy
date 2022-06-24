@@ -325,7 +325,15 @@ def floor_divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.floor(np.divide(x1, x2, out=out))
+    ret = np.floor_divide(x1, x2, out=out)
+    # TODO: implement two more corner cases
+    # 1) If `x1_i` is a positive (i.e., greater than `0`) finite number
+    #    and `x2_i` is `-infinity`, the result is `-0`.
+    # 2) If `x1_i` is a negative (i.e., less than `0`) finite number
+    #    and `x2_i` is `+infinity`, the result is `-0`.
+    if (x1.any() == float("inf") or x1.any() == -float("inf")) and isfinite(x2).all():
+        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+    return ret
 
 
 @_handle_0_dim_output
