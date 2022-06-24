@@ -2443,7 +2443,6 @@ def not_equal(
 
     Examples
     --------
-
     With :code:`float` input:
 
     >>> x1 = 1.2
