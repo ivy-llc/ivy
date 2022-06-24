@@ -556,7 +556,6 @@ def unset_default_device() -> None:
 
     Examples
     --------
-    
     >>> ivy.set_default_device("gpu:0")
     >>> ivy.default_device()
     "gpu:0"
