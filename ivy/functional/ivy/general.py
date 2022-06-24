@@ -527,43 +527,75 @@ def all_equal(
     Functional Examples
     -------------------
 
-    With a mix of :code:`int` and :code:`float` input:
+    With :code:`float` input:
 
-    >>> x1 = 1
-    >>> x2 = 1
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
-    >>> x1 = 1
-    >>> x2 = 1
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
-    >>> x1 = 1
+    >>> x1 = 1.2
     >>> x2 = 1.0
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
-    >>> x1 = 1
-    >>> x2 = 1.0
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
-    >>> x1 = 1
-    >>> x2 = 1.2
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
     False
 
+    >>> x1 = 1.0
+    >>> x2 = 1.0
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    True
+
+    With :code:`int` input:
+
     >>> x1 = 1
-    >>> x2 = 1.2
+    >>> x2 = 2
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    False
+
+    >>> x1 = 4
+    >>> x2 = 4
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    True
+
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    False
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 1, 1])
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    True
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([1, 2, 3])
+    >>> x2 = ivy.native_array([1, 0, 1])
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    False
+
+    >>> x1 = ivy.native_array([1, 0, 1, 1])
+    >>> x2 = ivy.native_array([1, 0, 1, 1])
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    True
+
+    With a mix of :code:`int` and :code:`float` input:
+
+    >>> x1 = 1
+    >>> x2 = 1.0
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> print(y)
+    True
+
+    >>> x1 = 1
+    >>> x2 = 1.0
     >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
     >>> print(y)
-    ivy.array([[True, False],[False, True]])
+    ivy.array([[True, True],[True, True]])
 
     With a mix of :code:`tuple` and :code:`list` input:
 
@@ -574,72 +606,24 @@ def all_equal(
     True
 
     >>> x1 = (1, 0, 1, -1, 1)
-    >>> x2 = (1, 0, 1, -1, 1)
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
-    >>> x1 = [1, 2, 3]
-    >>> x2 = [1, 2, 3]
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
-    >>> x1 = [1, 2, 3]
-    >>> x2 = [1, 2, 3]
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
-    >>> x1 = (1, 2, 3)
-    >>> x2 = [1, 2, 3]
+    >>> x2 = [1, 0, 1, -1, 1]
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
     False
-
-    >>> x1 = (1, 2, 3)
-    >>> x2 = [1, 2, 3]
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, False],[False, True]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` input:
 
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([1, 2, 3])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([1, 2, 3])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
-    >>> x1 = ivy.native_array([1, 2, 3])
-    >>> x2 = ivy.native_array([1, 2, 3])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
-    >>> x1 = ivy.native_array([1, 2, 3])
-    >>> x2 = ivy.native_array([1, 2, 3])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
-    >>> print(y)
-    ivy.array([[True, True],[True, True]])
-
     >>> x1 = ivy.array([1, 1, 0, 1.2, 1])
     >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
     False
 
-    >>> x1 = ivy.array([1, 1, 0, 1.2, 1])
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
     >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
-    ivy.array([[True, False],[False, True]])
+    False
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
