@@ -2441,6 +2441,171 @@ def not_equal(
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
 
+    Examples
+    --------
+
+    With :code:`float` input:
+
+    >>> x1 = 1.2
+    >>> x2 = 1.2
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array(False)
+
+    >>> x1 = 0.0
+    >>> x2 = 1.0
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array(True)
+
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2])
+    >>> x2 = ivy.array([1, 3])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True])
+
+    >>> x1 = ivy.array([1, 2])
+    >>> x2 = ivy.array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, False])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([1, 2])
+    >>> x2 = ivy.native_array([1, 3])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True])
+
+    >>> x1 = ivy.native_array([1, 2])
+    >>> x2 = ivy.native_array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, False])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray`\
+                                    and :code:`float` inputs:
+
+    >>> x1 = ivy.native_array([1, 2])
+    >>> x2 = ivy.array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, False])
+
+    >>> x1 = 1.2
+    >>> x2 = ivy.array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, True])
+
+    >>> x1 = 1.2
+    >>> x2 = ivy.native_array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, True])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                            b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                            b=ivy.array([1, 4, 5]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),\
+                            b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),\
+                            b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    With a mix of :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.native_array([1, 2, 3]),\
+                            b=ivy.native_array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.native_array([1, 2, 3]),\
+                            b=ivy.native_array([1, 4, 5]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.native_array([1.0, 2.0, 3.0]),\
+                            b=ivy.native_array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.native_array([1, 2, 3.0]),\
+                            b=ivy.native_array([1.0, 4.0, 5.0]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    With a mix of :code:`float` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=1.2, b=0.5, c=2.0)
+    >>> x2 = ivy.Container(a=1.2, b=1.0, c=2.5)
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array(False),
+        b: ivy.array(True),
+        c: ivy.array(True)
+    }
+
+    >>> x1 = ivy.Container(a=1.2, b=0.5, c=2.0)
+    >>> x2 = ivy.Container(a=1.3, b=1.0, c=3.0)
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array(True),
+        b: ivy.array(True),
+        c: ivy.array(True)
+    }
+
+    With :code:`ivy.Container` input:
+
+    >>> x1 = ivy.Container(a=1.2, b=ivy.array([1, 2, 3]),\
+                            c=ivy.native_array(1, 2, 4))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                            b=ivy.array([1, 2, 3]),\
+                            c=ivy.native_array(1, 2, 4))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False]),
+        c: ivy.array([False, False, False])
+    }
+
+    >>> x1 = ivy.Container(a=1.2,\
+                            b=ivy.array([1, 2, 3]),\
+                            c=ivy.native_array(1.0, 2.0, 4.0))
+    >>> x2 = ivy.Container(a=ivy.array([1.2]),\
+                            b=ivy.native_array([1.1, 2.1, 3.1]),\
+                            c=ivy.native_array([1, 2, 4]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False]),
+        b: ivy.array([True, True, True]),
+        c: ivy.array([False, False, False])
+    }
+
     """
     return current_backend(x1, x2).not_equal(x1, x2, out=out)
 
