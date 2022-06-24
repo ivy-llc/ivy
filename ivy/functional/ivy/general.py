@@ -989,31 +989,15 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.array([0, 1, 2])
     >>> y = x.to_list()
     >>> print(y)
-    ivy.to_list([0, 1, 2])
+    [0, 1, 2]
 
-    With :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> y = x.to_list()
-    >>> print(y)
-    ivy.to_list([0, 1, 2])
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` instance method:
+    With :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
     >>> y = x.to_list()
     >>> print(y)
     {
-        a: ivy.to_list([0, 1, 2]),
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` instance method:
-    
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
-    >>> y = x.to_list()
-    >>> print(y)
-    {
-        a: ivy.to_list([-1, 0, 1])
+        a: [0, 1, 2]
     }
 
     """
