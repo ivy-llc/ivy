@@ -310,16 +310,16 @@ def test_conv2d(
     array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
-    pad=st.sampled_from(['VALID', 'SAME']),
+    pad=st.sampled_from(["VALID", "SAME"]),
     output_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
-    data_format=st.sampled_from(['NHWC', 'NCHW']),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
     dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_conv2d_transpose(
     array_shape,
@@ -332,26 +332,26 @@ def test_conv2d_transpose(
     dtype,
     as_variable,
     num_positional_args,
-    native_array, container,
+    native_array,
+    container,
     instance_method,
     fw,
-    device
+    device,
 ):
-    if fw == 'tensorflow' and "cpu" in device:
+    if fw == "tensorflow" and "cpu" in device:
         # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
         return
-    if fw in ['numpy', 'jax']:
+    if fw in ["numpy", "jax"]:
         # numpy and jax do not yet support conv2d_transpose
         return
-    if fw == 'torch' and ('16' in dtype[0] or '16' in dtype[1]):
+    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
         # not implemented for Half
         return
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape,
-                                      filter_shape,
-                                      1,
-                                      1)).astype(dtype[1])
+    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
+        dtype[1]
+    )
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -368,7 +368,7 @@ def test_conv2d_transpose(
         padding=pad,
         output_shape=tuple(output_shape),
         data_format=data_format,
-        dilations=dilations
+        dilations=dilations,
     )
 
 
@@ -619,16 +619,16 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     array_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
-    pad=st.sampled_from(['VALID', 'SAME']),
+    pad=st.sampled_from(["VALID", "SAME"]),
     output_shape=helpers.lists(st.integers(1, 5), min_size=5, max_size=5),
-    data_format=st.sampled_from(['NHWC', 'NCHW']),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
     dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_conv3d_transpose(
     array_shape,
@@ -641,32 +641,31 @@ def test_conv3d_transpose(
     dtype,
     as_variable,
     num_positional_args,
-    native_array, container,
+    native_array,
+    container,
     instance_method,
     fw,
-    device
+    device,
 ):
-    if fw == 'tensorflow' and "cpu" in device:
+    if fw == "tensorflow" and "cpu" in device:
         # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
         return
     # smoke test
-    if fw in ['numpy', 'jax']:
+    if fw in ["numpy", "jax"]:
         # numpy and jax do not yet support 3d transpose convolutions, and mxnet only
         # supports with CUDNN
         return
-    if fw == 'mxnet' and "cpu" in device:
+    if fw == "mxnet" and "cpu" in device:
         # mxnet only supports 3d transpose convolutions with CUDNN
         return
-    if fw == 'torch' and ('16' in dtype[0] or '16' in dtype[1]):
+    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
         # not implemented for half
         return
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape,
-                                      filter_shape,
-                                      filter_shape,
-                                      1,
-                                      1)).astype(dtype[1])
+    filters = np.random.uniform(
+        size=(filter_shape, filter_shape, filter_shape, 1, 1)
+    ).astype(dtype[1])
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -683,7 +682,7 @@ def test_conv3d_transpose(
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations
+        dilations=dilations,
     )
 
 
@@ -701,7 +700,7 @@ def test_conv3d_transpose(
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_lstm(
     b,
@@ -715,7 +714,7 @@ def test_lstm(
     container,
     instance_method,
     fw,
-    device
+    device,
 ):
     # smoke test
     x = ivy.asarray(
@@ -742,5 +741,5 @@ def test_lstm(
         init_h=init_h,
         init_c=init_c,
         kernel=kernel,
-        recurrent_kernel=recurrent_kernel
+        recurrent_kernel=recurrent_kernel,
     )

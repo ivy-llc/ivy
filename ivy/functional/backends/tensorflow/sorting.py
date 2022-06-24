@@ -2,8 +2,6 @@
 import tensorflow as tf
 from typing import Union
 
-# local
-
 
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
