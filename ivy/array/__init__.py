@@ -101,8 +101,8 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-
         self.framework_str = ivy.current_backend_str()
+        self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
     # -----------#
@@ -167,6 +167,17 @@ class Array(
 
         """
         return self._size
+
+    @property
+    def is_variable(self):
+        """Determines whether the array is a variable or not.
+
+        Returns
+        -------
+        ret
+            Boolean, true if the array is a trainable variable, false otherwise.
+        """
+        return self._is_variable
 
     # Setters #
     # --------#
