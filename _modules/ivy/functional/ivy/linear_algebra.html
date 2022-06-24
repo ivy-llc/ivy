@@ -418,7 +418,10 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.</span>
 
@@ -436,10 +439,10 @@
 <span class="sd">    axis1</span>
 <span class="sd">        axis to be used as the first axis of the 2-D sub-arrays from which the diagonals</span>
 <span class="sd">        should be taken.</span>
-<span class="sd">        Defaults to first axis (0).</span>
+<span class="sd">        Defaults to first axis (-2).</span>
 <span class="sd">    axis2</span>
 <span class="sd">        axis to be used as the second axis of the 2-D sub-arrays from which the</span>
-<span class="sd">        diagonals should be taken. Defaults to second axis (1).</span>
+<span class="sd">        diagonals should be taken. Defaults to second axis (-1).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -448,26 +451,102 @@
 <span class="sd">        last two dimensions and appending a dimension equal to the size of the resulting</span>
 <span class="sd">        diagonals. The returned array must have the same data type as ``x``.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],\</span>
 <span class="sd">                       [3., 4.]])</span>
 <span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    ivy.array([1., 4.])</span>
-<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 1)</span>
-<span class="sd">    &gt;&gt;&gt; print(d)</span>
-<span class="sd">    ivy.array([1.])</span>
 
-<span class="sd">    A 3-D Example</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],\</span>
 <span class="sd">                        [3., 4.]],\</span>
 <span class="sd">                       [[5., 6.],\</span>
 <span class="sd">                        [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1., 4.],</span>
+<span class="sd">               [5., 8.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],\</span>
+<span class="sd">                       [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([1.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],\</span>
+<span class="sd">                       [3, 4, 5],\</span>
+<span class="sd">                       [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, -1, 0)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([3, 7])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[ 0,  1,  2],\</span>
+<span class="sd">                        [ 3,  4,  5],\</span>
+<span class="sd">                        [ 6,  7,  8]],\</span>
+<span class="sd">                       [[ 9, 10, 11],\</span>
+<span class="sd">                        [12, 13, 14],\</span>
+<span class="sd">                        [15, 16, 17]],\</span>
+<span class="sd">                       [[18, 19, 20],\</span>
+<span class="sd">                        [21, 22, 23],\</span>
+<span class="sd">                        [24, 25, 26]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 1, -3)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1, 11],</span>
+<span class="sd">               [4, 14],</span>
+<span class="sd">               [7, 17]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0, 1],\</span>
+<span class="sd">                        [2, 3]],\</span>
+<span class="sd">                       [[4, 5],\</span>
+<span class="sd">                        [6, 7]]])</span>
 <span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 0, 0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(d)</span>
-<span class="sd">    ivy.array([[1., 7.],</span>
-<span class="sd">               [2., 8.]])</span>
+<span class="sd">    ivy.array([[0, 6],</span>
+<span class="sd">               [1, 7]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],\</span>
+<span class="sd">                        [3., 4.]],\</span>
+<span class="sd">                       [[5., 6.],\</span>
+<span class="sd">                        [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 1, 0, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[3.],</span>
+<span class="sd">               [4.]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.],\</span>
+<span class="sd">                              [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1., 4.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[ 0,  1,  2],\</span>
+<span class="sd">                               [ 3,  4,  5],\</span>
+<span class="sd">                               [ 6,  7,  8]],\</span>
+<span class="sd">                              [[ 9, 10, 11],\</span>
+<span class="sd">                               [12, 13, 14],\</span>
+<span class="sd">                               [15, 16, 17]],\</span>
+<span class="sd">                              [[18, 19, 20],\</span>
+<span class="sd">                               [21, 22, 23],\</span>
+<span class="sd">                               [24, 25, 26]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, 1, 1, -1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[ 1,  5],</span>
+<span class="sd">               [10, 14],</span>
+<span class="sd">               [19, 23]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2],\</span>
+<span class="sd">                              [3, 4, 5],\</span>
+<span class="sd">                              [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([0, 4, 8])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">)</span></div>
 
