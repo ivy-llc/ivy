@@ -377,9 +377,7 @@ def tan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.tan(x)
 
 
-def tanh(
-    x: Union[tf.Tensor, tf.Variable],
-) -> Union[tf.Tensor, tf.Variable]:
+def tanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)
 
 
