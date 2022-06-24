@@ -166,7 +166,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -184,6 +184,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -213,7 +214,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -231,6 +232,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -241,7 +243,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -261,6 +263,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -290,7 +293,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -308,6 +311,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -318,7 +322,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -338,6 +342,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -348,7 +353,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -366,6 +371,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -469,7 +475,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -487,6 +493,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -554,7 +561,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -572,6 +579,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -582,7 +590,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -600,6 +608,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -610,7 +619,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -628,6 +637,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -695,7 +705,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -713,6 +723,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -723,7 +734,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -741,6 +752,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -827,7 +839,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -845,6 +857,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -855,7 +868,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -873,6 +886,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -902,7 +916,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -920,6 +934,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -930,7 +945,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -948,6 +963,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -1013,7 +1029,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1031,6 +1047,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -1060,7 +1077,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1078,6 +1095,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
@@ -1088,7 +1106,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1106,6 +1124,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests
             ),
             out,
         )
