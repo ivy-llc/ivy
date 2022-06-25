@@ -146,16 +146,34 @@ and also for each of its arguments.
 **Classes**
 
 The instance methods in :code:`ivy.Array` and :code:`ivy.Container` which directly wrap
-a function in the functional API do **not** require a docstring, on account that
+a function in the functional API do not require thorough docstrings, on account that
 these instance methods require no explanation beyond that provided in the docstring
 for the wrapped function.
-A good example is `ivy.Array.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/array/elementwise.py#L13>`_
-which does not require a docstring,
-because `ivy.abs <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/elementwise.py#L2013>`_
-already has one.
 
-However, for all other classes, such as the various layers at
-:code:`ivy/ivy/stateful/layers`, then we **should** add docstrings for both
+Therefore, these docstrings should all simply contain the following text:
+
+.. code-block:: python
+
+        ivy.<Array|Container> <instance|static> method variant of ivy.<func_name>. This method simply wraps the
+        function, and so the docstring for ivy.<func_name> also applies to this method
+        with minimal changes.
+
+ Let's again take :code:`ivy.tan` as an example.
+The docstring for
+`ivy.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/functional/ivy/elementwise.py#L3062>`_
+is thorough, as explained above.
+However, the docstrings for
+`ivy.Array.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/array/elementwise.py#L284>`_,
+`ivy.Container.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1375>`_
+and
+`ivy.Container.static_tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1340>`_
+all follow the pattern outlined above.
+Note that these docstrings *also* include examples,
+which we will cover in the next section.
+
+For all other classes, such as the various layers at
+:code:`ivy/ivy/stateful/layers`,
+then we should add full and thorough docstrings for both
 the **contstructor** and also **all methods**.
 
 This is the case even when the class directly wraps a function in the functional API.
@@ -173,7 +191,7 @@ and the latter having these implicit as internal instance attributes of the clas
 
 Therefore, with the exception of the :code:`ivy.Array` and :code:`ivy.Container`
 methods which directly wrap functions in the functional API,
-we should always add docstrings to all methods of all other classes in Ivy,
+we should always add full and thorough docstrings to all methods of all other classes in Ivy,
 including cases where these also directly wrap functions in the functional API.
 
 **Round Up**
