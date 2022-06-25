@@ -458,8 +458,8 @@ def roll(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -507,27 +507,6 @@ def roll(
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([5., 3., 4.])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.roll(1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.roll(1)
-    >>> print(y)
-    {
-        a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
-    }
-
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 
