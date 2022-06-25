@@ -709,6 +709,124 @@ def bitwise_and(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([2, 3, 7])
+    >>> y = ivy.array([7, 1, 15])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([2, 1, 7])
+
+    >>> x = ivy.array([[True], \
+                       [False]])
+    >>> y = ivy.array([[True], \
+                       [True]])
+    >>> ivy.bitwise_and(x, y, out=x)
+    >>> print(x)
+    ivy.array([[ True],
+               [False]])
+
+    >>> x = ivy.array([1])
+    >>> y = ivy.array([3])
+    >>> ivy.bitwise_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([1])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([True, True, False, False])
+    >>> y = ivy.native_array([True, False, True, False])
+    >>> ivy.bitwise_and(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([ True, False, False, False])
+
+    >>> x = ivy.native_array([[True, False]])
+    >>> y = ivy.native_array([[True], \
+                              [False]])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([[ True, False],
+               [False, False]])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([[6, 5], \
+                       [3, 7]])
+    >>> y = ivy.native_array([[2, 11], \
+                              [9, 13]])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([[2, 1],
+               [1, 5]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+    >>> y = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 11]))
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([0, 1, 2])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs: 
+
+    >>> x = ivy.array([True, True])
+    >>> y = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, False]),
+        b: ivy.array([False, True])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([True, False])
+    >>> y = ivy.array([True, True])
+    >>> x.bitwise_and(y, out=y)
+    >>> print(y)
+    ivy.array([ True, False])
+
+    >>> x = ivy.array([[7], \
+                       [8], \
+                       [9]])
+    >>> y = ivy.native_array([[10], \
+                              [11], \
+                              [12]])
+    >>> z = x.bitwise_and(y)
+    >>> print(z)
+    ivy.array([[2],
+               [8],
+               [8]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
+    >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
+    >>> x.bitwise_and(y, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, True]),
+        b: ivy.array([False, True])
+    }
+
     """
     return current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
@@ -1522,10 +1640,10 @@ def floor_divide(
 
     """
     if isinstance(x1, float) or isinstance(x1, int):
-        x1 = ivy.array(x1)
+        x1 = ivy.array(x1, dtype=x1.dtype)
     if isinstance(x2, float) or isinstance(x2, int):
-        x2 = ivy.array(x2)
-    return current_backend(x1, x2).floor(current_backend(x1, x2).divide(x1, x2))
+        x2 = ivy.array(x2, dtype=x2.dtype)
+    return current_backend(x1, x2).floor_divide(x1, x2)
 
 
 @to_native_arrays_and_back
@@ -1757,8 +1875,6 @@ def isfinite(
         ``bool``.
 
     """
-    if "tensorflow" in str(ivy.get_backend()):
-        return current_backend(x).isfinite(x)
     return current_backend(x).isfinite(x, out=out)
 
 
@@ -1789,8 +1905,6 @@ def isinf(
         a data type of bool.
 
     """
-    if "tensorflow" in str(ivy.get_backend()):
-        return current_backend(x).isinf(x)
     return current_backend(x).isinf(x, out=out)
 
 
@@ -3013,8 +3127,8 @@ def tan(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -3052,26 +3166,6 @@ def tan(
         a: ivy.array([0., 1.56, -2.19]),
         b: ivy.array([-0.143, 1.16, -3.38])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.tan()
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.tan()
-    >>> print(y)
-    {
-        a:ivy.array([0., 1.56, -2.19]),
-        b:ivy.array([-0.143, 1.16, -3.38])}
-
     """
     return ivy.current_backend(x).tan(x, out=out)
 

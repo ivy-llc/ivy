@@ -295,7 +295,10 @@ def det(
 @handle_out_argument
 @handle_nestable
 def diagonal(
-    x: ivy.Array, offset: int = 0, axis1: int = -2, axis2: int = -1
+        x: Union[ivy.Array, ivy.NativeArray],
+        offset: int = 0,
+        axis1: int = -2,
+        axis2: int = -1
 ) -> ivy.Array:
     """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
@@ -313,10 +316,10 @@ def diagonal(
     axis1
         axis to be used as the first axis of the 2-D sub-arrays from which the diagonals
         should be taken.
-        Defaults to first axis (0).
+        Defaults to first axis (-2).
     axis2
         axis to be used as the second axis of the 2-D sub-arrays from which the
-        diagonals should be taken. Defaults to second axis (1).
+        diagonals should be taken. Defaults to second axis (-1).
 
     Returns
     -------
@@ -325,26 +328,102 @@ def diagonal(
         last two dimensions and appending a dimension equal to the size of the resulting
         diagonals. The returned array must have the same data type as ``x``.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
-    >>> d = ivy.diagonal(x, 1)
-    >>> print(d)
-    ivy.array([1.])
 
-    A 3-D Example
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([[1., 4.],
+               [5., 8.]])
+
+    >>> x = ivy.array([[1., 2.],\
+                       [3., 4.]])
+    >>> d = ivy.diagonal(x, 1)
+    >>> print(d)
+    ivy.array([1.])
+
+    >>> x = ivy.array([[0, 1, 2],\
+                       [3, 4, 5],\
+                       [6, 7, 8]])
+    >>> d = ivy.diagonal(x, -1, 0)
+    >>> print(d)
+    ivy.array([3, 7])
+
+    >>> x = ivy.array([[[ 0,  1,  2],\
+                        [ 3,  4,  5],\
+                        [ 6,  7,  8]],\
+                       [[ 9, 10, 11],\
+                        [12, 13, 14],\
+                        [15, 16, 17]],\
+                       [[18, 19, 20],\
+                        [21, 22, 23],\
+                        [24, 25, 26]]])
+    >>> d = ivy.diagonal(x, 1, -3)
+    >>> print(d)
+    ivy.array([[1, 11],
+               [4, 14],
+               [7, 17]])
+
+    >>> x = ivy.array([[[0, 1],\
+                        [2, 3]],\
+                       [[4, 5],\
+                        [6, 7]]])
     >>> d = ivy.diagonal(x, 0, 0, 1)
     >>> print(d)
-    ivy.array([[1., 7.],
-               [2., 8.]])
+    ivy.array([[0, 6],
+               [1, 7]])
+
+    >>> x = ivy.array([[[1., 2.],\
+                        [3., 4.]],\
+                       [[5., 6.],\
+                        [7., 8.]]])
+    >>> d = ivy.diagonal(x, 1, 0, 1)
+    >>> print(d)
+    ivy.array([[3.],
+               [4.]])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1., 2.],\
+                              [3., 4.]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([[1., 4.]])
+
+    >>> x = ivy.native_array([[[ 0,  1,  2],\
+                               [ 3,  4,  5],\
+                               [ 6,  7,  8]],\
+                              [[ 9, 10, 11],\
+                               [12, 13, 14],\
+                               [15, 16, 17]],\
+                              [[18, 19, 20],\
+                               [21, 22, 23],\
+                               [24, 25, 26]]])
+    >>> d = ivy.diagonal(x, 1, 1, -1)
+    >>> print(d)
+    ivy.array([[ 1,  5],
+               [10, 14],
+               [19, 23]])
+
+    >>> x = ivy.native_array([[0, 1, 2],\
+                              [3, 4, 5],\
+                              [6, 7, 8]])
+    >>> d = ivy.diagonal(x)
+    >>> print(d)
+    ivy.array([0, 4, 8])
+
     """
     return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
