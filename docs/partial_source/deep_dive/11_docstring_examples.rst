@@ -322,7 +322,7 @@ Point 7 is not relevant as there is only one input argument
 
 .. code-block:: python
 
-    With one :code:`ivy.Container` input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.tan(x)
@@ -343,6 +343,8 @@ Point 9 is not relevant as there is only one input argument
 
     Examples
     --------
+
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.Container.static_tan(x)
@@ -522,6 +524,8 @@ in order to satisfy point 8.
     Examples
     --------
 
+    With one :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
     >>> y = ivy.Container.static_roll(x, 1)
@@ -536,6 +540,8 @@ We then add an :code:`ivy.Container` static method example with multiple
 in order to satisfy point 9.
 
 .. code-block:: python
+
+    With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -568,6 +574,9 @@ We then add an instance method example to :code:`ivy.Container.roll`
 in order to satisfy point 11.
 
 .. code-block:: python
+
+    Examples
+    --------
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.roll(1)
@@ -617,7 +626,7 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
     Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])

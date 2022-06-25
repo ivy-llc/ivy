@@ -218,7 +218,7 @@ def add(
     Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -243,20 +243,7 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
@@ -270,6 +257,19 @@ def add(
         b: ivy.array([[6.1, 7.3, 1.4],
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
     }
     """
     return current_backend(x1, x2).add(x1, x2, out=out)
