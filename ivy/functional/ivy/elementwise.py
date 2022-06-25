@@ -215,8 +215,8 @@ def add(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -286,31 +286,6 @@ def add(
         b: ivy.array([[6.1, 7.3, 1.4],
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x.add(y)
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                         b=ivy.array([5, 6, 7]))
-
-    >>> z = x.add(y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
     }
 
     Operator Examples
