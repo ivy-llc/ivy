@@ -20,7 +20,7 @@ The tasks currently open are:
 #. Function Formatting
 #. Frontend APIs
 
-We try to explain these tasks are clearly as possible, but in cases where things are not
+We try to explain these tasks as clearly as possible, but in cases where things are not
 clear, then please feel free to engage with the `open tasks discussion`_,
 or reach out on `discord`_ in the `open tasks channel`_!
 
@@ -32,26 +32,54 @@ Function Formatting
 
 Currently, we have many ToDo list issues
 `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo>`_
-for a general function reformatting task,
+for a general function formatting task,
 which is explained below.
 
 Each function in each submodule should be updated to follow the implementation
 instructions given in the :ref:`Deep Dive` section.
-The updates should be applied for both the Ivy API and Backend API,
-as explained in the :ref:`Navigating the Code` section.
+The updates should be applied for the:
 
-The :ref:`Deep Dive` is the best general resource for learning in detail how functions
-should be implemented.
+#. ivy API
+#. all backend APIs
+#. container static methods
+#. array instance methods
+#. container instance methods
+#. array operators
+#. array reverse operators
+#. container operators
+#. container reverse operators
+
+The :ref:`Deep Dive` is an **essential** resource for learning how each of these
+functions/methods should be implemented. Before starting any contribution task,
+you should go through the :ref:`Deep Dive`, and familiarize yourself with the content.
+
 At the time of writing, many of the functions are not implemented as they should be.
 You will need to make changes to the current implementations,
 but you do not need to address *all* sections of the :ref:`Deep Dive` in detail.
-Specifically, you should make the following changes, where appropriate:
+Specifically, you **do not** need to address the following:
 
-#. remove all :code:`lambda` and direct bindings for backend functions,
+#. implement the hypothesis testing for the function
+#. get the tests passing for your function, if they are failing before you start
+
+However, everything else covered in the :ref:`Deep Dive` must be addressed.
+Some common important tasks are:
+
+#. remove all :code:`lambda` and direct bindings for the backend functions,
    with each function instead defined using :code:`def`.
-#. update the :ref:`Function Arguments` and the type hints.
-#. add the correct :ref:`Docstrings`
-#. add thorough :ref:`Docstring Examples`
+#. implement the following if they don't exist but should do: :code:`ivy.Array` instance
+   method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
+   :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
+   :code:`ivy.Container` special method, :code:`ivy.Container` reverse special method.
+#. Make sure that the aforementioned methods are added into the correct
+   category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
+   :code:`ivy.ContainerWithManipulation` etc.
+#. correct all of the :ref:`Function Arguments` and the type hints for every
+   function **and** its *relevant methods*, including those you did not implement
+   yourself.
+#. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*,
+   including those you did not implement yourself.
+#. add thorough :ref:`Docstring Examples` for every function **and** its
+   *relevant methods*
 
 Frontend APIs
 -------------
