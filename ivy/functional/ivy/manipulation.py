@@ -692,6 +692,28 @@ def clip(
     >>> print(y)
     ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
 
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \ b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.clip(x, 1., 5.)
+    >>> print(y)
+{
+    a: ivy.array([1., 1., 2.]),
+    b: ivy.array([3., 4., 5.])
+}
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \ b=ivy.array([3., 4., 5.]))
+    >>> x_min = ivy.Container(a=1, b=-1)
+    >>> x_max = ivy.Container(a=1, b=-1)
+    >>> y = ivy.clip(x, x_min,x_max)
+    >>> print(y)
+{
+    a: ivy.array([1., 1., 1.]),
+    b: ivy.array([-1., -1., -1.])
+}
+
     Instance Method Examples
     ------------------------
 
@@ -700,8 +722,18 @@ def clip(
     >>> y = x.clip(1., 5.)
     >>> print(y)
     ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+     Using: code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.clip(1,2)
+    >>> print(y)
+{
+    a: ivy.array([1., 1., 2.]),
+    b: ivy.array([2., 2., 2.])
+}
     """
     return current_backend(x).clip(x, x_min, x_max, out=out)
+
 
 
 @to_native_arrays_and_back
