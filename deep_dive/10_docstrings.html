@@ -261,15 +261,31 @@ but instead you must use your own judgment when adding descriptions for the over
 and also for each of its arguments.</p>
 <p><strong>Classes</strong></p>
 <p>The instance methods in <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
-a function in the functional API do <strong>not</strong> require a docstring, on account that
+a function in the functional API do not require thorough docstrings, on account that
 these instance methods require no explanation beyond that provided in the docstring
-for the wrapped function.
-A good example is <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/array/elementwise.py#L13">ivy.Array.abs</a>
-which does not require a docstring,
-because <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/elementwise.py#L2013">ivy.abs</a>
-already has one.</p>
-<p>However, for all other classes, such as the various layers at
-<code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>, then we <strong>should</strong> add docstrings for both
+for the wrapped function.</p>
+<p>Therefore, these docstrings should all simply contain the following text:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>       <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">Array</span><span class="o">|</span><span class="n">Container</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">instance</span><span class="o">|</span><span class="n">static</span><span class="o">&gt;</span> <span class="n">method</span> <span class="n">variant</span> <span class="n">of</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;.</span> <span class="n">This</span> <span class="n">method</span> <span class="n">simply</span> <span class="n">wraps</span> <span class="n">the</span>
+       <span class="n">function</span><span class="p">,</span> <span class="ow">and</span> <span class="n">so</span> <span class="n">the</span> <span class="n">docstring</span> <span class="k">for</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;</span> <span class="n">also</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">this</span> <span class="n">method</span>
+       <span class="k">with</span> <span class="n">minimal</span> <span class="n">changes</span><span class="o">.</span>
+
+<span class="n">Let</span><span class="s1">&#39;s again take :code:`ivy.tan` as an example.</span>
+</pre></div>
+</div>
+<p>The docstring for
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/functional/ivy/elementwise.py#L3062">ivy.tan</a>
+is thorough, as explained above.
+However, the docstrings for
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/array/elementwise.py#L284">ivy.Array.tan</a>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1375">ivy.Container.tan</a>
+and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1340">ivy.Container.static_tan</a>
+all follow the pattern outlined above.
+Note that these docstrings <em>also</em> include examples,
+which we will cover in the next section.</p>
+<p>For all other classes, such as the various layers at
+<code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>,
+then we should add full and thorough docstrings for both
 the <strong>contstructor</strong> and also <strong>all methods</strong>.</p>
 <p>This is the case even when the class directly wraps a function in the functional API.
 For example, the class
@@ -285,7 +301,7 @@ quite distinct, with the former including all trainable variables explicitly,
 and the latter having these implicit as internal instance attributes of the class.</p>
 <p>Therefore, with the exception of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 methods which directly wrap functions in the functional API,
-we should always add docstrings to all methods of all other classes in Ivy,
+we should always add full and thorough docstrings to all methods of all other classes in Ivy,
 including cases where these also directly wrap functions in the functional API.</p>
 <p><strong>Round Up</strong></p>
 <p>These examples should hopefully give you a good understanding of what is required when adding docstings.</p>
