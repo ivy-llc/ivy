@@ -960,7 +960,7 @@ def bitwise_xor(
     >>> b = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([[ 4, 6, 89, 26, 57]])
+    ivy.array([ 4, 6, 89, 26, 57])
 
     With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -968,31 +968,29 @@ def bitwise_xor(
     >>> a = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([[4, 6, 89, 26, 57]])
+    ivy.array([0,0,0,0,0])
 
     With :code: `ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
-    a:ivy.array([20])
-    b:ivy.array([85])
+    a:ivy.array([85])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
-    b = ivy.array([78, 34]))
-    >>> y = ivy.array([12, 13]])
+    >>> x = ivy.Container(a = ivy.array([-67, 21]))
+    >>> b = ivy.array([78, 34])
+    >>> y = ivy.array([12, 13])
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
     a: ivy.array([-79, 24])
-    b: ivy.array([6, 74])
     }
 
     Instance Method Examples
@@ -1004,21 +1002,17 @@ def bitwise_xor(
     >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
     >>> y = a.bitwise_xor(b)
     >>> print(y)
-    ivy.array([[74, 41, 59],
-    [24, 5, 7]])
+    ivy.array([[[74,41,59],[24,5,7]]])
 
     Using :code:`ivy.Container` instance method:
 
-    >>>x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
-    >>>z = x.bitwise_xor(y)
-    >>>print(z)
-    {
-    a:ivy.array([20])
-    b:ivy.array([85])
-    }
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
+    >>> z = x.bitwise_xor(y)
+    >>> print(z)
+    {a:ivy.array([85])}
 
     Operator Examples
     -----------------
@@ -1029,32 +1023,26 @@ def bitwise_xor(
     >>> b = ivy.array([3, 2, 1])
     >>> y = a ^ b
     >>> print(y)
-    ivy.array([2, 0, 2])
+    ivy.array([2,0,2])
 
     With :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {
-    a:ivy.array([20])
-    b:ivy.array([85])
-    }
+    {a:ivy.array([True])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
-    b = ivy.array([78, 34]))
-    >>> y = ivy.array([12, 13]])
+    >>> x = ivy.Container(a = ivy.array([-67, 21]))
+    >>> b = ivy.array([78, 34])
+    >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {
-    a: ivy.array([-79, 24])
-    b: ivy.array([6, 74])
-    }
+    {a:ivy.array([True,True])}
     """
     return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
