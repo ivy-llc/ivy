@@ -148,16 +148,54 @@
              
   <section id="docstring-examples">
 <h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this heading"></a></h1>
-<p>After writing the general docstring, the final step is to add helpful examples to the docstring.</p>
-<p>There are three types of examples. There are <em>functional</em> examples, which show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, there are <em>instance method</em> examples,
-show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code>,
-and there are also <em>operator</em> examples,
-which show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>.</p>
-<p>The first two example types are very common, while the latter is, unsurprisingly,
-only relevant for <em>operator</em> functions
+<p>After writing the general docstrings,
+the final step is to add helpful examples to the docstrings.</p>
+<p>There are eight types of examples, which each need to be added:</p>
+<p><em>Functional</em> examples show the function being called like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
+in the Ivy API <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>.</p>
+<p><em>Container static method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
+docstring of the static container method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>.</p>
+<p><em>Array instance method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
+and these should be added to the docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array.&lt;func_name&gt;</span></code>.</p>
+<p><em>Container instance method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
+and these should be added to the docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.&lt;func_name&gt;</span></code>.</p>
+<p><em>Array operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
+with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
+docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__</span></code>.</p>
+<p><em>Array reverse operator</em> examples show an operation being performed like so
+<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__</span></code>.</p>
+<p><em>Container operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
+with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
+docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__</span></code>.</p>
+<p><em>Container reverse operator</em> examples show an operation being performed like so
+<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__</span></code>.</p>
+<p>The first four example types are very common, while the last four, unsurprisingly,
+are only relevant for <em>operator</em> functions
 such as <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>.</p>
+<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
+(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
+<p><em>Operator</em> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
+corresponding operator is applied to an array. For example, the functions <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
+are used respectively. Under the hood, these operators first call the special methods <code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respectively, on either the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instance upon which the operator is being applied.
+These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p><strong>Functional Examples</strong></p>
+<p>To recap, <em>functional</em> examples show the function being called like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;(...)</span></code>, and these should be added to docstring of the function
+in the Ivy API <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>.</p>
 <p>Firstly, we should include <em>functional</em> examples with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
 <ol class="arabic simple">
@@ -177,47 +215,102 @@ For example, passing in different shapes for two array arguments</p></li>
 </ol>
 <p>For all remaining examples, we can repeat input values from these <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> <em>functional</em>
 examples covered by points 1-5.</p>
-<p>The purpose of the extra examples with different input types in points 6-14 is to highlight the versatility
-of the function. The purpose is not to provide an excessive number of variations of possible function inputs.</p>
-<p>Next, we add examples with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.</p>
-<p>There should be an example that:</p>
+<p>The purpose of the extra examples with different input types in points 6-18 is to
+highlight the different contexts in which the function can be called
+(as an instance method etc.). The purpose is not to provide an excessive number of
+variations of possible function inputs.</p>
+<p>Next, for <em>nestable</em> functions there should be an example that:</p>
 <ol class="arabic simple" start="6">
-<li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances for all array arguments</p></li>
-</ol>
-<p>For functions which accept more than one array, there should also be an example that:</p>
-<ol class="arabic simple" start="7">
-<li><p>passes in a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
-</ol>
-<p>Going further, for <em>nestable</em> functions there should be an example that:</p>
-<ol class="arabic simple" start="8">
 <li><p>passes in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in place of one of the arguments</p></li>
 </ol>
 <p>For <em>nestable</em> functions which accept more than one argument, there should also be an example that:</p>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="7">
 <li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for multiple arguments</p></li>
 </ol>
-<p><strong>Instance Method Examples</strong></p>
-<p><em>Instance method</em> examples are of course only relevant if an instance method for the function exists.
-If so, these examples should:</p>
+<p><strong>Container Static Method Examples</strong></p>
+<p>To recap, <em>container static method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
+docstring of the static container method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>.</p>
+<p>The static methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are used under the hood when
+supporting the <em>nestable</em> property for all Ivy functions in the API,
+as showcased by the examples for points 6 and 7. We should demonstrate these same
+examples in the static method docstrings also.</p>
+<ol class="arabic simple" start="8">
+<li><p>the example from point 6 should be replicated, but added to the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+static method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code> docstring. With
+<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> replaced with <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>
+in the example.</p></li>
+<li><p>the example from point 7 should be replicated, but added to the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+static method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code> docstring. With
+<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> replaced with <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;</span></code>
+in the example.</p></li>
+</ol>
+<p><strong>Array Instance Method Example</strong></p>
+<p>To recap, <em>array instance method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
+and these should be added to the docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array.&lt;func_name&gt;</span></code>.</p>
+<p>These examples are of course only relevant if an instance method for
+the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="10">
 <li><p>call this instance method of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class</p></li>
+</ol>
+<p><strong>Container Instance Method Example</strong></p>
+<p>To recap, <em>container instance method</em> examples show the method being called like so
+<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
+and these should be added to the docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.&lt;func_name&gt;</span></code>.</p>
+<p>These examples are of course only relevant if an instance method
+for the function exists. If so, this example should simply:</p>
+<ol class="arabic simple" start="11">
 <li><p>call this instance method of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class</p></li>
 </ol>
-<p><strong>Operator Examples</strong></p>
-<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
-(<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
-<p><em>Operator</em> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
-corresponding operator is applied to an array. For example, the functions <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
-are used respectively. Under the hood, these operators first call the special methods <code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">__mul__</span></code> and <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> respectively, on either the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-instance upon which the operator is being applied.
-These special methods in turn call the functions in the Ivy API mentioned above.</p>
-<p>If the function is an <em>operator</em> function, then examples should be added which:</p>
+<p><strong>Array Operator Examples</strong></p>
+<p>To recap, <em>array operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
+with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
+docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>array operator</em> examples should:</p>
 <ol class="arabic simple" start="12">
-<li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
-<li><p>call the operator on <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances</p></li>
-<li><p>call the operator on a combination of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
+<li><p>call the operator on two <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
+<li><p>call the operator with an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right</p></li>
+</ol>
+<p><strong>Array Reverse Operator Examples</strong></p>
+<p>To recap, <em>array reverse operator</em> examples show an operation being performed like so
+<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
+should:</p>
+<ol class="arabic simple" start="14">
+<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+instance on the right</p></li>
+</ol>
+<p><strong>Container Operator Examples</strong></p>
+<p>To recap, <em>container operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
+with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
+docstring of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>container operator</em>
+examples should:</p>
+<ol class="arabic simple" start="15">
+<li><p>call the operator on two <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
+<code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves</p></li>
+<li><p>call the operator on two <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves</p></li>
+<li><p>call the operator with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left and
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right</p></li>
+</ol>
+<p><strong>Container Reverse Operator Examples</strong></p>
+<p>To recap, <em>container reverse operator</em> examples show an operation being performed like so
+<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
+should:</p>
+<ol class="arabic simple" start="18">
+<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instance on the right</p></li>
 </ol>
 <p><strong>All Possible Variants</strong></p>
 <p>Point 1 mentions that the examples should cover <em>all possible variations</em>.
@@ -253,7 +346,7 @@ included in the examples. These three examples procedurally go through the varia
 argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.</p>
 <p>You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
 examples that should be included in the docstring!</p>
-<p>We’ll next go through some examples to make these 14 points more clear.</p>
+<p>We’ll next go through some examples to make these 18 points more clear.</p>
 <section id="ivy-tan">
 <h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h2>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
