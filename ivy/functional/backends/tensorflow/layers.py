@@ -78,7 +78,7 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]it ,
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     output_shape: Optional[Tensor] = None,
     data_format: str = "NDHWC",
