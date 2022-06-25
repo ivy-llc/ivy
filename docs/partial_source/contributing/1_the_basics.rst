@@ -40,7 +40,12 @@ Even for very simple questions, there are benefits in starting a discussion for 
 This means that the question can be asked once and then easily found by others in future,
 avoiding the case where different people ask the same question multiple times on the discord server.
 
-I or someone else in the team will strive to respond to your newly created discussion as quickly as possible!
+For discussions that have already been created,
+all new comments will trigger the "Unanswered" label to be applied to the discussion.
+This makes it easy for members in the Ivy team to keep track of where attention is needed.
+Once the new comment has been responded to, we will manually remove the "Unanswered" label.
+
+I or someone else in the team will strive to respond to your comments, replies and newly created discussions as quickly as possible!
 
 **Issues**
 
