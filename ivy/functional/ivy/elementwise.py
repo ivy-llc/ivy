@@ -206,14 +206,14 @@ def add(
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
-
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -312,7 +312,7 @@ def asin(
         an array containing the inverse sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
         signatures.elementwise_functions.tan.html>`_
@@ -618,7 +618,7 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -923,7 +923,7 @@ def bitwise_xor(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -1179,7 +1179,7 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -2646,7 +2646,7 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -2965,13 +2965,14 @@ def tan(
         floating-point data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -2995,13 +2996,6 @@ def tan(
     >>> print(x)
     ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.tan(x)
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
