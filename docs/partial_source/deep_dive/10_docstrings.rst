@@ -83,7 +83,7 @@ Next, we add a section in the docstring which explains that it has been modified
 
 .. code-block:: diff
 
-    +This method conforms to the `Array API Standard
+    +This function conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
     +in the standard.
@@ -129,7 +129,7 @@ Following these changes, the new docstring is as follows:
         an array containing the tangent of each element in ``x``. The return must have a
         floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
     in the standard.
