@@ -3068,13 +3068,6 @@ def tan(
     ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.tan(x)
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
