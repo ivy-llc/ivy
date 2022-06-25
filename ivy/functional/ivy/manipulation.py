@@ -422,8 +422,8 @@ def roll(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -471,27 +471,6 @@ def roll(
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([5., 3., 4.])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.roll(1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.roll(1)
-    >>> print(y)
-    {
-        a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
-    }
-
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 
@@ -905,12 +884,89 @@ def swapaxes(
         First axis to be swapped.
     axis1
         Second axis to be swapped.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         x with its axes permuted.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[0, 1, 2]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[0],
+               [1],
+               [2]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[[0, 1],
+                [4, 5]],
+               [[2, 3],
+                [6, 7]]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 0, 2)
+    >>> print(y)
+    ivy.array([[[0, 4],
+                [2, 6]],
+               [[1, 5],
+                [3, 7]]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 1, 2)
+    >>> print(y)
+    ivy.array([[[0, 2],
+                [1, 3]],
+               [[4, 6],
+                [5, 7]]])
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([[0, 1, 2]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[0],
+               [1],
+               [2]])
+    
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    {
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
+    }
+
+    Instance Method Examples
+    ------------------------
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([[0., 1., 2.]])
+    >>> y = x.swapaxes(0, 1)
+    >>> print(y)
+    ivy.array([[0.],
+               [1.],
+               [2.]])
+    Using :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = x.swapaxes(0, 1)
+    >>> print(y)
+    {
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
+    }
+    
     """
     return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
