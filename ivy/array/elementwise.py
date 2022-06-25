@@ -11,6 +11,11 @@ import ivy
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
     def abs(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for this function also applies to this method
+        with minimal changes.
+        """
         return ivy.abs(self._data, out=out)
 
     def acosh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
