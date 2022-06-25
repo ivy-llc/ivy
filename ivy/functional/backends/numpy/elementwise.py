@@ -325,7 +325,12 @@ def floor_divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.floor(np.divide(x1, x2, out=out))
+    ret = np.floor_divide(x1, x2, out=out)
+    if (isinf(x1).any() and isfinite(x2).any()) or (
+        isfinite(x1).any() and isinf(x2).any()
+    ):
+        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+    return ret
 
 
 @_handle_0_dim_output
