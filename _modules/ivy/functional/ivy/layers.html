@@ -964,8 +964,14 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span>
-<span class="p">):</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+    <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> 
+    <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> 
+    <span class="n">output_shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span> 
+    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 3-D transpose convolution given 5-D input x and filters arrays.</span>
 
 <span class="sd">    Parameters</span>
@@ -977,12 +983,12 @@
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
-<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
 <span class="sd">        paddings.</span>
 <span class="sd">    output_shape</span>
 <span class="sd">        Shape of the output (Default value = None)</span>
 <span class="sd">    data_format</span>
-<span class="sd">        NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
+<span class="sd">        &quot;NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 
@@ -990,6 +996,84 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The result of the transpose convolution operation.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, strides=2, padding=&#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)  </span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 256, 256, 64]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 64, 32]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, strides=[1, 1, 1], padding=&#39;VALID&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 9, 258, 258, 32)</span>
+
+<span class="sd">    With :code: `ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),</span>
+<span class="sd">    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),</span>
+<span class="sd">    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, strides=2, padding=&#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;a&#39;].shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;b&#39;].shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 2.7)</span>
+<span class="sd">    &gt;&gt;&gt; a =  ivy.random_normal(0, 1, [3, 3, 3, 1, 16])</span>
+<span class="sd">    &gt;&gt;&gt; b =  ivy.random_normal(0, 1, [3, 3, 3, 1, 32])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;a&#39;].shape)</span>
+<span class="sd">    (1, 10, 10, 10, 16)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;b&#39;].shape)</span>
+<span class="sd">    (1, 10, 10, 10, 32)</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray`</span>
+<span class="sd">    and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 1.23)</span>
+<span class="sd">    &gt;&gt;&gt; a =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 64]))</span>
+<span class="sd">    &gt;&gt;&gt; b =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 128]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;a&#39;].shape)</span>
+<span class="sd">    (1, 10, 10, 10, 64)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;b&#39;].shape)</span>
+<span class="sd">    (1, 10, 10, 10, 128)</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.conv3d_transpose(filters, strides=2, padding=&#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),</span>
+<span class="sd">    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),</span>
+<span class="sd">    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.conv3d_transpose(filters, strides=2, padding=&#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;a&#39;].shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+<span class="sd">    &gt;&gt;&gt; print(y[&#39;b&#39;].shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">conv3d_transpose</span><span class="p">(</span>
