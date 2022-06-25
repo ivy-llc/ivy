@@ -11,39 +11,39 @@ the final step is to add helpful examples to the docstrings.
 
 There are eight types of examples, which each need to be added:
 
-*Functional* examples show the function being called like so
+**Functional** examples show the function being called like so
 :code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
 in the Ivy API :code:`ivy.<func_name>`.
 
-*Container static method* examples show the method being called like so
+**Container static method** examples show the method being called like so
 :code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
 docstring of the static container method :code:`ivy.Container.static_<func_name>`.
 
-*Array instance method* examples show the method being called like so
+**Array instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :code:`ivy.Array` instance,
 and these should be added to the docstring of the :code:`ivy.Array` instance method
 :code:`ivy.Array.<func_name>`.
 
-*Container instance method* examples show the method being called like so
+**Container instance method** examples show the method being called like so
 :code:`x.func_name(...)` on an :code:`ivy.Container` instance,
 and these should be added to the docstring of the :code:`ivy.Container` instance method
 :code:`ivy.Container.<func_name>`.
 
-*Array operator* examples show an operation being performed like so :code:`x + y`
+**Array operator** examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :code:`ivy.Array` instance, and these should be added to the
 docstring of the :code:`ivy.Array` special method :code:`ivy.Array.__<op_name>__`.
 
-*Array reverse operator* examples show an operation being performed like so
+**Array reverse operator** examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :code:`ivy.Array` instance. These should be added to the docstring of the
 :code:`ivy.Array` reverse special method :code:`ivy.Array.__r<op_name>__`.
 
-*Container operator* examples show an operation being performed like so :code:`x + y`
+**Container operator** examples show an operation being performed like so :code:`x + y`
 with :code:`x` being an :code:`ivy.Container` instance, and these should be added to the
 docstring of the :code:`ivy.Container` special method
 :code:`ivy.Container.__<op_name>__`.
 
-*Container reverse operator* examples show an operation being performed like so
+**Container reverse operator** examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
 :code:`ivy.Container` instance. These should be added to the docstring of the
 :code:`ivy.Container` reverse special method :code:`ivy.Container.__r<op_name>__`.
@@ -55,7 +55,7 @@ such as :code:`ivy.add`, `ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.div
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
 
-*Operator* examples are only relevant for *operator* functions. These are functions which are called when a
+**Operator** examples are only relevant for *operator* functions. These are functions which are called when a
 corresponding operator is applied to an array. For example, the functions :code:`ivy.add`, `ivy.subtract`,
 :code:`ivy.multiply` and :code:`ivy.divide` are called when the operators :code:`+`, :code:`-`, :code:`*` and :code:`/`
 are used respectively. Under the hood, these operators first call the special methods :code:`__add__`, :code:`__sub__`,
