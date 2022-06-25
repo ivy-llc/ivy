@@ -6,71 +6,51 @@ Docstring Examples
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
 
-After writing the general docstring, the final step is to add helpful examples to the docstring.
+After writing the general docstrings,
+the final step is to add helpful examples to the docstrings.
 
-There are three types of examples. There are *functional* examples, which show the function being called like so
-:code:`ivy.func_name(...)`, there are *instance method* examples,
-show the method being called like so :code:`x.func_name(...)`,
-and there are also *operator* examples,
-which show an operation being performed like so :code:`x + y`.
+There are eight types of examples, which each need to be added:
 
-The first two example types are very common, while the latter is, unsurprisingly,
-only relevant for *operator* functions
+*Functional* examples show the function being called like so
+:code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
+in the Ivy API :code:`ivy.<func_name>`.
+
+*Container static method* examples show the method being called like so
+:code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
+docstring of the static container method :code:`ivy.Container.static_<func_name>`.
+
+*Array instance method* examples show the method being called like so
+:code:`x.func_name(...)` on an :code:`ivy.Array` instance,
+and these should be added to the docstring of the :code:`ivy.Array` instance method
+:code:`ivy.Array.<func_name>`.
+
+*Container instance method* examples show the method being called like so
+:code:`x.func_name(...)` on an :code:`ivy.Container` instance,
+and these should be added to the docstring of the :code:`ivy.Container` instance method
+:code:`ivy.Container.<func_name>`.
+
+*Array operator* examples show an operation being performed like so :code:`x + y`
+with :code:`x` being an :code:`ivy.Array` instance, and these should be added to the
+docstring of the :code:`ivy.Array` special method :code:`ivy.Array.__<op_name>__`.
+
+*Array reverse operator* examples show an operation being performed like so
+:code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
+:code:`ivy.Array` instance. These should be added to the docstring of the
+:code:`ivy.Array` reverse special method :code:`ivy.Array.__r<op_name>__`.
+
+*Container operator* examples show an operation being performed like so :code:`x + y`
+with :code:`x` being an :code:`ivy.Container` instance, and these should be added to the
+docstring of the :code:`ivy.Container` special method
+:code:`ivy.Container.__<op_name>__`.
+
+*Container reverse operator* examples show an operation being performed like so
+:code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
+:code:`ivy.Container` instance. These should be added to the docstring of the
+:code:`ivy.Container` reverse special method :code:`ivy.Container.__r<op_name>__`.
+
+The first four example types are very common, while the last four, unsurprisingly,
+are only relevant for *operator* functions
 such as :code:`ivy.add`, `ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`.
-
-**Functional Examples**
-
-Firstly, we should include *functional* examples with :code:`ivy.Array` instances in the input.
-
-These should:
-
-1. cover all possible variants (explained below) for each of the arguments independently,
-   not combinatorily. This means the number of examples should be equal to the maximum number of
-   variations for a single argument, and not the entire grid of variations across all arguments
-   (further explained in the examples below)
-2. vary the values and input shapes considerably between examples
-3. start with the simplest examples first. For example, this means using the default values for all optional arguments
-   in the first example, and using small arrays, with a small number of dimensions, and with *simple* values for the
-   function in question
-4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`,
-   and (c) :code:`out` used to inplace update the input array :code:`x`
-   (provided that it shares the same :code:`dtype` and :code:`shape` as the return)
-5. If broadcasting is relevant for the function, then show examples which highlight this.
-   For example, passing in different shapes for two array arguments
-
-For all remaining examples, we can repeat input values from these :code:`ivy.Array` *functional*
-examples covered by points 1-5.
-
-The purpose of the extra examples with different input types in points 6-14 is to highlight the versatility
-of the function. The purpose is not to provide an excessive number of variations of possible function inputs.
-
-Next, we add examples with :code:`ivy.NativeArray` instances in the input.
-
-There should be an example that:
-
-6. passes in :code:`ivy.NativeArray` instances for all array arguments
-
-For functions which accept more than one array, there should also be an example that:
-
-7. passes in a combination of :code:`ivy.NativeArray` and :code:`ivy.Array` instances
-
-Going further, for *nestable* functions there should be an example that:
-
-8. passes in an :code:`ivy.Container` instance in place of one of the arguments
-
-For *nestable* functions which accept more than one argument, there should also be an example that:
-
-9. passes in :code:`ivy.Container` instances for multiple arguments
-
-**Instance Method Examples**
-
-*Instance method* examples are of course only relevant if an instance method for the function exists.
-If so, these examples should:
-
-10. call this instance method of the :code:`ivy.Array` class
-11. call this instance method of the :code:`ivy.Container` class
-
-**Operator Examples**
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
@@ -83,11 +63,150 @@ are used respectively. Under the hood, these operators first call the special me
 instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.
 
-If the function is an *operator* function, then examples should be added which:
+**Functional Examples**
 
-12. call the operator on :code:`ivy.Array` instances
-13. call the operator on :code:`ivy.Container` instances
-14. call the operator on a combination of :code:`ivy.Container` and :code:`ivy.Array` instances
+To recap, *functional* examples show the function being called like so
+:code:`ivy.<func_name>(...)`, and these should be added to docstring of the function
+in the Ivy API :code:`ivy.<func_name>`.
+
+Firstly, we should include *functional* examples with :code:`ivy.Array` instances in the input.
+
+These should:
+
+1. cover all possible variants (explained below) for each of the arguments independently,
+   not combinatorily. This means the number of examples should be equal to the maximum number of
+   variations for a single argument, and not the entire grid of variations across all arguments
+   (further explained in the examples below)
+
+2. vary the values and input shapes considerably between examples
+
+3. start with the simplest examples first. For example, this means using the default values for all optional arguments
+   in the first example, and using small arrays, with a small number of dimensions, and with *simple* values for the
+   function in question
+
+4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`,
+   and (c) :code:`out` used to inplace update the input array :code:`x`
+   (provided that it shares the same :code:`dtype` and :code:`shape` as the return)
+
+5. If broadcasting is relevant for the function, then show examples which highlight this.
+   For example, passing in different shapes for two array arguments
+
+For all remaining examples, we can repeat input values from these :code:`ivy.Array` *functional*
+examples covered by points 1-5.
+
+The purpose of the extra examples with different input types in points 6-18 is to
+highlight the different contexts in which the function can be called
+(as an instance method etc.). The purpose is not to provide an excessive number of
+variations of possible function inputs.
+
+Next, for *nestable* functions there should be an example that:
+
+6. passes in an :code:`ivy.Container` instance in place of one of the arguments
+
+For *nestable* functions which accept more than one argument, there should also be an example that:
+
+7. passes in :code:`ivy.Container` instances for multiple arguments
+
+**Container Static Method Examples**
+
+To recap, *container static method* examples show the method being called like so
+:code:`ivy.Container.static_<func_name>(...)`, and these should be added to the
+docstring of the static container method :code:`ivy.Container.static_<func_name>`.
+
+The static methods of the :code:`ivy.Container` class are used under the hood when
+supporting the *nestable* property for all Ivy functions in the API,
+as showcased by the examples for points 6 and 7. We should demonstrate these same
+examples in the static method docstrings also.
+
+8. the example from point 6 should be replicated, but added to the :code:`ivy.Container`
+   static method :code:`ivy.Container.static_<func_name>` docstring. With
+   :code:`ivy.<func_name>` replaced with :code:`ivy.Container.static_<func_name>`
+   in the example.
+
+9. the example from point 7 should be replicated, but added to the :code:`ivy.Container`
+   static method :code:`ivy.Container.static_<func_name>` docstring. With
+   :code:`ivy.<func_name>` replaced with :code:`ivy.Container.static_<func_name>`
+   in the example.
+
+**Array Instance Method Example**
+
+To recap, *array instance method* examples show the method being called like so
+:code:`x.func_name(...)` on an :code:`ivy.Array` instance,
+and these should be added to the docstring of the :code:`ivy.Array` instance method
+:code:`ivy.Array.<func_name>`.
+
+These examples are of course only relevant if an instance method for
+the function exists. If so, this example should simply:
+
+10. call this instance method of the :code:`ivy.Array` class
+
+**Container Instance Method Example**
+
+To recap, *container instance method* examples show the method being called like so
+:code:`x.func_name(...)` on an :code:`ivy.Container` instance,
+and these should be added to the docstring of the :code:`ivy.Container` instance method
+:code:`ivy.Container.<func_name>`.
+
+These examples are of course only relevant if an instance method
+for the function exists. If so, this example should simply:
+
+11. call this instance method of the :code:`ivy.Container` class
+
+**Array Operator Examples**
+
+To recap, *array operator* examples show an operation being performed like so :code:`x + y`
+with :code:`x` being an :code:`ivy.Array` instance, and these should be added to the
+docstring of the :code:`ivy.Array` special method :code:`ivy.Array.__<op_name>__`.
+
+If the function is an *operator* function, then the *array operator* examples should:
+
+12. call the operator on two :code:`ivy.Array` instances
+13. call the operator with an :code:`ivy.Array` instance on the left and
+    :code:`ivy.Container` on the right
+
+**Array Reverse Operator Examples**
+
+To recap, *array reverse operator* examples show an operation being performed like so
+:code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
+:code:`ivy.Array` instance. These should be added to the docstring of the
+:code:`ivy.Array` reverse special method :code:`ivy.Array.__r<op_name>__`.
+
+If the function is an *operator* function, then the *array reverse operator* example
+should:
+
+14. call the operator with a :code:`Number` on the left and an :code:`ivy.Array`
+    instance on the right
+
+**Container Operator Examples**
+
+To recap, *container operator* examples show an operation being performed like so :code:`x + y`
+with :code:`x` being an :code:`ivy.Container` instance, and these should be added to the
+docstring of the :code:`ivy.Container` special method
+:code:`ivy.Container.__<op_name>__`.
+
+If the function is an *operator* function, then the *container operator*
+examples should:
+
+15. call the operator on two :code:`ivy.Container` instances containing
+    :code:`Number` instances at the leaves
+16. call the operator on two :code:`ivy.Container` instances containing
+    :code:`ivy.Array` instances at the leaves
+17. call the operator with an :code:`ivy.Container` instance on the left and
+    :code:`ivy.Array` on the right
+
+**Container Reverse Operator Examples**
+
+To recap, *container reverse operator* examples show an operation being performed like so
+:code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
+:code:`ivy.Container` instance. These should be added to the docstring of the
+:code:`ivy.Container` reverse special method :code:`ivy.Container.__r<op_name>__`.
+
+If the function is an *operator* function, then the *array reverse operator* example
+should:
+
+18. call the operator with a :code:`Number` on the left and an :code:`ivy.Container`
+    instance on the right
+
 
 **All Possible Variants**
 
@@ -132,7 +251,7 @@ argument, but this doesn’t need to be the case if you think other combinations
 You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
 examples that should be included in the docstring!
 
-We'll next go through some examples to make these 14 points more clear.
+We'll next go through some examples to make these 18 points more clear.
 
 ivy.tan
 -------
