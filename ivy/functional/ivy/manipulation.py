@@ -557,7 +557,6 @@ def squeeze(
     Returns
     -------
     ret
-
         an output array having the same data type and elements as ``x``.
 
 
