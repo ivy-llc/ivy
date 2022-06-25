@@ -164,7 +164,7 @@ If the function is an *operator* function, then the *array operator* examples sh
 13. call the operator with an :code:`ivy.Array` instance on the left and
     :code:`ivy.Container` on the right
 
-**Array Reverse Operator Examples**
+**Array Reverse Operator Example**
 
 To recap, *array reverse operator* examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
@@ -194,7 +194,7 @@ examples should:
 17. call the operator with an :code:`ivy.Container` instance on the left and
     :code:`ivy.Array` on the right
 
-**Container Reverse Operator Examples**
+**Container Reverse Operator Example**
 
 To recap, *container reverse operator* examples show an operation being performed like so
 :code:`x + y` with :code:`x` being a :code:`Number` and :code:`y` being an
@@ -256,6 +256,8 @@ We'll next go through some examples to make these 18 points more clear.
 ivy.tan
 -------
 
+**Functional Examples**
+
 The signature for :code:`ivy.tan` is as follows:
 
 .. code-block:: python
@@ -270,8 +272,8 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
 
 .. code-block:: python
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -314,21 +316,8 @@ making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
-We then also add an example with an :code:`ivy.NativeArray` input, in order to satisfy point 6.
-Point 7 is not relevant as there is only one array input
-(excluding :code:`out` which does not count, as it essentially acts as an output)
-
-.. code-block:: python
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> y = ivy.tan(x)
-    >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
-
-We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 8.
-Point 9 is not relevant as there is only one input argument
+We then also add an example with an :code:`ivy.Container` input, in order to satisfy point 6.
+Point 7 is not relevant as there is only one input argument
 (excluding :code:`out` which does not count, as it essentially acts as an output)
 
 .. code-block:: python
@@ -343,31 +332,74 @@ Point 9 is not relevant as there is only one input argument
         b: ivy.array([-0.14254655, 1.1578213, -3.380515])
     }
 
-We then add instance method examples to satisfy points 10 and 11.
+**Container Static Method Examples**
+
+We then add an :code:`ivy.Container` static method example to the docstring of
+:code:`ivy.Container.static_tan` in order to satisfy point 8.
+Point 9 is not relevant as there is only one input argument
+(excluding :code:`out` which does not count, as it essentially acts as an output).
 
 .. code-block:: python
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.tan()
-    >>> print(y)
-    ivy.array([0., 1.5574077, -2.1850398])
-
-    Using :code:`ivy.Container` instance method:
+    Examples
+    --------
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.tan()
+    >>> y = ivy.Container.static_tan(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+        a: ivy.array([0., 1.56, -2.19]),
+        b: ivy.array([-0.143, 1.16, -3.38])
     }
 
-Points 12-14 are not relevant, as :code:`ivy.tan` is not an *operator* function.
+**Array Instance Method Example**
+
+We then add an instance method example to :code:`ivy.Array.tan` in order to satisfy
+point 10.
+
+.. code-block:: python
+
+        Examples
+        --------
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.tan()
+        >>> print(y)
+        ivy.array([0., 1.56, -2.19])
+
+**Container Instance Method Example**
+
+We then add an instance method example to :code:`ivy.Container.tan` in order to satisfy
+point 11.
+
+.. code-block:: python
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.tan()
+        >>> print(y)
+        {
+            a:ivy.array([0., 1.56, -2.19]),
+            b:ivy.array([-0.143, 1.16, -3.38])
+        }
+
+**Array Operator Examples**
+
+not relevant as :code:`ivy.tan` is not an *operator* function.
+
+**Array Reverse Operator Example**
+
+not relevant as :code:`ivy.tan` is not an *operator* function.
+
+**Container Operator Examples**
+
+not relevant as :code:`ivy.tan` is not an *operator* function.
+
+**Container Reverse Operator Example**
+
+not relevant as :code:`ivy.tan` is not an *operator* function.
 
 ivy.roll
 --------
