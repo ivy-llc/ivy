@@ -736,6 +736,7 @@ def clip(
     """
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
