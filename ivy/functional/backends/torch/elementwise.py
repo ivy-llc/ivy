@@ -322,7 +322,7 @@ def floor_divide(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.floor(torch.divide(x1, x2, out=out))
+    return torch.div(x1, x2, rounding_mode="floor", out=out)
 
 
 def bitwise_or(
