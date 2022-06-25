@@ -161,6 +161,16 @@ class ContainerWithManipulation(ContainerBase):
             a: ivy.array([2., 0., 1.]),
             b: ivy.array([5., 3., 4.])
         }
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> shift = ivy.Container(a=1, b=-1)
+        >>> y = ivy.Container.static_roll(x, shift)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([4., 5., 3.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "roll",
