@@ -1289,6 +1289,22 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tan. This method simply wraps the
+        function, and so the docstring for ivy.tan also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_tan(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.56, -2.19]),
+            b: ivy.array([-0.143, 1.16, -3.38])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "tan",
             x,
@@ -1308,6 +1324,22 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.tan. This method simply wraps the
+        function, and so the docstring for ivy.tan also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.tan()
+        >>> print(y)
+        {
+            a:ivy.array([0., 1.56, -2.19]),
+            b:ivy.array([-0.143, 1.16, -3.38])
+        }
+        """
         return self.static_tan(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
