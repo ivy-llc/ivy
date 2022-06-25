@@ -49,6 +49,8 @@ def linear_resample(x, num_samples: int, axis: int = -1):
     else:
         x_pre_shape = x_shape[:-1]
     x = torch.reshape(x, ([-1, 1] + [num_vals]))
+    if x.dtype not in ['float16','float32','float64']:
+        x=x.type(torch.float32)
     ret = torch.nn.functional.interpolate(
         x, num_samples, mode="linear", align_corners=True
     )
