@@ -694,7 +694,8 @@ def clip(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \ b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
     >>> y = ivy.clip(x, 1., 5.)
     >>> print(y)
 {
@@ -704,7 +705,8 @@ def clip(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \ b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
     >>> x_min = ivy.Container(a=1, b=-1)
     >>> x_max = ivy.Container(a=1, b=-1)
     >>> y = ivy.clip(x, x_min,x_max)
@@ -733,8 +735,6 @@ def clip(
 }
     """
     return current_backend(x).clip(x, x_min, x_max, out=out)
-
-
 
 @to_native_arrays_and_back
 @handle_out_argument
