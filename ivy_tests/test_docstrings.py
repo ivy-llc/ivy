@@ -49,12 +49,8 @@ def test_docstrings(backend):
     #             "\n".join(failures)
     #         )
     #     )
-    x = ivy.native_array([[1., 2.], \
-                          [4., 5.], \
-                          [7., 8.]])
-    y = ivy.array([[1.], \
-                        [0.], \
-                        [0.]])
+    x = ivy.native_array([[1., 2.], [4., 5.],[7., 8.]])
+    y = ivy.array([[1.],  [0.], [0.]])
     z = ivy.cross(x, y, axis=0)
     print(x.shape[-1], x.shape[-1])
     print(z)
