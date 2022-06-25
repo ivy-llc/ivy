@@ -149,7 +149,7 @@ distributed across task-specific
 <li><p>Function Formatting</p></li>
 <li><p>Frontend APIs</p></li>
 </ol>
-<p>We try to explain these tasks are clearly as possible, but in cases where things are not
+<p>We try to explain these tasks as clearly as possible, but in cases where things are not
 clear, then please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1403">open tasks discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/985156466963021854">open tasks channel</a>!</p>
 <p>Please always use the latest commit on GitHub when working on any of these tasks,
@@ -158,24 +158,52 @@ or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQ
 <h2>Function Formatting<a class="headerlink" href="#function-formatting" title="Permalink to this heading"></a></h2>
 <p>Currently, we have many ToDo list issues
 <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo">open</a>
-for a general function reformatting task,
+for a general function formatting task,
 which is explained below.</p>
 <p>Each function in each submodule should be updated to follow the implementation
 instructions given in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> section.
-The updates should be applied for both the Ivy API and Backend API,
-as explained in the <a class="reference internal" href="../deep_dive/0_navigating_the_code.html#navigating-the-code"><span class="std std-ref">Navigating the Code</span></a> section.</p>
-<p>The <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> is the best general resource for learning in detail how functions
-should be implemented.
-At the time of writing, many of the functions are not implemented as they should be.
+The updates should be applied for the:</p>
+<ol class="arabic simple">
+<li><p>ivy API</p></li>
+<li><p>all backend APIs</p></li>
+<li><p>container static methods</p></li>
+<li><p>array instance methods</p></li>
+<li><p>container instance methods</p></li>
+<li><p>array operators</p></li>
+<li><p>array reverse operators</p></li>
+<li><p>container operators</p></li>
+<li><p>container reverse operators</p></li>
+</ol>
+<p>The <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> is an <strong>essential</strong> resource for learning how each of these
+functions/methods should be implemented. Before starting any contribution task,
+you should go through the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a>, and familiarize yourself with the content.</p>
+<p>At the time of writing, many of the functions are not implemented as they should be.
 You will need to make changes to the current implementations,
 but you do not need to address <em>all</em> sections of the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> in detail.
-Specifically, you should make the following changes, where appropriate:</p>
+Specifically, you <strong>do not</strong> need to address the following:</p>
 <ol class="arabic simple">
-<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for backend functions,
+<li><p>implement the hypothesis testing for the function</p></li>
+<li><p>get the tests passing for your function, if they are failing before you start</p></li>
+</ol>
+<p>However, everything else covered in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> must be addressed.
+Some common important tasks are:</p>
+<ol class="arabic simple">
+<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions,
 with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
-<li><p>update the <a class="reference internal" href="../deep_dive/9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints.</p></li>
-<li><p>add the correct <a class="reference internal" href="../deep_dive/10_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a></p></li>
-<li><p>add thorough <a class="reference internal" href="../deep_dive/11_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a></p></li>
+<li><p>implement the following if they don’t exist but should do: <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance
+method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method,
+<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method,
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method.</p></li>
+<li><p>Make sure that the aforementioned methods are added into the correct
+category-specific parent class, such as <code class="code docutils literal notranslate"><span class="pre">ivy.ArrayWithElementwise</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.ContainerWithManipulation</span></code> etc.</p></li>
+<li><p>correct all of the <a class="reference internal" href="../deep_dive/9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every
+function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement
+yourself.</p></li>
+<li><p>add the correct <a class="reference internal" href="../deep_dive/10_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>,
+including those you did not implement yourself.</p></li>
+<li><p>add thorough <a class="reference internal" href="../deep_dive/11_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its
+<em>relevant methods</em></p></li>
 </ol>
 </section>
 <section id="frontend-apis">
