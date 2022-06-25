@@ -3127,8 +3127,8 @@ def tan(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -3166,26 +3166,6 @@ def tan(
         a: ivy.array([0., 1.56, -2.19]),
         b: ivy.array([-0.143, 1.16, -3.38])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.tan()
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.tan()
-    >>> print(y)
-    {
-        a:ivy.array([0., 1.56, -2.19]),
-        b:ivy.array([-0.143, 1.16, -3.38])}
-
     """
     return ivy.current_backend(x).tan(x, out=out)
 
