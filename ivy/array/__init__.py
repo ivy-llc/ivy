@@ -101,8 +101,8 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-
         self.framework_str = ivy.current_backend_str()
+        self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
     # -----------#
@@ -167,6 +167,17 @@ class Array(
 
         """
         return self._size
+
+    @property
+    def is_variable(self):
+        """Determines whether the array is a variable or not.
+
+        Returns
+        -------
+        ret
+            Boolean, true if the array is a trainable variable, false otherwise.
+        """
+        return self._is_variable
 
     # Setters #
     # --------#
@@ -293,10 +304,56 @@ class Array(
 
     @_native_wrapper
     def __add__(self, other):
+        """
+        ivy.Array special method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x + y
+        >>> print(z)
+        ivy.array([5, 7, 9])
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: ivy.array([[5.1, 6.3, 0.4],
+                          [6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4]]),
+            b: ivy.array([[6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4],
+                          [8.1, 9.3, 3.4]])
+        }
+        """
         return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.add. This method simply wraps
+        the function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = 1
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x + y
+        >>> print(z)
+        ivy.array([5, 6, 7])
+        """
         return ivy.add(other, self._data)
 
     @_native_wrapper
