@@ -78,6 +78,43 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_add(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([7, 9, 11])
+        }
+
+        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = ivy.Container.static_add(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[5.1, 6.3, 0.4],
+                          [6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4]]),
+            b: ivy.array([[6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4],
+                          [8.1, 9.3, 3.4]])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "add",
             x1,
@@ -99,6 +136,26 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                             b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                             b=ivy.array([5, 6, 7]))
+
+        >>> z = x.add(y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([7, 9, 11])
+        }
+        """
         return self.static_add(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
