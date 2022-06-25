@@ -260,8 +260,8 @@ def one_hot(indices, depth, *, device):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
-    if as_tensor:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[np.ndarray, List[int]]:
+    if as_array:
         return np.asarray(np.shape(x))
     else:
         return x.shape

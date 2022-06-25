@@ -276,8 +276,8 @@ def linear_resample(
     Examples
     --------
     >>> data = ivy.array([[1, 2],[3, 4]])
-    >>> y = linear_resample(data, 5)
+    >>> y = ivy.linear_resample(data, 5)
     >>> print(y)
-    ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
+    ivy.array([[1.,1.25,1.5,1.75,2.],[3.,3.25,3.5,3.75,4.]])
     """
     return current_backend(x).linear_resample(x, num_samples, axis)

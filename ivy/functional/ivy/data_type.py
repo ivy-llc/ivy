@@ -219,8 +219,7 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype = dtype)
+    >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
     """
@@ -801,6 +800,7 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
     return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
 
 
+@inputs_to_native_arrays
 @handle_nestable
 def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     """Returns the supported data types of the current backend's function.

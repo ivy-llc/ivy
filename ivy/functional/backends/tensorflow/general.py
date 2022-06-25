@@ -344,9 +344,9 @@ def indices_where(x):
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],
-    as_tensor: bool = False,
+    as_array: bool = False,
 ) -> Union[tf.Tensor, tf.Variable, List[int]]:
-    if as_tensor:
+    if as_array:
         return tf.shape(x)
     else:
         return tuple(x.shape)
