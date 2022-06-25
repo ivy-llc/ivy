@@ -400,7 +400,7 @@ making all three examples possible.</p>
 <p>We then also add an example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 6.
 Point 7 is not relevant as there is only one input argument
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With one :code:`ivy.Container` input:
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :code:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = ivy.tan(x)
@@ -416,16 +416,18 @@ Point 7 is not relevant as there is only one input argument
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_tan</span></code> in order to satisfy point 8.
 Point 9 is not relevant as there is only one input argument
 (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
-<span class="o">--------</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
+--------
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.56</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.19</span><span class="p">]),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.143</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.38</span><span class="p">])</span>
-<span class="p">}</span>
+With :code:`ivy.Container` input:
+
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; y = ivy.Container.static_tan(x)
+&gt;&gt;&gt; print(y)
+{
+    a: ivy.array([0., 1.56, -2.19]),
+    b: ivy.array([-0.143, 1.16, -3.38])
+}
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
@@ -560,31 +562,35 @@ in order to satisfy point 7.</p>
 <p>We then add an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 for one of the inputs, to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>,
 in order to satisfy point 8.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
-<span class="o">--------</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
+--------
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> \
-                      <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">])</span>
-<span class="p">}</span>
+With one :code:`ivy.Container` input:
+
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; y = ivy.Container.static_roll(x, 1)
+&gt;&gt;&gt; print(y)
+{
+    a: ivy.array([2., 0., 1.]),
+    b: ivy.array([5., 3., 4.])
+}
 </pre></div>
 </div>
 <p>We then add an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, to the docstring of <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>,
 in order to satisfy point 9.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> \
-<span class="go">                      b=ivy.array([3., 4., 5.]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shift</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([2., 0., 1.]),</span>
-<span class="go">    b: ivy.array([4., 5., 3.])</span>
-<span class="go">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :code:`ivy.Container` inputs:
+
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                      b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; shift = ivy.Container(a=1, b=-1)
+&gt;&gt;&gt; y = ivy.Container.static_roll(x, shift)
+&gt;&gt;&gt; print(y)
+{
+    a: ivy.array([2., 0., 1.]),
+    b: ivy.array([4., 5., 3.])
+}
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
@@ -602,13 +608,16 @@ in order to satisfy point 10.</p>
 <p><strong>Container Instance Method Example</strong></p>
 <p>We then add an instance method example to <code class="code docutils literal notranslate"><span class="pre">ivy.Container.roll</span></code>
 in order to satisfy point 11.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([2., 0., 1.], dtype=float32),</span>
-<span class="go">    b: ivy.array([5., 3., 4.], dtype=float32)</span>
-<span class="go">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
+<span class="o">--------</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">),</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>Array Operator Examples</strong></p>
@@ -636,7 +645,7 @@ in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 
-With :code:`ivy.Array` input:
+With :code:`ivy.Array` inputs:
 
 &gt;&gt;&gt; x = ivy.array([1, 2, 3])
 &gt;&gt;&gt; y = ivy.array([4, 5, 6])
