@@ -47,11 +47,19 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     num_vals = x.shape[axis]
-    xp = tf.range(num_vals, dtype=tf.float32)
-    x_coords = tf.range(num_samples, dtype=tf.float32) * (
-        (num_vals - 1) / (num_samples - 1)
-    )
+    if x.dtype not in ['float16','float32','float64']:
+        x=tf.cast(x,tf.float32)
+        xp = tf.range(num_vals, dtype=tf.float32)
+        x_coords = tf.range(num_samples, dtype=tf.float32) * (
+                (num_vals - 1) / (num_samples - 1)
+        )
+    else:
+        xp = tf.range(num_vals, dtype=x.dtype)
+        x_coords = tf.range(num_samples, dtype=x.dtype) * (
+            (num_vals - 1) / (num_samples - 1)
+        )
     x_coords = x_coords + xp[0:1]
+
     return tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals - 1, x, axis=axis)
 
 
