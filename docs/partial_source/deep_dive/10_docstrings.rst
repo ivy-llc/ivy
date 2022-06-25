@@ -154,21 +154,39 @@ Therefore, these docstrings should all simply contain the following text:
 
 .. code-block:: python
 
-        ivy.<Array|Container> <instance|static> method variant of ivy.<func_name>. This method simply wraps the
+        ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
         function, and so the docstring for ivy.<func_name> also applies to this method
         with minimal changes.
 
- Let's again take :code:`ivy.tan` as an example.
+The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
+which should instead use the following text, as these do not *directly* wrap a function
+in Ivy's functional API, but rather wrap the pure operator functions themselves,
+which can be called on any types that support the corresponding special methods:
+
+.. code-block:: python
+
+        ivy.Container <special|reverse special> method for the <operator_name> operator,
+        calling :code:`operator.<operator_name>` for each of the corresponding leaves of
+        the two containers.
+
+Let's take :code:`ivy.add` as an example.
 The docstring for
-`ivy.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/functional/ivy/elementwise.py#L3062>`_
+`ivy.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/functional/ivy/elementwise.py#L144>`_
 is thorough, as explained above.
 However, the docstrings for
-`ivy.Array.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/array/elementwise.py#L284>`_,
-`ivy.Container.tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1375>`_
+`ivy.Array.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/elementwise.py#L27>`_,
+`ivy.Container.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L129>`_
 and
-`ivy.Container.static_tan <https://github.com/unifyai/ivy/blob/368fa6b9b942e52670591f347ec41885404d49cf/ivy/container/elementwise.py#L1340>`_
-all follow the pattern outlined above.
-Note that these docstrings *also* include examples,
+`ivy.Container.static_add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L71>`_
+all follow the succinct pattern outlined above.
+Likewise, the docstrings for the special methods
+`ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L306>`_,
+`ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L342>`_,
+`ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L106>`_,
+and
+`ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L158>`_,
+also follow the succinct pattern outlined above.
+Note that these docstrings all *also* include examples,
 which we will cover in the next section.
 
 For all other classes, such as the various layers at
