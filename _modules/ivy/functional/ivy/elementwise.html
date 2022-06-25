@@ -366,28 +366,12 @@
 <span class="sd">                [5.7],</span>
 <span class="sd">                [-4.7]]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([4, 5, 6])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([5, 7, 9])</span>
-
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([4, 5, 6])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([5, 7, 9])</span>
-
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                        b=ivy.array([2, 3, 4]))</span>
+<span class="sd">                          b=ivy.array([2, 3, 4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                        b=ivy.array([5, 6, 7]))</span>
+<span class="sd">                          b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -399,7 +383,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                        b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -410,47 +394,6 @@
 <span class="sd">                      [7.1, 8.3, 2.4],</span>
 <span class="sd">                      [8.1, 9.3, 3.4]])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Operator Examples</span>
-<span class="sd">    -----------------</span>
-
-<span class="sd">    With :code:`ivy.Array` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
-<span class="sd">    &gt;&gt;&gt; z = x + y</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([5, 7, 9])</span>
-
-<span class="sd">    With :code:`ivy.Container` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                         b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]), \</span>
-<span class="sd">                            b=ivy.array([5, 6, 7]))</span>
-<span class="sd">    &gt;&gt;&gt; z = x + y</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([5, 7, 9]),</span>
-<span class="sd">        b: ivy.array([7, 9, 11])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                        b=ivy.array([[5.], [6.], [7.]]))</span>
-<span class="sd">    &gt;&gt;&gt; z = x + y</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[5.1, 6.3, 0.4],</span>
-<span class="sd">                      [6.1, 7.3, 1.4],</span>
-<span class="sd">                      [7.1, 8.3, 2.4]]),</span>
-<span class="sd">        b: ivy.array([[6.1, 7.3, 1.4],</span>
-<span class="sd">                      [7.1, 8.3, 2.4],</span>
-<span class="sd">                      [8.1, 9.3, 3.4]])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
