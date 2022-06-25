@@ -128,7 +128,7 @@ def floor(x: JaxArray) -> JaxArray:
 
 def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return jnp.floor(jnp.divide(x1, x2))
+    return jnp.floor_divide(x1, x2)
 
 
 def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
