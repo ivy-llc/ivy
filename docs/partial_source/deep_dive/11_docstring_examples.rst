@@ -359,13 +359,13 @@ point 10.
 
 .. code-block:: python
 
-        Examples
-        --------
+    Examples
+    --------
 
-        >>> x = ivy.array([0., 1., 2.])
-        >>> y = x.tan()
-        >>> print(y)
-        ivy.array([0., 1.56, -2.19])
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.tan()
+    >>> print(y)
+    ivy.array([0., 1.56, -2.19])
 
 **Container Instance Method Example**
 
@@ -374,16 +374,16 @@ point 11.
 
 .. code-block:: python
 
-        Examples
-        --------
+    Examples
+    --------
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-        >>> y = x.tan()
-        >>> print(y)
-        {
-            a:ivy.array([0., 1.56, -2.19]),
-            b:ivy.array([-0.143, 1.16, -3.38])
-        }
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.tan()
+    >>> print(y)
+    {
+        a:ivy.array([0., 1.56, -2.19]),
+        b:ivy.array([-0.143, 1.16, -3.38])
+    }
 
 **Array Operator Examples**
 
@@ -404,6 +404,8 @@ not relevant as :code:`ivy.tan` is not an *operator* function.
 ivy.roll
 --------
 
+**Functional Examples**
+
 The signature for :code:`ivy.roll` is as follows:
 
 .. code-block:: python
@@ -420,8 +422,8 @@ Let's start with the functional examples, with :code:`ivy.Array` instances in th
 
 .. code-block:: python
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -475,20 +477,7 @@ making all three examples possible.
 
 Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.
 
-We then also add an example with an :code:`ivy.NativeArray` input, in order to satisfy point 6.
-Point 7 is not relevant as there is only one array input
-(excluding :code:`out` which does not count, as it essentially acts as an output)
-
-.. code-block:: python
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.roll(x, 1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-We then also add an example with an :code:`ivy.Container` for one of the inputs, in order to satisfy point 8.
+We then also add an example with an :code:`ivy.Container` for one of the inputs, in order to satisfy point 6.
 
 .. code-block:: python
 
@@ -503,14 +492,12 @@ We then also add an example with an :code:`ivy.Container` for one of the inputs,
         b: ivy.array([5., 3., 4.])
     }
 
-Unlike :code:`ivy.tan`, point 9 is relevant in this case,
+Unlike :code:`ivy.tan`, point 7 is relevant in this case,
 as there are three function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :code:`ivy.Container` inputs,
-in order to satisfy point 9.
+in order to satisfy point 7.
 
 .. code-block:: python
-
-    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -522,21 +509,63 @@ in order to satisfy point 9.
         b: ivy.array([4., 5., 3.])
     }
 
-We then add instance method examples to satisfy points 10 and 11.
+ **Container Static Method Examples**
+
+We then add an :code:`ivy.Container` static method example with an :code:`ivy.Container`
+for one of the inputs, to the docstring of :code:`ivy.Container.static_roll`,
+in order to satisfy point 8.
 
 .. code-block:: python
 
-    Instance Method Examples
-    ------------------------
+    Examples
+    --------
 
-    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.Container.static_roll(x, 1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
+    }
+
+We then add an :code:`ivy.Container` static method example with multiple
+:code:`ivy.Container` inputs, to the docstring of :code:`ivy.Container.static_roll`,
+in order to satisfy point 9.
+
+.. code-block:: python
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> shift = ivy.Container(a=1, b=-1)
+    >>> y = ivy.Container.static_roll(x, shift)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([4., 5., 3.])
+    }
+
+**Array Instance Method Example**
+
+We then add an instance method example to :code:`ivy.Array.roll`
+in order to satisfy point 10.
+
+.. code-block:: python
+
+    Examples
+    --------
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.roll(1)
     >>> print(y)
     ivy.array([2., 0., 1.])
 
-    Using :code:`ivy.Container` instance method:
+**Container Instance Method Example**
+
+We then add an instance method example to :code:`ivy.Container.roll`
+in order to satisfy point 11.
+
+.. code-block:: python
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.roll(1)
@@ -546,7 +575,22 @@ We then add instance method examples to satisfy points 10 and 11.
         b: ivy.array([5., 3., 4.], dtype=float32)
     }
 
-Points 12-14 are not relevant, as :code:`ivy.roll` is not an *operator* function.
+
+**Array Operator Examples**
+
+not relevant as :code:`ivy.roll` is not an *operator* function.
+
+**Array Reverse Operator Example**
+
+not relevant as :code:`ivy.roll` is not an *operator* function.
+
+**Container Operator Examples**
+
+not relevant as :code:`ivy.roll` is not an *operator* function.
+
+**Container Reverse Operator Example**
+
+not relevant as :code:`ivy.roll` is not an *operator* function.
 
 ivy.add
 -------
