@@ -52,7 +52,10 @@ class ContainerWithGeneral(ContainerBase):
         )
 
 
-    def all_equal(  *xs: Iterable[Any], equality_matrix: bool = False
+    def all_equal(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        equality_matrix: bool = False
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method is
@@ -63,7 +66,8 @@ class ContainerWithGeneral(ContainerBase):
 
         With one :code:`ivy.Container` input:
 
-        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                                b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
         >>> y = ivy.all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
@@ -72,7 +76,8 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
 
-        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                                b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, -1, 0, 0])
         >>> y = ivy.all_equal(x1, x2, equality_matrix= True)
         >>> print(y)
