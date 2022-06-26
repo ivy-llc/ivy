@@ -777,7 +777,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable) -> ivy.NativeDtype:
+def function_unsupported_dtypes(fn: Callable) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -796,9 +796,14 @@ def function_unsupported_dtypes(fn: Callable) -> ivy.NativeDtype:
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16', 'uint16', 'uint32', 'uint64')
     """
+    unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
-        return fn.unsupported_dtypes + ivy.invalid_dtypes
-    return ivy.invalid_dtypes
+        fn_unsupported_dtypes = fn.unsupported_dtypes
+        if isinstance(fn_unsupported_dtypes, dict):
+            unsupported_dtypes += fn_unsupported_dtypes[ivy.current_backend_str()]
+        else:
+            unsupported_dtypes += fn_unsupported_dtypes
+    return tuple(set(unsupported_dtypes))
 
 
 def promote_types(
