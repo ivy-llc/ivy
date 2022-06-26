@@ -64,14 +64,14 @@ class ContainerWithGeneral(ContainerBase):
             inputs to compare.
         equality_matrix
             Whether to return a matrix of equalities comparing each
-                                            input with every other.
+            input with every other.
             Default is False.
 
         Returns
         -------
         ret
-            Boolean, whether or not the inputs are equal, or matrix array of booleans if
-            equality_matrix=True is set.
+            Boolean, whether or not the inputs are equal, or matrix array of booleans
+            if equality_matrix=True is set.
 
         Examples
         --------
