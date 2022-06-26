@@ -1424,10 +1424,16 @@ def get_axis(draw, shape, allow_none=False):
 
 
 @st.composite
-def num_positional_args(draw, fn_name=None):
+def num_positional_args(draw, fn_name: str = None):
     num_keyword_only = 0
     total = 0
-    for param in inspect.signature(ivy.__dict__[fn_name]).parameters.values():
+    fn = None
+    for i, fn_name_key in enumerate(fn_name.split(".")):
+        if i == 0:
+            fn = ivy.__dict__[fn_name_key]
+        else:
+            fn = fn.__dict__[fn_name_key]
+    for param in inspect.signature(fn).parameters.values():
         total += 1
         if param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
