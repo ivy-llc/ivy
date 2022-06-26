@@ -120,14 +120,21 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
     shape=helpers.get_shape(allow_none=False),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
+    # with_out = st.booleans(),
+    # num_positional_args=helpers.num_positional_args(fn_name="randint"),
+    # native_array=st.booleans(),
+    # container=st.booleans(),
+    # instance_method=st.booleans(),
 )
-def test_randint(data, shape, dtype, as_variable, device, call):
+def test_randint(data, shape, dtype, as_variable, device, out,
+    call):
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype))
     if (
         call in [helpers.mx_call, helpers.torch_call]
         and as_variable
         or dtype == "uint64"
+        or dtype == "uint32"
         or call == helpers.torch_call
         and dtype[0] == "u"
     ):
@@ -141,13 +148,14 @@ def test_randint(data, shape, dtype, as_variable, device, call):
         k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
     }
     kwargs["shape"] = shape
-    ret = ivy.randint(**kwargs, device=device)
+
+    ret = ivy.randint(**kwargs, device=device, out=out)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, **kwargs, device=device)
+    ret_np = call(ivy.randint, **kwargs, device=device, out=out)
     assert np.min((ret_np < high).astype(np.int64)) == 1
     assert np.min((ret_np >= low).astype(np.int64)) == 1
 

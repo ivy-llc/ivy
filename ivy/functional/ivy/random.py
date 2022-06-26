@@ -290,7 +290,7 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device)
+    return current_backend().randint(low, high, shape, device=device, out=out)
 
 
 @handle_nestable
