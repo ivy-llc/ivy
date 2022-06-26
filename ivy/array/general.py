@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
+from typing import Any, Union, Iterable
 # ToDo: implement all methods here as public instance methods
 
 # local
@@ -18,7 +18,8 @@ class ArrayWithGeneral(abc.ABC):
         xs
             inputs to compare.
         equality_matrix
-            Whether to return a matrix of equalities comparing each input with every other.
+            Whether to return a matrix of equalities comparing each
+                                            input with every other.
             Default is False.
 
         Returns
@@ -73,7 +74,8 @@ class ArrayWithGeneral(abc.ABC):
         True
 
         """
-        equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
+        equality_fn = ivy.array_equal if ivy.is_native_array(xs[0])\
+            else lambda a, b: a == b
         if equality_matrix:
             num_arrays = len(xs)
             mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
