@@ -944,17 +944,22 @@ def test_frontend_function(
     # create ivy array args
     args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
+    # frontend function
+    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name]
+
     # run from the Ivy API directly
-    ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](*args, **kwargs)
+    ret = frontend_fn(*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        kwargs['out'] = out
-        ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](
-            *args, **kwargs)
+        if "out" in kwargs:
+            kwargs["out"] = out
+        else:
+            args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
+        ret = frontend_fn(*args, **kwargs)
 
         if fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
