@@ -451,7 +451,7 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
-    With :code:`ivy.Container` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
@@ -461,6 +461,8 @@ def roll(
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([5., 3., 4.])
     }
+
+    With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))

@@ -335,7 +335,9 @@ def test_is_int_dtype(
 
 
 # Still to Add #
-# ---------------#
+# -------------#
 
 # broadcast_arrays
 # result_type
+# promote_types
+# type_promote_arrays
