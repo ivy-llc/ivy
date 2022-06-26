@@ -1111,6 +1111,8 @@ def dtype_and_values(
     draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
         shape=None,
 ):
+    if not isinstance(n_arrays, int):
+        n_arrays = draw(n_arrays)
     if n_arrays == 1:
         types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
