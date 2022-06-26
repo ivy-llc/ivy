@@ -148,35 +148,31 @@ def test_can_cast(
 
 # dtype_bits
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
 )
 def test_dtype_bits(
-    dtype_and_x,
-    as_variable,
+    dtype,
     num_positional_args,
-    native_array,
-    container,
-    instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
+    ret = helpers.test_array_function(
+        dtype,
+        False,
         False,
         num_positional_args,
-        native_array,
-        container,
-        instance_method,
+        True,
+        False,
+        False,
         fw,
         "dtype_bits",
-        x=x,
+        dtype_in=dtype,
+        test_values = False,
     )
+    if not ivy.exists(ret):
+        return
+    num_bits, num_bits_np = ret
+    assert num_bits == num_bits_np
 
 
 # finfo
