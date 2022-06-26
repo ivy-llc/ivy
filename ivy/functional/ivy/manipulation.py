@@ -84,7 +84,7 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given ``axis``.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -230,7 +230,7 @@ def flip(
         relative to ``x``, are reordered.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -449,17 +449,17 @@ def roll(
         an output array having the same data type as ``x`` and whose elements, relative
         to ``x``, are shifted.
 
-
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.roll.html>`_ # noqa
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
@@ -469,8 +469,7 @@ def roll(
     ivy.array([2., 0., 1.])
 
     >>> x = ivy.array([[0., 1., 2.], \
-                    [3., 4., 5.]])
-
+                       [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
@@ -478,8 +477,7 @@ def roll(
                 [4., 5., 3.]])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
-                   [[3., 9.], [4., 12.], [5., 15.]]])
-
+                       [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -489,18 +487,10 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.roll(x, 1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    With :code:`ivy.Container` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
-
+                          b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -508,26 +498,17 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
 
-    Instance Method Examples
-    ------------------------
+    With multiple :code:`ivy.Container` inputs:
 
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.roll(1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.roll(1)
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> shift = ivy.Container(a=1, b=-1)
+    >>> y = ivy.roll(x, shift)
     >>> print(y)
     {
         a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
+        b: ivy.array([4., 5., 3.])
     }
-
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 

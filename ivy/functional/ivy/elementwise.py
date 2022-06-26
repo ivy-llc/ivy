@@ -206,19 +206,19 @@ def add(
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
-
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
-    With :code:`ivy.Array` input:
+    Examples
+    --------
+
+    With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -243,116 +243,34 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With :code:`ivy.NativeArray` input:
+    With one :code:`ivy.Container` input:
 
-    >>> x = ivy.native_array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 6])
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
-    ivy.array([5, 7, 9])
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 6])
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    With :code:`ivy.Container` input:
+    With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                        b=ivy.array([2, 3, 4]))
+                          b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                        b=ivy.array([5, 6, 7]))
+                          b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
         a: ivy.array([5, 7, 9]),
         b: ivy.array([7, 9, 11])
     }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                        b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x.add(y)
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                         b=ivy.array([5, 6, 7]))
-
-    >>> z = x.add(y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    Operator Examples
-    -----------------
-
-    With :code:`ivy.Array` instances:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x + y
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    With :code:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                            b=ivy.array([5, 6, 7]))
-    >>> z = x + y
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                        b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = x + y
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
-
     """
     return current_backend(x1, x2).add(x1, x2, out=out)
 
@@ -394,7 +312,7 @@ def asin(
         an array containing the inverse sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
         signatures.elementwise_functions.tan.html>`_
@@ -710,7 +628,7 @@ def bitwise_and(
         data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -1015,7 +933,7 @@ def bitwise_xor(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -1283,7 +1201,7 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -2793,7 +2711,7 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -3119,13 +3037,14 @@ def tan(
         floating-point data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -3149,13 +3068,6 @@ def tan(
     >>> print(x)
     ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.tan(x)
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
