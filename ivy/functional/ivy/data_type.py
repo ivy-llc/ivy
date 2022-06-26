@@ -1,6 +1,5 @@
 # global
 import math
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable
@@ -803,6 +802,8 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
             backend_str = ivy.current_backend_str()
             if backend_str in fn_unsupported_dtypes:
                 unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+            if "all" in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes["all"]
         else:
             unsupported_dtypes += fn_unsupported_dtypes
     return tuple(set(unsupported_dtypes))
