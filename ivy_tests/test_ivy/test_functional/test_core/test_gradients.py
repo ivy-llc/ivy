@@ -285,8 +285,8 @@ def test_layerwise_gradient_descent_update(
 
 
 # lars_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
             Container({"a": [3.0], "b": [3.0]}),
@@ -295,9 +295,10 @@ def test_layerwise_gradient_descent_update(
             Container({"a": [2.7], "b": [2.4]}),
         )
     ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
@@ -321,8 +322,8 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 
 
 # adam_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
             Container({"w": [3.0]}),
@@ -331,9 +332,10 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
             Container({"w": [2.96837726]}),
         )
     ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
@@ -368,8 +370,21 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 
 
 # layerwise_adam_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
+# @pytest.mark.parametrize(
+#     "ws_n_grads_n_lr_n_wsnew",
+#     [
+#         (
+#             Container({"a": [3.0], "b": [3.0]}),
+#             Container({"a": [6.0], "b": [6.0]}),
+#             Container({"a": [0.1], "b": [0.2]}),
+#             Container({"a": [2.9683773], "b": [2.9367545]}),
+#         )
+#     ],
+# )
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
             Container({"a": [3.0], "b": [3.0]}),
@@ -378,9 +393,10 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
             Container({"a": [2.9683773], "b": [2.9367545]}),
         )
     ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
@@ -416,8 +432,8 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
 
 
 # lamb_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
             Container({"a": [3.0], "b": [3.0]}),
@@ -426,9 +442,10 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
             Container({"a": [2.7], "b": [2.4]}),
         )
     ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
