@@ -1114,17 +1114,17 @@ def dtype_and_values(
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
     if n_arrays == 1:
-        types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
+        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
     else:
         unwanted_types = set(ivy.invalid_dtypes).union(
             set(ivy.all_dtypes).difference(set(available_dtypes))
         )
         pairs = ivy.promotion_table.keys()
-        types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
-        dtype = list(draw(st.sampled_from(types)))
-    if n_arrays == 3:
-        dtype.append(dtype[0])
+        dtypes = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtype = list(draw(st.sampled_from(dtypes)))
+        if n_arrays > 2:
+            dtype += [dtype[i%2] for i in range(n_arrays - 2)]
     if shape:
         shape = draw(shape)
     else:
