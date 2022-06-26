@@ -1119,7 +1119,7 @@ def dtype_and_values(
     elif shared_dtype:
         dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-        dtype = [dtype for _ in range(n_arrays)]
+        dtype = [dtype[0] for _ in range(n_arrays)]
     else:
         unwanted_types = set(ivy.invalid_dtypes).union(
             set(ivy.all_dtypes).difference(set(available_dtypes))
