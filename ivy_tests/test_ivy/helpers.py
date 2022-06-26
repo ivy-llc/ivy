@@ -670,7 +670,7 @@ def test_array_function(
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function, None):
+        if d in ivy.function_unsupported_dtypes(function):
             return
     # change all data types so that they are supported by this framework
     # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
@@ -894,7 +894,7 @@ def test_frontend_function(
     # check for unsupported dtypes in backend framework
     function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function, None):
+        if d in ivy.function_unsupported_dtypes(function):
             return
 
     # split the arguments into their positional and keyword components
@@ -974,7 +974,7 @@ def test_frontend_function(
     # check for unsupported dtypes in frontend framework
     function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function, None):
+        if d in ivy.function_unsupported_dtypes(function):
             return
 
     # create frontend framework args
