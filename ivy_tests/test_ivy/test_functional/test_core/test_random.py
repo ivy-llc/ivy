@@ -120,11 +120,6 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
     shape=helpers.get_shape(allow_none=False),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
-    # with_out = st.booleans(),
-    # num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    # native_array=st.booleans(),
-    # container=st.booleans(),
-    # instance_method=st.booleans(),
 )
 def test_randint(data, shape, dtype, as_variable, device, out,
     call):
