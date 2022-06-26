@@ -88,6 +88,8 @@ def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
 
 
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
+    if isinstance(type, torch.Tensor):
+        type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
 
 
