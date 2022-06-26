@@ -75,4 +75,5 @@ General
    general/one_hot.rst
    general/shape.rst
    general/get_num_dims.rst
+   general/arg_info.rst
 
