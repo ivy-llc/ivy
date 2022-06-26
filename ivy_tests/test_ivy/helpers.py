@@ -389,16 +389,8 @@ def as_cont(x):
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
-def as_lists(dtype, as_variable, native_array, container):
-    if not isinstance(dtype, list):
-        dtype = [dtype]
-    if not isinstance(as_variable, list):
-        as_variable = [as_variable]
-    if not isinstance(native_array, list):
-        native_array = [native_array]
-    if not isinstance(container, list):
-        container = [container]
-    return dtype, as_variable, native_array, container
+def as_lists(*args):
+    return (a if isinstance(a, list) else [a] for a in args)
 
 
 def create_args(input_dtypes, num_positional_args, as_variable_flags, all_as_kwargs_np):
@@ -588,8 +580,8 @@ def test_array_function(
     input_dtypes
         data types of the input arguments in order.
     as_variable_flags
-        dictates whether the corresponding input argument should be t
-        reated as an ivy Variable.
+        dictates whether the corresponding input argument should be treated
+        as an ivy Variable.
     with_out
         if true, the function is also tested with the optional out argument.
     num_positional_args
