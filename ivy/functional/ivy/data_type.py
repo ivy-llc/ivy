@@ -219,8 +219,7 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype = dtype)
+    >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
     """
@@ -794,7 +793,7 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
-    ('float16', 'uint16', 'uint32', 'uint64')
+    ('float16','uint16','uint32','uint64')
     """
     unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
