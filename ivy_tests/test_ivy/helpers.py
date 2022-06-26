@@ -1,6 +1,7 @@
 """Collection of helpers for ivy unit tests."""
 
 # global
+import importlib
 from contextlib import redirect_stdout
 from io import StringIO
 import sys
@@ -669,7 +670,7 @@ def test_array_function(
     # check for unsupported dtypes
     function = getattr(ivy, fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function, fw):
+        if d in ivy.function_unsupported_dtypes(function, None):
             return
     # change all data types so that they are supported by this framework
     # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
@@ -819,6 +820,204 @@ def test_array_function(
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+def test_frontend_function(
+    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags: Union[bool, List[bool]],
+    with_out: bool,
+    num_positional_args: int,
+    native_array_flags: Union[bool, List[bool]],
+    fw: str,
+    frontend: str,
+    fn_name: str,
+    rtol: float = 1e-03,
+    atol: float = 1e-06,
+    test_values: bool = True,
+    **all_as_kwargs_np
+):
+    """Tests a frontend function for the current backend by comparing the result with
+    the function in the associated framework.
+
+    Parameters
+    ----------
+    input_dtypes
+        data types of the input arguments in order.
+    as_variable_flags
+        dictates whether the corresponding input argument should be treated
+        as an ivy Variable.
+    with_out
+        if true, the function is also tested with the optional out argument.
+    num_positional_args
+        number of input arguments that must be passed as positional
+        arguments.
+    native_array_flags
+        dictates whether the corresponding input argument should be treated
+        as a native array.
+    fw
+        current backend (framework).
+    frontend
+        current frontend (framework).
+    fn_name
+        name of the function to test.
+    rtol
+        relative tolerance value.
+    atol
+        absolute tolerance value.
+    test_values
+        if true, test for the correctness of the resulting values.
+    all_as_kwargs_np
+        input arguments to the function as keyword arguments.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_np
+        optional, return value from the Numpy function
+    """
+    # convert single values to length 1 lists
+    input_dtypes, as_variable_flags, native_array_flags = as_lists(
+        input_dtypes, as_variable_flags, native_array_flags
+    )
+
+    # update variable flags to be compatible with float dtype and with_out args
+    as_variable_flags = [
+        v if ivy.is_float_dtype(d) and not with_out else False
+        for v, d in zip(as_variable_flags, input_dtypes)
+    ]
+    # tolerance dict for dtypes
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+
+    # check for unsupported dtypes in backend framework
+    function = getattr(ivy, fn_name)
+    for d in input_dtypes:
+        if d in ivy.function_unsupported_dtypes(function, None):
+            return
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
+
+    # change all data types so that they are supported by this framework
+    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
+
+    # create args
+    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    num_arg_vals = len(arg_np_vals)
+    arg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(arg_array_vals, as_variable_flags[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(arg_array_vals, native_array_flags[:num_arg_vals])
+    ]
+    args = ivy.copy_nest(args_np, to_mutable=True)
+    ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
+
+    # create kwargs
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+    kwarg_array_vals = [
+        ivy.array(x, dtype=d)
+        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(kwarg_array_vals, as_variable_flags[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(kwarg_array_vals, native_array_flags[num_arg_vals:])
+    ]
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
+
+    # create ivy array args
+    args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+
+    # run from the Ivy API directly
+    ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](*args, **kwargs)
+
+    # assert idx of return if the idx of the out array provided
+    out = ret
+    if with_out:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](
+            *args, **kwargs, out=out)
+
+        if fw in ["tensorflow", "jax", "numpy"]:
+            # these backends do not always support native inplace updates
+            pass
+        else:
+            assert ret.data is out.data
+    if "bfloat16" in input_dtypes:
+        return  # bfloat16 is not supported by numpy
+
+    # temporarily set frontend framework as backend
+    ivy.set_backend(frontend)
+
+    # check for unsupported dtypes in frontend framework
+    function = getattr(ivy, fn_name)
+    for d in input_dtypes:
+        if d in ivy.function_unsupported_dtypes(function, None):
+            return
+
+    # create frontend framework args
+    args_frontend = ivy.nested_map(
+        args_ivy,
+        lambda x: ivy.native_array(ivy.to_numpy(x._data))
+        if isinstance(x, ivy.Array) else x,
+    )
+    kwargs_frontend = ivy.nested_map(
+        kwargs_ivy,
+        lambda x: ivy.native_array(ivy.to_numpy(x._data))
+        if isinstance(x, ivy.Array) else x,
+    )
+
+    # compute the return via the frontend framework
+    frontend_fw = importlib.import_module(frontend)
+    frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
+
+    # tuplify the frontend return
+    if not isinstance(frontend_ret, tuple):
+        frontend_ret = (frontend_ret,)
+
+    # flatten the frontend return and convert to NumPy arrays
+    frontend_ret_idxs =\
+        ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+    frontend_ret_flat =\
+        ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+
+    # unset frontend framework from backend
+    ivy.unset_backend()
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret, frontend_ret
+
+    # flatten the return
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+
+    # value tests, iterating through each array in the flattened returns
+    for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+        rtol = tolerance_dict.get(str(frontend_ret.dtype), rtol)
+        assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
