@@ -2596,11 +2596,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a `dict` containing the idx, and the `inspect.Parameter` for the argument,</span>
-<span class="sd">        which itself contains the parameter name, type, any other helpful information.</span>
+<span class="sd">        which itself contains the parameter name, type, and other helpful information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span> <span class="ow">or</span>\
             <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">idx</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;exactly one of the keyword arguments name or idx&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;exactly one of the keyword arguments name or idx &quot;</span>
                         <span class="s2">&quot;must be provided&quot;</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
