@@ -5,11 +5,13 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.torch as ivy_torch
 
 
 # tan
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        tuple(set(ivy_np.valid_float_dtypes + ivy_torch.valid_float_dtypes))),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
