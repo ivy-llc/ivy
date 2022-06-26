@@ -1,0 +1,8 @@
+Numpy
+=====
+
+.. automodule:: ivy.functional.frontends.numpy
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
