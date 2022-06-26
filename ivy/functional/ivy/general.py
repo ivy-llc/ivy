@@ -628,16 +628,16 @@ def all_equal(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 0, 1, 0]), b=ivy.array([1, -1, 0, 0]))
+    >>> x2 = ivy.array([1, 0, 1, 1])
     >>> y = ivy.all_equal(x1, x2, equality_matrix= False)
     >>> print(y)
     {
-        a: false,
-        b: true
+        a: true,
+        b: false
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 0, 1, 0]), b=ivy.array([1, -1, 0, 0]))
+    >>> x2 = ivy.array([1, -1, 0, 0])
     >>> y = ivy.all_equal(x1, x2, equality_matrix= True)
     >>> print(y)
     {
@@ -649,21 +649,17 @@ def all_equal(
 
     With a mix of :code:`ivy.NativeArray` and :code:`ivy.Container` inputs:
 
-    >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]),\
-                           b=ivy.native_array([1, -1, 0, 0]))
-    >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 0]),\
-                           b=ivy.native_array([1, -1, 0, 0]))
+    >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), b=ivy.native_array([1, -1, 0, 0]))
+    >>> x2 = ivy.native_array([1, 0, 1, 1])
     >>> y = ivy.all_equal(x1, x2, equality_matrix= False)
     >>> print(y)
     {
-        a: false,
-        b: true
+        a: true,
+        b: false
     }
 
-    >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]),\
-                           b=ivy.native_array([1, -1, 0, 0]))
-    >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 0]),\
-                           b=ivy.native_array([1, -1, 0, 0]))
+    >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), b=ivy.native_array([1, -1, 0, 0]))
+    >>> x2 = ivy.native_array([1, -1, 0, 0])
     >>> y = ivy.all_equal(x1, x2, equality_matrix= True)
     >>> print(y)
     {
