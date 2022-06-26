@@ -10,6 +10,7 @@ import ivy.functional.backends.numpy as ivy_np
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -18,6 +19,7 @@ import ivy.functional.backends.numpy as ivy_np
 )
 def test_numpy_tan(
     dtype_and_x,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -39,6 +41,6 @@ def test_numpy_tan(
         where=True,
         casting='same_kind',
         order='k',
-        dtype=None,
+        dtype=dtype,
         subok=True
     )
