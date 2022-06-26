@@ -32,6 +32,7 @@ def random_uniform(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype=None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -93,7 +94,7 @@ def random_uniform(
     
     """
     return current_backend().random_uniform(
-        low, high, shape, device=device, dtype=dtype
+        low, high, shape, device=device, dtype=dtype, out=out
     )
 
 
@@ -107,6 +108,7 @@ def random_normal(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.array:
     """
     Draws samples from a normal distribution.
@@ -135,7 +137,7 @@ def random_normal(
     >>> print(y)
     ivy.array(0.6444774682897879)
     """
-    return current_backend().random_normal(mean, std, shape, device=device)
+    return current_backend().random_normal(mean, std, shape, device=device, out=out)
 
 
 @to_native_arrays_and_back
@@ -150,6 +152,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
@@ -226,7 +229,7 @@ def multinomial(
 
     """
     return current_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device=device
+        population_size, num_samples, batch_size, probs, replace, device=device, out=out
     )
 
 
@@ -290,7 +293,7 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device)
+    return current_backend().randint(low, high, shape, device=device, out=out)
 
 
 @handle_nestable
@@ -314,7 +317,7 @@ def seed(seed_value: int = 0) -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def shuffle(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
     Parameters
@@ -335,4 +338,4 @@ def shuffle(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return current_backend(x).shuffle(x)
+    return current_backend(x).shuffle(x, out=out)
