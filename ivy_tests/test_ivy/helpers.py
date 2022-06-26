@@ -905,6 +905,9 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -977,6 +980,18 @@ def test_frontend_function(
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
 
+    # create NumPy args
+    args_np = ivy.nested_map(
+        args_ivy,
+        lambda x: ivy.to_numpy(x._data)
+        if isinstance(x, ivy.Array) else x,
+    )
+    kwargs_np = ivy.nested_map(
+        kwargs_ivy,
+        lambda x: ivy.to_numpy(x._data)
+        if isinstance(x, ivy.Array) else x,
+    )
+
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
 
@@ -985,17 +1000,20 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # create frontend framework args
     args_frontend = ivy.nested_map(
-        args_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        args_np,
+        lambda x: ivy.native_array(x)
+        if isinstance(x, np.ndarray) else x,
     )
     kwargs_frontend = ivy.nested_map(
-        kwargs_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        kwargs_np,
+        lambda x: ivy.native_array(x)
+        if isinstance(x, np.ndarray) else x,
     )
 
     # compute the return via the frontend framework
@@ -1087,7 +1105,8 @@ def integers(draw, min_value=None, max_value=None):
 
 @st.composite
 def dtype_and_values(
-    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10
+    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
+        shape=None,
 ):
     if n_arrays == 1:
         types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
@@ -1101,7 +1120,12 @@ def dtype_and_values(
         dtype = list(draw(st.sampled_from(types)))
     if n_arrays == 3:
         dtype.append(dtype[0])
-    shape = draw(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size))
+    if shape:
+        shape = draw(shape)
+    else:
+        shape = draw(
+            st.shared(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
+            key="shape"))
     values = []
     for i in range(n_arrays):
         values.append(
