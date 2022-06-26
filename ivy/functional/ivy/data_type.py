@@ -219,7 +219,8 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> dtype = ivy.float64
+    >>> y = ivy.astype(x, dtype = dtype)
     >>> print(y)
     ivy.array([1., 2.])
     """
@@ -775,63 +776,8 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
-    """Converts a data type from one backend framework representation to another.
-
-    Parameters
-    ----------
-    dtype_in
-        The data-type to convert, in the specified backend representation
-    backend
-        The backend framework the dtype_in is represented in.
-
-    Returns
-    -------
-    ret
-        The data-type in the current ivy backend format
-
-    """
-    valid_backends = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-    if backend not in valid_backends:
-        raise Exception(
-            "Invalid backend passed, must be one of {}".format(valid_backends)
-        )
-    ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
-    return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
-
-
-@inputs_to_native_arrays
 @handle_nestable
-def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
-    """Returns the supported data types of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported dtype attribute
-
-    Returns
-    -------
-    ret
-        The unsupported data types of the function
-
-    Examples
-    --------
-    >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8','int16','int32','int64','uint8','bfloat16','float32','float64','bool')
-
-    """
-    valid = list(ivy.valid_dtypes)
-    for d in list(function_unsupported_dtypes(fn, backend)):
-        if d in valid:
-            valid.remove(d)
-    return ivy.as_native_dtype(tuple(valid))
-
-
-@handle_nestable
-def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+def function_unsupported_dtypes(fn: Callable) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -847,22 +793,62 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_unsupported_dtypes(acosh, 'torch'))
+    >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16', 'uint16', 'uint32', 'uint64')
-
     """
+    unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
-        return fn.unsupported_dtypes + ivy.invalid_dtypes
-    else:
-        return ivy.invalid_dtypes
-    return ivy.as_native_dtype(fn.unsupported_dtypes)
+        fn_unsupported_dtypes = fn.unsupported_dtypes
+        if isinstance(fn_unsupported_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+        else:
+            unsupported_dtypes += fn_unsupported_dtypes
+    return tuple(set(unsupported_dtypes))
 
 
-if __name__ == "__main__":
-    ivy.set_backend("tensorflow")
-    pow = getattr(ivy, "pow")
-    print(function_supported_dtypes(pow, "tensorflow"))
+def promote_types(
+        type1: Union[ivy.Dtype, ivy.NativeDtype],
+        type2: Union[ivy.Dtype, ivy.NativeDtype],
+):
+    """
+    Promotes the datatypes type1 and type2, returning the data type they promote to
 
-    pow = getattr(ivy, "pow")
-    print(function_unsupported_dtypes(pow, "tensorflow"))
+    Parameters
+    ----------
+    type1
+        the first of the two types to promote
+    type2
+        the second of the two types to promote
+
+    Returns
+    -------
+    ret
+        The type that both input types promote to
+    """
+    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+
+
+def type_promote_arrays(
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Type promote the input arrays, returning new arrays with the shared correct
+    data type
+
+    Parameters
+    ----------
+    x1
+        the first of the two arrays to type promote
+    x2
+        the second of the two arrays to type promote
+
+    Returns
+    -------
+    ret1, ret2
+        The input arrays after type promotion
+    """
+    new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
+    return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
