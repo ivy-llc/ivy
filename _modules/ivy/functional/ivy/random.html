@@ -175,18 +175,46 @@
 <span class="sd">        If size is ``None`` (Default), a single value is returned.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        (Default value = None).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Drawn samples from the parameterized uniform distribution.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.0, 2.0)</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(0.26431865)</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(shape=3)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([0.475, 0.878, 0.861])</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.0, 2.0, device=&quot;cpu&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(1.89150229)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.7, 1.0, device=&quot;cpu&quot;, shape=(2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0.89629126, 0.94198485],</span>
+<span class="sd">               [0.91405606, 0.72848724]])</span>
 
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.random_uniform(), \</span>
+<span class="sd">                          b=ivy.random_uniform(shape=2))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">    a: ivy.array(0.7550739),</span>
+<span class="sd">    b: ivy.array([0.624, 0.00109])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
