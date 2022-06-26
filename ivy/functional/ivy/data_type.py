@@ -800,7 +800,9 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     if hasattr(fn, "unsupported_dtypes"):
         fn_unsupported_dtypes = fn.unsupported_dtypes
         if isinstance(fn_unsupported_dtypes, dict):
-            unsupported_dtypes += fn_unsupported_dtypes[ivy.current_backend_str()]
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
         else:
             unsupported_dtypes += fn_unsupported_dtypes
     return tuple(set(unsupported_dtypes))
