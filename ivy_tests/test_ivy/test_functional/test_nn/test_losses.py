@@ -43,7 +43,6 @@ def test_cross_entropy(
             allow_negative=False,
         )
     )
-    shape = (len(true),)
     pred = data.draw(
         helpers.array_values(
             dtype=pred_dtype,
@@ -106,7 +105,6 @@ def test_binary_cross_entropy(
             allow_negative=False,
         )
     )
-    shape = (len(true),)
     pred = data.draw(
         helpers.array_values(
             dtype=pred_dtype,
