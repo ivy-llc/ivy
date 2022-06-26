@@ -43,7 +43,7 @@ def get_referrers_recursive(
     seen_set
          (Default value = None)
     local_set
-         (Default value = None)
+         (Default value = None`)
 
     """
     seen_set = ivy.default(seen_set, set())
@@ -856,26 +856,149 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 @handle_nestable
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
-
+    
     Parameters
     ----------
     x
         Input array.
-
+        
     Returns
     -------
     ret
         A list representation of the input array ``x``.
-
-    Examples
-    --------
+        
+    Functional Examples
+    ------------------
+    
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
-
     >>> print(isinstance(y, list))
     True
+    
+    >>> x = ivy.array([[ 1.1,  2.2,  3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.array([[[-1,  0,  1],\
+                        [ 1,  0, -1]], \
+                       [[ 1, -1,  0], \
+                        [ 1,  0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    >>> print(isinstance(y, list))
+    True
+    
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([-1, 0, 1])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [-1, 0, 1]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.native_array([[-1, 0, 1], \
+                              [-1, 0, 1], \
+                              [ 1, 0, -1]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.native_array([[[-1, 0, 1], \
+                               [1, 0, -1]], \
+                              [[1, -1, 0], \
+                               [1, 0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    >>> print(isinstance(y, list))
+    True
+    
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [-1, 0, 1]
+    }
+    
+    >>> x = ivy.Container(a=ivy.array([[-1, 0, 1], \
+                                       [-1, 0, 1], \
+                                       [1, 0, -1]]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
+    }
+    
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1], \
+                                        [1, 0, -1]], \
+                                       [[1, -1, 0], \
+                                        [1, 0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    }
+    
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [-1, 0, 1]
+    }
+    
+    >>> x = ivy.Container(a=ivy.native_array([[-1 0 1], \
+                                              [-1 0 1], \
+                                              [1 0 -1]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
+    }
+    
+    >>> x = ivy.Container(a=ivy.native_array([[[-1 0 1], \
+                                               [1 0 -1]], \
+                                              [[1 -1 0], \
+                                               [1 0 -1]]]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = x.to_list()
+    >>> print(y)
+    [0, 1, 2]
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+    >>> y = x.to_list()
+    >>> print(y)
+    {
+        a: [0, 1, 2]
+    }
 
     """
     return current_backend(x).to_list(x)
@@ -1141,6 +1264,72 @@ def exists(x: Any) -> bool:
     -------
     ret
         True if x is not None, else False.
+
+    Examples
+    --------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    False
+
+    >>> x = ""
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = []
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = 1
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = "abc"
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = [1, 0, -1, 1]
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([1, 2, 3, 1.2])
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    With a mix of :code:`ivy.Container` and :code:`Any` input:
+
+    >>> x = ivy.Container(a=None, b=None)
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=None, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=123, b="")
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array[1, 2, 3], b=ivy.native_array([1, 0, 1.2]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
 
     """
     return x is not None
@@ -1813,6 +2002,63 @@ def cumprod(
     -------
     ret
         Input array with cumulatively multiplied elements along axis.
+        
+    Functional Examples
+    --------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    ivy.array([2, 6, 24])
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> exclusive = True
+    >>> y = ivy.cumprod(x, exclusive=exclusive)
+    >>> print(y)
+    ivy.array([1, 2, 6])
+    
+    Example specifying axes
+    
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
+    >>> print(y)
+    ivy.array([[1,  2], 
+               [1,  5], 
+               [1, 11]])
+     
+    >>> x = ivy.array([[2, 3], \
+                       [5, 7], \
+                       [11, 13]])
+    >>> exclusive = True
+    >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
+    >>> print(x)
+    ivy.array([[1,  2], 
+               [2,  3], 
+               [10, 21]])
+     
+     
+     With :code:`ivy.NativeArray` input:
+     
+     >>> x = ivy.native_array([2, 3, 4])
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     ivy.array([2, 6, 24])
+     
+     
+     With :code:`ivy.Container` input:
+     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+     >>> y = ivy.cumprod(x)
+     >>> print(y)
+     {
+         a: ivy.array([2, 6, 24]),
+         b: ivy.array([3, 12, 60])
+     }
 
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
@@ -2206,3 +2452,33 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
 
     """
     return current_backend(x).get_num_dims(x, as_array)
+
+
+def arg_info(fn: Callable, *, name: str = None, idx: int = None):
+    """
+    Return the index and `inspect.Parameter` representation of the specified argument.
+    In the form of a dict with keys "idx" and "param".
+
+    Parameters
+    ----------
+    fn
+        The function to retrieve the argument information for
+    name
+        The name of the argument
+    idx
+        the index of the argument in the inputs
+
+    Returns
+    -------
+    ret
+        a `dict` containing the idx, and the `inspect.Parameter` for the argument,
+        which itself contains the parameter name, type, and other helpful information.
+    """
+    if (not ivy.exists(name) and not ivy.exists(idx)) or\
+            (ivy.exists(name) and ivy.exists(idx)):
+        raise Exception("exactly one of the keyword arguments name or idx "
+                        "must be provided")
+    params = inspect.signature(fn).parameters
+    if ivy.exists(name):
+        return {"idx": list(params).index(name), "param": params[name]}
+    return {"idx": idx, "param": list(params.values())[idx]}
