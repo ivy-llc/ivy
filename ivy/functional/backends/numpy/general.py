@@ -106,19 +106,19 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: np.ndarray, axis: int = 0) -> np.ndarray:
-    return np.cumsum(x, axis)
+def cumsum(x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.cumsum(x, axis, out=out)
 
 
 def cumprod(
-    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False
+    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
+        res = np.cumprod(x, -1, out=out)
         return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+    return np.cumprod(x, axis, out=out)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
@@ -245,11 +245,11 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x):
+def indices_where(x, out: Optional[np.ndarray] = None):
     where_x = np.where(x)
     if len(where_x) == 1:
         return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
     return res
 
 

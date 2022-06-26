@@ -33,16 +33,16 @@ def gelu(x, approximate: bool = True):
     return torch.nn.functional.gelu(x)
 
 
-def tanh(x: torch.Tensor) -> torch.Tensor:
-    return torch.tanh(x)
+def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.tanh(x, out=out)
 
 
-def sigmoid(x: torch.Tensor) -> torch.Tensor:
-    return torch.sigmoid(x)
+def sigmoid(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.sigmoid(x, out=out)
 
 
-def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
-    exp_x = torch.exp(x)
+def softmax(x: torch.Tensor, axis: Optional[int] = None, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    exp_x = torch.exp(x, out=out)
     return exp_x / torch.sum(exp_x, axis, keepdims=True)
 
 
