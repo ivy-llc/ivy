@@ -78,7 +78,6 @@ def sum(
     axis: Union[int, Tuple[int]] = None,
     dtype: np.dtype = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
@@ -98,7 +97,7 @@ def sum(
         else:
             dtype = np.uint64
     dtype = ivy.as_native_dtype(dtype)
-    return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
+    return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims))
 
 
 def var(
