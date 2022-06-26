@@ -120,6 +120,8 @@ def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
 
 
 def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype
     return np.iinfo(ivy.as_native_dtype(type))
 
 
