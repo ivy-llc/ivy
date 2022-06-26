@@ -197,8 +197,9 @@ class Container(
         )
 
     def __truediv__(self, other):
-        return self.reduce([self, other], lambda xs: operator.floordiv(xs[0], xs[1]))
-
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
+        )
     def __rtruediv__(self, other):
         return ivy.Container.multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
