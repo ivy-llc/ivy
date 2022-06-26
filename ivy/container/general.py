@@ -51,12 +51,9 @@ class ContainerWithGeneral(ContainerBase):
             out,
         )
 
-
     def all_equal(
-        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        equality_matrix: bool = False
-    ) -> ivy.Container:
+            *xs: Iterable[Any], equality_matrix: bool = False
+    ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
         """
         ivy.Container static method variant of ivy.all_equal. This method is
         determines whether the inputs are all equal.
@@ -137,10 +134,12 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
+        equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) \
+            else lambda a, b: a == b
         if equality_matrix:
             num_arrays = len(xs)
-            mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
+            mat = [[None for _ in range(num_arrays)] \
+                   for _ in range(num_arrays)]
             for i, xa in enumerate(xs):
                 for j_, xb in enumerate(xs[i:]):
                     j = j_ + i
