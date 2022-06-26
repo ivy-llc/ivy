@@ -986,7 +986,7 @@ def test_frontend_function(
     )
 
     # compute the return via the frontend framework
-    frontend_fw = importlib.import_module(frontend)
+    frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
     frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
     # tuplify the frontend return
