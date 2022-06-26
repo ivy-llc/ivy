@@ -58,6 +58,61 @@ def min(
         containing the minimum values. The returned array must have the same data type
         as x.
 
+    Examples
+    --------
+    >>> arr_x = ivy.array([0, 1, 2])
+    >>> arr_z = ivy.array()
+    >>> arr_y = ivy.min(arr_x, out=arr_z)
+    >>> print(arr_z)
+    ivy.array(2)
+
+    >>> arr_x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> arr_y = ivy.min(arr_x, 0, False)
+    >>> print(arr_y)
+    ivy.array([0, 1, 2])
+
+    >>> arr_x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> arr_y = ivy.min(arr_x, 0, True)
+    >>> print(arr_y)
+    ivy.array([[0, 1, 2]])
+
+    >>> arr_x = ivy.array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
+    >>> arr_y = ivy.min(arr_x, 0)
+    >>> print(arr_y)
+    ivy.array([1, 4])
+
+    >>> arr_x = ivy.array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
+    >>> arr_y = ivy.min(arr_x, 0, True)
+    >>> print(arr_y)
+    ivy.array([[[1], [4]]])
+
+    >>> import numpy as np
+    >>> arr_x = ivy.native_array(np.array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]]))
+    >>> arr_y = ivy.min(arr_x, (0, 2), out=arr_x)
+    >>> print(arr_x)
+    ivy.array([1, 4])
+
+    >>> container_x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> container_y = ivy.min(container_x)
+    >>> print(container_y)
+    {
+        a: ivy.array(0.),
+        b: ivy.array(3.)
+    }
+
+    >>> arr_x = ivy.array([1, 2, 3])
+    >>> arr_z = arr_x.min()
+    >>> print(arr_z)
+    ivy.array(1)
+
+    >>> arr_x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([2, 3, 4]))
+    >>> z = x.min()
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
     """
     return _cur_backend.min(x, axis, keepdims, out=out)
 
@@ -136,7 +191,7 @@ def max(
     >>> x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
     >>> y = ivy.max(x, (0, 2), out=x)
     >>> print(x)
-    >>> ivy.array([6, 7])
+    ivy.array([6, 7])
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.max(x)
