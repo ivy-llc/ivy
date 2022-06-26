@@ -10,10 +10,13 @@ import ivy.functional.backends.numpy as ivy_np
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+<<<<<<< Updated upstream
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=st.sampled_from(
         (helpers.dtype_and_values(
             ("bool",), shape=st.shared(helpers.get_shape(), key="shape")), True)),
+=======
+>>>>>>> Stashed changes
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -22,8 +25,11 @@ import ivy.functional.backends.numpy as ivy_np
 )
 def test_numpy_tan(
     dtype_and_x,
+<<<<<<< Updated upstream
     dtype,
     where,
+=======
+>>>>>>> Stashed changes
     as_variable,
     with_out,
     num_positional_args,
@@ -42,9 +48,16 @@ def test_numpy_tan(
         "tan",
         x=np.asarray(x, dtype=input_dtype),
         out=None,
+<<<<<<< Updated upstream
         where=where,
         casting='same_kind',
         order='k',
         dtype=dtype,
+=======
+        where=True,
+        casting='same_kind',
+        order='k',
+        dtype=None,
+>>>>>>> Stashed changes
         subok=True
     )
