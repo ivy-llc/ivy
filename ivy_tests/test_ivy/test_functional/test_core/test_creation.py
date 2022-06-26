@@ -186,12 +186,14 @@ def test_from_dlpack(
 
 # full()
 # full_like()
-# meshgrid()
+
+# meshgrid
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_int_dtypes, st.shared(st.integers(1, 3), key="num_arrays"),
+        shared_dtype=True),
     as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(min_value=1),
+    num_positional_args=st.shared(st.integers(1, 3), key="num_arrays"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -199,25 +201,27 @@ def test_from_dlpack(
 def test_meshgrid(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
+    dtype, x = helpers.as_lists(*dtype_and_x)
+    kw = {}
+    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
     helpers.test_array_function(
         dtype,
         as_variable,
-        with_out,
+        False,
         num_positional_args,
         native_array,
         container,
         instance_method,
         fw,
         "meshgrid",
-        x=np.asarray(x, dtype=dtype),
+        **kw
     )
 
 
