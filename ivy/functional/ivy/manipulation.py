@@ -679,10 +679,10 @@ def clip(
                           b=ivy.array([3., 4., 5.]))
     >>> y = ivy.clip(x, 1., 5.)
     >>> print(y)
-{
-    a: ivy.array([1., 1., 2.]),
-    b: ivy.array([3., 4., 5.])
-}
+    {
+        a: ivy.array([1., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
 
     With :code:`ivy.Container` input:
 
@@ -692,28 +692,30 @@ def clip(
     >>> x_max = ivy.Container(a=1, b=-1)
     >>> y = ivy.clip(x, x_min,x_max)
     >>> print(y)
-{
-    a: ivy.array([1., 1., 1.]),
-    b: ivy.array([-1., -1., -1.])
-}
+    {
+        a: ivy.array([1., 1., 1.]),
+        b: ivy.array([-1., -1., -1.])
+    }
 
     Instance Method Examples
     ------------------------
 
     Using :code:`ivy.Array` instance method:
+
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
     >>> y = x.clip(1., 5.)
     >>> print(y)
     ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
 
-     Using: code:`ivy.Container` instance method:
+    Using: code:`ivy.Container` instance method:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.clip(1,2)
     >>> print(y)
-{
-    a: ivy.array([1., 1., 2.]),
-    b: ivy.array([2., 2., 2.])
-}
+    {
+        a: ivy.array([1., 1., 2.]),
+        b: ivy.array([2., 2., 2.])
+    }
     """
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
@@ -839,6 +841,30 @@ def repeat(
         a: ivy.array([0., 0., 1., 1., 2., 2.]),
         b: ivy.array([3., 3., 4., 4., 5., 5.])
     }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.array([3., 4., 1])
+    >>> x_max = ivy.array([5., 4., 3.])
+    >>> y = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> z = ivy.clip(y, x_min, x_max)
+    >>> print(z)
+    {
+        a: ivy.array([3., 4., 2.]),
+        b: ivy.array([3., 4., 3.])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> y = ivy.native_array([4, 5, 6])
+    >>> x_min = ivy.array([3., 4., 1])
+    >>> x_max = ivy.array([5., 4., 3.])
+    >>> z = ivy.clip(y, x_min, x_max)
+    >>> print(z)
+    ivy.array([4., 4., 3.])
 
     Instance Method Examples
     ------------------------
