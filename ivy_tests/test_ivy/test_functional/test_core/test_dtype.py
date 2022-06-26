@@ -339,3 +339,4 @@ def test_is_int_dtype(
 
 # broadcast_arrays
 # result_type
+# promote_types
