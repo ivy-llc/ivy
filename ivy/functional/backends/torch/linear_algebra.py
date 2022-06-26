@@ -36,8 +36,7 @@ def cross(
     promote_type = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(promote_type)
     x2 = x2.type(promote_type)
-    print(torch.__version__)
-    return torch.cross(input=x1, other=x2, dim=axis, out=out)
+    return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
 
 def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
