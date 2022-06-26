@@ -152,15 +152,18 @@ class ContainerWithManipulation(ContainerBase):
         Examples
         --------
 
+        With one :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
-
         >>> y = ivy.Container.static_roll(x, 1)
         >>> print(y)
         {
             a: ivy.array([2., 0., 1.]),
             b: ivy.array([5., 3., 4.])
         }
+
+        With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
