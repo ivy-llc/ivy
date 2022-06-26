@@ -13,5 +13,6 @@ Pointwise ops
    :maxdepth: -1
    :caption: Pointwise ops
 
+   pointwise_ops/add.rst
    pointwise_ops/tan.rst
 
