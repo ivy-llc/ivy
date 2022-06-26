@@ -56,6 +56,19 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.roll(1)
+        >>> print(y)
+        ivy.array([2., 0., 1.])
+        """
         return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 
     def squeeze(
