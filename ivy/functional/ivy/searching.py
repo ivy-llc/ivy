@@ -327,6 +327,7 @@ def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -421,7 +422,7 @@ def where(
     }
 
     """
-    return current_backend(x1).where(condition, x1, x2)
+    return current_backend(x1).where(condition, x1, x2, out=out)
 
 
 # Extra #

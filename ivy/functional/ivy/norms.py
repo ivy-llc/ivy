@@ -141,8 +141,8 @@ def layer_norm(
     instances in place of any of the arguments.
 
     """
-    mean = ivy.mean(x, normalized_idxs, keepdims=True)
-    var = ivy.var(x, normalized_idxs, keepdims=True)
+    mean = ivy.mean(x, normalized_idxs, keepdims=True, out=out)
+    var = ivy.var(x, normalized_idxs, keepdims=True, out=out)
     x = (-mean + x) / ivy.stable_pow(var, 0.5, epsilon)
     if new_std is not None:
         x = x * new_std

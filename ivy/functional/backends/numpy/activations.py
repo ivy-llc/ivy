@@ -30,18 +30,18 @@ def gelu(x, approximate: Optional[bool] = True):
     return 0.5 * x * (1 + erf(x / np.sqrt(2)))
 
 
-def sigmoid(x: np.ndarray) -> np.ndarray:
-    return 1 / (1 + np.exp(-x))
+def sigmoid(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return 1 / (1 + np.exp(-x, out=out))
 
 
-def tanh(x: np.ndarray) -> np.ndarray:
-    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+def tanh(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return (np.exp(x, out=out) - np.exp(-x, out=out)) / (np.exp(x, out=out) + np.exp(-x, out=out))
 
 
-def softmax(x: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
-    exp_x = np.exp(x)
-    return exp_x / np.sum(exp_x, axis, keepdims=True)
+def softmax(x: np.ndarray, axis: Optional[int] = None, out: Optional[np.ndarray] = None) -> np.ndarray:
+    exp_x = np.exp(x, out=out)
+    return exp_x / np.sum(exp_x, axis, keepdims=True, out=out)
 
 
-def softplus(x: np.ndarray) -> np.ndarray:
-    return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
+def softplus(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.log1p(np.exp(-np.abs(x, out=out), out=out), out=out) + np.maximum(x, 0, out=out)
