@@ -13,5 +13,6 @@ Mathematical functions
    :maxdepth: -1
    :caption: Mathematical functions
 
+   mathematical_functions/add.rst
    mathematical_functions/tan.rst
 
