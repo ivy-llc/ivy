@@ -177,34 +177,45 @@ class Container(
         )
 
     def __sub__(self, other):
-        return self.static_subtract(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rsub__(self, other):
-        return self.static_subtract(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __mul__(self, other):
-        return self.static_multiply(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rmul__(self, other):
-        return self.static_multiply(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __truediv__(self, other):
-        return self.static_divide(self, other)
+        return self.reduce([self, other], lambda xs: operator.floordiv(xs[0], xs[1]))
 
     def __rtruediv__(self, other):
-        return self.static_divide(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other],
-                               lambda xs: operator.floordiv(xs[0], xs[1]))
+            return self.reduce(
+                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            )
         return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):
         return self.map(lambda x, kc: other // x)
 
     def __abs__(self):
-        return self.map(lambda x, kc: self._ivy.abs(x))
+        return self.map(lambda x, kc: operator.abs(x))
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
