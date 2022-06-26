@@ -43,7 +43,7 @@ def get_referrers_recursive(
     seen_set
          (Default value = None)
     local_set
-         (Default value = None)
+         (Default value = None`)
 
     """
     seen_set = ivy.default(seen_set, set())
@@ -856,26 +856,149 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 @handle_nestable
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
-
+    
     Parameters
     ----------
     x
         Input array.
-
+        
     Returns
     -------
     ret
         A list representation of the input array ``x``.
-
-    Examples
-    --------
+        
+    Functional Examples
+    ------------------
+    
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
-
     >>> print(isinstance(y, list))
     True
+    
+    >>> x = ivy.array([[ 1.1,  2.2,  3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.array([[[-1,  0,  1],\
+                        [ 1,  0, -1]], \
+                       [[ 1, -1,  0], \
+                        [ 1,  0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    >>> print(isinstance(y, list))
+    True
+    
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([-1, 0, 1])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [-1, 0, 1]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.native_array([[-1, 0, 1], \
+                              [-1, 0, 1], \
+                              [ 1, 0, -1]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
+    >>> print(isinstance(y, list))
+    True
+    
+    >>> x = ivy.native_array([[[-1, 0, 1], \
+                               [1, 0, -1]], \
+                              [[1, -1, 0], \
+                               [1, 0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    >>> print(isinstance(y, list))
+    True
+    
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [-1, 0, 1]
+    }
+    
+    >>> x = ivy.Container(a=ivy.array([[-1, 0, 1], \
+                                       [-1, 0, 1], \
+                                       [1, 0, -1]]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
+    }
+    
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1], \
+                                        [1, 0, -1]], \
+                                       [[1, -1, 0], \
+                                        [1, 0, -1]]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    }
+    
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [-1, 0, 1]
+    }
+    
+    >>> x = ivy.Container(a=ivy.native_array([[-1 0 1], \
+                                              [-1 0 1], \
+                                              [1 0 -1]])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
+    }
+    
+    >>> x = ivy.Container(a=ivy.native_array([[[-1 0 1], \
+                                               [1 0 -1]], \
+                                              [[1 -1 0], \
+                                               [1 0 -1]]]))
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    {
+        a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = x.to_list()
+    >>> print(y)
+    [0, 1, 2]
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+    >>> y = x.to_list()
+    >>> print(y)
+    {
+        a: [0, 1, 2]
+    }
 
     """
     return current_backend(x).to_list(x)
