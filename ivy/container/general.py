@@ -50,4 +50,3 @@ class ContainerWithGeneral(ContainerBase):
             ),
             out,
         )
-
