@@ -901,7 +901,7 @@
 
 
 <div class="viewcode-block" id="function_unsupported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_unsupported_dtypes.html#ivy.functional.ivy.data_type.function_unsupported_dtypes">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unsupported data types of the current backend&#39;s function.</span>
 
 <span class="sd">    Parameters</span>
@@ -920,9 +920,14 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.function_unsupported_dtypes(ivy.acosh))</span>
 <span class="sd">    (&#39;float16&#39;, &#39;uint16&#39;, &#39;uint32&#39;, &#39;uint64&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span></div>
+        <span class="n">fn_unsupported_dtypes</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_dtypes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_unsupported_dtypes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">unsupported_dtypes</span> <span class="o">+=</span> <span class="n">fn_unsupported_dtypes</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unsupported_dtypes</span> <span class="o">+=</span> <span class="n">fn_unsupported_dtypes</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">unsupported_dtypes</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="promote_types"><a class="viewcode-back" href="../../../../functional/ivy/data_type/promote_types.html#ivy.functional.ivy.data_type.promote_types">[docs]</a><span class="k">def</span> <span class="nf">promote_types</span><span class="p">(</span>
