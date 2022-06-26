@@ -1109,13 +1109,17 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
-        shape=None,
+        shape=None, shared_dtype=False,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
     if n_arrays == 1:
         dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
         dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+    elif shared_dtype:
+        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        dtype = [dtype for _ in range(n_arrays)]
     else:
         unwanted_types = set(ivy.invalid_dtypes).union(
             set(ivy.all_dtypes).difference(set(available_dtypes))
