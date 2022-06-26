@@ -684,8 +684,9 @@ def test_array_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-    # change all data types so that they are supported by this framework
-    # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
