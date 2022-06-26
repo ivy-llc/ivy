@@ -169,6 +169,23 @@ def dtype(
     ret
         Data type of the array
 
+    Examples
+    --------
+
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1, as_native=False)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1, as_native=False)
+    >>> print(y)
+    float32
+
+    With :code:`ivy.NativeArray` input:
+
     """
     return current_backend(x).dtype(x, as_native)
 
