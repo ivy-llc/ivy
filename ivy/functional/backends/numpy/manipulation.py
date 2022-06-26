@@ -39,7 +39,7 @@ def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
 def flip(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
@@ -160,7 +160,10 @@ def swapaxes(
 
 
 def clip(
-    x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.asarray(np.clip(x, x_min, x_max))
+    ret = np.asarray(np.clip(x, x_min, x_max, out=out))
     return ret
