@@ -165,8 +165,6 @@ def test_dtype_bits(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -200,8 +198,6 @@ def test_finfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -235,8 +231,6 @@ def test_iinfo(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
