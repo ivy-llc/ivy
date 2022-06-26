@@ -1,11 +1,15 @@
 # global
 import abc
-
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 # ToDo: implement all methods here as public instance methods
+
+# local
+import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
-    def all_equal( *xs: Iterable[Any], equality_matrix: bool = False
+    def all_equal(
+            *xs: Iterable[Any], equality_matrix: bool = False
     ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
         """Determines whether the inputs are all equal.
 
