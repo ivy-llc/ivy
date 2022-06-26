@@ -342,7 +342,11 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdws
     vw = dcdws.map(lambda x, _: x**2)
-    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ret = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ws_new = {"ws_new": list(ret.values())[0][0]}
+    mw_new = {"mw_new": list(ret.values())[0][1]}
+    vw_new = {"vw_new": list(ret.values())[0][2]}
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
@@ -386,7 +390,11 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdws
     vw = dcdws.map(lambda x, _: x**2)
-    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ret = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ws_new = {"ws_new": list(ret.values())[0][0]}
+    mw_new = {"mw_new": list(ret.values())[0][1]}
+    vw_new = {"vw_new": list(ret.values())[0][2]}
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
@@ -430,7 +438,11 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdws
     vw = dcdws.map(lambda x, _: x**2)
-    ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ret = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    ws_new = {"ws_new": list(ret.values())[0][0]}
+    mw_new = {"mw_new": list(ret.values())[0][1]}
+    vw_new = {"vw_new": list(ret.values())[0][2]}
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
