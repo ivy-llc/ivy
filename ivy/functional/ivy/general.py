@@ -2452,3 +2452,33 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
 
     """
     return current_backend(x).get_num_dims(x, as_array)
+
+
+def arg_info(fn: Callable, *, name: str = None, idx: int = None):
+    """
+    Return the index and `inspect.Parameter` representation of the specified argument.
+    In the form of a dict with keys "idx" and "param".
+
+    Parameters
+    ----------
+    fn
+        The function to retrieve the argument information for
+    name
+        The name of the argument
+    idx
+        the index of the argument in the inputs
+
+    Returns
+    -------
+    ret
+        a `dict` containing the idx, and the `inspect.Parameter` for the argument,
+        which itself contains the parameter name, type, any other helpful information.
+    """
+    if (not ivy.exists(name) and not ivy.exists(idx)) or\
+            (ivy.exists(name) and ivy.exists(idx)):
+        raise Exception("exactly one of the keyword arguments name or idx"
+                        "must be provided")
+    params = inspect.signature(fn).parameters
+    if ivy.exists(name):
+        return {"idx": list(params).index(name), "param": params[name]}
+    return {"idx": idx, "param": list(params.values())[idx]}
