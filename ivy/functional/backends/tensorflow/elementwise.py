@@ -1,5 +1,6 @@
 # global
 import tensorflow as tf
+from tensorflow.python.types.core import Tensor
 from typing import Union
 
 # local
@@ -7,13 +8,15 @@ import ivy
 
 
 def _cast_for_binary_op(x1, x2):
-    if isinstance(x1, tf.Tensor):
-        if isinstance(x2, tf.Tensor):
+    if isinstance(x1, Tensor):
+        if isinstance(x2, Tensor):
             promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
             x1 = tf.cast(x1, promoted_type)
             x2 = tf.cast(x2, promoted_type)
         else:
             x2 = tf.constant(x2, dtype=x1.dtype)
+    elif isinstance(x2, Tensor):
+        x1 = tf.constant(x1, dtype=x2.dtype)
     return x1, x2
 
 
