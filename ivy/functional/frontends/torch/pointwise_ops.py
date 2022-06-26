@@ -15,3 +15,6 @@ tan.unsupported_dtypes = ('float16',)
 
 def tanh(input: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return ivy.tanh(input, out=out)
+
+
+tanh.unsupported_dtypes = ('float16',)
