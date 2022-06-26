@@ -2472,11 +2472,11 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
     -------
     ret
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
-        which itself contains the parameter name, type, any other helpful information.
+        which itself contains the parameter name, type, and other helpful information.
     """
     if (not ivy.exists(name) and not ivy.exists(idx)) or\
             (ivy.exists(name) and ivy.exists(idx)):
-        raise Exception("exactly one of the keyword arguments name or idx"
+        raise Exception("exactly one of the keyword arguments name or idx "
                         "must be provided")
     params = inspect.signature(fn).parameters
     if ivy.exists(name):
