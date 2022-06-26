@@ -858,10 +858,23 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     return ivy.as_native_dtype(fn.unsupported_dtypes)
 
 
-if __name__ == "__main__":
-    ivy.set_backend("tensorflow")
-    pow = getattr(ivy, "pow")
-    print(function_supported_dtypes(pow, "tensorflow"))
+def promote_types(
+        type1: Union[ivy.Dtype, ivy.NativeDtype],
+        type2: Union[ivy.Dtype, ivy.NativeDtype],
+):
+    """
+    Promotes the datatypes type1 and type2, returning the data type they promote to
 
-    pow = getattr(ivy, "pow")
-    print(function_unsupported_dtypes(pow, "tensorflow"))
+    Parameters
+    ----------
+    type1
+        the first of the two types to promote
+    type2
+        the second of the two types to promote
+
+    Returns
+    -------
+    ret
+        The type that both input types promote to
+    """
+    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
