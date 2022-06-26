@@ -783,11 +783,10 @@ def test_array_function(
         if max(container_flags):
             assert ret is out
 
-        if max(container_flags) or fw in ["tensorflow", "jax", "numpy"]:
+        if not max(container_flags) and fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
-            pass
-        else:
             assert ret.data is out.data
+
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
     # compute the return with a NumPy backend
@@ -953,14 +952,14 @@ def test_frontend_function(
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
+        kwargs['out'] = out
         ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](
-            *args, **kwargs, out=out)
+            *args, **kwargs)
 
-        if fw in ["tensorflow", "jax", "numpy"]:
+        if fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
-            pass
-        else:
             assert ret.data is out.data
+
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
 
