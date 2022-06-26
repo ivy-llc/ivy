@@ -25,7 +25,7 @@ class TrainableModule(ivy.Module):
         self._hidden_size = hidden_size
         ivy.Module.__init__(self, device, build_mode=build_mode, store_vars=store_vars)
 
-    def _build(self):
+    def _build(self, dtype=None):
         self._linear0 = ivy.Linear(self._in_size, self._hidden_size, device=self._dev)
         self._linear1 = ivy.Linear(
             self._hidden_size, self._hidden_size, device=self._dev
@@ -54,7 +54,7 @@ class TrainableModuleWithSplit(ivy.Module):
         self._hidden_size = hidden_size
         ivy.Module.__init__(self, device, build_mode=build_mode, store_vars=store_vars)
 
-    def _build(self):
+    def _build(self, dtype=None):
         self._linear0 = ivy.Linear(self._in_size, self._hidden_size, device=self._dev)
         self._linear1 = ivy.Linear(
             self._hidden_size, self._hidden_size, device=self._dev
@@ -106,7 +106,7 @@ def test_distributed_training(bs_ic_oc, device, call):
             input_channels,
             device=dev0,
         ),
-        "float32",
+        dtype="float32",
     )
 
     # second device
@@ -123,7 +123,7 @@ def test_distributed_training(bs_ic_oc, device, call):
                 input_channels,
                 device=dev1,
             ),
-            "float32",
+            dtype="float32",
         )
 
     # combined inputs
@@ -206,7 +206,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, device, call):
             input_channels,
             device=dev0,
         ),
-        "float32",
+        dtype="float32",
     )
 
     # second device
@@ -223,7 +223,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, device, call):
                 input_channels,
                 device=dev1,
             ),
-            "float32",
+            dtype="float32",
         )
 
     # combined inputs
@@ -315,7 +315,7 @@ def test_to_ivy_module_distributed(
             input_channels,
             device=dev0,
         ),
-        "float32",
+        dtype="float32",
     )
 
     # second device
@@ -332,7 +332,7 @@ def test_to_ivy_module_distributed(
                 input_channels,
                 device=dev1,
             ),
-            "float32",
+            dtype="float32",
         )
 
     # combined inputs

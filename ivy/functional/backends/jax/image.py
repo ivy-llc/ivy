@@ -4,19 +4,19 @@
 import math
 import jax
 import jax.numpy as jnp
-from operator import mul as _mul
-from functools import reduce as _reduce
+from operator import mul
+from functools import reduce
 
 # local
-from ivy.functional.backends import jax as _ivy
+from ivy.functional.backends import jax as ivy
 
 
 def stack_images(images, desired_aspect_ratio=(1, 1)):
     num_images = len(images)
     if num_images == 0:
         raise Exception("At least 1 image must be provided")
-    batch_shape = _ivy.shape(images[0])[:-3]
-    image_dims = _ivy.shape(images[0])[-3:-1]
+    batch_shape = ivy.shape(images[0])[:-3]
+    image_dims = ivy.shape(images[0])[-3:-1]
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
@@ -29,11 +29,11 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     image_rows = list()
     for i in range(stack_width_int):
         images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
-        images_to_concat += [_ivy.zeros_like(images[0])] * (
+        images_to_concat += [ivy.zeros_like(images[0])] * (
             stack_height_int - len(images_to_concat)
         )
-        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
-    return _ivy.concat(image_rows, num_batch_dims + 1)
+        image_rows.append(ivy.concat(images_to_concat, num_batch_dims))
+    return ivy.concat(image_rows, num_batch_dims + 1)
 
 
 def linear_resample(x, num_samples, axis=-1):
@@ -41,11 +41,11 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    x_pre_size = reduce(mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
     x_post_shape = x_shape[axis + 1 :]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    x_post_size = reduce(mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
     xp = jnp.reshape(jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
     x_coords = (
@@ -77,7 +77,7 @@ def bilinear_resample(x, warp):
     max_x = width - 1
     max_y = height - 1
     idx_size = warp.shape[-2]
-    batch_shape_flat = _reduce(_mul, batch_shape, 1)
+    batch_shape_flat = reduce(mul, batch_shape, 1)
     # B
     batch_offsets = jnp.arange(batch_shape_flat) * height * width
     # B x (HxW)
@@ -125,7 +125,7 @@ def bilinear_resample(x, warp):
 
 
 def gradient_image(x):
-    x_shape = _ivy.shape(x)
+    x_shape = ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
     device = x.device_buffer.device()
@@ -139,7 +139,7 @@ def gradient_image(x):
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # jax.device_put(x, dev_from_str(dev))
-    dy = _ivy.concat(
+    dy = ivy.concat(
         (
             dy,
             jax.device_put(
@@ -148,7 +148,7 @@ def gradient_image(x):
         ),
         -3,
     )
-    dx = _ivy.concat(
+    dx = ivy.concat(
         (
             dx,
             jax.device_put(

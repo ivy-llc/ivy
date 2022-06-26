@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.numpy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
@@ -336,7 +335,9 @@ def test_is_int_dtype(
 
 
 # Still to Add #
-# ---------------#
+# -------------#
 
 # broadcast_arrays
 # result_type
+# promote_types
+# type_promote_arrays

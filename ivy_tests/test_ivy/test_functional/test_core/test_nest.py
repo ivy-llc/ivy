@@ -7,7 +7,6 @@ import pytest
 # local
 from hypothesis import given
 import ivy
-import ivy.functional.backends.numpy
 from ivy_tests.test_ivy import helpers
 import ivy.functional.backends.numpy as ivy_np
 

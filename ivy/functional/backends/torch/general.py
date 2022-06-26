@@ -3,14 +3,14 @@
 # global
 import ivy
 import numpy as np
-import torch as torch
+import torch
 from operator import mul
-from functools import reduce as _reduce
+from functools import reduce
 from typing import List, Optional, Union
 from numbers import Number
 
 # local
-from ivy.functional.backends.torch.device import as_native_dev, _callable_dev
+from ivy.functional.backends.torch.device import as_native_dev, dev
 
 torch_scatter = None
 
@@ -144,7 +144,7 @@ def scatter_flat(
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
     if device is None:
-        device = _callable_dev(updates)
+        device = dev(updates)
     dtype = updates.dtype
     if reduction in ["sum", "replace"]:
         initial_val = torch.tensor(0).type(dtype).to(as_native_dev(device))
@@ -259,17 +259,17 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if device is None:
-        device = _callable_dev(updates)
+        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        _reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
+        reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list).to(as_native_dev(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_result_size = _reduce(mul, shape, 1)
+    flat_result_size = reduce(mul, shape, 1)
     if reduction in ["sum", "replace"]:
         initial_val = torch.tensor(0).type(dtype).to(as_native_dev(device))
     elif reduction == "min":
@@ -341,7 +341,7 @@ def gather(
 ) -> torch.Tensor:
 
     if device is None:
-        device = _callable_dev(params)
+        device = dev(params)
     return torch.gather(params, axis, indices.type(torch.int64)).to(
         as_native_dev(device)
     )
@@ -350,12 +350,12 @@ def gather(
 # noinspection PyShadowingNames
 def gather_nd(params, indices, *, device: torch.device):
     if device is None:
-        device = _callable_dev(params)
+        device = dev(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list).to(as_native_dev(device))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -394,7 +394,7 @@ def indices_where(x):
 # noinspection PyUnresolvedReferences,PyShadowingNames
 def one_hot(indices, depth: int, *, device: torch.device):
     if device is None:
-        device = _callable_dev(indices)
+        device = dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
         as_native_dev(device)
     )
