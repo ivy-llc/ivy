@@ -2,7 +2,7 @@
 
 # global
 import mxnet as mx
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 import ivy
@@ -24,6 +24,7 @@ def random_uniform(
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    dtype=None,
 ) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
@@ -32,9 +33,9 @@ def random_uniform(
     ctx = _mxnet_init_context(default_device(device))
     if shape is None or len(shape) == 0:
         return _1_dim_array_to_flat_array(
-            mx.nd.random.uniform(low, high, (1,), ctx=ctx)
+            mx.nd.random.uniform(low, high, (1,), ctx=ctx, dtype=dtype)
         )
-    return mx.nd.random.uniform(low, high, shape, ctx=ctx)
+    return mx.nd.random.uniform(low, high, shape, ctx=ctx, dtype=dtype)
 
 
 def random_normal(
@@ -82,8 +83,10 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Tuple[int, ...]],
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    shape: Union[int, Sequence[int]],
+    *,
+    device: mx.context.Context,
+    out: Optional[mx.nd.NDArray],
 ) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = int(low.asscalar())
@@ -97,7 +100,8 @@ def randint(
     return mx.nd.random.randint(low, high, shape, ctx=ctx)
 
 
-seed = lambda seed_value=0: mx.random.seed(seed_value)
+def seed(seed_value: int = 0) -> None:
+    mx.random.seed(seed_value)
 
 
 def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:

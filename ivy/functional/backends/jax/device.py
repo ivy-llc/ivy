@@ -3,7 +3,7 @@
 # global
 import os
 import jax
-from typing import Union
+from typing import Union, Optional
 import jaxlib.xla_extension
 
 # local
@@ -43,16 +43,23 @@ def dev(
     return as_ivy_dev(dv)
 
 
-_callable_dev = dev
-
-
-def to_dev(x, *, device=None, out=None):
+def to_device(
+    x: JaxArray, device: jaxlib.xla_extension.Device, stream: Optional[int] = None
+):
     if device is not None:
-        cur_dev = as_ivy_dev(_callable_dev(x))
+        cur_dev = as_ivy_dev(dev(x))
         if cur_dev != device:
             x = jax.device_put(x, as_native_dev(device))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
+    return x
+
+
+# this is a non-wrapped function used to place JAX arrays on respective devices,
+# since if we use to_device, it will return ivy.array which is not desirable
+def _to_device(x, device=None):
+    if device is not None:
+        cur_dev = as_ivy_dev(dev(x))
+        if cur_dev != device:
+            x = jax.device_put(x, as_native_dev(device))
     return x
 
 
@@ -79,7 +86,8 @@ def as_native_dev(device):
     return jax.devices(device)[idx]
 
 
-clear_mem_on_dev = lambda device: None
+def clear_mem_on_dev(device):
+    return None
 
 
 def _dev_is_available(base_dev):

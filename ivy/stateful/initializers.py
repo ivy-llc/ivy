@@ -10,9 +10,13 @@ class Constant:
     def __init__(self, constant):
         self._constant = constant
 
-    def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
+    def create_variables(
+        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
+    ):
         """Create internal variables for the layer"""
-        return ivy.variable(ivy.ones(var_shape, device=device) * self._constant)
+        return ivy.variable(
+            ivy.full(var_shape, self._constant, device=device, dtype=dtype),
+        )
 
 
 class Zeros(Constant):
@@ -41,7 +45,9 @@ class Uniform:
         self._power = power
         self._gain = gain
 
-    def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
+    def create_variables(
+        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
+    ):
         """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
@@ -75,7 +81,9 @@ class Uniform:
                 "fan_sum | fan_avg ] "
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, device=device))
+        return ivy.variable(
+            ivy.random_uniform(-wlim, wlim, var_shape, device=device, dtype=dtype),
+        )
 
 
 class GlorotUniform(Uniform):

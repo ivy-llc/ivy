@@ -19,16 +19,11 @@ import ivy.functional.backends.numpy as ivy_np
 )
 def test_array(dtype_and_x, from_numpy, device, call, fw):
     dtype, object_in = dtype_and_x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
     # to numpy
     if from_numpy:
         object_in = np.array(object_in)
     # smoke test
-    ret = ivy.array(object_in, dtype, device)
+    ret = ivy.array(object_in, dtype=dtype, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
@@ -48,16 +43,11 @@ def test_array(dtype_and_x, from_numpy, device, call, fw):
 )
 def test_native_array(dtype_and_x, from_numpy, device, call, fw):
     dtype, object_in = dtype_and_x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
     # to numpy
     if from_numpy:
         object_in = np.array(object_in)
     # smoke test
-    ret = ivy.native_array(object_in, dtype, device)
+    ret = ivy.native_array(object_in, dtype=dtype, device=device)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
@@ -91,8 +81,8 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    start = tensor_fn(start, dtype, device)
-    stop = tensor_fn(stop, dtype, device)
+    start = tensor_fn(start, dtype=dtype, device=device)
+    stop = tensor_fn(stop, dtype=dtype, device=device)
     ret = ivy.linspace(start, stop, num, axis, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -101,13 +91,12 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
     target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
     assert ret.shape == tuple(target_shape)
     # value test
+    ivy.set_backend("numpy")
+    np_ret = ivy.linspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, axis)
+    ivy.unset_backend()
     assert np.allclose(
         call(ivy.linspace, start, stop, num, axis, device=device),
-        np.asarray(
-            ivy.functional.backends.numpy.linspace(
-                ivy.to_numpy(start), ivy.to_numpy(stop), num, axis
-            )
-        ),
+        np_ret,
     )
 
 
@@ -132,8 +121,8 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
     ):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    start = tensor_fn(start, dtype, device)
-    stop = tensor_fn(stop, dtype, device)
+    start = tensor_fn(start, dtype=dtype, device=device)
+    stop = tensor_fn(stop, dtype=dtype, device=device)
     ret = ivy.logspace(start, stop, num, base, axis, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -145,7 +134,7 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
     assert np.allclose(
         call(ivy.logspace, start, stop, num, base, axis, device=device),
         ivy.functional.backends.numpy.logspace(
-            ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis
+            ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis, device=device
         ),
     )
 
@@ -159,12 +148,156 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
 # empty_like()
 # eye()
 # from_dlpack()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_from_dlpack(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "from_dlpack",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # full()
 # full_like()
-# meshgrid()
+
+# meshgrid
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_int_dtypes, st.shared(st.integers(1, 3), key="num_arrays"),
+        shared_dtype=True),
+    as_variable=st.booleans(),
+    num_positional_args=st.shared(st.integers(1, 3), key="num_arrays"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_meshgrid(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = helpers.as_lists(*dtype_and_x)
+    kw = {}
+    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "meshgrid",
+        **kw
+    )
+
+
 # ones()
 # ones_like()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_ones_like(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "ones_like",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # tril()
 # triu()
 # zeros()
 # zeros_like()
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_zeros_like(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "zeros_like",
+        x=np.asarray(x, dtype=dtype),
+    )

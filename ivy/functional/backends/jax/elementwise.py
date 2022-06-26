@@ -1,470 +1,286 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Optional
+from typing import Union, Optional
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def bitwise_left_shift(
-    x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.left_shift(x1, x2)
+def _cast_for_bitwise_op(x1, x2):
+    if not isinstance(x1, int):
+        if isinstance(x2, int):
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
 
 
-def add(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, (int, float)):
+        if isinstance(x2, (int, float)):
+            x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
+
+def abs(x: Union[float, JaxArray]) -> JaxArray:
+    return jnp.absolute(x)
+
+
+def acos(x: JaxArray) -> JaxArray:
+    return jnp.arccos(x)
+
+
+def acosh(x: JaxArray) -> JaxArray:
+    return jnp.arccosh(x)
+
+
+def add(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.add(x1, x2)
 
 
-def bitwise_xor(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.bitwise_xor(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def asin(x: JaxArray) -> JaxArray:
+    return jnp.arcsin(x)
 
 
-def exp(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.exp(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def asinh(x: JaxArray) -> JaxArray:
+    return jnp.arcsinh(x)
 
 
-def expm1(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.expm1(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def atan(x: JaxArray) -> JaxArray:
+    return jnp.arctan(x)
 
 
-def bitwise_invert(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.bitwise_not(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.arctan2(x1, x2)
 
 
-def bitwise_and(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.bitwise_and(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def atanh(x: JaxArray) -> JaxArray:
+    return jnp.arctanh(x)
 
 
-def ceil(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def bitwise_and(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    return jnp.bitwise_and(x1, x2)
+
+
+def bitwise_invert(x: Union[int, JaxArray]) -> JaxArray:
+    return jnp.bitwise_not(x)
+
+
+def bitwise_left_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    return jnp.left_shift(x1, x2)
+
+
+def bitwise_or(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    return jnp.bitwise_or(x1, x2)
+
+
+def bitwise_right_shift(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    return jnp.right_shift(x1, x2)
+
+
+def bitwise_xor(x1: Union[int, JaxArray], x2: Union[int, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    return jnp.bitwise_xor(x1, x2)
+
+
+def ceil(x: JaxArray) -> JaxArray:
     if "int" in str(x.dtype):
-        ret = x
+        return x
     else:
-        ret = jnp.ceil(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return jnp.ceil(x)
 
 
-def floor(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+def cos(x: JaxArray) -> JaxArray:
+    return jnp.cos(x)
+
+
+def cosh(x: JaxArray) -> JaxArray:
+    return jnp.cosh(x)
+
+
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    return jnp.divide(x1, x2)
+
+
+def equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.equal(x1, x2)
+
+
+def exp(x: JaxArray) -> JaxArray:
+    return jnp.exp(x)
+
+
+def expm1(x: JaxArray) -> JaxArray:
+    return jnp.expm1(x)
+
+
+def floor(x: JaxArray) -> JaxArray:
     if "int" in str(x.dtype):
-        ret = x
+        return x
     else:
-        ret = jnp.floor(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return jnp.floor(x)
 
 
-def isfinite(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.isfinite(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def floor_divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.floor_divide(x1, x2)
 
 
-def asin(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arcsin(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    return jnp.greater(x1, x2)
 
 
-def isinf(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.isinf(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def greater_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    return jnp.greater_equal(x1, x2)
 
 
-def equal(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def isfinite(x: JaxArray) -> JaxArray:
+    return jnp.isfinite(x)
 
 
-def greater(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.greater(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def isinf(x: JaxArray) -> JaxArray:
+    return jnp.isinf(x)
 
 
-def greater_equal(
-    x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None
-) -> JaxArray:
-    ret = jnp.greater_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def isnan(x: JaxArray) -> JaxArray:
+    return jnp.isnan(x)
 
 
-def less_equal(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.less_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def less(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    return jnp.less(x1, x2)
 
 
-def asinh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arcsinh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def less_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    return jnp.less_equal(x1, x2)
 
 
-def sign(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.sign(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def log(x: JaxArray) -> JaxArray:
+    return jnp.log(x)
 
 
-def sqrt(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.sqrt(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def log10(x: JaxArray) -> JaxArray:
+    return jnp.log10(x)
 
 
-def cosh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.cosh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def log1p(x: JaxArray) -> JaxArray:
+    return jnp.log1p(x)
 
 
-def log10(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.log10(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def log2(x: JaxArray) -> JaxArray:
+    return jnp.log2(x)
 
 
-def log(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.log(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logaddexp(x1, x2)
 
 
-def log2(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.log2(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def logical_and(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logical_and(x1, x2)
 
 
-def log1p(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.log1p(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def logical_not(x: JaxArray) -> JaxArray:
+    return jnp.logical_not(x)
 
 
-def multiply(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.multiply(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def logical_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logical_or(x1, x2)
 
 
-def isnan(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.isnan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def logical_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logical_xor(x1, x2)
 
 
-def less(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.less(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def multiply(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.multiply(x1, x2)
 
 
-def cos(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.cos(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def negative(x: Union[float, JaxArray]) -> JaxArray:
+    return jnp.negative(x)
 
 
-def logical_xor(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.logical_xor(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def not_equal(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.not_equal(x1, x2)
 
 
-def logical_or(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.logical_or(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def positive(x: Union[float, JaxArray]) -> JaxArray:
+    return jnp.positive(x)
 
 
-def logical_and(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.logical_and(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def pow(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.power(x1, x2)
 
 
-def logical_not(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.logical_not(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def divide(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.divide(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def acos(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arccos(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def acosh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arccosh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def sin(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.sin(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def negative(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.negative(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def not_equal(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.not_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def tanh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.tanh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def floor_divide(
-    x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.floor_divide(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def bitwise_or(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.bitwise_or(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def sinh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.sinh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def positive(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.positive(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def square(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.square(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def pow(
-    x1: jnp.ndarray, x2: jnp.ndarray, out: Optional[JaxArray] = None
-) -> jnp.ndarray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    ret = jnp.power(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def remainder(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.remainder(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def remainder(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.remainder(x1, x2)
 
 
 def round(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
-        ret = x
+        return x
     else:
-        ret = jnp.round(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return jnp.round(x)
 
 
-def trunc(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if "int" in str(x.dtype):
-        ret = x
-    else:
-        ret = jnp.trunc(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def sign(x: JaxArray) -> JaxArray:
+    return jnp.sign(x)
 
 
-def abs(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.absolute(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def sin(x: JaxArray) -> JaxArray:
+    return jnp.sin(x)
 
 
-def subtract(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    ret = jnp.subtract(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def sinh(x: JaxArray) -> JaxArray:
+    return jnp.sinh(x)
 
 
-def logaddexp(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.logaddexp(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def sqrt(x: JaxArray) -> JaxArray:
+    return jnp.sqrt(x)
 
 
-def bitwise_right_shift(
-    x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if isinstance(x2, int):
-        x2 = jnp.asarray(x2, dtype=x1.dtype)
-    ret = jnp.right_shift(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def square(x: JaxArray) -> JaxArray:
+    return jnp.square(x)
+
+
+def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return jnp.subtract(x1, x2)
 
 
 def tan(x: JaxArray) -> JaxArray:
     return jnp.tan(x)
 
 
-def atan(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arctan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def tanh(x: JaxArray) -> JaxArray:
+    return jnp.tanh(x)
 
 
-def atanh(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.arctanh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def atan2(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    ret = jnp.arctan2(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def trunc(x: JaxArray) -> JaxArray:
+    if "int" in str(x.dtype):
+        return x
+    else:
+        return jnp.trunc(x)
 
 
 # Extra #
 # ------#
 
 
-def minimum(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.minimum(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def erf(x: JaxArray) -> JaxArray:
+    return jax.scipy.special.erf(x)
 
 
-def maximum(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.maximum(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def maximum(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.maximum(x1, x2)
 
 
-def erf(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jax.scipy.special.erf(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def minimum(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.minimum(x1, x2)

@@ -28,7 +28,7 @@ class ContainerWithRandom(ContainerBase):
             low,
             high,
             shape,
-            device,
+            device=device,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
