@@ -381,11 +381,11 @@ def multi_head_attention(
     context = ivy.default(context, x)
 
     # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
-    kv = tuple(
-        to_kv_fn(context, v=to_kv_v)
-        if ivy.exists(to_kv_fn)
-        else ivy.split(context, 2, -1)
-    )
+
+    if ivy.exists(to_kv_fn):
+        kv = to_kv_fn(context, v=to_kv_v)
+    else:
+        kv = ivy.split(context, 2, -1)
 
     # BS x K x (HxF),  BS x K x (HxF)
     if isinstance(kv, tuple):
