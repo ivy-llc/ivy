@@ -112,7 +112,8 @@ def test_broadcast_to(
 
 # can_cast
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -121,6 +122,7 @@ def test_broadcast_to(
 )
 def test_can_cast(
     dtype_and_x,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -129,8 +131,6 @@ def test_can_cast(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if max(v == [] for v in x):
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -141,7 +141,8 @@ def test_can_cast(
         instance_method,
         fw,
         "can_cast",
-        x=x,
+        from_=np.array(x, dtype=input_dtype),
+        to=dtype,
     )
 
 
