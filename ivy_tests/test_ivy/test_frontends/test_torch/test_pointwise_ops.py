@@ -38,4 +38,5 @@ def test_torch_tan(
         "torch",
         "tan",
         input=np.asarray(x, dtype=input_dtype),
+        out=None,
     )
