@@ -1041,8 +1041,8 @@ def ceil(
     >>> y = ivy.ceil(x)
     >>> print(y)
     {
-        a: ivy.array([2., 0., -2.]),
-        b: ivy.array([5., -4., 0., 5.])
+        a: ivy.array([3., 1., -1.]),
+        b: ivy.array([6., -3., 0., 6.])
     }
     
     Instance Method Examples
