@@ -492,7 +492,7 @@ def var(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
     """Sums the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
@@ -645,4 +645,4 @@ def einsum(equation: str, *operands: Union[ivy.Array, ivy.NativeArray]) -> ivy.A
     }
 
     """
-    return current_backend(operands[0]).einsum(equation, *operands)
+    return current_backend(operands[0]).einsum(equation, *operands, out=out)
