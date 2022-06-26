@@ -10,7 +10,8 @@ import ivy_tests.test_ivy.helpers as helpers
 # cross_entropy
 @given(
     data=st.data(),
-    input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
+    pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
@@ -20,7 +21,8 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_cross_entropy(
     data,
-    input_dtype,
+    true_dtype,
+    pred_dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -29,14 +31,30 @@ def test_cross_entropy(
     instance_method,
     fw,
 ):
-    if fw == "torch" and "float16" in input_dtype:
+    if fw == "torch" and pred_dtype == "float16":
         return
     shape = data.draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=1))
-    true = data.draw(helpers.array_values(dtype=input_dtype[0], shape=shape))
+    true = data.draw(
+        helpers.array_values(
+            dtype=true_dtype,
+            shape=shape,
+            min_value=0,
+            max_value=1,
+            allow_negative=False,
+        )
+    )
     shape = (len(true),)
-    pred = data.draw(helpers.array_values(dtype=input_dtype[1], shape=shape))
+    pred = data.draw(
+        helpers.array_values(
+            dtype=pred_dtype,
+            shape=shape,
+            min_value=0,
+            max_value=1,
+            allow_negative=False,
+        )
+    )
     helpers.test_array_function(
-        input_dtype,
+        [true_dtype, pred_dtype],
         as_variable,
         False,
         num_positional_args,
@@ -45,8 +63,8 @@ def test_cross_entropy(
         instance_method,
         fw,
         "cross_entropy",
-        true=np.asarray(true, dtype=input_dtype[0]),
-        pred=np.asarray(pred, dtype=input_dtype[1]),
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
     )
 
 
