@@ -889,8 +889,11 @@ def test_frontend_function(
     # tolerance dict for dtypes
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
+    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    *frontend_submods, fn_name = fn_name.split(".")
+
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy, fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function, None):
             return
@@ -965,7 +968,7 @@ def test_frontend_function(
     ivy.set_backend(frontend)
 
     # check for unsupported dtypes in frontend framework
-    function = getattr(ivy, fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function, None):
             return
