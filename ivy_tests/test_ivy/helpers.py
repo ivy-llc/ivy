@@ -896,6 +896,9 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -988,6 +991,9 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # create frontend framework args
     args_frontend = ivy.nested_map(
