@@ -196,7 +196,12 @@ class ContainerBase(dict, abc.ABC):
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
         ret = ivy.Container.multi_map(
-            map_fn, conts, key_chains, to_apply, prune_unapplied
+            map_fn,
+            conts, 
+            key_chains, 
+            to_apply, 
+            prune_unapplied,
+            map_nests=map_sequences
         )
         if ivy.exists(out):
             out.inplace_update(ret)
@@ -593,7 +598,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
-        map_sequences=False,
+        map_nests=False,
         assert_identical=False,
     ):
         """Apply function to all array values from a collection of identically
@@ -621,7 +626,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
-
+        
         Returns
         -------
             Container
@@ -656,12 +661,12 @@ class ContainerBase(dict, abc.ABC):
                         prune_unapplied,
                         this_key_chain,
                         config,
-                        map_sequences,
+                        map_nests,
                         assert_identical,
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_sequences:
+                elif isinstance(value0, (list, tuple)) and map_nests:
                     ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
                     if prune_unapplied and not ret:
                         continue

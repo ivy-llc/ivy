@@ -39,6 +39,7 @@ def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
 def flip(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
