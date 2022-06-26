@@ -658,7 +658,7 @@ def bitwise_and(
     >>> y = ivy.native_array([True, False, True, False])
     >>> ivy.bitwise_and(x, y, out=y)
     >>> print(y)
-    ivy.native_array([ True, False, False, False])
+    tensor([True,False,False,False])
 
     >>> x = ivy.native_array([[True, False]])
     >>> y = ivy.native_array([[True], \
