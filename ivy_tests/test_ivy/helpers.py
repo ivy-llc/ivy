@@ -968,6 +968,18 @@ def test_frontend_function(
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
 
+    # create NumPy args
+    args_np = ivy.nested_map(
+        args_ivy,
+        lambda x: ivy.to_numpy(x._data)
+        if isinstance(x, ivy.Array) else x,
+    )
+    kwargs_np = ivy.nested_map(
+        kwargs_ivy,
+        lambda x: ivy.to_numpy(x._data)
+        if isinstance(x, ivy.Array) else x,
+    )
+
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
 
@@ -979,14 +991,14 @@ def test_frontend_function(
 
     # create frontend framework args
     args_frontend = ivy.nested_map(
-        args_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        args_np,
+        lambda x: ivy.native_array(x)
+        if isinstance(x, np.ndarray) else x,
     )
     kwargs_frontend = ivy.nested_map(
-        kwargs_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        kwargs_np,
+        lambda x: ivy.native_array(x)
+        if isinstance(x, np.ndarray) else x,
     )
 
     # compute the return via the frontend framework
