@@ -1425,6 +1425,7 @@ def get_axis(draw, shape, allow_none=False):
 
 @st.composite
 def num_positional_args(draw, fn_name: str = None):
+    num_positional_only = 0
     num_keyword_only = 0
     total = 0
     fn = None
@@ -1435,6 +1436,9 @@ def num_positional_args(draw, fn_name: str = None):
             fn = fn.__dict__[fn_name_key]
     for param in inspect.signature(fn).parameters.values():
         total += 1
-        if param.kind == param.KEYWORD_ONLY:
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
-    return draw(integers(min_value=0, max_value=(total - num_keyword_only)))
+    return draw(integers(min_value=num_positional_only,
+                         max_value=(total - num_keyword_only)))
