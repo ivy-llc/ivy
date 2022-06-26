@@ -878,3 +878,27 @@ def promote_types(
         The type that both input types promote to
     """
     return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+
+
+def type_promote_arrays(
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Type promote the input arrays, returning new arrays with the shared correct
+    data type
+
+    Parameters
+    ----------
+    x1
+        the first of the two arrays to type promote
+    x2
+        the second of the two arrays to type promote
+
+    Returns
+    -------
+    ret1, ret2
+        The input arrays after type promotion
+    """
+    new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
+    return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
