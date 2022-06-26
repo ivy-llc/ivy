@@ -41,6 +41,7 @@ Data type
    data_type/convert_dtype.rst
    data_type/function_supported_dtypes.rst
    data_type/function_unsupported_dtypes.rst
+   data_type/promote_types.rst
    data_type/DefaultDtype:
     """"""
 
