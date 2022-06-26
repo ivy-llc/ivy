@@ -856,3 +856,50 @@ def function_unsupported_dtypes(fn: Callable) -> ivy.Dtype:
     else:
         return ivy.invalid_dtypes
     return ivy.as_ivy_dtype(fn.unsupported_dtypes)
+
+
+def promote_types(
+        type1: Union[ivy.Dtype, ivy.NativeDtype],
+        type2: Union[ivy.Dtype, ivy.NativeDtype],
+):
+    """
+    Promotes the datatypes type1 and type2, returning the data type they promote to
+
+    Parameters
+    ----------
+    type1
+        the first of the two types to promote
+    type2
+        the second of the two types to promote
+
+    Returns
+    -------
+    ret
+        The type that both input types promote to
+    """
+    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+
+
+def type_promote_arrays(
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Type promote the input arrays, returning new arrays with the shared correct
+    data type
+
+    Parameters
+    ----------
+    x1
+        the first of the two arrays to type promote
+    x2
+        the second of the two arrays to type promote
+
+    Returns
+    -------
+    ret1, ret2
+        The input arrays after type promotion
+    """
+    new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
+    return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
+  

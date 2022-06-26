@@ -778,11 +778,10 @@ def test_array_function(
         if max(container_flags):
             assert ret is out
 
-        if max(container_flags) or fw in ["tensorflow", "jax", "numpy"]:
+        if not max(container_flags) and fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
-            pass
-        else:
             assert ret.data is out.data
+
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
     # compute the return with a NumPy backend
@@ -884,8 +883,11 @@ def test_frontend_function(
     # tolerance dict for dtypes
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
+    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    *frontend_submods, fn_name = fn_name.split(".")
+
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy, fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function, None):
             return
@@ -945,14 +947,14 @@ def test_frontend_function(
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
+        kwargs['out'] = out
         ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](
-            *args, **kwargs, out=out)
+            *args, **kwargs)
 
-        if fw in ["tensorflow", "jax", "numpy"]:
+        if fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
-            pass
-        else:
             assert ret.data is out.data
+
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
 
@@ -960,7 +962,7 @@ def test_frontend_function(
     ivy.set_backend(frontend)
 
     # check for unsupported dtypes in frontend framework
-    function = getattr(ivy, fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function, None):
             return
@@ -978,7 +980,7 @@ def test_frontend_function(
     )
 
     # compute the return via the frontend framework
-    frontend_fw = importlib.import_module(frontend)
+    frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
     frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
     # tuplify the frontend return
@@ -1419,11 +1421,21 @@ def get_axis(draw, shape, allow_none=False):
 
 
 @st.composite
-def num_positional_args(draw, fn_name=None):
+def num_positional_args(draw, fn_name: str = None):
+    num_positional_only = 0
     num_keyword_only = 0
     total = 0
-    for param in inspect.signature(ivy.__dict__[fn_name]).parameters.values():
+    fn = None
+    for i, fn_name_key in enumerate(fn_name.split(".")):
+        if i == 0:
+            fn = ivy.__dict__[fn_name_key]
+        else:
+            fn = fn.__dict__[fn_name_key]
+    for param in inspect.signature(fn).parameters.values():
         total += 1
-        if param.kind == param.KEYWORD_ONLY:
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
-    return draw(integers(min_value=0, max_value=(total - num_keyword_only)))
+    return draw(integers(min_value=num_positional_only,
+                         max_value=(total - num_keyword_only)))
