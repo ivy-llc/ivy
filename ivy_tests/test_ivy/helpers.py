@@ -1096,7 +1096,8 @@ def integers(draw, min_value=None, max_value=None):
 
 @st.composite
 def dtype_and_values(
-    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10
+    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
+        shape=None,
 ):
     if n_arrays == 1:
         types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
@@ -1110,7 +1111,12 @@ def dtype_and_values(
         dtype = list(draw(st.sampled_from(types)))
     if n_arrays == 3:
         dtype.append(dtype[0])
-    shape = draw(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size))
+    if shape:
+        shape = draw(shape)
+    else:
+        shape = draw(
+            st.shared(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
+            key="shape"))
     values = []
     for i in range(n_arrays):
         values.append(
