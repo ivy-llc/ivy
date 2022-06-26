@@ -11,7 +11,8 @@ import ivy.functional.backends.torch as ivy_torch
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        tuple(set(ivy_np.valid_float_dtypes + ivy_torch.valid_float_dtypes))),
+        tuple(set(ivy_np.valid_float_dtypes).intersection(
+              set(ivy_torch.valid_float_dtypes)))),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
