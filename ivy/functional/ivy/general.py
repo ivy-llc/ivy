@@ -2304,7 +2304,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[ivy.Array, ivy.NativeArray] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
