@@ -1521,8 +1521,6 @@ def test_negative(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if "uint" in input_dtype:
-        return
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -1631,7 +1629,7 @@ def test_pow(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    if fw == "jax":
+    if fw in ["jax", "tensorflow"]:
         return
     if (
         np.any(x2 < 0)
