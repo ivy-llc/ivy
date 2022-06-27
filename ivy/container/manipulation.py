@@ -223,7 +223,6 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -277,7 +276,6 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.roll(1)
         >>> print(y)
