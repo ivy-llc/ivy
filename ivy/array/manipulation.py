@@ -89,6 +89,58 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         return ivy.stack([self._data] + x, axis, out=out)
 
+    def clip(
+        x: Union[ivy.Array, ivy.NativeArray],
+        x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> y = ivy.clip(x, 1., 5.)
+        >>> print(y)
+        ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+
+        >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> y = ivy.zeros_like(x)
+        >>> ivy.clip(x, 2., 7., out=y)
+        >>> print(y)
+        ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])
+
+        >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+        >>> x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+        >>> y = ivy.clip(x, x_min, x_max)
+        >>> print(y)
+        ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+
+        With :code:`ivy.NativeArray` input:
+
+        >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+        >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+        >>> y = ivy.clip(x, x_min, x_max)
+        >>> print(y)
+        ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+
+        Instance Method Examples
+        ------------------------
+
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> y = x.clip(1., 5.)
+        >>> print(y)
+        ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+        """
+        return current_backend(x).squeeze(x, axis, out=out)
+
+
     def repeats(
         self: ivy.Array,
         repeats: Union[int, Iterable[int]],

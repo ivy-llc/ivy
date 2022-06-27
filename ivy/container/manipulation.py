@@ -48,26 +48,61 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    def expand_dims(
+    def clip(
         self: ivy.Container,
-        axis: Optional[int] = 0,
+        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.expand_dims(x_, axis=axis)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.clip(x, 1., 5.)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> x_min = ivy.Container(a=1, b=-1)
+        >>> x_max = ivy.Container(a=1, b=-1)
+        >>> y = ivy.clip(x, x_min,x_max)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 1.]),
+            b: ivy.array([-1., -1., -1.])
+        }
+
+        Using: code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.clip(1,2)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 2.]),
+            b: ivy.array([2., 2., 2.])
+        }
+        """
+        return self.static_clip(
+            self,
+            x_min,
+            x_max,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
 
     def permute_dims(
@@ -121,6 +156,9 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.reshape(x_, shape=shape) if ivy.is_array(x_) else x_,
@@ -278,6 +316,28 @@ class ContainerWithManipulation(ContainerBase):
                 to_apply,
                 prune_unapplied,
                 map_nests=map_nests,
+            ),
+            out,
+        )
+
+    def expand_dims(
+            self: ivy.Container,
+            axis: Optional[int] = 0,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.expand_dims(x_, axis=axis)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out,
         )
