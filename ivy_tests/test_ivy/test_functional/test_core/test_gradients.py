@@ -226,11 +226,11 @@ def test_gradient_descent_update(
     ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call
 ):
     # smoke test
-    ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.gradient_descent_update(ws, dcdws, lr)
+    ws_new = ivy.gradient_descent_update(ws, dcdw, lr)
     # type test
     assert isinstance(ws_new, dict)
     # cardinality test
@@ -264,12 +264,12 @@ def test_layerwise_gradient_descent_update(
     ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call
 ):
     # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     lr = lr_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.gradient_descent_update(ws, dcdws, lr)
+    ws_new = ivy.gradient_descent_update(ws, dcdw, lr)
     # type test
     assert isinstance(ws_new, dict)
     # cardinality test
@@ -301,12 +301,12 @@ def test_layerwise_gradient_descent_update(
 )
 def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     lr = lr_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.lars_update(ws, dcdws, lr)
+    ws_new = ivy.lars_update(ws, dcdw, lr)
     # type test
     assert isinstance(ws_new, dict)
     # cardinality test
@@ -338,14 +338,13 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 )
 def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
-    ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdws
-    vw = dcdws.map(lambda x, _: x**2)
-    # ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-    ret = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    mw = dcdw
+    vw = dcdw.map(lambda x, _: x**2)
+    ret = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     ws_new = {"ws_new": list(ret.values())[0][0]}
     mw_new = {"mw_new": list(ret.values())[0][1]}
     vw_new = {"vw_new": list(ret.values())[0][2]}
@@ -370,19 +369,6 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 
 
 # layerwise_adam_update
-# @pytest.mark.parametrize(
-#     "ws_n_grads_n_lr_n_wsnew",
-#     [
-#         (
-#             Container({"a": [3.0], "b": [3.0]}),
-#             Container({"a": [6.0], "b": [6.0]}),
-#             Container({"a": [0.1], "b": [0.2]}),
-#             Container({"a": [2.9683773], "b": [2.9367545]}),
-#         )
-#     ],
-# )
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
@@ -399,15 +385,14 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 )
 def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     lr = lr_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdws
-    vw = dcdws.map(lambda x, _: x**2)
-    # ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-    ret = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    mw = dcdw
+    vw = dcdw.map(lambda x, _: x**2)
+    ret = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     ws_new = {"ws_new": list(ret.values())[0][0]}
     mw_new = {"mw_new": list(ret.values())[0][1]}
     vw_new = {"vw_new": list(ret.values())[0][2]}
@@ -448,15 +433,14 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
 )
 def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
     lr = lr_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdws
-    vw = dcdws.map(lambda x, _: x**2)
-    # ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-    ret = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    mw = dcdw
+    vw = dcdw.map(lambda x, _: x**2)
+    ret = ivy.lamb_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     ws_new = {"ws_new": list(ret.values())[0][0]}
     mw_new = {"mw_new": list(ret.values())[0][1]}
     vw_new = {"vw_new": list(ret.values())[0][2]}
