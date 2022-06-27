@@ -16,7 +16,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 # variable
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
 )
 def test_variable(object_in, dtype, device, call):
@@ -49,7 +49,7 @@ def test_variable(object_in, dtype, device, call):
 
 # is_variable
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
 )
 def test_is_variable(object_in, dtype, device, call):
@@ -81,7 +81,7 @@ def test_is_variable(object_in, dtype, device, call):
 
 # variable data
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
 )
 def test_variable_data(object_in, dtype, device, call):
@@ -113,7 +113,7 @@ def test_variable_data(object_in, dtype, device, call):
 
 # stop_gradient
 @given(
-    x_raw=helpers.list_of_length(st.floats(-np.inf, np.inf), 10),
+    x_raw=helpers.list_of_length(st.floats(-np.inf, np.inf,width=32), 10),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([("array", ivy.array), ("var", helpers.var_fn)])
 )
