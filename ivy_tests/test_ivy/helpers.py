@@ -502,7 +502,6 @@ def test_array_method(
     if not isinstance(as_variable_flags, list):
         as_variable_flags = [as_variable_flags]
 
-
     # update variable flags to be compatible with float dtype
     as_variable_flags = [
         v if ivy.is_float_dtype(d) else False
@@ -517,7 +516,7 @@ def test_array_method(
     # create args
     calling_args, calling_kwargs, calling_args_np, calling_kwargs_np \
         = create_args(input_dtypes, num_positional_args, as_variable_flags,
-                    all_as_kwargs_np)
+                      all_as_kwargs_np)
 
     constructor_args, constructor_kwargs, constructor_args_np, constructor_kwargs_np \
         = create_args(input_dtypes_constructor, num_positional_args_constructor,
@@ -1129,16 +1128,17 @@ def dtype_and_values(
             set(ivy.all_dtypes).difference(set(available_dtypes))
         )
         pairs = ivy.promotion_table.keys()
-        dtypes = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtypes = [pair for pair in pairs if not any([d in pair for d in \
+                                                     unwanted_types])]
         dtype = list(draw(st.sampled_from(dtypes)))
         if n_arrays > 2:
-            dtype += [dtype[i%2] for i in range(n_arrays - 2)]
+            dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
     if shape:
         shape = draw(shape)
     else:
         shape = draw(
             st.shared(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
-            key="shape"))
+                      key="shape"))
     values = []
     for i in range(n_arrays):
         values.append(
