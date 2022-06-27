@@ -21,6 +21,15 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         return ivy.concat([self._data] + xs, axis, out=out)
 
+    def clip(
+        self: ivy.Array,
+        x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.clip(self._data, x_min, x_max, out=out)
+
     def flip(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
