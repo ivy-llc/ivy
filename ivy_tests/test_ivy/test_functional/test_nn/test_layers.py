@@ -101,29 +101,65 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
 # ----------#
 
 # # scaled_dot_product_attention
-@pytest.mark.parametrize(
-    "q_n_k_n_v_n_s_n_m_n_gt", [([[1.0]], [[2.0]], [[3.0]], 2.0, [[1.0]], [[3.0]])]
+@given(
+    batch_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    num_queries=st.integers(min_value=1, max_value=5),
+    num_keys=st.integers(min_value=1, max_value=5),
+    feat_dim=st.integers(min_value=1, max_value=5),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=helpers.list_of_length(st.booleans(), 5),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="scaled_dot_product_attention"
+    ),
+    with_out=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 5),
+    container=helpers.list_of_length(st.booleans(), 5),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scaled_dot_product_attention(
-    q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, device, call
-):
-    q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
-    # smoke test
-    q = tensor_fn(q, dtype=dtype, device=device)
-    k = tensor_fn(k, dtype=dtype, device=device)
-    v = tensor_fn(v, dtype=dtype, device=device)
-    mask = tensor_fn(mask, dtype=dtype, device=device)
-    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == q.shape
-    # value test
-    assert np.allclose(
-        call(ivy.scaled_dot_product_attention, q, k, v, scale, mask),
-        np.array(ground_truth),
+def test_scaled_dot_product_attention(batch_shape,
+                                      num_queries,
+                                      num_keys,
+                                      feat_dim,
+                                      dtype,
+                                      as_variable,
+                                      num_positional_args,
+                                      with_out,
+                                      native_array,
+                                      container,
+                                      instance_method,
+                                      fw,
+                                      device):
+
+    dtype = [dtype] * 5
+    if fw == 'torch' and 'float16' in dtype:
+        return
+    q = np.random.uniform(
+        size=batch_shape + [num_queries] + [feat_dim]
+    ).astype(dtype[0])
+    k = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[1])
+    v = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[2])
+    mask = np.random.uniform(
+        size=batch_shape + [num_queries] + [num_keys]
+    ).astype(dtype[3])
+    scale = np.random.uniform(size=[1]).astype(dtype[4])
+
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "scaled_dot_product_attention",
+        q=q,
+        k=k,
+        v=v,
+        scale=scale,
+        mask=mask
     )
 
 
