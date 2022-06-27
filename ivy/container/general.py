@@ -54,7 +54,8 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def all_equal(
-            *xs: Iterable[Any], equality_matrix: bool = False
+        self,
+        equality_matrix: bool = False
     ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
         """Determines whether the inputs are all equal.
 
@@ -147,25 +148,4 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        equality_fn = ivy.array_equal if ivy.is_native_array(xs[0])\
-            else lambda a, b: a == b
-        if equality_matrix:
-            num_arrays = len(xs)
-            mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
-            for i, xa in enumerate(xs):
-                for j_, xb in enumerate(xs[i:]):
-                    j = j_ + i
-                    res = equality_fn(xa, xb)
-                    if ivy.is_native_array(res):
-                        # noinspection PyTypeChecker
-                        res = ivy.to_scalar(res)
-                    # noinspection PyTypeChecker
-                    mat[i][j] = res
-                    # noinspection PyTypeChecker
-                    mat[j][i] = res
-            return ivy.array(mat)
-        x0 = xs[0]
-        for x in xs[1:]:
-            if not equality_fn(x0, x):
-                return False
-        return True
+        return ivy.all_equal(self, equality_matrix)
