@@ -28,51 +28,6 @@ class ArrayWithGeneral(abc.ABC):
             Boolean, whether or not the inputs are equal, or matrix array of booleans
             if equality_matrix=True is set.
 
-        Functional Examples
-        -------------------
-
-        With :code:`ivy.Array` input:
-
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.array([1, 0, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        False
-
-        >>> x1 = ivy.array([1, 0, 1, 1])
-        >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        True
-
-        With :code:`ivy.NativeArray` input:
-
-        >>> x1 = ivy.native_array([1, 2, 3])
-        >>> x2 = ivy.native_array([1, 0, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        False
-
-        >>> x1 = ivy.native_array([1, 0, 1, 1])
-        >>> x2 = ivy.native_array([1, 0, 1, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        True
-
-        With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` input:
-
-        >>> x1 = ivy.array([1, 1, 0, 1.2, 1])
-        >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        False
-
-        >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
-        >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-        >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-        >>> print(y)
-        True
-
         Instance Method Examples
         ------------------------
 
