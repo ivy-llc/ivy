@@ -882,4 +882,3 @@ def type_promote_arrays(
     """
     new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
     return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
-  
