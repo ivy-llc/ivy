@@ -842,13 +842,16 @@ def conv3d_transpose(
 
     With :code: `ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
+    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
     b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
+
     >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
     d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
+
     >>> y = ivy.conv3d_transpose(x, filters, strides=2, padding='SAME')
     >>> print(y['a'].shape)
     (1, 5, 55, 55, 6)
+
     >>> print(y['b'].shape)
     (1, 5, 55, 55, 6)
 
@@ -861,6 +864,7 @@ def conv3d_transpose(
     >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
     >>> print(y['a'].shape)
     (1, 10, 10, 10, 16)
+
     >>> print(y['b'].shape)
     (1, 10, 10, 10, 32)
 
@@ -874,6 +878,7 @@ def conv3d_transpose(
     >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
     >>> print(y['a'].shape)
     (1, 10, 10, 10, 64)
+
     >>> print(y['b'].shape)
     (1, 10, 10, 10, 128)
 
@@ -892,11 +897,14 @@ def conv3d_transpose(
 
     >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
     b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
+
+    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
     d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
+
     >>> y = x.conv3d_transpose(filters, strides=2, padding='SAME')
     >>> print(y['a'].shape)
     (1, 5, 55, 55, 6)
+
     >>> print(y['b'].shape)
     (1, 5, 55, 55, 6)
 
