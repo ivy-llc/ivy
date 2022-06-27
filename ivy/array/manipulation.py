@@ -138,8 +138,7 @@ class ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
         """
-        return current_backend(x).squeeze(x, axis, out=out)
-
+        return current_backend(x).clip(x, x_min, x_max, out=out)
 
     def repeats(
         self: ivy.Array,
