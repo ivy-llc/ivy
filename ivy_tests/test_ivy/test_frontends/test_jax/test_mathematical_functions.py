@@ -6,7 +6,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
-valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
+valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 
 
 # tan
@@ -14,7 +14,7 @@ valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
     dtype_and_x=helpers.dtype_and_values(valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.tan"),
+        fn_name="ivy.functional.frontends.jax.lax.tan"),
     native_array=st.booleans(),
 )
 def test_jax_tan(
@@ -34,6 +34,6 @@ def test_jax_tan(
         native_array,
         fw,
         "jax",
-        "numpy.tan",
+        "lax.tan",
         x=np.asarray(x, dtype=input_dtype),
     )
