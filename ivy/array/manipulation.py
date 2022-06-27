@@ -90,6 +90,7 @@ class ArrayWithManipulation(abc.ABC):
         return ivy.stack([self._data] + x, axis, out=out)
 
     def clip(
+        self: ivy.Array,
         x: Union[ivy.Array, ivy.NativeArray],
         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
@@ -138,7 +139,7 @@ class ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
         """
-        return current_backend(x).clip(x, x_min, x_max, out=out)
+        return ivy.clip(self._data, x_min=x_min, x_max=x_max, out=out)
 
     def repeats(
         self: ivy.Array,
