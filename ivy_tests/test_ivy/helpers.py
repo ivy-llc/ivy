@@ -292,10 +292,10 @@ def docstring_examples_run(fn):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
-                exec(line       )
+                exec(line)
             except Exception as e:
-                return False
-                #print(e," ",ivy.current_backend_str())
+
+                print(e,"  ",ivy.current_backend_str(), " ", line)
 
     output = f.getvalue()
     output = output.rstrip()
