@@ -272,7 +272,7 @@ With Docker
 #. With PyCharm (With or without docker):
     #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
         
-        .. image:: content/log_codespace.png
+        .. image:: content/pytest_button_pycharm.png
            :width: 420
         
     #. Testing can be done for the entire project, individual submodules, individual files and individual tests. This can be done by selecting the appropriate configuration from the top pane in PyCharm.
