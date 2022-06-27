@@ -106,12 +106,17 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
+def cumsum(
+    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.cumsum(x, axis, out=out)
 
 
 def cumprod(
-    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)

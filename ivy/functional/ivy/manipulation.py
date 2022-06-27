@@ -981,7 +981,7 @@ def swapaxes(
     ivy.array([[0],
                [1],
                [2]])
-    
+
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.swapaxes(x, 0, 1)
@@ -1016,7 +1016,7 @@ def swapaxes(
                       [4.],
                       [5.]])
     }
-    
+
     """
     return current_backend(x).swapaxes(x, axis0, axis1, out=out)
 
