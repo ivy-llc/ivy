@@ -11,13 +11,19 @@ import ivy.functional.backends.torch as ivy_torch
 # add
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        tuple(set(ivy_np.valid_float_dtypes).intersection(
-              set(ivy_torch.valid_float_dtypes))), 2),
+        tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+        2,
+    ),
     alpha=st.floats(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.add"),
+        fn_name="functional.frontends.torch.add"
+    ),
     native_array=st.booleans(),
 )
 def test_torch_add(
@@ -49,12 +55,17 @@ def test_torch_add(
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        tuple(set(ivy_np.valid_float_dtypes).intersection(
-              set(ivy_torch.valid_float_dtypes)))),
+        tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.tan"),
+        fn_name="functional.frontends.torch.tan"
+    ),
     native_array=st.booleans(),
 )
 def test_torch_tan(

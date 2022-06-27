@@ -2,8 +2,18 @@
 import ivy
 
 
-def add(x1, x2, /, out=None, *, where=True, casting='same_kind', order='k', dtype=None,
-        subok=True):
+def add(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
     if dtype:
         x1 = ivy.astype(x1, ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(x2, ivy.as_ivy_dtype(dtype))
@@ -16,8 +26,17 @@ def add(x1, x2, /, out=None, *, where=True, casting='same_kind', order='k', dtyp
 add.unsupported_dtypes = {"torch": ("float16",)}
 
 
-def tan(x, /, out=None, *, where=True, casting='same_kind', order='k', dtype=None,
-        subok=True):
+def tan(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
     if dtype:
         x = ivy.astype(x, ivy.as_ivy_dtype(dtype))
     ret = ivy.tan(x, out=out)

@@ -35,13 +35,19 @@ def sigmoid(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def tanh(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return (np.exp(x, out=out) - np.exp(-x, out=out)) / (np.exp(x, out=out) + np.exp(-x, out=out))
+    return (np.exp(x, out=out) - np.exp(-x, out=out)) / (
+        np.exp(x, out=out) + np.exp(-x, out=out)
+    )
 
 
-def softmax(x: np.ndarray, axis: Optional[int] = None, out: Optional[np.ndarray] = None) -> np.ndarray:
+def softmax(
+    x: np.ndarray, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     exp_x = np.exp(x, out=out)
     return exp_x / np.sum(exp_x, axis, keepdims=True, out=out)
 
 
 def softplus(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log1p(np.exp(-np.abs(x, out=out), out=out), out=out) + np.maximum(x, 0, out=out)
+    return np.log1p(np.exp(-np.abs(x, out=out), out=out), out=out) + np.maximum(
+        x, 0, out=out
+    )

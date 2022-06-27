@@ -196,8 +196,9 @@ class Container(
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other],
-                               lambda xs: operator.floordiv(xs[0], xs[1]))
+            return self.reduce(
+                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            )
         return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):

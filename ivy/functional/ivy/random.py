@@ -32,7 +32,7 @@ def random_uniform(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype=None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -108,7 +108,7 @@ def random_normal(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """
     Draws samples from a normal distribution.
@@ -152,7 +152,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """
     Draws samples from a multinomial distribution. Specifically, returns a tensor
@@ -317,7 +317,9 @@ def seed(seed_value: int = 0) -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def shuffle(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
+def shuffle(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
     Parameters

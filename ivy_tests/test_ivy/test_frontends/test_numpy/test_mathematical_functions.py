@@ -12,12 +12,18 @@ import ivy.functional.backends.numpy as ivy_np
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=st.sampled_from(
-        (helpers.dtype_and_values(
-            ("bool",), shape=st.shared(helpers.get_shape(), key="shape")), True)),
+        (
+            helpers.dtype_and_values(
+                ("bool",), shape=st.shared(helpers.get_shape(), key="shape")
+            ),
+            True,
+        )
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.add"),
+        fn_name="ivy.functional.frontends.numpy.add"
+    ),
     native_array=st.booleans(),
 )
 def test_numpy_add(
@@ -44,10 +50,10 @@ def test_numpy_add(
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
         where=where,
-        casting='same_kind',
-        order='k',
+        casting="same_kind",
+        order="k",
         dtype=dtype,
-        subok=True
+        subok=True,
     )
 
 
@@ -56,12 +62,18 @@ def test_numpy_add(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=st.sampled_from(
-        (helpers.dtype_and_values(
-            ("bool",), shape=st.shared(helpers.get_shape(), key="shape")), True)),
+        (
+            helpers.dtype_and_values(
+                ("bool",), shape=st.shared(helpers.get_shape(), key="shape")
+            ),
+            True,
+        )
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.tan"),
+        fn_name="ivy.functional.frontends.numpy.tan"
+    ),
     native_array=st.booleans(),
 )
 def test_numpy_tan(
@@ -87,8 +99,8 @@ def test_numpy_tan(
         x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
-        casting='same_kind',
-        order='k',
+        casting="same_kind",
+        order="k",
         dtype=dtype,
-        subok=True
+        subok=True,
     )

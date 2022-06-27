@@ -2304,7 +2304,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[ivy.Array, ivy.NativeArray] = None
+    out: Optional[ivy.Array, ivy.NativeArray] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
@@ -2350,7 +2350,8 @@ def multiprocessing(context: str = None):
 @handle_out_argument
 @handle_nestable
 def indices_where(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
@@ -2377,7 +2378,7 @@ def one_hot(
     depth: int,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array.
 
@@ -2476,10 +2477,12 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
         which itself contains the parameter name, type, and other helpful information.
     """
-    if (not ivy.exists(name) and not ivy.exists(idx)) or\
-            (ivy.exists(name) and ivy.exists(idx)):
-        raise Exception("exactly one of the keyword arguments name or idx "
-                        "must be provided")
+    if (not ivy.exists(name) and not ivy.exists(idx)) or (
+        ivy.exists(name) and ivy.exists(idx)
+    ):
+        raise Exception(
+            "exactly one of the keyword arguments name or idx " "must be provided"
+        )
     params = inspect.signature(fn).parameters
     if ivy.exists(name):
         return {"idx": list(params).index(name), "param": params[name]}
