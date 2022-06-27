@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Any, Union, Iterable
+from typing import Union
 # ToDo: implement all methods here as public instance methods
 
 # local
