@@ -64,7 +64,11 @@ def stack(
     return ret
 
 
-def squeeze(x, axis=None, out: Optional[mx.nd.NDArray] = None):
+def squeeze(
+    x,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[mx.nd.NDArray] = None
+):
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):

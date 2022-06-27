@@ -518,7 +518,7 @@ def roll(
 @handle_nestable
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int, ...]],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -548,6 +548,8 @@ def squeeze(
     (1, 2, 2)
 
     >>> print(ivy.squeeze(x, axis=0).shape)
+    (2, 2)
+    >>> print(ivy.squeeze(x).shape)
     (2, 2)
 
     """

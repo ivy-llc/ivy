@@ -76,7 +76,8 @@ def roll(
 
 def squeeze(
     x: np.ndarray,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
