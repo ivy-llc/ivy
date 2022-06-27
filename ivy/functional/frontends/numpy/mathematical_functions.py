@@ -25,9 +25,14 @@ def tan(x, /, out=None, *, where=True, casting='same_kind', order='k', dtype=Non
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> upstream/master
+=======
+
+
+>>>>>>> 53013b3608a900e6c899ea669c38caef71b07a3c
 tan.unsupported_dtypes = {"torch": ("float16",)}
 
