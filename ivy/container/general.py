@@ -1,5 +1,4 @@
 # global
-from typing import Union
 
 # local
 from ivy.container.base import ContainerBase
