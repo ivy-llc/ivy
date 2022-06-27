@@ -40,7 +40,6 @@ def test_cross_entropy(
             shape=shape,
             min_value=0,
             max_value=1,
-            allow_negative=False,
         )
     )
     pred = data.draw(
@@ -51,7 +50,12 @@ def test_cross_entropy(
             max_value=1,
             exclude_min=True,
             exclude_max=True,
-            allow_negative=False,
+        )
+    )
+    axis = data.draw(helpers.integers(min_value=-1, max_value=0))
+    epsilon = data.draw(
+        helpers.array_values(
+            dtype=pred_dtype, shape=(1,), min_value=0, max_value=1, allow_negative=False
         )
     )
     helpers.test_array_function(
@@ -66,6 +70,8 @@ def test_cross_entropy(
         "cross_entropy",
         true=np.asarray(true, dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
+        axis=axis,
+        epsilon=epsilon[0],
     )
 
 
@@ -102,7 +108,6 @@ def test_binary_cross_entropy(
             shape=shape,
             min_value=0,
             max_value=1,
-            allow_negative=False,
         )
     )
     pred = data.draw(
@@ -113,7 +118,11 @@ def test_binary_cross_entropy(
             max_value=1,
             exclude_min=True,
             exclude_max=True,
-            allow_negative=False,
+        )
+    )
+    epsilon = data.draw(
+        helpers.array_values(
+            dtype=pred_dtype, shape=(1,), min_value=0, max_value=1, allow_negative=False
         )
     )
     helpers.test_array_function(
@@ -128,6 +137,7 @@ def test_binary_cross_entropy(
         "binary_cross_entropy",
         true=np.asarray(true, dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
+        epsilon=epsilon[0],
     )
 
 
@@ -155,6 +165,10 @@ def test_sparse_cross_entropy(
     instance_method,
     fw,
 ):
+    if fw == "torch" and pred_dtype == "float16":
+        return
+    if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
+        return
     shape = data.draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2))
     pred = data.draw(
         helpers.array_values(
@@ -164,7 +178,6 @@ def test_sparse_cross_entropy(
             max_value=1,
             exclude_min=True,
             exclude_max=True,
-            allow_negative=False,
         )
     )
     true = data.draw(
@@ -172,14 +185,16 @@ def test_sparse_cross_entropy(
             dtype=true_dtype,
             shape=(1,),
             min_value=0,
-            max_value=len(pred),
-            allow_negative=False,
+            max_value=shape[0],
+            exclude_max=True,
         )
     )
-    if fw == "torch" and pred_dtype == "float16":
-        return
-    if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
-        return
+    axis = data.draw(helpers.integers(min_value=-1, max_value=0))
+    epsilon = data.draw(
+        helpers.array_values(
+            dtype=pred_dtype, shape=(1,), min_value=0, max_value=1, allow_negative=False
+        )
+    )
     assume(all([v < len(pred) for v in true]))
     helpers.test_array_function(
         [true_dtype, pred_dtype],
@@ -193,4 +208,6 @@ def test_sparse_cross_entropy(
         "sparse_cross_entropy",
         true=np.asarray(true, dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
+        axis=axis,
+        epsilon=epsilon[0],
     )

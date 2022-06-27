@@ -461,7 +461,8 @@ def test_array_method(
     input_dtypes
         data types of the input arguments in order.
     as_variable_flags
-        dictates whether the corresponding input argument should be treated as an ivy Variable.
+        dictates whether the corresponding input argument should be treated as
+        an ivy Variable.
     all_as_kwargs_np:
         input arguments to the function as keyword arguments.
     num_positional_args
@@ -470,7 +471,8 @@ def test_array_method(
     input_dtypes_constructor
         data types of the input arguments for the constructor in order.
     as_variable_flags_constructor
-        dictates whether the corresponding input argument should be treated as an ivy Variable for the constructor
+        dictates whether the corresponding input argument should be treated as
+        an ivy Variable for the constructor
     constructor_kwargs:
         input arguments to the constructor as keyword arguments.
     num_positional_args_constructor
@@ -500,7 +502,6 @@ def test_array_method(
     if not isinstance(as_variable_flags, list):
         as_variable_flags = [as_variable_flags]
 
-
     # update variable flags to be compatible with float dtype
     as_variable_flags = [
         v if ivy.is_float_dtype(d) else False
@@ -513,11 +514,20 @@ def test_array_method(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    calling_args, calling_kwargs, calling_args_np, calling_kwargs_np = create_args(input_dtypes, num_positional_args,
-                                                                                   as_variable_flags, all_as_kwargs_np)
-    constructor_args, constructor_kwargs, constructor_args_np, constructor_kwargs_np = \
-        create_args(input_dtypes_constructor, num_positional_args_constructor, as_variable_flags_constructor,
-                    constructor_kwargs)
+    calling_args, calling_kwargs, calling_args_np, calling_kwargs_np = create_args(
+        input_dtypes, num_positional_args, as_variable_flags, all_as_kwargs_np
+    )
+    (
+        constructor_args,
+        constructor_kwargs,
+        constructor_args_np,
+        constructor_kwargs_np,
+    ) = create_args(
+        input_dtypes_constructor,
+        num_positional_args_constructor,
+        as_variable_flags_constructor,
+        constructor_kwargs,
+    )
 
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
@@ -530,7 +540,9 @@ def test_array_method(
     # compute the return with a NumPy backend
     ivy.set_backend("numpy")
     ins_np = ivy.__dict__[class_name](*constructor_args_np, **constructor_kwargs_np)
-    ret_from_np = ivy.to_native(ins_np(*calling_args_np, **calling_kwargs_np), nested=True)
+    ret_from_np = ivy.to_native(
+        ins_np(*calling_args_np, **calling_kwargs_np), nested=True
+    )
     ivy.unset_backend()
 
     # assuming value test will be handled manually in the test function
@@ -951,7 +963,8 @@ def test_frontend_function(
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
         ret = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name](
-            *args, **kwargs, out=out)
+            *args, **kwargs, out=out
+        )
 
         if fw in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
@@ -974,12 +987,14 @@ def test_frontend_function(
     args_frontend = ivy.nested_map(
         args_ivy,
         lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        if isinstance(x, ivy.Array)
+        else x,
     )
     kwargs_frontend = ivy.nested_map(
         kwargs_ivy,
         lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
+        if isinstance(x, ivy.Array)
+        else x,
     )
 
     # compute the return via the frontend framework
@@ -991,10 +1006,8 @@ def test_frontend_function(
         frontend_ret = (frontend_ret,)
 
     # flatten the frontend return and convert to NumPy arrays
-    frontend_ret_idxs =\
-        ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat =\
-        ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+    frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
     frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
 
     # unset frontend framework from backend
@@ -1138,29 +1151,29 @@ def array_values(
             size *= dim
     if "int" in dtype:
         if dtype == "int8":
-            min_value = min_value if min_value else -128
-            max_value = max_value if max_value else 127
+            min_value = min_value if min_value is not None else -128
+            max_value = max_value if max_value is not None else 127
         elif dtype == "int16":
-            min_value = min_value if min_value else -32768
-            max_value = max_value if max_value else 32767
+            min_value = min_value if min_value is not None else -32768
+            max_value = max_value if max_value is not None else 32767
         elif dtype == "int32":
-            min_value = min_value if min_value else -2147483648
-            max_value = max_value if max_value else 2147483647
+            min_value = min_value if min_value is not None else -2147483648
+            max_value = max_value if max_value is not None else 2147483647
         elif dtype == "int64":
-            min_value = min_value if min_value else -9223372036854775808
-            max_value = max_value if max_value else 9223372036854775807
+            min_value = min_value if min_value is not None else -9223372036854775808
+            max_value = max_value if max_value is not None else 9223372036854775807
         elif dtype == "uint8":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 255
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 255
         elif dtype == "uint16":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 65535
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 65535
         elif dtype == "uint32":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 4294967295
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 4294967295
         elif dtype == "uint64":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 18446744073709551615
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 18446744073709551615
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
