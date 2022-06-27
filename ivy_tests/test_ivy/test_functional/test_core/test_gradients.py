@@ -45,6 +45,40 @@ def test_variable(object_in, dtype, device, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
+    
+@given(
+    object_in=helpers.lists(st.floats(min_value=-10,max_value=10),min_size=1,max_size=3),
+    num_positional_args=helpers.num_positional_args(fn_name="variable"),
+    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 3),
+    as_variable=helpers.list_of_length(st.booleans(), 3),
+    with_out=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 3),
+    instance_method=st.booleans(),
+    container=helpers.list_of_length(st.booleans(), 3),
+    )
+def test_variables(
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    instance_method,
+    container,
+    fw,
+    object_in
+):
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        instance_method,
+        container,
+        fw,
+        "variable",
+        object_in
+    )
 
 
 # is_variable
