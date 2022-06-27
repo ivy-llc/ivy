@@ -13,7 +13,9 @@ def _flat_array_to_1_dim_array(x):
 # -------------------#
 
 
-def concat(xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
+def concat(
+    xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
         if is_tuple:
@@ -101,7 +103,13 @@ def stack(
 # ------#
 
 
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False, out: Optional[np.ndarray] = None):
+def split(
+    x,
+    num_or_size_splits=None,
+    axis=0,
+    with_remainder=False,
+    out: Optional[np.ndarray] = None,
+):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception(

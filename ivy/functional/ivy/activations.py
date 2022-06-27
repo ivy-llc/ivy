@@ -88,7 +88,9 @@ def relu(
 @handle_out_argument
 @handle_nestable
 def leaky_relu(
-    x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    alpha: Optional[float] = 0.2,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
 
@@ -175,7 +177,9 @@ def gelu(x, approximate=True):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def tanh(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
+def tanh(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Applies the Hyperbolic tangent activation function element-wise.
 
     Parameters
@@ -223,7 +227,9 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def sigmoid(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
+def sigmoid(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
     Parameters
@@ -271,7 +277,9 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = Non
 @handle_out_argument
 @handle_nestable
 def softmax(
-    x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = -1,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
 
@@ -330,7 +338,9 @@ def softmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def softplus(x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None) -> ivy.Array:
+def softplus(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Applies the softplus function element-wise.
 
     Parameters
