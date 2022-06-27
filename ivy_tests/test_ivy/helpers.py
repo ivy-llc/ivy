@@ -1227,7 +1227,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype == "float32" or dtype == 'bfloat16':
+    elif dtype in ['float32', 'bfloat16']:
         values = draw(
             list_of_length(
                 st.floats(
