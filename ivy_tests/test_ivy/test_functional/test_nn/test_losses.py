@@ -61,7 +61,7 @@ def test_cross_entropy(
     helpers.test_array_function(
         [true_dtype, pred_dtype],
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
@@ -128,7 +128,7 @@ def test_binary_cross_entropy(
     helpers.test_array_function(
         [true_dtype, pred_dtype],
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
@@ -199,7 +199,7 @@ def test_sparse_cross_entropy(
     helpers.test_array_function(
         [true_dtype, pred_dtype],
         as_variable,
-        False,
+        with_out,
         num_positional_args,
         native_array,
         container,
