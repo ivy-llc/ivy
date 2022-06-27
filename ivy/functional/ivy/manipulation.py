@@ -26,7 +26,7 @@ def concat(
     ],
     axis: Optional[int] = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Casts an array to a specified type.
 
