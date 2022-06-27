@@ -324,9 +324,6 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-pow.unsupported_dtypes = tuple([ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64])
-
-
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
