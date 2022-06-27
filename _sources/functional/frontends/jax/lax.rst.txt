@@ -1,0 +1,8 @@
+Lax
+===
+
+.. automodule:: ivy.functional.frontends.jax.lax
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

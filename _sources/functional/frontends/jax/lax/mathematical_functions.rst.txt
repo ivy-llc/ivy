@@ -1,0 +1,17 @@
+Mathematical functions
+======================
+
+.. automodule:: ivy.functional.frontends.jax.lax.mathematical_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Mathematical functions
+
+   mathematical_functions/tan.rst
+
