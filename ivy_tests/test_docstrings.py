@@ -50,10 +50,9 @@ def test_docstrings(backend):
                 "\n".join(failures)
             )
         )
-    # x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \
-    #                   b=ivy.array([0.3, 0.4, 0.5]))
-    # y = ivy.cumprod(x)
-    # print(y)
+
+
+
 
 
 
