@@ -160,7 +160,10 @@ def swapaxes(
 
 
 def clip(
-    x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret
