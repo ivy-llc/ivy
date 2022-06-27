@@ -53,7 +53,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#small-commits-often">Small Commits Often</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#running-tests-locally">Running Tests Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-tests-locally">Running Tests Locally</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#with-docker">With Docker</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
@@ -336,7 +339,190 @@ or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord
 </section>
 <section id="running-tests-locally">
 <h2>Running Tests Locally<a class="headerlink" href="#running-tests-locally" title="Permalink to this heading"></a></h2>
-<p># ToDo: write this section</p>
+<section id="with-docker">
+<h3>With Docker<a class="headerlink" href="#with-docker" title="Permalink to this heading"></a></h3>
+<ol class="arabic">
+<li><dl>
+<dt>With PyCharm (With or without docker):</dt><dd><ol class="arabic">
+<li><p>PyCharm enables users to run pytest using the green button present near every function declaration inside the <code class="code docutils literal notranslate"><span class="pre">ivy_tests</span></code> folder.</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="../_images/log_codespace.png"><img alt="../_images/log_codespace.png" src="../_images/log_codespace.png" style="width: 420px;" /></a>
+</div></blockquote>
+</li>
+<li><p>Testing can be done for the entire project, individual submodules, individual files and individual tests. This can be done by selecting the appropriate configuration from the top pane in PyCharm.</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="contributing/content/pytest_with_pycharm.png"><img alt="contributing/content/pytest_with_pycharm.png" src="contributing/content/pytest_with_pycharm.png" style="width: 420px;" /></a>
+</div></blockquote>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Through the command line (With docker):</dt><dd><ol class="arabic">
+<li><p>We need to first enter inside the docker container and change into the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> directory using the following command.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it --entrypoint bash unifyai/ivy
+cd ivy
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Run the test using the pytest command.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Ivy Tests:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For a single function:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For a single file:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For all tests:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Array API Tests:</p>
+<ol class="arabic">
+<li><p>For a single function:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For a single file:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For all tests:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><p>For the entire project:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pytest ivy_tests/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Through the command line (Without docker):</dt><dd><ol class="arabic">
+<li><p>We need to first enter inside the virtual environment.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>ivy_devScriptsactivate.bat</p>
+<p>(on Windows)</p>
+<p>OR</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
+</pre></div>
+</div>
+<p>(on Mac/Linux)</p>
+</div></blockquote>
+</li>
+<li><p>Run the test using the pytest command.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Ivy Tests:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For a single function:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For a single file:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For all tests:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Array API Tests</p>
+<ol class="arabic">
+<li><p>For a single function:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For a single file:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For all tests:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><p>For the entire project</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pytest ivy_tests/ --no-header --no-summary -q
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good understanding of the basics for contributing.</p>
 <p>If you’re ever unsure of how best to proceed,
@@ -344,6 +530,7 @@ please feel free to engage with the <a class="reference external" href="https://
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982728618469912627">todo list issues channel</a>,
 <a class="reference external" href="https://discord.com/channels/799879767196958751/982728689408167956">fork management channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/982728733859414056">pull requests channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/982728822317256712">commit frequency channel</a>
 or <a class="reference external" href="https://discord.com/channels/799879767196958751/933380219832762430">other channel</a>, depending on the question!</p>
+</section>
 </section>
 </section>
 
