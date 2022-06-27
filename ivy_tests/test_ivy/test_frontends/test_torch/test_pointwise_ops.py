@@ -12,7 +12,7 @@ import ivy.functional.backends.torch as ivy_torch
 @given(
     dtype_and_x=helpers.dtype_and_values(
         tuple(set(ivy_np.valid_float_dtypes).intersection(
-            set(ivy_torch.valid_float_dtypes)))),
+              set(ivy_torch.valid_float_dtypes)))),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -20,12 +20,12 @@ import ivy.functional.backends.torch as ivy_torch
     native_array=st.booleans(),
 )
 def test_torch_tan(
-        dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -37,40 +37,6 @@ def test_torch_tan(
         fw,
         "torch",
         "tan",
-        input=np.asarray(x, dtype=input_dtype),
-        out=None,
-    )
-
-
-# tanh
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        tuple(set(ivy_np.valid_float_dtypes).intersection(
-            set(ivy_torch.valid_float_dtypes)))),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.tanh"),
-    native_array=st.booleans(),
-)
-def test_torch_tanh(
-        dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-        "torch",
-        "tanh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
