@@ -8,7 +8,6 @@ import sys
 import re
 import inspect
 import warnings
-
 import numpy as np
 import math
 from typing import Union, List
@@ -293,9 +292,10 @@ def docstring_examples_run(fn):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
-                exec(line, ivy.__dict__)
+                exec(line       )
             except Exception as e:
-                print(e," ",ivy.current_backend_str())
+                return False
+                #print(e," ",ivy.current_backend_str())
 
     output = f.getvalue()
     output = output.rstrip()
@@ -905,12 +905,9 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-<<<<<<< Updated upstream
     if "dtype" in all_as_kwargs_np and \
             all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
         return
-=======
->>>>>>> Stashed changes
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -983,7 +980,6 @@ def test_frontend_function(
     if "bfloat16" in input_dtypes:
         return  # bfloat16 is not supported by numpy
 
-<<<<<<< Updated upstream
     # create NumPy args
     args_np = ivy.nested_map(
         args_ivy,
@@ -996,8 +992,6 @@ def test_frontend_function(
         if isinstance(x, ivy.Array) else x,
     )
 
-=======
->>>>>>> Stashed changes
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
 
@@ -1006,7 +1000,6 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-<<<<<<< Updated upstream
     if "dtype" in all_as_kwargs_np and \
             all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
         return
@@ -1021,19 +1014,6 @@ def test_frontend_function(
         kwargs_np,
         lambda x: ivy.native_array(x)
         if isinstance(x, np.ndarray) else x,
-=======
-
-    # create frontend framework args
-    args_frontend = ivy.nested_map(
-        args_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
-    )
-    kwargs_frontend = ivy.nested_map(
-        kwargs_ivy,
-        lambda x: ivy.native_array(ivy.to_numpy(x._data))
-        if isinstance(x, ivy.Array) else x,
->>>>>>> Stashed changes
     )
 
     # compute the return via the frontend framework
