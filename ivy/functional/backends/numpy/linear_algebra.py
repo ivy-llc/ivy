@@ -52,7 +52,9 @@ def inv(x: np.ndarray) -> np.ndarray:
     return ret
 
 
-def matmul(x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matmul(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.matmul(x1, x2, out=out)
 
 
@@ -148,7 +150,9 @@ def tensordot(
     return ret
 
 
-def trace(x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def trace(
+    x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
@@ -180,7 +184,9 @@ def vector_norm(
 # ------#
 
 
-def vector_to_skew_symmetric_matrix(vector: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+def vector_to_skew_symmetric_matrix(
+    vector: np.ndarray, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = np.expand_dims(vector, -1)
