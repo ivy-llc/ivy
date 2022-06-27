@@ -5,14 +5,14 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+import ivy.functional.backends.tensorflow as ivy_tf
 
 valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
 
 
 # tan
 @given(
-    dtype_and_x=helpers.dtype_and_values(valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.tan"),

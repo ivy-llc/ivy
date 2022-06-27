@@ -5,13 +5,12 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
-valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+import ivy.functional.backends.jax as ivy_jax
 
 
 # tan
 @given(
-    dtype_and_x=helpers.dtype_and_values(valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.tan"),
