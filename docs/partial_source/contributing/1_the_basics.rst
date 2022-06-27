@@ -342,7 +342,7 @@ With Docker
 
         .. code-block:: none
 
-        ivy_dev\Scripts\activate.bat
+            ivy_dev\Scripts\activate.bat
 
         (on Windows)
 
