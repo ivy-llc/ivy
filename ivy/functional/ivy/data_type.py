@@ -776,7 +776,36 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 
 
 @handle_nestable
+def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
+    """Returns the supported data types of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    ('int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool')
+    """
+    valid = list(ivy.valid_dtypes)
+    for d in list(function_unsupported_dtypes(fn)):
+        if d in valid:
+            valid.remove(d)
+    return ivy.as_native_dtype(valid)
+
+
+@handle_nestable
 def function_unsupported_dtypes(fn: Callable) -> Tuple:
+
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
