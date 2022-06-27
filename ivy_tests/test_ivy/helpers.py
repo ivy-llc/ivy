@@ -671,6 +671,7 @@ def test_array_function(
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
+
     # tolerance dict for dtypes
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
@@ -680,19 +681,16 @@ def test_array_function(
     )
 
     # check for unsupported dtypes
-    function = getattr(ivy, fn_name)
+    fn = getattr(ivy, fn_name)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(function):
+        if d in ivy.function_unsupported_dtypes(fn):
             return
     if "dtype" in all_as_kwargs_np and \
-            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(fn):
         return
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
-
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
