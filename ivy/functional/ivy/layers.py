@@ -467,7 +467,7 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
 
@@ -510,7 +510,14 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 def conv1d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x,
+    filters,
+    strides,
+    padding,
+    output_shape=None,
+    data_format="NWC",
+    dilations=1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ):
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
@@ -553,7 +560,7 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
 
@@ -650,7 +657,14 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 def conv2d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x,
+    filters,
+    strides,
+    padding,
+    output_shape=None,
+    data_format="NHWC",
+    dilations=1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ):
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
@@ -693,7 +707,7 @@ def depthwise_conv2d(
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
     Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
@@ -792,7 +806,7 @@ def conv3d(
     padding: str,
     data_format: str = "NDHWC",
     dilations: int = 1,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
 
@@ -844,14 +858,14 @@ def conv3d(
 @handle_out_argument
 @handle_nestable
 def conv3d_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], 
-    filters: Union[ivy.Array, ivy.NativeArray], 
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]], 
-    padding: Union[str, List[int]], 
-    output_shape: Union[ivy.Array, ivy.NativeArray] = None, 
-    data_format: str = "NDHWC", 
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    padding: Union[str, List[int]],
+    output_shape: Union[ivy.Array, ivy.NativeArray] = None,
+    data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
 
@@ -886,7 +900,7 @@ def conv3d_transpose(
     >>> filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])
     >>> y = ivy.conv3d_transpose(x, filters, strides=2, padding='SAME')
     >>> print(y.shape)
-    (1, 5, 55, 55, 6)  
+    (1, 5, 55, 55, 6)
 
     With :code:`ivy.NativeArray` input:
 
