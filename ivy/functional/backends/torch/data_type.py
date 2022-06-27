@@ -84,10 +84,14 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
 
 
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
+    if isinstance(type, torch.Tensor):
+        type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
+    if isinstance(type, torch.Tensor):
+        type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
 
 
