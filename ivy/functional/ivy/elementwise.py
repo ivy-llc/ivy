@@ -1116,8 +1116,8 @@ def ceil(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     
-    Functional Examples
-    -------------------
+    Examples
+    --------
     
     With :code:`ivy.Array` input:
     
@@ -1154,26 +1154,6 @@ def ceil(
     {
         a: ivy.array([3., 1., -1.]),
         b: ivy.array([6., -3., 0., 6.])
-    }
-    
-    Instance Method Examples
-    ------------------------
-    
-    Using :code:`ivy.Array` instance method:
-    
-    >>> x = ivy.array([5.5, -2.5, 1.5, -0])
-    >>> y = x.ceil()
-    >>> print(y)
-    ivy.array([ 6., -2.,  2.,  0.])
-    
-    Using :code:`ivy.Container` instance method:
-    
-    >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]), b=ivy.array([5.4, -3.2, 5.2]))
-    >>> y = x.ceil()
-    >>> print(y)
-    {
-        a: ivy.array([3., 1., -1.]),
-        b: ivy.array([6., -3., 6.])
     }
     """
     return current_backend(x).ceil(x, out=out)
