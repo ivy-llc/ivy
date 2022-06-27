@@ -1128,7 +1128,7 @@ def dtype_and_values(
             set(ivy.all_dtypes).difference(set(available_dtypes))
         )
         pairs = ivy.promotion_table.keys()
-        dtypes = [pair for pair in pairs if not any([d in pair for d in \
+        dtypes = [pair for pair in pairs if not any([d in pair for d in
                                                      unwanted_types])]
         dtype = list(draw(st.sampled_from(dtypes)))
         if n_arrays > 2:
