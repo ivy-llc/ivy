@@ -684,8 +684,9 @@ def test_array_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-    # change all data types so that they are supported by this framework
-    # input_dtype = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtype]
+    if "dtype" in all_as_kwargs_np and \
+            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+        return
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -1109,22 +1110,26 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
-        shape=None,
+        shape=None, shared_dtype=False,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
     if n_arrays == 1:
-        types = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(types)), 1))
+        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+    elif shared_dtype:
+        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        dtype = [dtype[0] for _ in range(n_arrays)]
     else:
         unwanted_types = set(ivy.invalid_dtypes).union(
             set(ivy.all_dtypes).difference(set(available_dtypes))
         )
         pairs = ivy.promotion_table.keys()
-        types = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
-        dtype = list(draw(st.sampled_from(types)))
-    if n_arrays == 3:
-        dtype.append(dtype[0])
+        dtypes = [pair for pair in pairs if not any([d in pair for d in unwanted_types])]
+        dtype = list(draw(st.sampled_from(dtypes)))
+        if n_arrays > 2:
+            dtype += [dtype[i%2] for i in range(n_arrays - 2)]
     if shape:
         shape = draw(shape)
     else:
