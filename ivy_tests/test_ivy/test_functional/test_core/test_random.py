@@ -121,8 +121,7 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
 )
-def test_randint(data, shape, dtype, as_variable, device, out,
-    call):
+def test_randint(data, shape, dtype, as_variable, device, call):
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype))
     if (
@@ -142,7 +141,6 @@ def test_randint(data, shape, dtype, as_variable, device, out,
         k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
     }
     kwargs["shape"] = shape
-
     ret = ivy.randint(**kwargs, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
