@@ -56,7 +56,7 @@ class ContainerWithGeneral(ContainerBase):
     def all_equal(
         self,
         equality_matrix: bool = False
-    ) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
+    ):
         """Determines whether the inputs are all equal.
 
         Parameters
