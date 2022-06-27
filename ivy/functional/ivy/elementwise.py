@@ -2487,11 +2487,11 @@ def not_equal(
 
     With :code:`ivy.Array` inputs:
 
-    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x1 = ivy.zeros(4)
     >>> x2 = ivy.array([1, 0, 0, -1])
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
-    ivy.array([False, False, True, True])
+    ivy.array([True, False, False, True])
 
     >>> x1 = ivy.array([1, 0, 1, 0])
     >>> x2 = ivy.array([0, 1, 0, 1])
