@@ -47,7 +47,7 @@ def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> J
 def flip(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret

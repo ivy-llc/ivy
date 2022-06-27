@@ -256,7 +256,10 @@ def random_crop(
 @handle_out_argument
 @handle_nestable
 def linear_resample(
-    x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    num_samples: int,
+    axis: int = -1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 

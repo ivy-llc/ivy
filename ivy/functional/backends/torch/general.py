@@ -119,7 +119,10 @@ def cumsum(x: torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
 
 
 def cumprod(
-    x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)

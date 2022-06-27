@@ -31,7 +31,7 @@ def arange(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
     specified.
@@ -71,7 +71,9 @@ def arange(
         same sign, and length 0 otherwise.
 
     """
-    return current_backend().arange(start, stop, step, dtype=dtype, device=device, out=out)
+    return current_backend().arange(
+        start, stop, step, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -84,7 +86,7 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
@@ -117,7 +119,7 @@ def zeros(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with zeros.
 
@@ -159,7 +161,7 @@ def ones(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ones.
 
@@ -201,7 +203,7 @@ def full_like(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x``.
@@ -234,7 +236,9 @@ def full_like(
     ivy.array([1, 1, 1, 1, 1, 1])
 
     """
-    return current_backend(x).full_like(x, fill_value, dtype=dtype, device=device, out=out)
+    return current_backend(x).full_like(
+        x, fill_value, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -247,7 +251,7 @@ def ones_like(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ones and having the same shape as an input array
     ``x``.
@@ -289,7 +293,7 @@ def zeros_like(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
@@ -325,7 +329,9 @@ def zeros_like(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+def tril(
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
@@ -352,7 +358,9 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Arr
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+def triu(
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     Parameters
@@ -386,7 +394,7 @@ def empty(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a new array of given shape and type, filled with zeros.
 
@@ -419,7 +427,7 @@ def empty_like(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
 
@@ -455,7 +463,7 @@ def eye(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
 
@@ -635,7 +643,7 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
 
@@ -670,7 +678,9 @@ def full(
                [10., 10.]])
 
     """
-    return current_backend().full(shape, fill_value, dtype=dtype, device=device, out=out)
+    return current_backend().full(
+        shape, fill_value, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
