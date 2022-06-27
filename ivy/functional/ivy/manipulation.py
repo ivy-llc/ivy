@@ -552,6 +552,23 @@ def squeeze(
     >>> print(ivy.squeeze(x).shape)
     (2, 2)
 
+    >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
+    >>> print(x.shape)
+    (1, 2, 1, 3)
+    >>> print(ivy.squeeze(x, axis=2).shape)
+    (1, 2, 3)
+
+    >>> x = ivy.array([[[0], [1], [2]]])
+    >>> print(x.shape)
+    (1, 3, 1)
+    >>> print(ivy.squeeze(x))
+    [0, 1, 2]
+    >>> print(ivy.squeeze(x, axis=0))
+    [[0], [1], [2]]
+    >>> print(ivy.squeeze(x, axis=2))
+    [[0, 1, 2]]
+    >>> print(ivy.squeeze(x, axis=(0, 2)))
+    [0, 1, 2]
     """
     return current_backend(x).squeeze(x, axis, out=out)
 
