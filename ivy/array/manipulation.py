@@ -63,7 +63,6 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.roll(1)
         >>> print(y)
