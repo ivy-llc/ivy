@@ -1,8 +1,6 @@
 # global
 import numpy as np
 
-# local
-
 
 def argsort(
     x: np.ndarray, axis: int = -1, descending: bool = False, stable: bool = True
