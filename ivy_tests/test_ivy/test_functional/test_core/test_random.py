@@ -129,7 +129,6 @@ def test_randint(data, shape, dtype, as_variable, device, out,
         call in [helpers.mx_call, helpers.torch_call]
         and as_variable
         or dtype == "uint64"
-        or dtype == "uint32"
         or call == helpers.torch_call
         and dtype[0] == "u"
     ):
@@ -144,13 +143,13 @@ def test_randint(data, shape, dtype, as_variable, device, out,
     }
     kwargs["shape"] = shape
 
-    ret = ivy.randint(**kwargs, device=device, out=out)
+    ret = ivy.randint(**kwargs, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, **kwargs, device=device, out=out)
+    ret_np = call(ivy.randint, **kwargs, device=device)
     assert np.min((ret_np < high).astype(np.int64)) == 1
     assert np.min((ret_np >= low).astype(np.int64)) == 1
 
