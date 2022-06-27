@@ -21,5 +21,3 @@ class ArrayWithNorms(abc.ABC):
         return ivy.layer_norm(
             self, normalized_idxs, epsilon, scale, offset, new_std, out=out
         )
-
-
