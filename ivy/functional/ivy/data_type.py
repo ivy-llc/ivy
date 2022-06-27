@@ -1,6 +1,5 @@
 # global
 import math
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable
@@ -776,31 +775,6 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
-    """Converts a data type from one backend framework representation to another.
-
-    Parameters
-    ----------
-    dtype_in
-        The data-type to convert, in the specified backend representation
-    backend
-        The backend framework the dtype_in is represented in.
-
-    Returns
-    -------
-    ret
-        The data-type in the current ivy backend format
-
-    """
-    valid_backends = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-    if backend not in valid_backends:
-        raise Exception(
-            "Invalid backend passed, must be one of {}".format(valid_backends)
-        )
-    ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
-    return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
-
-
 @handle_nestable
 def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     """Returns the supported data types of the current backend's function.
@@ -818,8 +792,7 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh_valid_types = ivy.function_supported_dtypes(ivy.acosh)
-    >>> print(acosh_valid_types)
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
     ('int8', 'int16', 'int32', 'int64', 'uint8', \
      'bfloat16', 'float32', 'float64', 'bool')
     """
@@ -831,7 +804,8 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable) -> ivy.Dtype:
+def function_unsupported_dtypes(fn: Callable) -> Tuple:
+
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -847,15 +821,21 @@ def function_unsupported_dtypes(fn: Callable) -> ivy.Dtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh_invalid_types = ivy.function_unsupported_dtypes(ivy.acosh)
-    >>> print(acosh_invalid_types)
+    >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16', 'uint16', 'uint32', 'uint64')
     """
+    unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
-        return fn.unsupported_dtypes + ivy.invalid_dtypes
-    else:
-        return ivy.invalid_dtypes
-    return ivy.as_ivy_dtype(fn.unsupported_dtypes)
+        fn_unsupported_dtypes = fn.unsupported_dtypes
+        if isinstance(fn_unsupported_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+            if "all" in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes["all"]
+        else:
+            unsupported_dtypes += fn_unsupported_dtypes
+    return tuple(set(unsupported_dtypes))
 
 
 def promote_types(
