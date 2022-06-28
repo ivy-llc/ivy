@@ -2487,17 +2487,31 @@ def not_equal(
 
     With :code:`ivy.Array` inputs:
 
-    >>> x1 = ivy.zeros(4)
+    >>> x1 = ivy.array([1, 0, 1, 1])
     >>> x2 = ivy.array([1, 0, 0, -1])
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([False, False, True, True])
 
     >>> x1 = ivy.array([1, 0, 1, 0])
     >>> x2 = ivy.array([0, 1, 0, 1])
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     ivy.array([True, True, True, True])
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out = y)
+    >>> print(y)
+    ivy.array([1., 1., 1., 1.])
+
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.not_equal(x1, x2, out = x1)
+    >>> print(y)
+    ivy.array([1, 1, 1, 1])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -2512,6 +2526,20 @@ def not_equal(
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     ivy.array([True, True])
+
+    >>> x1 = ivy.native_array([1, -1, 1, -1])
+    >>> x2 = ivy.native_array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out = y)
+    >>> print(y)
+    ivy.array([1., 1., 1., 1.])
+
+
+    >>> x1 = ivy.native_array([1, -1, 1, -1])
+    >>> x2 = ivy.native_array([0, -1, 1, 0])
+    >>> y = ivy.not_equal(x1, x2, out = x1)
+    >>> print(y)
+    ivy.array([1, 1, 1, 1])
 
     With :code:`ivy.Container` input:
 
