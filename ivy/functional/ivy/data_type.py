@@ -813,7 +813,6 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
 
 @handle_nestable
 def function_unsupported_dtypes(fn: Callable) -> Tuple:
-
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
