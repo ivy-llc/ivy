@@ -99,10 +99,6 @@ def test_expand_dims(
     seed,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     np.random.seed(seed)
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
@@ -150,10 +146,6 @@ def test_flip(
     seed,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     np.random.seed(seed)
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
@@ -199,9 +191,6 @@ def test_permute_dims(
     seed,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
 
     np.random.seed(seed)
 
@@ -252,10 +241,6 @@ def test_reshape(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # draw a valid reshape shape
@@ -302,10 +287,6 @@ def test_roll(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     ndim = len(x.shape)
 
@@ -374,10 +355,6 @@ def test_squeeze(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     squeezable_axes = [i for i, side in enumerate(x.shape) if side == 1]
 
@@ -434,10 +411,6 @@ def test_stack(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     xs = [
         data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype[i]))
         for i in range(num_arrays)
@@ -489,7 +462,6 @@ def test_repeat(
     instance_method,
     fw,
 ):
-
     # smoke for torch
     # smoke for tensorflow as well, since it was throwing an error
     # as unint16 not implemented in Tile or something
@@ -548,10 +520,6 @@ def test_tile(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # tensorflow needs that reps is exactly of same dimensions as the input
@@ -608,10 +576,6 @@ def test_constant_pad(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     pads = [
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
@@ -661,10 +625,6 @@ def test_zero_pad(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     pads = [
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
@@ -712,10 +672,6 @@ def test_swapaxes(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     valid_axes = st.integers(0, len(x.shape) - 1)
     axis0 = data.draw(valid_axes)
