@@ -91,8 +91,10 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
     target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
     assert ret.shape == tuple(target_shape)
     # value test
+    start_np = ivy.to_numpy(start)
+    stop_np = ivy.to_numpy(stop)
     ivy.set_backend("numpy")
-    np_ret = ivy.linspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, axis)
+    np_ret = ivy.linspace(start_np, stop_np, num, axis)
     ivy.unset_backend()
     assert np.allclose(
         call(ivy.linspace, start, stop, num, axis, device=device),
@@ -168,8 +170,6 @@ def test_from_dlpack(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -190,8 +190,10 @@ def test_from_dlpack(
 # meshgrid
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_int_dtypes, st.shared(st.integers(1, 3), key="num_arrays"),
-        shared_dtype=True),
+        ivy_np.valid_int_dtypes,
+        st.shared(st.integers(1, 3), key="num_arrays"),
+        shared_dtype=True,
+    ),
     as_variable=st.booleans(),
     num_positional_args=st.shared(st.integers(1, 3), key="num_arrays"),
     native_array=st.booleans(),
@@ -247,8 +249,6 @@ def test_ones_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -287,8 +287,6 @@ def test_zeros_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,

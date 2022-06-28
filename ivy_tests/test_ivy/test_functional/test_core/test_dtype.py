@@ -91,9 +91,6 @@ def test_broadcast_to(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
@@ -167,7 +164,7 @@ def test_dtype_bits(
         fw,
         "dtype_bits",
         dtype_in=dtype,
-        test_values = False,
+        test_values=False,
     )
     if not ivy.exists(ret):
         return
@@ -175,70 +172,93 @@ def test_dtype_bits(
     assert num_bits == num_bits_np
 
 
+@st.composite
+def _array_or_type(draw, float_or_int):
+    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
+        float_or_int
+    ]
+    return draw(
+        st.sampled_from(
+            (
+                draw(helpers.dtype_and_values(valid_dtypes, 1)),
+                draw(st.sampled_from(valid_dtypes)),
+            )
+        )
+    )
+
+
 # finfo
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    type=_array_or_type("float"),
     num_positional_args=helpers.num_positional_args(fn_name="finfo"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
 )
 def test_finfo(
-    dtype_and_x,
-    as_variable,
+    type,
     num_positional_args,
-    native_array,
-    container,
-    instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if isinstance(type, str):
+        input_dtype = type
+    else:
+        input_dtype, x = type
+        type = np.array(x, dtype=input_dtype)
+    ret = helpers.test_array_function(
         input_dtype,
-        as_variable,
+        False,
         False,
         num_positional_args,
-        native_array,
-        container,
-        instance_method,
+        False,
+        False,
+        False,
         fw,
         "finfo",
-        x=x,
+        type=type,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    mach_lims, mach_lims_np = ret
+    assert mach_lims.min == mach_lims_np.min
+    assert mach_lims.max == mach_lims_np.max
+    assert mach_lims.eps == mach_lims_np.eps
+    assert mach_lims.bits == mach_lims_np.bits
 
 
 # iinfo
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_int_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    type=_array_or_type("int"),
     num_positional_args=helpers.num_positional_args(fn_name="iinfo"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
 )
 def test_iinfo(
-    dtype_and_x,
-    as_variable,
+    type,
     num_positional_args,
-    native_array,
-    container,
-    instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if isinstance(type, str):
+        input_dtype = type
+    else:
+        input_dtype, x = type
+        type = np.array(x, dtype=input_dtype)
+    ret = helpers.test_array_function(
         input_dtype,
-        as_variable,
+        False,
         False,
         num_positional_args,
-        native_array,
-        container,
-        instance_method,
+        False,
+        False,
+        False,
         fw,
         "iinfo",
-        x=x,
+        type=type,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    mach_lims, mach_lims_np = ret
+    assert mach_lims.min == mach_lims_np.min
+    assert mach_lims.max == mach_lims_np.max
+    assert mach_lims.dtype == mach_lims_np.dtype
+    assert mach_lims.bits == mach_lims_np.bits
 
 
 # is_float_dtype
@@ -265,9 +285,6 @@ def test_is_float_dtype(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
@@ -307,9 +324,6 @@ def test_is_int_dtype(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
