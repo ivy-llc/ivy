@@ -150,7 +150,7 @@ class ContainerWithManipulation(ContainerBase):
         with minimal changes.
 
         Examples
-        -------- 
+        --------
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -161,7 +161,9 @@ class ContainerWithManipulation(ContainerBase):
             a: ivy.array([2., 0., 1.]),
             b: ivy.array([5., 3., 4.])
         }
+
         With multiple :code:`ivy.Container` inputs:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
         >>> shift = ivy.Container(a=1, b=-1)
@@ -199,10 +201,9 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.roll. This method simply wraps the
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
-        
+
         Examples
-        --------
-        
+        --------       
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.roll(1)
         >>> print(y)
