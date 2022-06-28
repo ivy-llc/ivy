@@ -28,7 +28,6 @@ from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
 from .wrapping import add_ivy_array_instance_methods
-from hypothesis import seed
 
 
 def _native_wrapper(f):
