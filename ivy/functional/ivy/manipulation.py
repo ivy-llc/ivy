@@ -720,7 +720,6 @@ def clip(
     }
 
     """
-
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
 
