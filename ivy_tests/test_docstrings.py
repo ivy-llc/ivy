@@ -51,7 +51,7 @@ def test_docstrings(backend):
     #         )
     #     )
     y = ivy.randint(0, 9, 1)
-    git adprint(y)
+    print(y)
 
 
 
