@@ -2966,7 +2966,6 @@ def square(
     ret
         an array containing the evaluated result for each element in ``x``.
 
-
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_
@@ -2976,8 +2975,8 @@ def square(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
     
     With :code:`ivy.Array` input:
     
