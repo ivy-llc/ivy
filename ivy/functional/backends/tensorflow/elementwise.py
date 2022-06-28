@@ -46,8 +46,7 @@ def add(
 
 
 def asin(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.asin(x)
-    return ret
+    return tf.asin(x)
 
 
 def asinh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
