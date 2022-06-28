@@ -90,7 +90,6 @@ class ArrayWithManipulation(abc.ABC):
 
     def clip(
         self: ivy.Array,
-        x: Union[ivy.Array, ivy.NativeArray],
         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
         *,
