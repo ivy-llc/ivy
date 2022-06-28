@@ -2956,7 +2956,7 @@ def square(
     Parameters
     ----------
     x
-        Input array.
+        Input array. Should have a numeric data type.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
