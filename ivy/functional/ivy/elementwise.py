@@ -2506,7 +2506,6 @@ def not_equal(
     >>> print(y)
     ivy.array([1., 1., 1., 1.])
 
-
     >>> x1 = ivy.array([1, -1, 1, -1])
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out = x1)
@@ -2533,7 +2532,6 @@ def not_equal(
     >>> ivy.not_equal(x1, x2, out = y)
     >>> print(y)
     ivy.array([1., 1., 1., 1.])
-
 
     >>> x1 = ivy.native_array([1, -1, 1, -1])
     >>> x2 = ivy.native_array([0, -1, 1, 0])
