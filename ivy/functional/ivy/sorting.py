@@ -136,6 +136,73 @@ def sort(
         An array with the same dtype and shape as `values`, with the elements sorted
         along the given `axis`.
 
+<<<<<<< Updated upstream
+=======
+    Functional Examples
+    -------------------
+
+    With：code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([7, 8, 6])
+    >>> y = ivy.sort(x)
+    >>> print(y)
+    ivy.array([6, 7, 8])
+
+    >>> x = ivy.array([[[8.9,0], [19,5]], [[6,0.3], [19,0.5]]])
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+    ivy.array([[[ 8.9,  0. ], [19. ,  5. ]],
+       [[ 6. ,  0.3], [19. ,  0.5]]])
+
+    With：code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
+    >>> y = ivy.sort(x, 0, True, False)
+    >>> print(y)
+    ivy.array([3.2, 2.5, 1.5, 0.7])
+
+    >>> x = ivy.native_array([[[8.9, 0], [19, 5]],\
+                                [[6, 0.3], [19, 0.5]]])
+    >>> y = ivy.sort(x, 0, True, False)
+    >>> print(y)
+    ivy.array([[[ 8.9,  0.3],[19. ,  5. ]],[[ 6. ,  0. ],[19. ,  0.5]]])
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
+                            b=ivy.array([[9, 0.7], [0.4, 0]]))
+    >>> y = ivy.sort(x, 0, True, False)
+    >>> print(y)
+    {
+        a: ivy.array([8., 6., 0.5]),
+        b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.native_array` input:
+
+    >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]),\
+                b=ivy.native_array([[9, 0.7], [0.4, 0]]))
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+
+    {
+        a: ivy.array([8., 6., 0.5]),
+        b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+    With a mix of :code:`ivy.Container`and :code:`ivy.Array`
+                            and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
+                b=ivy.native_array([[9, 0.7], [0.4, 0]]))
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+    {
+        a: ivy.array([8., 6., 0.5]),
+        b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+>>>>>>> Stashed changes
     """
     return current_backend(x).sort(x, axis, descending, stable, out=out)
 
