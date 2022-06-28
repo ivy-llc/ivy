@@ -148,11 +148,11 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.roll. This method simply wraps the
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
-        
+
         Examples
-        --------
-        
+        -------- 
         With one :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_roll(x, 1)
