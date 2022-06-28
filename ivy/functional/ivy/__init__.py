@@ -43,5 +43,7 @@ from . import sorting
 from .sorting import *
 from . import statistical
 from .statistical import *
+from . import transformations
+from .transformations import *
 from . import utility
 from .utility import *
