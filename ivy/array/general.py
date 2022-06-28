@@ -13,9 +13,9 @@ class ArrayWithGeneral(abc.ABC):
             equality_matrix: bool = False
     ):
         """
-        ivy.Container static method variant of ivy.all_equal. This method simply wraps the
-        function, and so the docstring for ivy.all_equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.all_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.all_equal also applies to this method with minimal changes.
 
         Examples
         --------
