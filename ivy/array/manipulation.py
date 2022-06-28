@@ -103,7 +103,6 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         >>> y = x.clip(1., 5.)
         >>> print(y)
