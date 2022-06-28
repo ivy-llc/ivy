@@ -429,7 +429,7 @@ class ContainerWithManipulation(ContainerBase):
                               b=ivy.array([3., 4., 5.]))
         >>> x_min = ivy.Container(a=1, b=-1)
         >>> x_max = ivy.Container(a=1, b=-1)
-        >>> y = ivy.Container.static_roll(x, x_min,x_max)
+        >>> y = ivy.Container.static_roll(x, x_min, x_max)
         >>> print(y)
         {
             a: ivy.array([1., 1., 1.]),
