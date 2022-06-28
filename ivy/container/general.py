@@ -77,7 +77,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, True, True]),
@@ -101,7 +101,7 @@ class ContainerWithGeneral(ContainerBase):
                                 b=ivy.array([1, 2, 3]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),\
                                 b=ivy.array([1, 2, 3]))
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, False]),
@@ -124,7 +124,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, True, True]),
@@ -148,7 +148,7 @@ class ContainerWithGeneral(ContainerBase):
                                 b=ivy.native_array([1, 0, 0, 1]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \
                                 b=ivy.array([1, 0, -1, -1]))
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, True, True]),
@@ -162,7 +162,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, True, True]),
@@ -175,7 +175,7 @@ class ContainerWithGeneral(ContainerBase):
                                 b=ivy.native_array([1, 0, 0, 1]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \
                                 b=ivy.array([1, 0, -1, -1]))
-        >>> y = ivy.Container.equal(x1, x2)
+        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
             a: ivy.array([True, True, True, True]),
