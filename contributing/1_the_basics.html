@@ -254,6 +254,13 @@ sometimes you will see that changes to upstream have caused conflicts with your 
 In this case, you will need to either resolve these conflicts in the browser,
 or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.</p>
+<p>You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there
+are merge conflicts. In order to avoid tedious merge conflict resolution, you can try ‘stashing’ your local changes,
+then pulling from master. Once your branch is up-to-date with master, you can reinstate the most recently stashed
+changes, commit and push to master with no conflicts. The corresponding commands are <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">stash</span></code> -&gt;
+<code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span></code> -&gt; <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> -&gt; <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">stash</span> <span class="pre">apply</span> <span class="pre">stash&#64;{0}</span></code>. Note that this only works for uncommitted
+changes (staged and unstaged) and untracked files won’t be stashed. For a comprehensive explanation of git stashing,
+check out this <a class="reference external" href="https://www.atlassian.com/git/tutorials/saving-changes/git-stash">Atlassian tutorial</a>.</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/TFMPihytg9U" class="video">
