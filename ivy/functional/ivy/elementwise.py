@@ -1241,7 +1241,6 @@ def sign(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1275,9 +1274,76 @@ def sqrt(
     ret
         an array containing the square root of each element in ``x``. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
+    Functional Examples
+    -------------------
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([0, 4, 8])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([0.  , 2.  , 2.83])
+
+    >>> x = ivy.array([1, 2, 4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sqrt(x, out=y)
+    ivy.array([1.  , 1.41, 2.  ])
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([40., 24., 100.])
+    >>> ivy.sqrt(x, out=x)
+    ivy.array([ 6.32,  4.9 , 10.  ])
+
+    >>> x = ivy.native_array([-50., 1000., 34.])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([  nan, 31.6 ,  5.83])
+
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49,1], [0,20]]))
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    {
+        a: ivy.array([6.63, 7.48, 13.]),
+        b: ivy.array([[7., 1.],
+                      [0., 4.47]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([[1., 2.],  [3., 4.]])
+    >>> y = x.sqrt()
+    >>> print(y)
+    ivy.array([[1.  , 1.41],
+           [1.73, 2.  ]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
+    >>> y = x.sqrt()
+    >>> print(y)
+    {
+        a: ivy.array([0., 10., 5.2]),
+        b: ivy.array([9.64, 7.35, 5.])
+    }
     """
-    return current_backend(x).sqrt(x, out=out)
+    return _cur_backend(x).sqrt(x, out=out)
 
 
 @to_native_arrays_and_back
