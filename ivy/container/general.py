@@ -57,25 +57,13 @@ class ContainerWithGeneral(ContainerBase):
         x,
         equality_matrix: bool = False
     ):
-        """Determines whether the inputs are all equal.
+        """
+        ivy.Container instance method variant of ivy.all_equal. This method simply wraps the
+        function, and so the docstring for ivy.all_equal also applies to this method
+        with minimal changes.
 
-        Parameters
-        ----------
-        xs
-            inputs to compare.
-        equality_matrix
-            Whether to return a matrix of equalities comparing each
-            input with every other.
-            Default is False.
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not the inputs are equal, or matrix array of booleans
-            if equality_matrix=True is set.
-
-        Instance Method Examples
-        ------------------------
+        Examples
+        --------
 
         With one :code:`ivy.Container` instances:
 
@@ -89,14 +77,12 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
-        >>> x2 = ivy.array([1, -1, 0, 0])
-        >>> y = x1.all_equal(x2, equality_matrix= False)
+        >>> x2 = ivy.array([1, 0, 1, 1])
+        >>> y = ivy.Container.equal(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([[True, False],\
-                         [False, True]])
-            b: ivy.array([[True, True],\
-                         [True, True]]),
+            a: ivy.array([True, True, True, True]),
+            b: ivy.array([True, False, False, False])
         }
 
         With multiple :code:`ivy.Container` instances:
@@ -112,17 +98,15 @@ class ContainerWithGeneral(ContainerBase):
             b: true
         }
 
-        >>> x1 = ivy.Container(a=ivy.array([1, 0, 0]),\
-                                b=ivy.native_array([1, 0, 1]))
-        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
-                                b=ivy.native_array([1, 2, 3]))
-        >>> y = x1.all_equal(x2, equality_matrix= False)
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),\
+                                b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),\
+                                b=ivy.array([1, 2, 3]))
+        >>> y = ivy.Container.equal(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([[True, True],\
-                         [True, True]]),
-            b: ivy.array([[True, False],\
-                         [False, True]])
+            a: ivy.array([True, True, False]),
+            b: ivy.array([True, True, True])
         }
 
         Static Method Examples
@@ -139,6 +123,15 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
 
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
+        >>> x2 = ivy.array([1, 0, 1, 1])
+        >>> y = ivy.Container.equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True, True]),
+            b: ivy.array([True, False, False, False])
+        }
+
         With multiple :code:`ivy.Container` input:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
@@ -150,6 +143,44 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: true,
             b: false
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
+                                b=ivy.native_array([1, 0, 0, 1]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \
+                                b=ivy.array([1, 0, -1, -1]))
+        >>> y = ivy.Container.equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True, True]),
+            b: ivy.array([True, True, False, False])
+        }
+
+        Container Static Method Examples
+        --------------------------------
+
+        With one :code:`ivy.Container` input:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
+        >>> x2 = ivy.array([1, 0, 1, 1])
+        >>> y = ivy.Container.equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True, True]),
+            b: ivy.array([True, False, False, False])
+        }
+
+        With multiple :code:`ivy.Container` input:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
+                                b=ivy.native_array([1, 0, 0, 1]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \
+                                b=ivy.array([1, 0, -1, -1]))
+        >>> y = ivy.Container.equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True, True]),
+            b: ivy.array([True, True, False, False])
         }
 
         """

@@ -524,9 +524,8 @@ def all_equal(
         Boolean, whether or not the inputs are equal, or matrix array of booleans if
         equality_matrix=True is set.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :code:`Number` inputs:
 
     >>> x1 = 1.2
@@ -535,33 +534,15 @@ def all_equal(
     >>> print(y)
     False
 
-    >>> x1 = 1
-    >>> x2 = 1.0
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    True
-
     With :code:`ivy.Array` inputs:
-
-    >>> x1 = ivy.array([1, 0, 1, 0, -1, -1])
-    >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    False
 
     >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
     >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
+    >>> y = ivy.all_equal(x1, x2, equality_matrix=True)
     >>> print(y)
-    True
+    ivy.array([[ True,  True], [ True,  True]])
 
     With :code:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([1, 0, 1, 0, -1, -1])
-    >>> x2 = ivy.native_array([1, 1, 0, 0, 1, -1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    False
 
     >>> x1 = ivy.native_array([1, 1, 0, 0, 1, -1])
     >>> x2 = ivy.native_array([1, 1, 0, 0, 1, -1])
@@ -570,16 +551,6 @@ def all_equal(
     True
 
     With one :code:`ivy.Container` inputs:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
-                            b=ivy.array([1, 0, -1, -1]))
-    >>> x2 = ivy.array([1, 0, 1, 1])
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    {
-        a: true,
-        b: false
-    }
 
     >>> x1 = ivy.Container(a=ivy.native_array([0, 0, -1, 1, 0]), \
                             b=ivy.array([0, 0, -1, 1, 0]))
@@ -602,56 +573,6 @@ def all_equal(
     {
         a: true,
         b: false
-    }
-
-    >>> x1 = ivy.Container(a=ivy.native_array([1, 1, 1, 1]), \
-                            b=ivy.native_array([0, 0, 0, 1]))
-    >>> x2 = ivy.Container(a=ivy.native_array([0, 0, 0, 1]), \
-                            b=ivy.native_array([1, 1, 1, 1]))
-    >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
-    >>> print(y)
-    {
-        a: false,
-        b: false
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instances:
-
-    >>> x1 = ivy.native_array([1, 0, 1, 0, -1, -1])
-    >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
-    >>> y = x1.all_equal(x2, equality_matrix= False)
-    >>> print(y)
-    False
-
-    >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
-    >>> x2 = ivy.native_array([1, 1, 0, 0, 1, -1])
-    >>> y = x1.all_equal(x2, equality_matrix= False)
-    >>> print(y)
-    True
-
-    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \
-                            b=ivy.array([1, 0, -1, -1]))
-    >>> x2 = ivy.array([1, 0, 1, 1])
-    >>> y = x1.all_equal(x2, equality_matrix= False)
-    >>> print(y)
-    {
-        a: true,
-        b: false
-    }
-
-    >>> x1 = ivy.Container(a=ivy.native_array([0, 0, -1, 1, 0]), \
-                            b=ivy.array([0, 0, -1, 1, 0]))
-    >>> x2 = ivy.array([0, 0, -1, 1, 0])
-    >>> y = x1.all_equal(x2, equality_matrix= False)
-    >>> print(y)
-    {
-        a: true,
-        b: true
     }
 
     """
