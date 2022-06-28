@@ -535,8 +535,6 @@ def test_from_dlpack(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -727,8 +725,6 @@ def test_ones_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -881,8 +877,6 @@ def test_zeros_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
