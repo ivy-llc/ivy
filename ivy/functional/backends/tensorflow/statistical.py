@@ -6,8 +6,30 @@ from typing import Tuple, Union, Optional
 # local
 import ivy
 
+
 # Array API Standard #
 # -------------------#
+
+
+def max(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
+
+
+def mean(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def min(
@@ -16,27 +38,6 @@ def min(
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
-
-
-def sum(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: tf.DType = None,
-    keepdims: bool = False,
-) -> Union[tf.Tensor, tf.Variable]:
-
-    if dtype is None:
-        if x.dtype in [tf.int8, tf.int16, tf.int32]:
-            dtype = tf.int32
-        elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
-            dtype = tf.experimental.numpy.uint32
-        elif x.dtype == tf.int64:
-            dtype = tf.int64
-        elif x.dtype == tf.uint64:
-            dtype = tf.uint64
-    dtype = ivy.as_native_dtype(dtype)
-    return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
 def prod(
@@ -59,25 +60,33 @@ def prod(
     return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
 
 
-def mean(
+def std(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    correction: Union[int, float] = 0.0,
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+    return tf.experimental.numpy.std(x, axis, keepdims)
 
 
-def max(
+def sum(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int]] = None,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    dtype: tf.DType = None,
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
+    if dtype is None:
+        if x.dtype in [tf.int8, tf.int16, tf.int32]:
+            dtype = tf.int32
+        elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
+            dtype = tf.experimental.numpy.uint32
+        elif x.dtype == tf.int64:
+            dtype = tf.int64
+        elif x.dtype == tf.uint64:
+            dtype = tf.uint64
+    dtype = ivy.as_native_dtype(dtype)
+    return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
 def var(
@@ -87,15 +96,6 @@ def var(
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
-
-
-def std(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.std(x, axis, keepdims)
 
 
 # Extra #

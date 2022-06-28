@@ -67,6 +67,7 @@ def test_linear_resample(
     container,
     fw,
 ):
+
     # only float32 is supported
     if input_dtype == "float16" or input_dtype == "float64":
         return
