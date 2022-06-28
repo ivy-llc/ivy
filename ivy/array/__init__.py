@@ -368,6 +368,47 @@ class Array(
     @_native_wrapper
     def __le__(self, other):
         return ivy.less_equal(self._data, other)
+    """
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([6, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x <= y
+    >>> print(z)
+    ivy.array([ False, True, True])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x <= y
+    >>> print(z)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x <= y
+    >>> print(z)
+    {
+        a: ivy.array([[False, True, True],
+                      [False, True, True],
+                      [True, True, True]]),
+        b: ivy.array([[False, True, True],
+                      [True, True, True],
+                      [True, True, True]])
+    }
+    """
 
     @_native_wrapper
     def __eq__(self, other):
