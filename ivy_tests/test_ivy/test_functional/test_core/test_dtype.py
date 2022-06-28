@@ -91,9 +91,6 @@ def test_broadcast_to(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
@@ -288,9 +285,6 @@ def test_is_float_dtype(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
@@ -330,9 +324,6 @@ def test_is_int_dtype(
     instance_method,
     fw,
 ):
-    # smoke this for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_array_function(
         input_dtype,
