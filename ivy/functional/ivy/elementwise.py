@@ -217,7 +217,6 @@ def add(
 
     Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
@@ -3048,7 +3047,6 @@ def tan(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
