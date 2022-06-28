@@ -867,7 +867,6 @@ def test_array_function(
             assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
-
 def test_frontend_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
