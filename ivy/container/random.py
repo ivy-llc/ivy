@@ -58,3 +58,22 @@ class ContainerWithRandom(ContainerBase):
             map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_shuffle(
+        x: Union[ivy.NativeArray,ivy.Container],
+        out: Optional[ivy.Container] = None) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "shuffle",
+            x,
+            out=out,
+        )
+
+    def shuffle(
+        self:ivy.Container,
+        x: Union[ivy.NativeArray,ivy.Container],
+        out: Optional[ivy.Container] = None) -> ivy.Container:   
+        return ContainerBase.static_random_uniform(
+            x,
+            out=out,
+        )
