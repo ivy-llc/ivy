@@ -53,4 +53,3 @@ def softplus(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 def swish(x: np.ndarray) -> np.ndarray:
     return x * (1 / (1 + np.exp(-x)))
-
