@@ -229,7 +229,7 @@ def test_uint8_img_to_float_img(
 # random_crop
 @given(
     shape=st.lists(st.integers(min_value=2, max_value=8), min_size=3, max_size=3),
-    seed=st.integers(min_value=1, max_value=8),
+    data=st.data(),
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="random_crop"),
@@ -238,7 +238,7 @@ def test_uint8_img_to_float_img(
 )
 def test_random_crop(
     shape,
-    seed,
+    data,
     input_dtype,
     as_variable,
     num_positional_args,
@@ -247,6 +247,7 @@ def test_random_crop(
     fw,
 ):
     x = ivy.random_uniform(shape=shape+[3])
+    seed = data.draw(st.none() | st.integers(min_value=1, max_value=8))
     crop_size = [random.randint(1, shape[-3] * 2), random.randint(1, shape[-2] * 2)]
     helpers.test_array_function(
         input_dtype,
