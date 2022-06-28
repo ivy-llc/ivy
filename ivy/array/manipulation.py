@@ -88,6 +88,27 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         return ivy.stack([self._data] + x, axis, out=out)
 
+    def clip(
+        self: ivy.Array,
+        x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> y = x.clip(1., 5.)
+        >>> print(y)
+        ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+        """
+        return ivy.clip(self._data, x_min=x_min, x_max=x_max, out=out)
+
     def repeats(
         self: ivy.Array,
         repeats: Union[int, Iterable[int]],
