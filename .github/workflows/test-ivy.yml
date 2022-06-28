@@ -1,8 +1,5 @@
 name: test-ivy
-on:
-  push:
-  pull_request:
-    types : [opened, reopened, edited]
+on: [push, pull_request]
 jobs:
   run-nightly-tests:
     if: ${{ github.event.label.name!='Function Reformatting' }}
