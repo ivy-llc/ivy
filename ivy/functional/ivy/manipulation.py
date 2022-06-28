@@ -642,7 +642,6 @@ def clip(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
