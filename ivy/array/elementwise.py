@@ -37,7 +37,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.add(y)
@@ -289,7 +288,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tan()
         >>> print(y)

@@ -131,11 +131,39 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Examples
-    --------
+    Funtional Examples
+    ------------------
+
     >>> y = ivy.random_normal(0.0, 2.0)
     >>> print(y)
     ivy.array(0.6444774682897879)
+
+    >>> y = ivy.random_normal(shape=3)
+    >>> print(y)
+    ivy.array([ 0.811, -0.508, -0.564])
+    
+    >>> y = ivy.random_normal(0.0,2.0,device='cpu')
+    >>> print(y)
+    ivy.array(-0.7268672)
+    
+    >>> y = ivy.random_normal(0.7, 1.0, device="cpu", shape=(2, 2))
+    >>> print(y)
+    ivy.array([[1.17 , 0.968],
+               [0.175, 0.064]])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Container` input:
+    
+    >>> y = ivy.Container(a=ivy.random_normal(), \
+                          b=ivy.random_normal(shape=2))
+    >>> print(y)
+    {
+    a: ivy.array(-0.40935726),
+    b: ivy.array([1.54 , 0.556])
+    }
+
     """
     return current_backend().random_normal(mean, std, shape, device=device, out=out)
 

@@ -485,7 +485,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None, /
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
