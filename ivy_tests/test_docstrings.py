@@ -39,17 +39,19 @@ def test_docstrings(backend):
         "num_ivy_arrays_on_dev",
         "function_unsupported_dtypes",
     ]
-    for k, v in ivy.__dict__.copy().items():
-        if k in to_skip or helpers.docstring_examples_run(v):
-            continue
-        success = False
-        failures.append(k)
-    if not success:
-        warnings.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(failures)
-            )
-        )
+    # for k, v in ivy.__dict__.copy().items():
+    #     if k in to_skip or helpers.docstring_examples_run(v):
+    #         continue
+    #     success = False
+    #     failures.append(k)
+    # if not success:
+    #     warnings.warn(
+    #         "the following methods had failing docstrings:\n\n{}".format(
+    #             "\n".join(failures)
+    #         )
+    #     )
+    y = ivy.randint(0, 9, 1)
+    git adprint(y)
 
 
 

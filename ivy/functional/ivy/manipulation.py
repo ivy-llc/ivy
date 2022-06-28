@@ -821,12 +821,12 @@ def split(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.split(x)
     >>> print(y)
-    ivy.array([[1], [2], [3]])
+    [ivy.array([1]),ivy.array([2]),ivy.array([3])]
 
     >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
     >>> y = ivy.split(x, 2, 1, False)
     >>> print(y)
-    ivy.array([[3, 4], [2, 5], [1, 6]])
+    [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]
 
     >>> x = ivy.array([4, 6, 5, 3])
     >>> y = ivy.split(x, [1, 2], 0, True)
@@ -898,12 +898,14 @@ def swapaxes(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
     ivy.array([[0],
                [1],
                [2]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -911,6 +913,7 @@ def swapaxes(
                 [4, 5]],
                [[2, 3],
                 [6, 7]]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 0, 2)
     >>> print(y)
@@ -918,6 +921,7 @@ def swapaxes(
                 [2, 6]],
                [[1, 5],
                 [3, 7]]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 1, 2)
     >>> print(y)
@@ -927,6 +931,7 @@ def swapaxes(
                 [5, 7]]])
 
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -935,6 +940,7 @@ def swapaxes(
                [2]])
     
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -950,13 +956,16 @@ def swapaxes(
     Instance Method Examples
     ------------------------
     Using :code:`ivy.Array` instance method:
+
     >>> x = ivy.array([[0., 1., 2.]])
     >>> y = x.swapaxes(0, 1)
     >>> print(y)
     ivy.array([[0.],
                [1.],
                [2.]])
+
     Using :code:`ivy.Container` instance method:
+
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = x.swapaxes(0, 1)
     >>> print(y)
