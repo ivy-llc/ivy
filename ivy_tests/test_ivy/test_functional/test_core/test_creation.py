@@ -13,6 +13,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # array
+"""
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes),
     from_numpy=st.booleans(),
@@ -34,8 +35,8 @@ def test_array(dtype_and_x, from_numpy, device, call, fw):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
+"""
 
-# asarray
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -45,7 +46,7 @@ def test_array(dtype_and_x, from_numpy, device, call, fw):
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-def test_asarray(
+def test_array(
     dtype_and_x,
     as_variable,
     with_out,
