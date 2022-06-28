@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    types: [labeled, opened, reopened, edited]
     branches: [ "master" ]
 
 jobs:
