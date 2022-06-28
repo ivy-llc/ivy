@@ -458,7 +458,7 @@ def test_array_method(
     num_positional_args_constructor: int,
     fw: str,
     class_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
 ):
@@ -517,7 +517,7 @@ def test_array_method(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-3}
 
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
@@ -575,9 +575,13 @@ def test_array_method(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
 
 
 def test_array_function(
@@ -590,7 +594,7 @@ def test_array_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -854,9 +858,14 @@ def test_array_function(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
 
 
 def test_frontend_function(
