@@ -144,6 +144,36 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_roll(x, 1)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([5., 3., 4.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> shift = ivy.Container(a=1, b=-1)
+        >>> y = ivy.Container.static_roll(x, shift)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([4., 5., 3.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "roll",
             x,
@@ -167,6 +197,21 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.roll(1)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([5., 3., 4.])
+        }
+        """
         return self.static_roll(
             self,
             shift,

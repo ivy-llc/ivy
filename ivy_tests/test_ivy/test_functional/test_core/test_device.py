@@ -12,6 +12,7 @@ import numpy as np
 from numbers import Number
 from hypothesis import strategies as st, given
 import multiprocessing
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -605,15 +606,15 @@ def test_num_arrays_on_dev(num, device):
 @given(num=st.integers(0, 5))
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
-    arrs_on_dev = list(ivy.get_all_ivy_arrays_on_dev(device).values())
-    for arr in arrays:
-        assert arr in arrs_on_dev
+    arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
+    for a in arrays:
+        assert id(a) in arr_ids_on_dev
 
 
 def test_total_mem_on_dev(device):
-    if 'cpu' in device:
+    if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
-    elif 'gpu' in device:
+    elif "gpu" in device:
         gpu_mem = nvidia_smi.nvmlDeviceGetMemoryInfo(device)
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
@@ -624,8 +625,10 @@ def test_gpu_is_availble(fw):
     if ivy.gpu_is_available():
         try:
             nvidia_smi.nvmlInit()
-        except (nvidia_smi.NVMLError_LibraryNotFound,
-                nvidia_smi.NVMLError_DriverNotLoaded):
+        except (
+            nvidia_smi.NVMLError_LibraryNotFound,
+            nvidia_smi.NVMLError_DriverNotLoaded,
+        ):
             assert False
 
     # if gpu is returned not available but can be somehow initialised it must fail
@@ -633,8 +636,10 @@ def test_gpu_is_availble(fw):
         try:
             nvidia_smi.nvmlInit()
             assert False
-        except (nvidia_smi.NVMLError_LibraryNotFound,
-                nvidia_smi.NVMLError_DriverNotLoaded):
+        except (
+            nvidia_smi.NVMLError_LibraryNotFound,
+            nvidia_smi.NVMLError_DriverNotLoaded,
+        ):
             pass
 
 
