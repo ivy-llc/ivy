@@ -801,11 +801,35 @@ def matrix_rank(
         data type determined by :ref:`type-promotion` and must have shape ``(...)``
         (i.e., must have a shape equal to ``shape(x)[:-2]``).
 
-    Examples
+    Functional Examples
     --------
+
+    With :code: 'ivy.Array' inputs:
+
+    1. Full Matrix
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
-    ivy.array(2)
+    ivy.array(2.)
+
+    2. Rank Deficient Matrix
+    >>> x = ivy.array([[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    3. 1 Dimension - rank 1 unless all 0
+    >>> x = ivy.array([[1., 1.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    >>> x = ivy.array([[0., 0.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(0)
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array([2., 1.])
 
     """
     return current_backend(x).matrix_rank(x, rtol, out=out)
