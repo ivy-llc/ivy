@@ -24,16 +24,20 @@ def arange(
     *,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
-):
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
+    ret = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
     if not dtype:
-        if res.dtype == jnp.float64:
-            return res.astype(jnp.float32)
-        elif res.dtype == jnp.int64:
-            return res.astype(jnp.int32)
-    return res
+        if ret.dtype == jnp.float64:
+            return ret.astype(jnp.float32)
+        elif ret.dtype == jnp.int64:
+            return ret.astype(jnp.int32)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def asarray(
@@ -42,7 +46,8 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
-):
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
@@ -52,40 +57,57 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(
+            ret = _to_device(
                 jnp.array(object_in, dtype=dtype, copy=True), device=device
             )
         else:
-            return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+            ret = _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
     else:
         dtype = default_dtype(dtype, object_in)
 
     if copy is True:
-        return _to_device(jnp.array(object_in, dtype=dtype, copy=True), device=device)
+        ret = _to_device(jnp.array(object_in, dtype=dtype, copy=True), device=device)
     else:
-        return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
-
+        ret = _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+    
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 def empty(
     shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(
+    ret = _to_device(
         jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
     )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def empty_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
-
-    return _to_device(jnp.empty_like(x, dtype=dtype), device=device)
+    ret = _to_device(jnp.empty_like(x, dtype=dtype), device=device)
+    
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def eye(
@@ -95,14 +117,19 @@ def eye(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
-    return _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
+    ret = _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x):
+def from_dlpack(x) -> JaxArray:
     return jax_from_dlpack(x)
 
 
@@ -112,11 +139,16 @@ def full(
     *,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(
+    ret = _to_device(
         jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
         device=device,
     )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def full_like(
@@ -125,18 +157,24 @@ def full_like(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
 
-    return _to_device(
+    ret = _to_device(
         jnp.full_like(
             x, fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
         ),
         device=device,
     )
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def linspace(
@@ -148,7 +186,7 @@ def linspace(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
-):
+) -> JaxArray:
     if axis is None:
         axis = -1
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
@@ -165,28 +203,60 @@ def ones(
     shape: Union[int, Tuple[int], List[int]],
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(
+    ret = _to_device(
         jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
     )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
+
+
 
 
 def ones_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
-    return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
+    ret = _to_device(jnp.ones_like(x, dtype=dtype), device=device)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
-def tril(x: JaxArray, k: int = 0) -> JaxArray:
-    return jnp.tril(x, k)
+def tril(
+    x: JaxArray,
+    k: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.tril(x, k)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
-def triu(x: JaxArray, k: int = 0) -> JaxArray:
-    return jnp.triu(x, k)
+def triu(
+    x: JaxArray,
+    k: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.triu(x, k)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def zeros(
@@ -194,19 +264,33 @@ def zeros(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(
+    ret = _to_device(
         jnp.zeros(shape, dtype),
         device=device,
     )
 
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
+
 
 def zeros_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
-    return _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
+    ret = _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 # Extra #
@@ -218,7 +302,7 @@ array = asarray
 
 def logspace(
     start, stop, num, base=10.0, axis=None, *, device: jaxlib.xla_extension.Device
-):
+) -> JaxArray:
     if axis is None:
         axis = -1
     return _to_device(
