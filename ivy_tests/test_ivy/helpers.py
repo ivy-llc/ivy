@@ -517,7 +517,7 @@ def test_array_method(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-3}
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
