@@ -5,6 +5,7 @@ The Basics
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
@@ -153,6 +154,14 @@ sometimes you will see that changes to upstream have caused conflicts with your 
 In this case, you will need to either resolve these conflicts in the browser,
 or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.
+
+You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there
+are merge conflicts. In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes,
+then pulling from master. Once your branch is up-to-date with master, you can reinstate the most recently stashed
+changes, commit and push to master with no conflicts. The corresponding commands are :code:`git stash` ->
+:code:`git fetch` -> :code:`git pull` -> :code:`git stash apply stash@{0}`. Note that this only works for uncommitted
+changes (staged and unstaged) and untracked files won't be stashed. For a comprehensive explanation of git stashing,
+check out this `Atlassian tutorial`_.
 
 **Video**
 
