@@ -178,7 +178,8 @@ def sort(
 
     With a mix of :code:`ivy.Container` and :code:`ivy.native_array` input:
 
-    >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]), b=ivy.native_array([[9, 0.7], [0.4, 0]]))
+    >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]),\
+                b=ivy.native_array([[9, 0.7], [0.4, 0]]))
     >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
 
@@ -190,7 +191,7 @@ def sort(
     With a mix of :code:`ivy.Container`and :code:`ivy.Array` and :code:`ivy.NativeArray` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
-                            b=ivy.native_array([[9, 0.7], [0.4, 0]]))
+                b=ivy.native_array([[9, 0.7], [0.4, 0]]))
     >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
     {
