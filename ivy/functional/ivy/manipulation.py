@@ -508,7 +508,6 @@ def roll(
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([4., 5., 3.])
     }
-
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 
