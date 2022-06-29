@@ -58,6 +58,7 @@ class ContainerWithGeneral(ContainerBase):
     def static_all_equal(
         x1: Iterable[Any],
         x2: Iterable[Any],
+        equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
