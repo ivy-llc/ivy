@@ -9,7 +9,6 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # cross_entropy
 @given(
-    data=st.data(),
     dtype_and_true=helpers.dtype_and_values(
         ivy_np.valid_int_dtypes,
         min_value=0,
@@ -40,7 +39,6 @@ import ivy_tests.test_ivy.helpers as helpers
     instance_method=st.booleans(),
 )
 def test_cross_entropy(
-    data,
     dtype_and_true,
     dtype_and_pred,
     axis,
@@ -78,7 +76,6 @@ def test_cross_entropy(
 
 # binary_cross_entropy
 @given(
-    data=st.data(),
     dtype_and_true=helpers.dtype_and_values(
         ivy_np.valid_int_dtypes,
         min_value=0,
@@ -108,7 +105,6 @@ def test_cross_entropy(
     instance_method=st.booleans(),
 )
 def test_binary_cross_entropy(
-    data,
     dtype_and_true,
     dtype_and_pred,
     epsilon,
@@ -143,7 +139,6 @@ def test_binary_cross_entropy(
 
 # sparse_cross_entropy
 @given(
-    data=st.data(),
     dtype_and_true=helpers.dtype_and_values(
         ivy_np.valid_int_dtypes,
         min_value=0,
@@ -175,7 +170,6 @@ def test_binary_cross_entropy(
     instance_method=st.booleans(),
 )
 def test_sparse_cross_entropy(
-    data,
     dtype_and_true,
     dtype_and_pred,
     axis,
