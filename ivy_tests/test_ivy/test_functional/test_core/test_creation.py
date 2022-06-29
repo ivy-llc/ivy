@@ -2,9 +2,9 @@
 
 # global
 import numpy as np
-import pytest
 from numbers import Number
 from hypothesis import given, strategies as st
+from pyparsing import one_of
 
 # local
 import ivy
@@ -12,92 +12,9 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
-# array
-"""
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes),
-    from_numpy=st.booleans(),
-)
-def test_array(dtype_and_x, from_numpy, device, call, fw):
-    dtype, object_in = dtype_and_x
-    # to numpy
-    if from_numpy:
-        object_in = np.array(object_in)
-    # smoke test
-    ret = ivy.array(object_in, dtype=dtype, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == np.array(object_in).shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), np.array(object_in).astype(dtype))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
-"""
-
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="asarray"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_array(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "asarray",
-        x=x
-    )
-
 # native_array
-"""
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes),
-    from_numpy=st.booleans(),
-)
-def test_native_array(dtype_and_x, from_numpy, device, call, fw):
-    dtype, object_in = dtype_and_x
-    # to numpy
-    if from_numpy:
-        object_in = np.array(object_in)
-    # smoke test
-    ret = ivy.native_array(object_in, dtype=dtype, device=device)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == np.array(object_in).shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), np.array(object_in).astype(dtype))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
-"""
-@given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes).filter(lambda x: isinstance(x[1], list)),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
@@ -116,8 +33,6 @@ def test_native_array(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -132,53 +47,12 @@ def test_native_array(
     )
 
 # linspace
-"""
-@pytest.mark.parametrize(
-    "start_n_stop_n_num_n_axis",
-    [
-        [1, 10, 100, None],
-        [[[0.0, 1.0, 2.0]], [[1.0, 2.0, 3.0]], 150, -1],
-        [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, -2],
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, device, call):
-    # smoke test
-    start, stop, num, axis = start_n_stop_n_num_n_axis
-    if (
-        (isinstance(start, Number) or isinstance(stop, Number))
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    start = tensor_fn(start, dtype=dtype, device=device)
-    stop = tensor_fn(stop, dtype=dtype, device=device)
-    ret = ivy.linspace(start, stop, num, axis, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    target_shape = list(start.shape)
-    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
-    assert ret.shape == tuple(target_shape)
-    # value test
-    start_np = ivy.to_numpy(start)
-    stop_np = ivy.to_numpy(stop)
-    ivy.set_backend("numpy")
-    np_ret = ivy.linspace(start_np, stop_np, num, axis)
-    ivy.unset_backend()
-    assert np.allclose(
-        call(ivy.linspace, start, stop, num, axis, device=device),
-        np_ret,
-    )
-"""
-
 @given(
-    start = st.integers() | st.lists(st.integers()) | st.floats() | st.lists(st.floats()), 
-    stop = st.integers() | st.lists(st.integers()) | st.floats() | st.lists(st.floats()),
-    num = st.integers(),
-    axis = st.none() | st.integers(),
+    start = st.integers(-50, 50) | st.floats(-50, 50) | helpers.lists(st.one_of(st.integers(-50, 50),st.floats(-50, 50)) , min_size=1),
+    stop = st.integers(-50, 50) | st.floats(-50, 50) | helpers.lists(st.one_of(st.integers(-50, 50),st.floats(-50, 50)), min_size=1),
+    num = st.integers(1, 50),
+    axis = st.none() | st.integers(1, 50),
+    endpoint = st.booleans(),
     dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -192,6 +66,7 @@ def test_linspace(
     stop,
     num,
     axis,
+    endpoint,
     dtype,
     as_variable,
     with_out,
@@ -201,8 +76,6 @@ def test_linspace(
     instance_method,
     fw,
 ):
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -217,56 +90,18 @@ def test_linspace(
         stop = stop,
         num = num,
         axis = axis,
+        endpoint = endpoint
     )
 
 
 
 # logspace
-"""
-@pytest.mark.parametrize(
-    "start_n_stop_n_num_n_base_n_axis",
-    [
-        [1, 10, 100, 10.0, None],
-        [[[0.0, 1.0, 2.0]], [[1.0, 2.0, 3.0]], 150, 2.0, -1],
-        [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, 5.0, -2],
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, call):
-    # smoke test
-    start, stop, num, base, axis = start_n_stop_n_num_n_base_n_axis
-    if (
-        (isinstance(start, Number) or isinstance(stop, Number))
-        and tensor_fn == helpers.var_fn
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    start = tensor_fn(start, dtype=dtype, device=device)
-    stop = tensor_fn(stop, dtype=dtype, device=device)
-    ret = ivy.logspace(start, stop, num, base, axis, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    target_shape = list(start.shape)
-    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
-    assert ret.shape == tuple(target_shape)
-    # value test
-    assert np.allclose(
-        call(ivy.logspace, start, stop, num, base, axis, device=device),
-        ivy.functional.backends.numpy.logspace(
-            ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis, device=device
-        ),
-    )
-"""
-
 @given(
-    start = st.integers() | st.lists(st.integers()), 
-    stop = st.integers() | st.lists(st.integers()),
-    num = st.integers(),
-    base = st.floats(),
-    axis = st.none() | st.integers(),
+    start_ = st.integers() | st.lists(st.integers(), min_size=1), 
+    stop = st.integers() | st.lists(st.integers(), min_size=1),
+    num = st.integers(1, 50),
+    base = st.floats().filter(lambda x: True if x != 0 else False),
+    axis = st.none() | st.integers(1, 50),
     dtype = st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -290,8 +125,6 @@ def test_logspace(
     instance_method,
     fw,
 ):
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -308,13 +141,7 @@ def test_logspace(
         base = base,
         axis = axis,
     )
-    
-    
 
-
-
-# Still to Add #
-# ---------------#
 
 # arange()
 @given(
@@ -342,8 +169,6 @@ def test_arange(
     instance_method,
     fw,
 ):
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -381,8 +206,6 @@ def test_asarray(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -393,13 +216,14 @@ def test_asarray(
         instance_method,
         fw,
         "asarray",
-        object_in = x,
+        object_in = np.asarray(x),
     )
 
 
 # empty()
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    shape = st.integers(0,5) | st.lists(st.integers(0,5), min_size=1, max_size = 5),
+    dtype = st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
@@ -408,7 +232,8 @@ def test_asarray(
     instance_method=st.booleans(),
 )
 def test_empty(
-    dtype_and_x,
+    shape,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -416,10 +241,7 @@ def test_empty(
     container,
     instance_method,
     fw,
-):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+):    
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -430,13 +252,13 @@ def test_empty(
         instance_method,
         fw,
         "empty",
-        shape=np.asarray(x, dtype=dtype),
+        shape=shape,
     )
 
 
 # empty_like()
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="empty_like"),
@@ -455,8 +277,6 @@ def test_empty_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -467,15 +287,15 @@ def test_empty_like(
         instance_method,
         fw,
         "empty_like",
-        x=np.asarray(x, dtype=dtype),
+        x=ivy.asarray(x, dtype=dtype),
     )
 
 
 # eye()
 @given(
-    n_rows = st.integers(min_value = 0),
-    n_cols = st.none() | st.integers(min_value = 0),
-    k = st.none() | st.integers(),
+    n_rows = st.integers(min_value = 0, max_value = 5),
+    n_cols = st.none() | st.integers(min_value = 0, max_value = 5),
+    k = st.integers(min_value = -5, max_value = 5),
     dtype = st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -497,8 +317,7 @@ def test_eye(
     instance_method,
     fw,
 ):
-    if fw == "torch" and dtype == "float16":
-        return
+     
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -552,17 +371,20 @@ def test_from_dlpack(
 
 # full()
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+    shape = st.integers(1,5) | st.lists(st.integers(1,5), min_size=1, max_size = 5),
+    fill_value= st.integers() | st.floats(),
+    dtype = st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    fill_value= st.integers() | st.floats(),
 )
 def test_full(
-    dtype_and_x,
+    shape,
+    fill_value,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -570,11 +392,7 @@ def test_full(
     container,
     instance_method,
     fw,
-    fill_value,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -585,8 +403,8 @@ def test_full(
         instance_method,
         fw,
         "full",
-        shape=np.asarray(x, dtype=dtype),
-        fill_value = fill_value,
+        shape=shape,
+        fill_value=fill_value,
     )
 
 
@@ -613,8 +431,7 @@ def test_full_like(
     fill_value,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+     
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -672,7 +489,8 @@ def test_meshgrid(
 
 # ones()
 @given(
-dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
+shape = st.integers(1,5) | st.lists(st.integers(1,5), min_size=1, max_size = 5),
+dtype = st.sampled_from(ivy_np.valid_int_dtypes),
 as_variable = st.booleans(),
 with_out=st.booleans(),
 num_positional_args=helpers.num_positional_args(fn_name="ones"),
@@ -681,7 +499,8 @@ container=st.booleans(),
 instance_method=st.booleans(),
 )
 def test_ones(
-    dtype_and_x,
+    shape,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -690,7 +509,6 @@ def test_ones(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -701,7 +519,7 @@ def test_ones(
         instance_method,
         fw,
         "ones",
-        shape=np.asarray(x, dtype=dtype),
+        shape=shape,
     )
 
 
@@ -743,7 +561,7 @@ def test_ones_like(
 # tril()
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
-    k=st.integers(),
+    k=st.integers(-5, 5),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
@@ -763,8 +581,6 @@ def test_tril(
     k,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -776,7 +592,7 @@ def test_tril(
         fw,
         "tril",
         x=np.asarray(x, dtype=dtype),
-        k=k,
+        k=0,
     )
 
 
@@ -803,8 +619,7 @@ def test_triu(
     k,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
+     
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -822,16 +637,18 @@ def test_triu(
 
 # zeros()
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="zeros"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+shape = st.integers(1,5) | st.lists(st.integers(1,5), min_size=1, max_size = 5),
+dtype = st.sampled_from(ivy_np.valid_int_dtypes),
+as_variable = st.booleans(),
+with_out=st.booleans(),
+num_positional_args=helpers.num_positional_args(fn_name="zeros"),
+native_array = st.booleans(),
+container=st.booleans(),
+instance_method=st.booleans(),
 )
 def test_zeros(
-    dtype_and_x,
+    shape,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -840,9 +657,6 @@ def test_zeros(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -853,7 +667,7 @@ def test_zeros(
         instance_method,
         fw,
         "zeros",
-        shape=np.asarray(x, dtype=dtype),
+        shape=shape,
     )
 
 
