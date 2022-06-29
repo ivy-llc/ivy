@@ -219,8 +219,8 @@ def adam_step(
     beta2=0.999,
     epsilon=1e-7,
 ) -> ivy.Array:
-    """Compute adam step delta, given the derivatives of some cost c with respect to weights ws,
-    using ADAM update. `[reference]
+    """Compute adam step delta, given the derivatives of some cost c with respect
+    to weights ws, using ADAM update. `[reference]
 
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
@@ -298,8 +298,8 @@ def adam_step(
         ivy.array([0.2, 0.3, 0.5]),
         ivy.array([0.004, 0.009, 0.025]))
 
-    >>> dcdw = ivy.native_array([3., -4., 1., 0., 2., -3., 2.6, 4.2, -1., 3.])
-    >>> mw = ivy.zeros([10])
+    >>> dcdw = ivy.native_array([3., -4., 1., 0., 2., -3., 2.6,])
+    >>> mw = ivy.zeros([7])
     >>> vw = ivy.native_array([1])
     >>> step = ivy.native_array([2])
     >>> beta1 = 0.76
@@ -307,9 +307,10 @@ def adam_step(
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        (ivy.array([0.209, -0.271,  0.0717,  0., 0.142, -0.209, 0.182, 0.283, -0.0717, 0.209]),
-        ivy.array([0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624, 1.01, -0.24, 0.72]),
-        ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05, 1.13, 1., 1.06]))
+        (ivy.array([0.209, -0.271, 0.0717, 0., 0.142, -0.209, 0.182]),
+         ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),
+         ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05]))
+
 
     with mixture of both :code:`ivy.NativeArray`  and :code:'ivy.Array' inputs:
 
