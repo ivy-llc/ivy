@@ -627,6 +627,7 @@ def svdvals(
     >>> _, SS, _ = ivy.svd(x)
     >>> pring(SS.shape)
     (6,)
+
     >>> error = (SS - S).abs()
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 2.38e-07, 2.38e-07, 0.00e+00, 1.19e-07])
@@ -637,6 +638,7 @@ def svdvals(
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
     (4, 3)
+
     >>> S = ivy.svdvals(x)
     >>> print(S)
     ivy.array([10.3  ,  1.16 ,  0.615])
@@ -645,6 +647,7 @@ def svdvals(
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS)
     ivy.array([10.3  ,  1.16 ,  0.615])
+
     >>> error = (SS - S).abs()
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
@@ -700,6 +703,7 @@ def svdvals(
         a: ivy.array([13., 4.64, 2.55]),
         b: ivy.array([23.2, 10.4, 4.31, 1.36])
     }
+
     """
     return _cur_backend(x).svdvals(x)
 
