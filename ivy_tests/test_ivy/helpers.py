@@ -247,14 +247,23 @@ def trim(docstring):
     return "\n".join(trimmed)
 
 
-def docstring_examples_run(fn):
+def docstring_examples_run(fn, from_container=False, from_array=False):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
     if fn_name not in ivy.backend_handler.ivy_original_dict:
         return True
 
-    docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
+    if from_container:
+        docstring = getattr(
+            ivy.backend_handler.ivy_original_dict["Container"], fn_name
+        ).__doc__
+    elif from_array:
+        docstring = getattr(
+            ivy.backend_handler.ivy_original_dict["Array"], fn_name
+        ).__doc__
+    else:
+        docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
 
     if docstring is None:
         return True
@@ -449,7 +458,7 @@ def test_array_method(
     num_positional_args_constructor: int,
     fw: str,
     class_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
 ):
@@ -514,13 +523,21 @@ def test_array_method(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    calling_args, calling_kwargs, calling_args_np, calling_kwargs_np \
-        = create_args(input_dtypes, num_positional_args, as_variable_flags,
-                      all_as_kwargs_np)
+    calling_args, calling_kwargs, calling_args_np, calling_kwargs_np = create_args(
+        input_dtypes, num_positional_args, as_variable_flags, all_as_kwargs_np
+    )
 
-    constructor_args, constructor_kwargs, constructor_args_np, constructor_kwargs_np \
-        = create_args(input_dtypes_constructor, num_positional_args_constructor,
-                      as_variable_flags_constructor, constructor_kwargs)
+    (
+        constructor_args,
+        constructor_kwargs,
+        constructor_args_np,
+        constructor_kwargs_np,
+    ) = create_args(
+        input_dtypes_constructor,
+        num_positional_args_constructor,
+        as_variable_flags_constructor,
+        constructor_kwargs,
+    )
 
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
@@ -533,8 +550,9 @@ def test_array_method(
     # compute the return with a NumPy backend
     ivy.set_backend("numpy")
     ins_np = ivy.__dict__[class_name](*constructor_args_np, **constructor_kwargs_np)
-    ret_from_np = ivy.to_native(ins_np(*calling_args_np, **calling_kwargs_np),
-                                nested=True)
+    ret_from_np = ivy.to_native(
+        ins_np(*calling_args_np, **calling_kwargs_np), nested=True
+    )
     ivy.unset_backend()
 
     # assuming value test will be handled manually in the test function
@@ -557,9 +575,13 @@ def test_array_method(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
 
 
 def test_array_function(
@@ -572,7 +594,7 @@ def test_array_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -659,8 +681,12 @@ def test_array_function(
     )
 
     # make all lists equal in length
-    num_arrays = max(len(input_dtypes), len(as_variable_flags),
-                     len(native_array_flags), len(container_flags))
+    num_arrays = max(
+        len(input_dtypes),
+        len(as_variable_flags),
+        len(native_array_flags),
+        len(container_flags),
+    )
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -689,8 +715,9 @@ def test_array_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(fn):
             return
-    if "dtype" in all_as_kwargs_np and \
-            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(fn):
+    if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
+        "dtype"
+    ] in ivy.function_unsupported_dtypes(fn):
         return
 
     # split the arguments into their positional and keyword components
@@ -831,9 +858,13 @@ def test_array_function(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
 def test_frontend_function(
@@ -911,8 +942,9 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-    if "dtype" in all_as_kwargs_np and \
-            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+    if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
+        "dtype"
+    ] in ivy.function_unsupported_dtypes(function):
         return
 
     # split the arguments into their positional and keyword components
@@ -989,13 +1021,11 @@ def test_frontend_function(
     # create NumPy args
     args_np = ivy.nested_map(
         args_ivy,
-        lambda x: ivy.to_numpy(x._data)
-        if isinstance(x, ivy.Array) else x,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
     kwargs_np = ivy.nested_map(
         kwargs_ivy,
-        lambda x: ivy.to_numpy(x._data)
-        if isinstance(x, ivy.Array) else x,
+        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
     # temporarily set frontend framework as backend
@@ -1006,20 +1036,19 @@ def test_frontend_function(
     for d in input_dtypes:
         if d in ivy.function_unsupported_dtypes(function):
             return
-    if "dtype" in all_as_kwargs_np and \
-            all_as_kwargs_np["dtype"] in ivy.function_unsupported_dtypes(function):
+    if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
+        "dtype"
+    ] in ivy.function_unsupported_dtypes(function):
         return
 
     # create frontend framework args
     args_frontend = ivy.nested_map(
         args_np,
-        lambda x: ivy.native_array(x)
-        if isinstance(x, np.ndarray) else x,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
     )
     kwargs_frontend = ivy.nested_map(
         kwargs_np,
-        lambda x: ivy.native_array(x)
-        if isinstance(x, np.ndarray) else x,
+        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
     )
 
     # compute the return via the frontend framework
@@ -1109,8 +1138,14 @@ def integers(draw, min_value=None, max_value=None):
 
 @st.composite
 def dtype_and_values(
-    draw, available_dtypes, n_arrays=1, allow_inf=True, max_num_dims=5, max_dim_size=10,
-        shape=None, shared_dtype=False,
+    draw,
+    available_dtypes,
+    n_arrays=1,
+    allow_inf=True,
+    max_num_dims=5,
+    max_dim_size=10,
+    shape=None,
+    shared_dtype=False,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
@@ -1126,8 +1161,9 @@ def dtype_and_values(
             set(ivy.all_dtypes).difference(set(available_dtypes))
         )
         pairs = ivy.promotion_table.keys()
-        dtypes = [pair for pair in pairs if not any([d in pair for d in
-                                                     unwanted_types])]
+        dtypes = [
+            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+        ]
         dtype = list(draw(st.sampled_from(dtypes)))
         if n_arrays > 2:
             dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
@@ -1135,8 +1171,11 @@ def dtype_and_values(
         shape = draw(shape)
     else:
         shape = draw(
-            st.shared(get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
-                      key="shape"))
+            st.shared(
+                get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
+                key="shape",
+            )
+        )
     values = []
     for i in range(n_arrays):
         values.append(
@@ -1229,7 +1268,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype == "float32":
+    elif dtype in ['float32', 'bfloat16']:
         values = draw(
             list_of_length(
                 st.floats(
@@ -1491,5 +1530,6 @@ def num_positional_args(draw, fn_name: str = None):
             num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
-    return draw(integers(min_value=num_positional_only,
-                         max_value=(total - num_keyword_only)))
+    return draw(
+        integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
