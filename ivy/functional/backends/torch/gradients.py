@@ -39,17 +39,18 @@ def execute_with_gradients(func, xs, retain_grads=False):
                 create_graph=retain_grads,
             )
         )
+        grads = xs.from_flat_list(x_grads_flat)
+        grads = grads.to_ivy()
     else:
-        x_grads_flat = list(
-            torch.autograd.grad(
-                [elm for elm in y],
-                [elm for elm in xs],
+        grads = list(
+                torch.autograd.grad(
+                [elm for elm in y] if len(y.shape) > 0 else y,
+                [elm for elm in xs] if len(xs.shape) > 0 else xs,
                 retain_graph=retain_grads,
                 create_graph=retain_grads,
+                allow_unused=True
             )
         )
-    grads = xs.from_flat_list(x_grads_flat)
-    grads = grads.to_ivy()
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
