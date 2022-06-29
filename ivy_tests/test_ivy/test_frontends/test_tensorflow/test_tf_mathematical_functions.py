@@ -9,7 +9,9 @@ import ivy.functional.backends.tensorflow as ivy_tf
 
 # add
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_tf.valid_float_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_tf.valid_float_dtypes, 2, shared_dtype=True
+    ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.add"
