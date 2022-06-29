@@ -12,6 +12,8 @@ import ivy_tests.test_ivy.helpers as helpers
     data=st.data(),
     true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2),
+    axis=helpers.integers(min_value=-1, max_value=0),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
@@ -23,6 +25,8 @@ def test_cross_entropy(
     data,
     true_dtype,
     pred_dtype,
+    shape,
+    axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -33,7 +37,6 @@ def test_cross_entropy(
 ):
     if fw == "torch" and pred_dtype == "float16":
         return
-    shape = data.draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2))
     true = data.draw(
         helpers.array_values(
             dtype=true_dtype,
@@ -52,7 +55,6 @@ def test_cross_entropy(
             exclude_max=True,
         )
     )
-    axis = data.draw(helpers.integers(min_value=-1, max_value=0))
     epsilon = data.draw(
         helpers.array_values(
             dtype=pred_dtype, shape=(1,), min_value=0, max_value=1, allow_negative=False
@@ -80,6 +82,7 @@ def test_cross_entropy(
     data=st.data(),
     true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
@@ -91,6 +94,7 @@ def test_binary_cross_entropy(
     data,
     true_dtype,
     pred_dtype,
+    shape,
     as_variable,
     with_out,
     num_positional_args,
@@ -101,7 +105,6 @@ def test_binary_cross_entropy(
 ):
     if fw == "torch" and pred_dtype == "float16":
         return
-    shape = data.draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2))
     true = data.draw(
         helpers.array_values(
             dtype=true_dtype,
@@ -146,6 +149,8 @@ def test_binary_cross_entropy(
     data=st.data(),
     true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2),
+    axis=helpers.integers(min_value=-1, max_value=0),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
@@ -157,6 +162,8 @@ def test_sparse_cross_entropy(
     data,
     true_dtype,
     pred_dtype,
+    shape,
+    axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -169,7 +176,6 @@ def test_sparse_cross_entropy(
         return
     if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
         return
-    shape = data.draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2))
     pred = data.draw(
         helpers.array_values(
             dtype=pred_dtype,
@@ -189,7 +195,6 @@ def test_sparse_cross_entropy(
             exclude_max=True,
         )
     )
-    axis = data.draw(helpers.integers(min_value=-1, max_value=0))
     epsilon = data.draw(
         helpers.array_values(
             dtype=pred_dtype, shape=(1,), min_value=0, max_value=1, allow_negative=False
