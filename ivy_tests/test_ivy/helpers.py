@@ -1228,29 +1228,29 @@ def array_values(
             size *= dim
     if "int" in dtype:
         if dtype == "int8":
-            min_value = min_value if min_value else -128
-            max_value = max_value if max_value else 127
+            min_value = min_value if min_value is not None else -128
+            max_value = max_value if max_value is not None else 127
         elif dtype == "int16":
-            min_value = min_value if min_value else -32768
-            max_value = max_value if max_value else 32767
+            min_value = min_value if min_value is not None else -32768
+            max_value = max_value if max_value is not None else 32767
         elif dtype == "int32":
-            min_value = min_value if min_value else -2147483648
-            max_value = max_value if max_value else 2147483647
+            min_value = min_value if min_value is not None else -2147483648
+            max_value = max_value if max_value is not None else 2147483647
         elif dtype == "int64":
-            min_value = min_value if min_value else -9223372036854775808
-            max_value = max_value if max_value else 9223372036854775807
+            min_value = min_value if min_value is not None else -9223372036854775808
+            max_value = max_value if max_value is not None else 9223372036854775807
         elif dtype == "uint8":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 255
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 255
         elif dtype == "uint16":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 65535
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 65535
         elif dtype == "uint32":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 4294967295
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 4294967295
         elif dtype == "uint64":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 18446744073709551615
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 18446744073709551615
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
