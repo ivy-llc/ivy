@@ -111,7 +111,6 @@ class ArrayWithElementwise(abc.ABC):
         
         Examples
         --------
-        
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.ceil()
         >>> print(y)
