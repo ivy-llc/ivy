@@ -26,7 +26,7 @@ def concat(
     ],
     axis: Optional[int] = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Casts an array to a specified type.
 
@@ -84,7 +84,7 @@ def expand_dims(
     ret
         an array with its dimension added by one in a given ``axis``.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -230,7 +230,7 @@ def flip(
         relative to ``x``, are reordered.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -449,18 +449,17 @@ def roll(
         an output array having the same data type as ``x`` and whose elements, relative
         to ``x``, are shifted.
 
-
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.roll.html>`_ # noqa
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -469,8 +468,7 @@ def roll(
     ivy.array([2., 0., 1.])
 
     >>> x = ivy.array([[0., 1., 2.], \
-                    [3., 4., 5.]])
-
+                       [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.roll(x, 2, -1, out=y)
     >>> print(y)
@@ -478,8 +476,7 @@ def roll(
                 [4., 5., 3.]])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
-                   [[3., 9.], [4., 12.], [5., 15.]]])
-
+                       [[3., 9.], [4., 12.], [5., 15.]]])
     >>> ivy.roll(x, (1, -1), (0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
@@ -489,18 +486,10 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.roll(x, 1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    With :code:`ivy.Container` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
-
+                          b=ivy.array([3., 4., 5.]))
     >>> y = ivy.roll(x, 1)
     >>> print(y)
     {
@@ -508,26 +497,17 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
 
-    Instance Method Examples
-    ------------------------
+    With multiple :code:`ivy.Container` inputs:
 
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.roll(1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.roll(1)
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> shift = ivy.Container(a=1, b=-1)
+    >>> y = ivy.roll(x, shift)
     >>> print(y)
     {
         a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
+        b: ivy.array([4., 5., 3.])
     }
-
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 
@@ -660,9 +640,8 @@ def clip(
         An array with the elements of x, but where values < x_min are replaced with
         x_min, and those > x_max with x_max.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
@@ -692,16 +671,58 @@ def clip(
     >>> print(y)
     ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
 
-    Instance Method Examples
-    ------------------------
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
-    Using :code:`ivy.Array` instance method:
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> y = x.clip(1., 5.)
+    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
+    >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
+    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.clip(x, 1., 5.)
+    >>> print(y)
+    {
+        a: ivy.array([1., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> x_min = ivy.Container(a=1, b=-1)
+    >>> x_max = ivy.Container(a=1, b=-1)
+    >>> y = ivy.clip(x, x_min,x_max)
+    >>> print(y)
+    {
+        a: ivy.array([1., 1., 1.]),
+        b: ivy.array([-1., -1., -1.])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x_min = ivy.array([3., 4., 1])
+    >>> x_max = ivy.array([5., 4., 3.])
+    >>> y = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> z = ivy.clip(y, x_min, x_max)
+    >>> print(z)
+    {
+        a: ivy.array([3., 4., 2.]),
+        b: ivy.array([3., 4., 3.])
+    }
+
     """
-    return current_backend(x).clip(x, x_min, x_max, out=out)
+    res = current_backend(x).clip(x, x_min, x_max)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @to_native_arrays_and_back
@@ -953,11 +974,88 @@ def swapaxes(
         First axis to be swapped.
     axis1
         Second axis to be swapped.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         x with its axes permuted.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[0, 1, 2]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[0],
+               [1],
+               [2]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[[0, 1],
+                [4, 5]],
+               [[2, 3],
+                [6, 7]]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 0, 2)
+    >>> print(y)
+    ivy.array([[[0, 4],
+                [2, 6]],
+               [[1, 5],
+                [3, 7]]])
+    >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> y = ivy.swapaxes(x, 1, 2)
+    >>> print(y)
+    ivy.array([[[0, 2],
+                [1, 3]],
+               [[4, 6],
+                [5, 7]]])
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([[0, 1, 2]])
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    ivy.array([[0],
+               [1],
+               [2]])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.swapaxes(x, 0, 1)
+    >>> print(y)
+    {
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
+    }
+
+    Instance Method Examples
+    ------------------------
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([[0., 1., 2.]])
+    >>> y = x.swapaxes(0, 1)
+    >>> print(y)
+    ivy.array([[0.],
+               [1.],
+               [2.]])
+    Using :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = x.swapaxes(0, 1)
+    >>> print(y)
+    {
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
+    }
 
     """
     return current_backend(x).swapaxes(x, axis0, axis1, out=out)

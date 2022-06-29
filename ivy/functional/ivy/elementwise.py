@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def abs(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -142,8 +142,8 @@ def acosh(
 @handle_out_argument
 @handle_nestable
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -206,19 +206,18 @@ def add(
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
-
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
-    With :code:`ivy.Array` input:
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -243,116 +242,34 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With :code:`ivy.NativeArray` input:
+    With one :code:`ivy.Container` input:
 
-    >>> x = ivy.native_array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 6])
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.add(x, y)
     >>> print(z)
-    ivy.array([5, 7, 9])
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With multiple :code:`ivy.Container` inputs:
 
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 6])
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    With :code:`ivy.Container` input:
-    
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                        b=ivy.array([2, 3, 4]))
+                          b=ivy.array([2, 3, 4]))
     >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                        b=ivy.array([5, 6, 7]))
+                          b=ivy.array([5, 6, 7]))
     >>> z = ivy.add(x, y)
     >>> print(z)
     {
         a: ivy.array([5, 7, 9]),
         b: ivy.array([7, 9, 11])
     }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                        b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x.add(y)
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                         b=ivy.array([5, 6, 7]))
-
-    >>> z = x.add(y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    Operator Examples
-    -----------------
-
-    With :code:`ivy.Array` instances:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x + y
-    >>> print(z)
-    ivy.array([5, 7, 9])
-
-    With :code:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                            b=ivy.array([5, 6, 7]))
-    >>> z = x + y
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                        b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = x + y
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
-
     """
     return current_backend(x1, x2).add(x1, x2, out=out)
 
@@ -393,6 +310,81 @@ def asin(
     ret
         an array containing the inverse sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+        signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
+    >>> y = ivy.asin(x)
+    >>> print(y)
+    ivy.array([nan,  0.,  0., nan, nan], dtype=float32)
+
+    >>> x = ivy.array([-1, -0.5, 0.6, 1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.asin(x, out=y)
+    >>> print(y)
+    ivy.array([-1.5707964 , -0.5235988 ,
+               0.64350116,  1.5707964 ], dtype=float32)
+
+    >>> x = ivy.array([[0.1, 0.2, 0.3], \
+                       [-0.4, -0.5, -0.6]])
+    >>> ivy.asin(x, out=x)
+    >>> print(x)
+    ivy.array([[ 0.10016742,  0.20135793,  0.30469266], \
+               [-0.41151685, -0.5235988 , -0.64350116]], dtype=float32)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1, -0.5, 0.6, 1])
+    >>> y = ivy.asin(x)
+    >>> print(y)
+    ivy.array([-1.5707964 , -0.5235988 ,
+               0.64350116,  1.5707964 ], dtype=float32)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \
+                          b=ivy.array([0.3, 0.4, 0.5]))
+    >>> y = ivy.asin(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.10016742, 0.20135793], dtype=float32),
+        b: ivy.array([0.30469266, 0.41151685, 0.5235988], dtype=float32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1, -0.5, 0.6, 1])
+    >>> y = x.asin()
+    >>> print(y)
+    ivy.array([-1.5707964 , -0.5235988 ,
+               0.64350116,  1.5707964 ], dtype=float32)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \
+                          b=ivy.array([0.3, 0.4, 0.5]))
+    >>> y = x.asin()
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.10016742, 0.20135793], dtype=float32),
+        b: ivy.array([0.30469266, 0.41151685, 0.5235988], dtype=float32)
+    }
 
     """
     return current_backend(x).asin(x, out=out)
@@ -608,8 +600,8 @@ def atanh(
 @handle_out_argument
 @handle_nestable
 def bitwise_and(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -634,6 +626,124 @@ def bitwise_and(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([2, 3, 7])
+    >>> y = ivy.array([7, 1, 15])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([2, 1, 7])
+
+    >>> x = ivy.array([[True], \
+                       [False]])
+    >>> y = ivy.array([[True], \
+                       [True]])
+    >>> ivy.bitwise_and(x, y, out=x)
+    >>> print(x)
+    ivy.array([[ True],
+               [False]])
+
+    >>> x = ivy.array([1])
+    >>> y = ivy.array([3])
+    >>> ivy.bitwise_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([1])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([True, True, False, False])
+    >>> y = ivy.native_array([True, False, True, False])
+    >>> ivy.bitwise_and(x, y, out=y)
+    >>> print(y)
+    ivy.native_array([ True, False, False, False])
+
+    >>> x = ivy.native_array([[True, False]])
+    >>> y = ivy.native_array([[True], \
+                              [False]])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([[ True, False],
+               [False, False]])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([[6, 5], \
+                       [3, 7]])
+    >>> y = ivy.native_array([[2, 11], \
+                              [9, 13]])
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    ivy.array([[2, 1],
+               [1, 5]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+    >>> y = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 11]))
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([0, 1, 2])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs: 
+
+    >>> x = ivy.array([True, True])
+    >>> y = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
+    >>> z = ivy.bitwise_and(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, False]),
+        b: ivy.array([False, True])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([True, False])
+    >>> y = ivy.array([True, True])
+    >>> x.bitwise_and(y, out=y)
+    >>> print(y)
+    ivy.array([ True, False])
+
+    >>> x = ivy.array([[7], \
+                       [8], \
+                       [9]])
+    >>> y = ivy.native_array([[10], \
+                              [11], \
+                              [12]])
+    >>> z = x.bitwise_and(y)
+    >>> print(z)
+    ivy.array([[2],
+               [8],
+               [8]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
+    >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
+    >>> x.bitwise_and(y, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, True]),
+        b: ivy.array([False, True])
+    }
+
     """
     return current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
@@ -642,7 +752,7 @@ def bitwise_and(
 @handle_out_argument
 @handle_nestable
 def bitwise_invert(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -677,8 +787,8 @@ def bitwise_invert(
 @handle_out_argument
 @handle_nestable
 def bitwise_left_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -712,8 +822,8 @@ def bitwise_left_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_or(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -746,8 +856,8 @@ def bitwise_or(
 @handle_out_argument
 @handle_nestable
 def bitwise_right_shift(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -791,17 +901,17 @@ def bitwise_right_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_xor(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
-    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the 
-    input   
-    array ``x2``.   
+    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
+    input
+    array ``x2``.
 
-    **Special cases**   
+    **Special cases**
 
     This function does not take floating point operands
 
@@ -822,7 +932,7 @@ def bitwise_xor(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -846,7 +956,7 @@ def bitwise_xor(
     >>> ivy.bitwise_xor(a, b, out=y)
     >>> print(y)
     ivy.array([12, 22, 79])
- 
+
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
     >>> ivy.bitwise_xor(a, b, out = a)
@@ -860,8 +970,8 @@ def bitwise_xor(
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
     ivy.array([[ 4, 6, 89, 26, 57]])
-   
-    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:  
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([0, 1, 3, 67, 91])
     >>> a = ivy.native_array([4, 7, 90, 89, 98])
@@ -869,7 +979,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([[4, 6, 89, 26, 57]])
 
-    With :code: `ivy.Container` input:  
+    With :code: `ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([89]), \
     b = ivy.array([90]))
@@ -883,7 +993,7 @@ def bitwise_xor(
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.Container(a = ivy.array([-67, 21]), \
     b = ivy.array([78, 34]))
     >>> y = ivy.array([12, 13]])
@@ -903,9 +1013,9 @@ def bitwise_xor(
     >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
     >>> y = a.bitwise_xor(b)
     >>> print(y)
-    ivy.array([[74, 41, 59], 
+    ivy.array([[74, 41, 59],
     [24, 5, 7]])
-    
+
     Using :code:`ivy.Container` instance method:
 
     >>>x = ivy.Container(a = ivy.array([89]), \
@@ -917,12 +1027,12 @@ def bitwise_xor(
     {
     a:ivy.array([20])
     b:ivy.array([85])
-    } 
-    
+    }
+
     Operator Examples
     -----------------
 
-    With :code:`ivy.Array` instances:  
+    With :code:`ivy.Array` instances:
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
@@ -930,7 +1040,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([2, 0, 2])
 
-    With :code:`ivy.Container` instances:   
+    With :code:`ivy.Container` instances:
 
     >>> x = ivy.Container(a = ivy.array([89]), \
     b = ivy.array([90]))
@@ -941,8 +1051,8 @@ def bitwise_xor(
     {
     a:ivy.array([20])
     b:ivy.array([85])
-    }   
-    
+    }
+
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
     >>> x = ivy.Container(a = ivy.array([-67, 21]), \
@@ -953,7 +1063,7 @@ def bitwise_xor(
     {
     a: ivy.array([-79, 24])
     b: ivy.array([6, 74])
-    }   
+    }
     """
     return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -1090,7 +1200,7 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -1156,8 +1266,8 @@ def cosh(
 @handle_out_argument
 @handle_nestable
 def divide(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1186,8 +1296,8 @@ def divide(
 @handle_out_argument
 @handle_nestable
 def equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1422,8 +1532,8 @@ def floor(
 @handle_out_argument
 @handle_nestable
 def floor_divide(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1446,15 +1556,19 @@ def floor_divide(
         numeric data type.
 
     """
-    return current_backend(x1, x2).floor_divide(x1, x2, out=out)
+    if isinstance(x1, float) or isinstance(x1, int):
+        x1 = ivy.array(x1, dtype=x1.dtype)
+    if isinstance(x2, float) or isinstance(x2, int):
+        x2 = ivy.array(x2, dtype=x2.dtype)
+    return current_backend(x1, x2).floor_divide(x1, x2)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def greater(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1490,8 +1604,8 @@ def greater(
 @handle_out_argument
 @handle_nestable
 def greater_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1745,8 +1859,8 @@ def isnan(
 @handle_out_argument
 @handle_nestable
 def less(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -1784,8 +1898,8 @@ def less(
 @handle_out_argument
 @handle_nestable
 def less_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2154,8 +2268,8 @@ def logical_xor(
 @handle_out_argument
 @handle_nestable
 def multiply(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2222,7 +2336,7 @@ def multiply(
 @handle_out_argument
 @handle_nestable
 def negative(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2333,8 +2447,8 @@ def negative(
 @handle_out_argument
 @handle_nestable
 def not_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2366,7 +2480,7 @@ def not_equal(
 @handle_out_argument
 @handle_nestable
 def positive(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2390,8 +2504,8 @@ def positive(
 @handle_out_argument
 @handle_nestable
 def pow(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2479,8 +2593,8 @@ def pow(
 @handle_out_argument
 @handle_nestable
 def remainder(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2565,7 +2679,7 @@ def round(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rounds each element ``x_i`` of the input array ``x`` to the nearest 
+    """Rounds each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
 
     **Special cases**
@@ -2596,7 +2710,7 @@ def round(
         An array of the same shape and type as x, with the elements rounded to integers.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
@@ -2856,8 +2970,8 @@ def square(
 @handle_out_argument
 @handle_nestable
 def subtract(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -2922,17 +3036,17 @@ def tan(
         floating-point data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -2950,15 +3064,8 @@ def tan(
                         [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([[1.96, -1.37, 0.16], 
+    ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.tan(x)
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
 
     With :code:`ivy.Container` input:
 
@@ -2969,26 +3076,6 @@ def tan(
         a: ivy.array([0., 1.56, -2.19]),
         b: ivy.array([-0.143, 1.16, -3.38])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.tan()
-    >>> print(y)
-    ivy.array([0., 1.56, -2.19])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.tan()
-    >>> print(y)
-    {
-        a:ivy.array([0., 1.56, -2.19]),
-        b:ivy.array([-0.143, 1.16, -3.38])}
-
     """
     return ivy.current_backend(x).tan(x, out=out)
 
