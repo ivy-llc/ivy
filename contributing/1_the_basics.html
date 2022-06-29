@@ -536,6 +536,30 @@ cd ivy
 </dd>
 </dl>
 </li>
+<li><dl class="simple">
+<dt>Optional Flags: Various optional flags are available for running the tests such as <code class="code docutils literal notranslate"><span class="pre">device</span></code>, <code class="code docutils literal notranslate"><span class="pre">backend</span></code>, etc.</dt><dd><ol class="arabic simple">
+<li><dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">device</span></code>:</dt><dd><ol class="arabic simple">
+<li><p>This flag enables setting of the device where the tests would be run.</p></li>
+<li><p>Possible values being <code class="code docutils literal notranslate"><span class="pre">cpu</span></code> and <code class="code docutils literal notranslate"><span class="pre">gpu</span></code>.</p></li>
+<li><p>Default value is <code class="code docutils literal notranslate"><span class="pre">cpu</span></code></p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">backend</span></code>:</dt><dd><ol class="arabic simple">
+<li><p>This flag enables running the tests for particular backends.</p></li>
+<li><p>The values of this flag could be any possible combination of <code class="code docutils literal notranslate"><span class="pre">jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch</span></code>.</p></li>
+<li><p>Default value is <code class="code docutils literal notranslate"><span class="pre">jax,numpy,tensorflow,torch</span></code>.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
 </ol>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good understanding of the basics for contributing.</p>
