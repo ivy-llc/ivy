@@ -57,7 +57,6 @@ def can_cast(
 
     Examples
     --------
-
      With :code:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
