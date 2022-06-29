@@ -18,7 +18,7 @@ import ivy.functional.backends.torch as ivy_torch
         ),
         2,
     ),
-    alpha=st.floats(allow_infinity=False, width=32),
+    alpha=st.floats(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
