@@ -648,6 +648,57 @@
 <span class="sd">        Boolean, whether or not the inputs are equal, or matrix array of booleans if</span>
 <span class="sd">        equality_matrix=True is set.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`Number` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = 1.2</span>
+<span class="sd">    &gt;&gt;&gt; x2 = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.all_equal(x1, x2, equality_matrix=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.all_equal(x1, x2, equality_matrix=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ True,  True], [ True,  True]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.all_equal(x1, x2, equality_matrix=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    With one :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.native_array([0, 0, -1, 1, 0]), \</span>
+<span class="sd">                            b=ivy.array([0, 0, -1, 1, 0]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0, 0, -1, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.all_equal(x1, x2, equality_matrix=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: true,</span>
+<span class="sd">        b: true</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), \</span>
+<span class="sd">                            b=ivy.native_array([1, 0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.native_array([1, 0, 1, 1]), \</span>
+<span class="sd">                            b=ivy.array([1, 0, -1, -1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.all_equal(x1, x2, equality_matrix=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: true,</span>
+<span class="sd">        b: false</span>
+<span class="sd">    }</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">equality_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_equal</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
     <span class="k">if</span> <span class="n">equality_matrix</span><span class="p">:</span>
