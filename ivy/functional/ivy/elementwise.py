@@ -217,8 +217,12 @@ def add(
 
      Examples
     --------
+<<<<<<< HEAD
 
     With :code:`ivy.Array` input:
+=======
+    With :code:`ivy.Array` inputs:
+>>>>>>> upstream/master
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -2976,7 +2980,6 @@ def tan(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
