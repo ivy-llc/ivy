@@ -128,7 +128,11 @@ def std(
             )
         else:
             x = torch.std(
-                x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False
+                x,
+                dim=a if keepdims else a - i,
+                keepdim=keepdims,
+                unbiased=False,
+                out=out,
             )
     return x
 
