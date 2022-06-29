@@ -156,7 +156,10 @@ def variable_data(x: Optional[ivy.Variable]) -> Any:
         The internal data stored by the variable
 
     """
-    return current_backend(x).variable_data(x)
+    if is_variable(x):
+        return current_backend(x).variable_data(x)
+    else:
+        return x
 
 
 @to_native_arrays_and_back
@@ -374,7 +377,7 @@ def lars_update(
     lr: Union[float, ivy.Array, ivy.NativeArray], 
     decay_lambda: Optional[float]=0.,
     inplace: Optional[bool]=None,
-    stop_gradients=True
+    stop_gradients: Optional[bool]=True
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
