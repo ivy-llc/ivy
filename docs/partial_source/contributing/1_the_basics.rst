@@ -291,11 +291,18 @@ With Docker
         
 
 #. Through the command line (With docker):
-    #. We need to first enter inside the docker container and change into the :code:`ivy` directory using the following command.
+    #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
 
         .. code-block:: none
 
-            docker run --rm -it --entrypoint bash unifyai/ivy
+            docker exec <container-name> rm -rf ivy
+            docker cp ivy <container-name>:/ 
+
+    #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
+
+        .. code-block:: none
+
+            docker exec -it ivy_container bash 
             cd ivy
 
     #. Run the test using the pytest command.
