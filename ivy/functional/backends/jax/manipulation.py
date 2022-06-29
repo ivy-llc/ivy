@@ -30,7 +30,6 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-
     ret = jnp.concatenate(xs, axis)
     return ret
 
@@ -46,7 +45,9 @@ def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> J
 
 
 def flip(
-    x: JaxArray, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: JaxArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret
