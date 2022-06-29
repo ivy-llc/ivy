@@ -1344,7 +1344,7 @@ def sqrt(
         b: ivy.array([9.64, 7.35, 5.])
     }
     """
-   return current_backend(x).sqrt(x, out=out)
+    return current_backend(x).sqrt(x, out=out)
 
 
 @to_native_arrays_and_back
