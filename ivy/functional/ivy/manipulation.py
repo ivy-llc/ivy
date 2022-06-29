@@ -878,23 +878,21 @@ def split(
     >>> x = ivy.native_array([7, 8, 9])
     >>> y = ivy.split(x)
     >>> print(y)
-    ivy.array([[7], [8], [9]])
+    [ivy.array([7]),ivy.array([8]),ivy.array([9])]
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a: ivy.array([[10], [45], [2]])
-    }
+    {a:(list[3],<classivy.array.Array>shape=[1])}
 
     Instance Method Examples
     ------------------------
     >>> x = ivy.array([4, 6, 5, 3])
     >>> y = x.split()
     >>> print(y)
-    ivy.array([[4], [6], [5], [3]])
+    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
 
     >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
     >>> y = x.split()
