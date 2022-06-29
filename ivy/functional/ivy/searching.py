@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    infer_dtype,
 )
 
 
@@ -156,25 +157,21 @@ def argmin(
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    ivy.array([2])
+    ivy.array(2)
 
 
-    >>> x=ivy.array([[0., 1., -1.],
-                     [-2., 1., 2.]])
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1)
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.],
-                     [-2., 1., 2.]])
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1, keepdims= True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.],
-                     [-2., 1., 2.],
-                     [1., -2., 0.]])
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
     >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
     >>> print(y)
@@ -188,7 +185,7 @@ def argmin(
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    ivy.array([2])
+    ivy.array(2)
 
 
     With :code:`ivy.Container` input:
@@ -196,10 +193,7 @@ def argmin(
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
     >>> print(y)
-    {
-         a: ivy.array([1]),
-         b: ivy.array([0])
-    }
+    {a:ivy.array(1),b:ivy.array(0)}
 
 
     Instance Method Examples
@@ -210,17 +204,14 @@ def argmin(
     >>> x = ivy.array([0., 1., -1.])
     >>> y = x.argmin()
     >>> print(y)
-    ivy.array([2])
+    ivy.array(2)
 
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
     >>> print(y)
-    {
-         a: ivy.array([1]),
-         b: ivy.array([0])
-    }
+    {a:ivy.array(1),b:ivy.array(0)}
     """
     return current_backend(x).argmin(x, axis, keepdims, out=out)
 
@@ -355,16 +346,16 @@ def where(
 
     With `ivy.Array` input:
 
-    >>> condition = [[True, False], [True, True]]
+    >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
     >>> x2 = ivy.array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
     >>> print(res)
-    ivy.array([[1, 6], [3, 4]])
+    ivy.array([[1,6],[3,4]])
 
     With `ivy.NativeArray` input:
 
-    >>> condition = [[True, False], [False, True]]
+    >>> condition = ivy.array([[True, False], [False, True]])
     >>> x1 = ivy.native_array([[1, 2], [3, 4]])
     >>> x2 = ivy.native_array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
@@ -383,7 +374,7 @@ def where(
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1 > x2), x1, x2)
+    >>> res = ivy.where((x1.a > x2.a), x1, x2)
     >>> print(res)
     {
         a: ivy.array([3, 7, 5]),
@@ -393,9 +384,8 @@ def where(
     With a mix of `ivy.Array` and `ivy.Container` inputs:
 
     >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
-    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),
-                           b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1 < x2), x1, x2)
+    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))
+    >>> res = ivy.where((x1.b < x2.b), x1, x2)
     >>> print(res)
     {
         a: ivy.array([0, 2, -3.6]),
@@ -407,10 +397,10 @@ def where(
 
     With `ivy.Array` input:
 
-    >>> condition = [[True, False], [True, True]]
+    >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
     >>> x2 = ivy.array([[5, 6], [7, 8]])
-    >>> res = x1.where(condition, x2)
+    >>> res = x1.where(condition,x2)
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
 
@@ -418,11 +408,11 @@ def where(
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = x1.where((x1 > x2), x2)
+    >>> res = x1.where((x1.a > x2.a), x2)
     >>> print(res)
     {
         a: ivy.array([3, 7, 5]),
-        b: ivy.array([3, 8, 6])
+        b: ivy.array([2, 8, 6])
     }
 
     """
