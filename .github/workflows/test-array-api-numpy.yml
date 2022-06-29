@@ -35,7 +35,7 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_2
+          name: dir
           path: |
             ivy/.hypothesis/examples
     
