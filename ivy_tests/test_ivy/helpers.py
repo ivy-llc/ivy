@@ -328,14 +328,15 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
 
     output = ansi_escape.sub("", output)
 
-    print("Output: ", output)
-    print("Putput: ", parsed_output)
+    # print("Output: ", output)
+    # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
         ivy.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
+        return False
     return True
 
 
@@ -1272,7 +1273,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype in ['float32', 'bfloat16']:
+    elif dtype in ["float32", "bfloat16"]:
         values = draw(
             list_of_length(
                 st.floats(
