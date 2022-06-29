@@ -83,7 +83,7 @@ def all(
 
 
     >>> x=ivy.array(False)
-    >>> y=ivy.all([-1, 4, 5], out=x)
+    >>> y=ivy.all(ivy.array([-1, 4, 5]), out=x)
     >>> print(y)
     ivy.array(True)
 
