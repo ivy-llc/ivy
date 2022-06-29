@@ -268,12 +268,12 @@ def adam_step(
     >>> epsilon = 1e-6
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        (ivy.array([[ 1.,  1., -1.],
-                    [ 1.,  1.,  1.]]),
-       ivy.array([[ 0.14,  0.56, -0.42],
-                  [ 0.28,  0.42,  0.07]]),
-       ivy.array([[0.05  , 0.8   , 0.45  ],
-                  [0.2   , 0.45  , 0.0125]]))
+        (ivy.array([[1., 1., -1.],
+                    [1., 1., 1.]]),
+        ivy.array([[ 0.14, 0.56, -0.42],
+                  [ 0.28, 0.42, 0.07]]),
+        ivy.array([[0.05, 0.8, 0.45],
+                  [0.2, 0.45, 0.0125]]))
 
     >>> dcdw = ivy.array([1, -2, 3])
     >>> mw = ivy.zeros(1)
@@ -281,8 +281,8 @@ def adam_step(
     >>> step = ivy.array(3.6)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-        (ivy.array([ 0.601, -0.601,  0.601]),
-        ivy.array([ 0.1, -0.2,  0.3]),
+        (ivy.array([ 0.601, -0.601, 0.601]),
+        ivy.array([ 0.1, -0.2, 0.3]),
         ivy.array([0.001, 0.004, 0.009]))
 
 
@@ -307,9 +307,9 @@ def adam_step(
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        (ivy.array([ 0.209 , -0.271 ,  0.0717,  0.    ,  0.142 , -0.209 ,  0.182 ,0.283 , -0.0717,  0.209 ]),
-        ivy.array([ 0.72 , -0.96 ,  0.24 ,  0.   ,  0.48 , -0.72 ,  0.624,  1.01 ,-0.24 ,  0.72 ]),
-        ivy.array([1.06 , 1.12 , 1.   , 0.992, 1.02 , 1.06 , 1.05 , 1.13 , 1.   ,1.06 ]))
+        (ivy.array([0.209, -0.271,  0.0717,  0., 0.142, -0.209, 0.182, 0.283, -0.0717, 0.209]),
+        ivy.array([0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624, 1.01, -0.24, 0.72]),
+        ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05, 1.13, 1., 1.06]))
 
     with mixture of both :code:`ivy.NativeArray`  and :code:'ivy.Array' inputs:
 
