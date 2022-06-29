@@ -60,6 +60,9 @@ def linear_resample(x, num_samples: int, axis: int = -1):
     return ret
 
 
+linear_resample.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def bilinear_resample(x, warp):
     batch_shape = x.shape[:-3]

@@ -2239,6 +2239,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
@@ -2258,7 +2259,7 @@ def gather_nd(
         New array of given shape, with the values gathered at the indices.
 
     """
-    return current_backend(params).gather_nd(params, indices, device=device)
+    return current_backend(params).gather_nd(params, indices, device=device, out=out)
 
 
 @handle_nestable
@@ -2284,7 +2285,8 @@ def multiprocessing(context: str = None):
 @handle_out_argument
 @handle_nestable
 def indices_where(
-    x: Union[ivy.Array, ivy.NativeArray]
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
@@ -2299,7 +2301,7 @@ def indices_where(
         Indices for where the boolean array is True.
 
     """
-    return current_backend(x).indices_where(x)
+    return current_backend(x).indices_where(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -2311,6 +2313,7 @@ def one_hot(
     depth: int,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array.
 
@@ -2331,7 +2334,7 @@ def one_hot(
         overrides.
 
     """
-    return current_backend(indices).one_hot(indices, depth, device=device)
+    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
 @to_native_arrays_and_back
@@ -2411,10 +2414,12 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
         which itself contains the parameter name, type, and other helpful information.
     """
-    if (not ivy.exists(name) and not ivy.exists(idx)) or\
-            (ivy.exists(name) and ivy.exists(idx)):
-        raise Exception("exactly one of the keyword arguments name or idx "
-                        "must be provided")
+    if (not ivy.exists(name) and not ivy.exists(idx)) or (
+        ivy.exists(name) and ivy.exists(idx)
+    ):
+        raise Exception(
+            "exactly one of the keyword arguments name or idx " "must be provided"
+        )
     params = inspect.signature(fn).parameters
     if ivy.exists(name):
         return {"idx": list(params).index(name), "param": params[name]}

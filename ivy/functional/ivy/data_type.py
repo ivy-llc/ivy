@@ -109,7 +109,9 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 @handle_out_argument
 @handle_nestable
 def broadcast_to(
-    x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Tuple[int, ...],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Broadcasts an array to a specified shape.
 
@@ -128,7 +130,7 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-    return current_backend(x).broadcast_to(x, shape)
+    return current_backend(x).broadcast_to(x, shape, out=out)
 
 
 @to_native_arrays_and_back
@@ -180,6 +182,7 @@ def astype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
     *,
     copy: bool = True,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -223,7 +226,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return current_backend(x).astype(x, dtype, copy=copy)
+    return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
 
 # Extra #
@@ -805,7 +808,6 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
 
 @handle_nestable
 def function_unsupported_dtypes(fn: Callable) -> Tuple:
-
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -840,8 +842,8 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
 
 
 def promote_types(
-        type1: Union[ivy.Dtype, ivy.NativeDtype],
-        type2: Union[ivy.Dtype, ivy.NativeDtype],
+    type1: Union[ivy.Dtype, ivy.NativeDtype],
+    type2: Union[ivy.Dtype, ivy.NativeDtype],
 ):
     """
     Promotes the datatypes type1 and type2, returning the data type they promote to
@@ -862,8 +864,8 @@ def promote_types(
 
 
 def type_promote_arrays(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
 ):
     """
     Type promote the input arrays, returning new arrays with the shared correct
