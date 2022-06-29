@@ -69,8 +69,6 @@ def test_linear_resample(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy_np.random_normal(shape=shape, device=ivy.default_device())
     axis = random.randint(0, len(shape) - 1)
     helpers.test_array_function(
@@ -113,8 +111,6 @@ def test_bilinear_resample(
     container,
     fw,
 ):
-    if fw == "torch" and input_dtype == "float16":
-        return
     x = ivy.random_normal(shape=batch_shape + h_w + [n_dims])
     warp = ivy.random_uniform(shape=batch_shape + [n_samples, 2])
     helpers.test_array_function(

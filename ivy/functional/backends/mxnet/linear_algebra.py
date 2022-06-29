@@ -4,106 +4,18 @@ from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
 
-
 # local
 import ivy
 from ivy import inf
 
 DET_THRESHOLD = 1e-12
 
+
 # Array API Standard #
 # -------------------#
 
 
-def eigh(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    return mx.np.linalg.eigh(x)
-
-
-inv = mx.nd.linalg_inverse
-
-
-def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    return mx.nd.linalg.inverse(x)
-
-
-def pinv(x):
-    """reference: https://help.matheass.eu/en/Pseudoinverse.html"""
-    x_dim, y_dim = x.shape[-2:]
-    if x_dim == y_dim and mx.nd.sum(mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
-        return inv(x)
-    else:
-        xT = mx.nd.swapaxes(x, -1, -2)
-        xT_x = ivy.to_native(matmul(xT, x))
-        if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
-            return matmul(inv(xT_x), xT)
-        else:
-            x_xT = ivy.to_native(matmul(x, xT))
-            if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
-                return matmul(xT, inv(x_xT))
-            else:
-                return xT
-
-
-def vector_norm(
-    x: NDArray,
-    p: Union[int, float, Literal[inf, -inf]] = 2,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
-) -> NDArray:
-
-    return mx.np.linalg.norm(x, p, axis, keepdims)
-
-
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception(
-            "if specified, axes must be a length-2 sequence of ints,"
-            "but found {} of type {}".format(axes, type(axes))
-        )
-    return mx.nd.norm(x, p, axes, keepdims=keepdims)
-
-
-# noinspection PyPep8Naming
-def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
-    return mx.np.linalg.svd(x)
-
-
-def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    return mx.outer(x1, x2)
-
-
-def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> NDArray:
-    return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
-
-
-def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
-) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = mx.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-
-    return res
-
-
-def trace(x: NDArray, offset: int = 0) -> mx.np.ndarray:
-    return mx.np.trace(x, offset=offset)
-
-
-def qr(x, mode):
-    return mx.np.linalg.qr(x, mode=mode)
-
-
-def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
-    ret = mx.linalg.det(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
 def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
-
     if not upper:
         return mx.np.linalg.cholesky(x)
     else:
@@ -113,26 +25,31 @@ def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
         )
 
 
-def eigvalsh(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    return mx.np.linalg.eigvalsh(x)
-
-
-def matrix_rank(
-    x: NDArray, rtol: Union[NDArray, float] = None
-) -> Union[NDArray, float]:
-    return mx.np.linalg.matrix_rank(x, rtol)
-
-
 def cross(x1: mx.nd.NDArray, x2: mx.nd.NDArray, axis: int = -1) -> mx.nd.NDArray:
     return mx.np.cross(a=x1, b=x2, axis=axis)
 
 
-def matrix_transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return mx.nd.transpose(x, axes)
+def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
+    ret = mx.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> NDArray:
+    return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
+
+
+def eigh(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.np.linalg.eigh(x)
+
+
+def eigvalsh(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.np.linalg.eigvalsh(x)
+
+
+def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.linalg.inverse(x)
 
 
 def matmul(x1, x2):
@@ -161,6 +78,83 @@ def matmul(x1, x2):
     if expanded:
         return mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
     return res
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception(
+            "if specified, axes must be a length-2 sequence of ints,"
+            "but found {} of type {}".format(axes, type(axes))
+        )
+    return mx.nd.norm(x, p, axes, keepdims=keepdims)
+
+
+def matrix_rank(
+    x: NDArray, rtol: Union[NDArray, float] = None
+) -> Union[NDArray, float]:
+    return mx.np.linalg.matrix_rank(x, rtol)
+
+
+def matrix_transpose(x, axes=None):
+    if axes is None:
+        num_dims = len(x.shape)
+        axes = list(range(num_dims))
+        axes.reverse()
+    return mx.nd.transpose(x, axes)
+
+
+def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.outer(x1, x2)
+
+
+def pinv(x):
+    """reference: https://help.matheass.eu/en/Pseudoinverse.html"""
+    x_dim, y_dim = x.shape[-2:]
+    if x_dim == y_dim and mx.nd.sum(mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
+        return inv(x)
+    else:
+        xT = mx.nd.swapaxes(x, -1, -2)
+        xT_x = ivy.to_native(matmul(xT, x))
+        if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
+            return matmul(inv(xT_x), xT)
+        else:
+            x_xT = ivy.to_native(matmul(x, xT))
+            if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
+                return matmul(xT, inv(x_xT))
+            else:
+                return xT
+
+
+def qr(x, mode):
+    return mx.np.linalg.qr(x, mode=mode)
+
+
+def slogdet(
+    x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = mx.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+
+    return res
+
+
+def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
+    return mx.np.linalg.svd(x)
+
+
+def trace(x: NDArray, offset: int = 0) -> mx.np.ndarray:
+    return mx.np.trace(x, offset=offset)
+
+
+def vector_norm(
+    x: NDArray,
+    p: Union[int, float, Literal[inf, -inf]] = 2,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+) -> NDArray:
+    return mx.np.linalg.norm(x, p, axis, keepdims)
 
 
 # Extra #

@@ -5,6 +5,7 @@ The Basics
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
@@ -40,7 +41,12 @@ Even for very simple questions, there are benefits in starting a discussion for 
 This means that the question can be asked once and then easily found by others in future,
 avoiding the case where different people ask the same question multiple times on the discord server.
 
-I or someone else in the team will strive to respond to your newly created discussion as quickly as possible!
+For discussions that have already been created,
+all new comments will trigger the "Unanswered" label to be applied to the discussion.
+This makes it easy for members in the Ivy team to keep track of where attention is needed.
+Once the new comment has been responded to, we will manually remove the "Unanswered" label.
+
+I or someone else in the team will strive to respond to your comments, replies and newly created discussions as quickly as possible!
 
 **Issues**
 
@@ -148,6 +154,14 @@ sometimes you will see that changes to upstream have caused conflicts with your 
 In this case, you will need to either resolve these conflicts in the browser,
 or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.
+
+You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there
+are merge conflicts. In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes,
+then pulling from master. Once your branch is up-to-date with master, you can reinstate the most recently stashed
+changes, commit and push to master with no conflicts. The corresponding commands are :code:`git stash` ->
+:code:`git fetch` -> :code:`git pull` -> :code:`git stash apply stash@{0}`. Note that this only works for uncommitted
+changes (staged and unstaged) and untracked files won't be stashed. For a comprehensive explanation of git stashing,
+check out this `Atlassian tutorial`_.
 
 **Video**
 
@@ -261,7 +275,142 @@ or on `discord`_ in the `commit frequency channel`_!
 Running Tests Locally
 ---------------------
 
-# ToDo: write this section
+With Docker
+****
+
+#. With PyCharm (With or without docker):
+    #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
+        
+        .. image:: content/pytest_button_pycharm.png
+           :width: 420
+        
+    #. Testing can be done for the entire project, individual submodules, individual files and individual tests. This can be done by selecting the appropriate configuration from the top pane in PyCharm.
+        
+        .. image:: content/pytest_with_pycharm.png
+           :width: 420
+        
+
+#. Through the command line (With docker):
+    #. We need to first enter inside the docker container and change into the :code:`ivy` directory using the following command.
+
+        .. code-block:: none
+
+            docker run --rm -it --entrypoint bash unifyai/ivy
+            cd ivy
+
+    #. Run the test using the pytest command.
+
+        #. Ivy Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+
+            #. For all tests:
+
+                .. code-block:: none
+
+                    pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+
+        #.  Array API Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            
+            #. For all tests:
+
+                .. code-block:: none
+
+                    pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+        
+        #. For the entire project:
+
+            .. code-block:: none
+                
+                pytest ivy_tests/ --no-header --no-summary -q
+
+#. Through the command line (Without docker):
+    #. We need to first enter inside the virtual environment.
+
+        .. code-block:: none
+
+            ivy_dev\Scripts\activate.bat
+
+        (on Windows)
+
+        OR
+
+        .. code-block:: none
+
+            source ivy_dev/bin/activate
+
+        (on Mac/Linux)
+
+    #. Run the test using the pytest command.
+
+        #. Ivy Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+
+            #. For all tests:
+
+                .. code-block:: none
+
+                    python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+
+        #.  Array API Tests 
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            
+            #. For all tests:
+
+                .. code-block:: none
+
+                    python -m pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+        
+        #. For the entire project
+
+            .. code-block:: none
+                
+                python -m pytest ivy_tests/ --no-header --no-summary -q
+
 
 **Round Up**
 
