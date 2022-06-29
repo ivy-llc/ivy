@@ -303,6 +303,10 @@ class Array(
         return self._data.__rpow__(power)
 
     @_native_wrapper
+    def __ipow__(self, power):
+        return ivy.pow(self._data, power)
+
+    @_native_wrapper
     def __add__(self, other):
         """
         ivy.Array special method variant of ivy.add. This method simply wraps the
@@ -311,7 +315,6 @@ class Array(
 
         Examples
         --------
-
         With :code:`ivy.Array` instances only:
 
         >>> x = ivy.array([1, 2, 3])
@@ -347,7 +350,6 @@ class Array(
 
         Examples
         --------
-
         >>> x = 1
         >>> y = ivy.array([4, 5, 6])
         >>> z = x + y
@@ -355,6 +357,10 @@ class Array(
         ivy.array([5, 6, 7])
         """
         return ivy.add(other, self._data)
+
+    @_native_wrapper
+    def __iadd__(self, other):
+        return ivy.add(self._data, other)
 
     @_native_wrapper
     def __sub__(self, other):
@@ -373,7 +379,15 @@ class Array(
         return ivy.multiply(other, self._data)
 
     @_native_wrapper
+    def __imul__(self, other):
+        return ivy.multiply(self._data, other)
+
+    @_native_wrapper
     def __mod__(self, other):
+        return ivy.remainder(self._data, other)
+
+    @_native_wrapper
+    def __imod__(self, other):
         return ivy.remainder(self._data, other)
 
     @_native_wrapper
@@ -385,12 +399,20 @@ class Array(
         return ivy.divide(other, self._data)
 
     @_native_wrapper
+    def __itruediv__(self, other):
+        return ivy.divide(self._data, other)
+
+    @_native_wrapper
     def __floordiv__(self, other):
         return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __rfloordiv__(self, other):
         return ivy.floor_divide(other, self._data)
+
+    @_native_wrapper
+    def __ifloordiv__(self, other):
+        return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __abs__(self):
