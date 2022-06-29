@@ -9,7 +9,7 @@ import ivy
 class ArrayWithGeneral(abc.ABC):
     def all_equal(
             self,
-            x,
+            x2,
             equality_matrix: bool = False
     ):
         """
@@ -36,4 +36,4 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[ True,  True], [ True,  True]])
 
         """
-        return ivy.all_equal(self, x, equality_matrix)
+        return ivy.all_equal(self, x2, equality_matrix)
