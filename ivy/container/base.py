@@ -149,6 +149,7 @@ class ContainerBase(dict, abc.ABC):
         )
         self._config = dict()
         self.inplace_update(dict_in, **self._config_in)
+        self._is_variable = ivy.is_variable(dict_in)
 
     # Class Methods #
     # --------------#
@@ -5038,3 +5039,20 @@ class ContainerBase(dict, abc.ABC):
         if not kcs:
             return 0
         return max([len(kc.split("/")) for kc in kcs])
+    
+    @property
+    def is_variable(self):
+        """Determines whether the container is a variable or not.
+
+        Returns
+        -------
+        ret
+            Boolean, true if the container is a trainable variable, false otherwise.
+        """
+        return self._is_variable
+
+# noinspection PyRedeclaration
+class Variable(ContainerBase):
+    def __init__(self, data):
+        assert ivy.is_variable(data)
+        super().__init__(data)

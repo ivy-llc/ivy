@@ -4,146 +4,129 @@
 from numbers import Number
 import pytest
 import numpy as np
+import torch
+import tensorflow as tf
 from hypothesis import given, strategies as st
 
 # local
 import ivy
 import ivy.functional.backends.numpy
+from ivy.functional.ivy.creation import native_array
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.container import Container
 import ivy.functional.backends.numpy as ivy_np
 
 
-# variable
+# variable   
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-)
-def test_variable(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    ret = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    # type test
-    if call is not helpers.np_call:
-        assert ivy.is_variable(ret)
-    # cardinality test
-    assert ret.shape == np.array(object_in).shape
-    # value test
-    assert np.allclose(
-        call(ivy.variable, ivy.array(object_in, dtype=dtype, device=device)),
-        np.array(object_in).astype(dtype),
-    )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
-    
-@given(
-    object_in=helpers.lists(st.floats(min_value=-10,max_value=10),min_size=1,max_size=3),
-    num_positional_args=helpers.num_positional_args(fn_name="variable"),
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 3),
-    as_variable=helpers.list_of_length(st.booleans(), 3),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
     with_out=st.booleans(),
-    native_array=helpers.list_of_length(st.booleans(), 3),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,2),
+    container=st.booleans(),
     instance_method=st.booleans(),
-    container=helpers.list_of_length(st.booleans(), 3),
-    )
-def test_variables(
-    dtype,
+)
+def test_variable(
+    dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    instance_method,
+    num_positional_args,
     container,
-    fw,
-    object_in
+    instance_method,
+    fw
 ):
+    dtype, x = dtype_and_x
+    x = np.asarray(x, dtype=dtype)
+    if x.shape == ():
+        return
     helpers.test_array_function(
         dtype,
         as_variable,
         with_out,
-        num_positional_args,
         native_array,
-        instance_method,
-        container,
         fw,
+        num_positional_args,
+        container,
+        instance_method,
         "variable",
-        object_in
+        x=x
     )
 
 
 # is_variable
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0, 2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    exclusive=st.booleans()
 )
-def test_is_variable(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    non_var = ivy.array(object_in, dtype=dtype, device=device)
-    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    non_var_res = ivy.is_variable(non_var)
-    var_res = ivy.is_variable(var)
-    # type test
-    assert ivy.is_ivy_array(non_var)
-    if call is not helpers.np_call:
-        assert ivy.is_variable(var)
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not support flagging variables
-        pytest.skip()
-    # value test
-    assert non_var_res is False
-    assert var_res is True
-
+def test_is_variable(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    exclusive
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x,dtype=dtype)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "is_variable",
+        x=x,
+        exclusive=exclusive
+    )
 
 # variable data
 @given(
-    object_in=helpers.list_of_length(st.floats(-np.inf, np.inf, allow_infinity=False), 10),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,1),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-def test_variable_data(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    var_data = ivy.variable_data(var)
-    # type test
-    if call is not helpers.np_call:
-        # numpy does not support variables
-        assert ivy.is_variable(var)
-        if call is not helpers.mx_call:
-            # jax variables and their data are the same instance
-            assert not ivy.is_variable(var_data, exclusive=True)
-        assert ivy.is_ivy_array(var_data)
-    # cardinality test
-    assert var_data.shape == var.shape
-    # value test
-    assert np.allclose(ivy.to_numpy(var), ivy.to_numpy(var_data))
-
+def test_variable_data(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x, dtype=dtype)
+    if fw == "torch":
+        x = torch.as_tensor(x,dtype=torch.float32)
+    if fw == "tensorflow":
+        x = tf.Variable(tf.convert_to_tensor(x,dtype=dtype))
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "variable_data",
+        x=x
+    )
 
 # stop_gradient
 @given(
