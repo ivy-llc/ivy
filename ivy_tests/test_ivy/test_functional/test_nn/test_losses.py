@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -144,9 +144,27 @@ def test_binary_cross_entropy(
 # sparse_cross_entropy
 @given(
     data=st.data(),
-    true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2),
+    dtype_and_true=helpers.dtype_and_values(
+        ivy_np.valid_int_dtypes,
+        min_value=0,
+        max_value=10,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
     axis=helpers.integers(min_value=-1, max_value=0),
     epsilon=st.floats(min_value=0, max_value=1),
     as_variable=helpers.list_of_length(st.booleans(), 2),
@@ -158,9 +176,8 @@ def test_binary_cross_entropy(
 )
 def test_sparse_cross_entropy(
     data,
-    true_dtype,
-    pred_dtype,
-    shape,
+    dtype_and_true,
+    dtype_and_pred,
     axis,
     epsilon,
     as_variable,
@@ -171,30 +188,13 @@ def test_sparse_cross_entropy(
     instance_method,
     fw,
 ):
+    true_dtype, true = dtype_and_true
+    pred_dtype, pred = dtype_and_pred
     if fw == "torch" and pred_dtype == "float16":
         return
     if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
         return
-    pred = data.draw(
-        helpers.array_values(
-            dtype=pred_dtype,
-            shape=shape,
-            min_value=0,
-            max_value=1,
-            exclude_min=True,
-            exclude_max=True,
-        )
-    )
-    true = data.draw(
-        helpers.array_values(
-            dtype=true_dtype,
-            shape=(1,),
-            min_value=0,
-            max_value=shape[0],
-            exclude_max=True,
-        )
-    )
-    assume(all([v < len(pred) for v in true]))
+    min_true = min(true[0], len(pred) - 1)
     helpers.test_array_function(
         [true_dtype, pred_dtype],
         as_variable,
@@ -205,7 +205,7 @@ def test_sparse_cross_entropy(
         instance_method,
         fw,
         "sparse_cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
+        true=np.asarray([min_true], dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
