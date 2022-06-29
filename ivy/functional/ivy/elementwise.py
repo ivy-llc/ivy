@@ -1105,12 +1105,54 @@ def ceil(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+    
     Examples
     --------
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
     ivy.array([1., 0., -0.])
+    
+    >>> x = ivy.array([2.5, -3.5, 0, -3, -0])
+    >>> y = ivy.ones(5)
+    >>> ivy.ceil(x, out=y)
+    >>> print(y)
+    ivy.array([ 3., -3.,  0., -3.,  0.])
+    
+    >>> x = ivy.array([[3.3, 4.4, 5.5], [-6.6, -7.7, -8.8]])
+    >>> ivy.ceil(x, out=x)
+    >>> print(x)
+    ivy.array([[ 4.,  5.,  6.],
+               [-6., -7., -8.]])
+    
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0, -0, -2.5, -1, 2, 3.5])
+    >>> y = ivy.ceil(x)
+    >>> print(y)
+    ivy.array([ 0.,  0., -2., -1.,  2.,  4.])
+    
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                          b=ivy.array([5.4, -3.2, -0, 5.2]))
+    >>> y = ivy.ceil(x)
+    >>> print(y)
+    {
+        a: ivy.array([3., 1., -1.]),
+        b: ivy.array([6., -3., 0., 6.])
+    }
     """
     return current_backend(x).ceil(x, out=out)
 
