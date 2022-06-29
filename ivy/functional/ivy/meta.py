@@ -486,8 +486,8 @@ def fomaml_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1]
     if return_inner_v:
-        return (cost, grads, rets[2])
-    return (cost, grads)
+        return cost, grads, rets[2]
+    return cost, grads
 
 
 @to_native_arrays_and_back
@@ -569,8 +569,8 @@ def reptile_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
-        return (cost, grads, rets[2])
-    return (cost, grads)
+        return cost, grads, rets[2]
+    return cost, grads
 
 
 # Second Order
@@ -690,5 +690,4 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    # noinspection PyRedundantParentheses
     return (cost, grads.sum(0), *rets)
