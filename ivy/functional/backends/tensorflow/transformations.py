@@ -18,7 +18,7 @@ def vmap(fun, in_axes=0, out_axes=0):
             try:
                 assert (len(args)) == len(in_axes)
             except AssertionError:
-                raise Exception('''The in_axis should have length equivalent to the 
+                raise Exception('''The in_axes should have length equivalent to the 
                 number of positional arguments to the function being vectorized
                 or it should be an integer.''')
 
