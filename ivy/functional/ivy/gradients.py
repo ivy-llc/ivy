@@ -219,8 +219,13 @@ def adam_step(
     beta2=0.999,
     epsilon=1e-7,
 ) -> ivy.Array:
+<<<<<<< HEAD
     """Compute adam step delta, given the derivatives of some cost c with respect
     to weights ws, using ADAM update. `[reference]
+=======
+    """Compute adam step delta, given the derivatives of some cost c with respect to ws,
+    using ADAM update. `[reference]
+>>>>>>> parent of d39a4dd6d (Added functional examples for adam_step function)
 
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
@@ -246,6 +251,7 @@ def adam_step(
     ret
         The adam step delta.
 
+<<<<<<< HEAD
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
@@ -356,6 +362,8 @@ def adam_step(
         a: ivy.array([0., 0.024, 0.096]),
         b: ivy.array([0.216, 0.384, 0.6])
     }
+=======
+>>>>>>> parent of d39a4dd6d (Added functional examples for adam_step function)
     """
     step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
