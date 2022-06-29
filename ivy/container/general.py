@@ -65,8 +65,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.all_equal. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
+        ivy.Container static method variant of ivy.all_equal. This method simply wraps
+        the function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
 
         Examples
@@ -169,5 +169,11 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_all_equal(
-            self, x2, equality_matrix, key_chains, to_apply, prune_unapplied, map_sequences
+            self, 
+            x2, 
+            equality_matrix, 
+            key_chains, 
+            to_apply, 
+            prune_unapplied, 
+            map_sequences
         )
