@@ -44,6 +44,7 @@ def expand_dims(
 def flip(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:

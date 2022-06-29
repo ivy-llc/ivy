@@ -78,6 +78,42 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = ivy.Container.static_add(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[5.1, 6.3, 0.4],
+                          [6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4]]),
+            b: ivy.array([[6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4],
+                          [8.1, 9.3, 3.4]])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_add(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([7, 9, 11])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "add",
             x1,
@@ -99,6 +135,25 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                             b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                             b=ivy.array([5, 6, 7]))
+
+        >>> z = x.add(y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([7, 9, 11])
+        }
+        """
         return self.static_add(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -166,7 +221,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -184,6 +239,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -213,7 +269,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -231,6 +287,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -241,7 +298,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -261,6 +318,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -290,7 +348,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -308,6 +366,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -318,7 +377,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -338,6 +397,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -348,7 +408,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -366,6 +426,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -469,7 +530,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -487,6 +548,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -554,7 +616,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -572,6 +634,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -582,7 +645,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -600,6 +663,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -610,7 +674,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -628,6 +692,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -695,7 +760,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -713,6 +778,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -723,7 +789,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -741,6 +807,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -827,7 +894,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -845,6 +912,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -855,7 +923,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -873,6 +941,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -902,7 +971,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -920,6 +989,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -930,7 +1000,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -948,6 +1018,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -988,6 +1059,26 @@ class ContainerWithElementwise(ContainerBase):
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    @staticmethod
+    def static_negative(
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "negative",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def negative(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -996,15 +1087,13 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.negative(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.static_negative(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
 
     def not_equal(
@@ -1013,7 +1102,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1031,6 +1120,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -1060,7 +1150,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1078,6 +1168,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -1088,7 +1179,7 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1106,6 +1197,7 @@ class ContainerWithElementwise(ContainerBase):
                 key_chains,
                 to_apply,
                 prune_unapplied,
+                map_nests=map_nests,
             ),
             out,
         )
@@ -1270,6 +1362,23 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tan. This method simply wraps the
+        function, and so the docstring for ivy.tan also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_tan(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.56, -2.19]),
+            b: ivy.array([-0.143, 1.16, -3.38])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "tan",
             x,
@@ -1289,6 +1398,21 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.tan. This method simply wraps the
+        function, and so the docstring for ivy.tan also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.tan()
+        >>> print(y)
+        {
+            a:ivy.array([0., 1.56, -2.19]),
+            b:ivy.array([-0.143, 1.16, -3.38])
+        }
+        """
         return self.static_tan(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
