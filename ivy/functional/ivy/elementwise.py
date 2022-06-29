@@ -1107,10 +1107,10 @@ def ceil(
         array must have the same data type as ``x``.
 
     This method conforms to the
-    `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures.elementwise_functions.ceil.html>`_ in the standard.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    in the standard.
     
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -1118,13 +1118,12 @@ def ceil(
     
     Examples
     --------
-    
     With :code:`ivy.Array` input:
     
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    ivy.array([ 1.,  0., -0.])
+    ivy.array([1., 0., -0.])
     
     >>> x = ivy.array([2.5, -3.5, 0, -3, -0])
     >>> y = ivy.ones(5)
