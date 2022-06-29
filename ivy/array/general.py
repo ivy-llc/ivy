@@ -1,5 +1,6 @@
 # global
 import abc
+from typing import Any, Iterable
 
 # ToDo: implement all methods here as public instance methods
 
@@ -9,8 +10,8 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def all_equal(
-            self,
-            x2,
+            self: ivy.Array,
+            x2: Iterable[Any],
             equality_matrix: bool = False
     ):
         """
@@ -37,4 +38,4 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[ True,  True], [ True,  True]])
 
         """
-        return ivy.all_equal(self, x2, equality_matrix)
+        return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
