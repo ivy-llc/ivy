@@ -448,7 +448,6 @@ class ContainerWithElementwise(ContainerBase):
         
         Examples
         --------
-        
         >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]), b=ivy.array([5.4, -3.2, 5.2]))
         >>> y = x.ceil()
         >>> print(y)
