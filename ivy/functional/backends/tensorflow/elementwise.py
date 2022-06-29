@@ -1,6 +1,8 @@
 # global
+import numpy as np
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
+from tensorflow.experimental.numpy import any
 from typing import Union
 
 # local
@@ -40,12 +42,11 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.add(x1, x2)
+    return tf.experimental.numpy.add(x1, x2)
 
 
 def asin(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.asin(x)
-    return ret
+    return tf.asin(x)
 
 
 def asinh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
@@ -146,7 +147,7 @@ def divide(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.divide(x1, x2)
+    return tf.experimental.numpy.divide(x1, x2)
 
 
 def equal(
@@ -177,7 +178,14 @@ def floor_divide(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.math.floordiv(x1, x2)
+    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
+        ret = np.floor_divide(x1, x2)
+    else:
+        ret = tf.math.floordiv(x1, x2)
+
+    if (any(isinf(x1)) and any(isfinite(x2))) or (any(isfinite(x1)) and any(isinf(x2))):
+        return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
+    return ret
 
 
 def greater(
@@ -329,7 +337,9 @@ def remainder(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.math.floormod(x1, x2)
+    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
+        return np.remainder(x1, x2)
+    return tf.experimental.numpy.remainder(x1, x2)
 
 
 def round(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
