@@ -46,7 +46,7 @@ def _get_shape_of_list(lst, shape=()):
 # set_framework
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
 def test_set_framework(fw_str, device, call):
-    ivy.set_backend('tensorflow')
+    ivy.set_backend(fw_str)
     ivy.unset_backend()
 
 
