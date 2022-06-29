@@ -395,7 +395,6 @@ def fomaml_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple[ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of first order MAML.
 
@@ -487,12 +486,8 @@ def fomaml_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1]
     if return_inner_v:
-        ret = (cost, grads, rets[2])
-    else:
-        ret = (cost, grads)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return (cost, grads, rets[2])
+    return (cost, grads)
 
 
 @to_native_arrays_and_back
@@ -507,7 +502,6 @@ def reptile_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple[ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of Reptile.
 
@@ -575,12 +569,8 @@ def reptile_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
-        ret = (cost, grads, rets[2])
-    else:
-        ret = (cost, grads)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return (cost, grads, rets[2])
+    return (cost, grads)
 
 
 # Second Order
@@ -606,7 +596,6 @@ def maml_step(
     return_inner_v: Optional[Union[str, bool]] = False,
     num_tasks: Optional[int] = None,
     stop_gradients: Optional[bool] = True,
-    out: Optional[Tuple[ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of vanilla second order MAML.
 
@@ -702,7 +691,4 @@ def maml_step(
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
     # noinspection PyRedundantParentheses
-    ret = (cost, grads.sum(0), *rets)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return (cost, grads.sum(0), *rets)
