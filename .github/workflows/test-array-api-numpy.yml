@@ -16,14 +16,13 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
-#       - name: Download artifact
-#         uses: dawidd6/action-download-artifact@v2
-#         with:
-#           workflow: test-array-api-numpy.yml
-#           workflow_conclusion: success
-#           name: hypothesis_2
-#           path: |
-#             ivy/.hypothesis/examples/
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api-numpy.yml
+          name: dir
+          path: |
+            ivy/.hypothesis/examples/
             
       - name: Run NumPy Tests
         id: tests
@@ -39,6 +38,6 @@ jobs:
           path: |
             ivy/.hypothesis/examples
     
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
