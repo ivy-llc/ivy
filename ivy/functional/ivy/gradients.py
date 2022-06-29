@@ -219,7 +219,7 @@ def execute_with_gradients(
         extra function outputs
 
     """
-    return current_backend(None).execute_with_gradients(func, xs, retain_grads)
+    return current_backend(xs).execute_with_gradients(func, xs, retain_grads)
 
 
 # Optimizer Steps #

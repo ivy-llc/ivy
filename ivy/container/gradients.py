@@ -1,4 +1,4 @@
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Callable
 
 # local
 import ivy
@@ -75,6 +75,46 @@ class ContainerWithGradients(ContainerBase):
             prune_unapplied,
             map_sequences
             )
+        
+    @staticmethod
+    def static_execute_with_gradients(
+        func: Callable,
+        xs: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        retain_grads: Optional[bool]=False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]]=None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "execute_with_gradients",
+            func,
+            xs,
+            retain_grads,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences
+        )
+    
+    def execute_with_gradients(
+        self: ivy.Container,
+        xs: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        retain_grads: Optional[bool]=False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]]=None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        return self.static_execute_with_gradients(
+            self,
+            xs,
+            retain_grads,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences
+        )
     
     @staticmethod
     def static_adam_step(
