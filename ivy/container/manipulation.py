@@ -92,52 +92,6 @@ class ContainerWithManipulation(ContainerBase):
             out,
         )
 
-    @staticmethod
-    def static_clip(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        x_min: Union[Number, Union[ivy.Container, ivy.Array, ivy.NativeArray]],
-        x_max: Union[Number, Union[ivy.Container, ivy.Array, ivy.NativeArray]],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
-            "clip",
-            x,
-            x_min,
-            x_max,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def clip(
-        self: ivy.Container,
-        x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-        x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return self.static_clip(
-            self,
-            x_min,
-            x_max,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
-        )
-
     def flip(
         self: ivy.Container,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -437,18 +391,18 @@ class ContainerWithManipulation(ContainerBase):
             ),
             out,
         )
-    
+
     @staticmethod
     def static_clip(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-            x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.clip. This method simply wraps the
