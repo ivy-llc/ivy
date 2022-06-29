@@ -100,6 +100,7 @@ class ContainerWithGeneral(ContainerBase):
             "all_equal",
             x1,
             x2,
+            equality_matrix=equality_matrix,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
