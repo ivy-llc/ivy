@@ -391,18 +391,18 @@ class ContainerWithManipulation(ContainerBase):
             ),
             out,
         )
-    
+
     @staticmethod
     def static_clip(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-            x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.clip. This method simply wraps the
