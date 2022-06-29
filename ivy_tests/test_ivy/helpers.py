@@ -458,7 +458,7 @@ def test_array_method(
     num_positional_args_constructor: int,
     fw: str,
     class_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
 ):
@@ -575,9 +575,13 @@ def test_array_method(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
 
 
 def test_array_function(
@@ -590,7 +594,7 @@ def test_array_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -854,9 +858,13 @@ def test_array_function(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
 def test_frontend_function(
@@ -868,7 +876,7 @@ def test_frontend_function(
     fw: str,
     frontend: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -1074,9 +1082,13 @@ def test_frontend_function(
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
-        rtol = tolerance_dict.get(str(frontend_ret.dtype), rtol)
-        assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            rtol = tolerance_dict.get(str(frontend_ret.dtype), 1e-03)
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    else:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
@@ -1220,29 +1232,29 @@ def array_values(
             size *= dim
     if "int" in dtype:
         if dtype == "int8":
-            min_value = min_value if min_value else -128
-            max_value = max_value if max_value else 127
+            min_value = min_value if min_value is not None else -128
+            max_value = max_value if max_value is not None else 127
         elif dtype == "int16":
-            min_value = min_value if min_value else -32768
-            max_value = max_value if max_value else 32767
+            min_value = min_value if min_value is not None else -32768
+            max_value = max_value if max_value is not None else 32767
         elif dtype == "int32":
-            min_value = min_value if min_value else -2147483648
-            max_value = max_value if max_value else 2147483647
+            min_value = min_value if min_value is not None else -2147483648
+            max_value = max_value if max_value is not None else 2147483647
         elif dtype == "int64":
-            min_value = min_value if min_value else -9223372036854775808
-            max_value = max_value if max_value else 9223372036854775807
+            min_value = min_value if min_value is not None else -9223372036854775808
+            max_value = max_value if max_value is not None else 9223372036854775807
         elif dtype == "uint8":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 255
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 255
         elif dtype == "uint16":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 65535
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 65535
         elif dtype == "uint32":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 4294967295
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 4294967295
         elif dtype == "uint64":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 18446744073709551615
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 18446744073709551615
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
@@ -1260,7 +1272,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype == "float32":
+    elif dtype in ['float32', 'bfloat16']:
         values = draw(
             list_of_length(
                 st.floats(

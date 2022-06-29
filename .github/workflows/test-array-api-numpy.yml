@@ -21,9 +21,9 @@ jobs:
 #         with:
 #           workflow: test-array-api-numpy.yml
 #           workflow_conclusion: success
-#           name: hypothesis
+#           name: hypothesis_2
 #           path: |
-#             ivy/.hypothesis
+#             ivy/.hypothesis/examples/
             
       - name: Run NumPy Tests
         id: tests
@@ -35,9 +35,9 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_1
+          name: dir
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/examples
     
       - name: Check on failures
         if: steps.tests.outcome != 'success'
