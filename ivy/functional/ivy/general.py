@@ -1968,13 +1968,9 @@ def cumprod(
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
     >>> print(y)
-    ivy.array([[1,  2], 
-               [1,  5], 
-               [1, 11]])
+    ivy.array([[1.,2.],[1.,5.],[1.,11.]])
      
-    >>> x = ivy.array([[2, 3], \
-                       [5, 7], \
-                       [11, 13]])
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> exclusive = True
     >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
     >>> print(x)

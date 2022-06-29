@@ -258,7 +258,7 @@ def add(
     {
         a: ivy.array([5, 7, 9]),
         b: ivy.array([7, 9, 11])
-    },
+    }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -274,7 +274,7 @@ def add(
         b: ivy.array([[6.1, 7.3, 1.4],
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
-    },
+    }
     """
     return current_backend(x1, x2).add(x1, x2, out=out)
 
