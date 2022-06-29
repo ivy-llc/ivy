@@ -652,8 +652,13 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="num_cpu_cores"><a class="viewcode-back" href="../../../../functional/ivy/device/num_cpu_cores.html#ivy.functional.ivy.device.num_cpu_cores">[docs]</a><span class="k">def</span> <span class="nf">num_cpu_cores</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="num_cpu_cores"><a class="viewcode-back" href="../../../../functional/ivy/device/num_cpu_cores.html#ivy.functional.ivy.device.num_cpu_cores">[docs]</a><span class="k">def</span> <span class="nf">num_cpu_cores</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine the number of cores available in the cpu.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    logical</span>
+<span class="sd">        Whether request is for number of physical or logical cores available in CPU</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -662,11 +667,14 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.num_cpu_cores())</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.num_cpu_cores(False))</span>
 <span class="sd">    2</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span></div>
+    <span class="k">if</span> <span class="n">logical</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="n">logical</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../../functional/ivy/device/num_gpus.html#ivy.functional.ivy.device.num_gpus">[docs]</a><span class="k">def</span> <span class="nf">num_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
