@@ -114,19 +114,22 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: torch.Tensor, axis: int = 0):
-    return torch.cumsum(x, axis)
+def cumsum(x: torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
+    return torch.cumsum(x, axis, out=out)
 
 
 def cumprod(
-    x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = torch.cumprod(x, -1)
+        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
+        res = torch.cumprod(x, -1, out=out)
         return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis)
+    return torch.cumprod(x, axis, out=out)
 
 
 # noinspection PyShadowingNames
@@ -385,9 +388,9 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-def indices_where(x):
+def indices_where(x, out: Optional[torch.Tensor] = None):
     where_x = torch.where(x)
-    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
+    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
     return res
 
 

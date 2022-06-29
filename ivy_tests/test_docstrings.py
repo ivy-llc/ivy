@@ -50,16 +50,37 @@ def test_docstrings(backend):
     #             "\n".join(failures)
     #         )
     #     )
-    y = ivy.randint(0, 9, 1)
-    print(y)
 
 
 
+    for k, v in ivy.__dict__.copy().items():
+        if k == "Array":
+            for method_name in dir(v):
+                method = getattr(ivy.Array, method_name)
+                if helpers.docstring_examples_run(method, from_array=True):
+                    continue
+                success = False
+                failures.append("Array." + method_name)
 
+        elif k == "Container":
+            for method_name in dir(v):
+                method = getattr(ivy.Container, method_name)
+                if helpers.docstring_examples_run(method, from_container=True):
+                    continue
+                success = False
+                failures.append("Container." + method_name)
 
+        else:
+            if k in to_skip or helpers.docstring_examples_run(v):
+                continue
+            success = False
+            failures.append(k)
 
-
-
-
+    if not success:
+        ivy.warn(
+            "the following methods had failing docstrings:\n\n{}".format(
+                "\n".join(failures)
+            )
+        )
 
     ivy.unset_backend()
