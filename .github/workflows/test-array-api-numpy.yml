@@ -20,6 +20,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-array-api-numpy.yml
+          workflow_conclusion: success
           name: hypothesis_numpy
           path: |
             ivy/.hypothesis/examples/
