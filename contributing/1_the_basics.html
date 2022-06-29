@@ -367,9 +367,17 @@ or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord
 </li>
 <li><dl>
 <dt>Through the command line (With docker):</dt><dd><ol class="arabic">
-<li><p>We need to first enter inside the docker container and change into the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> directory using the following command.</p>
+<li><p>We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.</p>
 <blockquote>
-<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it --entrypoint bash unifyai/ivy
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker exec &lt;container-name&gt; rm -rf ivy
+docker cp ivy &lt;container-name&gt;:/
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>We need to then enter inside the docker container and change into the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> directory using the following command.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker exec -it ivy_container bash
 cd ivy
 </pre></div>
 </div>
