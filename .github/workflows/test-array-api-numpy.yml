@@ -26,7 +26,8 @@ jobs:
           cd ivy
           ./test_array_api.sh numpy
         continue-on-error: true
-        
+
+
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
