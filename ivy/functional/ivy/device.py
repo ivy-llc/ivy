@@ -547,7 +547,7 @@ def num_cpu_cores(logical=True) -> int:
     2
 
     """
-    if logical==True:
+    if logical:
         return psutil.cpu_count(logical=logical)
     else:
         return psutil.cpu_count(logical=False)
