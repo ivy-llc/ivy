@@ -10,9 +10,26 @@ import ivy_tests.test_ivy.helpers as helpers
 # cross_entropy
 @given(
     data=st.data(),
-    true_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    pred_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2),
+    dtype_and_true=helpers.dtype_and_values(
+        ivy_np.valid_int_dtypes,
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
     axis=helpers.integers(min_value=-1, max_value=0),
     epsilon=st.floats(min_value=0, max_value=1),
     as_variable=helpers.list_of_length(st.booleans(), 2),
@@ -24,9 +41,8 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_cross_entropy(
     data,
-    true_dtype,
-    pred_dtype,
-    shape,
+    dtype_and_true,
+    dtype_and_pred,
     axis,
     epsilon,
     as_variable,
@@ -37,26 +53,11 @@ def test_cross_entropy(
     instance_method,
     fw,
 ):
+    pred_dtype, pred = dtype_and_pred
     if fw == "torch" and pred_dtype == "float16":
         return
-    true = data.draw(
-        helpers.array_values(
-            dtype=true_dtype,
-            shape=shape,
-            min_value=0,
-            max_value=1,
-        )
-    )
-    pred = data.draw(
-        helpers.array_values(
-            dtype=pred_dtype,
-            shape=shape,
-            min_value=0,
-            max_value=1,
-            exclude_min=True,
-            exclude_max=True,
-        )
-    )
+    true_dtype, true = dtype_and_true
+    length = min(len(true), len(pred))
     helpers.test_array_function(
         [true_dtype, pred_dtype],
         as_variable,
@@ -67,8 +68,8 @@ def test_cross_entropy(
         instance_method,
         fw,
         "cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=np.asarray(true[:length], dtype=true_dtype),
+        pred=np.asarray(pred[:length], dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
         rtol=1e-04,
