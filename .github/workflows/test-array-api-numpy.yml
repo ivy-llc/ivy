@@ -35,9 +35,9 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_1
+          name: hypothesis_2
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/examples
     
       - name: Check on failures
         if: steps.tests.outcome != 'success'
