@@ -130,35 +130,39 @@ def test_variable_data(
 
 # stop_gradient
 @given(
-    x_raw=helpers.list_of_length(st.floats(-np.inf, np.inf,width=32), 10),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    tensor_fn=st.sampled_from([("array", ivy.array), ("var", helpers.var_fn)])
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,2),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    preserve_type=st.booleans()
 )
-def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
-    # smoke test
-    fn_name, tensor_fn = tensor_fn
-    x = tensor_fn(x_raw, dtype=dtype, device=device)
-    ret = ivy.stop_gradient(x)
-    # type test
-    if fn_name == "array":
-        assert ivy.is_ivy_array(ret)
-    elif call is not helpers.np_call:
-        # Numpy does not support variables, is_variable() always returns False
-        assert ivy.is_variable(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    if call is not helpers.tf_graph_call:
-        # Tf graph mode cannot create variables as part of the computation graph
-        assert np.array_equal(
-            call(ivy.stop_gradient, x),
-            np.array(x_raw, dtype=dtype),
-        )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support attribute setting
-        return
-
+def test_stop_gradient(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    preserve_type
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x, dtype=dtype)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "stop_gradient",
+        x=x,
+        preserve_type=preserve_type
+    )
 
 # execute_with_gradients
 @given(
