@@ -876,7 +876,7 @@ def test_frontend_function(
     fw: str,
     frontend: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -1082,9 +1082,13 @@ def test_frontend_function(
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
-        rtol = tolerance_dict.get(str(frontend_ret.dtype), rtol)
-        assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            rtol = tolerance_dict.get(str(frontend_ret.dtype), 1e-03)
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    else:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
