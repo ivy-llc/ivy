@@ -79,26 +79,3 @@ class ContainerWithRandom(ContainerBase):
             key_chains=key_chains,
             out=out,
         )
-
-    def randint(
-        self: ivy.Container,
-        low: Union[int, ivy.Container] = 0.0,
-        high: Union[int, ivy.Container] = 1.0,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return self.static_randint(
-            low,
-            high,
-            self,
-            device,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
-        )
