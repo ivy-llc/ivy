@@ -466,11 +466,89 @@ def constant_pad(
         axes of x.
     value
         The constant value to pad the array with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
+
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> y = ivy.constant_pad(x, (2, 3), (5, 6))
+    >>> print(y)
+    ivy.array([5 5 1 2 3 4 6 6 6])
+    >>> x = ivy.array([[1],[2],[3]])
+    >>> y = ivy.constant_pad(x, (1,2), (4,5))
+    >>> print(y)
+    ivy.array([[4, 4, 5, 5],
+       [4, 1, 5, 5],
+       [4, 2, 5, 5],
+       [4, 3, 5, 5],
+       [4, 5, 5, 5],
+       [4, 5, 5, 5]])
+    >>> x = ivy.array([[[1, 2],[3, 4]]])
+    >>> y = ivy.constant_pad(x, (1,2), (4,5))
+    >>> print(y)
+    ivy.array([[[4, 4, 4, 5, 5],
+        [4, 4, 4, 5, 5],
+        [4, 4, 4, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5]],
+       [[4, 4, 4, 5, 5],
+        [4, 1, 2, 5, 5],
+        [4, 3, 4, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5]],
+       [[4, 4, 4, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5]],
+       [[4, 4, 4, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5],
+        [4, 5, 5, 5, 5]]])
+    
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.NativeArray([1, 2, 3, 4])
+    >>> y = ivy.constant_pad(x, (2, 3), (5, 6))
+    >>> print(y)
+    ivy.array([5 5 1 2 3 4 6 6 6])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                          b=ivy.array([4, 5, 6]))
+    >>> y = ivy.constant_pad(x, (2, 3), (5, 6))
+    >>> print(y)
+    {
+        a: ivy.array([5 5 1 2 3 6 6 6]),
+        b: ivy.array([5 5 4 5 6 6 6 6])
+    }
+
+    Instance Method Examples
+    ------------------------
+    Using :code:`ivy.Array` instance method:
+    >>> x = ivy.array([1., 2., 3., 4.])
+    >>> y = ivy.constant_pad(x, (2, 3), (5., 6.))
+    >>> print(y)
+    ivy.array([5 5 1 2 3 4 6 6 6])
+
+    Using :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), \
+                          b=ivy.array([4., 5., 6.]))
+    >>> y = ivy.constant_pad(x, (2, 3), (5., 6.))
+    >>> print(y)
+    {
+        a: ivy.array([5. 5. 1. 2. 3. 6. 6. 6.]),
+        b: ivy.array([5. 5. 4. 5. 6. 6. 6. 6.])
+    }
 
     """
     return _cur_framework(x).constant_pad(x, pad_width, value, out)
