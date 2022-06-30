@@ -235,36 +235,95 @@ def test_execute_with_gradients(
             assert np.allclose(ivy.to_numpy(g), g_true)
 
 
+# optimizer_update
+@given(
+    dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,4),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+    effective_grad=st.floats(),
+    lr=st.floats(min_value=0.0,max_value=1.0),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans()
+)
+def test_optimizer_update(
+    dtype_and_w,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    effective_grad,
+    lr,
+    inplace,
+    stop_gradients
+):
+    dtype, w = dtype_and_w
+    w = np.asarray(w,dtype=dtype)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "optimizer_update",
+        w=w,
+        effective_grad=effective_grad,
+        lr=lr,
+        inplace=inplace,
+        stop_gradients=stop_gradients,
+    )
+    
 # gradient_descent_update
 @given(
-    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-        [(Container({"w": [3.0]}), Container({"w": [6.0]}), 0.1, Container({"w": [2.4]}))]
-    ),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
+    dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,4),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+    dcdw=st.floats(),
+    lr=st.floats(min_value=0.0,max_value=1.0),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans()
 )
 def test_gradient_descent_update(
-    ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call
+    dtype_and_w,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    dcdw,
+    lr,
+    inplace,
+    stop_gradients
 ):
-    # smoke test
-    ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
-    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.gradient_descent_update(ws, dcdw, lr)
-    # type test
-    assert isinstance(ws_new, dict)
-    # cardinality test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert w_new.shape == w_true_new.shape
-    # value test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
-
+    dtype, w = dtype_and_w
+    w = np.asarray(w,dtype=dtype)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "gradient_descent_update",
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        inplace=inplace,
+        stop_gradients=stop_gradients,
+    )
 
 # layerwise_gradient_descent_update
 @given(
