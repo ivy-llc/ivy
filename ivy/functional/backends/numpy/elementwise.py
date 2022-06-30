@@ -157,6 +157,9 @@ def ceil(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return ret
 
 
+ceil.unsupported_dtypes = ("float16",)
+
+
 @_handle_0_dim_output
 def floor(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):

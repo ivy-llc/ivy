@@ -110,7 +110,6 @@ class Container(
 
         Examples
         --------
-
         With :code:`Number` instances at the leaves:
 
         >>> x = ivy.Container(a=1, b=2)
@@ -162,7 +161,6 @@ class Container(
 
         Examples
         --------
-
         >>> x = 1
         >>> y = ivy.Container(a=3, b=4)
         >>> z = x + y
