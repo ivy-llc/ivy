@@ -150,6 +150,8 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
+
+
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_dtype
