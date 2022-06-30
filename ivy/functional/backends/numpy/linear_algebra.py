@@ -171,7 +171,7 @@ def vector_norm(
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
 
     else:
-        np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
+        np_normalized_vector = np.linalg.norm(x)
 
     if np_normalized_vector.shape == tuple():
         ret = np.expand_dims(np_normalized_vector, 0)
