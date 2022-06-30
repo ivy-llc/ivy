@@ -4749,23 +4749,23 @@ class ContainerBase(dict, abc.ABC):
                 [_add_newline(s) for s in json_dumped_str.split('":')]
             )
             # improve tf formatting
-            if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
-                json_dumped_str_split = json_dumped_str.split("'Variable:")
-                json_dumped_str = (
-                    json_dumped_str_split[0]
-                    + ", "
-                    + ", ".join(
-                        [
-                            "'".join(ss.split("'")[1:])
-                            for ss in json_dumped_str_split[1:]
-                        ]
-                    )
-                )
-                json_dumped_str = (
-                    json_dumped_str.replace(":shape", ", shape")
-                    .replace(")dtype=", "), dtype=")
-                    .replace(", ),", ",),")
-                )
+            # if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
+            #     json_dumped_str_split = json_dumped_str.split("'Variable:")
+            #     json_dumped_str = (
+            #         json_dumped_str_split[0]
+            #         + ", "
+            #         + ", ".join(
+            #             [
+            #                 "'".join(ss.split("'")[1:])
+            #                 for ss in json_dumped_str_split[1:]
+            #             ]
+            #         )
+            #     )
+            #     json_dumped_str = (
+            #         json_dumped_str.replace(":shape", ", shape")
+            #         .replace(")dtype=", "), dtype=")
+            #         .replace(", ),", ",),")
+            #     )
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
