@@ -68,11 +68,7 @@ def multinomial(
 
 
 def randint(
-    low: int, 
-    high: int, 
-    shape: Union[int, Sequence[int]], 
-    *, 
-    device: str
+    low: int, high: int, shape: Union[int, Sequence[int]], *, device: str
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")

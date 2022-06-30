@@ -3,8 +3,12 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,6 +17,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -103,17 +108,18 @@ def argmax(
     ivy.array(2)
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
+    return current_backend(x).argmax(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None,  
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -144,14 +150,14 @@ def argmin(
 
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
-        
+
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
     ivy.array([2])
-    
+
 
     >>> x=ivy.array([[0., 1., -1.],
                      [-2., 1., 2.]])
@@ -159,14 +165,14 @@ def argmin(
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.], 
+    >>> x=ivy.array([[0., 1., -1.],
                      [-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1, keepdims= True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.], 
+    >>> x=ivy.array([[0., 1., -1.],
                      [-2., 1., 2.],
                      [1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
@@ -178,15 +184,15 @@ def argmin(
 
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
     ivy.array([2])
 
-    
+
     With :code:`ivy.Container` input:
-        
+
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
     >>> print(y)
@@ -194,8 +200,8 @@ def argmin(
          a: ivy.array([1]),
          b: ivy.array([0])
     }
-        
-    
+
+
     Instance Method Examples
     ------------------------
 
@@ -205,7 +211,7 @@ def argmin(
     >>> y = x.argmin()
     >>> print(y)
     ivy.array([2])
-        
+
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -216,10 +222,11 @@ def argmin(
          b: ivy.array([0])
     }
     """
-    return _cur_backend(x).argmin(x, axis, keepdims, out=out)
+    return current_backend(x).argmin(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -310,15 +317,17 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return _cur_backend(x).nonzero(x)
+    return current_backend(x).nonzero(x)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -413,7 +422,7 @@ def where(
     }
 
     """
-    return _cur_backend(x1).where(condition, x1, x2)
+    return current_backend(x1).where(condition, x1, x2, out=out)
 
 
 # Extra #
