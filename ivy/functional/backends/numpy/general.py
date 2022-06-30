@@ -126,13 +126,11 @@ def cumprod(
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = dev(updates)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -161,7 +159,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 # noinspection PyShadowingNames

@@ -139,22 +139,18 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-    *,
-    device: torch.device
 ):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = dev(updates)
     dtype = updates.dtype
     if reduction in ["sum", "replace"]:
-        initial_val = torch.tensor(0).type(dtype).to(as_native_dev(device))
+        initial_val = torch.tensor(0).type(dtype)
     elif reduction == "min":
-        initial_val = torch.tensor(1e12).type(dtype).to(as_native_dev(device))
+        initial_val = torch.tensor(1e12).type(dtype)
     elif reduction == "max":
-        initial_val = torch.tensor(-1e12).type(dtype).to(as_native_dev(device))
+        initial_val = torch.tensor(-1e12).type(dtype)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -164,7 +160,7 @@ def scatter_flat(
     if target_given:
         output = tensor
     else:
-        output = torch.ones([size], dtype=dtype).to(as_native_dev(device)) * initial_val
+        output = torch.ones([size], dtype=dtype) * initial_val
     global torch_scatter
     if torch_scatter is None:
         try:
@@ -183,7 +179,7 @@ def scatter_flat(
     if not target_given:
         return torch.where(
             res == initial_val,
-            torch.zeros([size], dtype=updates.dtype).to(as_native_dev(device)),
+            torch.zeros([size], dtype=updates.dtype),
             res,
         )
     return res
