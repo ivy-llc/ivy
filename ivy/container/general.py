@@ -114,7 +114,7 @@ class ContainerWithGeneral(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.all_equal.
@@ -139,8 +139,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
-            a: ivy.array([True, True, True, True]),
-            b: ivy.array([True, False, False, False])
+            a: true,
+            b: false
         }
 
         With multiple :code:`ivy.Container` instances:
@@ -163,17 +163,17 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
         >>> print(y)
         {
-            a: ivy.array([True, True, False]),
-            b: ivy.array([True, True, True])
+            a: false,
+            b: true
         }
 
         """
         return self.static_all_equal(
-            self, 
-            x2, 
-            equality_matrix, 
-            key_chains, 
-            to_apply, 
-            prune_unapplied, 
-            map_sequences
+            self,
+            x2,
+            equality_matrix,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
         )
