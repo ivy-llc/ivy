@@ -176,6 +176,29 @@ check out this `Atlassian tutorial`_.
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
+Who To Ask
+-------------
+
+Quite often, you would like to get a better understanding of the logic in the
+implementation of Ivy, raising issues or starting discussions with the context
+of who made what changes. Here is a common workflow to help get around the
+problem of "who to ask" by using,
+
+**git blame** - Show what revision and author last modified each line of a file
+
+**git log**   - Show commit logs
+
+.. code-block:: none
+
+    # Info on changes made by author and commit-id in specific lines from time period.
+    # Eg: From line 16 to next 5 lines since past 2 weeks
+    git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
+    # Deeper look at what author changed in the files in commit retrieved from above step
+    git log <commit_id> -p
+
+You are welcome to tag members using "@" in our team, who you think would be best
+suited to interact with based on the information gained from above steps.
+
 Pull Requests
 -------------
 
