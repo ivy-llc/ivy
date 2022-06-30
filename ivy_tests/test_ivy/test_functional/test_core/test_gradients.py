@@ -366,6 +366,54 @@ def test_layerwise_gradient_descent_update(
 
 # lars_update
 @given(
+    dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=st.integers(0,4),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+    dcdw=st.floats(),
+    lr=st.floats(min_value=0.0,max_value=1.0),
+    decay_lambda=st.floats(min_value=0.0,max_value=1.0),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans()
+)
+def test_lars_update(
+    dtype_and_w,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    dcdw,
+    lr,
+    decay_lambda,
+    inplace,
+    stop_gradients
+):
+    dtype, w = dtype_and_w
+    w = np.asarray(w,dtype=dtype)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "lars_update",
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        decay_lambda=decay_lambda,
+        inplace=inplace,
+        stop_gradients=stop_gradients,
+    )
+
+
+@given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
         (
@@ -379,7 +427,7 @@ def test_layerwise_gradient_descent_update(
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_lar_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
