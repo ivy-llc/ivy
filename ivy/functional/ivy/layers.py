@@ -510,7 +510,7 @@ def conv1d(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    
+
 
     """
     return _cur_backend(x).conv1d(x, filters, strides, padding, data_format, dilations)
