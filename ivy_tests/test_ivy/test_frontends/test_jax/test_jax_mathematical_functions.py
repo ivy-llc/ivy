@@ -4,13 +4,18 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 
 
 # add
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_jax.valid_float_dtypes, 2, shared_dtype=True
+        tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
+        ),
+        2,
+        shared_dtype=True,
     ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(
