@@ -10,9 +10,13 @@ class Constant:
     def __init__(self, constant):
         self._constant = constant
 
-    def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
-        """Create internal variables for the layer."""
-        return ivy.variable(ivy.ones(var_shape, device=device) * self._constant)
+    def create_variables(
+        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
+    ):
+        """Create internal variables for the layer"""
+        return ivy.variable(
+            ivy.full(var_shape, self._constant, device=device, dtype=dtype),
+        )
 
 
 class Zeros(Constant):
@@ -33,15 +37,18 @@ class Uniform:
     def __init__(self, numerator, fan_mode, power, gain):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
-                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]"
+                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
+                "fan_avg ] "
             )
         self._numerator = numerator
         self._fan_mode = fan_mode
         self._power = power
         self._gain = gain
 
-    def create_variables(self, var_shape, device, fan_out=None, fan_in=None):
-        """Create internal variables for the layer."""
+    def create_variables(
+        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
+    ):
+        """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
                 raise Exception(
@@ -70,10 +77,13 @@ class Uniform:
             fan = (fan_in + fan_out) / 2
         else:
             raise Exception(
-                "Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]"
+                "Invalid denominator mode, must be one of [ fan_in | fan_out | "
+                "fan_sum | fan_avg ] "
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, device=device))
+        return ivy.variable(
+            ivy.random_uniform(-wlim, wlim, var_shape, device=device, dtype=dtype),
+        )
 
 
 class GlorotUniform(Uniform):
@@ -99,7 +109,8 @@ class KaimingNormal:
     def __init__(self, mean=0, fan_mode="fan_in"):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
-                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]"
+                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
+                "fan_avg ] "
             )
         self._mean = mean
         self._fan_mode = fan_mode
@@ -107,7 +118,7 @@ class KaimingNormal:
     def create_variables(
         self, var_shape, device, fan_out=None, fan_in=None, negative_slope=0.0
     ):
-        """Create internal variables for the layer."""
+        """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
                 raise Exception(
@@ -136,7 +147,8 @@ class KaimingNormal:
             fan = (fan_in + fan_out) / 2
         else:
             raise Exception(
-                "Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]"
+                "Invalid denominator mode, must be one of [ fan_in | fan_out | "
+                "fan_sum | fan_avg ] "
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
         return ivy.variable(

@@ -154,7 +154,7 @@ All code for setting and unsetting frameworks resides in the submodule at :code:
 
 When the backend framework is provided explicitly as an argument (for example :code:`f=ivy.functional.backends.torch`), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example :code:`ivy.set_framework(‘tensorflow’)`, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.
 
-The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the framework-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
+The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
 
 .. code-block:: python
 
@@ -184,7 +184,7 @@ The functions in this returned module are populated by iterating through the glo
            verbosity.cprint(
                'framework stack: {}'.format(framework_stack))
 
-The functions implemented by the framework-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
+The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 

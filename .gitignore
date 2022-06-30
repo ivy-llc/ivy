@@ -20,4 +20,4 @@ with_time_logs/
 *.ods
 *.json
 .hypothesis
-.array_api_tests_k_flag
+.array_api_tests_k_flag*

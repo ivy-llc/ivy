@@ -2,6 +2,9 @@
 import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
+# local
+from typing import Optional, Union, Callable, Tuple, Any
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
@@ -33,7 +36,7 @@ def _compute_cost_and_update_grads(
             retain_grads=False,
         )
         if batched:
-            inner_grads = inner_grads * num_tasks
+            inner_grads = ivy.multiply(inner_grads, num_tasks)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
@@ -83,7 +86,7 @@ def _train_task(
             retain_grads=order > 1,
         )
         if batched:
-            inner_update_grads = inner_update_grads * num_tasks
+            inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
         # compute the cost to be optimized, and update all_grads if fist order method
         if outer_cost_fn is None and not unique_inner and not unique_outer:
@@ -126,7 +129,8 @@ def _train_task(
                 stop_gradients=stop_gradients,
             )
 
-    # once training is finished, compute the final cost, and update all_grads if fist order method
+    # once training is finished, compute the final cost, and update
+    # all_grads if fist order method
     final_cost = _compute_cost_and_update_grads(
         inner_cost_fn if outer_cost_fn is None else outer_cost_fn,
         order,
@@ -371,26 +375,27 @@ def _train_tasks(
 # First Order
 
 
+@to_native_arrays_and_back
 def fomaml_step(
-    batch,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    inner_batch_fn=None,
-    outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
-    inner_v=None,
-    keep_inner_v=True,
-    outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Optional[Callable] = gradient_descent_update,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: Optional[bool] = False,
+    batched: Optional[bool] = True,
+    inner_v: Optional[ivy.Container] = None,
+    keep_inner_v: Optional[bool] = True,
+    outer_v: Optional[ivy.Container] = None,
+    keep_outer_v: Optional[bool] = True,
+    return_inner_v: Optional[Union[str, bool]] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: Optional[bool] = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of first order MAML.
 
     Parameters
@@ -485,18 +490,19 @@ def fomaml_step(
     return cost, grads
 
 
+@to_native_arrays_and_back
 def reptile_step(
-    batch,
-    cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    batched=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Optional[Callable] = gradient_descent_update,
+    batched: Optional[bool] = True,
+    return_inner_v: Optional[Union[str, bool]] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: Optional[bool] = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of Reptile.
 
     Parameters
@@ -570,26 +576,27 @@ def reptile_step(
 # Second Order
 
 
+@to_native_arrays_and_back
 def maml_step(
-    batch,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    inner_batch_fn=None,
-    outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
-    inner_v=None,
-    keep_inner_v=True,
-    outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Optional[Callable] = gradient_descent_update,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: Optional[bool] = False,
+    batched: Optional[bool] = True,
+    inner_v: Optional[ivy.Container] = None,
+    keep_inner_v: Optional[bool] = True,
+    outer_v: Optional[ivy.Container] = None,
+    keep_outer_v: Optional[bool] = True,
+    return_inner_v: Optional[Union[str, bool]] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: Optional[bool] = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of vanilla second order MAML.
 
     Parameters
@@ -683,5 +690,4 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    # noinspection PyRedundantParentheses
     return (cost, grads.sum(0), *rets)

@@ -2,20 +2,15 @@
 import torch
 from typing import Optional
 
-import ivy
-
 
 def argsort(
-    x: torch.Tensor,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[torch.Tensor] = None,
+    x: torch.Tensor, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> torch.Tensor:
     ret = torch.argsort(x, dim=axis, descending=descending)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
+
+
+argsort.unsupported_dtypes = ("uint16", "uint32", "uint64",)
 
 
 def sort(
@@ -23,9 +18,8 @@ def sort(
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    sorted_tensor, _ = torch.sort(x, dim=axis, descending=descending)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, sorted_tensor)
+    sorted_tensor, _ = torch.sort(x, dim=axis, descending=descending, out=out)
     return sorted_tensor

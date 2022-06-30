@@ -145,13 +145,15 @@ def set_nest_at_indices(nest, indices, values):
 def insert_into_nest_at_indices(nest, indices, values):
     """Insert a value into the nested item at specified indices with specified values.
 
-    :param nest: The nested object to insert into.
-    :type nest: nested
-    :param indices: A tuple of tuples of indices for the indices at which to insert
-    values.
-    :type indices: tuple of tuples of indices
-    :param values: The new values for inserting.
-    :type values: sequence of any
+    Parameters
+    ----------
+    nest
+        The nested object to insert into.
+    indices
+        A tuple of tuples of indices for the indices at which to insert
+        values.
+    values
+        The new values for inserting.
 
     """
     if not isinstance(values, (list, tuple)):
@@ -185,6 +187,7 @@ def nested_indices_where(
     to_ignore: Union[type, Tuple[type]] = None,
     _index: List = None,
     _base: bool = True,
+    stop_after_n_found: Optional[int] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -198,6 +201,8 @@ def nested_indices_where(
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is False.
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     _index
         The indices detected so far. None at the beginning. Used internally, do not set
         manually.
@@ -214,18 +219,64 @@ def nested_indices_where(
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(item, fn, check_nests, to_ignore, _index + [i], False)
-            for i, item in enumerate(nest)
-        ]
+        n = 0
+        _indices = []
+        for i, item in enumerate(nest):
+            ind = (
+                nested_indices_where(
+                    item,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [i],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    item, fn, check_nests, to_ignore, _index + [i], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
+            if stop_after_n_found is not None and len(_indices) >= stop_after_n_found:
+                break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
     elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(v, fn, check_nests, to_ignore, _index + [k], False)
-            for k, v in nest.items()
-        ]
+        n = 0
+        _indices = []
+        for k, v in nest.items():
+            ind = (
+                nested_indices_where(
+                    v,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [k],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    v, fn, check_nests, to_ignore, _index + [k], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
@@ -546,3 +597,96 @@ def copy_nest(
             {k: copy_nest(v, include_derived, to_mutable) for k, v in nest.items()}
         )
     return nest
+
+
+def nested_multi_map(
+    func,
+    nests,
+    key_chains=None,
+    to_apply=True,
+    prune_unapplied=False,
+    key_chain="",
+    config=None,
+    to_ivy=True,
+):
+    """Apply function to all array values from a collection of identically
+    structured ivy arrays.
+
+    Parameters
+    ----------
+    func
+        Function to apply to each nest entry.
+    nest
+        nests to map.
+    key_chains
+        The key-chains to apply or not apply the method to. Default is None.
+    to_apply
+        If True, the method will be applied to key_chains, otherwise key_chains will
+        be skipped. Default is True.
+    prune_unapplied
+        Whether to prune key_chains for which the function was not applied,
+        otherwise the leftmost nest value is used. Default is False.
+    key_chain
+        Chain of keys for this dict entry (Default value = '')
+    config
+        The configuration for the nests. Default is the same as nest0.
+    to_ivy
+        convert the output to ivy_arrays. Default is True
+    Returns
+    -------
+        nest containing the result of the funciton.
+
+    """
+    nest0 = nests[0]
+    return_list = list()
+    for index, val in enumerate(nest0):
+        values = [nest[index] for nest in nests]
+        value0 = values[0]
+        this_key_chain = (
+            str(index) if key_chain == "" else (key_chain + "/" + str(index))
+        )
+        if (
+            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
+            and ivy.get_num_dims(value0) > 0
+        ) or (
+            isinstance(value0, list)
+            or isinstance(value0, tuple)
+            or isinstance(value0, dict)
+        ):
+            ret = ivy.nested_multi_map(
+                func,
+                values,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                this_key_chain,
+                config,
+            )
+            if ret:
+                if ivy.is_array(ret):
+                    return_list.insert(index, ivy.to_list(ret))
+                else:
+                    return_list.insert(index, ret)
+        else:
+            if key_chains is not None:
+                if (this_key_chain in key_chains and not to_apply) or (
+                    this_key_chain not in key_chains and to_apply
+                ):
+                    if prune_unapplied:
+                        continue
+                    if ivy.is_array(value0):
+                        return_list.insert(index, ivy.to_list(value0))
+                    else:
+                        return_list.insert(index, value0)
+                    continue
+            ret = func(values, this_key_chain)
+            if ivy.is_array(ret):
+                return_list.insert(index, ivy.to_list(ret))
+            else:
+                return_list.insert(index, ret)
+
+    # noinspection PyProtectedMember
+    if to_ivy:
+        return ivy.array(return_list)
+    else:
+        return return_list

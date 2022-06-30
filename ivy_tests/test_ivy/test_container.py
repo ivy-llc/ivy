@@ -147,34 +147,6 @@ def test_container_concat(device, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
-def test_container_stack(device, call):
-    container_0 = Container(
-        {
-            "a": ivy.array([1], device=device),
-            "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
-            },
-        }
-    )
-    container_1 = Container(
-        {
-            "a": ivy.array([4], device=device),
-            "b": {
-                "c": ivy.array([5], device=device),
-                "d": ivy.array([6], device=device),
-            },
-        }
-    )
-    container_stacked = ivy.Container.stack([container_0, container_1], 0)
-    assert np.allclose(ivy.to_numpy(container_stacked["a"]), np.array([[1], [4]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
-    assert np.allclose(ivy.to_numpy(container_stacked["b"]["c"]), np.array([[2], [5]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
-    assert np.allclose(ivy.to_numpy(container_stacked["b"]["d"]), np.array([[3], [6]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
-
-
 def test_container_combine(device, call):
     container_0 = Container(
         {
@@ -953,250 +925,6 @@ def test_container_to_raw(device, call):
     assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
 
 
-def test_container_sum(device, call):
-    dict_in = {
-        "a": ivy.array([1.0, 2.0, 3.0], device=device),
-        "b": {
-            "c": ivy.array([2.0, 4.0, 6.0], device=device),
-            "d": ivy.array([3.0, 6.0, 9.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_sum = container.sum()
-    assert np.allclose(ivy.to_numpy(container_sum["a"]), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_sum.a), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_sum["b"]["c"]), np.array([12.0]))
-    assert np.allclose(ivy.to_numpy(container_sum.b.c), np.array([12.0]))
-    assert np.allclose(ivy.to_numpy(container_sum["b"]["d"]), np.array([18.0]))
-    assert np.allclose(ivy.to_numpy(container_sum.b.d), np.array([18.0]))
-
-
-def test_container_prod(device, call):
-    dict_in = {
-        "a": ivy.array([1.0, 2.0, 3.0], device=device),
-        "b": {
-            "c": ivy.array([2.0, 4.0, 6.0], device=device),
-            "d": ivy.array([3.0, 6.0, 9.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_prod = container.prod()
-    assert np.allclose(ivy.to_numpy(container_prod["a"]), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_prod.a), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_prod["b"]["c"]), np.array([48.0]))
-    assert np.allclose(ivy.to_numpy(container_prod.b.c), np.array([48.0]))
-    assert np.allclose(ivy.to_numpy(container_prod["b"]["d"]), np.array([162.0]))
-    assert np.allclose(ivy.to_numpy(container_prod.b.d), np.array([162.0]))
-
-
-def test_container_mean(device, call):
-    dict_in = {
-        "a": ivy.array([1.0, 2.0, 3.0], device=device),
-        "b": {
-            "c": ivy.array([2.0, 4.0, 6.0], device=device),
-            "d": ivy.array([3.0, 6.0, 9.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_mean = container.mean()
-    assert np.allclose(ivy.to_numpy(container_mean["a"]), np.array([2.0]))
-    assert np.allclose(ivy.to_numpy(container_mean.a), np.array([2.0]))
-    assert np.allclose(ivy.to_numpy(container_mean["b"]["c"]), np.array([4.0]))
-    assert np.allclose(ivy.to_numpy(container_mean.b.c), np.array([4.0]))
-    assert np.allclose(ivy.to_numpy(container_mean["b"]["d"]), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_mean.b.d), np.array([6.0]))
-
-
-def test_container_var(device, call):
-    dict_in = {
-        "a": ivy.array([1.0, 2.0, 3.0], device=device),
-        "b": {
-            "c": ivy.array([2.0, 4.0, 6.0], device=device),
-            "d": ivy.array([3.0, 6.0, 9.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_var = container.var()
-    assert np.allclose(ivy.to_numpy(container_var["a"]), np.array([2 / 3]))
-    assert np.allclose(ivy.to_numpy(container_var.a), np.array([2 / 3]))
-    assert np.allclose(ivy.to_numpy(container_var["b"]["c"]), np.array([8 / 3]))
-    assert np.allclose(ivy.to_numpy(container_var.b.c), np.array([8 / 3]))
-    assert np.allclose(ivy.to_numpy(container_var["b"]["d"]), np.array([6.0]))
-    assert np.allclose(ivy.to_numpy(container_var.b.d), np.array([6.0]))
-
-
-def test_container_std(device, call):
-    dict_in = {
-        "a": ivy.array([1.0, 2.0, 3.0], device=device),
-        "b": {
-            "c": ivy.array([2.0, 4.0, 6.0], device=device),
-            "d": ivy.array([3.0, 6.0, 9.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_std = container.std()
-    assert np.allclose(ivy.to_numpy(container_std["a"]), np.array([2 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_std.a), np.array([2 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_std["b"]["c"]), np.array([8 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_std.b.c), np.array([8 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_std["b"]["d"]), np.array([6.0]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_std.b.d), np.array([6.0]) ** 0.5)
-
-
-def test_container_minimum(device, call):
-    container = Container(
-        {
-            "a": ivy.array([1.0, 2.0, 3.0], device=device),
-            "b": {
-                "c": ivy.array([2.0, 4.0, 6.0], device=device),
-                "d": ivy.array([3.0, 6.0, 9.0], device=device),
-            },
-        }
-    )
-    other = Container(
-        {
-            "a": ivy.array([2.0, 3.0, 2.0], device=device),
-            "b": {
-                "c": ivy.array([1.0, 5.0, 4.0], device=device),
-                "d": ivy.array([4.0, 7.0, 8.0], device=device),
-            },
-        }
-    )
-
-    # against number
-    container_minimum = container.minimum(5.0)
-    assert np.allclose(ivy.to_numpy(container_minimum["a"]), np.array([1.0, 2.0, 3.0]))
-    assert np.allclose(ivy.to_numpy(container_minimum.a), np.array([1.0, 2.0, 3.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_minimum["b"]["c"]), np.array([2.0, 4.0, 5.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_minimum.b.c), np.array([2.0, 4.0, 5.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_minimum["b"]["d"]), np.array([3.0, 5.0, 5.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_minimum.b.d), np.array([3.0, 5.0, 5.0]))
-
-    # against container
-    container_minimum = container.minimum(other)
-    assert np.allclose(ivy.to_numpy(container_minimum["a"]), np.array([1.0, 2.0, 2.0]))
-    assert np.allclose(ivy.to_numpy(container_minimum.a), np.array([1.0, 2.0, 2.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_minimum["b"]["c"]), np.array([1.0, 4.0, 4.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_minimum.b.c), np.array([1.0, 4.0, 4.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_minimum["b"]["d"]), np.array([3.0, 6.0, 8.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_minimum.b.d), np.array([3.0, 6.0, 8.0]))
-
-
-def test_container_maximum(device, call):
-    container = Container(
-        {
-            "a": ivy.array([1.0, 2.0, 3.0], device=device),
-            "b": {
-                "c": ivy.array([2.0, 4.0, 6.0], device=device),
-                "d": ivy.array([3.0, 6.0, 9.0], device=device),
-            },
-        }
-    )
-    other = Container(
-        {
-            "a": ivy.array([2.0, 3.0, 2.0], device=device),
-            "b": {
-                "c": ivy.array([1.0, 5.0, 4.0], device=device),
-                "d": ivy.array([4.0, 7.0, 8.0], device=device),
-            },
-        }
-    )
-
-    # against number
-    container_maximum = container.maximum(4.0)
-    assert np.allclose(ivy.to_numpy(container_maximum["a"]), np.array([4.0, 4.0, 4.0]))
-    assert np.allclose(ivy.to_numpy(container_maximum.a), np.array([4.0, 4.0, 4.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_maximum["b"]["c"]), np.array([4.0, 4.0, 6.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_maximum.b.c), np.array([4.0, 4.0, 6.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_maximum["b"]["d"]), np.array([4.0, 6.0, 9.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_maximum.b.d), np.array([4.0, 6.0, 9.0]))
-
-    # against container
-    container_maximum = container.maximum(other)
-    assert np.allclose(ivy.to_numpy(container_maximum["a"]), np.array([2.0, 3.0, 3.0]))
-    assert np.allclose(ivy.to_numpy(container_maximum.a), np.array([2.0, 3.0, 3.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_maximum["b"]["c"]), np.array([2.0, 5.0, 6.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_maximum.b.c), np.array([2.0, 5.0, 6.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_maximum["b"]["d"]), np.array([4.0, 7.0, 9.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_maximum.b.d), np.array([4.0, 7.0, 9.0]))
-
-
-def test_container_clip(device, call):
-    container = Container(
-        {
-            "a": ivy.array([1.0, 2.0, 3.0], device=device),
-            "b": {
-                "c": ivy.array([2.0, 4.0, 6.0], device=device),
-                "d": ivy.array([3.0, 6.0, 9.0], device=device),
-            },
-        }
-    )
-    container_min = Container(
-        {
-            "a": ivy.array([2.0, 0.0, 0.0], device=device),
-            "b": {
-                "c": ivy.array([0.0, 5.0, 0.0], device=device),
-                "d": ivy.array([4.0, 7.0, 0.0], device=device),
-            },
-        }
-    )
-    container_max = Container(
-        {
-            "a": ivy.array([3.0, 1.0, 2.0], device=device),
-            "b": {
-                "c": ivy.array([1.0, 7.0, 5.0], device=device),
-                "d": ivy.array([5.0, 8.0, 8.0], device=device),
-            },
-        }
-    )
-
-    # against number
-    container_clipped = container.clip(2.0, 6.0)
-    assert np.allclose(ivy.to_numpy(container_clipped["a"]), np.array([2.0, 2.0, 3.0]))
-    assert np.allclose(ivy.to_numpy(container_clipped.a), np.array([2.0, 2.0, 3.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_clipped["b"]["c"]), np.array([2.0, 4.0, 6.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_clipped.b.c), np.array([2.0, 4.0, 6.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_clipped["b"]["d"]), np.array([3.0, 6.0, 6.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([3.0, 6.0, 6.0]))
-
-    if call is helpers.mx_call:
-        # MXNet clip does not support arrays for the min and max arguments
-        return
-
-    # against container
-    container_clipped = container.clip(container_min, container_max)
-    assert np.allclose(ivy.to_numpy(container_clipped["a"]), np.array([2.0, 1.0, 2.0]))
-    assert np.allclose(ivy.to_numpy(container_clipped.a), np.array([2.0, 1.0, 2.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_clipped["b"]["c"]), np.array([1.0, 5.0, 5.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_clipped.b.c), np.array([1.0, 5.0, 5.0]))
-    assert np.allclose(
-        ivy.to_numpy(container_clipped["b"]["d"]), np.array([4.0, 7.0, 8.0])
-    )
-    assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([4.0, 7.0, 8.0]))
-
-
 def test_container_clip_vector_norm(device, call):
     container = Container({"a": ivy.array([[0.8, 2.2], [1.5, 0.2]], device=device)})
     container_clipped = container.clip_vector_norm(2.5, 2.0)
@@ -1409,65 +1137,6 @@ def test_container_as_random_uniform(device, call):
     assert (ivy.to_numpy(container_random.b.d) != np.array([3.0]))[0]
 
 
-def test_container_expand_dims(device, call):
-    dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
-    }
-    container = Container(dict_in)
-
-    # without key_chains specification
-    container_expanded_dims = container.expand_dims(0)
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["a"]), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.a), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["c"]), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.c), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["d"]), np.array([[3]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.d), np.array([[3]]))
-
-    # with key_chains to apply
-    container_expanded_dims = container.expand_dims(0, ["a", "b/c"])
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["a"]), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.a), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["c"]), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.c), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["d"]), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.d), np.array([3]))
-
-    # with key_chains to apply pruned
-    container_expanded_dims = container.expand_dims(
-        0, ["a", "b/c"], prune_unapplied=True
-    )
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["a"]), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.a), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["c"]), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.c), np.array([[2]]))
-    assert "b/d" not in container_expanded_dims
-
-    # with key_chains to not apply
-    container_expanded_dims = container.expand_dims(
-        0, Container({"a": None, "b": {"d": None}}), to_apply=False
-    )
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["a"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.a), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["c"]), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.c), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["d"]), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.d), np.array([3]))
-
-    # with key_chains to not apply pruned
-    container_expanded_dims = container.expand_dims(
-        0,
-        Container({"a": None, "b": {"d": None}}),
-        to_apply=False,
-        prune_unapplied=True,
-    )
-    assert "a" not in container_expanded_dims
-    assert np.allclose(ivy.to_numpy(container_expanded_dims["b"]["c"]), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_expanded_dims.b.c), np.array([[2]]))
-    assert "b/d" not in container_expanded_dims
-
-
 def test_container_clone(device, call):
     dict_in = {
         "a": ivy.array([[1], [2], [3]], device=device),
@@ -1528,15 +1197,15 @@ def test_container_distribute(devs_as_dict, device, call):
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(
             ivy.to_numpy(sub_cont.a),
-            ivy.to_numpy(array_a)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_a)[i * sub_size : i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.c),
-            ivy.to_numpy(array_bc)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_bc)[i * sub_size : i * sub_size + sub_size],
         )
         assert np.array_equal(
             ivy.to_numpy(sub_cont.b.d),
-            ivy.to_numpy(array_bd)[i * sub_size: i * sub_size + sub_size],
+            ivy.to_numpy(array_bd)[i * sub_size : i * sub_size + sub_size],
         )
 
 
@@ -1760,355 +1429,6 @@ def test_container_gather_nd(device, call):
     assert "b/d" not in container_gathered
 
 
-def test_container_repeat(device, call):
-    if call is helpers.mx_call:
-        # MXNet does not support repeats specified as array
-        pytest.skip()
-    dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
-        "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    # without key_chains specification
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], device=device), -1)
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["a"]),
-        np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.a), np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["c"]),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.c),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["d"]),
-        np.array([[10.0, 10.0, 9.0, 7.0, 7.0, 7.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.d),
-        np.array([[10.0, 10.0, 9.0, 7.0, 7.0, 7.0]]),
-    )
-
-    # with key_chains to apply
-    container_repeated = container.repeat(
-        ivy.array([2, 1, 0, 3], device=device), -1, ["a", "b/c"]
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["a"]),
-        np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.a), np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["c"]),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.c),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["d"]), np.array([[10.0, 9.0, 8.0, 7.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.d), np.array([[10.0, 9.0, 8.0, 7.0]])
-    )
-
-    # with key_chains to apply pruned
-    container_repeated = container.repeat(
-        ivy.array([2, 1, 0, 3], device=device), -1, ["a", "b/c"], prune_unapplied=True
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["a"]),
-        np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.a), np.array([[0.0, 0.0, 1.0, 3.0, 3.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["c"]),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.c),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert "b/d" not in container_repeated
-
-    # with key_chains to not apply
-    container_repeated = container.repeat(
-        ivy.array([2, 1, 0, 3], device=device),
-        -1,
-        Container({"a": None, "b": {"d": None}}),
-        to_apply=False,
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["a"]), np.array([[0.0, 1.0, 2.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.a), np.array([[0.0, 1.0, 2.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["c"]),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.c),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["d"]), np.array([[10.0, 9.0, 8.0, 7.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.d), np.array([[10.0, 9.0, 8.0, 7.0]])
-    )
-
-    # with key_chains to not apply pruned
-    container_repeated = container.repeat(
-        ivy.array([2, 1, 0, 3], device=device),
-        -1,
-        Container({"a": None, "b": {"d": None}}),
-        to_apply=False,
-        prune_unapplied=True,
-    )
-    assert "a" not in container_repeated
-    assert np.allclose(
-        ivy.to_numpy(container_repeated["b"]["c"]),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_repeated.b.c),
-        np.array([[5.0, 5.0, 10.0, 20.0, 20.0, 20.0]]),
-    )
-    assert "b/d" not in container_repeated
-
-
-def test_container_swapaxes(device, call):
-    if call is helpers.mx_call:
-        # MXNet does not support repeats specified as array
-        pytest.skip()
-    dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
-        "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    # without key_chains specification
-    container_swapped = container.swapaxes(0, 1)
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["a"]), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.a), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.c), np.array([[5.0], [10.0], [15.0], [20.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["d"]),
-        np.array([[10.0], [9.0], [8.0], [7.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.d), np.array([[10.0], [9.0], [8.0], [7.0]])
-    )
-
-    # with key_chains to apply
-    container_swapped = container.swapaxes(0, 1, ["a", "b/c"])
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["a"]), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.a), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.c), np.array([[5.0], [10.0], [15.0], [20.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["d"]), np.array([10.0, 9.0, 8.0, 7.0])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.d), np.array([10.0, 9.0, 8.0, 7.0])
-    )
-
-    # with key_chains to apply pruned
-    container_swapped = container.swapaxes(0, 1, ["a", "b/c"], prune_unapplied=True)
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["a"]), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.a), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.c), np.array([[5.0], [10.0], [15.0], [20.0]])
-    )
-    assert "b/d" not in container_swapped
-
-    # with key_chains to not apply
-    container_swapped = container.swapaxes(
-        0, 1, Container({"a": None, "b": {"d": None}}), to_apply=False
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["a"]), np.array([0.0, 1.0, 2.0, 3.0])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.a), np.array([0.0, 1.0, 2.0, 3.0])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.c), np.array([[5.0], [10.0], [15.0], [20.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["d"]), np.array([10.0, 9.0, 8.0, 7.0])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.d), np.array([10.0, 9.0, 8.0, 7.0])
-    )
-
-    # with key_chains to not apply pruned
-    container_swapped = container.swapaxes(
-        0,
-        1,
-        Container({"a": None, "b": {"d": None}}),
-        to_apply=False,
-        prune_unapplied=True,
-    )
-    assert "a" not in container_swapped
-    assert np.allclose(
-        ivy.to_numpy(container_swapped["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_swapped.b.c), np.array([[5.0], [10.0], [15.0], [20.0]])
-    )
-    assert "b/d" not in container_swapped
-
-
-def test_container_reshape(device, call):
-    dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
-        "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    # pre_shape only
-    container_reshaped = container.reshape((1, 2, 2))
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["a"]), np.array([[0.0, 1.0], [2.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.a), np.array([[0.0, 1.0], [2.0, 3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["c"]),
-        np.array([[5.0, 10.0], [15.0, 20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.b.c), np.array([[5.0, 10.0], [15.0, 20.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["d"]), np.array([[10.0, 9.0], [8.0, 7.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.b.d), np.array([[10.0, 9.0], [8.0, 7.0]])
-    )
-
-    # pre_shape and slice
-    dict_in = {
-        "a": ivy.array([[[0.0, 1.0, 2.0, 3.0], [0.0, 1.0, 2.0, 3.0]]], device=device),
-        "b": {
-            "c": ivy.array([[[5.0, 10.0, 15.0], [20.0, 25.0, 30.0]]], device=device),
-            "d": ivy.array([[[10.0], [9.0]]], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_reshaped = container.reshape((-1,), slice(2, None))
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["a"]),
-        np.array([[0.0, 1.0, 2.0, 3.0], [0.0, 1.0, 2.0, 3.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.a),
-        np.array([[0.0, 1.0, 2.0, 3.0], [0.0, 1.0, 2.0, 3.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["c"]),
-        np.array([[5.0, 10.0, 15.0], [20.0, 25.0, 30.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.b.c),
-        np.array([[5.0, 10.0, 15.0], [20.0, 25.0, 30.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["d"]), np.array([[10.0], [9.0]])
-    )
-    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10.0], [9.0]]))
-
-    # pre_shape, slice and post_shape
-    dict_in = {
-        "a": ivy.array([[[0.0, 1.0, 2.0, 3.0], [0.0, 1.0, 2.0, 3.0]]], device=device),
-        "b": {
-            "c": ivy.array([[[5.0, 10.0, 15.0], [20.0, 25.0, 30.0]]], device=device),
-            "d": ivy.array([[[10.0], [9.0]]], device=device),
-        },
-    }
-    container = Container(dict_in)
-    container_reshaped = container.reshape((-1,), slice(2, None), (1,))
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["a"]),
-        np.array([[[0.0], [1.0], [2.0], [3.0]], [[0.0], [1.0], [2.0], [3.0]]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.a),
-        np.array([[[0.0], [1.0], [2.0], [3.0]], [[0.0], [1.0], [2.0], [3.0]]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["c"]),
-        np.array([[[5.0], [10.0], [15.0]], [[20.0], [25.0], [30.0]]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.b.c),
-        np.array([[[5.0], [10.0], [15.0]], [[20.0], [25.0], [30.0]]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped["b"]["d"]), np.array([[[10.0]], [[9.0]]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_reshaped.b.d), np.array([[[10.0]], [[9.0]]])
-    )
-
-
 def test_container_einops_rearrange(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
@@ -2199,7 +1519,7 @@ def test_container_einops_repeat(device, call):
     )
 
 
-def test_container_to_dev(device, call):
+def test_container_to_device(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
         "b": {
@@ -2209,13 +1529,13 @@ def test_container_to_dev(device, call):
     }
     container = Container(dict_in)
 
-    container_to_cpu = container.to_dev(device)
-    assert ivy.dev(container_to_cpu["a"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.a, as_str=True) == device
-    assert ivy.dev(container_to_cpu["b"]["c"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.b.c, as_str=True) == device
-    assert ivy.dev(container_to_cpu["b"]["d"], as_str=True) == device
-    assert ivy.dev(container_to_cpu.b.d, as_str=True) == device
+    container_to_cpu = container.to_device(device)
+    assert ivy.dev(container_to_cpu["a"]) == device
+    assert ivy.dev(container_to_cpu.a) == device
+    assert ivy.dev(container_to_cpu["b"]["c"]) == device
+    assert ivy.dev(container_to_cpu.b.c) == device
+    assert ivy.dev(container_to_cpu["b"]["d"]) == device
+    assert ivy.dev(container_to_cpu.b.d) == device
 
 
 def test_container_stop_gradients(device, call):
@@ -2539,12 +1859,12 @@ def test_container_has_key(device, call):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert container.has_key("a") # noqa
-    assert container.has_key("b") # noqa
-    assert container.has_key("c") # noqa
-    assert container.has_key("d") # noqa
-    assert not container.has_key("e") # noqa
-    assert not container.has_key("f") # noqa
+    assert container.has_key("a")  # noqa
+    assert container.has_key("b")  # noqa
+    assert container.has_key("c")  # noqa
+    assert container.has_key("d")  # noqa
+    assert not container.has_key("e")  # noqa
+    assert not container.has_key("f")  # noqa
 
 
 def test_container_has_key_chain(device, call):
@@ -2759,8 +2079,8 @@ def test_container_set_at_keys(device, call):
     container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
-    assert not container.has_key("c")
-    assert not container.has_key("d")
+    assert not container.has_key("c")  # noqa
+    assert not container.has_key("d")  # noqa
     container = orig_container.set_at_keys(
         {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
     )
@@ -3349,8 +2669,8 @@ def test_container_shuffle(device, call):
     # without key_chains specification
     container_shuffled = container.shuffle(0)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -3361,8 +2681,8 @@ def test_container_shuffle(device, call):
     # with key_chains to apply
     container_shuffled = container.shuffle(0, ["a", "b/c"])
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -3373,8 +2693,8 @@ def test_container_shuffle(device, call):
     # with key_chains to apply pruned
     container_shuffled = container.shuffle(0, ["a", "b/c"], prune_unapplied=True)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -3386,8 +2706,8 @@ def test_container_shuffle(device, call):
         0, Container({"a": None, "b": {"d": None}}), to_apply=False
     )
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled.a) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
@@ -3403,8 +2723,8 @@ def test_container_shuffle(device, call):
         prune_unapplied=True,
     )
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert "a" not in container_shuffled
     assert (ivy.to_numpy(container_shuffled["b"]["c"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.b.c) == shuffled_data).all()
@@ -3418,8 +2738,8 @@ def test_container_shuffle(device, call):
     container = Container(dict_in)
     container_shuffled = container.shuffle(0, map_sequences=True)
     data = ivy.array([1, 2, 3], device=device)
-    ivy.functional.ivy.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
+    ivy.seed()
+    shuffled_data = ivy.to_numpy(ivy.shuffle(data))
     assert (ivy.to_numpy(container_shuffled["a"]) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled["b"][0]) == shuffled_data).all()
@@ -3693,7 +3013,7 @@ def test_container_multi_map(device, call):
 
     # with key_chains to apply
     container_mapped = ivy.Container.multi_map(
-        lambda x, _: x[0] + x[1], [container0, container1]
+        lambda x, _: x[0] + x[1], [container0, container1], assert_identical=True
     )
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[4]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[4]]))
@@ -3701,6 +3021,47 @@ def test_container_multi_map(device, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.c), np.array([[6]]))
     assert np.allclose(ivy.to_numpy(container_mapped["b"]["d"]), np.array([[8]]))
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
+
+    # with sequences
+    container0 = Container(
+        {
+            "a": ivy.array([1], device=device),
+            "b": [
+                ivy.array([2], device=device),
+                ivy.array([3], device=device),
+            ],
+        }
+    )
+    container1 = Container(
+        {
+            "a": ivy.array([3], device=device),
+            "b": [
+                ivy.array([4], device=device),
+                ivy.array([5], device=device),
+            ],
+        }
+    )
+
+    container_mapped = ivy.Container.multi_map(
+        lambda x, _: x[0] + x[1],
+        [container0, container1],
+        map_nests=True,
+        assert_identical=True,
+    )
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([4]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][0]), np.array([6]))
+    assert np.allclose(ivy.to_numpy(container_mapped["b"][1]), np.array([8]))
+
+    # Non identical containers
+    a = ivy.Container(a={"b": 2, "c": 4}, d={"e": 6, "f": 9})
+    b = ivy.Container(a=2, d=3)
+    container_mapped = ivy.Container.multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
+
+    assert np.allclose(ivy.to_numpy(container_mapped["a"].b), 1)
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"]), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped.d.e), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped["d"].f), 3)
 
 
 def test_container_common_key_chains(device, call):
@@ -4177,7 +3538,7 @@ def test_container_pickle(device, call):
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
     # noinspection PyUnresolvedReferences
-    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
+    assert cont_again._local_ivy.current_backend_str() is ivy.current_backend_str()
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 
@@ -5263,7 +4624,7 @@ def test_container_scalar_xor(device, call):
             },
         }
     )
-    container = container != True
+    container = container != True  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))
@@ -5286,7 +4647,7 @@ def test_container_reverse_scalar_xor(device, call):
             },
         }
     )
-    container = False != container # noqa
+    container = False != container  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([True]))
@@ -5318,7 +4679,7 @@ def test_container_xor(device, call):
             },
         }
     )
-    container = container_a != container_b # noqa
+    container = container_a != container_b  # noqa
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([False]))

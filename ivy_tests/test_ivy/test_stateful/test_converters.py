@@ -74,7 +74,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, ca
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
+    natvie_module_class = NATIVE_MODULES[ivy.current_backend_str()]
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(
             native_module_class=natvie_module_class,

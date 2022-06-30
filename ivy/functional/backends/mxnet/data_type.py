@@ -2,61 +2,55 @@
 import numpy as np
 import mxnet as mx
 from typing import Union
-import numpy as _np
 
 # local
 import ivy
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
-DTYPE_TO_STR = {
-    _np.dtype("int8"): "int8",
-    _np.dtype("int16"): "int16",
-    _np.dtype("int32"): "int32",
-    _np.dtype("int64"): "int64",
-    _np.dtype("uint8"): "uint8",
-    _np.dtype("uint16"): "uint16",
-    _np.dtype("uint32"): "uint32",
-    _np.dtype("uint64"): "uint64",
+ivy_dtype_dict = {
+    np.dtype("int8"): "int8",
+    np.dtype("int16"): "int16",
+    np.dtype("int32"): "int32",
+    np.dtype("int64"): "int64",
+    np.dtype("uint8"): "uint8",
+    np.dtype("uint16"): "uint16",
+    np.dtype("uint32"): "uint32",
+    np.dtype("uint64"): "uint64",
     "bfloat16": "bfloat16",
-    _np.dtype("float16"): "float16",
-    _np.dtype("float32"): "float32",
-    _np.dtype("float64"): "float64",
-    _np.dtype("bool"): "bool",
-    _np.int8: "int8",
-    _np.int16: "int16",
-    _np.int32: "int32",
-    _np.int64: "int64",
-    _np.uint8: "uint8",
-    _np.uint16: "uint16",
-    _np.uint32: "uint32",
-    _np.uint64: "uint64",
-    _np.float16: "float16",
-    _np.float32: "float32",
-    _np.float64: "float64",
-    _np.bool_: "bool",
+    np.dtype("float16"): "float16",
+    np.dtype("float32"): "float32",
+    np.dtype("float64"): "float64",
+    np.dtype("bool"): "bool",
+    np.int8: "int8",
+    np.int16: "int16",
+    np.int32: "int32",
+    np.int64: "int64",
+    np.uint8: "uint8",
+    np.uint16: "uint16",
+    np.uint32: "uint32",
+    np.uint64: "uint64",
+    np.float16: "float16",
+    np.float32: "float32",
+    np.float64: "float64",
+    np.bool_: "bool",
 }
 
-DTYPE_FROM_STR = {
-    "int8": _np.int8,
-    "int16": _np.int16,
-    "int32": _np.int32,
-    "int64": _np.int64,
-    "uint8": _np.uint8,
-    "uint16": _np.uint16,
-    "uint32": _np.uint32,
-    "uint64": _np.uint64,
+native_dtype_dict = {
+    "int8": np.int8,
+    "int16": np.int16,
+    "int32": np.int32,
+    "int64": np.int64,
+    "uint8": np.uint8,
+    "uint16": np.uint16,
+    "uint32": np.uint32,
+    "uint64": np.uint64,
     "bfloat16": "bfloat16",
-    "float16": _np.float16,
-    "float32": _np.float32,
-    "float64": _np.float64,
-    "bool": _np.bool_,
+    "float16": np.float16,
+    "float32": np.float32,
+    "float64": np.float64,
+    "bool": np.bool_,
 }
-
-
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> np.iinfo:
-    return np.iinfo(ivy.dtype_from_str(type))
 
 
 class Finfo:
@@ -84,9 +78,12 @@ class Finfo:
         return float(self._mx_finfo.tiny)
 
 
-# noinspection PyShadowingBuiltins
-def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> Finfo:
-    return Finfo(np.finfo(ivy.dtype_from_str(type)))
+def iinfo(type: Union[type, str, mx.nd.NDArray]) -> np.iinfo:
+    return np.iinfo(ivy.as_native_dtype(type))
+
+
+def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
+    return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
 def broadcast_to(x, new_shape):
@@ -102,11 +99,12 @@ def broadcast_to(x, new_shape):
 
 @_handle_flat_arrays_in_out
 def astype(x, dtype):
+    dtype = ivy.as_native_dtype(dtype)
     return x.astype(dtype)
 
 
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -119,20 +117,20 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
+def dtype(x, as_native=False):
     dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return x.dtype
+    if as_native:
+        return x.dtype
+    return as_ivy_dtype(dt)
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def dtype_from_str(dtype_in):
+def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]

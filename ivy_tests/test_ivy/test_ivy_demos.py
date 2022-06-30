@@ -45,7 +45,7 @@ def test_training_demo(device, call):
 
 # functional api
 def test_array(device, call):
-    ivy.unset_framework()
+    ivy.unset_backend()
     import jax.numpy as jnp
 
     assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)

@@ -5,23 +5,26 @@ import os
 
 _round = round
 import mxnet as mx
-from mxnet import profiler as _profiler
+from typing import Union, Optional
+from mxnet import profiler
 
 # local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x, as_str=False):
+def dev(
+    x: mx.nd.NDArray, as_native: bool = False
+) -> Union[ivy.Device, mx.context.Context]:
     dv = x.context
-    if as_str:
-        return dev_to_str(dv)
-    return dv
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
 
 
-def to_dev(x, device=None, out=None):
+def to_device(x, device=None, out=None, stream: Optional[int] = None):
     if device is not None:
-        ret = x.as_in_context(dev_from_str(device))
+        ret = x.as_in_context(as_native_dev(device))
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
         return ret
@@ -30,21 +33,22 @@ def to_dev(x, device=None, out=None):
     return x
 
 
-def dev_to_str(device):
+def as_ivy_dev(device):
     if isinstance(device, str):
-        return device
+        return ivy.Device(device)
     device_type = device.device_type
     if device_type == "cpu":
-        return device_type
-    return device_type + (
-        ":" + (str(device.device_id) if device.device_id is not None else "0")
+        return ivy.Device(device_type)
+    return ivy.Device(
+        device_type
+        + (":" + (str(device.device_id) if device.device_id is not None else "0"))
     )
 
 
-def dev_from_str(device):
+def as_native_dev(device):
     if not isinstance(device, str):
         return device
-    dev_split = device.split(":")
+    dev_split = ivy.Device(device).split(":")
     device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
@@ -57,8 +61,7 @@ def gpu_is_available() -> bool:
     return mx.context.num_gpus() > 0
 
 
-clear_mem_on_dev = lambda dev: None
-_callable_dev = dev
+clear_mem_on_dev = lambda device: None
 
 
 def tpu_is_available() -> bool:
@@ -72,7 +75,7 @@ def num_gpus() -> int:
 class Profiler(BaseProfiler):
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
-        self._prof = _profiler
+        self._prof = profiler
         self._prof.set_config(
             profile_all=True,
             aggregate_stats=True,

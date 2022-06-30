@@ -31,7 +31,7 @@ def _replace_logos_html(txt):
     backends_chunk = chunks[2]
     bc = backends_chunk.split("\n\n")
     img_str = (
-        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n" # noqa
+        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
         "   :width: 100%"
     )
     backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
@@ -64,8 +64,13 @@ def _is_raw_block(line):
     return False
 
 
+def read_description(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
 this_directory = Path(__file__).parent
-text = (this_directory / "README.rst").read_text()
+text = read_description("README.rst")
 lines = _replace_logos_html(text).split("\n")
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = "\n".join(lines)
@@ -76,8 +81,10 @@ setup(
     version="1.1.9",
     author="Ivy Team",
     author_email="ivydl.team@gmail.com",
-    description=("The unified machine learning framework, enabling framework-agnostic "
-    "functions, layers and libraries."),
+    description=(
+        "The unified machine learning framework, enabling framework-agnostic "
+        "functions, layers and libraries."
+    ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://lets-unify.ai/ivy",
@@ -86,7 +93,9 @@ setup(
         "Source": "https://github.com/unifyai/ivy",
     },
     packages=setuptools.find_packages(),
-    install_requires=[_strip(line) for line in open("requirements.txt", "r")],
+    install_requires=[
+        _strip(line) for line in open("requirements.txt", "r", encoding="utf-8")
+    ],
     classifiers=["License :: OSI Approved :: Apache Software License"],
     license="Apache 2.0",
 )

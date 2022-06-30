@@ -9,23 +9,7 @@ from typing import Union, Tuple, List
 import ivy
 from ivy.functional.backends.jax import JaxArray
 
-
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
-    if type(from_) in [
-        jax.interpreters.xla._DeviceArray,
-        jaxlib.xla_extension.DeviceArray,
-    ]:
-        from_ = str(from_.dtype)
-    from_ = str(from_)
-    to = str(to)
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
-    return jnp.can_cast(from_, to)
-
-
-DTYPE_TO_STR = {
+ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
     jnp.dtype("int16"): "int16",
     jnp.dtype("int32"): "int32",
@@ -54,7 +38,7 @@ DTYPE_TO_STR = {
     jnp.bool_: "bool",
 }
 
-DTYPE_FROM_STR = {
+native_dtype_dict = {
     "int8": jnp.dtype("int8"),
     "int16": jnp.dtype("int16"),
     "int32": jnp.dtype("int32"),
@@ -69,11 +53,6 @@ DTYPE_FROM_STR = {
     "float64": jnp.dtype("float64"),
     "bool": jnp.dtype("bool"),
 }
-
-
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
-    return jnp.iinfo(ivy.dtype_from_str(type))
 
 
 class Finfo:
@@ -101,30 +80,12 @@ class Finfo:
         return float(self._jnp_finfo.tiny)
 
 
-# noinspection PyShadowingBuiltins
-def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
-    return Finfo(jnp.finfo(ivy.dtype_from_str(type)))
+# Array API Standard #
+# -------------------#
 
 
-def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
-    if len(arrays_and_dtypes) <= 1:
-        return jnp.result_type(arrays_and_dtypes)
-
-    result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
-    for i in range(2, len(arrays_and_dtypes)):
-        result = jnp.result_type(result, arrays_and_dtypes[i])
-    return result
-
-
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
-    return jnp.broadcast_to(x, shape)
-
-
-def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
-    return jnp.broadcast_arrays(*arrays)
-
-
-def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
+def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = jnp.array(x)
@@ -138,8 +99,53 @@ def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
     return x.astype(dtype)
 
 
+def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
+    return jnp.broadcast_arrays(*arrays)
+
+
+def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+    return jnp.broadcast_to(x, shape)
+
+
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+    if type(from_) in [
+        jax.interpreters.xla._DeviceArray,
+        jaxlib.xla_extension.DeviceArray,
+    ]:
+        from_ = str(from_.dtype)
+    from_ = str(from_)
+    to = str(to)
+    if "bool" in from_ and (("int" in to) or ("float" in to)):
+        return False
+    if "int" in from_ and "float" in to:
+        return False
+    return jnp.can_cast(from_, to)
+
+
+def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
+    return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
+
+
+def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
+    return jnp.iinfo(ivy.as_native_dtype(type))
+
+
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return jnp.result_type(arrays_and_dtypes)
+
+    result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = jnp.result_type(result, arrays_and_dtypes[i])
+    return result
+
+
+# Extra #
+# ------#
+
+
 def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
+    dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
     return int(
@@ -150,20 +156,19 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
+def dtype(x, as_native=False):
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
 
 
-def dtype_to_str(dtype_in):
+def as_ivy_dtype(dtype_in):
     if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def dtype_from_str(dtype_in):
+def as_native_dtype(dtype_in):
     if not isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
+    return native_dtype_dict[ivy.Dtype(dtype_in)]

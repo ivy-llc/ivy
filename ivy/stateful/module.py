@@ -1,4 +1,4 @@
-"""Base class for deriving trainable modules."""
+"""Base class for deriving trainable modules"""
 
 # global
 import os
@@ -10,6 +10,7 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
+from ivy.func_wrapper import _get_first_array
 
 
 # Base #
@@ -30,46 +31,52 @@ class Module(abc.ABC):
         fallback_to_non_compiled=False,
         with_partial_v=False,
         devices=None,
+        dtype=None,
     ):
-        """Initialze Ivy layer, which is a stateful object consisting of trainable
+        """
+        Initialze Ivy layer, which is a stateful object consisting of trainable
         variables.
 
-        :param device: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type device: ivy.Device, optional
-        :param v: Ivy container of trainable variables. Created internally by default.
-        :type v: ivy container, optional
-        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
-                           build(), or the first time the __call__ method is run. Default is on initialization.
-        :type build_mode: str, optional
-        :param compile_on_next_step: Whether to compile the network on the next forward pass. Default is False.
-        :type compile_on_next_step: bool, optional
-        :param store_vars: Whether or not to store the variables created. Default is True.
-        :type store_vars: bool, optional
-        :param stateful: The constant id stateful items to track as part of the forward pass.
-                         Used when graph compiling, default is None.
-        :type stateful: seq of any, optional
-        :param arg_stateful_idxs: The nested argument indices of stateful items to track as part of the forward pass.
-                                  Used when graph compiling, default is None.
-        :type arg_stateful_idxs: seq of any, optional
-        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful items to track as part of the
-                                    forward pass. Used when graph compiling, default is None.
-        :type kwarg_stateful_idxs: seq of any, optional
-        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
-                                         raised during the compiled forward pass. Default is True.
-        :type fallback_to_non_compiled: bool, optional
-        :param with_partial_v: Whether to allow partial specification of variables. Default is False.
-        :type with_partial_v: bool, optional
-        :param devices: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type devices: sequence of str, optional
-        :type build_mode: str, optional
-
+        Parameters
+        ----------
+        device
+            device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
+        v
+            Ivy container of trainable variables. Created internally by default.
+        build_mode
+            How the Module is built, either on initialization (now),
+            explicitly by the user by calling
+            build(), or the first time the __call__ method is run.
+            Default is on initialization.
+        compile_on_next_step
+            Whether to compile the network on the next forward pass. Default is False.
+        store_vars
+            Whether or not to store the variables created. Default is True.
+        stateful
+            The constant id stateful items to track as part of the forward pass.
+            Used when graph compiling, default is None.
+        arg_stateful_idxs
+            The nested argument indices of stateful items to track as part of
+            the forward pass.
+            Used when graph compiling, default is None.
+        kwarg_stateful_idxs
+            The nested keyword argument indices of stateful items to track as part of
+            the forward pass. Used when graph compiling, default is None.
+        fallback_to_non_compiled
+            Whether to fall back to non-compiled forward call in the case that an error
+            is raised during the compiled forward pass. Default is True.
+        with_partial_v
+            Whether to allow partial specification of variables. Default is False.
+        devices
+            devices on which to distribute the module's variables
+            'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
         if build_mode not in valid_build_modes:
             raise Exception(
-                "build_mode must be one of {} of type str, but found {} of type{}".format(
-                    valid_build_modes, build_mode, type(build_mode)
-                )
+                "build_mode must be one of {} of type str, but found "
+                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
             )
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
@@ -95,14 +102,15 @@ class Module(abc.ABC):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self.expected_submod_rets = None
         self.submod_dict = dict()
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._sub_mods = set()
+        self._dtype = dtype
         if build_mode != "on_init":
             return
         self.build()
@@ -201,7 +209,8 @@ class Module(abc.ABC):
 
     def _find_variables(self, obj=None):
         vs = Container()
-        # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
+        # ToDo: add support for finding local variables, if/when JAX supports
+        #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
             obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
                 depth, flatten_key_chains
@@ -301,24 +310,24 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, device):
-        """Create internal trainable variables, and return as arbitrary nested dict.
+    def _create_variables(self, device, dtype):
+        """
+        Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
 
-        :param device: The device string, specifying the device on which to create the variables.
-        :type device: ivy.Deviceing
-
+        Parameters
+        ----------
+        device
+            The device string, specifying the device on which to create the variables.
         """
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
-        """Build the internal layers and variables for this module.
-
-        Overridable. Return False or empty Container if the build only
-        partially completed (i.e. some child Modules have "on_call"
-        build mode). Alternatviely, return True or a container of the
-        built variables if the module is built.
-
+        """
+        Build the internal layers and variables for this module. Overridable. Return
+        False or empty Container if the build only partially completed (i.e. some
+        child Modules have "on_call" build mode). Alternatviely, return True or a
+        container of the built variables if the module is built.
         """
         return True
 
@@ -326,13 +335,14 @@ class Module(abc.ABC):
 
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
-        """Forward pass of the layer, called after handling the optional input
-        variables.
+        """
+        Forward pass of the layer,
+        called after handling the optional input variables.
         """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """Forward pass while optionally tracking submodule returns and call order."""
+        """Forward pass while optionally tracking submodule returns and call order"""
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -345,12 +355,18 @@ class Module(abc.ABC):
         return ret
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
-        """The forward pass of the layer, treating layer instance as callable
-        function.
+        """
+        The forward pass of the layer,
+        treating layer instance as callable function.
         """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
-            self.build(*args, **kwargs, from_call=True)
+            self.build(
+                *args,
+                **kwargs,
+                from_call=True,
+                dtype=_get_first_array(*args, **kwargs).dtype
+            )
         if v is not None:
             v_orig = self.v
             if not with_grads:
@@ -404,7 +420,8 @@ class Module(abc.ABC):
             self.top_v(depth).show_sub_container(self.v)
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in top_v,"
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, "
                 "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
@@ -420,7 +437,8 @@ class Module(abc.ABC):
             return ret
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in top_v,"
+                "both self.top_v and self.v must be initialized in order to show v in "
+                "top_v, "
                 "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
@@ -576,7 +594,7 @@ class Module(abc.ABC):
             else:
                 max_key = key + "_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+                    alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -605,7 +623,7 @@ class Module(abc.ABC):
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+                alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
             )
 
     def __call__(
@@ -623,12 +641,13 @@ class Module(abc.ABC):
         expected_submod_rets=None,
         **kwargs
     ):
+
         with_grads = ivy.with_grads(with_grads)
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_framework("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
         )
         self._set_submod_flags(
             track_submod_rets,
@@ -644,27 +663,33 @@ class Module(abc.ABC):
     def save_weights(self, weights_path):
         """Save the weights on the Module.
 
-        :param weights_path: The hdf5 file for saving the weights.
-        :type weights_path: string
-
+        Parameters
+        ----------
+        weights_path
+            The hdf5 file for saving the weights.
         """
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, **kwargs):
+    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """Build the internal layers and variables for this module."""
         self._dev = ivy.default(device, self._dev)
-
         # return False if not from_call but build_mode is on_call
+
         if not from_call and self._build_mode == "on_call":
             return self.v
+        if dtype:
+            dtype = ivy.default_dtype(dtype, as_native=True)
+        else:
+            dtype = ivy.default_dtype(self._dtype, as_native=True)
 
+        kwargs["dtype"] = dtype
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(self._dev))
+        created = Container(self._create_variables(self._dev, dtype=dtype))
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
@@ -683,13 +708,10 @@ class Module(abc.ABC):
                 self.v = v_from_constructor
         else:
             self.v = created_n_found
-
         # remove duplicates
         self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
-
         # build any child 'on_call' layers
         if not built and from_call:
-
             # update child modules to share the same device
             for k, v in self.__dict__.items():
                 if isinstance(v, ivy.Module):
@@ -698,12 +720,13 @@ class Module(abc.ABC):
             # build during forward pass
             self._forward(*args, **kwargs)
 
-            # re-build variables based on additional child on-call layers, if v not passed in constructor
+            # re-build variables based on additional child on-call layers, if v not
+            # passed in constructor
             if not ivy.exists(v_from_constructor):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(self),
-                        **self._create_variables(self._dev)
+                        **self._create_variables(self._dev, dtype=dtype)
                     )
                 )
                 self.v = created_n_found

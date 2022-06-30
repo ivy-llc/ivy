@@ -12,10 +12,10 @@ from ivy.functional.backends.mxnet import (
 
 # noinspection PyShadowingBuiltins
 def all(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-) -> mx.ndarray.ndarray.NDArray:
+) -> mx.nd.NDArray:
     red_prod = prod(x, axis, keepdims)
     is_flat = red_prod.shape == ()
     if is_flat:
@@ -28,8 +28,8 @@ def all(
 
 # noinspection PyShadowingBuiltins
 def any(
-    x: mx.ndarray.ndarray.NDArray,
+    x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-) -> mx.ndarray.ndarray.NDArray:
+) -> mx.nd.NDArray:
     return mx.nd.array(mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims))

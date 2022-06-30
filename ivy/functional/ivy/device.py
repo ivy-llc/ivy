@@ -11,19 +11,23 @@ import psutil
 import inspect
 import logging
 import nvidia_smi
-
 from typing import Optional
 
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
-except nvidia_smi.NVMLError_LibraryNotFound:
+except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
     pass
 from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _cur_framework
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 default_device_stack = list()
 dev_handles = dict()
@@ -39,10 +43,41 @@ class DefaultDevice:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, device):
+    def __init__(
+        self,
+        device: Union[ivy.Device, ivy.NativeDevice],
+    ) -> None:
+        """Initialises the DefaultDevice class
+
+        Parameters
+        ----------
+        device
+            The device string - as an ivy device or nativedevice class
+
+        Examples
+        --------
+        >>> z = ivy.DefaultDevice("cpu")
+        >>> x = ivy.DefaultDevice("tpu")
+        """
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -68,79 +103,229 @@ def _get_nvml_gpu_handle(device):
 
 # Array Printing
 
-# noinspection PyShadowingNames
-def get_all_arrays_on_dev(device):
-    """Gets all arrays which are currently alive on the specified device.
+
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
+    """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
+    device = ivy.as_ivy_dev(device)
     all_arrays = list()
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj) and ivy.dev(obj) == device:
+            if ivy.is_ivy_array(obj) and ivy.dev(obj) == device:
                 all_arrays.append(obj)
         except Exception:
             pass
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-# noinspection PyShadowingNames
-def num_arrays_on_dev(device):
+def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to count the arrays
+
+    Returns
+    -------
+    ret
+        Number of arrays on the specified device
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    2
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    2
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]),\
+                      x4=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]),\
+                      x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
 
     """
-    return len(get_all_arrays_on_dev(device))
+    return len(get_all_ivy_arrays_on_dev(device))
 
 
-# noinspection PyShadowingNames
-def print_all_arrays_on_dev(device):
-    """Prints all arrays which are currently alive on the specified device.
+@handle_nestable
+def print_all_ivy_arrays_on_dev(device, attr_only=True):
+    """
+    Prints the shape and dtype for all ivy arrays which are currently alive on the
+    specified device.
 
     Parameters
     ----------
     device
+        The device on which to print the arrays
+    attr_only
+        Whether or not to only print the `shape` and `dtype` attributes of the array
 
     """
-    for arr in get_all_arrays_on_dev(device):
-        print(type(arr), arr.shape)
+    arrs = get_all_ivy_arrays_on_dev(device).values()
+    if attr_only:
+        [print((arr.shape, arr.dtype)) for arr in arrs]
+    else:
+        [print(arr) for arr in arrs]
 
 
 # Retrieval
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, str]:
-    """Get the native device handle for input array x.
+    """
+    Get the native device handle for input array x.
 
     Parameters
     ----------
     x
-        Tensor for which to get the device handle.
-    as_str
-        Whether or not to return the dev in string format. Default is False.
+          array for which to get the device handle.
+
+    as_native
+          Whether or not to return the dev in native format. Default is False.
 
     Returns
     -------
     ret
-        Device handle for the array, in native framework format.
+          Device handle for the array, in native framework format.
 
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> print(y)
+    cpu
     """
-    return _cur_framework(x).dev(x, as_str)
+    return current_backend(x).dev(x, as_native)
 
 
 # Conversions
 
-# noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
+
+def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -154,17 +339,16 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_framework().dev_to_str(device)
+    return current_backend().as_ivy_dev(device)
 
 
-# noinspection PyShadowingNames
-def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
+def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     Returns
     -------
@@ -172,33 +356,32 @@ def dev_from_str(device: Union[ivy.Device, str]) -> ivy.Device:
         Native device handle.
 
     """
-    return _cur_framework().dev_from_str(device)
+    return current_backend().as_native_dev(device)
 
 
 # Memory
 
-# noinspection PyShadowingNames
-def clear_mem_on_dev(device: ivy.Device) -> None:
+
+def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     """
-    return _cur_framework(None).clear_mem_on_dev(device)
+    return current_backend(None).clear_mem_on_dev(device)
 
 
-# noinspection PyShadowingNames
-def total_mem_on_dev(device: ivy.Device) -> float:
+def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
 
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
 
     Returns
     -------
@@ -219,15 +402,16 @@ def total_mem_on_dev(device: ivy.Device) -> float:
         )
 
 
-# noinspection PyShadowingNames
-def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
 
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
     process_specific
         Whether the check the memory used by this python process alone. Default is
         False.
@@ -257,15 +441,16 @@ def used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
         )
 
 
-# noinspection PyShadowingNames
-def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float:
+def percent_used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
 
     Parameters
     ----------
     device
-        The device string to conver to native device handle.
+        The device string to convert to native device handle.
     process_specific
         Whether the check the memory used by this python process alone. Default is
         False.
@@ -297,8 +482,8 @@ def percent_used_mem_on_dev(device: ivy.Device, process_specific=False) -> float
 
 # Utilization
 
-# noinspection PyShadowingNames
-def dev_util(device: ivy.Device) -> float:
+
+def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
     Parameters
@@ -338,15 +523,34 @@ def gpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.gpu_is_available())
-    True
+    False
+    """
+    return current_backend().gpu_is_available()
+
+
+def num_cpu_cores(logical=True) -> int:
+    """Determine the number of cores available in the cpu.
+
+    Parameters
+    ----------
+    logical
+        Whether request is for number of physical or logical cores available in CPU
+
+    Returns
+    -------
+    ret
+        Number of cores available in CPU
+
+    Examples
+    --------
+    >>> print(ivy.num_cpu_cores(False))
+    2
 
     """
-    return _cur_framework().gpu_is_available()
-
-
-def num_cpu_cores() -> int:
-    """Determine the number of cores available in the cpu."""
-    return psutil.cpu_count()
+    if logical:
+        return psutil.cpu_count(logical=logical)
+    else:
+        return psutil.cpu_count(logical=False)
 
 
 def num_gpus() -> int:
@@ -363,7 +567,7 @@ def num_gpus() -> int:
     1
 
     """
-    return _cur_framework().num_gpus()
+    return current_backend().num_gpus()
 
 
 def tpu_is_available() -> bool:
@@ -377,63 +581,107 @@ def tpu_is_available() -> bool:
     Examples
     --------
     >>> print(ivy.tpu_is_available())
-    True
-
+    False
     """
-    return _cur_framework().tpu_is_available()
+    return current_backend().tpu_is_available()
 
 
 # Default Device #
 
 # noinspection PyShadowingNames
-def _assert_dev_correct_formatting(device):
-    assert device[0:3] in ["gpu", "tpu", "cpu"]
-    if device != "cpu":
-        assert device[3] == ":"
-        assert device[4:].isnumeric()
+def default_device(
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None,
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    as_native: bool = None,
+) -> Union[str, ivy.Device, ivy.NativeDevice]:
+    """Returns the input device or the default device.
+    If the as native flag is set, the device will be converted to a native device.
+    If the item is provided, the item's device is returned.
+    If the device is not provided, the last default device is returned.
+    If a default device has not been set, the first gpu is returned if available,
+    otherwise the cpu is returned.
 
-
-# noinspection PyShadowingNames
-def default_device(device=None):
-    """Summary.
 
     Parameters
     ----------
     device
-         (Default value = None)
+        The device to be returned or converted.
+    item
+        The item to get the device from.
+    as_native
+        Whether to convert the device to a native device.
 
     Returns
     -------
     ret
+        Device handle or string.
+
+    Examples
+    --------
+    >>> ivy.default_device()
+    device(type='cpu')
+    >>> ivy.default_device("gpu:0")
+    'gpu:0'
+    >>> ivy.default_device(item=[], as_native=False)
+    'cpu'
+    >>> ivy.default_device(item=(), as_native=True)
+    device(type='cpu')
+    >>> ivy.default_device(item={"a": 1}, as_native=True)
+    device(type='cpu')
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_device(x, 'gpu:0')
+    >>> ivy.default_device(item=x, as_native=True)
+    device(type='gpu', id=0)
 
     """
     if ivy.exists(device):
-        _assert_dev_correct_formatting(ivy.dev_to_str(device))
+        if as_native is True:
+            return ivy.as_native_dev(device)
+        elif as_native is False:
+            return ivy.as_ivy_dev(device)
         return device
+    as_native = ivy.default(as_native, False)
+    if ivy.exists(item):
+        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+            pass
+        elif ivy.is_array(item):
+            return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
         ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
     else:
         ret = default_device_stack[-1]
-    return ivy.dev_from_str(ret)
+    if as_native:
+        return ivy.as_native_dev(ret)
+    return ivy.as_ivy_dev(ret)
 
 
-# noinspection PyShadowingNames
-def set_default_device(device):
-    """Summary.
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
+    """Set the default device to given device instance
 
     Parameters
     ----------
     device
+        The device to set as the default device
 
     """
-    _assert_dev_correct_formatting(device)
     global default_device_stack
     default_device_stack.append(device)
 
 
-def unset_default_device():
-    """"""
+def unset_default_device() -> None:
+    """Resets the default device to "cpu".
+
+    Examples
+    --------
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device()
+    "gpu:0"
+    >>> ivy.unset_default_device()
+    >>> ivy.default_device()
+    "cpu"
+
+    """
     global default_device_stack
     if default_device_stack:
         default_device_stack.pop(-1)
@@ -441,11 +689,16 @@ def unset_default_device():
 
 # Device Allocation #
 
-# noinspection PyShadowingNames
-def to_dev(
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    device: Union[ivy.Device, ivy.NativeDevice],
+    *,
+    stream: Optional[Union[int, Any]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -455,6 +708,11 @@ def to_dev(
        input array to be moved to the desired device
     device
         device to move the input array `x` to
+    stream
+        stream object to use during copy. In addition to the types supported in
+        array.__dlpack__(), implementations may choose to support any library-specific
+        stream object with the caveat that any code using such an object would not be
+        portable.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -467,19 +725,22 @@ def to_dev(
     Examples
     --------
     >>> x = ivy.array([1., 2., 3.])
-    >>> x = ivy.to_dev(x, 'cpu')
+    >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return _cur_framework(x).to_dev(x, device, out)
+    return current_backend(x).to_device(x, device, out=out)
 
 
 # Function Splitting #
 
-# noinspection PyShadowingNames
-def split_factor(device=None):
-    """Get the global split factor for a given device, which can be used to scale batch
-    splitting chunk sizes for the device across the codebase. Default global value for
-    each device is 1.
+
+def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
+    """Get a device's global split factor, which can be used to scale the device's
+    batch splitting chunk sizes across the codebase.
+    If the global split factor is set for a given device,
+        returns the split factor value for the device from the split factors dictionary
+    If the global split factor for a device is not configured,
+        returns the default value which is 0.0
 
     Parameters
     ----------
@@ -491,16 +752,21 @@ def split_factor(device=None):
     ret
         The split factor for the specified device.
 
+    Examples
+    --------
+    >>> x = ivy.split_factor()
+    >>> print(x)
+    0.0
+    >>> y = ivy.split_factor("gpu:0")
+    >>> print(y)
+    1.5
+
     """
     global split_factors
     device = ivy.default(device, default_device())
-    if device in split_factors:
-        return split_factors[device]
-    split_factors[device] = 0.0
-    return split_factors[device]
+    return split_factors.setdefault(device, 0.0)
 
 
-# noinspection PyShadowingNames
 def set_split_factor(factor, device=None):
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -519,10 +785,9 @@ def set_split_factor(factor, device=None):
     split_factors[device] = factor
 
 
-# noinspection PyShadowingNames
 def split_func_call(
     func: Callable,
-    inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
+    inputs: Union[ivy.Array, ivy.NativeArray],
     mode: str,
     max_chunk_size: int = None,
     chunk_size: int = None,
@@ -530,7 +795,7 @@ def split_func_call(
     output_axes: Union[int, Iterable[int]] = None,
     stop_gradients: bool = False,
     device=None,
-) -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
     useful to reduce memory usage of the device the arrays are on.
@@ -794,6 +1059,7 @@ class DevDistNest(MultiDevNest):
         return "DevDistNest(" + self._data.__repr__() + ")"
 
 
+@handle_nestable
 def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
@@ -819,7 +1085,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, ds)
+            ds: ivy.to_device(x_sub, device=ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
@@ -827,6 +1093,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     )
 
 
+@handle_nestable
 def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute the input item across the specified devices, returning a list of sub-
     items, each on a different device.
@@ -856,8 +1123,9 @@ def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return x
 
 
+@handle_nestable
 def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-    """Distribute elements of the iterbale xs across the specified devices.
+    """Distribute elements of the iterable xs across the specified devices.
 
     Parameters
     ----------
@@ -882,6 +1150,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
 
 
+@handle_nestable
 def dev_dist_nest(
     args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1
 ):
@@ -940,7 +1209,10 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x, devices):
+@handle_nestable
+def dev_clone_array(
+    x: Union[ivy.Array, ivy.NativeArray], devices: Union[Iterable[str], Dict[str, int]]
+) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -956,10 +1228,51 @@ def dev_clone_array(x, devices):
     ret
         array cloned to each of the target devices
 
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': array([4, 5, 6])})
+
+    >>> x = ivy.array([[1, 8, 4], [2, 5, 6]])
+    >>> ivy.dev_clone_array(x, ['gpu:0'])
+    DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 2, 7])
+    >>> ivy.dev_clone_array(x, ['cpu', 'tpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'tpu:0': array([7, 2, 7])})
+
+    >>> x = ivy.native_array([4, 5])
+    >>> ivy.dev_clone_array(x, ['gpu:2', 'tpu:1'])
+    DevClonedItem({'gpu:2': array([4, 5]), 'tpu:1': array([4, 5])})
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]))
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': {
+        a: array([1, 2])
+    }})
+
+    >>> x = ivy.Container({'b': ivy.native_array([3, 4])})
+    >>> ivy.dev_clone_array(x, ['gpu:0', 'tpu:0'])
+    DevClonedItem({'gpu:0': {
+        b: array([3, 4])
+    }, 'tpu:0': {
+        b: array([3, 4])
+    }})
+
     """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in devices})
+    return DevClonedItem(
+        {ds: ivy.stop_gradient(ivy.to_device(x, device=ds)) for ds in devices}
+    )
 
 
+@handle_nestable
 def dev_clone(x, devices):
     """Clone the input item to each of the specified devices, returning a list of cloned
     items, each on a different device.
@@ -984,6 +1297,7 @@ def dev_clone(x, devices):
     return x
 
 
+@handle_nestable
 def dev_clone_iter(xs, devices):
     """Clone elements of the iterable xs to each of the specified devices.
 
@@ -1001,10 +1315,11 @@ def dev_clone_iter(xs, devices):
 
     """
     if isinstance(devices, str):
-        devs = [devices]
+        devices = [devices]
     return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
+@handle_nestable
 def dev_clone_nest(args, kwargs, devices, max_depth=1):
     """Clone the input arguments across the specified devices.
 
@@ -1041,20 +1356,25 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, device, axis):
-    return ivy.concat([ivy.to_dev(x_sub, device) for x_sub in xs.values()], axis)
+    return ivy.concat(
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()], axis
+    )
 
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
-    return sum([ivy.to_dev(x_sub, device) for x_sub in xs.values()])
+    return sum(
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()],
+        start=ivy.zeros([]),
+    )
 
 
 # noinspection PyShadowingNames
 def _mean_unify_array(xs, device, _=None):
-    return _sum_unify_array(xs, device) / len(xs)
+    return _sum_unify_array(xs, device=device) / len(xs)
 
 
-# noinspection PyShadowingNames
+@handle_nestable
 def dev_unify_array(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
@@ -1084,9 +1404,9 @@ def dev_unify_array(xs, device, mode, axis=0):
     }[mode](xs, device, axis)
 
 
-# noinspection PyShadowingNames
+@handle_nestable
 def dev_unify(xs, device, mode, axis=0):
-    """Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array
+    """Unify a list of sub-arrays, on arbitrary devices, to a single concatenated array
     on the specified device.
 
     Parameters
@@ -1114,15 +1434,15 @@ def dev_unify(xs, device, mode, axis=0):
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return dev_unify_array(xs, device, mode, axis)
+        return dev_unify_array(xs, device=device, mode=mode, axis=axis)
     elif isinstance(xs0, ivy.Container):
-        return ivy.Container.unify(xs, device, mode, axis)
+        return ivy.Container.unify(xs, device=device, mode=mode, axis=axis)
     return xs
 
 
-# noinspection PyShadowingNames
+@handle_nestable
 def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
-    """Unify elements of the iterbale xs to a single target device.
+    """Unify elements of the iterable xs to a single target device.
 
     Parameters
     ----------
@@ -1147,16 +1467,17 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if transpose:
-        # ToDo: make this more elegant, this method should not be responsible for transposing iterators
+        # ToDo: make this more elegant, this method should not be
+        #  responsible for transposing iterators
         xs_t = [
             MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
             for mdi in list(map(list, zip(*xs)))
         ]
-        return [dev_unify(x, device, mode, axis) for x in xs_t]
-    return dev_unify(xs, device, mode, axis)
+        return [dev_unify(x, device=device, mode=mode, axis=axis) for x in xs_t]
+    return dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
-# noinspection PyShadowingNames,PyProtectedMember
+@handle_nestable
 def dev_unify_nest(
     args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
 ):
@@ -1190,10 +1511,14 @@ def dev_unify_nest(
     args = args._data if isinstance(args, MultiDevIter) else args
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(
-        args, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth
+        args,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     kwargs_uni = ivy.nested_map(
-        kwargs, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth
+        kwargs,
+        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        max_depth=max_depth,
     )
     return args_uni, kwargs_uni
 
@@ -1262,7 +1587,7 @@ class DevMapper(abc.ABC):
                     output_queue,
                     devices[i],
                     worker_kwargs,
-                    ivy.current_framework_str(),
+                    ivy.current_backend_str(),
                 ),
             )
             worker.start()
@@ -1279,7 +1604,7 @@ class DevMapper(abc.ABC):
 
     # noinspection PyShadowingNames
     def _worker_fn(self, input_queue, output_queue, device, kwargs, framework_str):
-        ivy.set_framework(framework_str)
+        ivy.set_backend(framework_str)
         ivy.set_default_device(device)
         for k, v in kwargs.items():
             if isinstance(v, ivy.Module) and not v.built:
@@ -1599,7 +1924,8 @@ class DevManager:
 
         # otherwise
 
-        # check if all directions have changed, and if so, half the max dev dim step size
+        # check if all directions have changed, and if so,
+        # half the max dev dim step size
         if self._max_dev_dim_step_size > 1:
             da_directions = {
                 k: 1 if i < math.floor(self._num_devs / 2) else -1

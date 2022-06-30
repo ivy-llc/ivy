@@ -11,11 +11,18 @@ class GELU(Module):
         Module.__init__(self)
 
     def _forward(self, inputs):
-        """Perform forward pass of the GELU activation.
+        """
+        Perform forward pass of the GELU activation.
 
-        :param inputs: Inputs to process *[batch_shape, d]*.
-        :type inputs: array
-        :return: The outputs following the GELU activation *[batch_shape, d]*
+        Parameters
+        ----------
+        inputs
+            Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the GELU activation *[batch_shape, d]*
 
         """
         return ivy.gelu(inputs)
@@ -27,11 +34,18 @@ class GEGLU(Module):
         Module.__init__(self)
 
     def _forward(self, inputs):
-        """Perform forward pass of the GEGLU activation.
+        """
+        Perform forward pass of the GEGLU activation.
 
-        :param inputs: Inputs to process *[batch_shape, 2d]*.
-        :type inputs: array
-        :return: The outputs following the GEGLU activation *[batch_shape, d]*
+        Parameters
+        ----------
+        inputs
+            Inputs to process *[batch_shape, 2d]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the GEGLU activation *[batch_shape, d]*
 
         """
         x, gates = ivy.split(inputs, 2, -1)

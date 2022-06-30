@@ -1,33 +1,28 @@
 """Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Union, Tuple
-
-# global
+from typing import List, Tuple, Union
 import math
-from functools import reduce as _reduce
-from operator import mul as _mul
-
-from tensorflow.python.types.core import Tensor
-
-import ivy
+from functools import reduce
+from operator import mul
 
 tfa = None
 import tensorflow as tf
 import tensorflow_probability as tfp
 
 # local
-from ivy.functional.backends import tensorflow as _ivy
+from ivy.functional.backends import tensorflow as ivy
 
 
 def stack_images(
-    images: List[tf.Tensor], desired_aspect_ratio: Tuple[int, int] = (1, 1)
-) -> tf.Tensor:
+    images: List[Union[tf.Tensor, tf.Variable]],
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+) -> Union[tf.Tensor, tf.Variable]:
     num_images = len(images)
     if num_images == 0:
         raise Exception("At least 1 image must be provided")
-    batch_shape = _ivy.shape(images[0])[:-3]
-    image_dims = _ivy.shape(images[0])[-3:-1]
+    batch_shape = ivy.shape(images[0])[:-3]
+    image_dims = ivy.shape(images[0])[-3:-1]
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
@@ -40,11 +35,11 @@ def stack_images(
     image_rows = list()
     for i in range(stack_width_int):
         images_to_concat = images[i * stack_height_int : (i + 1) * stack_height_int]
-        images_to_concat += [_ivy.zeros_like(images[0])] * (
+        images_to_concat += [ivy.zeros_like(images[0])] * (
             stack_height_int - len(images_to_concat)
         )
-        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
-    return _ivy.concat(image_rows, num_batch_dims + 1)
+        image_rows.append(ivy.concat(images_to_concat, num_batch_dims))
+    return ivy.concat(image_rows, num_batch_dims + 1)
 
 
 def linear_resample(x, num_samples, axis=-1):
@@ -52,7 +47,6 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis + 1 :]
     xp = tf.range(num_vals, dtype=tf.float32)
     x_coords = tf.range(num_samples, dtype=tf.float32) * (
         (num_vals - 1) / (num_samples - 1)
@@ -62,31 +56,32 @@ def linear_resample(x, num_samples, axis=-1):
 
 
 def bilinear_resample(x, warp):
-    batch_shape = _ivy.shape(x)[:-3]
-    input_image_dims = _ivy.shape(x)[-3:-1]
+    batch_shape = ivy.shape(x)[:-3]
+    input_image_dims = ivy.shape(x)[-3:-1]
     num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
-    batch_shape_product = _reduce(_mul, batch_shape, 1)
+    batch_shape_product = reduce(mul, batch_shape, 1)
     warp_flat = tf.reshape(warp, [batch_shape_product] + [-1, 2])
     mat_flat = tf.reshape(x, [batch_shape_product] + input_image_dims + [-1])
     global tfa
     if tfa is None:
         try:
             import tensorflow_addons as tfa
-        except:
+        except ImportError:
             raise Exception(
-                "Unable to import tensorflow_addons, verify this is correctly installed."
+                "Unable to import tensorflow_addons, "
+                "verify this is correctly installed."
             )
     ret = tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing="xy")
     return tf.reshape(ret, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):
-    x_shape = _ivy.shape(x)
+    x_shape = ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
-    device = _ivy.dev(x)
+    device = ivy.dev(x)
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -96,11 +91,11 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    dy = _ivy.concat(
-        (dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
+    dy = ivy.concat(
+        (dy, ivy.zeros(batch_shape + [1, image_dims[1], num_dims], device=device)), -3
     )
-    dx = _ivy.concat(
-        (dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
+    dx = ivy.concat(
+        (dx, ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], device=device)), -2
     )
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
