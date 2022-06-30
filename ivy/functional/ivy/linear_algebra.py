@@ -1303,7 +1303,7 @@ def vector_norm(
     elif ord == 0:
         return ivy.sum(ivy.cast(x != 0, "float32"), axis, keepdims)
     x_raised = x**ord
-    return ivy.sum(x_raised, axis, keepdims) ** (1 / ord)
+    return ivy.sum(x_raised, axis=axis, keepdims=keepdims) ** (1 / ord)
 
 
 # Extra #
