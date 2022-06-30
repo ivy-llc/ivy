@@ -868,9 +868,7 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, ca
 @pytest.mark.parametrize("red", ["sum", "min", "max", "replace"])
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_nd(
-    inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, device, call
-):
+def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call):
     # smoke test
     if red in ("sum", "min", "max") and call is helpers.mx_call:
         # mxnet does not support sum, min or max reduction for scattering
@@ -879,16 +877,16 @@ def test_scatter_nd(
     if ivy.exists(tensor) and call is helpers.mx_call:
         # mxnet does not support scattering into pre-existing tensors
         pytest.skip()
-    inds = ivy.array(inds, dtype="int32", device=device)
-    upd = tensor_fn(upd, dtype=dtype, device=device)
+    inds = ivy.array(inds, dtype="int32")
+    upd = tensor_fn(upd, dtype=dtype)
     if tensor:
         # pytorch variables do not support in-place updates
         tensor = (
-            ivy.array(tensor, dtype=dtype, device=device)
+            ivy.array(tensor, dtype=dtype)
             if ivy.current_backend_str() == "torch"
-            else tensor_fn(tensor, dtype=dtype, device=device)
+            else tensor_fn(tensor, dtype=dtype)
         )
-    ret = ivy.scatter_nd(inds, upd, shape, tensor, red, device=device)
+    ret = ivy.scatter_nd(inds, upd, shape, tensor, red)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
@@ -900,7 +898,7 @@ def test_scatter_nd(
     if red == "replace" and with_duplicates:
         # replace with duplicates give non-deterministic outputs
         return
-    ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red, device=device)
+    ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red)
     true = np.asarray(
         ivy.functional.backends.numpy.scatter_nd(
             ivy.to_numpy(inds),
@@ -908,7 +906,6 @@ def test_scatter_nd(
             shape,
             ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
             red,
-            device=device,
         )
     )
     assert np.allclose(ret, true)

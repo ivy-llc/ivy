@@ -163,13 +163,11 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -201,7 +199,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 def gather(
