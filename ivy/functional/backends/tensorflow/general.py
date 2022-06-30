@@ -14,7 +14,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import dev, as_native_dev
+from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -302,11 +302,8 @@ def gather(
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
-    with tf.device(as_native_dev(device)):
-        return tf.gather_nd(params, indices)
+def gather_nd(params, indices):
+    return tf.gather_nd(params, indices)
 
 
 def one_hot(indices, depth, *, device):

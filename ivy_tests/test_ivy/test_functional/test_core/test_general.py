@@ -967,22 +967,22 @@ def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, call):
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather_nd(prms_n_inds, dtype, tensor_fn, device, call):
+def test_gather_nd(prms_n_inds, dtype, tensor_fn, call):
     # smoke test
     prms, inds = prms_n_inds
-    prms = tensor_fn(prms, dtype=dtype, device=device)
-    inds = ivy.array(inds, dtype="int32", device=device)
-    ret = ivy.gather_nd(prms, inds, device=device)
+    prms = tensor_fn(prms, dtype=dtype)
+    inds = ivy.array(inds, dtype="int32")
+    ret = ivy.gather_nd(prms, inds)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
     # value test
     assert np.allclose(
-        call(ivy.gather_nd, prms, inds, device=device),
+        call(ivy.gather_nd, prms, inds),
         np.asarray(
             ivy.functional.backends.numpy.gather_nd(
-                ivy.to_numpy(prms), ivy.to_numpy(inds), device=device
+                ivy.to_numpy(prms), ivy.to_numpy(inds)
             )
         ),
     )

@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.jax.device import _to_device, _to_array, dev
+from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -236,9 +236,7 @@ def gather(params: JaxArray, indices: JaxArray, axis: Optional[int] = -1) -> Jax
     return _to_device(jnp.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -263,7 +261,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
-    return _to_device(ret, device)
+    return _to_device(ret)
 
 
 def multiprocessing(context=None):

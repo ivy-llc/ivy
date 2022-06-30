@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import dev, _to_device
+from ivy.functional.backends.numpy.device import _to_device
 
 # Helpers #
 # --------#
@@ -210,9 +210,7 @@ def gather(
     return _to_device(np.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -237,7 +235,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_device(res, device)
+    return _to_device(res)
 
 
 def multiprocessing(context=None):
