@@ -62,6 +62,10 @@ def arange(
         None.
     device
         device on which to place the created array. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
+
 
     Returns
     -------
@@ -70,6 +74,14 @@ def arange(
         output array must be ceil((stop-start)/step) if stop - start and step have the
         same sign, and length 0 otherwise.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -98,11 +110,23 @@ def asarray(
         datatype, optional. Datatype is inferred from the input data.
     device
         device on which to place the created array. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         An array interpretation of x.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
@@ -131,11 +155,23 @@ def zeros(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array containing zeros.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -173,11 +209,23 @@ def ones(
         must be the default floating-point data type. Default  ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array containing ones.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -219,12 +267,24 @@ def full_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array having the same shape as ``x`` and where every element is equal to
         ``fill_value``.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -265,11 +325,23 @@ def ones_like(
     device
         device on which to place the created array. If device is ``None``, the output
         array device must be inferred from x. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array having the same shape as x and filled with ones.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -307,11 +379,23 @@ def zeros_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array having the same shape as ``x`` and filled with ``zeros``.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -329,7 +413,9 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int = 0,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -342,6 +428,9 @@ def tril(
         diagonal above which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
@@ -349,6 +438,15 @@ def tril(
         an array containing the lower triangular part(s). The returned array must have
         the same shape and data type as x. All elements above the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).tril(x, k, out=out)
@@ -358,7 +456,9 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int = 0,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -371,6 +471,9 @@ def triu(
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
@@ -378,6 +481,15 @@ def triu(
         an array containing the upper triangular part(s). The returned array must have
         the same shape and data type as x. All elements below the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).triu(x, k, out=out)
@@ -406,11 +518,23 @@ def empty(
         default floating-point data type. Default: None.
     device
         device on which to place the created array. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an uninitialized array having a specified shape
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
@@ -440,11 +564,23 @@ def empty_like(
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array having the same shape as x and containing uninitialized data.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
@@ -481,11 +617,23 @@ def eye(
         default floating-point data type. Default: None.
     device
          device on which to place the created array.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         device on which to place the created array. Default: None.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     return current_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device, out=out)
@@ -505,6 +653,7 @@ def linspace(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
@@ -524,22 +673,35 @@ def linspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         Tensor of evenly-spaced values.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(start).linspace(
-        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device
+        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device, out=out
     )
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -585,6 +747,10 @@ def meshgrid(
         in the standard. The descriptions above assume an array input for simplicity,
         but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
         instances, as shown in the type hints and also the examples below.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
 
         Functional Examples
         -------------------
@@ -661,11 +827,23 @@ def full(
         type. Default: ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         an array where every element is equal to `fill_value`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -685,7 +863,10 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def from_dlpack(
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
@@ -693,6 +874,9 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ----------
     x  object
         input (array) object.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
@@ -705,8 +889,17 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            The returned array may be either a copy or a view. See
            :ref:`data-interchange` for details.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
-    return current_backend(x).from_dlpack(x)
+    return current_backend(x).from_dlpack(x, out=out)
 
 
 # Extra #
@@ -759,6 +952,7 @@ def logspace(
     axis: int = None,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
@@ -780,11 +974,18 @@ def logspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
         Tensor of evenly-spaced values.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
-    return current_backend(start).logspace(start, stop, num, base, axis, device=device)
+    return current_backend(start).logspace(start, stop, num, base, axis, device=device, out=out)
