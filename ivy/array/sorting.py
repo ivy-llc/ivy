@@ -26,6 +26,6 @@ class ArrayWithSorting(abc.ABC):
             stable: bool = True,
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        return ivy.argsort(
+        return ivy.sort(
             self._data, axis, descending, stable, out=out
         )

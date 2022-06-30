@@ -26,7 +26,6 @@ class ContainerWithSorting(ContainerBase):
             axis,
             descending,
             stable,
-            to_apply,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -77,7 +76,6 @@ class ContainerWithSorting(ContainerBase):
             axis,
             descending,
             stable,
-            to_apply,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -97,7 +95,7 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
-        return self.static_argsort(
+        return self.static_sort(
             self,
             axis,
             descending,
