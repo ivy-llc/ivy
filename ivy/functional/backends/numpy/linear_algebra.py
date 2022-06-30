@@ -60,7 +60,7 @@ def matmul(
 
 def matrix_norm(
     x: np.ndarray,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    ord: Optional[Union[int, float, Literal['inf', '-inf', "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
 ) -> np.ndarray:
     ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
@@ -165,9 +165,9 @@ def vector_norm(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal['inf', '-inf']] = 2,
 ) -> np.ndarray:
-    if axis is None:
+    if axis is not None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
 
     else:
