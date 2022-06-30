@@ -8,6 +8,7 @@ from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
+    infer_dtype,
     handle_nestable,
 )
 
@@ -1233,8 +1234,10 @@ def vector_norm(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal['inf', '-inf']] = 2,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
+    """Computes the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -1296,14 +1299,7 @@ def vector_norm(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    if ord == -float("inf"):
-        return ivy.reduce_min(ivy.abs(x), axis, keepdims)
-    elif ord == float("inf"):
-        return ivy.reduce_max(ivy.abs(x), axis, keepdims)
-    elif ord == 0:
-        return ivy.sum(ivy.cast(x != 0, "float32"), axis, keepdims)
-    x_raised = x**ord
-    return ivy.sum(x_raised, axis=axis, keepdims=keepdims) ** (1 / ord)
+    return current_backend(x).vector_norm(x, axis, keepdims, ord)
 
 
 # Extra #
