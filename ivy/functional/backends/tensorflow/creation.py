@@ -274,3 +274,4 @@ def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
         start, stop, num, axis, dtype=None, device=default_device(device)
     )
     return base**power_seq
+    

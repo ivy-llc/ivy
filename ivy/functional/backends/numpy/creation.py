@@ -114,7 +114,7 @@ def linspace(
 ):
     if axis is None:
         axis = -1
-    ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
+    ans = np.linspavalid_numeric_dtypesce(start, stop, num, endpoint, dtype=dtype, axis=axis)
     if dtype is None:
         ans = np.float32(ans)
     # Waiting for fix when start is -0.0: https://github.com/numpy/numpy/issues/21513
@@ -183,3 +183,4 @@ def logspace(start, stop, num, base=10.0, axis=None, *, device: str):
     return _to_device(
         np.logspace(start, stop, num, base=base, axis=axis), device=device
     )
+    

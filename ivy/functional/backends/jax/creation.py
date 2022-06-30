@@ -224,3 +224,4 @@ def logspace(
     return _to_device(
         jnp.logspace(start, stop, num, base=base, axis=axis), device=device
     )
+    
