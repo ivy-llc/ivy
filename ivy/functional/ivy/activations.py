@@ -382,6 +382,5 @@ def softplus(
     >>> print(y)
     ivy.array([0.535,0.42])
 
-
     """
     return current_backend(x).softplus(x, out=out)
