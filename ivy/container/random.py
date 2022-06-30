@@ -70,6 +70,39 @@ class ContainerWithRandom(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.randint. This method simply wraps the
+        function, and so the docstring for ivy.randint also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With no device argument and no out argument specified and int arguemnt for shape:
+
+        >>> x = ivy.randint(low=1, high=10, shape=2)
+        >>> print(x)
+        ivy.array([5,7])
+
+        With no device argument and no out argument specified and sequence for shape:
+
+        >>> x = ivy.randint(low=1, high=10, shape=(3,2))
+        >>> print(x)
+        ivy.array([[5,8],
+                  [9,1],
+                  [2,3]])
+
+        With device argument and no out argument specified and int for shape:
+
+        >>> x = ivy.randint(low=1, high=10, shape=3, device='gpu:1')
+        >>> print(x)
+        ivy.array([4,7,1])
+
+        With no device argument and out argument specified and int for shape:
+
+        >>> x = ivy.randint(low=1, high=10, shape=5, out=x)
+        >>> print(x)
+        ivy.array([4,7,1,8,5])
+        """
         return ContainerBase.multi_map_in_static_method(
             "randint",
             low,
