@@ -51,6 +51,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#who-to-ask">Who To Ask</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#small-commits-often">Small Commits Often</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#running-tests-locally">Running Tests Locally</a><ul>
@@ -268,6 +269,24 @@ src="https://www.youtube.com/embed/TFMPihytg9U" class="video">
 </div>
 <p>For questions, please reach out on the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1309">contributing discussion</a>
 or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982728689408167956">fork management channel</a>!</p>
+</section>
+<section id="who-to-ask">
+<h2>Who To Ask<a class="headerlink" href="#who-to-ask" title="Permalink to this heading"></a></h2>
+<p>Quite often, you would like to get a better understanding of the logic in the
+implementation of Ivy, raising issues or starting discussions with the context
+of who made what changes. Here is a common workflow to help get around the
+problem of “who to ask” by using,</p>
+<p><strong>git blame</strong> - Show what revision and author last modified each line of a file</p>
+<p><strong>git log</strong>   - Show commit logs</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Info on changes made by author and commit-id in specific lines from time period.
+# Eg: From line 16 to next 5 lines since past 2 weeks
+git blame --since=2.weeks -L 16,+5 &lt;filepath&gt; | grep -v &quot;^\^&quot;
+# Deeper look at what author changed in the files in commit retrieved from above step
+git log &lt;commit_id&gt; -p
+</pre></div>
+</div>
+<p>You are welcome to tag members using “&#64;” in our team, who you think would be best
+suited to interact with based on the information gained from above steps.</p>
 </section>
 <section id="pull-requests">
 <h2>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this heading"></a></h2>
