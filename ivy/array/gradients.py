@@ -22,7 +22,7 @@ class ArrayWithGradients(abc.ABC):
         function, and so the docstring for ivy.adam_step also applies to this method
         with minimal changes.
 
-        Examples:
+        Examples
         --------
         With :code:`ivy.Array` inputs:
         >>> dcdw = ivy.array([1, 2, 3])

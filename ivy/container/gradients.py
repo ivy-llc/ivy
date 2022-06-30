@@ -18,11 +18,11 @@ class ContainerWithGradients(ContainerBase):
         epsilon=1e-7,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.adam_step. This method simply wraps the
-        function, and so the docstring for ivy.adam_step also applies to this method
-        with minimal changes
+        ivy.Container instance method variant of ivy.adam_step.
+        This method simply wraps the function, and so the docstring for ivy.
+        adam_step also applies to this method with minimal changes
 
-        Examples:
+        Examples
         --------
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
@@ -34,14 +34,14 @@ class ContainerWithGradients(ContainerBase):
         >>> beta1 = 0.87
         >>> beta2 = 0.976
         >>> epsilon = 1e-5
-        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw, mw, vw,\
+                                                            step, beta1, beta2, epsilon)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),
             b: (list[3], <class ivy.array.Array> shape=[3])
         }
         """
-
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
             dcdw,
@@ -63,11 +63,11 @@ class ContainerWithGradients(ContainerBase):
             epsilon=1e-7,
     ) -> ivy.Container:
         """
-            ivy.Container instance method variant of ivy.adam_step. This method simply wraps the
-        function, and so the docstring for ivy.adam_step also applies to this method
-        with minimal changes
+        ivy.Container instance method variant of ivy.adam_step.
+        This method simply wraps the function, and so the docstring for ivy.
+        adam_step also applies to this method with minimal changes
 
-        Examples:
+        Examples
         --------
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
