@@ -297,14 +297,9 @@ def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
-    *,
-    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    if device is None:
-        device = dev(params)
-    with tf.device(as_native_dev(device)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
 def gather_nd(params, indices, *, device: str):

@@ -232,12 +232,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     return _to_device(target)
 
 
-def gather(
-    params: JaxArray, indices: JaxArray, axis: Optional[int] = -1, *, device: str
-) -> JaxArray:
-    if device is None:
-        device = dev(params)
-    return _to_device(jnp.take_along_axis(params, indices, axis), device)
+def gather(params: JaxArray, indices: JaxArray, axis: Optional[int] = -1) -> JaxArray:
+    return _to_device(jnp.take_along_axis(params, indices, axis))
 
 
 def gather_nd(params, indices, *, device: str):

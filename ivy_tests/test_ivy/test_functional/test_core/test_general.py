@@ -922,26 +922,26 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("with_out", [True, False])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, device, call):
+def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, call):
     # smoke test
     prms, inds, axis = prms_n_inds_n_axis
-    prms = tensor_fn(prms, dtype=dtype, device=device)
-    inds = ivy.array(inds, dtype="int32", device=device)
+    prms = tensor_fn(prms, dtype=dtype)
+    inds = ivy.array(inds, dtype="int32")
     if with_out:
         out = ivy.zeros(inds.shape)
-        ret = ivy.gather(prms, inds, axis, device=device, out=out)
+        ret = ivy.gather(prms, inds, axis, out=out)
     else:
-        ret = ivy.gather(prms, inds, axis, device=device)
+        ret = ivy.gather(prms, inds, axis)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == inds.shape
     # value test
     assert np.allclose(
-        call(ivy.gather, prms, inds, axis, device=device),
+        call(ivy.gather, prms, inds, axis),
         np.asarray(
             ivy.functional.backends.numpy.gather(
-                ivy.to_numpy(prms), ivy.to_numpy(inds), axis, device=device
+                ivy.to_numpy(prms), ivy.to_numpy(inds), axis
             )
         ),
     )

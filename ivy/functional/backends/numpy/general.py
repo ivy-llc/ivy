@@ -203,11 +203,11 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
 
 
 def gather(
-    params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
+    params: np.ndarray,
+    indices: np.ndarray,
+    axis: Optional[int] = -1,
 ) -> np.ndarray:
-    if device is None:
-        device = dev(params)
-    return _to_device(np.take_along_axis(params, indices, axis), device)
+    return _to_device(np.take_along_axis(params, indices, axis))
 
 
 def gather_nd(params, indices, *, device: str):

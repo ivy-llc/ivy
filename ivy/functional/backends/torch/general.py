@@ -328,15 +328,8 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
-    *,
-    device: torch.device
 ) -> torch.Tensor:
-
-    if device is None:
-        device = dev(params)
-    return torch.gather(params, axis, indices.type(torch.int64)).to(
-        as_native_dev(device)
-    )
+    return torch.gather(params, axis, indices.type(torch.int64))
 
 
 # noinspection PyShadowingNames
