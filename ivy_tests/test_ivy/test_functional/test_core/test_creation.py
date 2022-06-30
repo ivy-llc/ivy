@@ -222,11 +222,8 @@ def test_asarray(
 
 # empty()
 @given(
-    array_shape=helpers.lists(
-        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[3, 5]
-    ),
+    array_shape = st.integers(0,5) | st.lists(st.integers(min_value = 0, max_value=10), min_size = 1, max_size = 5),
     dtype = st.sampled_from(ivy_np.valid_int_dtypes),
-    data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
@@ -237,7 +234,6 @@ def test_asarray(
 def test_empty(
     array_shape,
     dtype,
-    data,
     as_variable,
     with_out,
     num_positional_args,
@@ -246,6 +242,17 @@ def test_empty(
     instance_method,
     fw,
 ):  
+    #couldnt find a better way to generate multi length arrays
+    if isinstance(array_shape, list):
+        array_shape = tuple(array_shape)
+
+    instance_method = False
+    container = False
+    as_variable = False
+    rtol: float = 1e-03,
+    atol: float = 1e-06,
+    test_values = False,
+    
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -256,6 +263,9 @@ def test_empty(
         instance_method,
         fw,
         "empty",
+        rtol,
+        atol,
+        test_values,
         shape=array_shape
     )
 
