@@ -244,7 +244,7 @@ def test_execute_with_gradients(
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     effective_grad=st.floats(),
-    lr=st.floats(min_value=0.0,max_value=1.0),
+    lr=st.floats(min_value=0.0,max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -289,7 +289,7 @@ def test_optimizer_update(
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     dcdw=st.floats(),
-    lr=st.floats(min_value=0.0,max_value=1.0),
+    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -372,9 +372,9 @@ def test_layerwise_gradient_descent_update(
     num_positional_args=st.integers(0,4),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    dcdw=st.floats(),
-    lr=st.floats(min_value=0.0,max_value=1.0),
-    decay_lambda=st.floats(min_value=0.0,max_value=1.0),
+    dcdw=st.floats(allow_infinity=False,allow_nan=False),
+    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    decay_lambda=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -394,6 +394,7 @@ def test_lars_update(
 ):
     dtype, w = dtype_and_w
     w = np.asarray(w,dtype=dtype)
+    dcdw = np.asarray(dcdw,dtype=dtype)
     helpers.test_array_function(
         dtype,
         as_variable,
@@ -411,43 +412,6 @@ def test_lars_update(
         inplace=inplace,
         stop_gradients=stop_gradients,
     )
-
-
-@given(
-    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.7], "b": [2.4]}),
-        )
-    ],
-    ),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
-)
-def test_lar_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
-    # smoke test
-    ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
-    lr = lr_raw.map(lambda x, _: ivy.array(x))
-    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.lars_update(ws, dcdw, lr)
-    # type test
-    assert isinstance(ws_new, dict)
-    # cardinality test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert w_new.shape == w_true_new.shape
-    # value test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
-
 
 # adam_update
 @given(
