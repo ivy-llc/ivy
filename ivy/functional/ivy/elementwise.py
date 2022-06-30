@@ -3014,6 +3014,46 @@ def square(
         b: ivy.array([4, 9])
     }
     
+    Instance Method Examples
+    ------------------------
+    
+    With :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.square()
+    >>> print(y)
+    ivy.array([1, 4, 9])
+    
+    With :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = x.square()
+    >>> print(y)
+    {
+        a: ivy.array([0, 1])
+        b: ivy.array([4, 9])
+    }
+
+    Operator Examples
+    -----------------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x ** 2
+    >>> print(y)
+    ivy.array([1, 4, 9])
+    
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = x ** 2
+    >>> print(y)
+    {
+        a: ivy.array([0, 1])
+        b: ivy.array([4, 9])
+    }
+    
     """
     return current_backend(x).square(x, out=out)
 
