@@ -291,11 +291,18 @@ With Docker
         
 
 #. Through the command line (With docker):
-    #. We need to first enter inside the docker container and change into the :code:`ivy` directory using the following command.
+    #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
 
         .. code-block:: none
 
-            docker run --rm -it --entrypoint bash unifyai/ivy
+            docker exec <container-name> rm -rf ivy
+            docker cp ivy <container-name>:/ 
+
+    #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
+
+        .. code-block:: none
+
+            docker exec -it ivy_container bash 
             cd ivy
 
     #. Run the test using the pytest command.
@@ -411,6 +418,15 @@ With Docker
                 
                 python -m pytest ivy_tests/ --no-header --no-summary -q
 
+#. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
+    #. :code:`device`: 
+        #. This flag enables setting of the device where the tests would be run. 
+        #. Possible values being :code:`cpu` and :code:`gpu`.
+        #. Default value is :code:`cpu`
+    #. :code:`backend`:
+        #. This flag enables running the tests for particular backends.
+        #. The values of this flag could be any possible combination of :code:`jax`, :code:`numpy`, :code:`tensorflow` and :code:`torch`.
+        #. Default value is :code:`jax,numpy,tensorflow,torch`.
 
 **Round Up**
 

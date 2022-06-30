@@ -345,6 +345,7 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
         warnings.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
+        return False
     return True
 
 
@@ -1154,8 +1155,14 @@ def dtype_and_values(
     draw,
     available_dtypes,
     n_arrays=1,
+    min_value=None,
+    max_value=None,
     allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
     max_num_dims=5,
+    min_dim_size=1,
     max_dim_size=10,
     shape=None,
     shared_dtype=False,
@@ -1185,14 +1192,29 @@ def dtype_and_values(
     else:
         shape = draw(
             st.shared(
-                get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
+                get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=max_num_dims,
+                    min_dim_size=min_dim_size,
+                    max_dim_size=max_dim_size,
+                ),
                 key="shape",
             )
         )
     values = []
     for i in range(n_arrays):
         values.append(
-            draw(array_values(dtype=dtype[i], shape=shape, allow_inf=allow_inf))
+            draw(
+                array_values(
+                    dtype=dtype[i],
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
         )
     if n_arrays == 1:
         dtype = dtype[0]
@@ -1281,7 +1303,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype in ['float32', 'bfloat16']:
+    elif dtype in ["float32", "bfloat16"]:
         values = draw(
             list_of_length(
                 st.floats(
