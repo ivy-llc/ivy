@@ -303,6 +303,7 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
             try:
                 exec(line)
             except Exception as e:
+                #print(e, " ", ivy.current_backend_str()," ",line)
                 raise e
 
     output = f.getvalue()
