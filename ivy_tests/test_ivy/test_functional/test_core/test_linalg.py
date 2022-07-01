@@ -204,7 +204,7 @@ def test_eigh(
     if "float16" in input_dtype:
         return
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
-    x = (x + x.T)/2
+    x = (x + x.T) / 2
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -729,6 +729,7 @@ def test_pinv(
         x=x,
     )
 
+
 # qr
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -739,7 +740,7 @@ def test_pinv(
     instance_method=st.booleans(),
     mode=st.sampled_from(("reduced", "complete")),
     a=st.integers(2, 5),
-    b=st.integers(2, 5)
+    b=st.integers(2, 5),
 )
 def test_qr(
     input_dtype,
@@ -751,7 +752,7 @@ def test_qr(
     fw,
     a,
     b,
-    mode
+    mode,
 ):
     if "float16" in input_dtype:
         return
@@ -828,8 +829,7 @@ def test_svd(
     container=st.booleans(),
     instance_method=st.booleans(),
     kd=st.booleans(),
-    ord=st.integers(1, 2)
-    | st.sampled_from(("fro", "nuc")),
+    ord=st.integers(1, 2) | st.sampled_from(("fro", "nuc")),
 )
 def test_matrix_norm(
     array_shape,
@@ -865,7 +865,9 @@ def test_matrix_norm(
 
 # matrix_rank
 @given(
-    input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes[1:]), 1),
+    input_dtype=helpers.list_of_length(
+        st.sampled_from(ivy_np.valid_float_dtypes[1:]), 1
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
@@ -932,7 +934,7 @@ def test_cholesky(
     if "float16" in input_dtype:
         return
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
-    x = np.matmul(x, x.T + 1e-3) # make symmetric positive-definite
+    x = np.matmul(x, x.T + 1e-3)  # make symmetric positive-definite
     helpers.test_array_function(
         input_dtype,
         as_variable,
