@@ -14,7 +14,7 @@ class ContainerWithUtility(ContainerBase):
     def static_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
-        keepdims: Optional[bool, ivy.Container] = False,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -37,7 +37,7 @@ class ContainerWithUtility(ContainerBase):
     def all(
         self: ivy.Container,
         axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
-        keepdims: Optional[bool, ivy.Container] = False,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -59,7 +59,7 @@ class ContainerWithUtility(ContainerBase):
     def static_any(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
-        keepdims: Optional[bool, ivy.Container] = False,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -82,7 +82,7 @@ class ContainerWithUtility(ContainerBase):
     def any(
         self: ivy.Container,
         axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
-        keepdims: Optional[bool, ivy.Container] = False,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
