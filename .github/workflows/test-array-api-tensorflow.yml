@@ -20,7 +20,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-array-api-tensorflow.yml
-          workflow_conclusion: completed
+          workflow_conclusion: failure
           name: hypothesis_tensorflow_zip
           path: |
             ivy/.hypothesis/
