@@ -98,7 +98,7 @@ def matmul(
             ret = tf.constant(0)
         else:
 
-            ret = tf.math.multiply(x1, x2)[0]
+            ret = tf.reduce_sum(tf.math.multiply(x1, x2))
         ret = tf.cast(ret, dtype=dtype_from)  # return ret
 
     else:
