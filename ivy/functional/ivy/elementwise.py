@@ -1105,12 +1105,54 @@ def ceil(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+    
     Examples
     --------
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
     ivy.array([1., 0., -0.])
+    
+    >>> x = ivy.array([2.5, -3.5, 0, -3, -0])
+    >>> y = ivy.ones(5)
+    >>> ivy.ceil(x, out=y)
+    >>> print(y)
+    ivy.array([ 3., -3.,  0., -3.,  0.])
+    
+    >>> x = ivy.array([[3.3, 4.4, 5.5], [-6.6, -7.7, -8.8]])
+    >>> ivy.ceil(x, out=x)
+    >>> print(x)
+    ivy.array([[ 4.,  5.,  6.],
+               [-6., -7., -8.]])
+    
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([0, -0, -2.5, -1, 2, 3.5])
+    >>> y = ivy.ceil(x)
+    >>> print(y)
+    ivy.array([ 0.,  0., -2., -1.,  2.,  4.])
+    
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                          b=ivy.array([5.4, -3.2, -0, 5.2]))
+    >>> y = ivy.ceil(x)
+    >>> print(y)
+    {
+        a: ivy.array([3., 1., -1.]),
+        b: ivy.array([6., -3., 0., 6.])
+    }
     """
     return current_backend(x).ceil(x, out=out)
 
@@ -2955,13 +2997,104 @@ def square(
     Parameters
     ----------
     x
-        Input array.
-
+        Input array. Should have a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+        
     Returns
     -------
     ret
         an array containing the evaluated result for each element in ``x``.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_ # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.square(x)
+    >>> print(y)
+    ivy.array([1, 4, 9])
+    
+    >>> x = ivy.array([1.5, -0.8, 0.3])
+    >>> y = ivy.zeros(3)
+    >>> ivy.square(x, out=y)
+    >>> print(y)
+    ivy.array([2.25, 0.64, 0.09])
+    
+    >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
+    >>> ivy.square(x, out=x)
+    >>> print(x)
+    ivy.array([[1.44, 4, 9.61],
+               [1, 6.25, 81]])
+               
+    With :code: `ivy.NativeArray` input:
+    
+    >>> a = ivy.native_array([1, 2, 3])
+    >>> b = ivy.square(a)
+    >>> print(b)
+    ivy.array([1, 4, 9])
+    
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = ivy.square(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 1])
+        b: ivy.array([4, 9])
+    }
+    
+    Instance Method Examples
+    ------------------------
+    
+    With :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.square()
+    >>> print(y)
+    ivy.array([1, 4, 9])
+    
+    With :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = x.square()
+    >>> print(y)
+    {
+        a: ivy.array([0, 1])
+        b: ivy.array([4, 9])
+    }
+
+    Operator Examples
+    -----------------
+    
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x ** 2
+    >>> print(y)
+    ivy.array([1, 4, 9])
+    
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = x ** 2
+    >>> print(y)
+    {
+        a: ivy.array([0, 1])
+        b: ivy.array([4, 9])
+    }
+    
     """
     return current_backend(x).square(x, out=out)
 
