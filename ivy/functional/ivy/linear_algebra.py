@@ -237,7 +237,7 @@ def det(
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    ivy.array(-9.999999)
+    ivy.array(-10.)
 
     >>> x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
@@ -267,7 +267,7 @@ def det(
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = x.det()
     >>> print(y)
-    ivy.array(-9.999999)
+    ivy.array(-10.)
 
     Using :code:`ivy.Container` instance method:
 
