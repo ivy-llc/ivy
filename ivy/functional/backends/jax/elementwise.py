@@ -21,7 +21,9 @@ def _cast_for_binary_op(x1, x2):
     return x1, x2
 
 
-def abs(x: Union[float, JaxArray]) -> JaxArray:
+def abs(
+    x: Union[float, JaxArray]
+) -> JaxArray:
     return jnp.absolute(x)
 
 
