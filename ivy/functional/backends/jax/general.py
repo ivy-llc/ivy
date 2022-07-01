@@ -67,8 +67,8 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, List[int]]:
-    if as_tensor:
+def shape(x: JaxArray, as_array: bool = False) -> Union[JaxArray, List[int]]:
+    if as_array:
         return jnp.asarray(jnp.shape(x))
     else:
         return x.shape

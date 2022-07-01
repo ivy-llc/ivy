@@ -294,7 +294,7 @@ def copy_array(
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1]),
-        b: ivy.native_array([-1, 0, 1])
+        b: ivy.array([-1, 0, 1])
     }
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
@@ -335,23 +335,6 @@ def copy_array(
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    With :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([-1, 0, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.native_array([1, 0, 1, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([1, 0, 1, 1])
-
-    >>> x = ivy.native_array([1, 0, 1, -1])
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, -1])
@@ -621,17 +604,17 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([-1 0 1])
+    [-101]
 
     >>> print(type(y))
-    <class 'numpy.ndarray'>
+    <class'numpy.ndarray'>
 
     >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([[-1 0 1] \
+    [[-1 0 1] \
     [-1 0 1] \
-    [1 0 -1]])
+    [1 0 -1]]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
@@ -639,10 +622,10 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([[[-1 0 1] \
+    [[[-1 0 1] \
     [1 0 -1]] \
     [[1 -1 0] \
-    [1 0 -1]]])
+    [1 0 -1]]]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
@@ -652,7 +635,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.native_array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([-1 0 1])
+    [-1 0 1]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
@@ -660,9 +643,9 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([[-1 0 1] \
+    [[-1 0 1] \
     [-1 0 1] \
-    [1 0 -1]])
+    [1 0 -1]]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
@@ -670,71 +653,49 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     >>> x = ivy.native_array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    np.ndarray([[[-1 0 1] \
+    [[[-1 0 1] \
     [1 0 -1]] \
     [[1 -1 0] \
-    [1 0 -1]]])
+    [1 0 -1]]]
 
     >>> print(type(y))
     <class 'numpy.ndarray'>
 
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.Container(ivy.native_array([-1, 0, 1]))
+    >>> x = ivy.Container(x=ivy.native_array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([-1 0 1])
-    }
+    {x:array([-1,0,1],dtype=int32)}
 
-    >>> x = ivy.Container(ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
+    >>> x = ivy.Container(x=ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([[-1 0 1] \
-        [-1 0 1] \
-        [1 0 -1]])
-    }
+    {x:array([[-1,0,1],[-1,0,1],[1,0,-1]],dtype=int32)}
 
-    >>> x = ivy.Container(ivy.native_array([[[-1, 0, 1], [1, 0, -1]],
-    ...                                     [[1, -1, 0], [1, 0, -1]]]))
+    >>> x = \
+    ivy.Container(x=ivy.native_array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([[[-1 0 1] \
-        [1 0 -1]] \
-        [[1 -1 0] \
-        [1 0 -1]]])
-    }
+    {x:array([[[-1,0,1],[1,0,-1]],[[1,-1,0],[1,0,-1]]],dtype=int32)}
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
-    >>> x = ivy.Container(ivy.array([-1, 0, 1]))
+    >>> x = ivy.Container(x=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([-1 0 1])
-    }
+    {x:array([-1,0,1],dtype=int32)}
 
-    >>> x = ivy.Container(ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
+    >>> x = ivy.Container(x=ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([[-1 0 1] \
-        [-1 0 1] \
-        [1 0 -1]])
-    }
+    {x:array([[-1,0,1],[-1,0,1],[1,0,-1]],dtype=int32)}
 
-    >>> x = ivy.Container(ivy.array([[[-1, 0, 1], [1, 0, -1]],
-    ...                              [[1, -1, 0], [1, 0, -1]]]))
+    >>> x =\
+     ivy.Container(x=ivy.array([[[-1, 0, 1], [1, 0, -1]],[[1, -1, 0], [1, 0, -1]]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {
-        np.ndarray([[[-1 0 1] \
-        [1 0 -1]] \
-        [[1 -1 0] \
-        [1 0 -1]]])
-    }
+    {x:array([[[-1,0,1],[1,0,-1]],[[1,-1,0],[1,0,-1]]],dtype=int32)}
 
     """
     return current_backend(x).to_numpy(x)
@@ -805,7 +766,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     }
 
     >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
-                          c=ivy.array[-1])
+                          c=ivy.array([-1]))
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     {
@@ -831,7 +792,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     }
 
     >>> x = ivy.Container(a=ivy.native_array([1]), b=ivy.native_array([0]),\
-                          c=ivy.native_array[-1])
+                          c=ivy.native_array([-1]))
     >>> y = ivy.to_scalar(x)
     >>> print(y)
     {
@@ -858,24 +819,9 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     >>> print(y)
     3
 
-    With :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    -1
-
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.native_array([3])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    3
-
     With a mix of :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.native_array([3]))
+    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
     >>> y = x.to_scalar()
     >>> print(y)
     {
@@ -889,8 +835,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
         b: true
     }
 
-    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([0]),\
-                          c=ivy.array[-1])
+    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
+                          c=ivy.array([-1]))
     >>> y = x.to_scalar()
     >>> print(y)
     {
@@ -927,6 +873,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
+
     >>> print(isinstance(y, list))
     True
     
@@ -934,7 +881,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
                        [-4.4, -5.5, -6.6]])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    [[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]]
+    [[1.100000023841858,2.200000047683716,3.299999952316284],[-4.400000095367432,-5.5,-6.599999904632568]]
+
     >>> print(isinstance(y, list))
     True
     
@@ -945,6 +893,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+
     >>> print(isinstance(y, list))
     True
     
@@ -954,6 +903,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [-1, 0, 1]
+
     >>> print(isinstance(y, list))
     True
     
@@ -963,6 +913,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
+
     >>> print(isinstance(y, list))
     True
     
@@ -973,6 +924,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> y = ivy.to_list(x)
     >>> print(y)
     [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
+
     >>> print(isinstance(y, list))
     True
     
@@ -994,10 +946,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
     
-    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1], \
-                                        [1, 0, -1]], \
-                                       [[1, -1, 0], \
-                                        [1, 0, -1]]])
+    >>> x = \
+    ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
@@ -1013,19 +963,15 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
         a: [-1, 0, 1]
     }
     
-    >>> x = ivy.Container(a=ivy.native_array([[-1 0 1], \
-                                              [-1 0 1], \
-                                              [1 0 -1]])
+    >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1],[-1, 0, 1],[1, 0, -1]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
     }
     
-    >>> x = ivy.Container(a=ivy.native_array([[[-1 0 1], \
-                                               [1 0 -1]], \
-                                              [[1 -1 0], \
-                                               [1 0 -1]]]))
+    >>> x =\
+    ivy.Container(a=ivy.native_array([[[-1 ,0, 1],[1, 0 ,-1]],[[1, -1, 0],[1,0 ,-1]]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
@@ -1047,9 +993,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
     >>> y = x.to_list()
     >>> print(y)
-    {
-        a: [0, 1, 2]
-    }
+    [ivy.array([0,1,2])]
 
     """
     return current_backend(x).to_list(x)
@@ -1377,7 +1321,7 @@ def exists(x: Any) -> bool:
     >>> print(y)
     True
 
-    >>> x = ivy.Container(a=ivy.array[1, 2, 3], b=ivy.native_array([1, 0, 1.2]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.native_array([1, 0, 1.2]))
     >>> y = ivy.exists(x)
     >>> print(y)
     True
@@ -2079,17 +2023,13 @@ def cumprod(
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
     >>> print(y)
-    ivy.array([[1,  2], 
-               [1,  5], 
-               [1, 11]])
+    ivy.array([[1.,2.],[1.,5.],[1.,11.]])
      
-    >>> x = ivy.array([[2, 3], \
-                       [5, 7], \
-                       [11, 13]])
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> exclusive = True
     >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
     >>> print(x)
-    ivy.array([[1,  2], 
+    ivy.array([[1,  1],
                [2,  3], 
                [10, 21]])
      
@@ -2250,7 +2190,7 @@ def gather(
                         [1, 2]])
     >>> z = ivy.array([[0., 0.], \
                         [0., 0.]])
-    >>> ivy.gather(x, y, device='cpu', out=z)
+    >>> ivy.gather(x, y, out=z)
     >>> print(z)
     ivy.array([[0., 1.],
                [4., 5.]])
@@ -2263,12 +2203,7 @@ def gather(
                         [[2, 0]]])
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
-    ivy.array([[[ 0.,  5.],
-                [ 2.,  7.]],
-               [[ 4.,  9.],
-                [ 6., 11.]],
-               [[ 8.,  1.],
-                [10.,  3.]]])
+    ivy.array([[[0.,5.]],[[4.,9.]],[[8.,1.]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2443,7 +2378,8 @@ def one_hot(
     return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
@@ -2464,13 +2400,14 @@ def shape(
 
     Examples
     --------
-    >>> x = ivy.array([[-1, 0, 1],[1,0,-1]])
-    >>> y_tuple = ivy.shape(x)
-    >>> y_tensor = ivy.shape(x, as_tensor = True)
-    >>> print(y_tuple)
-    (2, 3)
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
+    >>> y = ivy.shape(x)
+    >>> z = ivy.shape(x, as_array = True)
+    >>> print(y)
+    torch.Size([2, 3])
 
-    >>> print(y_tensor)
+    >>> print(z)
     ivy.array([2, 3])
 
     """
