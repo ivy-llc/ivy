@@ -79,13 +79,13 @@ class ContainerWithRandom(ContainerBase):
         --------
         With no device argument and no out argument specified and int arguemnt for shape:
 
-        >>> x = ivy.randint(low=1, high=10, shape=2)
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=2)
         >>> print(x)
         ivy.array([5,7])
 
         With no device argument and no out argument specified and sequence for shape:
 
-        >>> x = ivy.randint(low=1, high=10, shape=(3,2))
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=(3,2))
         >>> print(x)
         ivy.array([[5,8],
                   [9,1],
@@ -93,13 +93,13 @@ class ContainerWithRandom(ContainerBase):
 
         With device argument and no out argument specified and int for shape:
 
-        >>> x = ivy.randint(low=1, high=10, shape=3, device='gpu:1')
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=3, device='gpu:1')
         >>> print(x)
         ivy.array([4,7,1])
 
         With no device argument and out argument specified and int for shape:
 
-        >>> x = ivy.randint(low=1, high=10, shape=5, out=x)
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=5, out=x)
         >>> print(x)
         ivy.array([4,7,1,8,5])
         """
