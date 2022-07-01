@@ -2968,8 +2968,7 @@ def square(
     >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
     >>> ivy.square(x, out=x)
     >>> print(x)
-    ivy.array([[1.44, 4, 9.61],
-               [1, 6.25, 81]])
+    ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
                
     With :code: `ivy.NativeArray` input:
     
@@ -2983,10 +2982,7 @@ def square(
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = ivy.square(x)
     >>> print(y)
-    {
-        a: ivy.array([0, 1])
-        b: ivy.array([4, 9])
-    }
+    {a:ivy.array([0,1]),b:ivy.array([4,9])}
     
     Instance Method Examples
     ------------------------
@@ -3003,10 +2999,7 @@ def square(
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = x.square()
     >>> print(y)
-    {
-        a: ivy.array([0, 1])
-        b: ivy.array([4, 9])
-    }
+    {a:ivy.array([0,1]),b:ivy.array([4,9])}
 
     Operator Examples
     -----------------
@@ -3024,7 +3017,7 @@ def square(
     >>> y = x ** 2
     >>> print(y)
     {
-        a: ivy.array([0, 1])
+        a: ivy.array([0, 1]),
         b: ivy.array([4, 9])
     }
     
