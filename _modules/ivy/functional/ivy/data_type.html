@@ -919,8 +919,8 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.function_supported_dtypes(ivy.acosh))</span>
-<span class="sd">    (&#39;int8&#39;, &#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;uint8&#39;, \</span>
-<span class="sd">     &#39;bfloat16&#39;, &#39;float32&#39;, &#39;float64&#39;, &#39;bool&#39;)</span>
+<span class="sd">    [&#39;int8&#39;, &#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;uint8&#39;, \</span>
+<span class="sd">     &#39;bfloat16&#39;, &#39;float32&#39;, &#39;float64&#39;, &#39;bool&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">)):</span>
@@ -947,7 +947,8 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.function_unsupported_dtypes(ivy.acosh))</span>
-<span class="sd">    (&#39;float16&#39;, &#39;uint16&#39;, &#39;uint32&#39;, &#39;uint64&#39;)</span>
+<span class="sd">    (&#39;float16&#39;,&#39;uint16&#39;,&#39;uint32&#39;,&#39;uint64&#39;)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">):</span>

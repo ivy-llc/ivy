@@ -217,61 +217,54 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-
 <span class="sd">    With :code:`ivy.Array` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (3,)</span>
+
 <span class="sd">    &gt;&gt;&gt; y = ivy.expand_dims(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 3)</span>
+
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0, 1, 2]])</span>
-
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.5, -0.7, 2.4], [1, 2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (2, 3)</span>
+
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros((2, 1, 3))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[0., 0., 0.]],</span>
+<span class="sd">           [[0., 0., 0.]]])</span>
 
-<span class="sd">           [[0., 0., 0.]]], dtype=float32)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.expand_dims(x, axis=1, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[[ 0.5, -0.7,  2.4]],</span>
-
-<span class="sd">           [[ 1. ,  2. ,  3. ]]], dtype=float32)</span>
-
+<span class="sd">    ivy.array([[[0.5,-0.7,2.4]],[[1.,2.,3.]]])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, -2], [3, 4]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[-1, -2],</span>
 <span class="sd">           [ 3,  4]])</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.expand_dims(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[[-1],</span>
-<span class="sd">            [-2]],</span>
-
-<span class="sd">           [[ 3],</span>
-<span class="sd">            [ 4]]])</span>
-
+<span class="sd">    ivy.array([[[-1,-2],[3,4]]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
-<span class="sd">    (3,)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    tensor([0,1,2],dtype=torch.int32)</span>
+
 <span class="sd">    &gt;&gt;&gt; y = ivy.expand_dims(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    (1, 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0,1,2]])</span>
+
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0, 1, 2]])</span>
 
-
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.expand_dims(x, axis=-1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -284,21 +277,18 @@
 <span class="sd">                      [5.]])</span>
 <span class="sd">    }</span>
 
-
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.expand_dims()</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape, y.shape)</span>
 <span class="sd">    (3,) (1, 3)</span>
+
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0., 1., 2.]])</span>
 
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \</span>
 <span class="sd">                            b=ivy.array([[4., 5.], [6., 7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -308,6 +298,7 @@
 <span class="sd">        b: ivy.array([[4., 5.],</span>
 <span class="sd">                      [6., 7.]])</span>
 <span class="sd">    }</span>
+
 <span class="sd">    &gt;&gt;&gt; y = x.expand_dims(axis=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -363,9 +354,7 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-
 <span class="sd">    With :code:`ivy.Array` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -374,8 +363,6 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 3))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flip(x, out=y)</span>
-<span class="sd">    ivy.array([[6, 5, 4],</span>
-<span class="sd">               [3, 2, 1]])</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[6, 5, 4],</span>
 <span class="sd">               [3, 2, 1]])</span>
@@ -383,52 +370,32 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 3))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=0, out=y)</span>
-<span class="sd">    ivy.array([[4, 5, 6],</span>
-<span class="sd">               [1, 2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[4, 5, 6],</span>
 <span class="sd">               [1, 2, 3]])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=[0, 1], out=x)</span>
-<span class="sd">    ivy.array([[[10, 11, 12],</span>
-<span class="sd">                [ 7,  8,  9]],</span>
-
-<span class="sd">               [[ 4,  5,  6],</span>
-<span class="sd">                [ 1,  2,  3]]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[[10, 11, 12],</span>
-<span class="sd">                [ 7,  8,  9]],</span>
-
-<span class="sd">               [[ 4,  5,  6],</span>
-<span class="sd">                [ 1,  2,  3]]])</span>
+<span class="sd">    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=(2, 1), out=x)</span>
-<span class="sd">    ivy.array([[[ 6,  5,  4],</span>
-<span class="sd">                [ 3,  2,  1]],</span>
-
-<span class="sd">               [[12, 11, 10],</span>
-<span class="sd">                [ 9,  8,  7]]])</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[[ 6,  5,  4],</span>
 <span class="sd">                [ 3,  2,  1]],</span>
-
 <span class="sd">               [[12, 11, 10],</span>
 <span class="sd">                [ 9,  8,  7]]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                      b=ivy.array([3., 4., 5.]))</span>
-
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -438,16 +405,13 @@
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -915,81 +879,69 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 4])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.repeat(x, repeats=2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])</span>
+<span class="sd">    ivy.array([5, 4, 3])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2], [3.3, 4.4]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.repeat(x, repeats=2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.flip(x, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1.1, 1.1, 2.2, 2.2, 3.3, 3.3, 4.4, 4.4])</span>
+<span class="sd">    ivy.array([[6, 5, 4],</span>
+<span class="sd">               [3, 2, 1]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, -2], [-3, -4]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((4, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.repeat(x, repeats=2, axis=0, out=y)</span>
-<span class="sd">    ivy.array([[-1, -2],</span>
-<span class="sd">           [-1, -2],</span>
-<span class="sd">           [-3, -4],</span>
-<span class="sd">           [-3, -4]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=0, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[-1, -2],</span>
-<span class="sd">           [-1, -2],</span>
-<span class="sd">           [-3, -4],</span>
-<span class="sd">           [-3, -4]])</span>
+<span class="sd">    ivy.array([[4, 5, 6],</span>
+<span class="sd">               [1, 2, 3]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.2, 2.5, 3.4], [4.6, 5.1, 6.4], \</span>
-<span class="sd">                        [-7, 0.8, 19], [10.5, 1.1, -12]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.repeat(x, repeats=ivy.array([1,2,3]), axis=1, out=x)</span>
-<span class="sd">    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],</span>
-<span class="sd">           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],</span>
-<span class="sd">           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],</span>
-<span class="sd">           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=[0, 1], out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],</span>
-<span class="sd">           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],</span>
-<span class="sd">           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],</span>
-<span class="sd">           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])</span>
+<span class="sd">    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.flip(x, axis=(2, 1), out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[[ 6,  5,  4],</span>
+<span class="sd">                [ 3,  2,  1]],</span>
+<span class="sd">               [[12, 11, 10],</span>
+<span class="sd">                [ 9,  8,  7]]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.NativeArray([1, 2, 3, 4])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.repeat(x, repeats=2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])</span>
+<span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                      b=ivy.array([3., 4., 5.]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.repeat(x, repeats=2)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 0., 1., 1., 2., 2.]),</span>
-<span class="sd">        b: ivy.array([3., 3., 4., 4., 5., 5.])</span>
+<span class="sd">        a: ivy.array([2., 1., 0.]),</span>
+<span class="sd">        b: ivy.array([5., 4., 3.])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1.],[ 2.,3.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.repeat(2,axis=1)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0., 0., 1., 1.],</span>
-<span class="sd">           [2., 2., 3., 3.]])</span>
+<span class="sd">    ivy.array([2., 1., 0.])</span>
 
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([10., 11., 12.]), \</span>
-<span class="sd">                          b=ivy.array([13., 14., 15.]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x.repeat(2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">    a: ivy.array([10., 10., 11., 11., 12., 12.]),</span>
-<span class="sd">    b: ivy.array([13., 13., 14., 14., 15., 15.])</span>
+<span class="sd">        a: ivy.array([2., 1., 0.]),</span>
+<span class="sd">        b: ivy.array([5., 4., 3.])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1032,12 +984,12 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1], [2], [3]])</span>
+<span class="sd">    [ivy.array([1]),ivy.array([2]),ivy.array([3])]</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[3, 2, 1], [4, 5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x, 2, 1, False)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[3, 4], [2, 5], [1, 6]])</span>
+<span class="sd">    [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 6, 5, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x, [1, 2], 0, True)</span>
@@ -1049,23 +1001,21 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7, 8, 9])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[7], [8], [9]])</span>
+<span class="sd">    [ivy.array([7]),ivy.array([8]),ivy.array([9])]</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([10, 45, 2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[10], [45], [2]])</span>
-<span class="sd">    }</span>
+<span class="sd">    {a:(list[3],&lt;classivy.array.Array&gt;shape=[1])}</span>
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 6, 5, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.split()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[4], [6], [5], [3]])</span>
+<span class="sd">    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, 5, 9]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.split()</span>
@@ -1109,12 +1059,14 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0],</span>
 <span class="sd">               [1],</span>
 <span class="sd">               [2]])</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1122,6 +1074,7 @@
 <span class="sd">                [4, 5]],</span>
 <span class="sd">               [[2, 3],</span>
 <span class="sd">                [6, 7]]])</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1129,6 +1082,7 @@
 <span class="sd">                [2, 6]],</span>
 <span class="sd">               [[1, 5],</span>
 <span class="sd">                [3, 7]]])</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 1, 2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1138,6 +1092,7 @@
 <span class="sd">                [5, 7]]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1146,6 +1101,7 @@
 <span class="sd">               [2]])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -1161,13 +1117,16 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.swapaxes(0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0.],</span>
 <span class="sd">               [1.],</span>
 <span class="sd">               [2.]])</span>
+
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.swapaxes(0, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>

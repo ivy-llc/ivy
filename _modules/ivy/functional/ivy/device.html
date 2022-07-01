@@ -246,9 +246,7 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.dev(x)</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.get_all_ivy_arrays_on_dev(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        140462020989616: ivy.array([1, 0, 2], dtype=int32),</span>
-<span class="sd">    },</span>
+<span class="sd">    {139740789224448:ivy.array([1,0,2])},</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="n">all_arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -287,6 +285,7 @@
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([-1, 0, 5.2])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([-1, 0, 5.2, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    2</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([-1, 0, 5.2])</span>
@@ -309,19 +308,20 @@
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([-1, 0, 5.2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    0</span>
+<span class="sd">    3</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([-1, 0, 5.2])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([-1, 0, 5.2, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
-<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    2</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([-1, 0, 5.2])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([-1, 0, 5.2, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; x3 = ivy.native_array([2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.num_ivy_arrays_on_dev(ivy.default_device())</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    0</span>
+<span class="sd">    1</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([-1, 0, 5.2])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([-1, 0, 5.2, 4, 5])</span>
@@ -898,9 +898,10 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.split_factor()</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    0.0</span>
+
 <span class="sd">    &gt;&gt;&gt; y = ivy.split_factor(&quot;gpu:0&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    1.5</span>
+<span class="sd">    0.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">split_factors</span>

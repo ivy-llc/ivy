@@ -422,22 +422,21 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.randint(0, 9, 1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.randint(0, 9, (1,1))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([3])</span>
+<span class="sd">    ivy.array([[5]])</span>
 
 <span class="sd">    &gt;&gt;&gt; y = ivy.randint(2, 20, (2, 2), device=&#39;cpu&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 7,  5],</span>
-<span class="sd">               [15, 15]])</span>
+<span class="sd">    ivy.array([[5,8],[9,3]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.randint(0, 10, (3,), out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([2, 6, 7])</span>
 
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3, 3)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.randint(3, 15, (3, 3), device=&#39;gpu:1&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.randint(3, 15, (3, 3), device=&#39;cpu&#39;, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 7,  7,  5],</span>
 <span class="sd">               [12,  8,  8],</span>

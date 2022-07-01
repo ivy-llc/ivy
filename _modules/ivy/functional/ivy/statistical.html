@@ -199,7 +199,7 @@
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.array()</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array([0,0,0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.max(x, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array(2)</span>
@@ -209,10 +209,10 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[4, 6, 10]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.max(x, (0, 2), out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.array([6, 7])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2], [4, 6, 10]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.max(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(10)</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.max(x)</span>
