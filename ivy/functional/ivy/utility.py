@@ -69,7 +69,7 @@ def all(
     ivy.array(True)
 
     >>> x = ivy.array([[0],[1]])
-    >>> y = ivy.zeros((1,1),dtype='bool')
+    >>> y = ivy.zeros((1,1), dtype='bool')
     >>> a = ivy.all(x, axis=0, out = y, keepdims=True)
     >>> print(a)
     ivy.array([[False]])
@@ -128,7 +128,7 @@ def all(
                           b=ivy.array([3, 4, 5]))
     >>> y = x.all()
     >>> print(y)
-     {
+    {
         a: ivy.array(False),
         b: ivy.array(True)
     }
@@ -137,7 +137,7 @@ def all(
                           b=ivy.array([3, 4, 5]))
     >>> y = x.all()
     >>> print(y)
-     {
+    {
         a: ivy.array(False),
         b: ivy.array(True)
     }
