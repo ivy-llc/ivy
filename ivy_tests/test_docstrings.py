@@ -42,7 +42,8 @@ def test_docstrings(backend):
         "unique_counts",
         "unique_all",
     ]
-
+    # the temp skip list consists of function which have an issue with their
+    # implementation
     skip_list_temp = [
         "outer",
         "argmax",
@@ -53,8 +54,9 @@ def test_docstrings(backend):
         "conv3d_transpose",
     ]
 
-    # comment out this line in future to check for the functions in temp skip list
+    # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp
+
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
