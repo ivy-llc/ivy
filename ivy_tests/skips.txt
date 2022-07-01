@@ -1,1 +1,2 @@
-array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is NaN or x2_i is NaN) -> NaN]
+test_array_api/array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is NaN or x2_i is NaN) -> NaN]
+test_array_api/array_api_tests/test_linalg.py::test_outer
