@@ -39,7 +39,7 @@ def add(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.add(x1, x2, out=out)
@@ -50,7 +50,7 @@ def pow(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.power(x1, x2, out=out)
@@ -61,7 +61,7 @@ def bitwise_xor(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_xor(x1, x2, out=out)
@@ -89,7 +89,7 @@ def bitwise_and(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_and(x1, x2, out=out)
@@ -100,7 +100,7 @@ def equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.equal(x1, x2, out=out)
 
@@ -110,7 +110,7 @@ def greater(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.greater(x1, x2, out=out)
 
@@ -120,7 +120,7 @@ def greater_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.greater_equal(x1, x2, out=out)
 
@@ -130,7 +130,7 @@ def less_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.less_equal(x1, x2, out=out)
 
@@ -140,7 +140,7 @@ def multiply(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.multiply(x1, x2, out=out)
@@ -233,7 +233,7 @@ def less(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.less(x1, x2, out=out)
 
@@ -253,7 +253,7 @@ def divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.divide(x1, x2, out=out)
@@ -307,17 +307,13 @@ def not_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.not_equal(x1, x2, out=out)
 
 
 @_handle_0_dim_output
-def tanh(
-    x: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+def tanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.tanh(x, out=out)
 
 
@@ -326,7 +322,7 @@ def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.floor(np.divide(x1, x2, out=out))
@@ -354,7 +350,7 @@ def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.remainder(x1, x2, out=out)
@@ -376,7 +372,7 @@ def bitwise_or(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.bitwise_or(x1, x2, out=out)
@@ -403,7 +399,7 @@ def subtract(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.subtract(x1, x2, out=out)
@@ -422,7 +418,7 @@ def bitwise_right_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.right_shift(x1, x2, out=out)
@@ -433,7 +429,7 @@ def bitwise_left_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return np.left_shift(x1, x2, out=out)
