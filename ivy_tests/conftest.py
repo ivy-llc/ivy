@@ -1,5 +1,6 @@
 from hypothesis import settings, HealthCheck
 from pytest import mark
+from os import path
 
 settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
 settings.load_profile("ci")
@@ -7,10 +8,10 @@ settings.load_profile("ci")
 skip_ids = []
 
 skips_path = r"C:\ivy_tests\skips.txt"
-if skips_path.exists():
-    with open(skips_path) as f:
+if path.exists("skips.txt"):
+    with open("skips.txt") as f:
         for line in f:
-            if line.startswith("array_api_tests"):
+            if line.startswith("test_array_api"):
                 id_ = line.strip("\n")
                 skip_ids.append(id_)
 
