@@ -11,30 +11,29 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # all
 @given(
-    data=st.data(),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    axis=helpers.integers(min_value=-1, max_value=0),
     keepdims=st.booleans(),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="all"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_all(
-    data,
+    dtype_and_x,
+    axis,
     keepdims,
-    input_dtype,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    num_positional_args = data.draw(helpers.num_positional_args(fn_name="all"))
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
-    axis = data.draw(helpers.get_axis(shape=shape))
+    input_dtype, x = dtype_and_x
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -53,30 +52,29 @@ def test_all(
 
 # any
 @given(
-    data=st.data(),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    axis=helpers.integers(min_value=-1, max_value=0),
     keepdims=st.booleans(),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="any"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_any(
-    data,
+    dtype_and_x,
+    axis,
     keepdims,
-    input_dtype,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    num_positional_args = data.draw(helpers.num_positional_args(fn_name="any"))
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
-    axis = data.draw(helpers.get_axis(shape=shape))
+    input_dtype, x = dtype_and_x
     helpers.test_array_function(
         input_dtype,
         as_variable,
