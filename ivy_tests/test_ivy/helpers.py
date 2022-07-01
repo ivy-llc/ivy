@@ -7,7 +7,6 @@ from io import StringIO
 import sys
 import re
 import inspect
-import warnings
 import numpy as np
 import math
 from typing import Union, List
@@ -342,7 +341,7 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
             "\noutput in docs :",
             parsed_output,
         )
-        warnings.warn(
+        ivy.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
         return False
