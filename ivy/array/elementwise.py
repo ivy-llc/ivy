@@ -103,6 +103,18 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.bitwise_xor(self._data, x2, out=out)
 
     def ceil(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.ceil. This method simply wraps the
+        function, and so the docstring for ivy.ceil also applies to this method
+        with minimal changes.
+        
+        Examples
+        --------
+        >>> x = ivy.array([5.5, -2.5, 1.5, -0])
+        >>> y = x.ceil()
+        >>> print(y)
+        ivy.array([ 6., -2.,  2.,  0.])
+        """
         return ivy.ceil(self._data, out=out)
 
     def cos(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
