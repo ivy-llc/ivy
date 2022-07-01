@@ -261,8 +261,6 @@ def multinomial(
     )
 
 
-
-
 @outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
@@ -305,7 +303,7 @@ def randint(
     >>> print(y)
     ivy.array([3])
 
-    >>> y = ivy.randint(2, 20, (2, 2), 'cpu')
+    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
     ivy.array([[ 7,  5],
                [15, 15]])
@@ -316,7 +314,7 @@ def randint(
     ivy.array([2, 6, 7])
 
     >>> y = ivy.zeros(3, 3)
-    >>> ivy.randint(3, 15, (3, 3), 'gpu:1', out=y)
+    >>> ivy.randint(3, 15, (3, 3), device='gpu:1', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
