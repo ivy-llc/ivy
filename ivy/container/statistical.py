@@ -123,7 +123,7 @@ class ContainerWithStatistical(ContainerBase):
 
     @staticmethod
     def static_sum(
-        x: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
