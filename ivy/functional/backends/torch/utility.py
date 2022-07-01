@@ -7,7 +7,7 @@ from typing import Union, Optional, Tuple, List
 def all(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -28,7 +28,7 @@ def all(
 def any(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
