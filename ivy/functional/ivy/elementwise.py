@@ -54,6 +54,67 @@ def abs(
         an array containing the absolute value of each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-1,0,-6])
+    >>> y = ivy.abs(x)
+    >>> print(y)
+    ivy.array([1, 0, 6])
+
+    >>> x = ivy.array(3.7, -7.7, 0, -2, -0])
+    >>> y = ivy.abs(x)
+    >>> print(y)
+    ivy.array([ 3.7, 7.7, 0, 2, 0])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+    >>> ivy.abs(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1,  2.2,  3.3],
+               [4.4, 5.5, 6.6]])
+               
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
+    >>> y = ivy.abs(x)
+    >>> print(y)
+    ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+    ... b=ivy.array([4.5, -5.3, -0, -2.3]))
+    >>> y = ivy.abs(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 2.6, 3.5]),
+        b: ivy.array([4.5, 5.3, 0, 2.3])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([2.6, -6.6, 1.6, -0])
+    >>> y = x.abs()
+    >>> print(y)
+    ivy.array([ 2.6, 6.6, 1.6, 0])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]), b=ivy.array([4.5, -5.3, -2.3]))
+    >>> y = x.abs()
+    >>> print(y)
+    {
+        a: ivy.array([1.6, 2.6, 3.5]),
+        b: ivy.array([4.5, 5.3, 2.3])
+    }
+
+
+
     """
     return current_backend(x).abs(x, out=out)
 
