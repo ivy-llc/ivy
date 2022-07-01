@@ -37,7 +37,7 @@ def _native_wrapper(f):
             return f(self, *args, **kwargs)
         return getattr(self, f.__name__)(*args, **kwargs)
 
-    return decor
+
 
 
 class Array(
