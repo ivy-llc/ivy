@@ -218,7 +218,6 @@ def add(
     Examples
     --------
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
@@ -242,7 +241,20 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With one :code:`ivy.Container` input:
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
@@ -256,19 +268,6 @@ def add(
         b: ivy.array([[6.1, 7.3, 1.4],
                       [7.1, 8.3, 2.4],
                       [8.1, 9.3, 3.4]])
-    }
-
-    With multiple :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
     }
     """
     return current_backend(x1, x2).add(x1, x2, out=out)
@@ -329,29 +328,26 @@ def asin(
     >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
     >>> y = ivy.asin(x)
     >>> print(y)
-    ivy.array([nan,  0.,  0., nan, nan], dtype=float32)
+    ivy.array([nan,  0.,  0., nan, nan])
 
     >>> x = ivy.array([-1, -0.5, 0.6, 1])
     >>> y = ivy.zeros(4)
     >>> ivy.asin(x, out=y)
     >>> print(y)
-    ivy.array([-1.5707964 , -0.5235988 ,
-               0.64350116,  1.5707964 ], dtype=float32)
+    ivy.array([-1.57,-0.524,0.644,1.57])
 
     >>> x = ivy.array([[0.1, 0.2, 0.3], \
                        [-0.4, -0.5, -0.6]])
     >>> ivy.asin(x, out=x)
     >>> print(x)
-    ivy.array([[ 0.10016742,  0.20135793,  0.30469266], \
-               [-0.41151685, -0.5235988 , -0.64350116]], dtype=float32)
+    ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-1, -0.5, 0.6, 1])
     >>> y = ivy.asin(x)
     >>> print(y)
-    ivy.array([-1.5707964 , -0.5235988 ,
-               0.64350116,  1.5707964 ], dtype=float32)
+    ivy.array([-1.57,-0.524,0.644,1.57])
 
     With :code:`ivy.Container` input:
 
@@ -359,10 +355,7 @@ def asin(
                           b=ivy.array([0.3, 0.4, 0.5]))
     >>> y = ivy.asin(x)
     >>> print(y)
-    {
-        a: ivy.array([0., 0.10016742, 0.20135793], dtype=float32),
-        b: ivy.array([0.30469266, 0.41151685, 0.5235988], dtype=float32)
-    }
+    {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
 
     Instance Method Examples
     ------------------------
@@ -372,8 +365,7 @@ def asin(
     >>> x = ivy.array([-1, -0.5, 0.6, 1])
     >>> y = x.asin()
     >>> print(y)
-    ivy.array([-1.5707964 , -0.5235988 ,
-               0.64350116,  1.5707964 ], dtype=float32)
+    ivy.array([-1.57,-0.524,0.644,1.57])
 
     Using :code:`ivy.Container` instance method:
 
@@ -381,10 +373,7 @@ def asin(
                           b=ivy.array([0.3, 0.4, 0.5]))
     >>> y = x.asin()
     >>> print(y)
-    {
-        a: ivy.array([0., 0.10016742, 0.20135793], dtype=float32),
-        b: ivy.array([0.30469266, 0.41151685, 0.5235988], dtype=float32)
-    }
+    {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
 
     """
     return current_backend(x).asin(x, out=out)
@@ -667,7 +656,7 @@ def bitwise_and(
     >>> y = ivy.native_array([True, False, True, False])
     >>> ivy.bitwise_and(x, y, out=y)
     >>> print(y)
-    ivy.native_array([ True, False, False, False])
+    tensor([True,False,False,False])
 
     >>> x = ivy.native_array([[True, False]])
     >>> y = ivy.native_array([[True], \
@@ -734,7 +723,7 @@ def bitwise_and(
                [8]])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([True, True]), b=ivy.array([False, True]))
     >>> y = ivy.Container(a=ivy.array([False, True]), b=ivy.array([False, True]))
     >>> x.bitwise_and(y, out=y)
@@ -969,7 +958,7 @@ def bitwise_xor(
     >>> b = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([[ 4, 6, 89, 26, 57]])
+    ivy.array([ 4, 6, 89, 26, 57])
 
     With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -977,31 +966,29 @@ def bitwise_xor(
     >>> a = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([[4, 6, 89, 26, 57]])
+    ivy.array([0,0,0,0,0])
 
     With :code: `ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
-    a:ivy.array([20])
-    b:ivy.array([85])
+    a:ivy.array([85])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
-    b = ivy.array([78, 34]))
-    >>> y = ivy.array([12, 13]])
+    >>> x = ivy.Container(a = ivy.array([-67, 21]))
+    >>> b = ivy.array([78, 34])
+    >>> y = ivy.array([12, 13])
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
     a: ivy.array([-79, 24])
-    b: ivy.array([6, 74])
     }
 
     Instance Method Examples
@@ -1013,21 +1000,17 @@ def bitwise_xor(
     >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
     >>> y = a.bitwise_xor(b)
     >>> print(y)
-    ivy.array([[74, 41, 59],
-    [24, 5, 7]])
+    ivy.array([[[74,41,59],[24,5,7]]])
 
     Using :code:`ivy.Container` instance method:
 
-    >>>x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
-    >>>z = x.bitwise_xor(y)
-    >>>print(z)
-    {
-    a:ivy.array([20])
-    b:ivy.array([85])
-    }
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
+    >>> z = x.bitwise_xor(y)
+    >>> print(z)
+    {a:ivy.array([85])}
 
     Operator Examples
     -----------------
@@ -1038,32 +1021,26 @@ def bitwise_xor(
     >>> b = ivy.array([3, 2, 1])
     >>> y = a ^ b
     >>> print(y)
-    ivy.array([2, 0, 2])
+    ivy.array([2,0,2])
 
     With :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a = ivy.array([89]), \
-    b = ivy.array([90]))
-    >>> y = ivy.container(a = ivy.array([12])), \
-    b = ivy.array([78]))
+    >>> x = ivy.Container(a = ivy.array([89]))
+    >>> b = ivy.array([90])
+    >>> y = ivy.Container(a = ivy.array([12]))
+    >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {
-    a:ivy.array([20])
-    b:ivy.array([85])
-    }
+    {a:ivy.array([True])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]), \
-    b = ivy.array([78, 34]))
-    >>> y = ivy.array([12, 13]])
+    >>> x = ivy.Container(a = ivy.array([-67, 21]))
+    >>> b = ivy.array([78, 34])
+    >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {
-    a: ivy.array([-79, 24])
-    b: ivy.array([6, 74])
-    }
+    {a:ivy.array([True,True])}
     """
     return current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -1110,41 +1087,41 @@ def ceil(
     This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
     in the standard.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-    
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
     ivy.array([1., 0., -0.])
-    
+
     >>> x = ivy.array([2.5, -3.5, 0, -3, -0])
     >>> y = ivy.ones(5)
     >>> ivy.ceil(x, out=y)
     >>> print(y)
     ivy.array([ 3., -3.,  0., -3.,  0.])
-    
+
     >>> x = ivy.array([[3.3, 4.4, 5.5], [-6.6, -7.7, -8.8]])
     >>> ivy.ceil(x, out=x)
     >>> print(x)
     ivy.array([[ 4.,  5.,  6.],
                [-6., -7., -8.]])
-    
+
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([0, -0, -2.5, -1, 2, 3.5])
     >>> y = ivy.ceil(x)
     >>> print(y)
     ivy.array([ 0.,  0., -2., -1.,  2.,  4.])
-    
+
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
                           b=ivy.array([5.4, -3.2, -0, 5.2]))
     >>> y = ivy.ceil(x)
@@ -1258,30 +1235,25 @@ def cosh(
     >>> x = ivy.array([1, 2, 3, 4])
     >>> y = ivy.cosh(x)
     >>> print(y)
-    ivy.array([ 1.5430806,  3.7621958, 10.067662 , 27.308231 ], dtype=float32)
+    ivy.array([1.54,3.76,10.1,27.3])
 
     >>> x = ivy.array([0.2, -1.7, -5.4, 1.1])
     >>> y = ivy.zeros(4)
     >>> ivy.cosh(x, out=y)
-    ivy.array([  1.0200667,   2.8283155, 110.705475 ,   1.6685185], dtype=float32)
+    ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3, 3.2], \
                        [-4.4, -5.5, -6.6, -7.2]])
     >>> y = ivy.cosh(x)
     >>> print(y)
-    ivy.array([[  1.6685185,   4.567909 ,  13.57476  ,  12.286647 ],
-               [ 40.731575 , 122.34801  , 367.54822  , 669.71564  ]],
-              dtype=float32)
+    ivy.array([[1.67,4.57,13.6,12.3],[40.7,122.,368.,670.]])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
     >>> y = ivy.cosh(x)
     >>> print(y)
-    {
-        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
-        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
-    }
+    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
 
     Instance Method Examples
     ------------------------
@@ -1291,15 +1263,12 @@ def cosh(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = x.cosh()
     >>> print(y)
-    ivy.array([ 1.5430806,  3.7621958, 10.067662 ], dtype=float32)
+    ivy.array([1.54,3.76,10.1])
 
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
     >>> y = x.cosh()
     >>> print(y)
-    {
-        a: ivy.array([1.5430806, 3.7621958, 10.067662], dtype=float32),
-        b: ivy.array([201.71564, 548.317, 1490.4791], dtype=float32)
-    }
+    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
     """
     return current_backend(x).cosh(x, out=out)
 
@@ -1407,7 +1376,7 @@ def exp(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.exp(x)
     >>> print(y)
-    ivy.array([2.7182817, 7.389056, 20.085537])
+    ivy.array([2.72,7.39,20.1])
 
     """
     return current_backend(x).exp(x, out=out)
@@ -1675,7 +1644,7 @@ def greater_equal(
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
-    ivy.array([False, True,  True])
+    ivy.array([False,True,True])
 
     >>> x = ivy.array([[10.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
@@ -1684,9 +1653,7 @@ def greater_equal(
     >>> z = ivy.full(shape, fill_value)
     >>> ivy.greater_equal(x, y, out=z)
     >>> print(z)
-    ivy.array([[ True, False, False],
-       [ True, False, False],
-       [ True, False, False]])
+    ivy.array([[True,False,False],[True,False,False],[True,False,False]])
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
@@ -1700,7 +1667,7 @@ def greater_equal(
     >>> y = ivy.native_array([4, 5])
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    ivy.array([False, False])
+    ivy.array([False,False])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -1708,7 +1675,7 @@ def greater_equal(
     >>> y = ivy.native_array([4, 5, 0])
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    ivy.array([False, False,  True])
+    ivy.array([False,False,True])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -1717,14 +1684,7 @@ def greater_equal(
                            b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    {
-        a: ivy.array([[True, False, False],
-                      [True, False, False],
-                      [False, False, False]]),
-        b: ivy.array([[True, False, False],
-                      [False, False, False],
-                      [False, False, False]])
-    }
+    {a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])}
 
     With :code:`ivy.Container` input:
 
@@ -1734,10 +1694,7 @@ def greater_equal(
                       b=ivy.array([5, 6, 7]))
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    {
-        a: ivy.array([True, True, True]),
-        b: ivy.array([False, False, False])
-    }
+    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
 
     Instance Method Examples
     ------------------------
@@ -1748,7 +1705,7 @@ def greater_equal(
     >>> y = ivy.array([4, 5, 6])
     >>> z = z = x.greater_equal(y)
     >>> print(z)
-    ivy.array([ True, False, False])
+    ivy.array([False,False,False])
 
     Using :code:`ivy.Container` instance method:
 
@@ -1758,10 +1715,7 @@ def greater_equal(
                       b=ivy.array([5, 6, 7]))
     >>> z = x.greater_equal(y)
     >>> print(z)
-    {
-        a: ivy.array([True, True, True]),
-        b: ivy.array([False, False, False])
-    }
+    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
 
     Operator Examples
     -----------------
@@ -1772,7 +1726,7 @@ def greater_equal(
     >>> y = ivy.array([4, 5, 6])
     >>> z = x >= y
     >>> print(z)
-    ivy.array([ True, False, False])
+    ivy.array([True,False,False])
 
     With :code:`ivy.Container` instances:
 
@@ -1782,10 +1736,7 @@ def greater_equal(
                       b=ivy.array([5, 6, 7]))
     >>> z = x >= y
     >>> print(z)
-    {
-        a: ivy.array([True, True, True]),
-        b: ivy.array([False, False, False])
-    }
+    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
@@ -1794,14 +1745,7 @@ def greater_equal(
                           b=ivy.array([[5.], [6.], [7.]]))
     >>> z = x >= y
     >>> print(z)
-    {
-        a: ivy.array([[True, False, False],
-                      [True, False, False],
-                      [False, False, False]]),
-        b: ivy.array([[True, False, False],
-                      [False, False, False],
-                      [False, False, False]])
-    }
+    {a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])}
 
     """
     return current_backend(x1, x2).greater_equal(x1, x2, out=out)
@@ -2406,27 +2350,26 @@ def negative(
     >>> x = ivy.array([0,1,1,2])
     >>> y = ivy.negative(x)
     >>> print(y)
-    ivy.array([ 0, -1, -1, -2])
+    ivy.array([0,-1,-1,-2])
 
     >>> x = ivy.array([0,-1,-0.5,2,3])
     >>> y = ivy.zeros(5)
     >>> ivy.negative(x,out=y)
     >>> print(y)
-    ivy.array([-0. ,  1. ,  0.5, -2. , -3. ], dtype=float32)
+    ivy.array([-0.,1.,0.5,-2.,-3.])
 
     >>> x = ivy.array([[1.1,2.2,3.3], \
                        [-4.4,-5.5,-6.6]])
     >>> ivy.negative(x,out=x)
     >>> print(x)
-    ivy.array([[-1.1, -2.2, -3.3],
-               [ 4.4,  5.5,  6.6]], dtype=float32)
+    ivy.array([[-1.1,-2.2,-3.3],[4.4,5.5,6.6]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
     >>> y = ivy.negative(x)
     >>> print(y)
-    ivy.array([ 1.1,  1. , -0. , -1. , -1.1], dtype=float32)
+    ivy.array([1.1,1.,-0.,-1.,-1.1])
 
     With :code:`ivy.Container` input:
 
@@ -2434,10 +2377,7 @@ def negative(
                          b=ivy.array([3.,4.,-5.]))
     >>> y = ivy.negative(x)
     >>> print(y)
-    {
-        a: ivy.array([-0., -1., -2.], dtype=float32),
-        b: ivy.array([-3., -4., 5.], dtype=float32)
-    }
+    {a:ivy.array([-0.,-1.,-2.]),b:ivy.array([-3.,-4.,5.])}
 
     Instance Method Examples
     -------------------
@@ -2447,7 +2387,7 @@ def negative(
     >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
     >>> y = x.negative()
     >>> print(y)
-    ivy.array([ 1.1,  1. , -0. , -0. , -1. , -1.1], dtype=float32)
+    ivy.array([1.1,1.,-0.,-0.,-1.,-1.1])
 
     Using :code:`ivy.Container` instance method:
 
@@ -2455,10 +2395,7 @@ def negative(
                          b=ivy.array([-4.4,5,-6.6]))
     >>> y = x.negative()
     >>> print(y)
-    {
-        a: ivy.array([-1, -2, -3]),
-        b: ivy.array([4.4, -5., 6.6], dtype=float32)
-    }
+    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
 
     Operator Examples
     -----------------
@@ -2468,7 +2405,7 @@ def negative(
     >>> x = ivy.array([1,2,3])
     >>> y = -x
     >>> print(y)
-    ivy.array([-1, -2, -3])
+    ivy.array([-1,-2,-3])
 
     Using :code:`ivy.Container` instance method:
 
@@ -2476,10 +2413,7 @@ def negative(
                          b=ivy.array([-4.4,5,-6.6]))
     >>> y = -x
     >>> print(y)
-    {
-        a: ivy.array([-1, -2, -3]),
-        b: ivy.array([4.4, -5., 6.6], dtype=float32)
-    }
+    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
 
     """
     return current_backend(x).negative(x, out=out)
@@ -2762,59 +2696,51 @@ def round(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
     >>> x = ivy.array([1.2, 2.4, 3.6])
     >>> y = ivy.round(x)
     >>> print(y)
-    ivy.array([1., 2., 4.], dtype=float32)
+    ivy.array([1.,2.,4.])
 
     >>> x = ivy.array([-0, 5, 4.5])
     >>> y = ivy.round(x)
     >>> print(y)
-    ivy.array([0., 5., 4.], dtype=float32)
+    ivy.array([0.,5.,4.])
 
     >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
     >>> y = ivy.zeros(4)
     >>> ivy.round(x, out=y)
     >>> print(y)
-    ivy.array([ 2.,  2., 15., -5.], dtype=float32)
+    ivy.array([2.,2.,15.,-5.])
 
     >>> x = ivy.array([[0, 5.433, -343.3, 1.5], \
                       [-5.5, 44.2, 11.5, 12.01]])
     >>> ivy.round(x, out=x)
     >>> print(x)
-    ivy.array([[   0.,    5., -343.,    2.],
-               [  -6.,   44.,   12.,   12.]], dtype=float32)
+    ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
 
     With :code:`ivy.NativeArray` input:
     >>> x = ivy.NativeArray([20.2, 30.5, -5.81])
     >>> y = ivy.round(x)
     >>> print(y)
-    ivy.array([20., 30., -6.], dtype=float32)
+    ivy.array([20.,30.,-6.])
 
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                   b=ivy.array([-300.9, -527.3, 4.5]))
     >>> y = ivy.round(x)
     >>> print(y)
-    {
-        a: ivy.array([4., 9., 7., 0.], dtype=float32),
-        b: ivy.array([-301., -527., 4.], dtype=float32)
-    }
+    {a:ivy.array([4.,9.,7.,0.]),b:ivy.array([-301.,-527.,4.])}
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
     >>> x = ivy.array([5.4, 1.2, 2.3])
     >>> y = x.round()
     >>> print(y)
     ivy.array([5., 1., 2.])
 
     Using :code:`ivy.Container` instance method:
-
     >>> x = ivy.Container(a=ivy.array([0.3, 1.5, 201.5]), b=ivy.array([3.6, 4.4, -5.2]))
     >>> y = x.round()
     >>> print(y)
@@ -2822,6 +2748,7 @@ def round(
         a: ivy.array([0., 2., 202.]),
         b: ivy.array([4., 4., -5.])
     }
+
 
     """
     return current_backend(x).round(x, out=out)
@@ -3001,7 +2928,7 @@ def square(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
     ret
@@ -3011,90 +2938,83 @@ def square(
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_ # noqa
     in the standard.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     ------------------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.square(x)
     >>> print(y)
     ivy.array([1, 4, 9])
-    
+
     >>> x = ivy.array([1.5, -0.8, 0.3])
     >>> y = ivy.zeros(3)
     >>> ivy.square(x, out=y)
     >>> print(y)
     ivy.array([2.25, 0.64, 0.09])
-    
+
     >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
     >>> ivy.square(x, out=x)
     >>> print(x)
-    ivy.array([[1.44, 4, 9.61],
-               [1, 6.25, 81]])
-               
+    ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
+
     With :code: `ivy.NativeArray` input:
-    
+
     >>> a = ivy.native_array([1, 2, 3])
     >>> b = ivy.square(a)
     >>> print(b)
     ivy.array([1, 4, 9])
-    
+
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = ivy.square(x)
     >>> print(y)
-    {
-        a: ivy.array([0, 1])
-        b: ivy.array([4, 9])
-    }
-    
+    {a:ivy.array([0,1]),b:ivy.array([4,9])}
+
     Instance Method Examples
     ------------------------
-    
+
     With :code:`ivy.Array` instance method:
-    
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = x.square()
     >>> print(y)
     ivy.array([1, 4, 9])
-    
+
     With :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = x.square()
     >>> print(y)
-    {
-        a: ivy.array([0, 1])
-        b: ivy.array([4, 9])
-    }
+    {a:ivy.array([0,1]),b:ivy.array([4,9])}
 
     Operator Examples
     -----------------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = x ** 2
     >>> print(y)
     ivy.array([1, 4, 9])
-    
+
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = x ** 2
     >>> print(y)
     {
-        a: ivy.array([0, 1])
+        a: ivy.array([0, 1]),
         b: ivy.array([4, 9])
     }
-    
+
     """
     return current_backend(x).square(x, out=out)
 
@@ -3330,9 +3250,7 @@ def maximum(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
     >>> z = ivy.maximum(x, y)
@@ -3340,47 +3258,40 @@ def maximum(
     ivy.array([9, 9, 5])
 
     With :code:`ivy.NativeArray` inputs:
-
     >>> x = ivy.native_array([1, 5, 9, 8, 3])
     >>> y = ivy.native_array([9, 3, 2, 0, 7])
-    >>> ivy.maximum(x, y)
-    >>> print(y)
-    ivy.native_array([9, 5, 9, 8, 7])
+    >>> z= ivy.maximum(x, y)
+    >>> print(z)
+    ivy.array([9, 5, 9, 8, 7])
 
     With :code:`Number` inputs:
-
     >>> z = ivy.zeros(1)
     >>> ivy.maximum(1, 5, out=z)
     >>> print(z)
-    ivy.array([5])
+    ivy.array(5.)
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
     >>> x = ivy.array([7, 3])
     >>> y = ivy.native_array([0, 7])
     >>> z = ivy.maximum(x, y)
     >>> print(z)
-    ivy.array([7, 3])
+    ivy.array([7, 7])
 
     With a mix of :code:`ivy.Array` and :code:`Number` inputs:
-
     >>> x = ivy.array([1, 7, 3])
     >>> z = ivy.maximum(x, 5)
     >>> print(z)
     ivy.array([5, 7, 5])
 
     With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
-
     >>> x = ivy.native_array([1, 3])
     >>> z = ivy.maximum(x, 5)
     >>> print(z)
-    ivy.native_array([5, 5])
+    ivy.array([5, 5])
 
     Instance Method Examples
     ------------------------
-
     With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
-
     >>> x = ivy.array([4, 8, 3])
     >>> y = ivy.array([9, 3, 2])
     >>> x.maximum(y, out=y)
@@ -3388,7 +3299,6 @@ def maximum(
     ivy.array([9, 8, 3])
 
     With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
-
     >>> x = ivy.array([4, 1, 8, 3])
     >>> y = ivy.native_array([9, 3, 2, 6])
     >>> z = x.maximum(y)
@@ -3396,12 +3306,11 @@ def maximum(
     ivy.array([9, 3, 8, 6])
 
     With :code:`ivy.Array` instance method using :code:`Number` input:
-
     >>> x = ivy.array([1, 7, 8])
     >>> z = ivy.zeros(3)
     >>> x.maximum(3, out=z)
     >>> print(z)
-    ivy.array([3, 7, 8])
+    ivy.array([3., 7., 8.])
 
     """
     return current_backend(x1).maximum(x1, x2, out=out)
@@ -3433,7 +3342,6 @@ def minimum(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` inputs:
     >>> x = ivy.array([1, 5, 9])
     >>> y = ivy.array([2, 6, 8])
@@ -3442,22 +3350,19 @@ def minimum(
     ivy.array([1, 5, 8])
 
     With :code:`ivy.NativeArray` inputs:
-
     >>> x = ivy.native_array([2, 6, 8, 5])
     >>> y = ivy.native_array([1, 5, 9, 6])
-    >>> ivy.minimum(x, y)
-    >>> print(y)
-    ivy.native_array([1, 5, 8, 5])
+    >>> z= ivy.minimum(x, y)
+    >>> print(z)
+    ivy.array([1, 5, 8, 5])
 
     With :code:`Number` inputs:
-
     >>> z = ivy.zeros(1)
     >>> ivy.minimum(1, 5, out=z)
     >>> print(z)
-    ivy.array([1])
+    ivy.array(1.)
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
     >>> x = ivy.array([2, 3])
     >>> y = ivy.native_array([0, 4])
     >>> z = ivy.minimum(x, y)
@@ -3465,24 +3370,20 @@ def minimum(
     ivy.array([0, 3])
 
     With a mix of :code:`ivy.Array` and :code:`Number` inputs:
-
     >>> x = ivy.array([2, 3, 9])
     >>> z = ivy.minimum(x, 5)
     >>> print(z)
     ivy.array([2, 3, 5])
 
     With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
-
     >>> x = ivy.native_array([2, 3, 9, 7, 3])
     >>> z = ivy.minimum(x, 5)
     >>> print(z)
-    ivy.native_array([2, 3, 5, 5, 3])
+    ivy.array([2, 3, 5, 5, 3])
 
     Instance Method Examples
     ------------------------
-
     With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
-
     >>> x = ivy.array([4, 7, 3])
     >>> y = ivy.array([3, 3, 2])
     >>> z = x.minimum(y)
@@ -3490,20 +3391,19 @@ def minimum(
     ivy.array([3, 3, 2])
 
     With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
-
     >>> x = ivy.array([4, 7])
     >>> y = ivy.native_array([6, 0])
-    >>> x.minimum(y)
-    >>> print(y)
-    ivy.native_array([4, 0])
+    >>> z=x.minimum(y)
+    >>> print(z)
+    ivy.array([4, 0])
 
     With :code:`ivy.Array` instance method using :code:`Number` input:
-
     >>> x = ivy.array([1, 4, 8])
-    >>> z = ivy.zeros(3)
-    >>> x.minimum(3)
+    >>> y = ivy.zeros(3)
+    >>> z=x.minimum(3)
     >>> print(z)
-    ivy.array([1, 4, 5])
+    ivy.array([1, 3, 3])
+
 
     """
     return current_backend(x1).minimum(x1, x2, out=out)
