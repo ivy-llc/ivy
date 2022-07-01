@@ -105,7 +105,8 @@ def abs(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]), b=ivy.array([4.5, -5.3, -2.3]))
+    >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
+    ... b=ivy.array([4.5, -5.3, -2.3]))
     >>> y = x.abs()
     >>> print(y)
     {
