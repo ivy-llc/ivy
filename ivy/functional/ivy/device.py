@@ -664,6 +664,24 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     device
         The device to set as the default device
 
+    Examples
+    --------
+    >>> ivy.set_default_device("cpu")
+    >>> ivy.default_device()
+    'cpu'
+    
+    >>> ivy.set_backend("torch")
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda', index=0)
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_default_device(device)
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda')
+
     """
     global default_device_stack
     default_device_stack.append(device)
