@@ -1,7 +1,6 @@
 import ivy
 import numpy as np
 import torch
-import tensorflow as tf
 import jax.numpy as jnp
 def ivy_matmul(x,y):
     return ivy.matmul(x,y)
