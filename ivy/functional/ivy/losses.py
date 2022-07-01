@@ -134,7 +134,7 @@ def binary_cross_entropy(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.array([1 , 1, 0])
+    >>> x = ivy.array([1, 1, 0])
     >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
