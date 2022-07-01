@@ -43,8 +43,15 @@ def test_docstrings(backend):
         "unique_all",
     ]
 
-    skip_list_temp = ['outer', 'argmax', 'split',
-                      'cumprod', 'where', 'conv3d_transpose']
+    skip_list_temp = [
+        "outer",
+        "argmax",
+        "split",
+        "det",
+        "cumprod",
+        "where",
+        "conv3d_transpose",
+    ]
 
     # comment out this line in future to check for the functions in temp skip list
     to_skip += skip_list_temp
