@@ -165,35 +165,35 @@ def sparse_cross_entropy(
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
 
-     Parameters
-     ----------
-     true
-         input array containing the true labels as logits.
-     pred
-         input array containing the predicted labels as logits.
-     axis
-         the axis along which to compute the cross-entropy. If axis is ``-1``, the
-         cross-entropy will be computed along the last dimension. Default: ``-1``.
-     epsilon
-         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
-     out
-         optional output array, for writing the result to. It must have a shape
-         that the inputs broadcast to.
+    Parameters
+    ----------
+    true
+     input array containing the true labels as logits.
+    pred
+     input array containing the predicted labels as logits.
+    axis
+     the axis along which to compute the cross-entropy. If axis is ``-1``, the
+     cross-entropy will be computed along the last dimension. Default: ``-1``.
+    epsilon
+     a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+     loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+     optional output array, for writing the result to. It must have a shape
+     that the inputs broadcast to.
 
-     Returns
-     -------
-     ret
-         The sparse cross-entropy loss between the given distributions
+    Returns
+    -------
+    ret
+     The sparse cross-entropy loss between the given distributions
 
-     Functional Examples
-     -------------------
+    Functional Examples
+    -------------------
 
-     With :code:`ivy.Array` input:
+    With :code:`ivy.Array` input:
 
-     >>> x = ivy.array([2])
-     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-     >>> print(ivy.sparse_cross_entropy(x, y))
+    >>> x = ivy.array([2])
+    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.sparse_cross_entropy(x, y))
     ivy.array([0.357])
 
      >>> x = ivy.array([3])
