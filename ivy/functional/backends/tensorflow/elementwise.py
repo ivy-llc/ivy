@@ -394,12 +394,16 @@ def tanh(
 
 
 def trunc(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    if "int" in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.zeros(x.shape, dtype=x.dtype)
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x > 0), tf.math.floor(x[x > 0]))
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    ret = x
+    if not ivy.is_array(x):
+        raise Exception("Input must be array")
+    elif not ("int" in str(x.dtype) or ret.get_shape().ndims == 0):
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+        )
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
+        )
     return ret
 
 
