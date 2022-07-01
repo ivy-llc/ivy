@@ -59,7 +59,6 @@ class ContainerWithRandom(ContainerBase):
             out=out,
         )
 
-
     # randint
     @staticmethod
     def static_randint(
@@ -97,7 +96,10 @@ class ContainerWithRandom(ContainerBase):
                          [6, 7]])
         }
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=5,b=20,c=40), high=100, shape=3, device='gpu:1')
+        >>> x = ivy.Container.randint(low=ivy.Container(a=5,b=20,c=40),\
+                                      high=100,\
+                                      shape=3,\
+                                      device='gpu:1')
         >>> print(x)
         {
             a: ivy.array([90, 87, 62]),
@@ -106,7 +108,10 @@ class ContainerWithRandom(ContainerBase):
         }
 
         >>> x = ivy.Container(a=1,b=2)
-        >>> y = ivy.Container.randint(low=ivy.Container(a=3,b=5,c=10,d=7), high=14, shape=5, out=x)
+        >>> y = ivy.Container.randint(low=ivy.Container(a=3,b=5,c=10,d=7),\
+                                      high=14,\
+                                      shape=5,\
+                                      out=x)
         >>> print(x)
         {
             a: ivy.array([4, 10, 13, 3, 3]),
@@ -117,7 +122,9 @@ class ContainerWithRandom(ContainerBase):
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=ivy.Container(a=5, b= 15, c=2), shape=2)
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10),\
+                                      high=ivy.Container(a=5, b= 15, c=2),\
+                                      shape=2)
         >>> print(x)
         {
             a: ivy.array([1, 2]),
