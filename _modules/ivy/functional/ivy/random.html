@@ -384,7 +384,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
@@ -426,7 +426,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([3])</span>
 
-<span class="sd">    &gt;&gt;&gt; y = ivy.randint(2, 20, (2, 2), &#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.randint(2, 20, (2, 2), device=&#39;cpu&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 7,  5],</span>
 <span class="sd">               [15, 15]])</span>
@@ -437,14 +437,17 @@
 <span class="sd">    ivy.array([2, 6, 7])</span>
 
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3, 3)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.randint(3, 15, (3, 3), &#39;gpu:1&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.randint(3, 15, (3, 3), device=&#39;gpu:1&#39;, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 7,  7,  5],</span>
 <span class="sd">               [12,  8,  8],</span>
 <span class="sd">               [ 8, 11,  3]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
 
 
 <div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../functional/ivy/random/seed.html#ivy.functional.ivy.random.seed">[docs]</a><span class="nd">@handle_nestable</span>
