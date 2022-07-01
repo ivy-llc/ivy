@@ -95,13 +95,13 @@ def binary_cross_entropy(
     >>> y = ivy.array([0.2, 0.8, 0.3, 0.8])
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
-    ivy.array([0.2231, 0.2231, 0.3567, 1.6094])
+    ivy.array([0.223, 0.223, 0.357, 1.61 ])
 
     >>> x = ivy.array([[0, 1, 0, 0]])
     >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
     >>> z = ivy.binary_cross_entropy(x, y, epsilon=1e-3)
     >>> print(z)
-    ivy.array([[0.9163, 1.6094, 1.2040, 0.3567]])
+    ivy.array([[0.916, 1.61 , 1.2  , 0.357]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -109,7 +109,7 @@ def binary_cross_entropy(
     >>> y = ivy.native_array([0.2, 0.7, 0.2, 0.6])
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
-    ivy.array([0.2231, 0.3567, 0.2231, 0.5108])
+    ivy.array([0.223, 0.357, 0.223, 0.511])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -117,29 +117,27 @@ def binary_cross_entropy(
     >>> y = ivy.native_array([0.1, 0.2, 0.8, 0.6])
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
-    ivy.array([0.1054, 0.2231, 0.2231, 0.5108])
+    ivy.array([0.105, 0.223, 0.223, 0.511])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 0, 0]),
-    >>>                   b=ivy.array([0, 0, 1]))
-    >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),
-    >>>                   b=ivy.array([0.8, 0.2, 0.2]))
+    >>> x = ivy.Container(a=ivy.array([1, 0, 0]), b=ivy.array([0, 0, 1]))
+    >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]), b=ivy.array([0.8, 0.2, 0.2]))
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
     {
-        a: ivy.array([0.5108, 0.2231, 0.3567]),
-        b: ivy.array([1.6094, 0.2231, 1.6094])
+        a: ivy.array([0.511, 0.223, 0.357]),
+        b: ivy.array([1.61, 0.223, 1.61])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.array([1 , 1, 0])
+    >>> x = ivy.array([1, 1, 0])
     >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
     {
-       a: ivy.array([0.3567, 0.2231, 0.2231])
+        a: ivy.array([0.357, 0.223, 0.223])
     }
 
     Instance Method Examples
@@ -151,7 +149,7 @@ def binary_cross_entropy(
     >>> y = ivy.array([0.8, 0.2, 0.2, 0.2])
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
-    ivy.array([0.2231, 0.2231, 0.2231, 0.2231])
+    ivy.array([0.223, 0.223, 0.223, 0.223])
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -199,15 +197,15 @@ def sparse_cross_entropy(
     >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.sparse_cross_entropy(x, y))
-    ivy.array([0.35667497 ])
+    ivy.array([0.357])
 
     >>> x = ivy.array([3])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array([2.3025851 ])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([2.3])
 
     >>> x = ivy.array([2,3])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array([0.35667497, 2.3025851 ])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([0.357, 2.3  ])
 
     With :code:`ivy.NativeArray` input:
 
