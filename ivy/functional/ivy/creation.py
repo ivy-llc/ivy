@@ -86,7 +86,6 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
@@ -106,7 +105,7 @@ def asarray(
         An array interpretation of x.
 
     """
-    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device, out=out)
+    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
 @outputs_to_ivy_arrays
@@ -582,7 +581,8 @@ def meshgrid(
 
         This method conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
+        the `docstring <https://data-apis.org/array-api/latest/API_specification
+        /generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
         in the standard. The descriptions above assume an array input for simplicity,
         but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
         instances, as shown in the type hints and also the examples below.
@@ -674,8 +674,7 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10., 10.],
-               [10., 10.]])
+    ivy.array([[10,10],[10,10]])
 
     """
     return current_backend().full(

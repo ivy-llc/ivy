@@ -131,11 +131,39 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Examples
-    --------
+    Funtional Examples
+    ------------------
+
     >>> y = ivy.random_normal(0.0, 2.0)
     >>> print(y)
     ivy.array(0.6444774682897879)
+
+    >>> y = ivy.random_normal(shape=3)
+    >>> print(y)
+    ivy.array([ 0.811, -0.508, -0.564])
+    
+    >>> y = ivy.random_normal(0.0,2.0,device='cpu')
+    >>> print(y)
+    ivy.array(-0.7268672)
+    
+    >>> y = ivy.random_normal(0.7, 1.0, device="cpu", shape=(2, 2))
+    >>> print(y)
+    ivy.array([[1.17 , 0.968],
+               [0.175, 0.064]])
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Container` input:
+    
+    >>> y = ivy.Container(a=ivy.random_normal(), \
+                          b=ivy.random_normal(shape=2))
+    >>> print(y)
+    {
+    a: ivy.array(-0.40935726),
+    b: ivy.array([1.54 , 0.556])
+    }
+
     """
     return current_backend().random_normal(mean, std, shape, device=device, out=out)
 
@@ -233,7 +261,7 @@ def multinomial(
     )
 
 
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
 @handle_nestable
@@ -271,29 +299,31 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, 1)
+    >>> y = ivy.randint(0, 9, (1,1))
     >>> print(y)
-    ivy.array([3])
+    ivy.array([[5]])
 
-    >>> y = ivy.randint(2, 20, (2, 2), 'cpu')
+    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
-    ivy.array([[ 7,  5],
-               [15, 15]])
+    ivy.array([[5,8],[9,3]])
 
-    >>> x = ivy.Array([1, 2, 3])
+    >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, (3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
-    >>> y = ivy.zeros(3, 3)
-    >>> ivy.randint(3, 15, (3, 3), 'gpu:1', out=y)
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device, out=out)
+    res = current_backend().randint(low, high, shape, device=device)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
