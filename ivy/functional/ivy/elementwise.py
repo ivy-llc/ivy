@@ -20,9 +20,9 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def abs(
-        x: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
@@ -62,9 +62,9 @@ def abs(
 @handle_out_argument
 @handle_nestable
 def acos(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
     the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element
@@ -101,9 +101,9 @@ def acos(
 @handle_out_argument
 @handle_nestable
 def acosh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
     cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each
@@ -142,10 +142,10 @@ def acosh(
 @handle_out_argument
 @handle_nestable
 def add(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
@@ -218,7 +218,6 @@ def add(
      Examples
     --------
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
@@ -278,9 +277,9 @@ def add(
 @handle_out_argument
 @handle_nestable
 def asin(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
     the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
@@ -384,9 +383,9 @@ def asin(
 @handle_out_argument
 @handle_nestable
 def asinh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
     sine, having domain ``[-infinity, +infinity]`` and codomain
@@ -426,9 +425,9 @@ def asinh(
 @handle_out_argument
 @handle_nestable
 def atan(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
     the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain
@@ -469,10 +468,10 @@ def atan(
 @handle_out_argument
 @handle_nestable
 def atan2(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the inverse tangent of
     the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x.
@@ -557,9 +556,9 @@ def atan2(
 @handle_out_argument
 @handle_nestable
 def atanh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the inverse hyperbolic tangent of the elements of ``x``.
 
@@ -590,10 +589,10 @@ def atanh(
 @handle_out_argument
 @handle_nestable
 def bitwise_and(
-        x1: Union[int, bool, ivy.Array, ivy.NativeArray],
-        x2: Union[int, bool, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise AND of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
@@ -742,9 +741,9 @@ def bitwise_and(
 @handle_out_argument
 @handle_nestable
 def bitwise_invert(
-        x: Union[int, bool, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[int, bool, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
 
@@ -777,10 +776,10 @@ def bitwise_invert(
 @handle_out_argument
 @handle_nestable
 def bitwise_left_shift(
-        x1: Union[int, ivy.Array, ivy.NativeArray],
-        x2: Union[int, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
     appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to
@@ -812,10 +811,10 @@ def bitwise_left_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_or(
-        x1: Union[int, bool, ivy.Array, ivy.NativeArray],
-        x2: Union[int, bool, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise OR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
@@ -846,10 +845,10 @@ def bitwise_or(
 @handle_out_argument
 @handle_nestable
 def bitwise_right_shift(
-        x1: Union[int, ivy.Array, ivy.NativeArray],
-        x2: Union[int, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[int, ivy.Array, ivy.NativeArray],
+    x2: Union[int, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
     according to the respective element ``x2_i`` of the input array ``x2``.
@@ -891,10 +890,10 @@ def bitwise_right_shift(
 @handle_out_argument
 @handle_nestable
 def bitwise_xor(
-        x1: Union[int, bool, ivy.Array, ivy.NativeArray],
-        x2: Union[int, bool, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x2: Union[int, bool, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
@@ -1050,9 +1049,9 @@ def bitwise_xor(
 @handle_out_argument
 @handle_nestable
 def ceil(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
     closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
@@ -1139,9 +1138,9 @@ def ceil(
 @handle_out_argument
 @handle_nestable
 def cos(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the cosine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
@@ -1187,9 +1186,9 @@ def cos(
 @handle_out_argument
 @handle_nestable
 def cosh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic cosine,
     having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
@@ -1278,10 +1277,10 @@ def cosh(
 @handle_out_argument
 @handle_nestable
 def divide(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
@@ -1308,10 +1307,10 @@ def divide(
 @handle_out_argument
 @handle_nestable
 def equal(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i == x2_i for each element x1_i of the input array
     x1 with the respective element x2_i of the input array x2.
@@ -1338,9 +1337,9 @@ def equal(
 @handle_out_argument
 @handle_nestable
 def exp(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the exponential function,
     having domain ``[-infinity, +infinity]`` and codomain ``[+0, +infinity]``, for each
@@ -1387,9 +1386,9 @@ def exp(
 @handle_out_argument
 @handle_nestable
 def expm1(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
     domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
@@ -1434,9 +1433,9 @@ def expm1(
 @handle_out_argument
 @handle_nestable
 def floor(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
     closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
@@ -1544,10 +1543,10 @@ def floor(
 @handle_out_argument
 @handle_nestable
 def floor_divide(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds the result of dividing each element x1_i of the input array x1 by the
     respective element x2_i of the input array x2 to the greatest (i.e., closest to
@@ -1579,10 +1578,10 @@ def floor_divide(
 @handle_out_argument
 @handle_nestable
 def greater(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i < x2_i for each element x1_i of the input array
     x1 with the respective element x2_i of the input array x2.
@@ -1616,10 +1615,10 @@ def greater(
 @handle_out_argument
 @handle_nestable
 def greater_equal(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array
     x1 with the respective element x2_i of the input array x2.
@@ -1756,9 +1755,9 @@ def greater_equal(
 @handle_out_argument
 @handle_nestable
 def isfinite(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
     not ``NaN`` and not equal to positive or negative infinity).
@@ -1786,9 +1785,9 @@ def isfinite(
 @handle_out_argument
 @handle_nestable
 def isinf(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element x_i of the input array x to determine if equal to positive or
     negative infinity.
@@ -1816,9 +1815,9 @@ def isinf(
 @handle_out_argument
 @handle_nestable
 def isnan(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Tests each element ``x_i`` of the input array ``x`` to determine whether the
     element is ``NaN``.
@@ -1846,10 +1845,10 @@ def isnan(
 @handle_out_argument
 @handle_nestable
 def less(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
     input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -1885,10 +1884,10 @@ def less(
 @handle_out_argument
 @handle_nestable
 def less_equal(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
     x1 with the respective element x2_i of the input array x2.
@@ -1915,9 +1914,9 @@ def less_equal(
 @handle_out_argument
 @handle_nestable
 def log(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the natural (base ``e``)
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
@@ -1956,9 +1955,9 @@ def log(
 @handle_out_argument
 @handle_nestable
 def log10(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``10``
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
@@ -1997,9 +1996,9 @@ def log10(
 @handle_out_argument
 @handle_nestable
 def log1p(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
@@ -2025,9 +2024,9 @@ def log1p(
 @handle_out_argument
 @handle_nestable
 def log2(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
@@ -2066,10 +2065,10 @@ def log2(
 @handle_out_argument
 @handle_nestable
 def logaddexp(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
     for each element ``x1_i`` of the input array ``x1`` with the respective element
@@ -2113,10 +2112,10 @@ def logaddexp(
 @handle_out_argument
 @handle_nestable
 def logical_and(
-        x1: ivy.Array,
-        x2: ivy.Array,
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: ivy.Array,
+    x2: ivy.Array,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical AND for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
@@ -2146,9 +2145,9 @@ def logical_and(
 @handle_out_argument
 @handle_nestable
 def logical_not(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical NOT for each element ``x_i`` of the input array ``x``.
 
@@ -2181,10 +2180,10 @@ def logical_not(
 @handle_out_argument
 @handle_nestable
 def logical_or(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with
     the respective element ``x2_i`` of the input array ``x2``.
@@ -2221,10 +2220,10 @@ def logical_or(
 @handle_out_argument
 @handle_nestable
 def logical_xor(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the bitwise XOR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
@@ -2255,10 +2254,10 @@ def logical_xor(
 @handle_out_argument
 @handle_nestable
 def multiply(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
     the respective element ``x2_i`` of the input array ``x2``.
@@ -2323,9 +2322,9 @@ def multiply(
 @handle_out_argument
 @handle_nestable
 def negative(
-        x: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the
     input array x.
@@ -2424,10 +2423,10 @@ def negative(
 @handle_out_argument
 @handle_nestable
 def not_equal(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
     input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -2457,9 +2456,9 @@ def not_equal(
 @handle_out_argument
 @handle_nestable
 def positive(
-        x: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the positive value of each element in ``x``.
 
@@ -2481,10 +2480,10 @@ def positive(
 @handle_out_argument
 @handle_nestable
 def pow(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of exponentiation by raising
     each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i``
@@ -2570,10 +2569,10 @@ def pow(
 @handle_out_argument
 @handle_nestable
 def remainder(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
     ``x1`` and the respective element ``x2_i`` of the input array ``x2``.
@@ -2652,9 +2651,9 @@ def remainder(
 @handle_out_argument
 @handle_nestable
 def round(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
@@ -2759,9 +2758,9 @@ def round(
 @handle_out_argument
 @handle_nestable
 def sign(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns an indication of the sign of a number for each element ``x_i`` of the
     input array ``x``.
@@ -2794,9 +2793,9 @@ def sign(
 @handle_out_argument
 @handle_nestable
 def sin(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the sine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
@@ -2834,9 +2833,9 @@ def sin(
 @handle_out_argument
 @handle_nestable
 def sinh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic sine,
     having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
@@ -2875,9 +2874,9 @@ def sinh(
 @handle_out_argument
 @handle_nestable
 def sqrt(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
     ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
@@ -2916,9 +2915,9 @@ def sqrt(
 @handle_out_argument
 @handle_nestable
 def square(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Each element ``x_i`` of the input array ``x``.
 
@@ -3024,10 +3023,10 @@ def square(
 @handle_out_argument
 @handle_nestable
 def subtract(
-        x1: Union[float, ivy.Array, ivy.NativeArray],
-        x2: Union[float, ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
     with the respective element ``x2_i`` of the input array ``x2``.
@@ -3056,9 +3055,9 @@ def subtract(
 @handle_out_argument
 @handle_nestable
 def tan(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
@@ -3138,9 +3137,9 @@ def tan(
 @handle_out_argument
 @handle_nestable
 def tanh(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a new array with the hyperbolic tangent of the elements of x.
 
@@ -3162,9 +3161,9 @@ def tanh(
 @handle_out_argument
 @handle_nestable
 def trunc(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Rounds each element x_i of the input array x to the integer-valued number that is
     closest to but no greater than x_i.
@@ -3204,9 +3203,9 @@ def trunc(
 @handle_out_argument
 @handle_nestable
 def erf(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes the Gauss error function of ``x`` element-wise.
 
@@ -3228,10 +3227,10 @@ def erf(
 @handle_out_argument
 @handle_nestable
 def maximum(
-        x1: Union[ivy.Array, ivy.NativeArray, Number],
-        x2: Union[ivy.Array, ivy.NativeArray, Number],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray, Number],
+    x2: Union[ivy.Array, ivy.NativeArray, Number],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
@@ -3321,10 +3320,10 @@ def maximum(
 @handle_out_argument
 @handle_nestable
 def minimum(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
