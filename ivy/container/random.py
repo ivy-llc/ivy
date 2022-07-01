@@ -77,31 +77,58 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With no device argument and no out argument specified and int arguemnt for shape:
+        With one :code:`ivy.Container` input, no device argument, and no out argument specified and int arguemnt for shape:
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=2)
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=20, shape=2)
         >>> print(x)
-        ivy.array([5,7])
+        {
+            a: ivy.array([10, 15]),
+            b: ivy.array([16, 12])
+        }
 
-        With no device argument and no out argument specified and sequence for shape:
+        With one :code:`ivy.Container` input, no device argument and no out argument specified and sequence for shape:
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=(3,2))
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=4), high=15, shape=(3,2))
         >>> print(x)
-        ivy.array([[5,8],
-                  [9,1],
-                  [2,3]])
+        {
+            a: ivy.array([[12, 3],
+                         [5, 7],
+                         [7, 2]]),
+            b: ivy.array([[8, 10],
+                         [9, 6],
+                         [6, 7]])
+        }
 
-        With device argument and no out argument specified and int for shape:
+        With one :code:`ivy.Container` input, device argument and no out argument specified and int for shape:
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=3, device='gpu:1')
+        >>> x = ivy.Container.randint(low=ivy.Container(a=5,b=20,c=40), high=100, shape=3, device='gpu:1')
         >>> print(x)
-        ivy.array([4,7,1])
+        {
+            a: ivy.array([90, 87, 62]),
+            b: ivy.array([52, 95, 37]),
+            c: ivy.array([95, 90, 42])
+        }
 
-        With no device argument and out argument specified and int for shape:
+        With one :code:`ivy.Container` input, no device argument and out argument specified and int for shape:
 
-        >>> x = ivy.Container.randint(low=ivy.Container(a=1), high=ivy.Container(b=10), shape=5, out=x)
+        >>> x = ivy.Container(a=1,b=2)
+        >>> y = ivy.Container.randint(low=ivy.Container(a=3,b=5,c=10,d=7), high=14, shape=5, out=x)
         >>> print(x)
-        ivy.array([4,7,1,8,5])
+        {
+            a: ivy.array([4, 10, 13, 3, 3]),
+            b: ivy.array([12, 11, 11, 12, 5]),
+            c: ivy.array([10, 13, 11, 13, 12]),
+            d: ivy.array([12, 7, 8, 11, 8])
+        }
+
+        With two :code:`ivy.Container` input, no device argument, and no out argument specified and int arguemnt for shape:
+
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=ivy.Container(a=5, b= 15, c=2), shape=2)
+        >>> print(x)
+        {
+            a: ivy.array([1, 2]),
+            b: ivy.array([14, 10])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "randint",
