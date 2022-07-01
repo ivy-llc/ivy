@@ -6,7 +6,7 @@ from typing import Union, Tuple, Optional, List
 def all(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -16,7 +16,7 @@ def all(
 def any(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
