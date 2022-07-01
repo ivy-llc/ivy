@@ -383,7 +383,9 @@ def subtract(
     return tf.subtract(x1, x2)
 
 
-def tan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def tan(
+        x: Union[tf.Tensor, tf.Variable]
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.tan(x)
 
 
