@@ -1479,7 +1479,8 @@ def floor(
 
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
-    - If ``x_i`` is ``0``, the result is ``0``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
 
     Parameters
