@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Union
 
 # local
 import ivy
