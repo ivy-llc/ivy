@@ -51,38 +51,31 @@ def cholesky(
      With :code:`ivy.Array` input:
 
      1. Returns a lower-triangular Cholesky factor L
-
      >>> x = ivy.array([[1., -2.], [2., 5.]])
      >>> l = ivy.cholesky(x)
      >>> print(l)
      ivy.array([[ 1., 0.], [ 2., 1.]])
 
-
      With :code:`ivy.NativeArray` input:
 
      2. Returns an upper-triangular cholesky factor U
-
      >>> x = ivy.array([[1., -2.], [2., 5.]])
      >>> u = ivy.cholesky(x, upper = True)
      >>> print(u)
      ivy.array([[ 1., -2.], [ 0.,  1.]])
 
-
-
      Instance Method Examples
      ------------------------
-
      With :code:`ivy.Container` input:
 
      3. Returns a lower-triangular Cholesky factor
-
      >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\
                            b = ivy.array([[2., 1.], [1., 1.]]))
      >>> y = x.cholesky()
      >>> print(y)
     {
-         a: ivy.array([[1.73, 0.], [-0.57,  1.63]])
-         b: ivy.array([[1.41, 0.], [0.70, 0.70]])
+         a: ivy.array([[1.73, 0.], [-0.577,  1.63]]),
+         b: ivy.array([[1.41, 0.], [0.707, 0.707]])
      }
 
     """
@@ -240,25 +233,23 @@ def det(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    ivy.array([-10.0])
+    ivy.array(-10.)
 
     >>> x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    ivy.array([293.47])
+    ivy.array(293.46997)
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
-    ivy.array([293.47])
+    ivy.array(293.46997)
 
     With :code:`ivy.Container` input:
 
@@ -266,10 +257,7 @@ def det(
                                  b = ivy.array([[2., 1.], [1., 1.]]))
     >>> y = ivy.det(x)
     >>> print(y)
-    {
-        a: ivy.array([8.0]),
-        b: ivy.array([1.0])
-    }
+    {a:ivy.array(8.),b:ivy.array(1.)}
 
     Instance Method Examples
     ------------------------
@@ -279,7 +267,7 @@ def det(
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = x.det()
     >>> print(y)
-    ivy.array([-10.0])
+    ivy.array(-10.)
 
     Using :code:`ivy.Container` instance method:
 
@@ -287,10 +275,8 @@ def det(
                                     b = ivy.array([[2., 1.], [1., 1.]]))
     >>> y = x.det()
     >>> print(y)
-    {
-        a: ivy.array([8.0]),
-        b: ivy.array([1.0])
-    }
+    {a:ivy.array(8.),b:ivy.array(1.)}
+
 
     """
     return current_backend(x).det(x, out=out)
@@ -334,6 +320,7 @@ def diagonal(
         last two dimensions and appending a dimension equal to the size of the resulting
         diagonals. The returned array must have the same data type as ``x``.
 
+
     Functional Examples
     ------------------
 
@@ -341,9 +328,11 @@ def diagonal(
 
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
+
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
+
 
     >>> x = ivy.array([[[1., 2.],\
                         [3., 4.]],\
@@ -356,9 +345,11 @@ def diagonal(
 
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
+
     >>> d = ivy.diagonal(x, 1)
     >>> print(d)
-    ivy.array([1.])
+    ivy.array([2.])
+
 
     >>> x = ivy.array([[0, 1, 2],\
                        [3, 4, 5],\
@@ -406,7 +397,7 @@ def diagonal(
                               [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
-    ivy.array([[1., 4.]])
+    ivy.array([1., 4.])
 
     >>> x = ivy.native_array([[[ 0,  1,  2],\
                                [ 3,  4,  5],\
@@ -429,6 +420,7 @@ def diagonal(
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([0, 4, 8])
+
 
     """
     return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2, out=out)
@@ -763,6 +755,7 @@ def outer(
                 [10., 12., 14., 16.],
                 [15., 18., 21., 24.],
                 [20., 24., 28., 32.]])
+
     >>> d = ivy.outer(x, 1)
     >>> print(d)
     ivy.array([[1.],
@@ -789,6 +782,7 @@ def outer(
                 [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
                 [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
                 [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])
+
     """
     return current_backend(x1, x2).outer(x1, x2, out=out)
 
@@ -1072,33 +1066,17 @@ def tensordot(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     1. Axes = 0 : tensor product
-
     >>> x = ivy.array([[1., 2.], [2., 3.]])
     >>> y = ivy.array([[3., 4.], [4., 5.]])
     >>> res = ivy.tensordot(x, y, axes =0)
     >>> print(res)
-    ivy.array([[[[ 3.,  4.],
-                  [ 4.,  5.]],
-
-                 [[ 6.,  8.],
-                  [ 8., 10.]]],
-
-                [[[ 6.,  8.],
-                  [ 8., 10.]],
-
-                 [[ 9., 12.],
-                  [12., 15.]]]])
-
-
+    ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     2. Axes = 1 : tensor dot product
-
     >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
     >>> y = ivy.native_array([[1.], [2.], [3.]])
     >>> res = ivy.tensordot(x, y, axes = 1)
@@ -1107,11 +1085,9 @@ def tensordot(
                 [26.],
                 [20.]])
 
-
     With :code:`ivy.Container` input:
 
     3. Axes = 2: (default) tensor double contraction
-
     >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),\
                           b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
     >>> y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),\
@@ -1119,7 +1095,7 @@ def tensordot(
     >>> res = ivy.tensordot(x, y)
     >>> print(res)
     {
-        a: ivy.array(89.)
+        a: ivy.array(89.),
         b: ivy.array(76.)
     }
 

@@ -7,7 +7,6 @@ from io import StringIO
 import sys
 import re
 import inspect
-
 import numpy as np
 import math
 from typing import Union, List
@@ -302,8 +301,9 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
             # noinspection PyBroadException
             try:
                 exec(line)
-            except Exception:
-                return False
+            except Exception as e:
+                # print(e," ",ivy.current_backend_str(), line)
+                raise e
 
     output = f.getvalue()
     output = output.rstrip()
@@ -333,6 +333,14 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
+        print(
+            "output for ",
+            fn_name,
+            " on run: ",
+            output,
+            "\noutput in docs :",
+            parsed_output,
+        )
         ivy.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
