@@ -10,7 +10,6 @@ from ivy.func_wrapper import handle_nestable
 
 
 @handle_nestable
-
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
