@@ -261,7 +261,7 @@ def multinomial(
     )
 
 
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
 @handle_nestable
@@ -320,7 +320,10 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device, out=out)
+    res = current_backend().randint(low, high, shape, device=device)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
