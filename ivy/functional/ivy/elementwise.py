@@ -215,7 +215,7 @@ def add(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-     Examples
+    Examples
     --------
     With :code:`ivy.Array` inputs:
     >>> x = ivy.array([1, 2, 3])
