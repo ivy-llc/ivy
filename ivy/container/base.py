@@ -197,11 +197,11 @@ class ContainerBase(dict, abc.ABC):
         # as inputs
         ret = ivy.Container.multi_map(
             map_fn,
-            conts, 
-            key_chains, 
-            to_apply, 
+            conts,
+            key_chains,
+            to_apply,
             prune_unapplied,
-            map_nests=map_sequences
+            map_nests=map_sequences,
         )
         if ivy.exists(out):
             out.inplace_update(ret)
@@ -626,7 +626,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
-        
+
         Returns
         -------
             Container

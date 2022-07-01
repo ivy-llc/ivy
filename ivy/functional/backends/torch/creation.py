@@ -38,7 +38,13 @@ def _differentiable_linspace(start, stop, num, device, dtype=None):
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
-    start, stop=None, step=1, *, dtype: torch.dtype = None, device: torch.device
+    start,
+    stop=None,
+    step=1,
+    *,
+    dtype: torch.dtype = None,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     if stop is None:
         stop = start
@@ -54,18 +60,20 @@ def arange(
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device
+                start, stop, step=step, dtype=torch.int64, device=device, out=out
             ).to(torch.int32)
         else:
-            return torch.arange(start, stop, step=step, device=device)
+            return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
         if dtype in [torch.int8, torch.uint8, torch.int16]:
             return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device
+                start, stop, step=step, dtype=torch.int64, device=device, out=out
             ).to(dtype)
         else:
-            return torch.arange(start, stop, step=step, dtype=dtype, device=device)
+            return torch.arange(
+                start, stop, step=step, dtype=dtype, device=device, out=out
+            )
 
 
 def asarray(
@@ -111,12 +119,17 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]], *, dtype: torch.dtype, device: torch.device
+    shape: Union[int, Tuple[int]],
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.empty(
         shape,
         dtype=as_native_dtype(default_dtype(dtype)),
         device=as_native_dev(default_device(device)),
+        out=out,
     )
 
 
@@ -136,25 +149,33 @@ def eye(
     *,
     dtype: torch.dtype,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
     if n_cols is None:
         n_cols = n_rows
-    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
     if k == 0:
         return i
     elif -n_rows < k < 0:
         return torch.concat(
-            [torch.zeros([-k, n_cols], dtype=dtype, device=device), i[: n_rows + k]], 0
+            [
+                torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
+                i[: n_rows + k],
+            ],
+            0,
         )
     elif 0 < k < n_cols:
         return torch.concat(
-            [torch.zeros([n_rows, k], dtype=dtype, device=device), i[:, : n_cols - k]],
+            [
+                torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
+                i[:, : n_cols - k],
+            ],
             1,
         )
     else:
-        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
+        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
 
 
 def from_dlpack(x):
@@ -167,12 +188,14 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.full(
         shape_to_tuple(shape),
         fill_value,
         dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
         device=device,
+        out=out,
     )
 
 
@@ -326,7 +349,11 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 # noinspection PyShadowingNames
 def ones(
-    shape: Union[int, Tuple[int]], *, dtype: torch.dtype, device: torch.device
+    shape: Union[int, Tuple[int]],
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype_val: torch.dtype = as_native_dtype(dtype)
     device = default_device(device)
@@ -342,12 +369,16 @@ def ones_like(
     return torch.ones_like(x, dtype=dtype, device=as_native_dev(device))
 
 
-def tril(x: torch.Tensor, k: int = 0) -> torch.Tensor:
-    return torch.tril(x, diagonal=k)
+def tril(
+    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.tril(x, diagonal=k, out=out)
 
 
-def triu(x: torch.Tensor, k: int = 0) -> torch.Tensor:
-    return torch.triu(x, diagonal=k)
+def triu(
+    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.triu(x, diagonal=k, out=out)
 
 
 def zeros(
@@ -355,12 +386,9 @@ def zeros(
     *,
     dtype: torch.dtype,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    return torch.zeros(
-        shape,
-        dtype=dtype,
-        device=device,
-    )
+    return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 
 def zeros_like(

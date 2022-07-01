@@ -1,6 +1,5 @@
 # global
 import math
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable
@@ -110,7 +109,9 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 @handle_out_argument
 @handle_nestable
 def broadcast_to(
-    x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Tuple[int, ...],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Broadcasts an array to a specified shape.
 
@@ -129,7 +130,7 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-    return current_backend(x).broadcast_to(x, shape)
+    return current_backend(x).broadcast_to(x, shape, out=out)
 
 
 @to_native_arrays_and_back
@@ -181,6 +182,7 @@ def astype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
     *,
     copy: bool = True,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -224,7 +226,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return current_backend(x).astype(x, dtype, copy=copy)
+    return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
 
 # Extra #
@@ -777,6 +779,34 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 
 
 @handle_nestable
+def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
+    """Returns the supported data types of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    ('int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool')
+    """
+    valid = list(ivy.valid_dtypes)
+    for d in list(function_unsupported_dtypes(fn)):
+        if d in valid:
+            valid.remove(d)
+    return ivy.as_native_dtype(valid)
+
+
+@handle_nestable
 def function_unsupported_dtypes(fn: Callable) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
@@ -803,14 +833,16 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
             backend_str = ivy.current_backend_str()
             if backend_str in fn_unsupported_dtypes:
                 unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+            if "all" in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes["all"]
         else:
             unsupported_dtypes += fn_unsupported_dtypes
     return tuple(set(unsupported_dtypes))
 
 
 def promote_types(
-        type1: Union[ivy.Dtype, ivy.NativeDtype],
-        type2: Union[ivy.Dtype, ivy.NativeDtype],
+    type1: Union[ivy.Dtype, ivy.NativeDtype],
+    type2: Union[ivy.Dtype, ivy.NativeDtype],
 ):
     """
     Promotes the datatypes type1 and type2, returning the data type they promote to
@@ -831,8 +863,8 @@ def promote_types(
 
 
 def type_promote_arrays(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
 ):
     """
     Type promote the input arrays, returning new arrays with the shared correct
