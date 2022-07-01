@@ -1,6 +1,5 @@
 # global
 import warnings
-import torch
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
@@ -43,12 +42,11 @@ def test_docstrings(backend):
         "unique_all",
     ]
 
-    skip_list_temp=['outer', 'argmax', 'split', 'cumprod', 'where', 'conv3d_transpose']
+    skip_list_temp = ['outer', 'argmax', 'split',
+                      'cumprod', 'where', 'conv3d_transpose']
 
-    #comment out this line in future to check for the functions in temp skip list
-    to_skip+=skip_list_temp
-
-
+    # comment out this line in future to check for the functions in temp skip list
+    to_skip += skip_list_temp
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
@@ -79,6 +77,5 @@ def test_docstrings(backend):
             )
         )
         assert success
-
 
     ivy.unset_backend()
