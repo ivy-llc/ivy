@@ -77,7 +77,7 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input, no device argument, and no out argument specified and int arguemnt for shape:
+        With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=20, shape=2)
         >>> print(x)
@@ -85,8 +85,6 @@ class ContainerWithRandom(ContainerBase):
             a: ivy.array([10, 15]),
             b: ivy.array([16, 12])
         }
-
-        With one :code:`ivy.Container` input, no device argument and no out argument specified and sequence for shape:
 
         >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=4), high=15, shape=(3,2))
         >>> print(x)
@@ -99,8 +97,6 @@ class ContainerWithRandom(ContainerBase):
                          [6, 7]])
         }
 
-        With one :code:`ivy.Container` input, device argument and no out argument specified and int for shape:
-
         >>> x = ivy.Container.randint(low=ivy.Container(a=5,b=20,c=40), high=100, shape=3, device='gpu:1')
         >>> print(x)
         {
@@ -108,8 +104,6 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([52, 95, 37]),
             c: ivy.array([95, 90, 42])
         }
-
-        With one :code:`ivy.Container` input, no device argument and out argument specified and int for shape:
 
         >>> x = ivy.Container(a=1,b=2)
         >>> y = ivy.Container.randint(low=ivy.Container(a=3,b=5,c=10,d=7), high=14, shape=5, out=x)
@@ -121,7 +115,7 @@ class ContainerWithRandom(ContainerBase):
             d: ivy.array([12, 7, 8, 11, 8])
         }
 
-        With two :code:`ivy.Container` input, no device argument, and no out argument specified and int arguemnt for shape:
+        With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=ivy.Container(a=5, b= 15, c=2), shape=2)
         >>> print(x)
