@@ -11,13 +11,16 @@ from ivy import inf
 # -------------------#
 
 
-def cholesky(x: torch.Tensor, upper: bool = False) -> torch.Tensor:
+def cholesky(
+    x: torch.Tensor, upper: bool = False, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if not upper:
-        ret = torch.linalg.cholesky(x)
+        ret = torch.linalg.cholesky(x, out=out)
     else:
         ret = torch.transpose(
             torch.linalg.cholesky(
-                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2),
+                out=out,
             ),
             dim0=len(x.shape) - 1,
             dim1=len(x.shape) - 2,
@@ -80,8 +83,10 @@ def matrix_norm(
     return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
 
 
-def matrix_power(x: torch.Tensor, n: int) -> torch.Tensor:
-    return torch.linalg.matrix_power(x, n)
+def matrix_power(
+    x: torch.Tensor, n: int, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.matrix_power(x, n, out=out)
 
 
 # noinspection PyPep8Naming
@@ -116,13 +121,15 @@ def pinv(
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-def qr(x: torch.Tensor, mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
-        q, r = torch.qr(x, some=True)
+        q, r = torch.qr(x, some=True, out=out)
         ret = res(q, r)
     elif mode == "complete":
-        q, r = torch.qr(x, some=False)
+        q, r = torch.qr(x, some=False, out=out)
         ret = res(q, r)
     else:
         raise Exception(
@@ -131,9 +138,11 @@ def qr(x: torch.Tensor, mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-def slogdet(x: torch.Tensor) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
+def slogdet(
+    x: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = torch.linalg.slogdet(x)
+    sign, logabsdet = torch.linalg.slogdet(x, out=out)
     return results(sign, logabsdet)
 
 
@@ -168,11 +177,11 @@ def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True
+    x: torch.Tensor, full_matrices: bool = True, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
+    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices, out=out)
     ret = results(U, D, VT)
     return ret
 
@@ -225,8 +234,9 @@ def vector_norm(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
+    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
 
     if py_normalized_vector.shape == ():
         ret = torch.unsqueeze(py_normalized_vector, 0)

@@ -528,8 +528,13 @@ def gpu_is_available() -> bool:
     return current_backend().gpu_is_available()
 
 
-def num_cpu_cores() -> int:
+def num_cpu_cores(logical=True) -> int:
     """Determine the number of cores available in the cpu.
+
+    Parameters
+    ----------
+    logical
+        Whether request is for number of physical or logical cores available in CPU
 
     Returns
     -------
@@ -538,11 +543,14 @@ def num_cpu_cores() -> int:
 
     Examples
     --------
-    >>> print(ivy.num_cpu_cores())
+    >>> print(ivy.num_cpu_cores(False))
     2
 
     """
-    return psutil.cpu_count()
+    if logical:
+        return psutil.cpu_count(logical=logical)
+    else:
+        return psutil.cpu_count(logical=False)
 
 
 def num_gpus() -> int:
@@ -655,6 +663,24 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     ----------
     device
         The device to set as the default device
+
+    Examples
+    --------
+    >>> ivy.set_default_device("cpu")
+    >>> ivy.default_device()
+    'cpu'
+    
+    >>> ivy.set_backend("torch")
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda', index=0)
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_default_device(device)
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda')
 
     """
     global default_device_stack
