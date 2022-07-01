@@ -6,7 +6,7 @@ settings.load_profile("ci")
 
 skip_ids = []
 
-skips_path = "ivy_tests/skips.txt"
+skips_path = r"C:\ivy_tests\skips.txt"
 if skips_path.exists():
     with open(skips_path) as f:
         for line in f:
