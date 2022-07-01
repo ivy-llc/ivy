@@ -9,16 +9,14 @@ from ivy.functional.backends.jax import JaxArray
 def all(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
 ) -> JaxArray:
-    ret = jnp.all(x, axis, keepdims=keepdims)
-    return ret
+    return jnp.all(x, axis, keepdims=keepdims)
 
 
 def any(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
 ) -> JaxArray:
-    ret = jnp.any(x, axis, keepdims=keepdims)
-    return ret
+    return jnp.any(x, axis, keepdims=keepdims)
