@@ -439,6 +439,22 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.ceil. This method simply wraps the
+        function, and so the docstring for ivy.ceil also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = x.ceil()
+        >>> print(y)
+        {
+            a: ivy.array([3., 1., -1.]),
+            b: ivy.array([6., -3., 6.])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.ceil(x_) if ivy.is_array(x_) else x_,
