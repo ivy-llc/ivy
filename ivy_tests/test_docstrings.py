@@ -25,6 +25,7 @@ def test_docstrings(backend):
     to_skip = [
         "random_normal",
         "random_uniform",
+        "randint",
         "shuffle",
         "num_gpus",
         "current_backend",
