@@ -4766,6 +4766,7 @@ class ContainerBase(dict, abc.ABC):
                     .replace(")dtype=", "), dtype=")
                     .replace(", ),", ",),")
                 )
+                json_dumped_str = re.sub('}, $', '}', json_dumped_str)
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
