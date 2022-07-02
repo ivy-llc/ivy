@@ -2560,24 +2560,22 @@ def not_equal(
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
                            b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
-                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.array([1, 3, 5])
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
+        a: ivy.array([False, True, True]),
+        b: ivy.array([False, False, False])
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
                            b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
-                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> x2 = ivy.array([2.0, 1.0, 0.0])
     >>> y = ivy.not_equal(x1, x2)
     >>> print(y)
     {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, False, False])
+        a: ivy.array([True, True, True]),
+        b: ivy.array([True, True, True])
     }
 
     Instance Method Examples
@@ -2666,24 +2664,22 @@ def not_equal(
 
     >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
                            b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
-                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.array([1, 0, 3])
     >>> y = (x1 != x2)
     >>> print(y)
     {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, True, True])
     }
 
     >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
                            b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
-                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> x2 = ivy.array([1.0, 2.0, 5.0])
     >>> y = (x1 != x2)
     >>> print(y)
     {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, False, False])
+        a: ivy.array([False, False, True]),
+        b: ivy.array([False, True, False])
     }
 
     """
