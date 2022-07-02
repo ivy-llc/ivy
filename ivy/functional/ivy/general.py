@@ -1395,10 +1395,10 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     """
     if ivy.is_array(shape):
         raise Exception("shape_to_tuple does not accept arrays as input")
-    if isinstance(shape, int):
+    if isinstance(shape, tuple):
         return shape
     else:
-        return tuple(shape)
+        return (shape,)
 
 
 @handle_nestable
