@@ -6,7 +6,7 @@ from typing import Union, Tuple, Optional, List
 def all(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
@@ -19,7 +19,7 @@ def all(
 def any(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)

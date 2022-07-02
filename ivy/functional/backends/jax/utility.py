@@ -9,7 +9,7 @@ from ivy.functional.backends.jax import JaxArray
 def all(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.all(x, axis, keepdims=keepdims)
 
@@ -17,6 +17,6 @@ def all(
 def any(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
 ) -> JaxArray:
     return jnp.any(x, axis, keepdims=keepdims)
