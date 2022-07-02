@@ -79,15 +79,16 @@ def squeeze(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        if x.shape[axis] > 1:
+        if axis < -x.dim() or x.dim() - 1 < axis:
             raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[axis]
+                "Expected dimension of size [{}, {}], but found dimension size {}".format(
+                    -x.dim(), x.dim() - 1, axis
                 )
             )
-        ret = torch.squeeze(x, axis)
-        return ret
-    elif isinstance(axis, tuple):
+        return torch.squeeze(x, axis)
+    if axis is None:
+        return torch.squeeze(x)
+    if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
         (len(x.shape) - abs(element)) if element < 0 else element for element in axis
@@ -102,8 +103,8 @@ def squeeze(
                 )
             )
         else:
-            x = torch.squeeze(x, i)
-    return x
+            ret = torch.squeeze(x, i)
+    return ret
 
 
 def stack(

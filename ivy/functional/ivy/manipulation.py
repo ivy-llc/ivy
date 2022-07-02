@@ -609,7 +609,7 @@ def squeeze(
 
     >>> x = ivy.Container(a=ivy.array([10., 11., 12.]), \
                           b=ivy.array([13., 14., 15.]))
-    >>> y = x.repeat(2)
+    >>> y = x.squeeze(2)
     >>> print(y)
     {
         a: ivy.array([10., 11., 12.]),
