@@ -1422,6 +1422,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply: bool = True,
             prune_unapplied: bool = False,
             map_sequences: bool = False,
+            *,
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1457,6 +1458,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1475,7 +1477,7 @@ class ContainerWithElementwise(ContainerBase):
         }
         """
         return self.static_tanh(
-            self, key_chains, to_apply, prune_unapplied, map_sequences, out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def trunc(

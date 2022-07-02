@@ -3219,7 +3219,7 @@ def tan(
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to the hyperbolic tangent, having
        domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element ``x_i`` of

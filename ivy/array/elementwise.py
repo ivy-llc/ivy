@@ -307,7 +307,7 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.tan(self._data, out=out)
 
-    def tanh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method
