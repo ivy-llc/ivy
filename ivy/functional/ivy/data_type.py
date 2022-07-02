@@ -70,20 +70,27 @@ def can_cast(
     >>> x = ivy.array([1., 2., 3.])
     >>> print(x.dtype)
     float32
+
     >>> print(ivy.can_cast(x, ivy.float64))
     True
 
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype='int16')
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
+        dtype='int16')
     >>> print(x.dtype)
-    int16
+    <dtype:'int16'>
+
     >>> print(ivy.can_cast(x, 'uint8'))
     False
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+        b=ivy.array([3, 4, 5]))
     >>> print(x.a.dtype, x.b.dtype)
     float32 int32
+
     >>> print(ivy.can_cast(x, 'int64'))
     {
         a: false,
