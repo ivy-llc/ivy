@@ -839,8 +839,8 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_supported_dtypes(ivy.acosh))
-    ('int8', 'int16', 'int32', 'int64', 'uint8', \
-     'bfloat16', 'float32', 'float64', 'bool')
+    ['int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool']
     """
     valid = list(ivy.valid_dtypes)
     for d in list(function_unsupported_dtypes(fn)):
@@ -867,7 +867,8 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
-    ('float16', 'uint16', 'uint32', 'uint64')
+    ('float16','uint16','uint32','uint64')
+
     """
     unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
