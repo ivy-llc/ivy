@@ -1,8 +1,9 @@
 """Collection of gradient Ivy functions."""
 
 # local
+from xmlrpc.client import Boolean
 import ivy
-from typing import Union
+from typing import Callable, Union
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -180,7 +181,7 @@ def stop_gradient(x, preserve_type=True):
 
 
 @to_native_arrays_and_back
-def execute_with_gradients(func, xs, retain_grads=False):
+def execute_with_gradients(func: Callable, xs: Union[ivy.Array, ivy.NativeArray], retain_grads:bool =  False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
     y value.
