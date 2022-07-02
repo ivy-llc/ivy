@@ -1,7 +1,6 @@
 """Collection of gradient Ivy functions."""
 
 # local
-from xmlrpc.client import Boolean
 import ivy
 from typing import Callable, Union
 from ivy.backend_handler import current_backend
