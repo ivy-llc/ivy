@@ -90,10 +90,6 @@ def test_sort(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     # we do not want any nans
     x = data.draw(
         helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
