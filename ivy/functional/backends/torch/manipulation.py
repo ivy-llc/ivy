@@ -79,10 +79,10 @@ def squeeze(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        if axis < -x.dim() or x.dim() - 1 < axis:
+        if x.dim() > 0 and (axis < -x.dim() or x.dim() <= axis):
             raise ValueError(
                 "Expected dimension of size [{}, {}], but found dimension size {}"
-                .format(-x.dim(), x.dim() - 1, axis)
+                .format(-x.dim(), x.dim(), axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:
