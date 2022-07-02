@@ -23,10 +23,8 @@ def vmap(func, in_axes=0, out_axes=0):
                 assert (len(args)) == len(in_axes)
             except AssertionError:
                 raise Exception("Length of in_axis and positional args incompatible")
-
-        if isinstance(in_axes, (tuple, list)):
-            for i in range(len(in_axes)):
-                args[i] = np.moveaxis(args[i], in_axes[i], 0)
+            for i, axis in enumerate(in_axes):
+                args[i] = np.moveaxis(args[i], axis, 0)
         elif isinstance(in_axes, int):
             args[0] = np.moveaxis(args[0], in_axes, 0)
         if len(args) == 1:
