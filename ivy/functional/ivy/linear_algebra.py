@@ -614,7 +614,7 @@ def matmul(
 @handle_nestable
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
-    ord: Optional[Union[int, float, Literal['inf', '-inf', "fro", "nuc"]]] = "fro",
+    ord: Optional[Union[int, float, Literal["inf", "-inf", "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1233,7 +1233,7 @@ def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal['inf', '-inf']] = 2,
+    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
     *,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
