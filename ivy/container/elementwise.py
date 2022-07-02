@@ -1459,15 +1459,23 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.tanh(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.tanh()
+        >>> print(y)
+        {
+            a:ivy.array([0., 0.76, 0.96]),
+            b:ivy.array([0.995, 0.999, 0.9999])
+        }
+        """
+        return self.static_tanh(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out
         )
 
     def trunc(
