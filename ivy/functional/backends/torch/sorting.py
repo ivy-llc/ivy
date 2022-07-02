@@ -9,7 +9,6 @@ def argsort(
     ret = torch.argsort(x, dim=axis, descending=descending)
     return ret
 
-
 def sort(
     x: torch.Tensor,
     axis: int = -1,
