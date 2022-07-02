@@ -191,8 +191,9 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 </section>
 <section id="api-static-methods">
 <h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this heading"></a></h2>
-<p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements all functions in the functional API as
-<em>static</em> methods. The main reason for this is to support the <em>nestable</em> property of all functions in the API,
+<p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements
+<strong>all nestable functions</strong> in the functional API as <em>static</em> methods.
+The main reason for this is to support the <em>nestable</em> property of all functions in the API,
 which is explained in detail in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
 <p>To recap, what this means is that every function can arbitrarily accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
 of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
@@ -220,7 +221,12 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.</p
 <p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
 They enable functions in Ivy’s functional API to be called as instance methods on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
 The difference is that with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
-the API function is applied recursively to all the leaves of the container.</p>
+the API function is applied recursively to all the leaves of the container.
+The <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance methods should <strong>exactly match</strong> the instance methods
+of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, both in terms of the methods implemented and the argument
+which <code class="code docutils literal notranslate"><span class="pre">self</span></code> replaces in the function being called. This means <code class="code docutils literal notranslate"><span class="pre">self</span></code> should
+always replace the first array argument in the function, which is <em>not necessarily the
+first argument</em>.</p>
 <p>Under the hood, every <em>instance</em> method calls the corresponding <em>static</em> method.
 For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92">ivy.Container.add</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259">ivy.Container.tan</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_tan</span></code>,
