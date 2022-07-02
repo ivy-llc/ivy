@@ -171,7 +171,6 @@ def dtype(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x1 = ivy.array([1, 0, 1, -1, 0])
@@ -198,7 +197,8 @@ def dtype(
 
     With :code:`ivy.Container` input:
 
-    >>> x1 = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), b=ivy.native_array([1, 0, -1, 0, 1]))
+    >>> x1 = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]),\
+                    b=ivy.native_array([1, 0, -1, 0, 1]))
     >>> y = ivy.dtype(x1, as_native=True)
     >>> print(y)
     <bound method ContainerBase.dtype of {
@@ -206,7 +206,8 @@ def dtype(
         b: array([1, 0, -1, 0, 0], dtype=int32)
     }>
 
-    >>> x1 = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]), b=ivy.array([1, 0, 0, 0, 1]))
+    >>> x1 = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),\
+                            b=ivy.array([1, 0, 0, 0, 1]))
     >>> y = ivy.dtype(x1, as_native=True)
     >>> print(y)
     <bound method ContainerBase.dtype of {
