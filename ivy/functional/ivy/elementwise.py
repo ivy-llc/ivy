@@ -2510,7 +2510,7 @@ def not_equal(
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out = x1)
     >>> print(y)
-    ivy.array([1, 1, 1, 1])
+    ivy.array([1, 0, 0, 1])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
