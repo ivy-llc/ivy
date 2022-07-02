@@ -95,14 +95,13 @@ def squeeze(
     normalise_axis.sort()
     axis_updated_after_squeeze = [dim - key for (key, dim) in enumerate(normalise_axis)]
     for i in axis_updated_after_squeeze:
-        if x.shape[i] > 1:
-            raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[i]
+        for dim in normalise_axis:
+            if dim < -x.dim() or x.dim() - 1 < dim:
+                raise ValueError(
+                    "Expected dimension of size [{}, {}], but found dimension size {}"
+                    .format(-x.dim(), x.dim() - 1, dim)
                 )
-            )
-        else:
-            ret = torch.squeeze(x, i)
+        ret = torch.squeeze(x, i)
     return ret
 
 
