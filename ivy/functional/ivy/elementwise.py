@@ -3290,7 +3290,8 @@ def tanh(
 
        With :code:`ivy.Container` input:
 
-       >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+       >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                             b=ivy.array([3., 4., 5.]))
        >>> y = ivy.tanh(x)
        >>> print(y)
        {
@@ -3310,7 +3311,8 @@ def tanh(
 
        Using :code:`ivy.Container` instance method:
 
-       >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+       >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                             b=ivy.array([3., 4., 5.]))
        >>> y = x.tanh()
        >>> print(y)
        {
