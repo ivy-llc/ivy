@@ -176,6 +176,50 @@ check out this `Atlassian tutorial`_.
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
+Who To Ask
+-------------
+
+Quite often, you would like to get a better understanding of the logic in the
+implementation of Ivy, raising issues or starting discussions with the context
+of who made what changes. Here is a common workflow to help get around the
+problem of "who to ask" by using,
+
+With Command Line:
+****
+**git blame** - Show what revision and author last modified each line of a file
+
+**git log**   - Show commit logs
+
+.. code-block:: none
+
+    # Eg: From line 16 to next 5 lines since past 2 weeks
+    git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
+    # Deeper look at what author changed in the files in commit retrieved from above step
+    git log <commit_id> -p
+
+You are welcome to tag members using "@" in our team, who you think would be best
+suited to interact with based on the information gained from above steps.
+
+With Browser:
+****
+**Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
+or view the revision history of a single line within a file.
+
+.. image:: content/git_blame_1.png
+   :width: 420
+
+This view can be toggled from option in left vertical pane or from the "blame" icon in top-right
+as highlighted above.
+
+.. image:: content/git_blame_2.png
+   :width: 420
+
+Each time you click the highlighted icon, the previous revision information
+for that line, including who committed the change and when is shown.
+
+.. image:: content/git_blame_3.png
+   :width: 420
+
 Pull Requests
 -------------
 
@@ -291,11 +335,18 @@ With Docker
         
 
 #. Through the command line (With docker):
-    #. We need to first enter inside the docker container and change into the :code:`ivy` directory using the following command.
+    #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
 
         .. code-block:: none
 
-            docker run --rm -it --entrypoint bash unifyai/ivy
+            docker exec <container-name> rm -rf ivy
+            docker cp ivy <container-name>:/ 
+
+    #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
+
+        .. code-block:: none
+
+            docker exec -it ivy_container bash 
             cd ivy
 
     #. Run the test using the pytest command.
@@ -411,6 +462,15 @@ With Docker
                 
                 python -m pytest ivy_tests/ --no-header --no-summary -q
 
+#. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
+    #. :code:`device`: 
+        #. This flag enables setting of the device where the tests would be run. 
+        #. Possible values being :code:`cpu` and :code:`gpu`.
+        #. Default value is :code:`cpu`
+    #. :code:`backend`:
+        #. This flag enables running the tests for particular backends.
+        #. The values of this flag could be any possible combination of :code:`jax`, :code:`numpy`, :code:`tensorflow` and :code:`torch`.
+        #. Default value is :code:`jax,numpy,tensorflow,torch`.
 
 **Round Up**
 
