@@ -67,7 +67,7 @@ def stack(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[mx.nd.NDArray] = None
+    out: Optional[mx.nd.NDArray] = None,
 ):
     if type(x) == ivy.Array and x.shape == ():
         if axis is None or axis == 0 or axis == -1:

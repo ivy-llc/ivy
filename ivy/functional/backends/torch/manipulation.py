@@ -76,14 +76,13 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if axis < -x.dim() or x.dim() - 1 < axis:
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}".format(
-                    -x.dim(), x.dim() - 1, axis
-                )
+                "Expected dimension of size [{}, {}], but found dimension size {}"
+                .format(-x.dim(), x.dim() - 1, axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:
