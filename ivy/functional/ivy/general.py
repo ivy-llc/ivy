@@ -1404,6 +1404,14 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
+    >>> x = [ivy.array([1., 2., 3.]).shape, ivy.array([4., 5., 6.]).shape]
+    >>> print(ivy.shape_to_tuple(x))
+    ((3,), (3,))
+
+    >>> x = [ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape]
+    >>> print(ivy.shape_to_tuple(x))
+    ((2, 3), (2, 3))
+
     >>> x = ivy.array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
@@ -1411,6 +1419,14 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
+
+    >>> x = (ivy.array([1., 2., 3.]).shape, ivy.array([4., 5., 6.]).shape)
+    >>> print(ivy.shape_to_tuple(x))
+    ((3,), (3,))
+
+    >>> x = (ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape)
+    >>> print(ivy.shape_to_tuple(x))
+    ((2, 3), (2, 3))
 
     With :code:`ivy.NativeArray.shape` input:
 
@@ -1422,6 +1438,14 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
+    >>> x = [ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape]
+    >>> print(ivy.shape_to_tuple(x))
+    ((3,), (3,))
+
+    >>> x = [ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape]
+    >>> print(ivy.shape_to_tuple(x))
+    ((2, 3), (2, 3))
+
     >>> x = ivy.native_array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
@@ -1429,6 +1453,14 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> x = ivy.native_array(((1., 2., 3.), (4., 5., 6.))).shape
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
+
+    >>> x = (ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape)
+    >>> print(ivy.shape_to_tuple(x))
+    ((3,), (3,))
+
+    >>> x = (ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape)
+    >>> print(ivy.shape_to_tuple(x))
+    ((2, 3), (2, 3))
 
     """
     if ivy.is_array(shape):
