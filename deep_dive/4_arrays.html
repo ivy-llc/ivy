@@ -173,8 +173,14 @@ The <code class="code docutils literal notranslate"><span class="pre">ivy.Array<
 such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/elementwise.py#L12">ArrayWithElementwise</a>,
 each of which implement the category-specific instance methods.</p>
 <p>Each instance method simply calls the functional API function internally,
-but passes in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> as the first <em>array</em> argument,
-which is <em>not necessarily the first argument</em>.</p>
+but passes in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> as the first <em>array</em> argument.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/63d9c26acced9ef40e34f7b4fc1c1a75017f9c69/ivy/array/elementwise.py#L22">ivy.Array.add</a> is a good example.
+However, it’s important to bear in mind that this is
+<em>not necessarily the first argument</em>, although in most cases it will be.
+We also <strong>do not</strong> set the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument to <code class="code docutils literal notranslate"><span class="pre">self</span></code> for instance methods.
+If the only array argument is the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, then we do not implement this
+instance method. For example, we do not implement an instance method for
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116">ivy.zeros</a>.</p>
 <p>Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/__init__.py#L148">programmatically</a>.
 This serves as a helpful backup in cases where some methods are accidentally missed out.</p>
