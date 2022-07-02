@@ -3228,6 +3228,7 @@ def tanh(
        **Special cases**
 
        For floating-point operands,
+
        - If ``x_i`` is ``NaN``, the result is ``NaN``.
        - If ``x_i`` is ``+0``, the result is ``+0``.
        - If ``x_i`` is ``-0``, the result is ``-0``.
@@ -3261,27 +3262,34 @@ def tanh(
        Functional Examples
        -------------------
        With :code:`ivy.Array` input:
+
        >>> x = ivy.array([0., 1., 2.])
        >>> y = ivy.tanh(x)
        >>> print(y)
        ivy.array([0., 0.76, 0.96])
+
        >>> x = ivy.array([0.5, -0.7, 2.4])
        >>> y = ivy.zeros(3)
        >>> ivy.tanh(x, out=y)
        >>> print(y)
        ivy.array([0.462, -0.604, 0.983])
+
        >>> x = ivy.array([[1.1, 2.2, 3.3],\
                            [-4.4, -5.5, -6.6]])
        >>> ivy.tanh(x, out=x)
        >>> print(x)
        ivy.array([[0.8, 0.976, 0.997],
            [-0.9997, -0.99997, -0.999996]])
+
        With :code:`ivy.NativeArray` input:
+
        >>> x = ivy.native_array([0., 1., 2.])
        >>> y = ivy.tanh(x)
        >>> print(y)
        ivy.array([0., 0.76, 0.96])
+
        With :code:`ivy.Container` input:
+
        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
        >>> y = ivy.tanh(x)
        >>> print(y)
@@ -3294,11 +3302,14 @@ def tanh(
        Instance Method Examples
        ------------------------
        Using :code:`ivy.Array` instance method:
+
        >>> x = ivy.array([0., 1., 2.])
        >>> y = x.tanh()
        >>> print(y)
        ivy.array([0., 0.76, 0.96])
+
        Using :code:`ivy.Container` instance method:
+
        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
        >>> y = x.tanh()
        >>> print(y)
