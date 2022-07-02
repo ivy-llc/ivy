@@ -1415,6 +1415,42 @@ class ContainerWithElementwise(ContainerBase):
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    @staticmethod
+    def static_tanh(
+            x: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_tanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.76, 0.96]),
+            b: ivy.array([0.995, 0.999, 0.9999])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "tanh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def tanh(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
