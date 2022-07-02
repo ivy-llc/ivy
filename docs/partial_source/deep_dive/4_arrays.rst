@@ -56,8 +56,14 @@ such as `ArrayWithElementwise`_,
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self._data` as the first *array* argument,
-which is *not necessarily the first argument*.
+but passes in :code:`self._data` as the first *array* argument.
+`ivy.Array.add`_ is a good example.
+However, it's important to bear in mind that this is
+*not necessarily the first argument*, although in most cases it will be.
+We also **do not** set the :code:`out` argument to :code:`self` for instance methods.
+If the only array argument is the :code:`out` argument, then we do not implement this
+instance method. For example, we do not implement an instance method for
+`ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
