@@ -1408,7 +1408,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     ((3,), (3,))
 
-    >>> x = [ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape]
+    >>> x = [ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape] # noqa
     >>> print(ivy.shape_to_tuple(x))
     ((2, 3), (2, 3))
 
@@ -1424,7 +1424,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     ((3,), (3,))
 
-    >>> x = (ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape)
+    >>> x = (ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape) # noqa
     >>> print(ivy.shape_to_tuple(x))
     ((2, 3), (2, 3))
 
@@ -1442,7 +1442,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     ((3,), (3,))
 
-    >>> x = [ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape]
+    >>> x = [ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape] # noqa
     >>> print(ivy.shape_to_tuple(x))
     ((2, 3), (2, 3))
 
@@ -1458,7 +1458,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     ((3,), (3,))
 
-    >>> x = (ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape)
+    >>> x = (ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape) # noqa
     >>> print(ivy.shape_to_tuple(x))
     ((2, 3), (2, 3))
 
