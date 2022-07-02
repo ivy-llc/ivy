@@ -176,8 +176,7 @@ def uint8_img_to_float_img(
     >>> image = ivy.reshape(x,(batch_size, h, w, d))
     >>> y = ivy.uint8_img_to_float_img(image)
     >>> print(y)
-    ivy.array([[[3.820471434542632e-37, 1.0082513512365273e-34],
-                [2.658462758989161e-32, 7.003653270560797e-30]]])
+    ivy.array([[[3.82e-37,1.01e-34],[2.66e-32,7.00e-30]]])
 
     """
     x_np = ivy.to_numpy(x).astype("uint8")
@@ -280,8 +279,8 @@ def linear_resample(
     Examples
     --------
     >>> data = ivy.array([[1, 2],[3, 4]])
-    >>> y = linear_resample(data, 5)
+    >>> y = ivy.linear_resample(data, 5)
     >>> print(y)
-    ivy.array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
+    ivy.array([[1.,1.25,1.5,1.75,2.],[3.,3.25,3.5,3.75,4.]])
     """
     return current_backend(x).linear_resample(x, num_samples, axis, out=out)
