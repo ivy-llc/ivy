@@ -88,8 +88,9 @@ There are many more examples, check out the abstract `ContainerBase`_ class to s
 API Static Methods
 ------------------
 
-Unlike the :code:`ivy.Array` class, the :code:`ivy.Container` also implements all functions in the functional API as
-*static* methods. The main reason for this is to support the *nestable* property of all functions in the API,
+Unlike the :code:`ivy.Array` class, the :code:`ivy.Container` also implements
+**all nestable functions** in the functional API as *static* methods.
+The main reason for this is to support the *nestable* property of all functions in the API,
 which is explained in detail in the :ref:`Function Types` section.
 
 To recap, what this means is that every function can arbitrarily accept :code:`ivy.Container` instances for **any**
@@ -124,6 +125,11 @@ The *API* instance methods serve a similar purpose to the instance methods of th
 They enable functions in Ivy's functional API to be called as instance methods on the :code:`ivy.Container` class.
 The difference is that with the :code:`ivy.Container`,
 the API function is applied recursively to all the leaves of the container.
+The :code:`ivy.Container` instance methods should **exactly match** the instance methods
+of the :code:`ivy.Array`, both in terms of the methods implemented and the argument
+which :code:`self` replaces in the function being called. This means :code:`self` should
+always replace the first array argument in the function, which is *not necessarily the
+first argument*.
 
 Under the hood, every *instance* method calls the corresponding *static* method.
 For example, `ivy.Container.add`_ calls :code:`ivy.Container.static_add`,
