@@ -541,8 +541,10 @@ def squeeze(
         an output array having the same data type and elements as ``x``.
 
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[[0, 1], [2, 3]]])
     >>> print(x.shape)
     (1, 2, 2)
@@ -575,6 +577,44 @@ def squeeze(
 
     >>> print(ivy.squeeze(x, axis=(0, 2)))
     [0, 1, 2]
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.NativeArray([0, 1, 2])
+    >>> print(ivy.squeeze(x))
+    ivy.array([0, 1, 2])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.squeeze(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[0., 1.],[ 2.,3.]])
+    >>> y = x.squeeze(2)
+    >>> print(y)
+    ivy.array([[0., 1.], [2., 3.]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([10., 11., 12.]), \
+                          b=ivy.array([13., 14., 15.]))
+    >>> y = x.repeat(2)
+    >>> print(y)
+    {
+        a: ivy.array([10., 11., 12.]),
+        b: ivy.array([13., 14., 15.])
+    }
     """
     return current_backend(x).squeeze(x, axis, out=out)
 
