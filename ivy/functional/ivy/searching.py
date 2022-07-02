@@ -21,7 +21,7 @@ from ivy.func_wrapper import (
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -117,7 +117,7 @@ def argmax(
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
