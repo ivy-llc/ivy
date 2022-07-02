@@ -12,7 +12,7 @@ class ArrayWithUtility(abc.ABC):
     def all(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -21,7 +21,7 @@ class ArrayWithUtility(abc.ABC):
     def any(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
