@@ -9,10 +9,6 @@ def argsort(
     ret = torch.argsort(x, dim=axis, descending=descending)
     return ret
 
-
-argsort.unsupported_dtypes = ("uint16", "uint32", "uint64",)
-
-
 def sort(
     x: torch.Tensor,
     axis: int = -1,
