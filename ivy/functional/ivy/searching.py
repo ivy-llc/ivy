@@ -321,6 +321,7 @@ def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
@@ -333,6 +334,9 @@ def where(
         values from which to choose when condition is True.
     x2
         values from which to choose when condition is False.
+    out
+        If provided, the result will be inserted into this array. It should be of the
+        appropriate shape and dtype.
 
     Returns
     -------
