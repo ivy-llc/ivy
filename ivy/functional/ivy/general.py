@@ -1440,11 +1440,11 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     >>> x = [ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape]
     >>> print(ivy.shape_to_tuple(x))
-    ((3,), (3,))
+    (torch.Size([3]),torch.Size([3]))
 
     >>> x = [ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape] # noqa
     >>> print(ivy.shape_to_tuple(x))
-    ((2, 3), (2, 3))
+    (torch.Size([2,3]),torch.Size([2,3]))
 
     >>> x = ivy.native_array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
@@ -1456,11 +1456,11 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
     >>> x = (ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape)
     >>> print(ivy.shape_to_tuple(x))
-    ((3,), (3,))
+    (torch.Size([3]),torch.Size([3]))
 
     >>> x = (ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape) # noqa
     >>> print(ivy.shape_to_tuple(x))
-    ((2, 3), (2, 3))
+   (torch.Size([2,3]),torch.Size([2,3]))
 
     """
     if ivy.is_array(shape):
