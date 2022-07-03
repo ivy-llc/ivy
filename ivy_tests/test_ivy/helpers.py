@@ -457,7 +457,7 @@ def create_args(input_dtypes, num_positional_args, as_variable_flags, all_as_kwa
     return args, kwargs, args_np, kwargs_np
 
 
-def test_array_method(
+def test_method(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     all_as_kwargs_np,
@@ -637,8 +637,8 @@ def test_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = None,
-    atol: float = 1e-06,
+    test_rtol: float = None,
+    test_atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
 ):
@@ -670,9 +670,9 @@ def test_function(
         current backend (framework).
     fn_name
         name of the function to test.
-    rtol
+    test_rtol
         relative tolerance value.
-    atol
+    test_atol
         absolute tolerance value.
     test_values
         if true, test for the correctness of the resulting values.
@@ -713,7 +713,7 @@ def test_function(
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,\
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
@@ -887,7 +887,7 @@ def test_function(
     ret_np_flat, ret_from_np_flat = get_flattened_array_returns(ret, ret_from_np)
 
     # value test
-    value_test(ret_np_flat, ret_from_np_flat, rtol, atol)
+    value_test(ret_np_flat, ret_from_np_flat, test_rtol, test_atol)
 
 
 def test_frontend_function(
