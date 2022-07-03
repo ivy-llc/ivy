@@ -851,10 +851,8 @@ def pinv(
 @to_native_arrays_and_back
 @handle_nestable
 def qr(
-    x: ivy.Array,
+    x: Union[ivy.Array, ivy.NativeArray],
     mode: str = "reduced",
-    *,
-    out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
@@ -891,7 +889,7 @@ def qr(
           dimensions must have the same size as those of the input x.
 
     """
-    return current_backend(x).qr(x, mode, out=out)
+    return current_backend(x).qr(x, mode)
 
 
 @to_native_arrays_and_back
