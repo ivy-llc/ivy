@@ -195,7 +195,7 @@ def stop_gradient(
 def execute_with_gradients(
     func: Callable,
     xs: Union[ivy.Array, ivy.NativeArray],
-    retain_grads=False
+    retain_grads: bool=False
 )-> ivy.Array:
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
