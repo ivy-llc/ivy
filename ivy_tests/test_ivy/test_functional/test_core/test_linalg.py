@@ -800,7 +800,7 @@ def test_svd(
         return
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
-    helpers.test_array_function(
+    ret, ret_from_np = helpers.test_array_function(
         input_dtype,
         as_variable,
         False,
@@ -810,11 +810,24 @@ def test_svd(
         instance_method,
         fw,
         "svd",
-        rtol=1e-01,
-        atol=1e-01,
         x=x,
         full_matrices=fm,
+        test_values=False,
     )
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat =\
+        helpers.get_flattened_array_returns(ret, ret_from_np)
+
+    # value test
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        num_cols = ret_np.shape[-2]
+        for col_idx in range(num_cols):
+            ret_np_col = ret_np[..., col_idx, :]
+            ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
+            ret_from_np_col = ret_from_np[..., col_idx, :]
+            ret_from_np_col = np.where(
+                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col)
+            helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-1, atol=1e-1)
 
 
 # matrix_norm
