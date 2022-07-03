@@ -19,4 +19,3 @@ class ArrayWithActivations(abc.ABC):
         with minimal changes.
         """
         return ivy.softplus(self._data, out=out)
-        
