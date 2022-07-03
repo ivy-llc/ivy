@@ -429,6 +429,8 @@ def test_slogdet(
         fw,
         "slogdet",
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
+        test_rtol=1e-3,
+        test_atol=1e-3,
     )
 
 
