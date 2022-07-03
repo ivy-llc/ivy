@@ -23,7 +23,7 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,2),
+    num_positional_args=helpers.num_positional_args(fn_name="variable"),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
@@ -41,7 +41,7 @@ def test_variable(
     x = np.asarray(x, dtype=dtype)
     if x.shape == ():
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -60,7 +60,7 @@ def test_variable(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.num_positional_args(fn_name="is_variable"),
     container=st.booleans(),
     instance_method=st.booleans(),
     exclusive=st.booleans()
@@ -77,7 +77,7 @@ def test_is_variable(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x,dtype=dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -96,7 +96,7 @@ def test_is_variable(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,1),
+    num_positional_args=helpers.num_positional_args(fn_name="variable_data"),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
@@ -115,7 +115,7 @@ def test_variable_data(
         x = torch.as_tensor(x,dtype=torch.float32)
     if fw == "tensorflow":
         x = tf.Variable(tf.convert_to_tensor(x,dtype=dtype))
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -133,7 +133,7 @@ def test_variable_data(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,2),
+    num_positional_args=helpers.num_positional_args(fn_name="stop_gradient"),
     container=st.booleans(),
     instance_method=st.booleans(),
     preserve_type=st.booleans()
@@ -150,7 +150,7 @@ def test_stop_gradient(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -234,13 +234,66 @@ def test_execute_with_gradients(
         for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
             assert np.allclose(ivy.to_numpy(g), g_true)
 
+# adam_step
+@given(
+    dtype_and_dcdw=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="adam_step"),
+    container=helpers.list_of_length(st.booleans(), 3),
+    instance_method=st.booleans(),
+    mw=st.floats(allow_infinity=False,allow_nan=False),
+    vw=st.floats(allow_infinity=False,allow_nan=False),
+    step=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
+    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+)
+def test_adam_step(
+    dtype_and_dcdw,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    mw,
+    vw,
+    step,
+    beta1,
+    beta2,
+    epsilon,
+):
+    dtype, dcdw = dtype_and_dcdw
+    dcdw = np.asarray(dcdw,dtype=dtype)
+    mw = np.asarray(mw,dtype=dtype)
+    vw = np.asarray(vw,dtype=dtype)
+    step = np.asarray(step,dtype=dtype)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "adam_step",
+        dcdw=dcdw,
+        mw=mw,
+        vw=vw,
+        step=step,
+        beta1=beta1,
+        beta2=beta2,
+        epsilon=epsilon,
+    )
 
 # optimizer_update
 @given(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,4),
+    num_positional_args=helpers.num_positional_args(fn_name="optimizer_update"),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     effective_grad=st.floats(),
@@ -263,7 +316,8 @@ def test_optimizer_update(
 ):
     dtype, w = dtype_and_w
     w = np.asarray(w,dtype=dtype)
-    helpers.test_array_function(
+    effective_grad = np.asarray(effective_grad,dtype=dtype)
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -285,7 +339,7 @@ def test_optimizer_update(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,4),
+    num_positional_args=helpers.num_positional_args(fn_name="gradient_descent_update"),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     dcdw=st.floats(),
@@ -308,7 +362,8 @@ def test_gradient_descent_update(
 ):
     dtype, w = dtype_and_w
     w = np.asarray(w,dtype=dtype)
-    helpers.test_array_function(
+    dcdw = np.asarray(dcdw,dtype=dtype)
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -369,7 +424,7 @@ def test_layerwise_gradient_descent_update(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0,4),
+    num_positional_args=helpers.num_positional_args(fn_name="lars_update"),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     dcdw=st.floats(allow_infinity=False,allow_nan=False),
@@ -395,7 +450,10 @@ def test_lars_update(
     dtype, w = dtype_and_w
     w = np.asarray(w,dtype=dtype)
     dcdw = np.asarray(dcdw,dtype=dtype)
-    helpers.test_array_function(
+    if fw == "torch":
+        w = torch.as_tensor(w)
+        dcdw = torch.as_tensor(dcdw)
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -458,6 +516,73 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
+    
+#adam_update
+@given(
+    dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="adam_update"),
+    container=helpers.list_of_length(st.booleans(), 4),
+    instance_method=st.booleans(),
+    dcdw=st.floats(allow_infinity=False,allow_nan=False),
+    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
+    vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
+    step=st.floats(allow_infinity=False,allow_nan=False),
+    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans()
+)
+def test_adam_update(
+    dtype_and_w,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    dcdw,
+    lr,
+    mw_tm1,
+    vw_tm1,
+    step,
+    beta1,
+    beta2,
+    epsilon,
+    inplace,
+    stop_gradients
+):
+    dtype, w = dtype_and_w
+    w = np.asarray(w,dtype=dtype)
+    dcdw = np.asarray(dcdw,dtype=dtype)
+    mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
+    vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
+    step = np.asarray(step,dtype=dtype)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "adam_update",
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
+        step=step,
+        beta1=beta1,
+        beta2=beta2,
+        epsilon=epsilon,
+        inplace=inplace,
+        stop_gradients=stop_gradients
+    )
 
 
 # layerwise_adam_update
@@ -484,10 +609,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdw
     vw = dcdw.map(lambda x, _: x**2)
-    ret = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
-    ws_new = {"ws_new": list(ret.values())[0][0]}
-    mw_new = {"mw_new": list(ret.values())[0][1]}
-    vw_new = {"vw_new": list(ret.values())[0][2]}
+    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
@@ -532,10 +654,7 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdw
     vw = dcdw.map(lambda x, _: x**2)
-    ret = ivy.lamb_update(ws, dcdw, lr, mw, vw, ivy.array(1))
-    ws_new = {"ws_new": list(ret.values())[0][0]}
-    mw_new = {"mw_new": list(ret.values())[0][1]}
-    vw_new = {"vw_new": list(ret.values())[0][2]}
+    ws_new,mw_new,vw_new = ivy.lamb_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
@@ -555,6 +674,79 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
         # pytorch scripting does not support internal function definitions
         return
 
+@given(
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
+    w=st.floats(allow_infinity=False,allow_nan=False),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
+    container=helpers.list_of_length(st.booleans(), 5),
+    instance_method=st.booleans(),
+    dcdw=st.floats(allow_infinity=False,allow_nan=False),
+    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
+    vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
+    step=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
+    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    max_trust_ratio=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
+    decay_lambda=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans()
+)
+def test_lamb_update(
+    dtype,
+    w,
+    as_variable,
+    native_array,
+    num_positional_args,
+    container,
+    instance_method,
+    fw,
+    dcdw,
+    lr,
+    mw_tm1,
+    vw_tm1,
+    step,
+    beta1,
+    beta2,
+    epsilon,
+    max_trust_ratio,
+    decay_lambda,
+    inplace,
+    stop_gradients
+):
+    w = np.asarray(w,dtype=dtype)
+    dcdw = np.asarray(dcdw,dtype=dtype)
+    lr = np.asarray(lr,dtype=dtype)
+    mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
+    vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
+    step = np.asarray(step,dtype=dtype)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        native_array,
+        fw,
+        num_positional_args,
+        container,
+        instance_method,
+        "lamb_update",
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        mw_tm1=mw_tm1,
+        vw_tm1=vw_tm1,
+        step=step,
+        beta1=beta1,
+        beta2=beta2,
+        epsilon=epsilon,
+        max_trust_ratio=max_trust_ratio,
+        decay_lambda=decay_lambda,
+        inplace=inplace,
+        stop_gradients=stop_gradients
+    )
 
 # Still to Add #
 # ---------------#
