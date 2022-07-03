@@ -83,8 +83,8 @@ def test_matrix_power(
         instance_method,
         fw,
         "matrix_power",
-        test_rtol=1e-03,
-        test_atol=1e-03,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         n=n,
     )
