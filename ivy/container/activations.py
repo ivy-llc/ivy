@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union
 
 # local
 import ivy
@@ -15,9 +15,9 @@ class ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softplus. This method simply wraps the
-        function, and so the docstring for ivy.softplus also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.softplus. 
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
         """
         return ContainerWithActivations.static_softplus(self, out=out)
     
@@ -27,9 +27,9 @@ class ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.softplus. This method simply wraps the
-        function, and so the docstring for ivy.softplus also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
         """
         return ContainerBase.multi_map_in_static_method(
             "softplus",

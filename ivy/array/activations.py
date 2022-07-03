@@ -1,8 +1,8 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional
 
-#local
+# local
 import ivy
 
 # ToDo: implement all methods here as public instance methods
@@ -19,3 +19,4 @@ class ArrayWithActivations(abc.ABC):
         with minimal changes.
         """
         return ivy.softplus(self._data, out=out)
+        
