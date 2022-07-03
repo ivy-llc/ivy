@@ -36,7 +36,7 @@ def test_unique_values(
 
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -76,7 +76,7 @@ def test_unique_all(
 
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -116,7 +116,7 @@ def test_unique_counts(
 ):
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -159,7 +159,7 @@ def test_unique_inverse(
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
