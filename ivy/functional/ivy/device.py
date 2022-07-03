@@ -786,9 +786,8 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     return split_factors.setdefault(device, 0.0)
 
 
-def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None) -> None:
+def set_split_factor(factor: float, 
+                     device: Union[ivy.Device, ivy.NativeDevice] = None) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
 
