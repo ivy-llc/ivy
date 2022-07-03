@@ -2376,9 +2376,10 @@ def gather_nd(
                           b=ivy.array([2]))
     >>> print(ivy.gather_nd(x, y))
     {
-     	a: ivy.array(0.),
+        a: ivy.array(0.),
         b: ivy.array(6.)
     }
+
     """
     res = current_backend(params, indices).gather_nd(params, indices)
     if ivy.exists(out):

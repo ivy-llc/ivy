@@ -59,4 +59,4 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array(3)
         """
-        return ivy.gather_nd(self._data, indices, out=out)
+        return ivy.gather_nd(self, indices, out=out)
