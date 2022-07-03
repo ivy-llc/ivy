@@ -35,7 +35,7 @@ def test_all(
     shape = data.draw(helpers.get_shape(min_num_dims=1))
     x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
     axis = data.draw(helpers.get_axis(shape=shape))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -77,7 +77,7 @@ def test_any(
     shape = data.draw(helpers.get_shape(min_num_dims=1))
     x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
     axis = data.draw(helpers.get_axis(shape=shape))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
