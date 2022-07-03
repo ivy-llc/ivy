@@ -2423,7 +2423,7 @@ def shape(
     return current_backend(x).shape(x, as_array)
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
 @handle_nestable
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
     """Returns the number of dimensions of the array x.
