@@ -627,7 +627,7 @@ def value_test(ret_np_flat, ret_from_np_flat, rtol, atol):
             assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
-def test_array_function(
+def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
@@ -698,7 +698,7 @@ def test_array_function(
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,
     >>> container_flags, instance_method, fw, fn_name, x=x)
 
