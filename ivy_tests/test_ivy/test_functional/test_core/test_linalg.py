@@ -890,6 +890,7 @@ def test_matrix_norm(
     a=st.integers(1, 50),
     b=st.integers(1, 50),
     c=st.integers(1, 50),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     input_dtype,
@@ -903,6 +904,7 @@ def test_matrix_rank(
     a,
     b,
     c,
+    rtol,
 ):
     if "float16" in input_dtype:
         return
@@ -919,6 +921,7 @@ def test_matrix_rank(
         test_atol=1e-04,
         test_rtol=1e-04,
         x=np.random.uniform(size=(a, b, c)).astype(input_dtype[0]),
+        rtol=rtol,
     )
 
 
