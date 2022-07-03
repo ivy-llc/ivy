@@ -83,7 +83,6 @@ def asarray(
     dtype: torch.dtype = None,
     device: torch.device,
 ):
-    device = default_device(device)
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
     elif (
@@ -97,10 +96,10 @@ def asarray(
                 torch.as_tensor(object_in, dtype=dtype)
                 .clone()
                 .detach()
-                .to(as_native_dev(device))
+                .to(device)
             )
         else:
-            return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
+            return torch.as_tensor(object_in, dtype=dtype).to(device)
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
@@ -112,10 +111,10 @@ def asarray(
             torch.as_tensor(object_in, dtype=dtype)
             .clone()
             .detach()
-            .to(as_native_dev(device))
+            .to(device)
         )
     else:
-        return torch.as_tensor(object_in, dtype=dtype).to(as_native_dev(device))
+        return torch.as_tensor(object_in, dtype=dtype).to(device)
 
 
 def empty(

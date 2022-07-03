@@ -12,6 +12,7 @@ from numbers import Number
 # local
 from ivy.functional.backends.torch.device import as_native_dev, dev
 
+
 torch_scatter = None
 
 
@@ -94,7 +95,10 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, torch.Tensor],
+    val: Union[ivy.Array, torch.Tensor],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native.data -= val_native
     if ivy.is_ivy_array(x):
@@ -104,7 +108,10 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, torch.Tensor],
+    val: Union[ivy.Array, torch.Tensor],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native.data += val_native
     if ivy.is_ivy_array(x):
