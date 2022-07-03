@@ -2380,7 +2380,10 @@ def gather_nd(
         b: ivy.array(6.)
     }
     """
-    return current_backend(params,indices).gather_nd(params, indices, out=out)
+    res = current_backend(params, indices).gather_nd(params, indices)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
