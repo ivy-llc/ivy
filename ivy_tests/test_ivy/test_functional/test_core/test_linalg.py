@@ -227,18 +227,8 @@ def test_eigh(
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        if len(ret_np.shape) <= 1:
-            helpers.assert_all_close(
-                np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2)
-            continue
-        num_cols = ret_np.shape[-2]
-        for col_idx in range(num_cols):
-            ret_np_col = ret_np[..., col_idx, :]
-            ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
-            ret_from_np_col = ret_from_np[..., col_idx, :]
-            ret_from_np_col = np.where(
-                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col)
-            helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-2, atol=1e-2)
+        helpers.assert_all_close(
+            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2)
 
 
 # eigvalsh
