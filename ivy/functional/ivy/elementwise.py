@@ -3247,9 +3247,17 @@ def maximum(
         An array with the elements of x1, but clipped to not be lower than the x2
         values.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
     With :code:`ivy.Array` inputs:
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
@@ -3275,7 +3283,7 @@ def maximum(
     With one :code:`ivy.Container` input:
 
     >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
-    >>> y = ivy.Container(a=ivy.array([1, 0,]) \
+    >>> y = ivy.Container(a=ivy.array([1, 0,]), \
                           b=ivy.array([-5, 9]))
     >>> z = ivy.maximum(x, y)
     >>> print(z)
@@ -3297,7 +3305,7 @@ def maximum(
     >>> z = ivy.maximum(x, y)
     >>> print(z)
     {
-        a: ivy.array([1, 5, 6])
+        a: ivy.array([1, 5, 6]),
         b: ivy.array([5, 9, 7])
     }
     """
