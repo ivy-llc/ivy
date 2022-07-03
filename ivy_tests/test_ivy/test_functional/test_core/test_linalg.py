@@ -466,8 +466,8 @@ def test_solve(
         instance_method,
         fw,
         "solve",
-        test_rtol=1e-04,
-        test_atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x1=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         x2=np.random.uniform(size=(a, 1)).astype(input_dtype[1]),
     )
