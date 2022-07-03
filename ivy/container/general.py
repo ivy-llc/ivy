@@ -190,8 +190,9 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather_nd. This method simply wraps the
-        function, and so the docstring for ivy.gather_nd also applies to this method
+        ivy.Container static method variant of ivy.gather_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.gather_nd also applies to this method
         with minimal changes.
 
         Examples
@@ -234,7 +235,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def gather_nd(
             self: ivy.Container,
-            indices: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
@@ -243,8 +244,9 @@ class ContainerWithGeneral(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather_nd. This method simply wraps the
-        function, and so the docstring for ivy.gather_nd also applies to this method
+        ivy.Container instance method variant of ivy.gather_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.gather_nd also applies to this method
         with minimal changes.
 
         Examples
@@ -269,7 +271,3 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather_nd(
             self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
-
-
-
-
