@@ -54,9 +54,9 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.array([4, 5, 6])
+        >>> y = ivy.array([1])
         >>> z = x.gather_nd(y)
         >>> print(z)
-        ivy.array(3)
+        ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
