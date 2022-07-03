@@ -130,6 +130,18 @@ class ArrayWithManipulation(abc.ABC):
         value: Number = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.constant_pad. This method simply wraps the
+        function, and so the docstring for ivy.constant_pad also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4])
+        >>> y = x.constant_pad((2, 3), (5, 6))
+        >>> print(y)
+        ivy.array([5, 5, 1, 2, 3, 4, 6, 6, 6,])
+        """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 
     def zero_pad(
