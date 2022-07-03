@@ -39,3 +39,24 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
+
+    def gather_nd(
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
+        function, and so the docstring for ivy.gather_nd also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.gather_nd(y)
+        >>> print(z)
+        ivy.array(3)
+        """
+        return ivy.gather_nd(self._data, indices, out=out)
