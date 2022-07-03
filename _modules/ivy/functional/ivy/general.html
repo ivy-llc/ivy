@@ -57,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
@@ -1997,7 +1996,8 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_update.html#ivy.functional.ivy.general.inplace_update">[docs]</a><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
+<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_update.html#ivy.functional.ivy.general.inplace_update">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2028,7 +2028,11 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">ensure_in_backend</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="inplace_decrement"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_decrement.html#ivy.functional.ivy.general.inplace_decrement">[docs]</a><span class="k">def</span> <span class="nf">inplace_decrement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="inplace_decrement"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_decrement.html#ivy.functional.ivy.general.inplace_decrement">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">inplace_decrement</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Perform in-place decrement for the input array.</span>
 
 <span class="sd">    Parameters</span>
@@ -2047,7 +2051,11 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="inplace_increment"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_increment.html#ivy.functional.ivy.general.inplace_increment">[docs]</a><span class="k">def</span> <span class="nf">inplace_increment</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="inplace_increment"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_increment.html#ivy.functional.ivy.general.inplace_increment">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">inplace_increment</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Perform in-place increment for the input array.</span>
 
 <span class="sd">    Parameters</span>
