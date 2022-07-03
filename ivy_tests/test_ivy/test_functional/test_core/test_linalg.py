@@ -83,8 +83,8 @@ def test_matrix_power(
         instance_method,
         fw,
         "matrix_power",
-        test_rtol=1e-03,
-        test_atol=1e-03,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         n=n,
     )
@@ -175,8 +175,8 @@ def test_det(
         instance_method,
         fw,
         "det",
-        test_rtol=1e-04,
-        test_atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x=x,
     )
 
@@ -205,7 +205,7 @@ def test_eigh(
         return
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
     x = (x + x.T) / 2
-    helpers.test_function(
+    ret, ret_from_np = helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -218,7 +218,17 @@ def test_eigh(
         test_rtol=1e-02,
         test_atol=1e-02,
         x=x,
+        test_values=False,
     )
+
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat =\
+        helpers.get_flattened_array_returns(ret, ret_from_np)
+
+    # value test
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        helpers.assert_all_close(
+            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2)
 
 
 # eigvalsh
@@ -419,6 +429,8 @@ def test_slogdet(
         fw,
         "slogdet",
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
+        test_rtol=1e-3,
+        test_atol=1e-3,
     )
 
 
@@ -456,8 +468,8 @@ def test_solve(
         instance_method,
         fw,
         "solve",
-        test_rtol=1e-04,
-        test_atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x1=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         x2=np.random.uniform(size=(a, 1)).astype(input_dtype[1]),
     )
@@ -890,6 +902,7 @@ def test_matrix_norm(
     a=st.integers(1, 50),
     b=st.integers(1, 50),
     c=st.integers(1, 50),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     input_dtype,
@@ -903,6 +916,7 @@ def test_matrix_rank(
     a,
     b,
     c,
+    rtol,
 ):
     if "float16" in input_dtype:
         return
@@ -919,6 +933,7 @@ def test_matrix_rank(
         test_atol=1e-04,
         test_rtol=1e-04,
         x=np.random.uniform(size=(a, b, c)).astype(input_dtype[0]),
+        rtol=rtol,
     )
 
 
