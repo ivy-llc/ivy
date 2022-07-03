@@ -30,25 +30,16 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    if isinstance(y,ivy.Container):
-        x_grads_flat = list(
-            torch.autograd.grad(
-                [v for v in y.values()],
-                [v for _, v in xs.to_iterator()],
-                retain_graph=retain_grads,
-                create_graph=retain_grads,
-            )
-        )
-        grads = xs.from_flat_list(x_grads_flat)
-        grads = grads.to_ivy()
-    else:
-        grads = torch.autograd.grad(
-            y,
-            xs,
+    x_grads_flat = list(
+        torch.autograd.grad(
+            [y],
+            [v for _, v in xs.to_iterator()],
             retain_graph=retain_grads,
             create_graph=retain_grads,
-            allow_unused=True
-            )
+        )
+    )
+    grads = xs.from_flat_list(x_grads_flat)
+    grads = grads.to_ivy()
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
