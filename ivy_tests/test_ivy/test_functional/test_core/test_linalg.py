@@ -175,8 +175,8 @@ def test_det(
         instance_method,
         fw,
         "det",
-        test_rtol=1e-04,
-        test_atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x=x,
     )
 
