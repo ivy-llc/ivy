@@ -2979,8 +2979,6 @@ def sqrt(
     ret
         an array containing the square root of each element in ``x``. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
-    Functional Examples
-    -------------------
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -2990,30 +2988,30 @@ def sqrt(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
     With :code:`ivy.Array` input:
     
     >>> x = ivy.array([0, 4, 8])
     >>> y = ivy.sqrt(x)
     >>> print(y)
-    ivy.array([0.  , 2.  , 2.83])
+    ivy.array([0., 2., 2.83])
 
     >>> x = ivy.array([1, 2, 4])
     >>> y = ivy.zeros(3)
     >>> ivy.sqrt(x, out=y)
-    ivy.array([1.  , 1.41, 2.  ])
+    ivy.array([1., 1.41, 2.])
 
     >>> X = ivy.array([40., 24., 100.])
     >>> ivy.sqrt(x, out=x)
-    >>> ivy.array([ 6.32455532,  4.89897949, 10.        ])
+    >>> ivy.array([6.32455532, 4.89897949, 10.])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-50., 1000., 34.])
     >>> y = ivy.sqrt(x)
     >>> print(y)
-    ivy.array([  nan, 31.6 ,  5.83])
+    ivy.array([nan, 31.6, 5.83])
 
     With :code:`ivy.Container` input:
     
@@ -3035,7 +3033,7 @@ def sqrt(
     >>> y = x.sqrt()
     >>> print(y)
     ivy.array([[1.  , 1.41],
-           [1.73, 2.  ]])
+               [1.73, 2.  ]])
 
     Using :code:`ivy.Container` instance method:
     
@@ -3046,6 +3044,7 @@ def sqrt(
         a: ivy.array([0., 10., 5.2]),
         b: ivy.array([9.64, 7.35, 5.])
     }
+    
     """
     return current_backend(x).sqrt(x, out=out)
 
