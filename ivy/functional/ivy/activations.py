@@ -22,7 +22,7 @@ from ivy.func_wrapper import (
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -81,7 +81,7 @@ def relu(
     ivy.array([0., 1., 0.])
 
     """
-    return current_backend(x).relu(x, out)
+    return current_backend(x).relu(x, out=out)
 
 
 @to_native_arrays_and_back

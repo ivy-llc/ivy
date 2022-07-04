@@ -999,7 +999,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     return current_backend(x).to_list(x)
 
 
-@handle_out_argument
 @handle_nestable
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1035,12 +1034,11 @@ def clip_vector_norm(
     else:
         ret = x
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(x=out, val=ret)
     return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1533,7 +1531,6 @@ def current_backend_str() -> Union[str, None]:
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1564,12 +1561,11 @@ def einops_rearrange(
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(x=out, val=ret)
     return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1603,12 +1599,11 @@ def einops_reduce(
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(x=out, val=ret)
     return ret
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1639,7 +1634,7 @@ def einops_repeat(
     """
     ret = einops.repeat(x, pattern, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(x=out, val=ret)
     return ret
 
 
