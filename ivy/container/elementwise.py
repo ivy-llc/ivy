@@ -12,8 +12,6 @@ from ivy.container.base import ContainerBase
 class ContainerWithElementwise(ContainerBase):
     @staticmethod
     def static_abs(
-        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -30,7 +28,7 @@ class ContainerWithElementwise(ContainerBase):
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-        ... b=ivy.array([4.5, -5.3, -0, -2.3]))
+                            b=ivy.array([4.5, -5.3, -0, -2.3]))
         >>> y = ivy.Container.static_abs(x)
         >>> print(y)
         {
@@ -41,7 +39,6 @@ class ContainerWithElementwise(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "abs",
-            x1,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -51,8 +48,6 @@ class ContainerWithElementwise(ContainerBase):
     
     def abs(
         self: ivy.Container,
-        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -69,7 +64,7 @@ class ContainerWithElementwise(ContainerBase):
         Using :code:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
-        ... b=ivy.array([4.5, -5.3, -2.3]))
+                            b=ivy.array([4.5, -5.3, -2.3]))
         >>> y = x.abs()
         >>> print(y)
         {
@@ -80,7 +75,6 @@ class ContainerWithElementwise(ContainerBase):
         """
         return self.static_abs(
             self, 
-            x1, 
             key_chains, 
             to_apply, 
             prune_unapplied, 

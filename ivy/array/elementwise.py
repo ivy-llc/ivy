@@ -12,7 +12,6 @@ import ivy
 class ArrayWithElementwise(abc.ABC):
     def abs(
         self: ivy.Array, 
-        x1: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -35,7 +34,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
 
         """
-        return ivy.abs(self._data, x1, out=out)
+        return ivy.abs(self._data, out=out)
 
     def acosh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.acosh(self._data, out=out)
