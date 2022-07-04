@@ -5,6 +5,7 @@ The Basics
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
@@ -40,7 +41,12 @@ Even for very simple questions, there are benefits in starting a discussion for 
 This means that the question can be asked once and then easily found by others in future,
 avoiding the case where different people ask the same question multiple times on the discord server.
 
-I or someone else in the team will strive to respond to your newly created discussion as quickly as possible!
+For discussions that have already been created,
+all new comments will trigger the "Unanswered" label to be applied to the discussion.
+This makes it easy for members in the Ivy team to keep track of where attention is needed.
+Once the new comment has been responded to, we will manually remove the "Unanswered" label.
+
+I or someone else in the team will strive to respond to your comments, replies and newly created discussions as quickly as possible!
 
 **Issues**
 
@@ -93,9 +99,9 @@ e. Wait for us to review your PR. Once we have reviewed your PR we will either m
 f. Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
+the issue will be closed and the task will be made free for others in the community. Likewise, if we have requested
 changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
+issue will be closed, and the task will be freed for others in the community. Even if you do not make code changes,
 you should request a new code review to flag to us that our attention is again needed to further the discussion.
 
 The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
@@ -149,6 +155,14 @@ In this case, you will need to either resolve these conflicts in the browser,
 or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.
 
+You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there
+are merge conflicts. In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes,
+then pulling from master. Once your branch is up-to-date with master, you can reinstate the most recently stashed
+changes, commit and push to master with no conflicts. The corresponding commands are :code:`git stash` ->
+:code:`git fetch` -> :code:`git pull` -> :code:`git stash apply stash@{0}`. Note that this only works for uncommitted
+changes (staged and unstaged) and untracked files won't be stashed. For a comprehensive explanation of git stashing,
+check out this `Atlassian tutorial`_.
+
 **Video**
 
 .. raw:: html
@@ -162,26 +176,78 @@ Both of these cases are explained in the following video.
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
+Who To Ask
+-------------
+
+Quite often, you would like to get a better understanding of the logic in the
+implementation of Ivy, raising issues or starting discussions with the context
+of who made what changes. Here is a common workflow to help get around the
+problem of "who to ask" by using,
+
+With Command Line:
+****
+**git blame** - Show what revision and author last modified each line of a file
+
+**git log**   - Show commit logs
+
+.. code-block:: none
+
+    # Eg: From line 16 to next 5 lines since past 2 weeks
+    git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
+    # Deeper look at what author changed in the files in commit retrieved from above step
+    git log <commit_id> -p
+
+With Browser:
+****
+**Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
+or view the revision history of a single line within a file.
+
+.. image:: content/git_blame_1.png
+   :width: 420
+
+This view can be toggled from option in left vertical pane or from the "blame" icon in top-right
+as highlighted above.
+
+.. image:: content/git_blame_2.png
+   :width: 420
+
+Each time you click the highlighted icon, the previous revision information
+for that line, including who committed the change and when is shown.
+
+.. image:: content/git_blame_3.png
+   :width: 420
+
+Whenever starting a discussion or creating an issue, you are welcome to tag
+members using "@" in our team, who you think would be best suited to interact
+with based on the information gained from above steps.
+
 Pull Requests
 -------------
 
-Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+Our process for responding to pull requests is quite simple.
+All newly created PRs will be reviewed by a member of the team,
 and then the PR will either be merged or changes will be requested.
 In order for us to look at the changes you have made,
 you will then need to request a code review once you have addressed our requested changes.
 We will then take another look, and either merge the PR or request further changes.
-This process then will repeat until either the PR is closed by us or yourself, or the PR is merged.
+This process then will repeat until either the PR is closed by us or yourself,
+or the PR is merged.
 
-If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
-This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
+If we request changes, you make those changes, but you do not request a code review,
+then we will likely not check the changes.
+This is the case even if you comment on the PR.
+This simple process makes it much simpler for us to track where and when
 our attention is needed.
 
-Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
-receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!
-Your PR will never be closed until we have provided at least code review on it, even if more than 7 days go by.
+Note that you cannot request a code review until you have already received at least one
+review from us. Therefore, all new PRs will receive a code review,
+so please just wait and we will check out and review your newly created PR
+as soon as possible!
+Your PR will never be closed until we have provided at least code review on it.
 
-Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
-lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+Finally, all PRs must give write access to Ivy maintainers of the branch.
+This can be done by checking a tickbox in the lower right corner of the PR.
+This will enable us to quickly fix conflicts, merge with upstream, and get things moving
 much more quickly without us needing to request very simple fixes from yourself.
 
 The code review process is explained in more detail in the following video.
@@ -250,6 +316,162 @@ so don't stress about this too much 🙂
 
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `commit frequency channel`_!
+
+Running Tests Locally
+---------------------
+
+With Docker
+****
+
+#. With PyCharm (With or without docker):
+    #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
+        
+        .. image:: content/pytest_button_pycharm.png
+           :width: 420
+        
+    #. Testing can be done for the entire project, individual submodules, individual files and individual tests. This can be done by selecting the appropriate configuration from the top pane in PyCharm.
+        
+        .. image:: content/pytest_with_pycharm.png
+           :width: 420
+        
+
+#. Through the command line (With docker):
+    #. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
+
+        .. code-block:: none
+
+            docker exec <container-name> rm -rf ivy
+            docker cp ivy <container-name>:/ 
+
+    #. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
+
+        .. code-block:: none
+
+            docker exec -it ivy_container bash 
+            cd ivy
+
+    #. Run the test using the pytest command.
+
+        #. Ivy Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+
+            #. For all tests:
+
+                .. code-block:: none
+
+                    pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+
+        #.  Array API Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            
+            #. For all tests:
+
+                .. code-block:: none
+
+                    pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+        
+        #. For the entire project:
+
+            .. code-block:: none
+                
+                pytest ivy_tests/ --no-header --no-summary -q
+
+#. Through the command line (Without docker):
+    #. We need to first enter inside the virtual environment.
+
+        .. code-block:: none
+
+            ivy_dev\Scripts\activate.bat
+
+        (on Windows)
+
+        OR
+
+        .. code-block:: none
+
+            source ivy_dev/bin/activate
+
+        (on Mac/Linux)
+
+    #. Run the test using the pytest command.
+
+        #. Ivy Tests:
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
+
+            #. For all tests:
+
+                .. code-block:: none
+
+                    python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
+
+        #.  Array API Tests 
+
+            #. For a single function: 
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+            
+            #. For a single file:
+
+                .. code-block:: none
+                
+                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+            
+            #. For all tests:
+
+                .. code-block:: none
+
+                    python -m pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+        
+        #. For the entire project
+
+            .. code-block:: none
+                
+                python -m pytest ivy_tests/ --no-header --no-summary -q
+
+#. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
+    #. :code:`device`: 
+        #. This flag enables setting of the device where the tests would be run. 
+        #. Possible values being :code:`cpu` and :code:`gpu`.
+        #. Default value is :code:`cpu`
+    #. :code:`backend`:
+        #. This flag enables running the tests for particular backends.
+        #. The values of this flag could be any possible combination of :code:`jax`, :code:`numpy`, :code:`tensorflow` and :code:`torch`.
+        #. Default value is :code:`jax,numpy,tensorflow,torch`.
 
 **Round Up**
 

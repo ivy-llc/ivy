@@ -22,7 +22,12 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 default_device_stack = list()
 dev_handles = dict()
@@ -38,10 +43,41 @@ class DefaultDevice:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, device):
+    def __init__(
+        self,
+        device: Union[ivy.Device, ivy.NativeDevice],
+    ) -> None:
+        """Initialises the DefaultDevice class
+
+        Parameters
+        ----------
+        device
+            The device string - as an ivy device or nativedevice class
+
+        Examples
+        --------
+        >>> z = ivy.DefaultDevice("cpu")
+        >>> x = ivy.DefaultDevice("tpu")
+        """
         self._dev = device
 
     def __enter__(self):
+        """Enter the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "cpu" as device:
+        >>> with ivy.DefaultDevice("cpu") as device:
+        >>>     # with block calls device.__enter__()
+        >>>     print(device._dev)
+        "cpu"
+
+        """
         set_default_device(self._dev)
         return self
 
@@ -68,13 +104,26 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device):
+def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
     device
+        The device handle from which to get the arrays
 
+    Returns
+    -------
+    ret
+        Container with the arrays found for the specified device [identity, array]
+
+    Examples
+    --------
+    >>> x = ivy.array([1,0,2])
+    >>> y = ivy.dev(x)
+    >>> z = ivy.get_all_ivy_arrays_on_dev(y)
+    >>> print(z)
+    {139740789224448:ivy.array([1,0,2])},
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -103,26 +152,142 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
     Examples
     --------
-    >>> x = ivy.array([-1,0,5.2])
-    >>> y = ivy.dev(x)
-    >>> z = ivy.num_ivy_arrays_on_dev(y)
-    >>> print(z)
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
     2
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x1 = ivy.array([-1, 0, 5.2])
+    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.array([2])
+    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    2
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x1 = ivy.native_array([-1, 0, 5.2])
+    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> x3 = ivy.native_array([2])
+    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    1
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    2
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    3
+
+    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.array([2]),\
+                      x4=ivy.array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    4
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                        x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
+
+    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
+                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
+                      x3=ivy.native_array([2]),\
+                      x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
+    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
+    0
 
     """
     return len(get_all_ivy_arrays_on_dev(device))
 
 
-def print_all_ivy_arrays_on_dev(device):
-    """Prints all arrays which are currently alive on the specified device.
+@handle_nestable
+def print_all_ivy_arrays_on_dev(device, attr_only=True):
+    """
+    Prints the shape and dtype for all ivy arrays which are currently alive on the
+    specified device.
 
     Parameters
     ----------
     device
+        The device on which to print the arrays
+    attr_only
+        Whether or not to only print the `shape` and `dtype` attributes of the array
 
     """
-    for arr in get_all_ivy_arrays_on_dev(device):
-        print(type(arr), arr.shape)
+    arrs = get_all_ivy_arrays_on_dev(device).values()
+    if attr_only:
+        [print((arr.shape, arr.dtype)) for arr in arrs]
+    else:
+        [print(arr) for arr in arrs]
 
 
 # Retrieval
@@ -154,7 +319,7 @@ def dev(
     >>> print(y)
     cpu
     """
-    return _cur_backend(x).dev(x, as_native)
+    return current_backend(x).dev(x, as_native)
 
 
 # Conversions
@@ -174,7 +339,7 @@ def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return _cur_backend().as_ivy_dev(device)
+    return current_backend().as_ivy_dev(device)
 
 
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
@@ -191,7 +356,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
         Native device handle.
 
     """
-    return _cur_backend().as_native_dev(device)
+    return current_backend().as_native_dev(device)
 
 
 # Memory
@@ -206,7 +371,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
         The device string to convert to native device handle.
 
     """
-    return _cur_backend(None).clear_mem_on_dev(device)
+    return current_backend(None).clear_mem_on_dev(device)
 
 
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
@@ -360,11 +525,16 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    return _cur_backend().gpu_is_available()
+    return current_backend().gpu_is_available()
 
 
-def num_cpu_cores() -> int:
+def num_cpu_cores(logical=True) -> int:
     """Determine the number of cores available in the cpu.
+
+    Parameters
+    ----------
+    logical
+        Whether request is for number of physical or logical cores available in CPU
 
     Returns
     -------
@@ -373,11 +543,14 @@ def num_cpu_cores() -> int:
 
     Examples
     --------
-    >>> print(ivy.num_cpu_cores())
+    >>> print(ivy.num_cpu_cores(False))
     2
 
     """
-    return psutil.cpu_count()
+    if logical:
+        return psutil.cpu_count(logical=logical)
+    else:
+        return psutil.cpu_count(logical=False)
 
 
 def num_gpus() -> int:
@@ -394,7 +567,7 @@ def num_gpus() -> int:
     1
 
     """
-    return _cur_backend().num_gpus()
+    return current_backend().num_gpus()
 
 
 def tpu_is_available() -> bool:
@@ -410,27 +583,55 @@ def tpu_is_available() -> bool:
     >>> print(ivy.tpu_is_available())
     False
     """
-    return _cur_backend().tpu_is_available()
+    return current_backend().tpu_is_available()
 
 
 # Default Device #
 
+# noinspection PyShadowingNames
+def default_device(
+    device: Union[str, ivy.Device, ivy.NativeDevice] = None,
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    as_native: bool = None,
+) -> Union[str, ivy.Device, ivy.NativeDevice]:
+    """Returns the input device or the default device.
+    If the as native flag is set, the device will be converted to a native device.
+    If the item is provided, the item's device is returned.
+    If the device is not provided, the last default device is returned.
+    If a default device has not been set, the first gpu is returned if available,
+    otherwise the cpu is returned.
 
-def default_device(device=None, item=None, as_native: bool = None):
-    """Summary.
 
     Parameters
     ----------
     device
-         (Default value = None)
+        The device to be returned or converted.
     item
-         (Default value = None)
+        The item to get the device from.
     as_native
-         (Default value = None)
+        Whether to convert the device to a native device.
 
     Returns
     -------
     ret
+        Device handle or string.
+
+    Examples
+    --------
+    >>> ivy.default_device()
+    device(type='cpu')
+    >>> ivy.default_device("gpu:0")
+    'gpu:0'
+    >>> ivy.default_device(item=[], as_native=False)
+    'cpu'
+    >>> ivy.default_device(item=(), as_native=True)
+    device(type='cpu')
+    >>> ivy.default_device(item={"a": 1}, as_native=True)
+    device(type='cpu')
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_device(x, 'gpu:0')
+    >>> ivy.default_device(item=x, as_native=True)
+    device(type='gpu', id=0)
 
     """
     if ivy.exists(device):
@@ -463,13 +664,42 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     device
         The device to set as the default device
 
+    Examples
+    --------
+    >>> ivy.set_default_device("cpu")
+    >>> ivy.default_device()
+    'cpu'
+    
+    >>> ivy.set_backend("torch")
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda', index=0)
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_default_device(device)
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda')
+
     """
     global default_device_stack
     default_device_stack.append(device)
 
 
-def unset_default_device():
-    """"""
+def unset_default_device() -> None:
+    """Resets the default device to "cpu".
+
+    Examples
+    --------
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device()
+    "gpu:0"
+    >>> ivy.unset_default_device()
+    >>> ivy.default_device()
+    "cpu"
+
+    """
     global default_device_stack
     if default_device_stack:
         default_device_stack.pop(-1)
@@ -478,10 +708,14 @@ def unset_default_device():
 # Device Allocation #
 
 
-def to_dev(
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
-    *,
     device: Union[ivy.Device, ivy.NativeDevice],
+    *,
+    stream: Optional[Union[int, Any]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
@@ -492,6 +726,11 @@ def to_dev(
        input array to be moved to the desired device
     device
         device to move the input array `x` to
+    stream
+        stream object to use during copy. In addition to the types supported in
+        array.__dlpack__(), implementations may choose to support any library-specific
+        stream object with the caveat that any code using such an object would not be
+        portable.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -504,19 +743,22 @@ def to_dev(
     Examples
     --------
     >>> x = ivy.array([1., 2., 3.])
-    >>> x = ivy.to_dev(x, 'cpu')
+    >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return _cur_backend(x).to_dev(x, device=device, out=out)
+    return current_backend(x).to_device(x, device, out=out)
 
 
 # Function Splitting #
 
 
-def split_factor(device=None):
-    """Get the global split factor for a given device, which can be used to scale batch
-    splitting chunk sizes for the device across the codebase. Default global value for
-    each device is 1.
+def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
+    """Get a device's global split factor, which can be used to scale the device's
+    batch splitting chunk sizes across the codebase.
+    If the global split factor is set for a given device,
+        returns the split factor value for the device from the split factors dictionary
+    If the global split factor for a device is not configured,
+        returns the default value which is 0.0
 
     Parameters
     ----------
@@ -528,13 +770,20 @@ def split_factor(device=None):
     ret
         The split factor for the specified device.
 
+    Examples
+    --------
+    >>> x = ivy.split_factor()
+    >>> print(x)
+    0.0
+
+    >>> y = ivy.split_factor("gpu:0")
+    >>> print(y)
+    0.0
+
     """
     global split_factors
     device = ivy.default(device, default_device())
-    if device in split_factors:
-        return split_factors[device]
-    split_factors[device] = 0.0
-    return split_factors[device]
+    return split_factors.setdefault(device, 0.0)
 
 
 def set_split_factor(factor, device=None):
@@ -829,6 +1078,7 @@ class DevDistNest(MultiDevNest):
         return "DevDistNest(" + self._data.__repr__() + ")"
 
 
+@handle_nestable
 def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
@@ -854,7 +1104,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
         {
-            ds: ivy.to_dev(x_sub, device=ds)
+            ds: ivy.to_device(x_sub, device=ds)
             for x_sub, ds in zip(
                 ivy.split(x, split_arg, axis, with_remainder=True), devices
             )
@@ -862,6 +1112,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     )
 
 
+@handle_nestable
 def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """Distribute the input item across the specified devices, returning a list of sub-
     items, each on a different device.
@@ -891,8 +1142,9 @@ def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return x
 
 
+@handle_nestable
 def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-    """Distribute elements of the iterbale xs across the specified devices.
+    """Distribute elements of the iterable xs across the specified devices.
 
     Parameters
     ----------
@@ -917,6 +1169,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     return DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
 
 
+@handle_nestable
 def dev_dist_nest(
     args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1
 ):
@@ -975,7 +1228,10 @@ class DevClonedNest(MultiDevNest):
         return "DevClonedNest(" + self._data.__repr__() + ")"
 
 
-def dev_clone_array(x, devices):
+@handle_nestable
+def dev_clone_array(
+    x: Union[ivy.Array, ivy.NativeArray], devices: Union[Iterable[str], Dict[str, int]]
+) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
 
@@ -991,12 +1247,51 @@ def dev_clone_array(x, devices):
     ret
         array cloned to each of the target devices
 
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': array([4, 5, 6])})
+
+    >>> x = ivy.array([[1, 8, 4], [2, 5, 6]])
+    >>> ivy.dev_clone_array(x, ['gpu:0'])
+    DevClonedItem({'gpu:0': array([[1, 8, 4], [2, 5, 6]])})
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7, 2, 7])
+    >>> ivy.dev_clone_array(x, ['cpu', 'tpu:0'])
+    DevClonedItem({'cpu': array([7, 2, 7]), 'tpu:0': array([7, 2, 7])})
+
+    >>> x = ivy.native_array([4, 5])
+    >>> ivy.dev_clone_array(x, ['gpu:2', 'tpu:1'])
+    DevClonedItem({'gpu:2': array([4, 5]), 'tpu:1': array([4, 5])})
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]))
+    >>> ivy.dev_clone_array(x, ['cpu'])
+    DevClonedItem({'cpu': {
+        a: array([1, 2])
+    }})
+
+    >>> x = ivy.Container({'b': ivy.native_array([3, 4])})
+    >>> ivy.dev_clone_array(x, ['gpu:0', 'tpu:0'])
+    DevClonedItem({'gpu:0': {
+        b: array([3, 4])
+    }, 'tpu:0': {
+        b: array([3, 4])
+    }})
+
     """
     return DevClonedItem(
-        {ds: ivy.stop_gradient(ivy.to_dev(x, device=ds)) for ds in devices}
+        {ds: ivy.stop_gradient(ivy.to_device(x, device=ds)) for ds in devices}
     )
 
 
+@handle_nestable
 def dev_clone(x, devices):
     """Clone the input item to each of the specified devices, returning a list of cloned
     items, each on a different device.
@@ -1021,6 +1316,7 @@ def dev_clone(x, devices):
     return x
 
 
+@handle_nestable
 def dev_clone_iter(xs, devices):
     """Clone elements of the iterable xs to each of the specified devices.
 
@@ -1042,6 +1338,7 @@ def dev_clone_iter(xs, devices):
     return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
+@handle_nestable
 def dev_clone_nest(args, kwargs, devices, max_depth=1):
     """Clone the input arguments across the specified devices.
 
@@ -1078,13 +1375,16 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, device, axis):
-    return ivy.concat([ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], axis)
+    return ivy.concat(
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()], axis
+    )
 
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, device, _=None):
     return sum(
-        [ivy.to_dev(x_sub, device=device) for x_sub in xs.values()], start=ivy.zeros([])
+        [ivy.to_device(x_sub, device=device) for x_sub in xs.values()],
+        start=ivy.zeros([]),
     )
 
 
@@ -1093,6 +1393,7 @@ def _mean_unify_array(xs, device, _=None):
     return _sum_unify_array(xs, device=device) / len(xs)
 
 
+@handle_nestable
 def dev_unify_array(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
@@ -1122,6 +1423,7 @@ def dev_unify_array(xs, device, mode, axis=0):
     }[mode](xs, device, axis)
 
 
+@handle_nestable
 def dev_unify(xs, device, mode, axis=0):
     """Unify a list of sub-arrays, on arbitrary devices, to a single concatenated array
     on the specified device.
@@ -1157,6 +1459,7 @@ def dev_unify(xs, device, mode, axis=0):
     return xs
 
 
+@handle_nestable
 def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     """Unify elements of the iterable xs to a single target device.
 
@@ -1193,6 +1496,7 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
     return dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
+@handle_nestable
 def dev_unify_nest(
     args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
 ):

@@ -83,7 +83,7 @@ Next, we add a section in the docstring which explains that it has been modified
 
 .. code-block:: diff
 
-    +This method conforms to the `Array API Standard
+    +This function conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
     +in the standard.
@@ -129,7 +129,7 @@ Following these changes, the new docstring is as follows:
         an array containing the tangent of each element in ``x``. The return must have a
         floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
     in the standard.
@@ -142,6 +142,75 @@ If the function that you are writing a docstring for is **not** in the `Array AP
 then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.
+
+**Classes**
+
+The instance methods in :code:`ivy.Array` and :code:`ivy.Container` which directly wrap
+a function in the functional API do not require thorough docstrings, on account that
+these instance methods require no explanation beyond that provided in the docstring
+for the wrapped function.
+
+Therefore, these docstrings should all simply contain the following text:
+
+.. code-block:: python
+
+        ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
+        function, and so the docstring for ivy.<func_name> also applies to this method
+        with minimal changes.
+
+The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
+which should instead use the following text, as these do not *directly* wrap a function
+in Ivy's functional API, but rather wrap the pure operator functions themselves,
+which can be called on any types that support the corresponding special methods:
+
+.. code-block:: python
+
+        ivy.Container <special|reverse special> method for the <operator_name> operator,
+        calling :code:`operator.<operator_name>` for each of the corresponding leaves of
+        the two containers.
+
+Let's take :code:`ivy.add` as an example.
+The docstring for
+`ivy.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/functional/ivy/elementwise.py#L144>`_
+is thorough, as explained above.
+However, the docstrings for
+`ivy.Array.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/elementwise.py#L27>`_,
+`ivy.Container.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L129>`_
+and
+`ivy.Container.static_add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L71>`_
+all follow the succinct pattern outlined above.
+Likewise, the docstrings for the special methods
+`ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L306>`_,
+`ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L342>`_,
+`ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L106>`_,
+and
+`ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L158>`_,
+also follow the succinct pattern outlined above.
+Note that these docstrings all *also* include examples,
+which we will cover in the next section.
+
+For all other classes, such as the various layers at
+:code:`ivy/ivy/stateful/layers`,
+then we should add full and thorough docstrings for both
+the **contstructor** and also **all methods**.
+
+This is the case even when the class directly wraps a function in the functional API.
+For example, the class
+`ivy.Linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13>`_
+wraps the function
+`ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_,
+but does so in a stateful manner
+with the variables stored internally in the instance of the class.
+Even though the :code:`ivy.Linear` class wraps :code:`ivy.linear` in the forward pass
+defined in `ivy.Linear._forward <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84>`_,
+the function signatures of :code:`ivy.linear` and :code:`ivy.Linear._forward` are still
+quite distinct, with the former including all trainable variables explicitly,
+and the latter having these implicit as internal instance attributes of the class.
+
+Therefore, with the exception of the :code:`ivy.Array` and :code:`ivy.Container`
+methods which directly wrap functions in the functional API,
+we should always add full and thorough docstrings to all methods of all other classes in Ivy,
+including cases where these also directly wrap functions in the functional API.
 
 **Round Up**
 

@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # localf
 
@@ -15,10 +15,11 @@ def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype=None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
-    return np.asarray(np.random.uniform(low, high, shape))
+    return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
 def random_normal(
@@ -26,7 +27,7 @@ def random_normal(
     std: float = 1.0,
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: str
+    device: str,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
 
@@ -38,7 +39,8 @@ def multinomial(
     probs: Optional[np.ndarray] = None,
     replace=True,
     *,
-    device: str
+    device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -53,18 +55,20 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = np.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True, dtype="float64")
+    probs_flat = probs_flat / np.sum(
+        probs_flat, -1, keepdims=True, dtype="float64", out=out
+    )
     probs_stack = np.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         np.random.choice(num_classes, num_samples, replace, p=prob[0])
         for prob in probs_stack
     ]
-    samples_flat = np.stack(samples_stack)
+    samples_flat = np.stack(samples_stack, out=out)
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Tuple[int, ...]], *, device: str
+    low: int, high: int, shape: Union[int, Sequence[int]], *, device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 

@@ -18,7 +18,7 @@ import ivy.functional.backends.numpy as ivy_np
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 4),
+    num_positional_args=helpers.num_positional_args(fn_name="argsort"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -35,10 +35,6 @@ def test_argsort(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     # we do not want any nans
     x = data.draw(
         helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
@@ -51,7 +47,7 @@ def test_argsort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -77,7 +73,7 @@ def test_argsort(
     data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 4),
+    num_positional_args=helpers.num_positional_args(fn_name="sort"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -94,10 +90,6 @@ def test_sort(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     # we do not want any nans
     x = data.draw(
         helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
@@ -110,7 +102,7 @@ def test_sort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
