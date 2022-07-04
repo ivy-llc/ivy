@@ -2,13 +2,13 @@ from hypothesis import settings, HealthCheck
 from pytest import mark
 from os import path
 
+# flake8: noqa
 settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
 settings.load_profile("ci")
 
-skip_ids = (
-    "ivy/ivy_tests/\
-    test_array_api/array_api_tests/test_array_object.py::test_getitem_masking",
-)
+skip_ids = [
+    "ivy/ivy_tests/\test_array_api/array_api_tests/test_array_object.py::test_getitem_masking",
+]
 
 skips_path = r"C:\ivy_tests\skips.txt"
 if path.exists("skips.txt"):
