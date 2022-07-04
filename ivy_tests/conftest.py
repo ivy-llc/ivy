@@ -11,12 +11,13 @@ skips_path = r"C:\ivy_tests\skips.txt"
 if path.exists("skips.txt"):
     with open("skips.txt") as f:
         for line in f:
+            print("skip:", line)
             # if line.startswith("test_array_api"):
             id_ = line.strip("\n")
             skip_ids.append(id_)
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(items):
     for item in items:
         # skip if specified in skips.txt
         for id_ in skip_ids:

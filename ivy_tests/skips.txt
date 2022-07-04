@@ -1,3 +1,4 @@
+ivy/ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem
 ivy/ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
 ivy/ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is +0) -> +0]
 test_array_api/array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is +0 and x2_i is -0) -> +0]
