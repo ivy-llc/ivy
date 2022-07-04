@@ -669,7 +669,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
-    
+
     >>> ivy.set_backend("torch")
     >>> ivy.set_default_device("gpu:0")
     >>> ivy.default_device(as_native=True)
@@ -753,8 +753,10 @@ def to_device(
 
 
 def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
-    """Get a device's global split factor, which can be used to scale the device's
+    """
+    Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
+
     If the global split factor is set for a given device,
         returns the split factor value for the device from the split factors dictionary
     If the global split factor for a device is not configured,
