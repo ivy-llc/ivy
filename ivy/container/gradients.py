@@ -29,7 +29,8 @@ class ContainerWithGradients(ContainerBase):
         >>> beta1 = 0.87
         >>> beta2 = 0.976
         >>> epsilon = 1e-5
-        >>> adam_step_delta, _, _= ivy.Container.static_adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+        >>> adam_step_delta, _, _= ivy.Container.static_adam_step(dcdw, mw, vw,\
+                                                                    step, beta1, beta2, epsilon)
         >>> print(adam_step_delta)
             {a:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]]),
             b:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]])}
@@ -71,7 +72,7 @@ class ContainerWithGradients(ContainerBase):
             {a:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]]),
             b:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]])}
         """
-        return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
+        return self.static_adam_step(self._data, mw, vw, step, beta1, beta2, epsilon)
 
     @staticmethod
     def static_optimizer_update(
