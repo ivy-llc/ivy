@@ -69,6 +69,21 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array special method variant of ivy.bitwise_and. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_and also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = ivy.bitwise_and(x, y)
+        >>> print(z)
+        ivy.array([0, 0, 2])
+        """
         return ivy.bitwise_and(self._data, x2, out=out)
 
     def bitwise_left_shift(

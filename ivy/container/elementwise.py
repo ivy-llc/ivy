@@ -272,6 +272,25 @@ class ContainerWithElementwise(ContainerBase):
         map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                             b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                             b=ivy.array([5, 6, 7]))
+
+        >>> z = ivy.bitwise_and(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0, 0, 2]),
+            b: ivy.array([0, 2, 4])
+        }
+        """
         kw = {}
         conts = {"x1": self}
         if ivy.is_array(x2):

@@ -466,10 +466,40 @@ class Array(
 
     @_native_wrapper
     def __and__(self, other):
+        """
+        ivy.Array special method variant of ivy.bitwise_and. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_and also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = ivy.bitwise_and(x, y)
+        >>> print(z)
+        ivy.array([0, 0, 2])
+        """
         return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __rand__(self, other):
+        """
+        ivy.Array special method variant of ivy.bitwise_and. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_and also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = ivy.bitwise_and(x, y)
+        >>> print(z)
+        ivy.array([0, 0, 2])
+        """
         return ivy.bitwise_and(other, self._data)
 
     @_native_wrapper
