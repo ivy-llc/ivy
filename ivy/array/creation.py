@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy
-# ToDo: implement all methods here as public instance methods
 
 # Array API Standard #
 # -------------------#
