@@ -204,18 +204,14 @@ def vector_norm(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
 ) -> JaxArray:
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
     else:
         jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
 
-    if jnp_normalized_vector.shape == ():
-        ret = jnp.expand_dims(jnp_normalized_vector, 0)
-    else:
-        ret = jnp_normalized_vector
-    return ret
+    return jnp_normalized_vector
 
 
 # Extra #

@@ -234,16 +234,12 @@ def vector_norm(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
 
-    if py_normalized_vector.shape == ():
-        ret = torch.unsqueeze(py_normalized_vector, 0)
-    else:
-        ret = py_normalized_vector
-    return ret
+    return py_normalized_vector
 
 
 # Extra #

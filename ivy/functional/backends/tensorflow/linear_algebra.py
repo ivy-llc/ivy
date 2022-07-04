@@ -358,7 +358,7 @@ def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
@@ -375,11 +375,7 @@ def vector_norm(
     else:
         tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
 
-    if tn_normalized_vector.shape == tuple():
-        ret = tf.expand_dims(tn_normalized_vector, 0)
-    else:
-        ret = tn_normalized_vector
-    return ret
+    return tn_normalized_vector
 
 
 # Extra #
