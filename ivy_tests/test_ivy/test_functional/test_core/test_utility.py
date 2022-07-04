@@ -35,7 +35,7 @@ def test_all(
 ):
     input_dtype, x = dtype_and_x
     if not isinstance(x, list):
-        x = [x]
+        axis = None
     helpers.test_array_function(
         input_dtype,
         as_variable,
@@ -78,7 +78,7 @@ def test_any(
 ):
     input_dtype, x = dtype_and_x
     if not isinstance(x, list):
-        x = [x]
+        axis = None
     helpers.test_array_function(
         input_dtype,
         as_variable,
