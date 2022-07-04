@@ -76,6 +76,19 @@ class ArrayWithManipulation(abc.ABC):
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.squeeze. This method simply wraps the
+        function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([[[0.],[ 1.]]])
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        ivy.array([[0., 1.]])
+        """
         return ivy.squeeze(self._data, axis=axis, out=out)
 
     def stack(
