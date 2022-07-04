@@ -35,11 +35,13 @@ def arange(
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
     specified.
+
     Values are generated within the half-open interval [start, stop) (in other words,
     the interval including start but excluding stop). For integer arguments the function
     is equivalent to the Python built-in range function, but returns an array in the
     chosen ml_framework rather than a list.
     See :math:`linspace` for a certain number of evenly spaced values in an interval.
+
     Parameters
     ----------
     start
@@ -59,6 +61,7 @@ def arange(
         None.
     device
         device on which to place the created array. Default: None.
+    
     Returns
     -------
     ret
@@ -83,6 +86,7 @@ def asarray(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
+    
     Parameters
     ----------
     x
@@ -92,6 +96,7 @@ def asarray(
         datatype, optional. Datatype is inferred from the input data.
     device
         device on which to place the created array. Default: None.
+    
     Returns
     -------
     ret
@@ -113,6 +118,7 @@ def zeros(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with zeros.
+    
     Parameters
     ----------
     shape
@@ -122,6 +128,7 @@ def zeros(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
+    
     Returns
     -------
     ret
@@ -151,6 +158,7 @@ def ones(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ones.
+    
     Parameters
     ----------
     shape
@@ -160,6 +168,7 @@ def ones(
         must be the default floating-point data type. Default  ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    
     Returns
     -------
     ret
@@ -190,6 +199,7 @@ def full_like(
 ) -> ivy.Array:
     """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
     an input array ``x``.
+    
     Parameters
     ----------
     x
@@ -202,11 +212,13 @@ def full_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    
     Returns
     -------
     ret
         an array having the same shape as ``x`` and where every element is equal to
         ``fill_value``.
+    
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -234,6 +246,7 @@ def ones_like(
 ) -> ivy.Array:
     """Returns a new array filled with ones and having the same shape as an input array
     ``x``.
+    
     Parameters
     ----------
     x
@@ -244,10 +257,12 @@ def ones_like(
     device
         device on which to place the created array. If device is ``None``, the output
         array device must be inferred from x. Default: ``None``.
+    
     Returns
     -------
     ret
         an array having the same shape as x and filled with ones.
+    
     Examples
     --------
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
@@ -272,6 +287,7 @@ def zeros_like(
 ) -> ivy.Array:
     """Returns a new array filled with zeros and having the same ``shape`` as an input
     array ``x``.
+    
     Parameters
     ----------
     x
@@ -282,10 +298,12 @@ def zeros_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    
     Returns
     -------
     ret
         an array having the same shape as ``x`` and filled with ``zeros``.
+    
     Examples
     --------
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
@@ -304,6 +322,7 @@ def tril(
     x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    
     Parameters
     ----------
     x
@@ -313,6 +332,7 @@ def tril(
         diagonal above which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    
     Returns
     -------
     ret
@@ -330,6 +350,7 @@ def triu(
     x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    
     Parameters
     ----------
     x
@@ -339,6 +360,7 @@ def triu(
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    
     Returns
     -------
     ret
@@ -362,6 +384,7 @@ def empty(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a new array of given shape and type, filled with zeros.
+    
     Parameters
     ----------
     shape
@@ -371,6 +394,7 @@ def empty(
         default floating-point data type. Default: None.
     device
         device on which to place the created array. Default: None.
+    
     Returns
     -------
     ret
@@ -392,6 +416,7 @@ def empty_like(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
+    
     Parameters
     ----------
     x
@@ -402,6 +427,7 @@ def empty_like(
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: None.
+    
     Returns
     -------
     ret
@@ -425,6 +451,7 @@ def eye(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
+    
     Parameters
     ----------
     n_rows
@@ -440,6 +467,7 @@ def eye(
         default floating-point data type. Default: None.
     device
          device on which to place the created array.
+    
     Returns
     -------
     ret
@@ -467,6 +495,7 @@ def linspace(
     axis.
     See :math:`arange` that allows to specify the step size of evenly spaced values in
     an interval.
+    
     Parameters
     ----------
     start
@@ -479,6 +508,7 @@ def linspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    
     Returns
     -------
     ret
@@ -495,6 +525,7 @@ def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
+    
     Parameters
     ----------
     arrays
@@ -505,6 +536,7 @@ def meshgrid(
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
         respectively), the ``indexing`` keyword has no effect and should be ignored.
         Default: ``'xy'``.
+    
     Returns
     -------
     ret
@@ -531,6 +563,7 @@ def meshgrid(
         in the standard. The descriptions above assume an array input for simplicity,
         but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
         instances, as shown in the type hints and also the examples below.
+        
         Functional Examples
         -------------------
         With :code:`ivy.Array` input:
@@ -581,6 +614,7 @@ def full(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
+    
     Parameters
     ----------
     shape
@@ -596,10 +630,12 @@ def full(
         type. Default: ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    
     Returns
     -------
     ret
         an array where every element is equal to `fill_value`.
+    
     Examples
     --------
     >>> shape = (2,2)
@@ -619,10 +655,12 @@ def full(
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
+    
     Parameters
     ----------
     x  object
         input (array) object.
+    
     Returns
     -------
     ret
@@ -649,6 +687,7 @@ def native_array(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
     """Converts the input to a native array.
+    
     Parameters
     ----------
     x
@@ -658,6 +697,7 @@ def native_array(
         datatype, optional. Datatype is inferred from the input data.
     device
         device on which to place the created array. Default: None.
+    
     Returns
     -------
     ret
@@ -687,6 +727,7 @@ def logspace(
     along a given axis.
     See :math:`arange` that allows to specify the step size of evenly spaced values in
     an interval.
+    
     Parameters
     ----------
     start
@@ -701,6 +742,7 @@ def logspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    
     Returns
     -------
     ret
