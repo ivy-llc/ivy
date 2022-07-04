@@ -1397,8 +1397,9 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
         raise Exception("shape_to_tuple does not accept arrays as input")
     if isinstance(shape, int):
         return shape
-    else:
-        return tuple(shape)
+    elif isinstance(shape, (tuple, list)):
+        assert min([isinstance(d, int) for d in shape]) is True
+    return tuple(shape)
 
 
 @handle_nestable
