@@ -2324,7 +2324,7 @@ def gather_nd(
                        [1]])
     >>> z = ivy.array([[0., 0.], \
                        [0., 0.]])
-    >>> ivy.gather_nd(x, y, device='cpu', out=z)
+    >>> ivy.gather_nd(x, y, out=z)
     >>> print(z)
     ivy.array([[0., 1.],
                [2., 3.]])

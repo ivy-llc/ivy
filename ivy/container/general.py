@@ -200,7 +200,7 @@ class ContainerWithGeneral(ContainerBase):
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([4., 5., 6.]))
+                              b=ivy.array([4., 5., 6.]))
         >>> y = ivy.array([1])
         >>> print(ivy.static_gather_nd(x, y))
         >>> print(z)
@@ -212,9 +212,9 @@ class ContainerWithGeneral(ContainerBase):
         With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                            b=ivy.array([3., 4., 5.]))
+                              b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container(a=ivy.array([0]), \
-                            b=ivy.array([1]))
+                              b=ivy.array([1]))
         >>> y = ivy.Container.static_gather_nd(x, y)
         >>> print(y)
         {
@@ -252,9 +252,9 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                                 b=ivy.array([2, 3, 4]))
+                              b=ivy.array([2, 3, 4]))
         >>> y = ivy.Container(a=ivy.array([2]),\
-                                 b=ivy.array([1]))
+                              b=ivy.array([1]))
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
