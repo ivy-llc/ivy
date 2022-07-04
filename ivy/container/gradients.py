@@ -24,8 +24,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> mw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
         >>> vw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
-        >>> vw = ivy.array([0.,])
-        >>> step = ivy.array([3.4])
+        >>> step = ivy.array([3.4], dtype='float64')
         >>> adam_step_delta= ivy.Container.static_adam_step(dcdw, mw, vw,step)
         >>> print(adam_step_delta)
         {
@@ -46,8 +45,8 @@ class ContainerWithGradients(ContainerBase):
 
     def adam_step(
             self: ivy.Container,
-            mw: Union[ivy.Array, ivy.NativeArray],
-            vw: Union[ivy.Array, ivy.NativeArray],
+            mw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            vw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
             step: Union[int, float],
             beta1=0.9,
             beta2=0.999,
@@ -60,7 +59,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> mw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
         >>> vw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
-        >>> step = ivy.array([[3.4]])
+        >>> step = ivy.array([3.4], dtype='float64')
         >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
