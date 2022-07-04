@@ -21,7 +21,6 @@ from ivy.func_wrapper import (
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def linear(x, weight, bias=None, *, out: Optional[ivy.Array] = None) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
@@ -86,7 +85,6 @@ def linear(x, weight, bias=None, *, out: Optional[ivy.Array] = None) -> ivy.Arra
 
 # Dropout #
 
-@handle_out_argument
 @handle_nestable
 def dropout(x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
@@ -125,7 +123,6 @@ def dropout(x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None)
 
 # Attention #
 
-@handle_out_argument
 @handle_nestable
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
@@ -347,7 +344,6 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-@handle_out_argument
 @to_native_arrays_and_back
 def multi_head_attention(
     x,
