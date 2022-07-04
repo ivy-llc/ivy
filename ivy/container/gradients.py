@@ -24,7 +24,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, 3]))
         >>> mw = ivy.array([[0., 0., 0.]])
         >>> vw = ivy.array([[0., 0., 0.]])
-        >>> step = ivy.array([3.4])
+        >>> step = ivy.array(3.4)
         >>> adam_step_delta, _, _= ivy.Container.static_adam_step(dcdw, mw, vw,step)
         >>> print(adam_step_delta)
         {
@@ -57,14 +57,14 @@ class ContainerWithGradients(ContainerBase):
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, 3]))
-        >>> mw = ivy.array([[0., 0., 0.]])
-        >>> vw = ivy.array([[0., 0., 0.]])
+        >>> mw = ivy.array([[0.,]])
+        >>> vw = ivy.array([[0.,]])
         >>> step = ivy.array([3.4])
         >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
-            a: (list[3], <class ivy.array.Array> shape=[1, 3]),
-            b: (list[3], <class ivy.array.Array> shape=[1, 3])
+            a: (list[3], <class ivy.array.Array> shape=[3, 1]),
+            b: (list[3], <class ivy.array.Array> shape=[3, 1])
         }
         """
         return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
