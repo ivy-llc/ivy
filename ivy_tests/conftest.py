@@ -8,6 +8,7 @@ settings.load_profile("ci")
 
 skip_ids = [
     "ivy/ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_masking",
+    "ivy/ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_setitem",
 ]
 
 skips_path = r"C:\ivy_tests\skips.txt"
