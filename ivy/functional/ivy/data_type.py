@@ -424,7 +424,7 @@ def _check_float64(input):
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
         mant = bin(int(tmp[0])).replace("0b", "")
         return (
-            (input > 3.4028235 * 10**38)
+            (input > 3.4028235 * 10 ** 38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
             or (exponent < -126)
             or (exponent > 127)
@@ -567,7 +567,16 @@ def set_default_dtype(dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_dtype():
-    """"""
+    """Unsets the default dtype from the global default dtype stack.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+    """
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)
@@ -590,7 +599,16 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_int_dtype():
-    """"""
+    """Unsets the default integer dtype from the global default dtype stack.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+    """
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)
@@ -613,7 +631,16 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
 
 
 def unset_default_float_dtype():
-    """"""
+    """Unsets the default float dtype from the global default dtype stack.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+    """
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
