@@ -20,7 +20,7 @@ class ArrayWithCreation(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> ivy.array:
+        ) -> ivy.array:
         return ivy.arange(
             start, stop, step, dtype=dtype, device=device, out=out
             )
