@@ -3362,15 +3362,15 @@ def minimum(
     >>> z = ivy.zeros((3, 6))
     >>> ivy.minimum(x, y, out=z)
     >>> print(z)
-    tensor([[1, 5, 9, 8, 3, 7],
-            [1, 3, 3, 3, 3, 3],
-            [1, 2, 2, 2, 2, 2]])
+    ivy.array([[1.,5.,9.,8.,3.,7.],
+               [1.,3.,3.,3.,3.,3.],
+               [1.,2.,2.,2.,2.,2.]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
     >>> ivy.minimum(x, y, out=x)
     >>> print(x)
-    tensor([[0, 3]])
+    ivy.array([[0, 3]])
 
     With one :code:`ivy.Container` input:
 
