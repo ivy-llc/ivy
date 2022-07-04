@@ -77,8 +77,8 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.squeeze. This method simply wraps the
-        function, and so the docstring for ivy.squeeze also applies to this method
+        ivy.Array instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
         with minimal changes.
 
         Examples

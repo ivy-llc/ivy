@@ -235,8 +235,8 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.squeeze. This method simply wraps the
-        function, and so the docstring for ivy.squeeze also applies to this method
+        ivy.Container instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
         with minimal changes.
 
         Examples
