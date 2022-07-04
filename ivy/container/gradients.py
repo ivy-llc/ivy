@@ -21,6 +21,15 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
+
+        Examples
+        --------
+
+        with :code: 'ivy.container' inputs:
+        >>> ivy.set_backend('jax')
+        >>> ivy.get_backend()
+            <module 'ivy.functional.backends.jax'
+            from '/ivy/ivy/functional/backends/jax/__init__.py'>
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> mw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
         >>> vw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
@@ -31,6 +40,8 @@ class ContainerWithGradients(ContainerBase):
             a: (list[3], <class ivy.array.Array> shape=[3]),
             b: (list[3], <class ivy.array.Array> shape=[3])
         }
+
+
         """
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
@@ -56,6 +67,14 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
+
+        Examples
+        --------
+        with :code: 'ivy.container' inputs:
+        >>> ivy.set_backend('jax')
+        >>> ivy.get_backend()
+            <module 'ivy.functional.backends.jax'
+            from '/ivy/ivy/functional/backends/jax/__init__.py'>
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> mw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
         >>> vw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
