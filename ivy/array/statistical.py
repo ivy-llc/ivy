@@ -58,7 +58,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.sum(self._data, axis, dtype, keepdims, out=out)
+        return ivy.sum(self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
     def std(
         self: ivy.Array,

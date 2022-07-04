@@ -79,8 +79,7 @@ def layer_norm(
     >>> arr = ivy.native_array([[3., 1.],[4., 12.]])
     >>> norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)
     >>> print(norm)
-    ivy.array([[ 0.0707, -0.109 ],
-           [ 0.16  ,  0.877 ]])
+    ivy.array([[0.2,0.15],[0.225,0.425]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -120,7 +119,7 @@ def layer_norm(
         [0.1047,  0.5886,  1.2732], \
         [0.7696, -1.7024, -2.2518]])
     >>> norm = arr.layer_norm([0, 1], epsilon=0.001, \
-                 new_std=1.5, offset=0.5, scale=0.5))
+                 new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
     ivy.array([[ 0.58 ,  0.283,  1.37 ],
            [ 0.585,  0.909,  1.37 ],
@@ -131,10 +130,7 @@ def layer_norm(
     >>> container = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> norm = container.layer_norm([0], new_std=1.25, offset=0.2)
     >>> print(norm)
-    {
-        a: ivy.array([-1.33, 0.2, 1.73]),
-        b: ivy.array([0.335, 1.66, -1.39])
-    }
+    {a: ivy.array([-1.33, 0.2, 1.73]),b:ivy.array([-1.33,0.2,1.73])}
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
