@@ -9,9 +9,9 @@ from ivy.container.base import ContainerBase
 class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_adam_step(
-        dcdw,
-        mw: Union[ivy.Array, ivy.NativeArray],
-        vw: Union[ivy.Array, ivy.NativeArray],
+        dcdw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         step: Union[int, float],
         beta1=0.9,
         beta2=0.999,
@@ -26,16 +26,10 @@ class ContainerWithGradients(ContainerBase):
         --------
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                               b=ivy.array([0., 0., 0.]))
-        >>> vw = ivy.Container(a=ivy.array([0.,]),\
-                               b=ivy.array([0.,]))
+        >>> mw = ivy.zeros(3)
+        >>> vw = ivy.zeros(1)
         >>> step = ivy.array([3.4])
-        >>> beta1 = 0.87
-        >>> beta2 = 0.976
-        >>> epsilon = 1e-5
-        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw, mw, vw,\
-                                                            step, beta1, beta2, epsilon)
+        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw, mw, vw,step)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),
@@ -71,15 +65,10 @@ class ContainerWithGradients(ContainerBase):
         --------
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                               b=ivy.array([0., 0., 0.]))
-        >>> vw = ivy.Container(a=ivy.array([0.,]),\
-                               b=ivy.array([0.,]))
+        >>> mw = ivy.zeros(3)
+        >>> vw = ivy.zeros(1)
         >>> step = ivy.array([3.4])
-        >>> beta1 = 0.87
-        >>> beta2 = 0.976
-        >>> epsilon = 1e-5
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),

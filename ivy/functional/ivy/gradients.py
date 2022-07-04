@@ -211,9 +211,9 @@ def execute_with_gradients(func, xs, retain_grads=False):
 @to_native_arrays_and_back
 @handle_nestable
 def adam_step(
-    dcdw: Union[ivy.Array, ivy.NativeArray],
-    mw: Union[ivy.Array, ivy.NativeArray],
-    vw: Union[ivy.Array, ivy.NativeArray],
+    dcdw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+    mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+    vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
     step: Union[int, float],
     beta1=0.9,
     beta2=0.999,
