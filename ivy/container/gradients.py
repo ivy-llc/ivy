@@ -21,17 +21,6 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
-
-        Examples
-        --------
-        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                         b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.zeros(3)
-        >>> vw = ivy.zeros(1)
-        >>> step = ivy.array([3.4])
-        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw, mw, vw,step)
-        >>> print(adam_step_delta.shape)
-            [3]
         """
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
@@ -57,17 +46,6 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
-
-        Examples
-        --------
-        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                         b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.zeros(3)
-        >>> vw = ivy.zeros(1)
-        >>> step = ivy.array([3.4])
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
-        >>> print(adam_step_delta.shape)
-            [3]
         """
         return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
 
