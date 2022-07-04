@@ -101,6 +101,9 @@ def leaky_relu(
         Input array.
     alpha
         Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -165,6 +168,9 @@ def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate=True, *, out: Optiona
         Input array.
     approximate
         Whether to approximate, default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -187,6 +193,9 @@ def tanh(
     ----------
     x
         input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -237,6 +246,9 @@ def sigmoid(
     ----------
     x
         input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -292,6 +304,9 @@ def softmax(
     axis
         The dimension softmax would be performed on. The default is -1 which indicates
         the last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -349,6 +364,9 @@ def softplus(
     ----------
     x
         input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
