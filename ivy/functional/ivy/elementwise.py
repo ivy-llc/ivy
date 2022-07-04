@@ -2656,7 +2656,7 @@ def not_equal(
         a: ivy.array([False, False, True]),
         b: ivy.array([False, True, False])
     }
-
+    
     """
     return current_backend(x1, x2).not_equal(x1, x2, out=out)
 
