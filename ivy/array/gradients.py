@@ -29,7 +29,7 @@ class ArrayWithGradients(abc.ABC):
         >>> mw = ivy.zeros(3)
         >>> vw = ivy.zeros(1)
         >>> step = ivy.array(3)
-        >>> adam_step_delta = dcdw.adam_step(dcdw, mw, vw, step)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
             (ivy.array([0.639, 0.639, 0.639]),
             ivy.array([0.1, 0.2, 0.3]),
