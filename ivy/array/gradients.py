@@ -11,7 +11,7 @@ import ivy
 class ArrayWithGradients(abc.ABC):
     def adam_step(self: ivy.Array,
                   mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-                  vw: Union[ivy.container, ivy.Array, ivy.NativeArray],
+                  vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
                   step: Union[int, float],
                   beta1=0.9,
                   beta2=0.999,
