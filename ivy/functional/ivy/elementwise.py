@@ -1548,25 +1548,6 @@ def floor(
         b: ivy.array([3., -5., 0., -2.])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1.5, -5.5, 0.5, -0])
-    >>> y = x.floor()
-    >>> print(y)
-    ivy.array([ 1., -6.,  0.,  0.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, -2.4]), b=ivy.array([3.4, -4.2, 1.2]))
-    >>> y = x.floor()
-    >>> print(y)
-    {
-        a: ivy.array([0., 1., -3.]),
-        b: ivy.array([3., -5., 1.])
-    }
     """
     return current_backend(x).floor(x, out=out)
 
