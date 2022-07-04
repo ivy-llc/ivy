@@ -324,7 +324,10 @@ def adam_step(
         ivy.array([0.001, 0.004, 0.009]))
 
     with :code: 'ivy.container' inputs:
-
+    >>> ivy.set_backend('torch')
+    >>> ivy.get_backend()
+        <module 'ivy.functional.backends.torch'
+        from '/ivy/ivy/functional/backends/torch/__init__.py'>
     >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
                                             b=ivy.array([[5.], [6.], [7.]]))
     >>> mw = ivy.array([[0., 0., 0.]])
@@ -333,10 +336,12 @@ def adam_step(
     >>> beta1 = 0.87
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
-    >>> adam_step_delta, _, _= ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+    >>> adam_step_delta= ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        {a:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]]),
-        b:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]])}
+    {
+        a: (list[3], <class ivy.array.Array> shape=[3, 3]),
+        b: (list[3], <class ivy.array.Array> shape=[3, 3])
+    }
     """
     step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
