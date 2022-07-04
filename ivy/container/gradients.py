@@ -22,19 +22,15 @@ class ContainerWithGradients(ContainerBase):
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> mw = ivy.array([[0.,]])
-        >>> vw = ivy.array([[0.,]])
+        >>> mw = ivy.array([0.,])
+        >>> vw = ivy.array([0.,])
         >>> step = ivy.array([3.4])
         >>> adam_step_delta= ivy.Container.static_adam_step(dcdw, mw, vw,step)
         >>> print(adam_step_delta)
         {
-            a: (array([[0.6120524, 0.61205336, 0.61205369]]),
-                array([[0.1, 0.2, 0.3]]),
-                array([[0.001, 0.004, 0.009]])),
-            b: (array([[0.61205385, 0.61205394, 0.61205401]]),
-                array([[0.4, 0.5, 0.6]]),
-                array([[0.016, 0.025, 0.036]]))
-        },
+            a: (list[3], <class ivy.array.Array> shape=[3]),
+            b: (list[3], <class ivy.array.Array> shape=[3])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
@@ -61,19 +57,15 @@ class ContainerWithGradients(ContainerBase):
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> mw = ivy.array([[0.,]])
-        >>> vw = ivy.array([[0.,]])
+        >>> mw = ivy.array([0.,])
+        >>> vw = ivy.array([0.,])
         >>> step = ivy.array([3.4])
         >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
-            a: (array([[0.6120524, 0.61205336, 0.61205369]]),
-                array([[0.1, 0.2, 0.3]]),
-                array([[0.001, 0.004, 0.009]])),
-            b: (array([[0.61205385, 0.61205394, 0.61205401]]),
-                array([[0.4, 0.5, 0.6]]),
-                array([[0.016, 0.025, 0.036]]))
-        },
+            a: (list[3], <class ivy.array.Array> shape=[3]),
+            b: (list[3], <class ivy.array.Array> shape=[3])
+        }
         """
         return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
 
