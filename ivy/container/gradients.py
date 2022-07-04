@@ -21,6 +21,18 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
+        >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> mw = ivy.array([[0., 0., 0.]])
+        >>> vw = ivy.array([[0., 0., 0.]])
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.87
+        >>> beta2 = 0.976
+        >>> epsilon = 1e-5
+        >>> adam_step_delta, _, _= ivy.Container.static_adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+        >>> print(adam_step_delta)
+            {a:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]]),
+            b:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]])}
         """
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
@@ -46,6 +58,18 @@ class ContainerWithGradients(ContainerBase):
         ivy.Container instance method variant of ivy.adam_step.
         This method simply wraps the function, and so the docstring for ivy.
         adam_step also applies to this method with minimal changes
+        >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> mw = ivy.array([[0., 0., 0.]])
+        >>> vw = ivy.array([[0., 0., 0.]])
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.87
+        >>> beta2 = 0.976
+        >>> epsilon = 1e-5
+        >>> adam_step_delta, _, _= dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
+        >>> print(adam_step_delta)
+            {a:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]]),
+            b:ivy.array([[0.626,0.626,0.626],[0.626,0.626,0.626],[0.626,0.626,0.626]])}
         """
         return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
 
