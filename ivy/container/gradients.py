@@ -28,8 +28,8 @@ class ContainerWithGradients(ContainerBase):
         >>> adam_step_delta, _, _= ivy.Container.static_adam_step(dcdw, mw, vw,step)
         >>> print(adam_step_delta)
         {
-            a: ivy.array([[0.612, 0.612, 0.612]]),
-            b: ivy.array([[0.612, 0.612, 0.612]])
+            a: (list[3], <class ivy.array.Array> shape=[1, 3]),
+            b: (list[3], <class ivy.array.Array> shape=[1, 3])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -60,11 +60,11 @@ class ContainerWithGradients(ContainerBase):
         >>> mw = ivy.array([[0., 0., 0.]])
         >>> vw = ivy.array([[0., 0., 0.]])
         >>> step = ivy.array([3.4])
-        >>> adam_step_delta, _, _= dcdw.adam_step(mw, vw, step)
+        >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
-            a: ivy.array([[0.612, 0.612, 0.612]]),
-            b: ivy.array([[0.612, 0.612, 0.612]])
+            a: (list[3], <class ivy.array.Array> shape=[1, 3]),
+            b: (list[3], <class ivy.array.Array> shape=[1, 3])
         }
         """
         return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
