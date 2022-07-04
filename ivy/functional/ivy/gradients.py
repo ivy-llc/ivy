@@ -317,7 +317,7 @@ def adam_step(
     >>> mw = ivy.native_array([0, 0, 0])
     >>> vw = ivy.zeros(1)
     >>> step = ivy.native_array([2])
-    >>> adam_delta = ivy.adam_step(dcdw, mw, vw, step)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
         (ivy.array([0.744, 0.744, 0.744]),
         ivy.array([0.1, 0.2, 0.3]),
@@ -336,22 +336,16 @@ def adam_step(
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
-    >>> print(adam_step_delta)
-    {
-        a: (list[3], <class ivy.array.Array> shape=[3]),
-        b: (list[3], <class ivy.array.Array> shape=[3])
-    }
-    >>> print(adam_step_delta[0])
+    >>> for i in range(adam_step_delta.shape[0]):
+    ...     print(adam_step_delta[i])
     {
         a: ivy.array([0., 0.626, 0.626]),
         b: ivy.array([0.626, 0.626, 0.626])
     }
-    >>> print(adam_step_delta[1])
     {
         a: ivy.array([0., 0.13, 0.26]),
         b: ivy.array([0.39, 0.52, 0.65])
     }
-    >>> print(adam_step_delta[2])
     {
         a: ivy.array([0., 0.024, 0.096]),
         b: ivy.array([0.216, 0.384, 0.6])
