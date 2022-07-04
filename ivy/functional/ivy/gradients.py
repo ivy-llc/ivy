@@ -337,7 +337,10 @@ def adam_step(
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta.shape)
-        [3]
+            {
+                a: (list[3], <class ivy.array.Array> shape=[3]),
+                b: (list[3], <class ivy.array.Array> shape=[3])
+            }
     """
     step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
