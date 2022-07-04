@@ -23,7 +23,7 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
@@ -333,6 +333,9 @@ def where(
         values from which to choose when condition is True.
     x2
         values from which to choose when condition is False.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
