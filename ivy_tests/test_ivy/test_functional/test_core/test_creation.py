@@ -3,9 +3,9 @@
 # global
 from enum import Flag
 import numpy as np
+import pytest
 from numbers import Number
 from hypothesis import given, strategies as st
-from pyparsing import one_of
 
 # local
 import ivy
@@ -354,7 +354,7 @@ def test_eye(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="from_dlpack"),
+    num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -370,7 +370,7 @@ def test_from_dlpack(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -494,7 +494,7 @@ def test_meshgrid(
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
         kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -571,7 +571,7 @@ def test_ones_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -725,7 +725,7 @@ def test_zeros_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -737,4 +737,3 @@ def test_zeros_like(
         "zeros_like",
         x=np.asarray(x, dtype=dtype),
     )
-    

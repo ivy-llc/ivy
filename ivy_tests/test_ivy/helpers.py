@@ -7,11 +7,11 @@ from io import StringIO
 import sys
 import re
 import inspect
-
 import numpy as np
 import math
 from typing import Union, List
 
+TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
 try:
     import jax.numpy as jnp
@@ -302,8 +302,9 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
             # noinspection PyBroadException
             try:
                 exec(line)
-            except Exception:
-                return False
+            except Exception as e:
+                # print(e," ",ivy.current_backend_str(), line)
+                raise e
 
     output = f.getvalue()
     output = output.rstrip()
@@ -328,14 +329,23 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
 
     output = ansi_escape.sub("", output)
 
-    print("Output: ", output)
-    print("Putput: ", parsed_output)
+    # print("Output: ", output)
+    # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     if not (output == parsed_output):
+        print(
+            "output for ",
+            fn_name,
+            " on run: ",
+            output,
+            "\noutput in docs :",
+            parsed_output,
+        )
         ivy.warn(
             "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
         )
+        return False
     return True
 
 
@@ -447,7 +457,7 @@ def create_args(input_dtypes, num_positional_args, as_variable_flags, all_as_kwa
     return args, kwargs, args_np, kwargs_np
 
 
-def test_array_method(
+def test_method(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     all_as_kwargs_np,
@@ -458,7 +468,7 @@ def test_array_method(
     num_positional_args_constructor: int,
     fw: str,
     class_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
 ):
@@ -575,12 +585,49 @@ def test_array_method(
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
 
 
-def test_array_function(
+def get_flattened_array_returns(ret, ret_from_np):
+
+    # flatten the return
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+
+    # flatten the return from the NumPy backend
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
+    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+
+    # return
+    return ret_np_flat, ret_from_np_flat
+
+
+def value_test(ret_np_flat, ret_from_np_flat, rtol, atol):
+
+    # value tests, iterating through each array in the flattened returns
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
@@ -590,8 +637,8 @@ def test_array_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = 1e-03,
-    atol: float = 1e-06,
+    test_rtol: float = None,
+    test_atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
 ):
@@ -623,9 +670,9 @@ def test_array_function(
         current backend (framework).
     fn_name
         name of the function to test.
-    rtol
+    test_rtol
         relative tolerance value.
-    atol
+    test_atol
         absolute tolerance value.
     test_values
         if true, test for the correctness of the resulting values.
@@ -651,7 +698,7 @@ def test_array_function(
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,
     >>> container_flags, instance_method, fw, fn_name, x=x)
 
@@ -666,7 +713,7 @@ def test_array_function(
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,\
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
@@ -698,8 +745,6 @@ def test_array_function(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (
@@ -838,25 +883,11 @@ def test_array_function(
     if not test_values:
         return ret, ret_from_np
 
-    # flatten the return
-    if not isinstance(ret, tuple):
-        ret = (ret,)
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat = get_flattened_array_returns(ret, ret_from_np)
 
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
-    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-
-    # convert the return to NumPy
-    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-
-    # flatten the return from the NumPy backend
-    if not isinstance(ret_from_np, tuple):
-        ret_from_np = (ret_from_np,)
-    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
-
-    # value tests, iterating through each array in the flattened returns
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        rtol = tolerance_dict.get(str(ret_from_np.dtype), rtol)
-        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    # value test
+    value_test(ret_np_flat, ret_from_np_flat, test_rtol, test_atol)
 
 
 def test_frontend_function(
@@ -868,7 +899,7 @@ def test_frontend_function(
     fw: str,
     frontend: str,
     fn_name: str,
-    rtol: float = 1e-03,
+    rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
@@ -1074,9 +1105,13 @@ def test_frontend_function(
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
 
     # value tests, iterating through each array in the flattened returns
-    for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
-        rtol = tolerance_dict.get(str(frontend_ret.dtype), rtol)
-        assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    if not rtol:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            rtol = tolerance_dict.get(str(frontend_ret.dtype), 1e-03)
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
+    else:
+        for ret_np, frontend_ret in zip(ret_np_flat, frontend_ret_np_flat):
+            assert_all_close(ret_np, frontend_ret, rtol=rtol, atol=atol)
 
 
 # Hypothesis #
@@ -1133,8 +1168,14 @@ def dtype_and_values(
     draw,
     available_dtypes,
     n_arrays=1,
+    min_value=None,
+    max_value=None,
     allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
     max_num_dims=5,
+    min_dim_size=1,
     max_dim_size=10,
     shape=None,
     shared_dtype=False,
@@ -1164,14 +1205,29 @@ def dtype_and_values(
     else:
         shape = draw(
             st.shared(
-                get_shape(max_num_dims=max_num_dims, max_dim_size=max_dim_size),
+                get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=max_num_dims,
+                    min_dim_size=min_dim_size,
+                    max_dim_size=max_dim_size,
+                ),
                 key="shape",
             )
         )
     values = []
     for i in range(n_arrays):
         values.append(
-            draw(array_values(dtype=dtype[i], shape=shape, allow_inf=allow_inf))
+            draw(
+                array_values(
+                    dtype=dtype[i],
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
         )
     if n_arrays == 1:
         dtype = dtype[0]
@@ -1220,29 +1276,29 @@ def array_values(
             size *= dim
     if "int" in dtype:
         if dtype == "int8":
-            min_value = min_value if min_value else -128
-            max_value = max_value if max_value else 127
+            min_value = min_value if min_value is not None else -128
+            max_value = max_value if max_value is not None else 127
         elif dtype == "int16":
-            min_value = min_value if min_value else -32768
-            max_value = max_value if max_value else 32767
+            min_value = min_value if min_value is not None else -32768
+            max_value = max_value if max_value is not None else 32767
         elif dtype == "int32":
-            min_value = min_value if min_value else -2147483648
-            max_value = max_value if max_value else 2147483647
+            min_value = min_value if min_value is not None else -2147483648
+            max_value = max_value if max_value is not None else 2147483647
         elif dtype == "int64":
-            min_value = min_value if min_value else -9223372036854775808
-            max_value = max_value if max_value else 9223372036854775807
+            min_value = min_value if min_value is not None else -9223372036854775808
+            max_value = max_value if max_value is not None else 9223372036854775807
         elif dtype == "uint8":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 255
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 255
         elif dtype == "uint16":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 65535
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 65535
         elif dtype == "uint32":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 4294967295
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 4294967295
         elif dtype == "uint64":
-            min_value = min_value if min_value else 0
-            max_value = max_value if max_value else 18446744073709551615
+            min_value = min_value if min_value is not None else 0
+            max_value = max_value if max_value is not None else 18446744073709551615
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
@@ -1260,7 +1316,7 @@ def array_values(
                 size,
             )
         )
-    elif dtype == "float32":
+    elif dtype in ["float32", "bfloat16"]:
         values = draw(
             list_of_length(
                 st.floats(
