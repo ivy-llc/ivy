@@ -2992,12 +2992,12 @@ def sqrt(
     -------------------
     With :code:`ivy.Array` input:
     
-    >>> x = ivy.array([0, 4, 8])
+    >>> x = ivy.array([0, 4., 8.])
     >>> y = ivy.sqrt(x)
     >>> print(y)
     ivy.array([0., 2., 2.83])
 
-    >>> x = ivy.array([1, 2, 4])
+    >>> x = ivy.array([1, 2., 4.])
     >>> y = ivy.zeros(3)
     >>> ivy.sqrt(x, out=y)
     ivy.array([1., 1.41, 2.])
@@ -3015,7 +3015,7 @@ def sqrt(
 
     With :code:`ivy.Container` input:
     
-    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49,1], [0,20]]))
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
     >>> y = ivy.sqrt(x)
     >>> print(y)
     {
