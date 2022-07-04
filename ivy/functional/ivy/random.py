@@ -31,7 +31,7 @@ def random_uniform(
     shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    dtype = None,
+    dtype=None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over

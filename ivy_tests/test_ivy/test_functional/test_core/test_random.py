@@ -13,59 +13,59 @@ import ivy_tests.test_ivy.helpers as helpers
 # random_uniform
 @given(
     data=st.data(),
-    #input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    # input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
-    #shape=helpers.get_shape(),
+    # shape=helpers.get_shape(),
     with_out=st.booleans(),
-    #num_positional_args=st.integers(0, 1),
-    #num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    #num_positional_args=st.shared(st.integers(1, 6), key="random_uniform"),
+    # num_positional_args=st.integers(0, 1),
+    # num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
+    # num_positional_args=st.shared(st.integers(1, 6), key="random_uniform"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    #shape = st.sampled_from(ivy_np.valid_int_dtypes),
-    #shape = st.integers(1, 3),
+    # shape = st.sampled_from(ivy_np.valid_int_dtypes),
+    # shape = st.integers(1, 3),
 )
 def test_random_uniform(
     data,
     input_dtype,
     as_variable,
     with_out,
-    #num_positional_args,
+    # num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
-    #shape,
+    # shape,
     device,
 ):
-    num_positional_args = data.draw(helpers.num_positional_args(fn_name="random_uniform"))
-    #shape = data.draw(st.integers(1,))
+    num_positional_args = data.draw(
+        helpers.num_positional_args(fn_name="random_uniform")
+    )
+    # shape = data.draw(st.integers(1,))
 
     shape = data.draw(helpers.get_shape(min_num_dims=1))
-    #low, high = data.draw(helpers.get_bounds(input_dtype))
+    # low, high = data.draw(helpers.get_bounds(input_dtype))
 
-    #values = data.draw(helpers.none_or_list_of_floats(input_dtype, 2, 1, 10, no_none=True))
+    # values = data.draw(helpers.none_or_list_of_floats(input_dtype, 2, 1, 10, no_none=True))
     values = data.draw(helpers.array_values(dtype=input_dtype, shape=2, min_value=0))
     if values[0] is not None and values[1] is not None:
         low, high = min(values), max(values)
     else:
         low, high = values[0], values[1]
 
-    #low, high = helpers.get_bounds(data, dtype=input_dtype)
-    #if type(low) == float:
+    # low, high = helpers.get_bounds(data, dtype=input_dtype)
+    # if type(low) == float:
     #    low = int(low)
-    #if type(high) == float:
+    # if type(high) == float:
     #    high = int(high)
 
-    #shape = helpers.get_shape()
-    #shape = data.draw(helpers.get_shape())
-    #shape = st.draw(st.shared(helpers.get_shape(), key="shape"))
+    # shape = helpers.get_shape()
+    # shape = data.draw(helpers.get_shape())
+    # shape = st.draw(st.shared(helpers.get_shape(), key="shape"))
 
-
-
-    '''
+    """
     # smoke test
     if as_variable and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -84,7 +84,7 @@ def test_random_uniform(
     if shape is not None:
         kwargs["shape"] = shape
     ret = ivy.random_uniform(**kwargs, device=device)
-    '''
+    """
 
     helpers.test_function(
         input_dtype,
@@ -103,7 +103,7 @@ def test_random_uniform(
         dtype=input_dtype,
     )
 
-    '''
+    """
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
@@ -115,7 +115,7 @@ def test_random_uniform(
     ret_np = call(ivy.random_uniform, **kwargs, device=device)
     assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
     assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
-    '''
+    """
 
 
 # random_normal
