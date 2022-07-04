@@ -340,7 +340,7 @@ def copy_array(
     ivy.array([1, 0, 1, -1])
 
     """
-    return current_backend(x).copy_array(x)
+    return current_backend(x).copy_array(x, out=out)
 
 
 @inputs_to_native_arrays
@@ -999,13 +999,14 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     return current_backend(x).to_list(x)
 
 
+@handle_out_argument
 @handle_nestable
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
 
@@ -1039,12 +1040,14 @@ def clip_vector_norm(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
-    out: Optional[ivy.Array] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
 
@@ -1056,7 +1059,10 @@ def clip_matrix_norm(
         The maximum value of the array norm.
     p
         The p-value for computing the p-norm. Default is 2.
-
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    
     Returns
     -------
     ret
@@ -1099,9 +1105,14 @@ def floormod(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], 
+    axis: int, 
+    keepdims: bool = False,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1113,6 +1124,9 @@ def unstack(
         Axis for which to unpack the array.
     keepdims
         Whether to keep dimension 1 in the unstack dimensions. Default is False.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1120,7 +1134,7 @@ def unstack(
         List of arrays, unpacked along specified dimensions.
 
     """
-    return current_backend(x).unstack(x, axis, keepdims)
+    return current_backend(x).unstack(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -1519,10 +1533,12 @@ def current_backend_str() -> Union[str, None]:
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
+    *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
@@ -1536,6 +1552,9 @@ def einops_rearrange(
         Rearrangement pattern.
     axes_lengths
         Any additional specifications for dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1550,11 +1569,13 @@ def einops_rearrange(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
+    *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
@@ -1568,6 +1589,9 @@ def einops_reduce(
         Reduction pattern.
     reduction
         One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
     axes_lengths
         Any additional specifications for dimensions.
 
@@ -1584,11 +1608,13 @@ def einops_reduce(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
-    out: Optional[ivy.Array] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Perform einops repeat operation on input array x.
@@ -1601,6 +1627,9 @@ def einops_repeat(
         Rearrangement pattern.
     axes_lengths
         Any additional specifications for dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1875,11 +1904,14 @@ def assert_supports_inplace(x):
     return True
 
 
+@handle_out_argument
 @handle_nestable
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
     ensure_in_backend: bool = False,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
@@ -1897,6 +1929,9 @@ def inplace_update(
         Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
         In cases where it should be, backends which do not natively support inplace
         updates will raise an exception.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1904,13 +1939,16 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return current_backend(x).inplace_update(x, val, ensure_in_backend)
+    return current_backend(x).inplace_update(x, val, ensure_in_backend, out=out)
 
 
+@handle_out_argument
 @handle_nestable
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place decrement for the input array.
 
@@ -1920,6 +1958,9 @@ def inplace_decrement(
         The array to decrement.
     val
         The array to decrement the variable with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1927,13 +1968,16 @@ def inplace_decrement(
         The array following the in-place decrement.
 
     """
-    return current_backend(x).inplace_decrement(x, val)
+    return current_backend(x).inplace_decrement(x, val, out=out)
 
 
+@handle_out_argument
 @handle_nestable
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place increment for the input array.
 
@@ -1943,6 +1987,9 @@ def inplace_increment(
         The array to increment.
     val
         The array to increment the variable with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1950,7 +1997,7 @@ def inplace_increment(
         The array following the in-place increment.
 
     """
-    return current_backend(x).inplace_increment(x, val)
+    return current_backend(x).inplace_increment(x, val, out=out)
 
 
 @to_native_arrays_and_back
@@ -2002,6 +2049,9 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2074,6 +2124,8 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -2094,6 +2146,9 @@ def scatter_flat(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
         updates if None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2102,7 +2157,7 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction
+        indices, updates, size, tensor, reduction, out=out
     )
 
 
@@ -2115,6 +2170,8 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -2136,6 +2193,9 @@ def scatter_nd(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
         updates if None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2144,7 +2204,7 @@ def scatter_nd(
 
     """
     return current_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction
+        indices, updates, shape, tensor, reduction, out=out
     )
 
 
@@ -2303,6 +2363,9 @@ def gather_nd(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2345,6 +2408,9 @@ def indices_where(
     ----------
     x
         Boolean array, for which indices are desired.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2377,6 +2443,9 @@ def one_hot(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
