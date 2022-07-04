@@ -60,7 +60,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> mw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
         >>> vw = ivy.Container(a=ivy.array([0]), b=ivy.array([0]))
-        >>> step = ivy.array([3.4])
+        >>> step = ivy.array([[3.4]])
         >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
