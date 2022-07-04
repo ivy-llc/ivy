@@ -170,9 +170,7 @@ def test_from_dlpack(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -192,8 +190,10 @@ def test_from_dlpack(
 # meshgrid
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_int_dtypes, st.shared(st.integers(1, 3), key="num_arrays"),
-        shared_dtype=True),
+        ivy_np.valid_int_dtypes,
+        st.shared(st.integers(1, 3), key="num_arrays"),
+        shared_dtype=True,
+    ),
     as_variable=st.booleans(),
     num_positional_args=st.shared(st.integers(1, 3), key="num_arrays"),
     native_array=st.booleans(),
@@ -213,7 +213,7 @@ def test_meshgrid(
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
         kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -249,9 +249,7 @@ def test_ones_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -289,9 +287,7 @@ def test_zeros_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
