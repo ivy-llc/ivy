@@ -355,7 +355,7 @@ def test_from_dlpack(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -473,7 +473,7 @@ def test_meshgrid(
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
         kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -544,7 +544,7 @@ def test_ones_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -692,7 +692,7 @@ def test_zeros_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
