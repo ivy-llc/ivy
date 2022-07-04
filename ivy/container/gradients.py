@@ -24,7 +24,6 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-
         with :code: 'ivy.container' inputs:
         >>> ivy.set_backend('jax')
         >>> ivy.get_backend()
