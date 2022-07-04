@@ -1,4 +1,7 @@
 """Converters from Native Modules to Ivy Modules"""
+# global
+import ivy
+from typing import Union, Optional, List, Tuple
 
 # local
 from ivy.backend_handler import current_backend
@@ -9,9 +12,16 @@ def to_ivy_module(
     native_module_class=None,
     args=None,
     kwargs=None,
-    device=None,
-    devices=None,
-    inplace_update=False,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    devices: Optional[
+        Union[
+            ivy.Device,
+            ivy.NativeDevice,
+            List[Union[ivy.Device, ivy.NativeDevice]],
+            Tuple[Union[ivy.Device, ivy.NativeDevice]],
+        ]
+    ] = None,
+    inplace_update: bool = False,
 ):
     """
     Convert an instance of a trainable module from a native framework into a
