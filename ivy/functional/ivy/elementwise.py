@@ -3270,15 +3270,15 @@ def maximum(
     >>> z = ivy.zeros((3, 6))
     >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    tensor([[9, 9, 9, 9, 9, 9],
-            [3, 5, 9, 8, 3, 7],
-            [2, 5, 9, 8, 3, 7]])
+    ivy.array([[9.,9.,9.,9.,9.,9.],
+               [3.,5.,9.,8.,3.,7.],
+               [2.,5.,9.,8.,3.,7.]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
     >>> ivy.maximum(x, y, out=x)
     >>> print(x)
-    tensor([[7, 7]])
+    ivy.array([[7, 7]])
 
     With one :code:`ivy.Container` input:
 
