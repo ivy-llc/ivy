@@ -276,7 +276,7 @@ def test_adam_step(
         native_array,
         fw,
         num_positional_args,
-        container,
+        False,
         instance_method,
         "adam_step",
         dcdw=dcdw,
@@ -676,17 +676,17 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 
 @given(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
-    w=st.floats(allow_infinity=False,allow_nan=False),
     as_variable=st.booleans(),
     native_array=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
     container=helpers.list_of_length(st.booleans(), 5),
     instance_method=st.booleans(),
+    w=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x != 0),
     dcdw=st.floats(allow_infinity=False,allow_nan=False),
     lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
     mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
     vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
+    step=st.integers().filter(lambda x: x > 0),
     beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
@@ -697,13 +697,13 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 )
 def test_lamb_update(
     dtype,
-    w,
     as_variable,
     native_array,
     num_positional_args,
     container,
     instance_method,
     fw,
+    w,
     dcdw,
     lr,
     mw_tm1,
@@ -723,6 +723,12 @@ def test_lamb_update(
     mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
     vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
     step = np.asarray(step,dtype=dtype)
+    if fw == "torch":
+        w = torch.as_tensor(w)
+        dcdw = torch.as_tensor(dcdw)
+        lr = torch.as_tensor(lr)
+        mw_tm1 = torch.as_tensor(mw_tm1)
+        vw_tm1 = torch.as_tensor(vw_tm1)
     helpers.test_function(
         dtype,
         as_variable,
@@ -730,7 +736,7 @@ def test_lamb_update(
         native_array,
         fw,
         num_positional_args,
-        container,
+        False,
         instance_method,
         "lamb_update",
         w=w,
