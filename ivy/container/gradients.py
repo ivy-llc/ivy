@@ -86,7 +86,7 @@ class ContainerWithGradients(ContainerBase):
             b: (list[3], <class ivy.array.Array> shape=[3])
         }
         """
-        return self.static_adam_step(self._data, mw, vw, step, beta1, beta2, epsilon)
+        return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
 
     @staticmethod
     def static_optimizer_update(
