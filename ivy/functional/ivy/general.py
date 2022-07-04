@@ -108,7 +108,7 @@ def is_native_array(
         Boolean, whether or not x is an array.
 
     Examples
-    -------
+    --------
     >>> x = ivy.array([0, 1, 2])
     >>> ivy.is_native_array(x)
     False
