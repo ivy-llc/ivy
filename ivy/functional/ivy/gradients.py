@@ -263,7 +263,8 @@ def adam_step(
         The adam step delta.
 
     """
-    step = float(ivy.to_scalar(step))
+    if not isinstance(step,float):
+        step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
     dcdw_sqrd = dcdw**2
     vw = beta2 * vw + (1 - beta2) * dcdw_sqrd
@@ -542,6 +543,6 @@ def lamb_update(
         r2 = ivy.vector_norm(eff_grads + decay_lambda * w)
     else:
         r2 = ivy.vector_norm(eff_grads)
-    r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
+    r = ivy.asarray(ivy.stable_divide(r1, r2)).minimum(max_trust_ratio)
     lr = r * lr
     return optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
