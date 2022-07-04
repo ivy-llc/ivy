@@ -336,7 +336,7 @@ def adam_step(
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
-    >>> print(adam_step_delta.shape)
+    >>> print(adam_step_delta)
             {
                 a: (list[3], <class ivy.array.Array> shape=[3]),
                 b: (list[3], <class ivy.array.Array> shape=[3])
