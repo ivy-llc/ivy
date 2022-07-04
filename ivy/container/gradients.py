@@ -9,7 +9,7 @@ from ivy.container.base import ContainerBase
 class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_adam_step(
-        dcdw: Union[ivy.Array, ivy.NativeArray],
+        dcdw,
         mw: Union[ivy.Array, ivy.NativeArray],
         vw: Union[ivy.Array, ivy.NativeArray],
         step: Union[int, float],
