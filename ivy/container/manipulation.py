@@ -241,7 +241,6 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
                               b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(2)

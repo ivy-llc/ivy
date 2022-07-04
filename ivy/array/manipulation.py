@@ -83,7 +83,6 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([[[0.],[ 1.]]])
         >>> y = x.squeeze(2)
         >>> print(y)
