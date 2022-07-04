@@ -853,22 +853,22 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 @handle_nestable
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
-    
+
     Parameters
     ----------
     x
         Input array.
-        
+
     Returns
     -------
     ret
         A list representation of the input array ``x``.
-        
+
     Functional Examples
     ------------------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
@@ -876,7 +876,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.array([[ 1.1,  2.2,  3.3], \
                        [-4.4, -5.5, -6.6]])
     >>> y = ivy.to_list(x)
@@ -885,7 +885,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.array([[[-1,  0,  1],\
                         [ 1,  0, -1]], \
                        [[ 1, -1,  0], \
@@ -896,9 +896,9 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
@@ -906,7 +906,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.native_array([[-1, 0, 1], \
                               [-1, 0, 1], \
                               [ 1, 0, -1]])
@@ -916,7 +916,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.native_array([[[-1, 0, 1], \
                                [1, 0, -1]], \
                               [[1, -1, 0], \
@@ -927,16 +927,16 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [-1, 0, 1]
     }
-    
+
     >>> x = ivy.Container(a=ivy.array([[-1, 0, 1], \
                                        [-1, 0, 1], \
                                        [1, 0, -1]]))
@@ -945,7 +945,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
-    
+
     >>> x = \
     ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
@@ -953,23 +953,23 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
-    
+
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [-1, 0, 1]
     }
-    
+
     >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1],[-1, 0, 1],[1, 0, -1]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
     }
-    
+
     >>> x =\
     ivy.Container(a=ivy.native_array([[[-1 ,0, 1],[1, 0 ,-1]],[[1, -1, 0],[1,0 ,-1]]]))
     >>> y = ivy.to_list(x)
@@ -1005,7 +1005,7 @@ def clip_vector_norm(
     max_norm: float,
     p: float = 2.0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
 
@@ -1034,7 +1034,7 @@ def clip_vector_norm(
     else:
         ret = x
     if ivy.exists(out):
-        return ivy.inplace_update(x=out, val=ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -1045,7 +1045,7 @@ def clip_matrix_norm(
     max_norm: float,
     p: float = 2.0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
 
@@ -1060,7 +1060,6 @@ def clip_matrix_norm(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
     Returns
     -------
     ret
@@ -1103,14 +1102,9 @@ def floormod(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], 
-    axis: int, 
-    keepdims: bool = False,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1122,9 +1116,6 @@ def unstack(
         Axis for which to unpack the array.
     keepdims
         Whether to keep dimension 1 in the unstack dimensions. Default is False.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1132,7 +1123,7 @@ def unstack(
         List of arrays, unpacked along specified dimensions.
 
     """
-    return current_backend(x).unstack(x, axis, keepdims, out=out)
+    return current_backend(x).unstack(x, axis, keepdims)
 
 
 @to_native_arrays_and_back
@@ -1561,7 +1552,7 @@ def einops_rearrange(
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(x=out, val=ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -1585,11 +1576,11 @@ def einops_reduce(
         Reduction pattern.
     reduction
         One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
+    axes_lengths
+        Any additional specifications for dimensions.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    axes_lengths
-        Any additional specifications for dimensions.
 
     Returns
     -------
@@ -1599,7 +1590,7 @@ def einops_reduce(
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(x=out, val=ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -1609,7 +1600,7 @@ def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Perform einops repeat operation on input array x.
@@ -1634,7 +1625,7 @@ def einops_repeat(
     """
     ret = einops.repeat(x, pattern, **axes_lengths)
     if ivy.exists(out):
-        return ivy.inplace_update(x=out, val=ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -1899,14 +1890,11 @@ def assert_supports_inplace(x):
     return True
 
 
-@handle_out_argument
 @handle_nestable
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
     ensure_in_backend: bool = False,
-    *,
-    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
@@ -1924,9 +1912,6 @@ def inplace_update(
         Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
         In cases where it should be, backends which do not natively support inplace
         updates will raise an exception.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1934,16 +1919,13 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return current_backend(x).inplace_update(x, val, ensure_in_backend, out=out)
+    return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
-@handle_out_argument
 @handle_nestable
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place decrement for the input array.
 
@@ -1953,9 +1935,6 @@ def inplace_decrement(
         The array to decrement.
     val
         The array to decrement the variable with.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1963,16 +1942,13 @@ def inplace_decrement(
         The array following the in-place decrement.
 
     """
-    return current_backend(x).inplace_decrement(x, val, out=out)
+    return current_backend(x).inplace_decrement(x, val)
 
 
-@handle_out_argument
 @handle_nestable
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Perform in-place increment for the input array.
 
@@ -1982,9 +1958,6 @@ def inplace_increment(
         The array to increment.
     val
         The array to increment the variable with.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1992,7 +1965,7 @@ def inplace_increment(
         The array following the in-place increment.
 
     """
-    return current_backend(x).inplace_increment(x, val, out=out)
+    return current_backend(x).inplace_increment(x, val)
 
 
 @to_native_arrays_and_back
@@ -2047,17 +2020,17 @@ def cumprod(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-
+    
     Returns
     -------
     ret
         Input array with cumulatively multiplied elements along axis.
-        
+
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([2, 3, 4])
     >>> y = ivy.cumprod(x)
     >>> print(y)
@@ -2068,9 +2041,9 @@ def cumprod(
     >>> y = ivy.cumprod(x, exclusive=exclusive)
     >>> print(y)
     ivy.array([1, 2, 6])
-    
+
     Example specifying axes
-    
+
     >>> x = ivy.array([[2, 3], \
                        [5, 7], \
                        [11, 13]])
@@ -2079,24 +2052,24 @@ def cumprod(
     >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
     >>> print(y)
     ivy.array([[1.,2.],[1.,5.],[1.,11.]])
-     
+
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> exclusive = True
     >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
     >>> print(x)
     ivy.array([[1,  1],
-               [2,  3], 
+               [2,  3],
                [10, 21]])
-     
-     
+
+
      With :code:`ivy.NativeArray` input:
-     
+
      >>> x = ivy.native_array([2, 3, 4])
      >>> y = ivy.cumprod(x)
      >>> print(y)
      ivy.array([2, 6, 24])
-     
-     
+
+
      With :code:`ivy.Container` input:
      >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
      >>> y = ivy.cumprod(x)
@@ -2241,7 +2214,7 @@ def gather(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
