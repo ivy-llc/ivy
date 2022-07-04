@@ -74,6 +74,7 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_abs(
+            self, 
             key_chains, 
             to_apply, 
             prune_unapplied, 
