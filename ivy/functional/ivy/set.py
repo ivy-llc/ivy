@@ -307,6 +307,9 @@ def unique_values(
     x
         input array. If ``x`` has more than one dimension, the function must flatten
         ``x`` and return the unique elements of the flattened array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
