@@ -325,7 +325,8 @@ def adam_step(
 
     with :code: 'ivy.container' inputs:
 
-    >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
+    >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                                            b=ivy.array([[5.], [6.], [7.]]))
     >>> mw = ivy.array([[0., 0., 0.]])
     >>> vw = ivy.array([[0., 0., 0.]])
     >>> step = ivy.array([3.4])
