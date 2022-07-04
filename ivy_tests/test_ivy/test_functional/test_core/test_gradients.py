@@ -244,7 +244,7 @@ def test_execute_with_gradients(
     instance_method=st.booleans(),
     mw=st.floats(allow_infinity=False,allow_nan=False),
     vw=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
+    step=st.integers(min_value=1,max_value=1000).filter(lambda x: x > 0),
     beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
@@ -276,7 +276,7 @@ def test_adam_step(
         native_array,
         fw,
         num_positional_args,
-        False,
+        container,
         instance_method,
         "adam_step",
         dcdw=dcdw,
@@ -686,7 +686,7 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
     mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
     vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.integers().filter(lambda x: x > 0),
+    step=st.integers(min_value=1,max_value=1000).filter(lambda x: x > 0),
     beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
     epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
@@ -760,10 +760,5 @@ def test_lamb_update(
 # with_grads
 # set_with_grads
 # unset_with_grads
-# variable
-# is_variable
-# variable_data
-# stop_gradient
 # execute_with_gradients
 # adam_step
-# optimizer_update
