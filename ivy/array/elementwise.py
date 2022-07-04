@@ -10,13 +10,32 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
-    def abs(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def abs(
+        self: ivy.Array, 
+        x1: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method
         with minimal changes.
+
+       Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([2.6, -6.6, 1.6, -0])
+        >>> y = x.abs()
+        >>> print(y)
+        ivy.array([ 2.6, 6.6, 1.6, 0])
+
+        With :code:`ivy.NativeArray` instance method:
+
+        >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
+        >>> y = x.abs()
+        >>> print(y)
+        ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
+
         """
-        return ivy.abs(self._data, out=out)
+        return ivy.abs(self._data, x1, out=out)
 
     def acosh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.acosh(self._data, out=out)

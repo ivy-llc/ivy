@@ -103,6 +103,14 @@ def abs(
     >>> print(y)
     ivy.array([ 2.6, 6.6, 1.6, 0])
 
+
+    With :code:`ivy.NativeArray` instance method:
+
+    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
+    >>> y = x.abs()
+    >>> print(y)
+    ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
+
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
