@@ -39,8 +39,6 @@ def test_variable(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
     helpers.test_function(
         dtype,
         as_variable,
