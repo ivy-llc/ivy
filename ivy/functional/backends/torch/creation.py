@@ -145,6 +145,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Tuple[int]]] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -154,13 +155,15 @@ def eye(
     device = as_native_dev(default_device(device))
     if n_cols is None:
         n_cols = n_rows
+    if batch_shape is None:
+        batch_shape = []
     i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
     if k == 0:
-        return i
+        return torch.reshape(i, batch_shape + [n_rows, n_cols])
     elif -n_rows < k < 0:
         return torch.concat(
             [
-                torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
+                torch.zeros(batch_shape+[-k, n_cols], dtype=dtype, device=device, out=out),
                 i[: n_rows + k],
             ],
             0,
@@ -168,13 +171,13 @@ def eye(
     elif 0 < k < n_cols:
         return torch.concat(
             [
-                torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
+                torch.zeros(batch_shape+[n_rows, k], dtype=dtype, device=device, out=out),
                 i[:, : n_cols - k],
             ],
             1,
         )
     else:
-        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
+        return torch.zeros(batch_shape+[n_rows, n_cols], dtype=dtype, device=device, out=out)
 
 
 def from_dlpack(x):
