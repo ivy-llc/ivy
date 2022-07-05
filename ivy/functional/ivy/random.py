@@ -299,22 +299,21 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, 1)
+    >>> y = ivy.randint(0, 9, (1,1))
     >>> print(y)
-    ivy.array([3])
+    ivy.array([[5]])
 
     >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
-    ivy.array([[ 7,  5],
-               [15, 15]])
+    ivy.array([[5,8],[9,3]])
 
-    >>> x = ivy.Array([1, 2, 3])
+    >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, (3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
-    >>> y = ivy.zeros(3, 3)
-    >>> ivy.randint(3, 15, (3, 3), device='gpu:1', out=y)
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
