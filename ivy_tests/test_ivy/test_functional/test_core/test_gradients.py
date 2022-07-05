@@ -109,8 +109,12 @@ def test_variable_data(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
-    if fw == "torch":
-        x = torch.as_tensor(x,dtype=torch.float32)
+    # We convert x to tf.Variable because otherwise tf framework is treating
+    # x as tf.constant, which will raise "'EagerTensor' object has no attribute
+    # 'value'" error during testing. Current test for variable_data will pass 
+    # after tf.Variable conversion, whereas the error will be exposed to the 
+    # user from the tf framework during the real execution because tf.constant 
+    # do not support auto-diff.
     if fw == "tensorflow":
         x = tf.Variable(tf.convert_to_tensor(x,dtype=dtype))
     helpers.test_function(
