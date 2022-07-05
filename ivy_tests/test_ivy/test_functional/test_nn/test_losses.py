@@ -136,7 +136,9 @@ def test_binary_cross_entropy(
 # sparse_cross_entropy
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        ivy_np.valid_int_dtypes,
+        tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set({"uint8", "int32", "int64"}))
+        ),
         min_value=0,
         max_value=10,
         allow_inf=False,
@@ -180,8 +182,6 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-    if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
-        return
     min_true = min(true[0], len(pred) - 1)
     helpers.test_function(
         [true_dtype, pred_dtype],
