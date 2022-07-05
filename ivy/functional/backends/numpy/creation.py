@@ -73,12 +73,19 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     dtype: np.dtype,
     device: str
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
-    return _to_device(np.eye(n_rows, n_cols, k, dtype), device=device)
+    if n_cols is None:
+        n_cols = n_rows
+    i = _to_device(np.eye(n_rows, n_cols, k, dtype), device=device)
+    if batch_shape is None:
+        return i
+    else:
+        return np.reshape(i, batch_shape+[n_rows, n_cols])
 
 
 # noinspection PyShadowingNames
