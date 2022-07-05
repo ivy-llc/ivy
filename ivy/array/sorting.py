@@ -13,6 +13,7 @@ class ArrayWithSorting(abc.ABC):
             axis: int = -1,
             descending: bool = False,
             stable: bool = True,
+            *,
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.argsort(
@@ -24,6 +25,7 @@ class ArrayWithSorting(abc.ABC):
             axis: int = -1,
             descending: bool = False,
             stable: bool = True,
+            *,
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.sort(
