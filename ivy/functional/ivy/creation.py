@@ -63,8 +63,8 @@ def arange(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
 
     Returns
@@ -76,7 +76,7 @@ def arange(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -111,8 +111,8 @@ def asarray(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -121,7 +121,7 @@ def asarray(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -156,8 +156,8 @@ def zeros(
     device
        device on which to place the created array. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -166,7 +166,7 @@ def zeros(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -220,7 +220,7 @@ def ones(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -268,8 +268,8 @@ def full_like(
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -279,7 +279,7 @@ def full_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -326,8 +326,8 @@ def ones_like(
         device on which to place the created array. If device is ``None``, the output
         array device must be inferred from x. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -336,7 +336,7 @@ def ones_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -380,8 +380,8 @@ def zeros_like(
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -390,7 +390,7 @@ def zeros_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -429,8 +429,8 @@ def tril(
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -441,7 +441,7 @@ def tril(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -472,8 +472,8 @@ def triu(
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -484,7 +484,7 @@ def triu(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -519,8 +519,8 @@ def empty(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -529,7 +529,7 @@ def empty(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -575,7 +575,7 @@ def empty_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -628,7 +628,7 @@ def eye(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -674,8 +674,8 @@ def linspace(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -684,7 +684,7 @@ def linspace(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.linspace.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -741,16 +741,14 @@ def meshgrid(
         Each returned array should have the same data type as the input arrays.
 
 
-        This method conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.htm>`_  # noqa
-        in the standard. The descriptions above assume an array input for simplicity,
-        but the method also accepts :code:`ivy.Array` or :code:`ivy.NativeArray`
-        instances, as shown in the type hints and also the examples below.
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
+        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.mesgrid.html>`_ # noqa
+        in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for 
+        simplicity, but this function is *nestable*, and therefore also accepts 
+        :code:`ivy.Container` instances in place of any of the arguments.
 
         Functional Examples
         -------------------
@@ -828,8 +826,8 @@ def full(
     device
         device on which to place the created array. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -838,7 +836,7 @@ def full(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -875,8 +873,8 @@ def from_dlpack(
     x  object
         input (array) object.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -891,7 +889,7 @@ def from_dlpack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.from_dlpack.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -975,8 +973,8 @@ def logspace(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the 
+        inputs broadcast to.
 
     Returns
     -------
@@ -988,4 +986,6 @@ def logspace(
     instances in place of any of the arguments.
 
     """
-    return current_backend(start).logspace(start, stop, num, base, axis, device=device, out=out)
+    return current_backend(start).logspace(
+        start, stop, num, base, axis, device=device, out=out
+        )
