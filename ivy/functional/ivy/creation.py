@@ -459,6 +459,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -488,7 +489,7 @@ def eye(
         device on which to place the created array. Default: None.
 
     """
-    return current_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device, out=out)
+    return current_backend().eye(n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out)
 
 
 @to_native_arrays_and_back
