@@ -258,14 +258,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
-            a: {
-                    a: ivy.array(3),
-                    b: ivy.array(2)
-                },
-            b: {
-                    a: ivy.array(4),
-                    b: ivy.array(3)
-                }
+            a: ivy.array(3),
+            b: ivy.array(3)
         }
         """
         return self.static_gather_nd(
