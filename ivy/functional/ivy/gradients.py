@@ -91,8 +91,8 @@ def unset_with_grads():
 def variable(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[ivy.Variable] = None
-) -> ivy.Variable:
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Creates a variable, which supports gradient computation.
 
     Parameters
@@ -139,7 +139,7 @@ def is_variable(
 
 @to_native_arrays_and_back
 @handle_nestable
-def variable_data(x: Optional[ivy.Variable]) -> Any:
+def variable_data(x: Optional[ivy.Array]) -> Any:
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
     dedicated variable class, the function returns the data passed in.
