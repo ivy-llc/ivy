@@ -23,7 +23,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 def linear(x: Union[ivy.Array, ivy.NativeArray],
            weight: Union[ivy.Array, ivy.NativeArray],
-           bias: Union[ivy.Array, ivy.NativeArray]=None,
+           bias: Union[ivy.Array, ivy.NativeArray] = None,
            out: Optional[ivy.Array] = None):
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
