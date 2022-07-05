@@ -497,6 +497,9 @@ def erf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.erf(x, out=out)
 
 
+erf.unsupported_dtypes = ('float16',)
+
+
 def minimum(x1, x2, *, out: Optional[torch.Tensor] = None):
     x_val = torch.tensor(x1) if (isinstance(x1, int) or isinstance(x1, float)) else x1
     y_val = torch.tensor(x2) if (isinstance(x2, int) or isinstance(x2, float)) else x2

@@ -39,7 +39,7 @@ def cross(
     promote_type = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(promote_type)
     x2 = x2.type(promote_type)
-    return torch.cross(input=x1, other=x2, dim=axis, out=out)
+    return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
 
 def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -96,6 +96,7 @@ def matrix_rank(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    # ToDo: add support for default rtol value here, for the case where None is provided
     return torch.linalg.matrix_rank(x, rtol, out=out)
 
 

@@ -11,8 +11,8 @@ class ContainerWithLosses(ContainerBase):
     def static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        axis: Union[int, ivy.Container] = -1,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -36,8 +36,8 @@ class ContainerWithLosses(ContainerBase):
     def cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        axis: Union[int, ivy.Container] = -1,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -61,7 +61,7 @@ class ContainerWithLosses(ContainerBase):
     def static_binary_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        epsilon: Optional[float] = 1e-7,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -83,7 +83,7 @@ class ContainerWithLosses(ContainerBase):
     def binary_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        epsilon: Optional[float] = 1e-7,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -105,8 +105,8 @@ class ContainerWithLosses(ContainerBase):
     def static_sparse_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        axis: Union[int, ivy.Container] = -1,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -129,8 +129,8 @@ class ContainerWithLosses(ContainerBase):
     def sparse_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        axis: Union[int, ivy.Container] = -1,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
