@@ -64,7 +64,7 @@ def abs(
     >>> print(y)
     ivy.array([1, 0, 6])
 
-    >>> x = ivy.array(3.7, -7.7, 0, -2, -0])
+    >>> x = ivy.array([3.7, -7.7, 0, -2, -0])
     >>> y = ivy.abs(x)
     >>> print(y)
     ivy.array([ 3.7, 7.7, 0, 2, 0])
@@ -121,8 +121,6 @@ def abs(
         a: ivy.array([1.6, 2.6, 3.5]),
         b: ivy.array([4.5, 5.3, 2.3])
     }
-
-
 
     """
     return current_backend(x).abs(x, out=out)
