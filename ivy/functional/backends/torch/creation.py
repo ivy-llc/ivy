@@ -92,12 +92,7 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return (
-                torch.as_tensor(object_in, dtype=dtype)
-                .clone()
-                .detach()
-                .to(device)
-            )
+            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
         else:
             return torch.as_tensor(object_in, dtype=dtype).to(device)
 
@@ -107,12 +102,7 @@ def asarray(
         dtype = as_native_dtype((default_dtype(dtype, object_in)))
 
     if copy is True:
-        return (
-            torch.as_tensor(object_in, dtype=dtype)
-            .clone()
-            .detach()
-            .to(device)
-        )
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
     else:
         return torch.as_tensor(object_in, dtype=dtype).to(device)
 
@@ -163,7 +153,9 @@ def eye(
     elif -n_rows < k < 0:
         return torch.concat(
             [
-                torch.zeros(batch_shape+[-k, n_cols], dtype=dtype, device=device, out=out),
+                torch.zeros(
+                    batch_shape + [-k, n_cols], dtype=dtype, device=device, out=out
+                ),
                 i[: n_rows + k],
             ],
             0,
@@ -171,13 +163,17 @@ def eye(
     elif 0 < k < n_cols:
         return torch.concat(
             [
-                torch.zeros(batch_shape+[n_rows, k], dtype=dtype, device=device, out=out),
+                torch.zeros(
+                    batch_shape + [n_rows, k], dtype=dtype, device=device, out=out
+                ),
                 i[:, : n_cols - k],
             ],
             1,
         )
     else:
-        return torch.zeros(batch_shape+[n_rows, n_cols], dtype=dtype, device=device, out=out)
+        return torch.zeros(
+            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+        )
 
 
 def from_dlpack(x):

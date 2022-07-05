@@ -85,7 +85,7 @@ def eye(
     if batch_shape is None:
         return i
     else:
-        return np.reshape(i, batch_shape+[n_rows, n_cols])
+        return np.reshape(i, batch_shape + [n_rows, n_cols])
 
 
 # noinspection PyShadowingNames

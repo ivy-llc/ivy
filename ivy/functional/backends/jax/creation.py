@@ -105,8 +105,8 @@ def eye(
     i = _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
     if batch_shape is None:
         return i
-    else: 
-        return jnp.reshape(i, batch_shape+[n_rows, n_cols])
+    else:
+        return jnp.reshape(i, batch_shape + [n_rows, n_cols])
 
 
 # noinspection PyShadowingNames
