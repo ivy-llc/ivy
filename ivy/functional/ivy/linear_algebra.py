@@ -212,9 +212,7 @@ def cross(
 @handle_out_argument
 @handle_nestable
 def det(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
@@ -493,9 +491,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -523,9 +519,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -671,10 +665,7 @@ def matrix_norm(
 @handle_out_argument
 @handle_nestable
 def matrix_power(
-    x: Union[ivy.Array, ivy.NativeArray],
-    n: int,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], n: int, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
@@ -736,9 +727,7 @@ def matrix_rank(
 @handle_out_argument
 @handle_nestable
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Transposes a matrix (or a stack of matrices) ``x``.
 
@@ -929,9 +918,7 @@ def qr(
 @handle_out_argument
 @handle_nestable
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1080,9 +1067,7 @@ def svd(
 @handle_out_argument
 @handle_nestable
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the singular values of a matrix (or a stack of matrices) ``x``.
 
@@ -1369,9 +1354,7 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    vector: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric
     matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying

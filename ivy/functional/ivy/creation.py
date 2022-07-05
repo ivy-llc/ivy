@@ -538,7 +538,7 @@ def linspace(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
@@ -725,7 +725,9 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def from_dlpack(x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None) -> ivy.Array:
+def from_dlpack(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
@@ -802,7 +804,7 @@ def logspace(
     axis: int = None,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
@@ -834,4 +836,6 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return current_backend(start).logspace(start, stop, num, base, axis, device=device, out=out)
+    return current_backend(start).logspace(
+        start, stop, num, base, axis, device=device, out=out
+    )

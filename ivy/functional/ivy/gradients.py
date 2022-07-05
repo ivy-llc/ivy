@@ -152,10 +152,10 @@ def variable_data(x):
 @handle_out_argument
 @handle_nestable
 def stop_gradient(
-        x: Union[ivy.Array, ivy.NativeArray],
-        preserve_type: bool = True,
-        *,
-        out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    preserve_type: bool = True,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Stops gradient computation.
 

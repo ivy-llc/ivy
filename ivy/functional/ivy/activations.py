@@ -20,9 +20,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -159,7 +157,12 @@ def leaky_relu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate=True, *, out: Optional[ivy.Array] = None):
+def gelu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    approximate=True,
+    *,
+    out: Optional[ivy.Array] = None,
+):
     """Applies the Gaussian error linear unit (GELU) activation function.
 
     Parameters

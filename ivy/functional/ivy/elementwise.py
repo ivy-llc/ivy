@@ -570,7 +570,7 @@ def atanh(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
     ret
@@ -1298,7 +1298,7 @@ def divide(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
+
     Returns
     -------
     ret
@@ -1571,7 +1571,7 @@ def floor_divide(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
+
     Returns
     -------
     ret
@@ -1920,7 +1920,7 @@ def less_equal(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
      ret

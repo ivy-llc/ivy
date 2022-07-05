@@ -9,11 +9,7 @@ import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
-    def all_equal(
-            self: ivy.Array,
-            x2: Iterable[Any],
-            equality_matrix: bool = False
-    ):
+    def all_equal(self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False):
         """
         ivy.Container instance method variant of ivy.all_equal.
         This method simply wraps the function, and so the docstring for

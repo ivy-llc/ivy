@@ -107,7 +107,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.ceil. This method simply wraps the
         function, and so the docstring for ivy.ceil also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
