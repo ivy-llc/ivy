@@ -1,66 +1,33 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ivy.container.container &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -68,26 +35,42 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
+<p class="caption" role="heading"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/wrapping.html">Wrapping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Container</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
@@ -112,7 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/utility.html">Utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/wrapping.html">Wrapping</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
@@ -123,7 +106,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/losses.html">Losses</a></li>
@@ -138,7 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
@@ -149,7 +131,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
@@ -162,68 +144,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>ivy.container.container</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for ivy.container.container</h1><div class="highlight"><pre>
-<span></span><span class="c1"># local</span>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">.activations</span> <span class="kn">import</span> <span class="n">ContainerWithActivations</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
@@ -247,32 +197,315 @@
 <span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">ContainerWithUtility</span>
 
 
-<div class="viewcode-block" id="Container"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container">[docs]</a><span class="k">class</span> <span class="nc">Container</span><span class="p">(</span><span class="n">ContainerWithActivations</span><span class="p">,</span> <span class="n">ContainerWithCreation</span><span class="p">,</span> <span class="n">ContainerWithDataTypes</span><span class="p">,</span>
-                <span class="n">ContainerWithDevice</span><span class="p">,</span> <span class="n">ContainerWithElementwise</span><span class="p">,</span> <span class="n">ContainerWithGeneral</span><span class="p">,</span> <span class="n">ContainerWithGradients</span><span class="p">,</span>
-                <span class="n">ContainerWithImage</span><span class="p">,</span> <span class="n">ContainerWithLayers</span><span class="p">,</span> <span class="n">ContainerWithLinearAlgebra</span><span class="p">,</span> <span class="n">ContainerWithLosses</span><span class="p">,</span>
-                <span class="n">ContainerWithManipulation</span><span class="p">,</span> <span class="n">ContainerWithNorms</span><span class="p">,</span> <span class="n">ContainerWithRandom</span><span class="p">,</span> <span class="n">ContainerWithSearching</span><span class="p">,</span>
-                <span class="n">ContainerWithSet</span><span class="p">,</span> <span class="n">ContainerWithSorting</span><span class="p">,</span> <span class="n">ContainerWithStatistical</span><span class="p">,</span> <span class="n">ContainerWithUtility</span><span class="p">):</span>
-
-<div class="viewcode-block" id="Container.__init__"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="o">=</span><span class="s1">&#39;list_join&#39;</span><span class="p">,</span>
-                 <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_key_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Container"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container">[docs]</a><span class="k">class</span> <span class="nc">Container</span><span class="p">(</span>
+    <span class="n">ContainerWithActivations</span><span class="p">,</span>
+    <span class="n">ContainerWithCreation</span><span class="p">,</span>
+    <span class="n">ContainerWithDataTypes</span><span class="p">,</span>
+    <span class="n">ContainerWithDevice</span><span class="p">,</span>
+    <span class="n">ContainerWithElementwise</span><span class="p">,</span>
+    <span class="n">ContainerWithGeneral</span><span class="p">,</span>
+    <span class="n">ContainerWithGradients</span><span class="p">,</span>
+    <span class="n">ContainerWithImage</span><span class="p">,</span>
+    <span class="n">ContainerWithLayers</span><span class="p">,</span>
+    <span class="n">ContainerWithLinearAlgebra</span><span class="p">,</span>
+    <span class="n">ContainerWithLosses</span><span class="p">,</span>
+    <span class="n">ContainerWithManipulation</span><span class="p">,</span>
+    <span class="n">ContainerWithNorms</span><span class="p">,</span>
+    <span class="n">ContainerWithRandom</span><span class="p">,</span>
+    <span class="n">ContainerWithSearching</span><span class="p">,</span>
+    <span class="n">ContainerWithSet</span><span class="p">,</span>
+    <span class="n">ContainerWithSorting</span><span class="p">,</span>
+    <span class="n">ContainerWithStatistical</span><span class="p">,</span>
+    <span class="n">ContainerWithUtility</span><span class="p">,</span>
+<span class="p">):</span>
+<div class="viewcode-block" id="Container.__init__"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">container_combine_method</span><span class="o">=</span><span class="s2">&quot;list_join&quot;</span><span class="p">,</span>
+        <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_key_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+        <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="n">ContainerBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="n">queues</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="p">,</span> <span class="n">queue_timeout</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span>
-            <span class="n">key_length_limit</span><span class="p">,</span> <span class="n">print_indent</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">,</span> <span class="n">default_key_color</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="p">,</span>
-            <span class="n">rebuild_child_containers</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">dict_in</span><span class="p">,</span>
+            <span class="n">queues</span><span class="p">,</span>
+            <span class="n">queue_load_sizes</span><span class="p">,</span>
+            <span class="n">container_combine_method</span><span class="p">,</span>
+            <span class="n">queue_timeout</span><span class="p">,</span>
+            <span class="n">print_limit</span><span class="p">,</span>
+            <span class="n">key_length_limit</span><span class="p">,</span>
+            <span class="n">print_indent</span><span class="p">,</span>
+            <span class="n">print_line_spacing</span><span class="p">,</span>
+            <span class="n">ivyh</span><span class="p">,</span>
+            <span class="n">default_key_color</span><span class="p">,</span>
+            <span class="n">keyword_color_dict</span><span class="p">,</span>
+            <span class="n">rebuild_child_containers</span><span class="p">,</span>
+            <span class="n">types_to_iteratively_nest</span><span class="p">,</span>
+            <span class="n">alphabetical_keys</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># Built-ins #</span>
+    <span class="c1"># ----------#</span>
+
+    <span class="k">def</span> <span class="fm">__pos__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="nb">pow</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="n">power</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">power</span><span class="o">**</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Container.__add__"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container special method for the add operator, calling :code:`operator.add`</span>
+<span class="sd">        for each of the corresponding leaves of the two containers.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`Number` instances at the leaves:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=1, b=2)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=3, b=4)</span>
+<span class="sd">        &gt;&gt;&gt; z = x + y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: 4,</span>
+<span class="sd">            b: 6</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With :code:`ivy.Array` instances at the leaves:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
+<span class="sd">                              b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]), \</span>
+<span class="sd">                              b=ivy.array([5, 6, 7]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x + y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([5, 7, 9]),</span>
+<span class="sd">            b: ivy.array([7, 9, 11])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
+<span class="sd">                              b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([[1.1, 2.3, -3.6]])</span>
+<span class="sd">        &gt;&gt;&gt; z = x + y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[5.1, 6.3, 0.4],</span>
+<span class="sd">                          [6.1, 7.3, 1.4],</span>
+<span class="sd">                          [7.1, 8.3, 2.4]]),</span>
+<span class="sd">            b: ivy.array([[6.1, 7.3, 1.4],</span>
+<span class="sd">                          [7.1, 8.3, 2.4],</span>
+<span class="sd">                          [8.1, 9.3, 3.4]])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">xs</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">map_nests</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.__radd__"><a class="viewcode-back" href="../../../container/container/Container.html#ivy.container.container.Container.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container reverse special method for the add operator, calling</span>
+<span class="sd">        :code:`operator.add` for each of the corresponding leaves of the two containers.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = 1</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=3, b=4)</span>
+<span class="sd">        &gt;&gt;&gt; z = x + y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: 4,</span>
+<span class="sd">            b: 5</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">xs</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">],</span> <span class="n">map_nests</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_subtract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_subtract</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_multiply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_multiply</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_divide</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">floordiv</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">//</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rfloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">//</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="ow">and</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="ow">or</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="ow">or</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">not_</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">!=</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">config_in</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config_in&quot;</span><span class="p">])</span>
+        <span class="n">config_in</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">config_in</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config_in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_in</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config&quot;</span><span class="p">])</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">())</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="k">return</span> <span class="n">state_dict</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;_local_ivy&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">]):</span>
+                <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;_config_in&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
+            <span class="n">config_in</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config_in&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;ivyh&quot;</span> <span class="ow">in</span> <span class="n">config_in</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_in</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]):</span>
+                    <span class="n">config_in</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">config_in</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">])</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config_in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_in</span>
+        <span class="k">if</span> <span class="s2">&quot;_config&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;ivyh&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]):</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">])</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MultiDevContainer"><a class="viewcode-back" href="../../../container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer">[docs]</a><span class="k">class</span> <span class="nc">MultiDevContainer</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
-
-<div class="viewcode-block" id="MultiDevContainer.__init__"><a class="viewcode-back" href="../../../container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="o">=</span><span class="s1">&#39;list_join&#39;</span><span class="p">,</span>
-                 <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_key_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="n">queues</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="p">,</span> <span class="n">queue_timeout</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span>
-                         <span class="n">key_length_limit</span><span class="p">,</span> <span class="n">print_indent</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">,</span> <span class="n">default_key_color</span><span class="p">,</span>
-                         <span class="n">keyword_color_dict</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="p">,</span>
-                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="MultiDevContainer.__init__"><a class="viewcode-back" href="../../../container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dict_in</span><span class="p">,</span>
+        <span class="n">devs</span><span class="p">,</span>
+        <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">container_combine_method</span><span class="o">=</span><span class="s2">&quot;list_join&quot;</span><span class="p">,</span>
+        <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_key_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+        <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">dict_in</span><span class="p">,</span>
+            <span class="n">queues</span><span class="p">,</span>
+            <span class="n">queue_load_sizes</span><span class="p">,</span>
+            <span class="n">container_combine_method</span><span class="p">,</span>
+            <span class="n">queue_timeout</span><span class="p">,</span>
+            <span class="n">print_limit</span><span class="p">,</span>
+            <span class="n">key_length_limit</span><span class="p">,</span>
+            <span class="n">print_indent</span><span class="p">,</span>
+            <span class="n">print_line_spacing</span><span class="p">,</span>
+            <span class="n">ivyh</span><span class="p">,</span>
+            <span class="n">default_key_color</span><span class="p">,</span>
+            <span class="n">keyword_color_dict</span><span class="p">,</span>
+            <span class="n">rebuild_child_containers</span><span class="p">,</span>
+            <span class="n">types_to_iteratively_nest</span><span class="p">,</span>
+            <span class="n">alphabetical_keys</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span></div>
 
@@ -284,42 +517,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
