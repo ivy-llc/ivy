@@ -3281,27 +3281,6 @@ def tanh(
         a: ivy.array([0., 0.76, 0.96]),
         b: ivy.array([0.995, 0.999, 0.9999])
     }
-
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.tanh()
-    >>> print(y)
-    ivy.array([0., 0.76, 0.96])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                          b=ivy.array([3., 4., 5.]))
-    >>> y = x.tanh()
-    >>> print(y)
-    {
-        a:ivy.array([0., 0.76, 0.96]),
-        b:ivy.array([0.995, 0.999, 0.9999])
-    }
     """
     return current_backend(x).tanh(x, out=out)
 
