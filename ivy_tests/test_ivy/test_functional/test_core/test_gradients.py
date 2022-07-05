@@ -289,7 +289,46 @@ def test_adam_step(
         beta2=beta2,
         epsilon=epsilon,
     )
-
+    
+# adam_step ground truth tests
+@given(
+    dcdw_mw_vw_step=st.sampled_from(
+    [
+        (
+            Container({"w": [5.0]}),
+            np.array([2.0]),
+            Container({"w": [0.2353166]}),
+        )
+    ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
+)
+def test_adam_step_ground_truth(dcdw_mw_vw_step, dtype, tensor_fn, device, call):
+    # smoke test
+    dcdw_raw, step, w_raw_new = dcdw_mw_vw_step
+    dcdw = dcdw_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    w_true_new = w_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    mw = dcdw
+    vw = dcdw.map(lambda x, _: x**2)
+    w_new,mw_new,vw_new = ivy.adam_step(dcdw, mw, vw, step)
+    # type test
+    assert isinstance(w_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
+    # cardinality test
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
+    # value test
+    for (w_new, w_true_new) in zip(w_new.values(), w_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
+    
 # optimizer_update
 @given(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -473,7 +512,7 @@ def test_lars_update(
         stop_gradients=stop_gradients,
     )
 
-# adam_update
+# adam_update ground truth tests
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
@@ -488,7 +527,7 @@ def test_lars_update(
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -496,10 +535,7 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdw
     vw = dcdw.map(lambda x, _: x**2)
-    ret = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
-    ws_new = {"ws_new": list(ret.values())[0][0]}
-    mw_new = {"mw_new": list(ret.values())[0][1]}
-    vw_new = {"vw_new": list(ret.values())[0][2]}
+    ws_new,mw_new,vw_new = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
