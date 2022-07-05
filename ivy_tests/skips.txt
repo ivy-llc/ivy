@@ -146,5 +146,3 @@ ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_setitem_mask
 
 # ValueError: mask cannot be scalar
 ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_masking
-
-# New
