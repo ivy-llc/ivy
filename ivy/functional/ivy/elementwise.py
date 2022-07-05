@@ -1806,8 +1806,8 @@ def less_equal(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[0.],[1.],[0.]]])
-
+    ivy.array([[[1.],[0.],[1.]]])
+    
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2])
