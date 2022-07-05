@@ -11,6 +11,7 @@ import numpy as np
 import math
 from typing import Union, List
 
+TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
 try:
     import jax.numpy as jnp
@@ -456,7 +457,7 @@ def create_args(input_dtypes, num_positional_args, as_variable_flags, all_as_kwa
     return args, kwargs, args_np, kwargs_np
 
 
-def test_array_method(
+def test_method(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     all_as_kwargs_np,
@@ -593,7 +594,40 @@ def test_array_method(
             assert_all_close(ret_np, ret_from_np, rol=rtol, atol=atol)
 
 
-def test_array_function(
+def get_flattened_array_returns(ret, ret_from_np):
+
+    # flatten the return
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+
+    # flatten the return from the NumPy backend
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
+    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+
+    # return
+    return ret_np_flat, ret_from_np_flat
+
+
+def value_test(ret_np_flat, ret_from_np_flat, rtol, atol):
+
+    # value tests, iterating through each array in the flattened returns
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
@@ -603,8 +637,8 @@ def test_array_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    rtol: float = None,
-    atol: float = 1e-06,
+    test_rtol: float = None,
+    test_atol: float = 1e-06,
     test_values: bool = True,
     **all_as_kwargs_np
 ):
@@ -636,9 +670,9 @@ def test_array_function(
         current backend (framework).
     fn_name
         name of the function to test.
-    rtol
+    test_rtol
         relative tolerance value.
-    atol
+    test_atol
         absolute tolerance value.
     test_values
         if true, test for the correctness of the resulting values.
@@ -664,7 +698,7 @@ def test_array_function(
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,
     >>> container_flags, instance_method, fw, fn_name, x=x)
 
@@ -679,7 +713,7 @@ def test_array_function(
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_array_function(input_dtypes, as_variable_flags, with_out,\
+    >>> test_function(input_dtypes, as_variable_flags, with_out,\
                             num_positional_args, native_array_flags,\
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
@@ -711,8 +745,6 @@ def test_array_function(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (
@@ -851,29 +883,11 @@ def test_array_function(
     if not test_values:
         return ret, ret_from_np
 
-    # flatten the return
-    if not isinstance(ret, tuple):
-        ret = (ret,)
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat = get_flattened_array_returns(ret, ret_from_np)
 
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
-    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-
-    # convert the return to NumPy
-    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-
-    # flatten the return from the NumPy backend
-    if not isinstance(ret_from_np, tuple):
-        ret_from_np = (ret_from_np,)
-    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
-
-    # value tests, iterating through each array in the flattened returns
-    if not rtol:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            rtol = tolerance_dict.get(str(ret_from_np.dtype), 1e-03)
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
-    else:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+    # value test
+    value_test(ret_np_flat, ret_from_np_flat, test_rtol, test_atol)
 
 
 def test_frontend_function(
