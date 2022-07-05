@@ -1,6 +1,6 @@
 # global
 import abc
-
+from typing import Tuple, Optional
 # local
 import ivy
 
@@ -25,12 +25,6 @@ class ArrayWithDataTypes(abc.ABC):
         """
         return ivy.can_cast(from_=self._data, to=to)
 
-    def iinfo(self: ivy.Array) -> Iinfo:
-        return ivy.iinfo(type=self._dtype)
-
-    def finfo(self: ivy.Array) -> Finfo:
-        return ivy.finfo(type=self._dtype)
-
     def broadcast_to(
         self: ivy.Array,
         shape: Tuple[int, ...],
@@ -38,10 +32,7 @@ class ArrayWithDataTypes(abc.ABC):
     ):
         return ivy.broadcast_to(x=self._data, shape= shape, out=out)
 
-    def broadcast_arrays(self, *arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
-        return ivy.broadcast_arrays(self._data, arrays)
-
-    def dtype(self: ivy.Array, as_native: bool = False) -> ivy.Dtype:
+    def dtype(self: ivy.Array, as_native: Optional[bool] = False) -> ivy.Dtype:
         return ivy.dtype(self._data, as_native)
 
     def astype(
@@ -51,6 +42,23 @@ class ArrayWithDataTypes(abc.ABC):
         out: ivy.Array = None
     ) -> ivy.Array:
         return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+
+    def dtype_bits(self: ivy.Array) -> int:
+        return ivy.dtype_bits(self._dtype)
+
+    def as_ivy_dtype(self: ivy.Array) -> ivy.Dtype:
+        return ivy.as_ivy_dtype(self._dtype)
+
+    def as_native_dtype(self: ivy.Array) -> ivy.NativeDtype:
+        return ivy.as_native_dtype(self._dtype)
+
+    def is_int_dtype(self: ivy.Array) -> bool:
+        return ivy.is_int_dtype(self._data)
+
+    def is_float_dtype(self: ivy.Array) -> bool:
+        return ivy.is_float_dtype(self._data)
+
+
 
 
 
