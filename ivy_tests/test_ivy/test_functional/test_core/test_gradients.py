@@ -374,6 +374,40 @@ def test_optimizer_update(
         inplace=inplace,
         stop_gradients=stop_gradients,
     )
+
+# optimizer_update ground truth tests
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew",
+    [
+        (
+            Container({"w": [3.0]}),
+            Container({"w": [6.0]}),
+            0.1,
+            Container({"w": [2.4]}),
+        )
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+    # smoke test
+    ws_raw, effect_grad_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    effect_grad = effect_grad_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    ws_new= ivy.optimizer_update(ws, effect_grad, lr)
+    # type test
+    assert isinstance(ws_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
     
 # gradient_descent_update
 @given(
