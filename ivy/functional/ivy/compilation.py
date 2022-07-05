@@ -40,6 +40,7 @@ def compile(
 
     Returns
     -------
+    ret
         The handle to the newly compiled function.
     """
     return current_backend(example_inputs).compile(
