@@ -171,10 +171,8 @@ class ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         return ivy.from_dlpack(self, out=out)
 
-
 # Extra #
 # ------#
-
 
     def native_array(
         self: ivy.Array,
