@@ -337,8 +337,8 @@ def remainder(
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
-        return np.remainder(x1, x2)
+    if (not np.all(x2)) or (np.any(x2) == -0) or (np.any(x1) == 0):
+        return ivy.asarray(np.remainder(x1, x2))
     return tf.experimental.numpy.remainder(x1, x2)
 
 
@@ -394,12 +394,16 @@ def tanh(
 
 
 def trunc(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    if "int" in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.zeros(x.shape, dtype=x.dtype)
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x > 0), tf.math.floor(x[x > 0]))
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    ret = x
+    if not ivy.is_array(x):
+        raise Exception("Input must be array")
+    elif not ("int" in str(x.dtype) or ret.get_shape().ndims == 0):
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+        )
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
+        )
     return ret
 
 

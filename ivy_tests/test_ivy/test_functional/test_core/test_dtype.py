@@ -52,7 +52,7 @@ def test_astype(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -92,7 +92,7 @@ def test_broadcast_to(
     fw,
 ):
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -128,7 +128,7 @@ def test_can_cast(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -153,7 +153,7 @@ def test_dtype_bits(
     num_positional_args,
     fw,
 ):
-    ret = helpers.test_array_function(
+    ret = helpers.test_function(
         dtype,
         False,
         False,
@@ -202,7 +202,7 @@ def test_finfo(
     else:
         input_dtype, x = type
         type = np.array(x, dtype=input_dtype)
-    ret = helpers.test_array_function(
+    ret = helpers.test_function(
         input_dtype,
         False,
         False,
@@ -239,7 +239,7 @@ def test_iinfo(
     else:
         input_dtype, x = type
         type = np.array(x, dtype=input_dtype)
-    ret = helpers.test_array_function(
+    ret = helpers.test_function(
         input_dtype,
         False,
         False,
@@ -286,7 +286,7 @@ def test_is_float_dtype(
     fw,
 ):
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -325,7 +325,7 @@ def test_is_int_dtype(
     fw,
 ):
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
