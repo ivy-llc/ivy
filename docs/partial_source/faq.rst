@@ -16,8 +16,8 @@ then many more questions and answers will no doubt be added!
 We are all incredibly grateful to everyone in the community who has put in the time and effort to ask so many important
 and probing questions! We hope these Q&As are a useful reference!
 
-Manaing Backend Versions
-------------------------
+Maintaining Backend Versions
+----------------------------
 
 **Q:** Isn't it complex to maintain support for all backend versions,
 particularly as they undergo constant changes?
