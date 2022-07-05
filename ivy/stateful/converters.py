@@ -1,7 +1,7 @@
 """Converters from Native Modules to Ivy Modules"""
 # global
 import ivy
-from typing import Union, Optional, List, Tuple
+from typing import Union, Optional, Sequence
 
 # local
 from ivy.backend_handler import current_backend
@@ -15,10 +15,7 @@ def to_ivy_module(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     devices: Optional[
         Union[
-            ivy.Device,
-            ivy.NativeDevice,
-            List[Union[ivy.Device, ivy.NativeDevice]],
-            Tuple[Union[ivy.Device, ivy.NativeDevice]],
+            ivy.Device, ivy.NativeDevice, Sequence[Union[ivy.Device, ivy.NativeDevice]]
         ]
     ] = None,
     inplace_update: bool = False,
