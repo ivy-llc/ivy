@@ -4,6 +4,8 @@ logical_xor
 .. autofunction:: ivy.functional.ivy.elementwise.logical_xor
 
 .. autofunction:: ivy.array.array_methods.logical_xor
+
+.. autofunction:: ivy.container.container_methods.logical_xor
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ logical_xor
    :maxdepth: -1
    :caption: logical_xor
 
+   logical_xor/logical_xor_container.rst
    logical_xor/logical_xor_array.rst
    logical_xor/logical_xor_functional.rst
 

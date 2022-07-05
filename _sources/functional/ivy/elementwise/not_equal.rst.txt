@@ -4,6 +4,8 @@ not_equal
 .. autofunction:: ivy.functional.ivy.elementwise.not_equal
 
 .. autofunction:: ivy.array.array_methods.not_equal
+
+.. autofunction:: ivy.container.container_methods.not_equal
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ not_equal
    :caption: not_equal
 
    not_equal/not_equal_array.rst
+   not_equal/not_equal_container.rst
    not_equal/not_equal_functional.rst
 

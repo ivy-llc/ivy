@@ -4,6 +4,10 @@ sparse_cross_entropy
 .. autofunction:: ivy.functional.ivy.losses.sparse_cross_entropy
 
 .. autofunction:: ivy.array.array_methods.sparse_cross_entropy
+
+.. autofunction:: ivy.container.container_methods.static_sparse_cross_entropy
+
+.. autofunction:: ivy.container.container_methods.sparse_cross_entropy
 |
 | **Supported Frameworks:**
 
@@ -30,6 +34,8 @@ sparse_cross_entropy
    :maxdepth: -1
    :caption: sparse_cross_entropy
 
-   sparse_cross_entropy/sparse_cross_entropy_functional.rst
+   sparse_cross_entropy/sparse_cross_entropy_container.rst
    sparse_cross_entropy/sparse_cross_entropy_array.rst
+   sparse_cross_entropy/sparse_cross_entropy_functional.rst
+   sparse_cross_entropy/static_sparse_cross_entropy_container.rst
 

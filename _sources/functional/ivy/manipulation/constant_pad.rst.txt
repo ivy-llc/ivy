@@ -4,6 +4,8 @@ constant_pad
 .. autofunction:: ivy.functional.ivy.manipulation.constant_pad
 
 .. autofunction:: ivy.array.array_methods.constant_pad
+
+.. autofunction:: ivy.container.container_methods.constant_pad
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ constant_pad
    :maxdepth: -1
    :caption: constant_pad
 
+   constant_pad/constant_pad_container.rst
    constant_pad/constant_pad_array.rst
    constant_pad/constant_pad_functional.rst
 

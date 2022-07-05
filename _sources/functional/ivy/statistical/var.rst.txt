@@ -4,6 +4,8 @@ var
 .. autofunction:: ivy.functional.ivy.statistical.var
 
 .. autofunction:: ivy.array.array_methods.var
+
+.. autofunction:: ivy.container.container_methods.var
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ var
    :caption: var
 
    var/var_array.rst
+   var/var_container.rst
    var/var_functional.rst
 

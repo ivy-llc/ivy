@@ -8,6 +8,14 @@ logaddexp
 .. autofunction:: ivy.array.array_methods.exp
 
 .. autofunction:: ivy.array.array_methods.logaddexp
+
+.. autofunction:: ivy.container.container_methods.add
+
+.. autofunction:: ivy.container.container_methods.static_add
+
+.. autofunction:: ivy.container.container_methods.exp
+
+.. autofunction:: ivy.container.container_methods.logaddexp
 |
 | **Supported Frameworks:**
 
@@ -36,4 +44,5 @@ logaddexp
 
    logaddexp/logaddexp_functional.rst
    logaddexp/logaddexp_array.rst
+   logaddexp/logaddexp_container.rst
 

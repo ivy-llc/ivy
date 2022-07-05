@@ -4,6 +4,8 @@ abs
 .. autofunction:: ivy.functional.ivy.elementwise.abs
 
 .. autofunction:: ivy.array.array_methods.abs
+
+.. autofunction:: ivy.container.container_methods.abs
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ abs
    :maxdepth: -1
    :caption: abs
 
+   abs/abs_container.rst
    abs/abs_array.rst
    abs/abs_functional.rst
 

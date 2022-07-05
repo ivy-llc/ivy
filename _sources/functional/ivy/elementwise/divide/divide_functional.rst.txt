@@ -2,9 +2,7 @@ floor_divide functional
 =======================
 .. autofunction:: ivy.functional.ivy.elementwise.floor_divide
 
-.. autofunction:: ivy.array.array_methods.floor
-
-.. autofunction:: ivy.array.array_methods.floor_divide
+.. autofunction:: ivy.container.container_methods.floor_divide
 |
 | **Supported Frameworks:**
 

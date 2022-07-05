@@ -4,6 +4,8 @@ prod
 .. autofunction:: ivy.functional.ivy.statistical.prod
 
 .. autofunction:: ivy.array.array_methods.prod
+
+.. autofunction:: ivy.container.container_methods.prod
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ prod
 
    prod/prod_functional.rst
    prod/prod_array.rst
+   prod/prod_container.rst
 

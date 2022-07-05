@@ -4,6 +4,8 @@ concat
 .. autofunction:: ivy.functional.ivy.manipulation.concat
 
 .. autofunction:: ivy.array.array_methods.concat
+
+.. autofunction:: ivy.container.container_methods.concat
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ concat
    :caption: concat
 
    concat/concat_array.rst
+   concat/concat_container.rst
    concat/concat_functional.rst
 

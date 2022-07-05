@@ -4,6 +4,8 @@ log10
 .. autofunction:: ivy.functional.ivy.elementwise.log10
 
 .. autofunction:: ivy.array.array_methods.log10
+
+.. autofunction:: ivy.container.container_methods.log10
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ log10
    :maxdepth: -1
    :caption: log10
 
+   log10/log10_container.rst
    log10/log10_array.rst
    log10/log10_functional.rst
 

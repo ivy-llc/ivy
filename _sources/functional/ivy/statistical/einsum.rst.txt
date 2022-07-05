@@ -6,6 +6,10 @@ einsum
 .. autofunction:: ivy.array.array_methods.sum
 
 .. autofunction:: ivy.array.array_methods.einsum
+
+.. autofunction:: ivy.container.container_methods.sum
+
+.. autofunction:: ivy.container.container_methods.einsum
 |
 | **Supported Frameworks:**
 
@@ -32,6 +36,7 @@ einsum
    :maxdepth: -1
    :caption: einsum
 
-   einsum/einsum_functional.rst
+   einsum/einsum_container.rst
    einsum/einsum_array.rst
+   einsum/einsum_functional.rst
 

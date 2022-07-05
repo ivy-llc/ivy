@@ -4,6 +4,8 @@ flip
 .. autofunction:: ivy.functional.ivy.manipulation.flip
 
 .. autofunction:: ivy.array.array_methods.flip
+
+.. autofunction:: ivy.container.container_methods.flip
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ flip
    :caption: flip
 
    flip/flip_array.rst
+   flip/flip_container.rst
    flip/flip_functional.rst
 

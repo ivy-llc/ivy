@@ -4,6 +4,8 @@ all
 .. autofunction:: ivy.functional.ivy.utility.all
 
 .. autofunction:: ivy.array.array_methods.all
+
+.. autofunction:: ivy.container.container_methods.all
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ all
    :maxdepth: -1
    :caption: all
 
+   all/all_container.rst
    all/all_array.rst
    all/all_functional.rst
 

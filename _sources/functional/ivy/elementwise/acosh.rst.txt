@@ -10,6 +10,14 @@ acosh
 .. autofunction:: ivy.array.array_methods.cos
 
 .. autofunction:: ivy.array.array_methods.acosh
+
+.. autofunction:: ivy.container.container_methods.acos
+
+.. autofunction:: ivy.container.container_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.cos
+
+.. autofunction:: ivy.container.container_methods.acosh
 |
 | **Supported Frameworks:**
 
@@ -38,4 +46,5 @@ acosh
 
    acosh/acosh_functional.rst
    acosh/acosh_array.rst
+   acosh/acosh_container.rst
 

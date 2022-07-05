@@ -4,6 +4,8 @@ sinh
 .. autofunction:: ivy.functional.ivy.elementwise.sinh
 
 .. autofunction:: ivy.array.array_methods.sinh
+
+.. autofunction:: ivy.container.container_methods.sinh
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ sinh
 
    sinh/sinh_functional.rst
    sinh/sinh_array.rst
+   sinh/sinh_container.rst
 

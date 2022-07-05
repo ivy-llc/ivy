@@ -4,6 +4,10 @@ multiply
 .. autofunction:: ivy.functional.ivy.elementwise.multiply
 
 .. autofunction:: ivy.array.array_methods.multiply
+
+.. autofunction:: ivy.container.container_methods.multiply
+
+.. autofunction:: ivy.container.container_methods.static_multiply
 |
 | **Supported Frameworks:**
 
@@ -30,6 +34,8 @@ multiply
    :maxdepth: -1
    :caption: multiply
 
+   multiply/multiply_container.rst
    multiply/multiply_array.rst
    multiply/multiply_functional.rst
+   multiply/static_multiply_container.rst
 

@@ -4,6 +4,8 @@ swapaxes
 .. autofunction:: ivy.functional.ivy.manipulation.swapaxes
 
 .. autofunction:: ivy.array.array_methods.swapaxes
+
+.. autofunction:: ivy.container.container_methods.swapaxes
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ swapaxes
    :maxdepth: -1
    :caption: swapaxes
 
+   swapaxes/swapaxes_container.rst
    swapaxes/swapaxes_array.rst
    swapaxes/swapaxes_functional.rst
 

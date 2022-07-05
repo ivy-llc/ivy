@@ -4,6 +4,8 @@ logical_not
 .. autofunction:: ivy.functional.ivy.elementwise.logical_not
 
 .. autofunction:: ivy.array.array_methods.logical_not
+
+.. autofunction:: ivy.container.container_methods.logical_not
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ logical_not
    :maxdepth: -1
    :caption: logical_not
 
+   logical_not/logical_not_container.rst
    logical_not/logical_not_array.rst
    logical_not/logical_not_functional.rst
 

@@ -5,6 +5,8 @@ clip
 
 .. autofunction:: ivy.array.array_methods.clip
 
+.. autofunction:: ivy.container.container_methods.clip
+
 .. autofunction:: ivy.container.container_methods.static_clip
 |
 | **Supported Frameworks:**
@@ -32,7 +34,8 @@ clip
    :maxdepth: -1
    :caption: clip
 
-   clip/clip_functional.rst
+   clip/clip_container.rst
    clip/clip_array.rst
+   clip/clip_functional.rst
    clip/static_clip_container.rst
 

@@ -4,6 +4,8 @@ min
 .. autofunction:: ivy.functional.ivy.statistical.min
 
 .. autofunction:: ivy.array.array_methods.min
+
+.. autofunction:: ivy.container.container_methods.min
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ min
    :maxdepth: -1
    :caption: min
 
+   min/min_container.rst
    min/min_array.rst
    min/min_functional.rst
 

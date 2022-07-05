@@ -4,6 +4,8 @@ expm1
 .. autofunction:: ivy.functional.ivy.elementwise.expm1
 
 .. autofunction:: ivy.array.array_methods.expm1
+
+.. autofunction:: ivy.container.container_methods.expm1
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ expm1
 
    expm1/expm1_functional.rst
    expm1/expm1_array.rst
+   expm1/expm1_container.rst
 

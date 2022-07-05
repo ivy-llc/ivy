@@ -4,6 +4,8 @@ positive
 .. autofunction:: ivy.functional.ivy.elementwise.positive
 
 .. autofunction:: ivy.array.array_methods.positive
+
+.. autofunction:: ivy.container.container_methods.positive
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ positive
    :maxdepth: -1
    :caption: positive
 
+   positive/positive_container.rst
    positive/positive_array.rst
    positive/positive_functional.rst
 

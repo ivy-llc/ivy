@@ -4,6 +4,8 @@ expand_dims
 .. autofunction:: ivy.functional.ivy.manipulation.expand_dims
 
 .. autofunction:: ivy.array.array_methods.expand_dims
+
+.. autofunction:: ivy.container.container_methods.expand_dims
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ expand_dims
 
    expand_dims/expand_dims_functional.rst
    expand_dims/expand_dims_array.rst
+   expand_dims/expand_dims_container.rst
 

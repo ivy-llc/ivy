@@ -2,9 +2,11 @@ atanh functional
 ================
 .. autofunction:: ivy.functional.ivy.elementwise.atanh
 
-.. autofunction:: ivy.array.array_methods.tan
+.. autofunction:: ivy.container.container_methods.static_tan
 
-.. autofunction:: ivy.array.array_methods.atanh
+.. autofunction:: ivy.container.container_methods.tan
+
+.. autofunction:: ivy.container.container_methods.atanh
 |
 | **Supported Frameworks:**
 

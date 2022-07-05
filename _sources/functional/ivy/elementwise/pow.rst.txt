@@ -4,6 +4,8 @@ pow
 .. autofunction:: ivy.functional.ivy.elementwise.pow
 
 .. autofunction:: ivy.array.array_methods.pow
+
+.. autofunction:: ivy.container.container_methods.pow
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ pow
    :caption: pow
 
    pow/pow_array.rst
+   pow/pow_container.rst
    pow/pow_functional.rst
 

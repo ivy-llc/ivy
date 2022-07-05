@@ -4,6 +4,8 @@ less
 .. autofunction:: ivy.functional.ivy.elementwise.less
 
 .. autofunction:: ivy.array.array_methods.less
+
+.. autofunction:: ivy.container.container_methods.less
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ less
    :maxdepth: -1
    :caption: less
 
+   less/less_container.rst
    less/less_array.rst
    less/less_functional.rst
 

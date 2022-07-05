@@ -2,7 +2,7 @@ einsum functional
 =================
 .. autofunction:: ivy.functional.ivy.statistical.einsum
 
-.. autofunction:: ivy.array.array_methods.einsum
+.. autofunction:: ivy.container.container_methods.einsum
 |
 | **Supported Frameworks:**
 

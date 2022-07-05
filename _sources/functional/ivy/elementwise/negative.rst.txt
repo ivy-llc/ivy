@@ -4,6 +4,8 @@ negative
 .. autofunction:: ivy.functional.ivy.elementwise.negative
 
 .. autofunction:: ivy.array.array_methods.negative
+
+.. autofunction:: ivy.container.container_methods.negative
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ negative
    :maxdepth: -1
    :caption: negative
 
+   negative/negative_container.rst
    negative/negative_array.rst
    negative/negative_functional.rst
 

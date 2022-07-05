@@ -2,7 +2,7 @@ atanh functional
 ================
 .. autofunction:: ivy.functional.ivy.elementwise.atanh
 
-.. autofunction:: ivy.array.array_methods.atanh
+.. autofunction:: ivy.container.container_methods.atanh
 |
 | **Supported Frameworks:**
 

@@ -4,6 +4,8 @@ sign
 .. autofunction:: ivy.functional.ivy.elementwise.sign
 
 .. autofunction:: ivy.array.array_methods.sign
+
+.. autofunction:: ivy.container.container_methods.sign
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ sign
 
    sign/sign_functional.rst
    sign/sign_array.rst
+   sign/sign_container.rst
 

@@ -4,6 +4,8 @@ isnan
 .. autofunction:: ivy.functional.ivy.elementwise.isnan
 
 .. autofunction:: ivy.array.array_methods.isnan
+
+.. autofunction:: ivy.container.container_methods.isnan
 |
 | **Supported Frameworks:**
 
@@ -31,5 +33,6 @@ isnan
    :caption: isnan
 
    isnan/isnan_array.rst
+   isnan/isnan_container.rst
    isnan/isnan_functional.rst
 

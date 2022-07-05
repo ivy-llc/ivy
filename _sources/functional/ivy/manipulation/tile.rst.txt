@@ -4,6 +4,8 @@ tile
 .. autofunction:: ivy.functional.ivy.manipulation.tile
 
 .. autofunction:: ivy.array.array_methods.tile
+
+.. autofunction:: ivy.container.container_methods.tile
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ tile
    :maxdepth: -1
    :caption: tile
 
-   tile/tile_functional.rst
+   tile/tile_container.rst
    tile/tile_array.rst
+   tile/tile_functional.rst
 

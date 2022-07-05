@@ -4,6 +4,10 @@ all_equal
 .. autofunction:: ivy.functional.ivy.general.all_equal
 
 .. autofunction:: ivy.array.array_methods.all_equal
+
+.. autofunction:: ivy.container.container_methods.all_equal
+
+.. autofunction:: ivy.container.container_methods.static_all_equal
 |
 | **Supported Frameworks:**
 
@@ -30,6 +34,8 @@ all_equal
    :maxdepth: -1
    :caption: all_equal
 
+   all_equal/static_all_equal_container.rst
    all_equal/all_equal_array.rst
+   all_equal/all_equal_container.rst
    all_equal/all_equal_functional.rst
 

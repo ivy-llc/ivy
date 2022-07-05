@@ -4,6 +4,10 @@ roll
 .. autofunction:: ivy.functional.ivy.manipulation.roll
 
 .. autofunction:: ivy.array.array_methods.roll
+
+.. autofunction:: ivy.container.container_methods.static_roll
+
+.. autofunction:: ivy.container.container_methods.roll
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ roll
    :caption: roll
 
    roll/roll_array.rst
+   roll/roll_container.rst
    roll/roll_functional.rst
+   roll/static_roll_container.rst
 

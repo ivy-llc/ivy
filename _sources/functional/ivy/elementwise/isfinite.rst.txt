@@ -4,6 +4,8 @@ isfinite
 .. autofunction:: ivy.functional.ivy.elementwise.isfinite
 
 .. autofunction:: ivy.array.array_methods.isfinite
+
+.. autofunction:: ivy.container.container_methods.isfinite
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ isfinite
    :maxdepth: -1
    :caption: isfinite
 
+   isfinite/isfinite_container.rst
    isfinite/isfinite_array.rst
    isfinite/isfinite_functional.rst
 

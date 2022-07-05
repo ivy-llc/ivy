@@ -4,6 +4,8 @@ zero_pad
 .. autofunction:: ivy.functional.ivy.manipulation.zero_pad
 
 .. autofunction:: ivy.array.array_methods.zero_pad
+
+.. autofunction:: ivy.container.container_methods.zero_pad
 |
 | **Supported Frameworks:**
 
@@ -30,6 +32,7 @@ zero_pad
    :maxdepth: -1
    :caption: zero_pad
 
+   zero_pad/zero_pad_container.rst
    zero_pad/zero_pad_array.rst
    zero_pad/zero_pad_functional.rst
 

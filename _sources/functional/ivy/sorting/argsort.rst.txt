@@ -4,6 +4,10 @@ argsort
 .. autofunction:: ivy.functional.ivy.sorting.argsort
 
 .. autofunction:: ivy.array.array_methods.argsort
+
+.. autofunction:: ivy.container.container_methods.argsort
+
+.. autofunction:: ivy.container.container_methods.static_argsort
 |
 | **Supported Frameworks:**
 
@@ -30,6 +34,8 @@ argsort
    :maxdepth: -1
    :caption: argsort
 
+   argsort/static_argsort_container.rst
    argsort/argsort_array.rst
+   argsort/argsort_container.rst
    argsort/argsort_functional.rst
 

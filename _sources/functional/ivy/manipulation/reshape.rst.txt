@@ -4,6 +4,8 @@ reshape
 .. autofunction:: ivy.functional.ivy.manipulation.reshape
 
 .. autofunction:: ivy.array.array_methods.reshape
+
+.. autofunction:: ivy.container.container_methods.reshape
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ reshape
 
    reshape/reshape_functional.rst
    reshape/reshape_array.rst
+   reshape/reshape_container.rst
 
