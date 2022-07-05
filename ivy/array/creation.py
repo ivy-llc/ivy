@@ -35,7 +35,6 @@ class ArrayWithCreation(abc.ABC):
         return ivy.asarray([self._data], copy=copy, dtype=dtype, device=device)
     
     def zeros(
-        self: ivy.Array,
         shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -45,7 +44,6 @@ class ArrayWithCreation(abc.ABC):
         return ivy.zeros(shape, dtype=dtype, device=device, out=out)
 
     def ones(
-        self: ivy.Array,
         shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -89,17 +87,16 @@ class ArrayWithCreation(abc.ABC):
         k: int = 0,
         out: Optional[ivy.Array] = None
         ) -> ivy.Array:
-        return ivy.tril([self._data], k, out=out)
+        return ivy.tril(self, k, out=out)
     
     def triu(
         self: ivy.Array,
         k: int = 0,
         out: Optional[ivy.Array] = None
         ) -> ivy.Array:
-        return ivy.triu([self._data], k, out=out)
+        return ivy.triu(self, k, out=out)
 
     def empty(
-        self: ivy.Array,
         shape: Union[int, Tuple[int], List[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -115,10 +112,9 @@ class ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
         ) -> ivy.Array:
-        return ivy.empty_like([self._data], dtype=dtype, device=device, out=out)
+        return ivy.empty_like(self, dtype=dtype, device=device, out=out)
 
     def eye(
-        self: ivy.Array,
         n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -130,7 +126,6 @@ class ArrayWithCreation(abc.ABC):
         return ivy.eye(n_rows, n_cols, k, dtype=dtype, device=device, out=out)
 
     def linspace(
-        self: ivy.Array,
         start: Union[ivy.Array, ivy.NativeArray, int, float],
         stop: Union[ivy.Array, ivy.NativeArray, int, float],
         num: int,
@@ -142,18 +137,23 @@ class ArrayWithCreation(abc.ABC):
         out: Optional[ivy.Array] = None,
         ) -> Union[ivy.Array, ivy.NativeArray]:
         return ivy.linspace(
-            start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device, out=out
+            start, 
+            stop, 
+            num, 
+            axis, 
+            endpoint=endpoint, 
+            dtype=dtype, 
+            device=device, 
+            out=out
             )
 
     def meshgrid(
-        self: ivy.Array,
         *arrays: Union[ivy.Array, ivy.NativeArray],
         indexing: Optional[str] = "xy"
         ) -> List[ivy.Array]:
         return ivy.meshgrid(*arrays, indexing=indexing)
 
     def full(
-        self: ivy.Array,
         shape: Union[int, Tuple[int, ...]],
         fill_value: Union[int, float],
         *,
@@ -169,7 +169,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         out: Optional[ivy.Array] = None,
         ) -> ivy.Array:
-        return ivy.from_dlpack([self._data], out=out)
+        return ivy.from_dlpack(self, out=out)
 
 
 # Extra #
@@ -181,10 +181,9 @@ class ArrayWithCreation(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         ) -> ivy.NativeArray:
-        return ivy.to_native(ivy.asarray([self._data], dtype=dtype, device=device))
+        return ivy.to_native(ivy.asarray(self, dtype=dtype, device=device))
 
     def logspace(
-        self: ivy.Array,
         start: Union[ivy.Array, ivy.NativeArray, int],
         stop: Union[ivy.Array, ivy.NativeArray, int],
         num: int,
