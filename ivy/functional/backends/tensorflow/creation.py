@@ -127,6 +127,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     dtype: tf.DType,
     device: str,
@@ -136,17 +137,19 @@ def eye(
     with tf.device(device):
         if n_cols is None:
             n_cols = n_rows
-        i = tf.eye(n_rows, n_cols, dtype=dtype)
+        if batch_shape is None:
+            batch_shape = []
+        i = tf.eye(n_rows, n_cols, batch_shape, dtype=dtype)
         if k == 0:
             return i
         elif -n_rows < k < 0:
-            return tf.concat([tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]], 0)
+            return tf.concat([tf.zeros(batch_shape+[-k, n_cols], dtype=dtype), i[: n_rows + k]], 0)
         elif 0 < k < n_cols:
             return tf.concat(
-                [tf.zeros([n_rows, k], dtype=dtype), i[:, : n_cols - k]], 1
+                [tf.zeros(batch_shape+[n_rows, k], dtype=dtype), i[:, : n_cols - k]], 1
             )
         else:
-            return tf.zeros([n_rows, n_cols], dtype=dtype)
+            return tf.zeros(batch_shape+[n_rows, n_cols], dtype=dtype)
 
 
 # noinspection PyShadowingNames
