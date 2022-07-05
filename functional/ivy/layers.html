@@ -587,10 +587,10 @@ batch of different network parameters are to be represented.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – The input x compute linear transformation on.
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The input x compute linear transformation on.
 <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
-<li><p><strong>weight</strong> – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
-<li><p><strong>bias</strong> – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
+<li><p><strong>weight</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
+<li><p><strong>bias</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
