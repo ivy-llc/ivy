@@ -740,15 +740,14 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
-
         This function conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
         the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.mesgrid.html>`_ # noqa
         in the standard.
 
-        Both the description and the type hints above assumes an array input for 
-        simplicity, but this function is *nestable*, and therefore also accepts 
-        :code:`ivy.Container` instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
 
         Functional Examples
         -------------------
