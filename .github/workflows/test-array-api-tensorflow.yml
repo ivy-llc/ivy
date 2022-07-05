@@ -49,6 +49,6 @@ jobs:
           path: |
             ivy/.hypothesis/examples.zip
     
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: exit 1
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
