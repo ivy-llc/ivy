@@ -146,6 +146,8 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
 
 
 def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
+    if isinstance(type, tf.Tensor):
+        type = type.dtype
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
