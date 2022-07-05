@@ -2,6 +2,8 @@ binary_cross_entropy
 ====================
 
 .. autofunction:: ivy.functional.ivy.losses.binary_cross_entropy
+
+.. autofunction:: ivy.array.array_methods.binary_cross_entropy
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ binary_cross_entropy
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: binary_cross_entropy
+
+   binary_cross_entropy/binary_cross_entropy_functional.rst
+   binary_cross_entropy/binary_cross_entropy_array.rst
+

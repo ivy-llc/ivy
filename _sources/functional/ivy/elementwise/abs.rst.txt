@@ -2,6 +2,8 @@ abs
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.abs
+
+.. autofunction:: ivy.array.array_methods.abs
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ abs
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: abs
+
+   abs/abs_array.rst
+   abs/abs_functional.rst
+

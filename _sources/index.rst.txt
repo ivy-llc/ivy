@@ -322,6 +322,7 @@ Citation
    :caption: Array
 
    array/activations.rst
+   array/array_methods.rst
    array/conversions.rst
    array/creation.rst
    array/data_types.rst
@@ -352,6 +353,7 @@ Citation
    container/activations.rst
    container/base.rst
    container/container.rst
+   container/container_methods.rst
    container/creation.rst
    container/data_types.rst
    container/device.rst

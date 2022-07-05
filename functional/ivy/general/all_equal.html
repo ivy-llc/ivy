@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!
+      <link rel="icon" type="image/png" href="../logos/ivy_logo_only.png">DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
@@ -20,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="to_numpy" href="to_numpy.html" />
+    <link rel="next" title="all_equal array" href="all_equal/all_equal_array.html" />
     <link rel="prev" title="arrays_equal" href="arrays_equal.html" /> 
 </head>
 
@@ -116,7 +117,11 @@
 <li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">all_equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">all_equal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="all_equal/all_equal_array.html">all_equal array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_equal/all_equal_functional.html">all_equal functional</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
@@ -308,11 +313,38 @@ equality_matrix=True is set.</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.all_equal">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">all_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equality_matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/array_methods.html#all_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.all_equal" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.all_equal.
+This method simply wraps the function, and so the docstring for
+ivy.all_equal also applies to this method with minimal changes.</p>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">all_equal</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">equality_matrix</span><span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>With a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">all_equal</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">equality_matrix</span><span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[ True,  True], [ True,  True]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -320,7 +352,7 @@ equality_matrix=True is set.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="arrays_equal.html" class="btn btn-neutral float-left" title="arrays_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="to_numpy.html" class="btn btn-neutral float-right" title="to_numpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="all_equal/all_equal_array.html" class="btn btn-neutral float-right" title="all_equal array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

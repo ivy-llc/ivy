@@ -2,6 +2,8 @@ var
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.var
+
+.. autofunction:: ivy.array.array_methods.var
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ var
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: var
+
+   var/var_array.rst
+   var/var_functional.rst
+

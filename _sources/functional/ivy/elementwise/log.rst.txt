@@ -2,6 +2,8 @@ log
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.log
+
+.. autofunction:: ivy.array.array_methods.log
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ log
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: log
+
+   log/log_functional.rst
+   log/log_array.rst
+

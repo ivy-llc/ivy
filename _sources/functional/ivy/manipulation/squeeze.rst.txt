@@ -2,6 +2,8 @@ squeeze
 =======
 
 .. autofunction:: ivy.functional.ivy.manipulation.squeeze
+
+.. autofunction:: ivy.array.array_methods.squeeze
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ squeeze
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: squeeze
+
+   squeeze/squeeze_array.rst
+   squeeze/squeeze_functional.rst
+

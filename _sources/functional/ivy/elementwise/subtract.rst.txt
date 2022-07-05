@@ -2,6 +2,8 @@ subtract
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.subtract
+
+.. autofunction:: ivy.array.array_methods.subtract
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ subtract
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: subtract
+
+   subtract/subtract_array.rst
+   subtract/subtract_functional.rst
+
