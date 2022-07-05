@@ -21,7 +21,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         Using :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([2.6, -6.6, 1.6, -0])
