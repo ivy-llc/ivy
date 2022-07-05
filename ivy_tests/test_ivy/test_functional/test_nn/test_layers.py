@@ -62,6 +62,7 @@ def test_linear(
         instance_method,
         fw,
         "linear",
+        test_rtol=1e-03,
         x=x,
         weight=weight,
         bias=bias,
