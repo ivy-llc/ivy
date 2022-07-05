@@ -37,7 +37,6 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-@handle_nestable
 def with_grads(with_grads: bool = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
