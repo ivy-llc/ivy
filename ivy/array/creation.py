@@ -175,6 +175,7 @@ class ArrayWithCreation(abc.ABC):
 # Extra #
 # ------#
 
+
     def native_array(
         self: ivy.Array,
         *,
@@ -194,13 +195,3 @@ class ArrayWithCreation(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return ivy.logspace(start, stop, num, base, axis, device=device, out=out)
-
-
-
-
-
-
-
-
-
-
