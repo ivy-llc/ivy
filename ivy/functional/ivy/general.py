@@ -1436,19 +1436,11 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (1, 2, 3)
 
-    >>> x = ((1, 2, 3), (4, 5, 6))
-    >>> print(ivy.shape_to_tuple(x))
-    ((1, 2, 3), (4, 5, 6))
-
     With :code:`List[int]` input:
 
     >>> x = [1, 2, 3]
     >>> print(ivy.shape_to_tuple(x))
     (1, 2, 3)
-
-    >>> x = [[1, 2, 3], [4, 5, 6]]
-    >>> print(ivy.shape_to_tuple(x))
-    ([1, 2, 3], [4, 5, 6])
 
     """
     if ivy.is_array(shape):
