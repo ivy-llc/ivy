@@ -3,8 +3,12 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,6 +17,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
@@ -49,14 +54,14 @@ def argmax(
 
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
     >>> print(y)
     ivy.array([1])
-    
+
     >>> x = ivy.array([-0., 1., -1.])
     >>> ivy.argmax(x,out=x)
     >>> print(x)
@@ -103,17 +108,18 @@ def argmax(
     ivy.array(2)
 
     """
-    return _cur_backend(x).argmax(x, axis, keepdims, out=out)
+    return current_backend(x).argmax(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None,  
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
@@ -144,31 +150,27 @@ def argmin(
 
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
-        
+
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    ivy.array([2])
-    
+    ivy.array(2)
 
-    >>> x=ivy.array([[0., 1., -1.],
-                     [-2., 1., 2.]])
+
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1)
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.], 
-                     [-2., 1., 2.]])
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1, keepdims= True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.], 
-                     [-2., 1., 2.],
-                     [1., -2., 0.]])
+    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
     >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
     >>> print(y)
@@ -178,24 +180,21 @@ def argmin(
 
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
     >>> print(y)
-    ivy.array([2])
+    ivy.array(2)
 
-    
+
     With :code:`ivy.Container` input:
-        
+
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
     >>> print(y)
-    {
-         a: ivy.array([1]),
-         b: ivy.array([0])
-    }
-        
-    
+    {a:ivy.array(1),b:ivy.array(0)}
+
+
     Instance Method Examples
     ------------------------
 
@@ -204,22 +203,20 @@ def argmin(
     >>> x = ivy.array([0., 1., -1.])
     >>> y = x.argmin()
     >>> print(y)
-    ivy.array([2])
-        
+    ivy.array(2)
+
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
     >>> print(y)
-    {
-         a: ivy.array([1]),
-         b: ivy.array([0])
-    }
+    {a:ivy.array(1),b:ivy.array(0)}
     """
-    return _cur_backend(x).argmin(x, axis, keepdims, out=out)
+    return current_backend(x).argmin(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
+@handle_nestable
 def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -258,7 +255,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    (array([0, 0, 1]), array([0, 1, 0]))
+    (ivy.array([0, 0, 1]), ivy.array([0, 1, 0]))
 
     >>> x = ivy.native_array([[0], [1], [1], [0], [1]])
     >>> y = ivy.nonzero(x)
@@ -274,8 +271,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[2], <class ivy.array.Array> shape=[2])
     }
+
     >>> print(y.a)
     (ivy.array([1, 2, 3]),)
+
     >>> print(y.b)
     (ivy.array([0, 0]), ivy.array([0, 1]))
 
@@ -294,7 +293,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
     >>> y = x.nonzero()
     >>> print(y)
-    (array([0, 0, 2, 2]), array([0, 1, 0, 1]))
+    tensor([[0,0],[0,1],[2,0],[2,1]])
 
     Using :code:`ivy.Container` instance method:
 
@@ -305,20 +304,24 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     a: (list[1], <class ivy.array.Array> shape=[3]),
     b: (list[1], <class ivy.array.Array> shape=[0])
     }
+
     >>> print(y.a)
     (ivy.array([0, 1, 2]),)
+
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return _cur_backend(x).nonzero(x)
+    return current_backend(x).nonzero(x)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
 
@@ -342,16 +345,16 @@ def where(
 
     With `ivy.Array` input:
 
-    >>> condition = [[True, False], [True, True]]
+    >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
     >>> x2 = ivy.array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
     >>> print(res)
-    ivy.array([[1, 6], [3, 4]])
+    ivy.array([[1,6],[3,4]])
 
     With `ivy.NativeArray` input:
 
-    >>> condition = [[True, False], [False, True]]
+    >>> condition = ivy.array([[True, False], [False, True]])
     >>> x1 = ivy.native_array([[1, 2], [3, 4]])
     >>> x2 = ivy.native_array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
@@ -370,7 +373,7 @@ def where(
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1 > x2), x1, x2)
+    >>> res = ivy.where((x1.a > x2.a), x1, x2)
     >>> print(res)
     {
         a: ivy.array([3, 7, 5]),
@@ -380,9 +383,8 @@ def where(
     With a mix of `ivy.Array` and `ivy.Container` inputs:
 
     >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
-    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),
-                           b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1 < x2), x1, x2)
+    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))
+    >>> res = ivy.where((x1.b < x2.b), x1, x2)
     >>> print(res)
     {
         a: ivy.array([0, 2, -3.6]),
@@ -394,10 +396,10 @@ def where(
 
     With `ivy.Array` input:
 
-    >>> condition = [[True, False], [True, True]]
+    >>> condition = ivy.array([[True, False], [True, True]])
     >>> x1 = ivy.array([[1, 2], [3, 4]])
     >>> x2 = ivy.array([[5, 6], [7, 8]])
-    >>> res = x1.where(condition, x2)
+    >>> res = x1.where(condition,x2)
     >>> print(res)
     ivy.array([[1, 6], [3, 4]])
 
@@ -405,15 +407,15 @@ def where(
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = x1.where((x1 > x2), x2)
+    >>> res = x1.where((x1.a > x2.a), x2)
     >>> print(res)
     {
         a: ivy.array([3, 7, 5]),
-        b: ivy.array([3, 8, 6])
+        b: ivy.array([2, 8, 6])
     }
 
     """
-    return _cur_backend(x1).where(condition, x1, x2)
+    return current_backend(x1).where(condition, x1, x2, out=out)
 
 
 # Extra #

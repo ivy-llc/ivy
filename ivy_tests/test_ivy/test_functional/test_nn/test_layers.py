@@ -52,7 +52,7 @@ def test_linear(
     ).astype(dtype[1])
     bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
 
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -101,29 +101,65 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
 # ----------#
 
 # # scaled_dot_product_attention
-@pytest.mark.parametrize(
-    "q_n_k_n_v_n_s_n_m_n_gt", [([[1.0]], [[2.0]], [[3.0]], 2.0, [[1.0]], [[3.0]])]
+@given(
+    batch_shape=helpers.lists(
+        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    ),
+    num_queries=st.integers(min_value=1, max_value=5),
+    num_keys=st.integers(min_value=1, max_value=5),
+    feat_dim=st.integers(min_value=1, max_value=5),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=helpers.list_of_length(st.booleans(), 5),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="scaled_dot_product_attention"
+    ),
+    with_out=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 5),
+    container=helpers.list_of_length(st.booleans(), 5),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scaled_dot_product_attention(
-    q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, device, call
-):
-    q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
-    # smoke test
-    q = tensor_fn(q, dtype=dtype, device=device)
-    k = tensor_fn(k, dtype=dtype, device=device)
-    v = tensor_fn(v, dtype=dtype, device=device)
-    mask = tensor_fn(mask, dtype=dtype, device=device)
-    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == q.shape
-    # value test
-    assert np.allclose(
-        call(ivy.scaled_dot_product_attention, q, k, v, scale, mask),
-        np.array(ground_truth),
+def test_scaled_dot_product_attention(batch_shape,
+                                      num_queries,
+                                      num_keys,
+                                      feat_dim,
+                                      dtype,
+                                      as_variable,
+                                      num_positional_args,
+                                      with_out,
+                                      native_array,
+                                      container,
+                                      instance_method,
+                                      fw,
+                                      device):
+
+    dtype = [dtype] * 5
+    if fw == 'torch' and 'float16' in dtype:
+        return
+    q = np.random.uniform(
+        size=batch_shape + [num_queries] + [feat_dim]
+    ).astype(dtype[0])
+    k = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[1])
+    v = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[2])
+    mask = np.random.uniform(
+        size=batch_shape + [num_queries] + [num_keys]
+    ).astype(dtype[3])
+    scale = np.random.uniform(size=[1]).astype(dtype[4])
+
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "scaled_dot_product_attention",
+        q=q,
+        k=k,
+        v=v,
+        scale=scale,
+        mask=mask
     )
 
 
@@ -286,7 +322,7 @@ def test_conv2d(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -310,16 +346,16 @@ def test_conv2d(
     array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
-    pad=st.sampled_from(['VALID', 'SAME']),
+    pad=st.sampled_from(["VALID", "SAME"]),
     output_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
-    data_format=st.sampled_from(['NHWC', 'NCHW']),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
     dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_conv2d_transpose(
     array_shape,
@@ -332,27 +368,27 @@ def test_conv2d_transpose(
     dtype,
     as_variable,
     num_positional_args,
-    native_array, container,
+    native_array,
+    container,
     instance_method,
     fw,
-    device
+    device,
 ):
-    if fw == 'tensorflow' and "cpu" in device:
+    if fw == "tensorflow" and "cpu" in device:
         # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
         return
-    if fw in ['numpy', 'jax']:
+    if fw in ["numpy", "jax"]:
         # numpy and jax do not yet support conv2d_transpose
         return
-    if fw == 'torch' and ('16' in dtype[0] or '16' in dtype[1]):
+    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
         # not implemented for Half
         return
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape,
-                                      filter_shape,
-                                      1,
-                                      1)).astype(dtype[1])
-    helpers.test_array_function(
+    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
+        dtype[1]
+    )
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -368,7 +404,7 @@ def test_conv2d_transpose(
         padding=pad,
         output_shape=tuple(output_shape),
         data_format=data_format,
-        dilations=dilations
+        dilations=dilations,
     )
 
 
@@ -619,16 +655,16 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     array_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
-    pad=st.sampled_from(['VALID', 'SAME']),
+    pad=st.sampled_from(["VALID", "SAME"]),
     output_shape=helpers.lists(st.integers(1, 5), min_size=5, max_size=5),
-    data_format=st.sampled_from(['NHWC', 'NCHW']),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
     dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_conv3d_transpose(
     array_shape,
@@ -641,33 +677,32 @@ def test_conv3d_transpose(
     dtype,
     as_variable,
     num_positional_args,
-    native_array, container,
+    native_array,
+    container,
     instance_method,
     fw,
-    device
+    device,
 ):
-    if fw == 'tensorflow' and "cpu" in device:
+    if fw == "tensorflow" and "cpu" in device:
         # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
         return
     # smoke test
-    if fw in ['numpy', 'jax']:
+    if fw in ["numpy", "jax"]:
         # numpy and jax do not yet support 3d transpose convolutions, and mxnet only
         # supports with CUDNN
         return
-    if fw == 'mxnet' and "cpu" in device:
+    if fw == "mxnet" and "cpu" in device:
         # mxnet only supports 3d transpose convolutions with CUDNN
         return
-    if fw == 'torch' and ('16' in dtype[0] or '16' in dtype[1]):
+    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
         # not implemented for half
         return
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape,
-                                      filter_shape,
-                                      filter_shape,
-                                      1,
-                                      1)).astype(dtype[1])
-    helpers.test_array_function(
+    filters = np.random.uniform(
+        size=(filter_shape, filter_shape, filter_shape, 1, 1)
+    ).astype(dtype[1])
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -683,7 +718,7 @@ def test_conv3d_transpose(
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations
+        dilations=dilations,
     )
 
 
@@ -701,7 +736,7 @@ def test_conv3d_transpose(
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
 )
 def test_lstm(
     b,
@@ -715,7 +750,7 @@ def test_lstm(
     container,
     instance_method,
     fw,
-    device
+    device,
 ):
     # smoke test
     x = ivy.asarray(
@@ -728,7 +763,7 @@ def test_lstm(
     recurrent_kernel = (
         ivy.variable(ivy.ones([hidden_channel, 4 * hidden_channel])) * 0.5
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -742,5 +777,5 @@ def test_lstm(
         init_h=init_h,
         init_c=init_c,
         kernel=kernel,
-        recurrent_kernel=recurrent_kernel
+        recurrent_kernel=recurrent_kernel,
     )

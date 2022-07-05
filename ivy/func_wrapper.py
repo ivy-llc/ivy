@@ -4,94 +4,6 @@ import functools
 from types import FunctionType
 from typing import Callable
 
-NON_WRAPPED_FUNCTIONS = [
-    "copy_nest",
-    "current_backend",
-    "current_backend_str",
-    "set_backend",
-    "get_backend",
-    "unset_backend",
-    "get_referrers_recursive",
-    "set_debug_mode",
-    "set_breakpoint_debug_mode",
-    "set_exception_debug_mode",
-    "unset_debug_mode",
-    "debug_mode",
-    "nested_map",
-    "to_ivy",
-    "args_to_ivy",
-    "to_native",
-    "args_to_native",
-    "default",
-    "exists",
-    "set_min_base",
-    "get_min_base",
-    "set_min_denominator",
-    "get_min_denominator",
-    "split_func_call_across_gpus",
-    "cache_fn",
-    "split_func_call",
-    "compile",
-    "compile_graph",
-    "dev",
-    "as_ivy_dev",
-    "as_native_dev",
-    "memory_on_dev",
-    "gpu_is_available",
-    "num_gpus",
-    "tpu_is_available",
-    "dtype",
-    "as_ivy_dtype",
-    "cprint",
-    "to_ivy_module",
-    "tree_flatten",
-    "tree_unflatten",
-    "start_compiling",
-    "stop_compiling",
-    "get_compiled",
-    "index_nest",
-    "set_nest_at_index",
-    "map_nest_at_index",
-    "multi_index_nest",
-    "set_nest_at_indices",
-    "map_nest_at_indices",
-    "nested_indices_where",
-    "map",
-    "set_default_device",
-    "unset_default_device",
-    "closest_valid_dtype",
-    "set_default_dtype",
-    "default_dtype",
-    "default_device",
-    "as_native_dtype",
-    "is_ivy_array",
-    "is_ivy_container",
-    "inplace_update",
-    "inplace_increment",
-    "inplace_decrement",
-    "prune_nest_at_index",
-    "prune_nest_at_indices",
-    "is_array",
-    "is_native_array",
-    "nested_any",
-    "fn_array_spec",
-    "insert_into_nest_at_index",
-    "insert_into_nest_at_indices",
-    "vec_sig_fig",
-    "native_array",
-]
-FUNCTIONS_W_CONT_SUPPORT = [
-    "multi_head_attention",
-    "execute_with_gradients",
-    "adam_step",
-    "optimizer_update",
-    "gradient_descent_update",
-    "lars_update",
-    "adam_update",
-    "lamb_update",
-    "stable_divide",
-    "stable_pow",
-]
 FW_FN_KEYWORDS = {
     "numpy": [],
     "jax": [],
@@ -128,15 +40,17 @@ def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     arr = None
     if args:
-        arr_idxs = ivy.nested_indices_where(args, ivy.is_array)
+        arr_idxs = ivy.nested_indices_where(args, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+            arr_idxs = ivy.nested_indices_where(
+                kwargs, ivy.is_array, stop_after_n_found=1
+            )
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array)
+        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -173,6 +87,8 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         return fn(*native_args, **native_kwargs)
 
     new_fn.inputs_to_native_arrays = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -203,6 +119,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -231,6 +149,8 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
 
     new_fn.outputs_to_ivy_arrays = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -276,6 +196,8 @@ def infer_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     new_fn.infer_dtype = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -313,6 +235,8 @@ def infer_device(fn: Callable) -> Callable:
         return fn(*args, device=device, **kwargs)
 
     new_fn.infer_device = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -360,6 +284,8 @@ def handle_out_argument(fn: Callable) -> Callable:
         return ivy.inplace_update(out, ret)
 
     new_fn.handle_out_argument = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -403,6 +329,8 @@ def handle_nestable(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     new_fn.handle_nestable = True
+    if hasattr(fn, "array_spec"):
+        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -429,8 +357,6 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the
         input is returned.
     """
-    if hasattr(original, "array_spec"):
-        to_wrap.array_spec = original.array_spec
     if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
@@ -439,6 +365,8 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
+        if hasattr(original, "array_spec"):
+            to_wrap.array_spec = original.array_spec
         if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
             to_wrap = infer_device(to_wrap)
         if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
@@ -455,12 +383,8 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             to_wrap, "handle_out_argument"
         ):
             to_wrap = handle_out_argument(to_wrap)
-        if (
-            hasattr(original, "handle_nestable")
-            and not hasattr(to_wrap, "handle_nestable")
-        ) or (
-            hasattr(ivy.Container, to_wrap.__name__)
-            and to_wrap.__name__ not in FUNCTIONS_W_CONT_SUPPORT + NON_WRAPPED_FUNCTIONS
+        if hasattr(original, "handle_nestable") and not hasattr(
+            to_wrap, "handle_nestable"
         ):
             to_wrap = handle_nestable(to_wrap)
     return to_wrap
