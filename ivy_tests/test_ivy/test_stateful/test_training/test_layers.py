@@ -40,7 +40,7 @@ def test_linear_layer_training(
     if call is helpers.np_call:
         # NumPy does not support gradients
         return
-    x = ivy.astype(
+    x = ivy.asarray(
         ivy.linspace(
             ivy.zeros(batch_shape, device=device),
             ivy.ones(batch_shape, device=device),
