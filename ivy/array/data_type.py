@@ -24,3 +24,33 @@ class ArrayWithDataTypes(abc.ABC):
         True
         """
         return ivy.can_cast(from_=self._data, to=to)
+
+    def iinfo(self: ivy.Array) -> Iinfo:
+        return ivy.iinfo(type=self._dtype)
+
+    def finfo(self: ivy.Array) -> Finfo:
+        return ivy.finfo(type=self._dtype)
+
+    def broadcast_to(
+        self: ivy.Array,
+        shape: Tuple[int, ...],
+        out: Optional[ivy.Array] = None
+    ):
+        return ivy.broadcast_to(x=self._data, shape= shape, out=out)
+
+    def broadcast_arrays(self, *arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
+        return ivy.broadcast_arrays(self._data, arrays)
+
+    def dtype(self: ivy.Array, as_native: bool = False) -> ivy.Dtype:
+        return ivy.dtype(self._data, as_native)
+
+    def astype(
+        self: ivy.Array,
+        dtype: ivy.Dtype,
+        copy: bool = True,
+        out: ivy.Array = None
+    ) -> ivy.Array:
+        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+
+
+
