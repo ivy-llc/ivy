@@ -45,7 +45,7 @@ def test_docstrings(backend):
     # the temp skip list consists of function which have an issue with their
     # implementation
     skip_list_temp = [
-        "outer",
+
         "argmax",
         "split",
         "det",
