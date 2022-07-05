@@ -46,6 +46,56 @@ def can_cast(
         ``True`` if the cast can occur according to :ref:`type-promotion` rules;
         otherwise, ``False``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+     With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
+    True
+
+    >>> print(ivy.can_cast(ivy.float64, 'int64'))
+    False
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> print(x.dtype)
+    float32
+
+    >>> print(ivy.can_cast(x, ivy.float64))
+    True
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
+        dtype='int16')
+    >>> print(x.dtype)
+    <dtype:'int16'>
+
+    >>> print(ivy.can_cast(x, 'uint8'))
+    False
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+        b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
+
+    >>> print(ivy.can_cast(x, 'int64'))
+    {
+        a: false,
+        b: true
+    }
     """
     return current_backend(from_).can_cast(from_, to)
 
@@ -796,8 +846,8 @@ def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_supported_dtypes(ivy.acosh))
-    ('int8', 'int16', 'int32', 'int64', 'uint8', \
-     'bfloat16', 'float32', 'float64', 'bool')
+    ['int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool']
     """
     valid = list(ivy.valid_dtypes)
     for d in list(function_unsupported_dtypes(fn)):
@@ -824,7 +874,8 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
-    ('float16', 'uint16', 'uint32', 'uint64')
+    ('float16','uint16','uint32','uint64')
+
     """
     unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):

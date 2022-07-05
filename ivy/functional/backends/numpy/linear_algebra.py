@@ -55,7 +55,10 @@ def inv(x: np.ndarray) -> np.ndarray:
 def matmul(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.matmul(x1, x2, out=out)
+    ret = np.matmul(x1, x2, out=out)
+    if len(x1.shape) == len(x2.shape) == 1:
+        ret = np.array(ret)
+    return ret
 
 
 def matrix_norm(
