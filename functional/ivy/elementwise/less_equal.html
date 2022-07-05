@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="log" href="log.html" />
-    <link rel="prev" title="less" href="less.html" /> 
+    <link rel="next" title="less_equal functional" href="less_equal/less_equal_functional.html" />
+    <link rel="prev" title="less functional" href="less/less_functional.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,10 +53,9 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
@@ -80,9 +79,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../container/data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/general.html">General</a></li>
@@ -140,7 +138,11 @@
 <li class="toctree-l2"><a class="reference internal" href="isinf.html">isinf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">less_equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">less_equal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="less_equal/less_equal_functional.html">less_equal functional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="less_equal/less_equal_array.html">less_equal array</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
@@ -261,19 +263,31 @@ data type of bool.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.less_equal">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">less_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/array_methods.html#less_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.less_equal" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="less.html" class="btn btn-neutral float-left" title="less" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="log.html" class="btn btn-neutral float-right" title="log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="less/less_functional.html" class="btn btn-neutral float-left" title="less functional" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="less_equal/less_equal_functional.html" class="btn btn-neutral float-right" title="less_equal functional" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

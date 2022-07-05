@@ -50,10 +50,9 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../array/data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../array/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/general.html">General</a></li>
@@ -77,9 +76,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/general.html">General</a></li>
@@ -189,7 +187,7 @@
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../../functional/ivy/statistical/max.html#ivy.functional.ivy.statistical.max">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../../functional/ivy/statistical/max/max_functional.html#ivy.functional.ivy.statistical.max">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
@@ -290,7 +288,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean/mean_functional.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
@@ -344,7 +342,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../../functional/ivy/statistical/min.html#ivy.functional.ivy.statistical.min">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../../functional/ivy/statistical/min/min_functional.html#ivy.functional.ivy.statistical.min">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
@@ -397,7 +395,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../functional/ivy/statistical/prod.html#ivy.functional.ivy.statistical.prod">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../functional/ivy/statistical/prod/prod_functional.html#ivy.functional.ivy.statistical.prod">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
@@ -451,7 +449,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std/std_functional.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
@@ -600,7 +598,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../../functional/ivy/statistical/var.html#ivy.functional.ivy.statistical.var">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../../functional/ivy/statistical/var/var_functional.html#ivy.functional.ivy.statistical.var">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
@@ -663,7 +661,7 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/einsum.html#ivy.functional.ivy.statistical.einsum">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum/sum_functional.html#ivy.functional.ivy.statistical.einsum">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>

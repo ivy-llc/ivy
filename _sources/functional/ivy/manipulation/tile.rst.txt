@@ -2,6 +2,8 @@ tile
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.tile
+
+.. autofunction:: ivy.array.array_methods.tile
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ tile
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: tile
+
+   tile/tile_functional.rst
+   tile/tile_array.rst
+

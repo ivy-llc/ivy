@@ -2,6 +2,8 @@ mean
 ====
 
 .. autofunction:: ivy.functional.ivy.statistical.mean
+
+.. autofunction:: ivy.array.array_methods.mean
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ mean
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: mean
+
+   mean/mean_functional.rst
+   mean/mean_array.rst
+

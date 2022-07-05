@@ -325,7 +325,7 @@ Citation
    array/array_methods.rst
    array/conversions.rst
    array/creation.rst
-   array/data_types.rst
+   array/data_type.rst
    array/device.rst
    array/elementwise.rst
    array/general.rst
@@ -355,7 +355,7 @@ Citation
    container/container.rst
    container/container_methods.rst
    container/creation.rst
-   container/data_types.rst
+   container/data_type.rst
    container/device.rst
    container/elementwise.rst
    container/general.rst

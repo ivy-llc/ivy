@@ -2,6 +2,8 @@ prod
 ====
 
 .. autofunction:: ivy.functional.ivy.statistical.prod
+
+.. autofunction:: ivy.array.array_methods.prod
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ prod
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: prod
+
+   prod/prod_functional.rst
+   prod/prod_array.rst
+
