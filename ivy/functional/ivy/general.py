@@ -1397,8 +1397,9 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
         raise Exception("shape_to_tuple does not accept arrays as input")
     if isinstance(shape, int):
         return shape
-    else:
-        return tuple(shape)
+    elif isinstance(shape, (tuple, list)):
+        assert min([isinstance(d, int) for d in shape]) is True
+    return tuple(shape)
 
 
 @handle_nestable
@@ -1874,6 +1875,7 @@ def assert_supports_inplace(x):
     return True
 
 
+@handle_nestable
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -1905,7 +1907,11 @@ def inplace_update(
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
 
-def inplace_decrement(x, val):
+@handle_nestable
+def inplace_decrement(
+    x: Union[ivy.Array, ivy.NativeArray],
+    val: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """Perform in-place decrement for the input array.
 
     Parameters
@@ -1924,7 +1930,11 @@ def inplace_decrement(x, val):
     return current_backend(x).inplace_decrement(x, val)
 
 
-def inplace_increment(x, val):
+@handle_nestable
+def inplace_increment(
+    x: Union[ivy.Array, ivy.NativeArray],
+    val: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """Perform in-place increment for the input array.
 
     Parameters
@@ -2414,7 +2424,7 @@ def shape(
     return current_backend(x).shape(x, as_array)
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
 @handle_nestable
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
     """Returns the number of dimensions of the array x.
