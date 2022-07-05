@@ -56,7 +56,7 @@ def test_linear_layer_training(
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(
             ivy.array(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                ivy.random_uniform(-wlim, wlim, (output_channels, input_channels)),
                 dtype=dtype,
                 device=device,
             )
