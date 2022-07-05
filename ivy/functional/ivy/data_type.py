@@ -127,6 +127,7 @@ def broadcast_to(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -217,6 +218,7 @@ def astype(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
