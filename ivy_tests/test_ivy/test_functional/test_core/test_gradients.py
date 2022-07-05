@@ -798,6 +798,9 @@ def test_lamb_update(
     mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
     vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
     step = np.asarray(step,dtype=dtype)
+    # we convert np array to torch tensor because lars update needs to use
+    # vector_norm. when the fw is set to torch, the arguments have to be tensor when
+    # they are passed into torch backend linalg_vector_norm function
     if fw == "torch":
         w = torch.as_tensor(w)
         dcdw = torch.as_tensor(dcdw)
