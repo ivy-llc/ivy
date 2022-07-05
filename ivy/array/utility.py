@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Sequence
 import abc
 
 # local
@@ -11,7 +11,7 @@ import ivy
 class ArrayWithUtility(abc.ABC):
     def all(
         self: ivy.Array,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         *,
         out: Optional[ivy.Array] = None,
@@ -20,7 +20,7 @@ class ArrayWithUtility(abc.ABC):
 
     def any(
         self: ivy.Array,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         *,
         out: Optional[ivy.Array] = None,

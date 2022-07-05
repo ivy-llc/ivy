@@ -1,11 +1,11 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, Optional, List
+from typing import Union, Optional, Sequence
 
 
 def all(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
@@ -18,7 +18,7 @@ def all(
 
 def any(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:

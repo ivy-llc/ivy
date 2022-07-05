@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple
+from typing import Optional, Union, Dict, Sequence
 
 # local
 import ivy
@@ -13,9 +13,9 @@ class ContainerWithUtility(ContainerBase):
     @staticmethod
     def static_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -36,9 +36,9 @@ class ContainerWithUtility(ContainerBase):
 
     def all(
         self: ivy.Container,
-        axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -58,9 +58,9 @@ class ContainerWithUtility(ContainerBase):
     @staticmethod
     def static_any(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -81,9 +81,9 @@ class ContainerWithUtility(ContainerBase):
 
     def any(
         self: ivy.Container,
-        axis: Optional[Union[int, Tuple[int], List[int], ivy.Container]] = None,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
