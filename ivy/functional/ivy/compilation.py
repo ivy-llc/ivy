@@ -16,7 +16,7 @@ def compile(
     dynamic: bool = True,
     example_inputs: Optional[Union[Any, Sequence[Any]]] = None,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
-    static_argnames: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
 ) -> Callable:
     """Provide a function which should be compiled, for faster inference. The handle to
     the newly compiled function is returned.
