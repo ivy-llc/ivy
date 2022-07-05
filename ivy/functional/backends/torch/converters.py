@@ -3,6 +3,7 @@
 # global
 import torch
 from collections import OrderedDict
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -92,9 +93,13 @@ def to_ivy_module(
     native_module_class=None,
     args=None,
     kwargs=None,
-    device=None,
-    devices=None,
-    inplace_update=False,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    devices: Optional[
+        Union[
+            ivy.Device, ivy.NativeDevice, Sequence[Union[ivy.Device, ivy.NativeDevice]]
+        ]
+    ] = None,
+    inplace_update: bool = False,
 ):
 
     args = ivy.default(args, [])
