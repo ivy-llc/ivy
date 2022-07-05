@@ -548,42 +548,34 @@ def test_lars_update(
         inplace=inplace,
         stop_gradients=stop_gradients,
     )
-
-# adam_update ground truth tests
-@given(
-    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
+    
+# lars_update ground truth test
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew",
     [
         (
-            Container({"w": [3.0]}),
-            Container({"w": [6.0]}),
-            0.1,
-            Container({"w": [2.96837726]}),
+            Container({"a": [3.0], "b": [3.0]}),
+            Container({"a": [6.0], "b": [6.0]}),
+            Container({"a": [0.1], "b": [0.2]}),
+            Container({"a": [2.7], "b": [2.4]}),
         )
     ],
-    ),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
-    ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    lr = lr_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdw
-    vw = dcdw.map(lambda x, _: x**2)
-    ws_new,mw_new,vw_new = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
+    ws_new = ivy.lars_update(ws, dcdws, lr)
     # type test
     assert isinstance(ws_new, dict)
-    assert isinstance(mw_new, dict)
-    assert isinstance(vw_new, dict)
     # cardinality test
     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
         assert w_new.shape == w_true_new.shape
-    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
-        assert m_new.shape == m_orig.shape
-    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
-        assert v_new.shape == v_orig.shape
     # value test
     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
         assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
@@ -659,8 +651,51 @@ def test_adam_update(
         stop_gradients=stop_gradients
     )
 
+# adam_update ground truth tests
+@given(
+    ws_n_grads_n_lr_n_wsnew=st.sampled_from(
+    [
+        (
+            Container({"w": [3.0]}),
+            Container({"w": [6.0]}),
+            0.1,
+            Container({"w": [2.96837726]}),
+        )
+    ],
+    ),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
+)
+def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+    # smoke test
+    ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdw = dcdw_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    mw = dcdw
+    vw = dcdw.map(lambda x, _: x**2)
+    ws_new,mw_new,vw_new = ivy.adam_update(ws, dcdw, lr, mw, vw, ivy.array(1))
+    # type test
+    assert isinstance(ws_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
 
-# layerwise_adam_update
+
+# layerwise_adam_update ground truth test
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
@@ -705,7 +740,7 @@ def test_layerwise_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tens
         return
 
 
-# lamb_update
+# lamb_update ground truth test
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
     [
