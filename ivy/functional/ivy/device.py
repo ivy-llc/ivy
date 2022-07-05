@@ -81,7 +81,26 @@ class DefaultDevice:
         set_default_device(self._dev)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
+        """
+        Exit the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        >>> ivy.set_default_device("gpu:0")
+        >>> ivy.default_device()
+        "gpu:0"
+
+        >>> ivy.unset_default_device()
+        >>> ivy.default_device()
+        "cpu"
+
+        """
         unset_default_device()
         return self
 
