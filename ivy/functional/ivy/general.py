@@ -1392,6 +1392,56 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     -------
         The shape in tuple representation
 
+    Examples
+    --------
+    With :code:`ivy.Array.shape` input:
+
+    >>> x = ivy.array([1., 2., 3.]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
+    >>> x = ivy.array((1., 2., 3.)).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
+    With :code:`ivy.NativeArray.shape` input:
+
+    >>> x = ivy.native_array([1., 2., 3.]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
+    >>> x = ivy.native_array((1., 2., 3.)).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (3,)
+
+    >>> x = ivy.native_array(((1., 2., 3.), (4., 5., 6.))).shape
+    >>> print(ivy.shape_to_tuple(x))
+    (2, 3)
+
+    With :code:`Tuple[int]` input:
+
+    >>> x = (1, 2, 3)
+    >>> print(ivy.shape_to_tuple(x))
+    (1, 2, 3)
+
+    With :code:`List[int]` input:
+
+    >>> x = [1, 2, 3]
+    >>> print(ivy.shape_to_tuple(x))
+    (1, 2, 3)
+
     """
     if ivy.is_array(shape):
         raise Exception("shape_to_tuple does not accept arrays as input")
