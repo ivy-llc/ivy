@@ -1473,8 +1473,8 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = x.tanh()
         >>> print(y)
         {
-            a:ivy.array([0., 0.76, 0.96]),
-            b:ivy.array([0.995, 0.999, 0.9999])
+            a:ivy.array([0., 0.762, 0.964]),
+            b:ivy.array([0.995, 0.999, 1.])
         }
         """
         return self.static_tanh(

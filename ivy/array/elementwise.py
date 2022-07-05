@@ -318,7 +318,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tanh()
         >>> print(y)
-        ivy.array([0., 0.76, 0.96])
+        ivy.array([0., 0.762, 0.964])
         """
         return ivy.tanh(self._data, out=out)
 

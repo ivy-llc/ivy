@@ -3242,34 +3242,34 @@ def tanh(
     and also the examples below.
 
 
-    Functional Examples
+    Examples
     -------------------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.tanh(x)
     >>> print(y)
-    ivy.array([0., 0.76, 0.96])
+    ivy.array([0., 0.762, 0.964])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tanh(x, out=y)
     >>> print(y)
-    ivy.array([0.462, -0.604, 0.983])
+    ivy.array([0.462, -0.604, 0.984])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],\
                       [-4.4, -5.5, -6.6]])
     >>> ivy.tanh(x, out=x)
     >>> print(x)
     ivy.array([[0.8, 0.976, 0.997],
-              [-0.9997, -0.99997, -0.999996]])
+              [-1., -1., -1.]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.tanh(x)
     >>> print(y)
-    ivy.array([0., 0.76, 0.96])
+    ivy.array([0., 0.762, 0.964])
 
     With :code:`ivy.Container` input:
 
@@ -3278,8 +3278,8 @@ def tanh(
     >>> y = ivy.tanh(x)
     >>> print(y)
     {
-        a: ivy.array([0., 0.76, 0.96]),
-        b: ivy.array([0.995, 0.999, 0.9999])
+        a: ivy.array([0., 0.762, 0.964]),
+        b: ivy.array([0.995, 0.999, 1.])
     }
     """
     return current_backend(x).tanh(x, out=out)
