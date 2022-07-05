@@ -1,4 +1,5 @@
 # global
+from re import I
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
 import jaxlib.xla_extension
@@ -92,13 +93,20 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
-    return _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
+    if n_cols is None:
+        n_cols = n_rows
+    i = _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
+    if batch_shape is None:
+        return i
+    else: 
+        return jnp.reshape(i, batch_shape+[n_rows, n_cols])
 
 
 # noinspection PyShadowingNames
