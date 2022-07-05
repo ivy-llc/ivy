@@ -169,11 +169,11 @@ def test_logspace(
     )
 
 
-# arange() - passing right now
+# arange() - Done
 @given(
     start = st.integers(0,5), 
     stop = st.integers(0,5) | st.none(),
-    step = st.integers(-1,5).filter(lambda x : True if x != 0 else False),
+    step = st.integers(-5,5).filter(lambda x : True if x != 0 else False),
     dtype = st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="arange"),
     with_out = st.booleans()
@@ -434,7 +434,7 @@ def test_from_dlpack(
     )
 
 
-# full() - Not working with container
+# full() - Not working with ivy.container
 @given(
 shape = helpers.get_shape(
         allow_none=False,
@@ -539,7 +539,7 @@ def test_full_like(
     )
 
 
-# meshgrid - not working now
+# meshgrid - issue with helper function
 @given(
     dtype_and_x = helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
@@ -549,10 +549,10 @@ def test_full_like(
         allow_inf=False,
         exclude_min=False,
         exclude_max=False,
-        min_num_dims=1,
-        max_num_dims=1,
+        min_num_dims=2,
+        max_num_dims=4,
         min_dim_size=2,
-        max_dim_size=2,
+        max_dim_size=4,
         shape=False,
         shared_dtype=True,),
     as_variable=st.booleans(),
@@ -579,10 +579,10 @@ def test_meshgrid(
         num_positional_args,
         native_array,
         container,
-        instance_method,
+        False,
         fw,
         "meshgrid",
-        np.asarray(x),
+        np.asarray(x, dtype=dtype),
     )
 
 
