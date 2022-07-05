@@ -197,6 +197,9 @@ With Command Line:
     # Deeper look at what author changed in the files in commit retrieved from above step
     git log <commit_id> -p
 
+You are welcome to tag members using "@" in our team, who you think would be best
+suited to interact with based on the information gained from above steps.
+
 With Browser:
 ****
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
@@ -216,10 +219,6 @@ for that line, including who committed the change and when is shown.
 
 .. image:: content/git_blame_3.png
    :width: 420
-
-Whenever starting a discussion or creating an issue, you are welcome to tag
-members using "@" in our team, who you think would be best suited to interact
-with based on the information gained from above steps.
 
 Pull Requests
 -------------
