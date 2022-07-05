@@ -675,7 +675,7 @@ def test_adam_update(
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_layerwise_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -720,7 +720,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
