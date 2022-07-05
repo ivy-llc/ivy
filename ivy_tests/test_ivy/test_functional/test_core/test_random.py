@@ -12,27 +12,31 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # random_uniform
 @given(
-    data=st.data(),
-    # input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2, max_num_dims=1),
+    #data=st.data(),
+    #input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    #as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     # shape=helpers.get_shape(),
     with_out=st.booleans(),
     # num_positional_args=st.integers(0, 1),
-    # num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
+    num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
     # num_positional_args=st.shared(st.integers(1, 6), key="random_uniform"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    #native_array=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    #container=st.booleans(),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     # shape = st.sampled_from(ivy_np.valid_int_dtypes),
     # shape = st.integers(1, 3),
 )
 def test_random_uniform(
-    data,
-    input_dtype,
+    dtype_and_x,
+    #data,
+    #input_dtype,
     as_variable,
     with_out,
-    # num_positional_args,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -40,20 +44,26 @@ def test_random_uniform(
     # shape,
     device,
 ):
-    num_positional_args = data.draw(
-        helpers.num_positional_args(fn_name="random_uniform")
-    )
-    # shape = data.draw(st.integers(1,))
+    input_dtype, x = dtype_and_x
+    low = np.asarray(x[0], dtype=input_dtype[0])
+    high = np.asarray(x[1], dtype=input_dtype[1])
 
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    # low, high = data.draw(helpers.get_bounds(input_dtype))
+    #num_positional_args = data.draw(
+    #    helpers.num_positional_args(fn_name="random_uniform")
+    #)
+    #shape = data.draw(helpers.get_shape(min_num_dims=1))
+    #shape = data.draw(helpers.get_shape(min_dim_size=1, max_dim_size=2))
+
+
+    #low, high = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
+    #low, high = data.draw(helpers.get_bounds(input_dtype))
 
     # values = data.draw(helpers.none_or_list_of_floats(input_dtype, 2, 1, 10, no_none=True))
-    values = data.draw(helpers.array_values(dtype=input_dtype, shape=2, min_value=0))
-    if values[0] is not None and values[1] is not None:
-        low, high = min(values), max(values)
-    else:
-        low, high = values[0], values[1]
+    #values = data.draw(helpers.array_values(dtype=input_dtype, shape=2, min_value=0))
+    #if values[0] is not None and values[1] is not None:
+    #    low, high = min(values), max(values)
+    #else:
+    #    low, high = values[0], values[1]
 
     # low, high = helpers.get_bounds(data, dtype=input_dtype)
     # if type(low) == float:
@@ -64,6 +74,12 @@ def test_random_uniform(
     # shape = helpers.get_shape()
     # shape = data.draw(helpers.get_shape())
     # shape = st.draw(st.shared(helpers.get_shape(), key="shape"))
+
+    #x = data.draw(
+    #    helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
+    #        lambda x: not np.any(np.isnan(x))
+    #    )
+    #)
 
     """
     # smoke test
@@ -98,9 +114,9 @@ def test_random_uniform(
         "random_uniform",
         low=low,
         high=high,
-        shape=shape,
+        #shape=shape,
         device=device,
-        dtype=input_dtype,
+        #dtype=input_dtype,
     )
 
     """
@@ -185,22 +201,62 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 # randint
 @given(
     data=st.data(),
-    shape=helpers.get_shape(allow_none=False),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
+    #num_positional_args=helpers.num_positional_args(fn_name="randint"),
+    num_positional_args=st.integers(3, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-def test_randint(data, shape, dtype, as_variable, device, call):
-    # smoke test
-    low, high = data.draw(helpers.get_bounds(dtype))
-    if (
-        call in [helpers.mx_call, helpers.torch_call]
-        and as_variable
-        or dtype == "uint64"
-        or call == helpers.torch_call
-        and dtype[0] == "u"
-    ):
-        # PyTorch and MXNet do not support non-float variables
+def test_randint(
+    data,
+    shape,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    #call,
+    fw,
+):
+    #NEXT: ret_from_np and ret: x and y
+    if type(shape) == tuple:
+        shape = list(shape)
+        #shape = shape[0]
+    #else:
+    #    shape = list(shape)
+
+    val = data.draw(
+        helpers.array_values(dtype, (2,), min_value=0)
+    )
+
+    #val2 = data.draw(helpers.array_values(dtype, arr_shape, min_value=0))
+    if val[1] > val[0]:
+        low = val[0]
+        high = val[1]
+    elif val[1] < val[0]:
+        low = val[1]
+        high = val[0]
+    elif val[1] == val[0]:
+        low = val[0]
+        high = val[1]+1
+
+
+    # PyTorch and MXNet do not support non-float variables
+    if fw == "torch" and dtype in ["int8", "int16", "int32", "int64"]:
         return
+    if dtype[0] == "u":
+        return
+
+    '''
+    low, high = tuple(data.draw(helpers.get_bounds(dtype)))
+    
     low_tnsr = ivy.array(low, dtype=dtype, device=device)
     high_tnsr = ivy.array(high, dtype=dtype, device=device)
     if as_variable:
@@ -215,9 +271,28 @@ def test_randint(data, shape, dtype, as_variable, device, call):
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, **kwargs, device=device)
-    assert np.min((ret_np < high).astype(np.int64)) == 1
-    assert np.min((ret_np >= low).astype(np.int64)) == 1
+    #ret_np = call(ivy.randint, **kwargs, device=device)
+    #assert np.min((ret_np < high).astype(np.int64)) == 1
+    #assert np.min((ret_np >= low).astype(np.int64)) == 1
+    '''
+
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "randint",
+        low=low,
+        high=high,
+        #low=np.asarray(low, dtype=dtype),
+        #high=np.asarray(high, dtype=dtype),
+        shape=shape,
+        device=device,
+    )
 
 
 # seed
