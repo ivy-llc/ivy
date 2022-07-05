@@ -2309,8 +2309,56 @@ def gather_nd(
     ret
         New array of given shape, with the values gathered at the indices.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6.])
+    >>> y = ivy.array([1])
+    >>> print(ivy.gather_nd(x, y))
+    ivy.array(1.)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.native_array([1])
+    >>> print(ivy.gather_nd(x, y))
+    ivy.array(1.)
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.array([1])
+    >>> print(ivy.gather_nd(x, y))
+    ivy.array(1.)
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([4., 5., 6.]))
+    >>> y = ivy.array([1])
+    >>> print(ivy.gather_nd(x, y))
+    {
+        a: ivy.array(1.),
+        b: ivy.array(5.)
+    }
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([4., 5., 6.]))
+    >>> y = ivy.Container(a=ivy.array([0]), \
+                          b=ivy.array([2]))
+    >>> print(ivy.gather_nd(x, y))
+    {
+        a: ivy.array(0.),
+        b: ivy.array(6.)
+    }
     """
-    return current_backend(params).gather_nd(params, indices, out=out)
+    res = current_backend(params, indices).gather_nd(params, indices)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
