@@ -2,6 +2,10 @@ less_equal
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.less_equal
+
+.. autofunction:: ivy.array.array_methods.less_equal
+
+.. autofunction:: ivy.container.container_methods.less_equal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ less_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: less_equal
+
+   less_equal/less_equal_functional.rst
+   less_equal/less_equal_array.rst
+   less_equal/less_equal_container.rst
+

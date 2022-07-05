@@ -2,6 +2,10 @@ sin
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.sin
+
+.. autofunction:: ivy.array.array_methods.sin
+
+.. autofunction:: ivy.container.container_methods.sin
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ sin
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: sin
+
+   sin/sin_functional.rst
+   sin/sin_array.rst
+   sin/sin_container.rst
+

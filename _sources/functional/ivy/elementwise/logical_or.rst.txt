@@ -2,6 +2,10 @@ logical_or
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_or
+
+.. autofunction:: ivy.array.array_methods.logical_or
+
+.. autofunction:: ivy.container.container_methods.logical_or
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ logical_or
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: logical_or
+
+   logical_or/logical_or_functional.rst
+   logical_or/logical_or_array.rst
+   logical_or/logical_or_container.rst
+

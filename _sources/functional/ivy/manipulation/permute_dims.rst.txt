@@ -2,6 +2,10 @@ permute_dims
 ============
 
 .. autofunction:: ivy.functional.ivy.manipulation.permute_dims
+
+.. autofunction:: ivy.array.array_methods.permute_dims
+
+.. autofunction:: ivy.container.container_methods.permute_dims
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ permute_dims
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: permute_dims
+
+   permute_dims/permute_dims_functional.rst
+   permute_dims/permute_dims_array.rst
+   permute_dims/permute_dims_container.rst
+

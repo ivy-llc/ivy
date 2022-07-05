@@ -2,6 +2,10 @@ bitwise_left_shift
 ==================
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_left_shift
+
+.. autofunction:: ivy.array.array_methods.bitwise_left_shift
+
+.. autofunction:: ivy.container.container_methods.bitwise_left_shift
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ bitwise_left_shift
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: bitwise_left_shift
+
+   bitwise_left_shift/bitwise_left_shift_functional.rst
+   bitwise_left_shift/bitwise_left_shift_array.rst
+   bitwise_left_shift/bitwise_left_shift_container.rst
+

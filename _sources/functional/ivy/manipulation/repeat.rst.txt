@@ -2,6 +2,10 @@ repeat
 ======
 
 .. autofunction:: ivy.functional.ivy.manipulation.repeat
+
+.. autofunction:: ivy.array.array_methods.repeat
+
+.. autofunction:: ivy.container.container_methods.repeat
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ repeat
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: repeat
+
+   repeat/repeat_functional.rst
+   repeat/repeat_array.rst
+   repeat/repeat_container.rst
+
