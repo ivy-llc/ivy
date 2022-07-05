@@ -177,3 +177,91 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied,
             map_sequences,
         )
+
+    @staticmethod
+    def static_gather_nd(
+        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.gather_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.gather_nd also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.array([1])
+        >>> print(ivy.static_gather_nd(x, y))
+        >>> print(z)
+        {
+            a: ivy.array(1.),
+            b: ivy.array(5.)
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container(a=ivy.array([0]), \
+                              b=ivy.array([1]))
+        >>> y = ivy.Container.static_gather_nd(x, y)
+        >>> print(y)
+        {
+                a: ivy.array(0.),
+                b: ivy.array(4.)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "gather_nd",
+            params,
+            indices,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def gather_nd(
+            self: ivy.Container,
+            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.gather_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.gather_nd also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([2]),\
+                              b=ivy.array([1]))
+        >>> z = x.gather_nd(y)
+        >>> print(z)
+        {
+            a: ivy.array(3),
+            b: ivy.array(3)
+        }
+        """
+        return self.static_gather_nd(
+            self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
