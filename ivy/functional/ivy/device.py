@@ -123,9 +123,7 @@ def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     >>> y = ivy.dev(x)
     >>> z = ivy.get_all_ivy_arrays_on_dev(y)
     >>> print(z)
-    {
-        140462020989616: ivy.array([1, 0, 2], dtype=int32),
-    },
+    {139740789224448:ivy.array([1,0,2])},
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -164,6 +162,7 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> print(y)
     2
 
     >>> x1 = ivy.array([-1, 0, 5.2])
@@ -186,19 +185,20 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    0
+    3
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    0
+    >>> print(y)
+    2
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.native_array([2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    0
+    1
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
@@ -528,8 +528,13 @@ def gpu_is_available() -> bool:
     return current_backend().gpu_is_available()
 
 
-def num_cpu_cores() -> int:
+def num_cpu_cores(logical=True) -> int:
     """Determine the number of cores available in the cpu.
+
+    Parameters
+    ----------
+    logical
+        Whether request is for number of physical or logical cores available in CPU
 
     Returns
     -------
@@ -538,11 +543,14 @@ def num_cpu_cores() -> int:
 
     Examples
     --------
-    >>> print(ivy.num_cpu_cores())
+    >>> print(ivy.num_cpu_cores(False))
     2
 
     """
-    return psutil.cpu_count()
+    if logical:
+        return psutil.cpu_count(logical=logical)
+    else:
+        return psutil.cpu_count(logical=False)
 
 
 def num_gpus() -> int:
@@ -656,6 +664,24 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     device
         The device to set as the default device
 
+    Examples
+    --------
+    >>> ivy.set_default_device("cpu")
+    >>> ivy.default_device()
+    'cpu'
+    
+    >>> ivy.set_backend("torch")
+    >>> ivy.set_default_device("gpu:0")
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda', index=0)
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_default_device(device)
+    >>> ivy.default_device(as_native=True)
+    device(type='cuda')
+
     """
     global default_device_stack
     default_device_stack.append(device)
@@ -749,9 +775,10 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     >>> x = ivy.split_factor()
     >>> print(x)
     0.0
+
     >>> y = ivy.split_factor("gpu:0")
     >>> print(y)
-    1.5
+    0.0
 
     """
     global split_factors
