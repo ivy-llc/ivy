@@ -1404,14 +1404,6 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
-    >>> x = [ivy.array([1., 2., 3.]).shape, ivy.array([4., 5., 6.]).shape]
-    >>> print(ivy.shape_to_tuple(x))
-    ((3,), (3,))
-
-    >>> x = [ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape] # noqa
-    >>> print(ivy.shape_to_tuple(x))
-    ((2, 3), (2, 3))
-
     >>> x = ivy.array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
@@ -1419,14 +1411,6 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
-
-    >>> x = (ivy.array([1., 2., 3.]).shape, ivy.array([4., 5., 6.]).shape)
-    >>> print(ivy.shape_to_tuple(x))
-    ((3,), (3,))
-
-    >>> x = (ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape) # noqa
-    >>> print(ivy.shape_to_tuple(x))
-    ((2, 3), (2, 3))
 
     With :code:`ivy.NativeArray.shape` input:
 
@@ -1438,14 +1422,6 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
-    >>> x = [ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape]
-    >>> print(ivy.shape_to_tuple(x))
-    (torch.Size([3]),torch.Size([3]))
-
-    >>> x = [ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape] # noqa
-    >>> print(ivy.shape_to_tuple(x))
-    (torch.Size([2,3]),torch.Size([2,3]))
-
     >>> x = ivy.native_array((1., 2., 3.)).shape
     >>> print(ivy.shape_to_tuple(x))
     (3,)
@@ -1454,13 +1430,25 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     >>> print(ivy.shape_to_tuple(x))
     (2, 3)
 
-    >>> x = (ivy.native_array([1., 2., 3.]).shape, ivy.native_array([4., 5., 6.]).shape)
-    >>> print(ivy.shape_to_tuple(x))
-    (torch.Size([3]),torch.Size([3]))
+    With :code:`Tuple[int]` input:
 
-    >>> x = (ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape, ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape) # noqa
+    >>> x = (1, 2, 3)
     >>> print(ivy.shape_to_tuple(x))
-    (torch.Size([2,3]),torch.Size([2,3]))
+    (1, 2, 3)
+
+    >>> x = ((1, 2, 3), (4, 5, 6))
+    >>> print(ivy.shape_to_tuple(x))
+    ((1, 2, 3), (4, 5, 6))
+
+    With :code:`List[int]` input:
+
+    >>> x = [1, 2, 3]
+    >>> print(ivy.shape_to_tuple(x))
+    (1, 2, 3)
+
+    >>> x = [[1, 2, 3], [4, 5, 6]]
+    >>> print(ivy.shape_to_tuple(x))
+    ([1, 2, 3], [4, 5, 6])
 
     """
     if ivy.is_array(shape):
