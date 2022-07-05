@@ -19,7 +19,7 @@ import ivy_tests.test_ivy.helpers as helpers
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        ivy_np.valid_float_dtypes,
+        tuple(set(ivy_np.valid_float_dtypes).difference(set({"float16"}))),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -52,8 +52,6 @@ def test_cross_entropy(
     fw,
 ):
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
     helpers.test_function(
@@ -86,7 +84,7 @@ def test_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        ivy_np.valid_float_dtypes,
+        tuple(set(ivy_np.valid_float_dtypes).difference(set({"float16"}))),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -117,8 +115,6 @@ def test_binary_cross_entropy(
     fw,
 ):
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
     helpers.test_function(
@@ -150,7 +146,7 @@ def test_binary_cross_entropy(
         max_dim_size=1,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        ivy_np.valid_float_dtypes,
+        tuple(set(ivy_np.valid_float_dtypes).difference(set({"float16"}))),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -184,8 +180,6 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
     if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
         return
     min_true = min(true[0], len(pred) - 1)
