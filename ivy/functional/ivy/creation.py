@@ -740,7 +740,6 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
-
         This function conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
         the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
