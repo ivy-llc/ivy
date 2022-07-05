@@ -1862,7 +1862,7 @@ def less_equal(
     >>> y = ivy.array([4, 5, 6])
     >>> z = z = x.less_equal(y)
     >>> print(z)
-    ivy.array([ False, True, Ture])
+    ivy.array([False, True, True])
 
     Using :code:`ivy.Container` instance method:
 
