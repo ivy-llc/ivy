@@ -23,7 +23,7 @@ class ArrayWithCreation(abc.ABC):
     ) -> ivy.array:
         return ivy.arange(
             start, stop, step, dtype=dtype, device=device, out=out
-            )
+        )
 
     def asarray(
         self: ivy.Array,
@@ -62,7 +62,7 @@ class ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         return ivy.full_like(
             [self._data], fill_value, dtype=dtype, device=device, out=out
-            )
+        )
     
     def ones_like(
         self: ivy.Array,
@@ -145,7 +145,7 @@ class ArrayWithCreation(abc.ABC):
             dtype=dtype, 
             device=device, 
             out=out
-            )
+        )
 
     def meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray],
@@ -163,7 +163,7 @@ class ArrayWithCreation(abc.ABC):
     ) -> ivy.Array:
         return ivy.full(
             shape, fill_value, dtype=dtype, device=device, out=out
-            )
+        )
     
     def from_dlpack(
         self: ivy.Array,
