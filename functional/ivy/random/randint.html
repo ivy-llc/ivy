@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="static_randint container" href="randint/static_randint_container.html" />
+    <link rel="next" title="seed" href="seed.html" />
     <link rel="prev" title="multinomial" href="multinomial.html" /> 
 </head>
 
@@ -123,11 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="random_uniform.html">random_uniform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random_normal.html">random_normal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multinomial.html">multinomial</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">randint</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="randint/static_randint_container.html">static_randint container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="randint/randint_functional.html">randint functional</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">randint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="seed.html">seed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shuffle.html">shuffle</a></li>
 </ul>
@@ -243,7 +239,7 @@ the uniform distribution in the “half-open” interval [low, high)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.static_randint">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_randint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#static_randint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_randint" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_randint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#static_randint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_randint" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container static method variant of ivy.randint. This method simply wraps the
 function, and so the docstring for ivy.randint also applies to this method
 with minimal changes.</p>
@@ -310,8 +306,6 @@ with minimal changes.</p>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
@@ -319,7 +313,7 @@ with minimal changes.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="multinomial.html" class="btn btn-neutral float-left" title="multinomial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="randint/static_randint_container.html" class="btn btn-neutral float-right" title="static_randint container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="seed.html" class="btn btn-neutral float-right" title="seed" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

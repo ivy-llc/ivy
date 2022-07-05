@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="floor" href="floor.html" />
+    <link rel="next" title="expm1 functional" href="expm1/expm1_functional.html" />
     <link rel="prev" title="exp" href="exp.html" /> 
 </head>
 
@@ -131,7 +131,12 @@
 <li class="toctree-l2"><a class="reference internal" href="divide.html">divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exp.html">exp</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">expm1</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">expm1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="expm1/expm1_functional.html">expm1 functional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="expm1/expm1_array.html">expm1 array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="expm1/expm1_container.html">expm1 container</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floor_divide.html">floor_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="greater.html">greater</a></li>
@@ -281,7 +286,7 @@ array must have a floating-point data type determined by <span class="xref std s
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.expm1">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">expm1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#expm1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.expm1" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">expm1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#expm1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.expm1" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
@@ -294,6 +299,8 @@ array must have a floating-point data type determined by <span class="xref std s
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -301,7 +308,7 @@ array must have a floating-point data type determined by <span class="xref std s
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="exp.html" class="btn btn-neutral float-left" title="exp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="floor.html" class="btn btn-neutral float-right" title="floor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="expm1/expm1_functional.html" class="btn btn-neutral float-right" title="expm1 functional" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

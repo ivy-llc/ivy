@@ -25,3 +25,13 @@ svdvals
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: svdvals
+
+   svdvals/svdvals_array.rst
+   svdvals/svdvals_functional.rst
+
