@@ -53,6 +53,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/data_types.html">Data types</a></li>
@@ -83,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="MultiDevContainer.html">MultiDevContainer</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_types.html">Data types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
@@ -380,11 +382,6 @@ order. Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.container.Container.cache_fn">
 <span class="sig-name descname"><span class="pre">cache_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.container.container.Container.cache_fn" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.container.Container.can_cast">
-<span class="sig-name descname"><span class="pre">can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.container.container.Container.can_cast" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1240,11 +1237,6 @@ order. Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.container.Container.static_cache_fn">
 <span class="sig-name descname"><span class="pre">static_cache_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.container.container.Container.static_cache_fn" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.container.Container.static_can_cast">
-<span class="sig-name descname"><span class="pre">static_can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.container.container.Container.static_can_cast" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

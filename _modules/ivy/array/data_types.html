@@ -50,6 +50,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/data_types.html">Data types</a></li>
@@ -76,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/data_types.html">Data types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
@@ -173,11 +175,29 @@
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
 <div class="viewcode-block" id="ArrayWithDataTypes"><a class="viewcode-back" href="../../../array/data_types/ArrayWithDataTypes.html#ivy.array.data_types.ArrayWithDataTypes">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithDataTypes</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="ArrayWithDataTypes.can_cast"><a class="viewcode-back" href="../../../array/data_types/ArrayWithDataTypes.html#ivy.array.data_types.ArrayWithDataTypes.can_cast">[docs]</a>    <span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for `ivy.can_cast` also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.dtype)</span>
+<span class="sd">        float32</span>
+
+<span class="sd">        &gt;&gt;&gt; print(x.can_cast(ivy.float64))</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

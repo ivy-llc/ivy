@@ -2,8 +2,6 @@ sign
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.sign
-
-.. autofunction:: ivy.array.array_methods.sign
 |
 | **Supported Frameworks:**
 
@@ -23,13 +21,3 @@ sign
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: sign
-
-   sign/sign_functional.rst
-   sign/sign_array.rst
-

@@ -2,12 +2,6 @@ greater_equal
 =============
 
 .. autofunction:: ivy.functional.ivy.elementwise.greater_equal
-
-.. autofunction:: ivy.array.array_methods.equal
-
-.. autofunction:: ivy.array.array_methods.greater
-
-.. autofunction:: ivy.array.array_methods.greater_equal
 |
 | **Supported Frameworks:**
 
@@ -27,13 +21,3 @@ greater_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: greater_equal
-
-   greater_equal/greater_equal_functional.rst
-   greater_equal/greater_equal_array.rst
-

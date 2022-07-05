@@ -1,0 +1,106 @@
+Array methods
+=============
+
+.. automodule:: ivy.array.array_methods
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Array methods
+
+   array_methods/can_cast.rst
+   array_methods/abs.rst
+   array_methods/acosh.rst
+   array_methods/acos.rst
+   array_methods/add.rst
+   array_methods/asin.rst
+   array_methods/asinh.rst
+   array_methods/atan.rst
+   array_methods/atan2.rst
+   array_methods/atanh.rst
+   array_methods/bitwise_and.rst
+   array_methods/bitwise_left_shift.rst
+   array_methods/bitwise_invert.rst
+   array_methods/bitwise_or.rst
+   array_methods/bitwise_right_shift.rst
+   array_methods/bitwise_xor.rst
+   array_methods/ceil.rst
+   array_methods/cos.rst
+   array_methods/cosh.rst
+   array_methods/divide.rst
+   array_methods/equal.rst
+   array_methods/exp.rst
+   array_methods/expm1.rst
+   array_methods/floor.rst
+   array_methods/floor_divide.rst
+   array_methods/greater.rst
+   array_methods/greater_equal.rst
+   array_methods/isfinite.rst
+   array_methods/isinf.rst
+   array_methods/isnan.rst
+   array_methods/less.rst
+   array_methods/less_equal.rst
+   array_methods/log.rst
+   array_methods/log1p.rst
+   array_methods/log2.rst
+   array_methods/log10.rst
+   array_methods/logaddexp.rst
+   array_methods/logical_and.rst
+   array_methods/logical_not.rst
+   array_methods/logical_or.rst
+   array_methods/logical_xor.rst
+   array_methods/multiply.rst
+   array_methods/negative.rst
+   array_methods/not_equal.rst
+   array_methods/positive.rst
+   array_methods/pow.rst
+   array_methods/remainder.rst
+   array_methods/round.rst
+   array_methods/sign.rst
+   array_methods/sin.rst
+   array_methods/sinh.rst
+   array_methods/square.rst
+   array_methods/sqrt.rst
+   array_methods/subtract.rst
+   array_methods/tan.rst
+   array_methods/tanh.rst
+   array_methods/trunc.rst
+   array_methods/erf.rst
+   array_methods/all_equal.rst
+   array_methods/matmul.rst
+   array_methods/cross_entropy.rst
+   array_methods/binary_cross_entropy.rst
+   array_methods/sparse_cross_entropy.rst
+   array_methods/concat.rst
+   array_methods/flip.rst
+   array_methods/expand_dims.rst
+   array_methods/reshape.rst
+   array_methods/permute_dims.rst
+   array_methods/roll.rst
+   array_methods/squeeze.rst
+   array_methods/stack.rst
+   array_methods/clip.rst
+   array_methods/repeat.rst
+   array_methods/tile.rst
+   array_methods/constant_pad.rst
+   array_methods/zero_pad.rst
+   array_methods/swapaxes.rst
+   array_methods/layer_norm.rst
+   array_methods/argsort.rst
+   array_methods/sort.rst
+   array_methods/min.rst
+   array_methods/max.rst
+   array_methods/mean.rst
+   array_methods/var.rst
+   array_methods/prod.rst
+   array_methods/sum.rst
+   array_methods/std.rst
+   array_methods/einsum.rst
+   array_methods/all.rst
+   array_methods/any.rst
+

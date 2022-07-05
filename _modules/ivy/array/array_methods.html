@@ -50,6 +50,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/data_types.html">Data types</a></li>
@@ -76,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/data_types.html">Data types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
@@ -170,11 +172,31 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.array.array_methods</h1><div class="highlight"><pre>
-<span></span><span class="c1">#ivy.array.elementwise</span>
+<span></span><span class="c1">#ivy.array.data_types</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<div class="viewcode-block" id="can_cast"><a class="viewcode-back" href="../../../array/array_methods/can_cast.html#ivy.array.array_methods.can_cast">[docs]</a><span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps</span>
+<span class="sd">    the function, and so the docstring for `ivy.can_cast` also applies to this</span>
+<span class="sd">    method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.dtype)</span>
+<span class="sd">    float32</span>
+
+<span class="sd">    &gt;&gt;&gt; print(x.can_cast(ivy.float64))</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span></div>
+
+<span class="c1">#ivy.array.elementwise</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="abs"><a class="viewcode-back" href="../../../functional/ivy/elementwise/abs/abs_array.html#ivy.array.array_methods.abs">[docs]</a><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="abs"><a class="viewcode-back" href="../../../array/array_methods/abs.html#ivy.array.array_methods.abs">[docs]</a><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.abs. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.abs also applies to this method</span>
@@ -183,15 +205,15 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/cosh/cosh_functional.html#ivy.array.array_methods.acosh">[docs]</a><span class="k">def</span> <span class="nf">acosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../array/array_methods/acosh.html#ivy.array.array_methods.acosh">[docs]</a><span class="k">def</span> <span class="nf">acosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="acos"><a class="viewcode-back" href="../../../functional/ivy/elementwise/acosh.html#ivy.array.array_methods.acos">[docs]</a><span class="k">def</span> <span class="nf">acos</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="acos"><a class="viewcode-back" href="../../../array/array_methods/acos.html#ivy.array.array_methods.acos">[docs]</a><span class="k">def</span> <span class="nf">acos</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logaddexp.html#ivy.array.array_methods.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../../array/array_methods/add.html#ivy.array.array_methods.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -217,15 +239,15 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="asinh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/asinh/asinh_array.html#ivy.array.array_methods.asinh">[docs]</a><span class="k">def</span> <span class="nf">asinh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="asinh"><a class="viewcode-back" href="../../../array/array_methods/asinh.html#ivy.array.array_methods.asinh">[docs]</a><span class="k">def</span> <span class="nf">asinh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="atan"><a class="viewcode-back" href="../../../functional/ivy/elementwise/atanh.html#ivy.array.array_methods.atan">[docs]</a><span class="k">def</span> <span class="nf">atan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="atan"><a class="viewcode-back" href="../../../array/array_methods/atan.html#ivy.array.array_methods.atan">[docs]</a><span class="k">def</span> <span class="nf">atan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="atan2"><a class="viewcode-back" href="../../../functional/ivy/elementwise/atan2/atan2_array.html#ivy.array.array_methods.atan2">[docs]</a><span class="k">def</span> <span class="nf">atan2</span><span class="p">(</span>
+<div class="viewcode-block" id="atan2"><a class="viewcode-back" href="../../../array/array_methods/atan2.html#ivy.array.array_methods.atan2">[docs]</a><span class="k">def</span> <span class="nf">atan2</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -233,11 +255,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/tanh/tanh_functional.html#ivy.array.array_methods.atanh">[docs]</a><span class="k">def</span> <span class="nf">atanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../array/array_methods/atanh.html#ivy.array.array_methods.atanh">[docs]</a><span class="k">def</span> <span class="nf">atanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="bitwise_and"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_and/bitwise_and_array.html#ivy.array.array_methods.bitwise_and">[docs]</a><span class="k">def</span> <span class="nf">bitwise_and</span><span class="p">(</span>
+<div class="viewcode-block" id="bitwise_and"><a class="viewcode-back" href="../../../array/array_methods/bitwise_and.html#ivy.array.array_methods.bitwise_and">[docs]</a><span class="k">def</span> <span class="nf">bitwise_and</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -253,7 +275,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="bitwise_invert"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_invert/bitwise_invert_array.html#ivy.array.array_methods.bitwise_invert">[docs]</a><span class="k">def</span> <span class="nf">bitwise_invert</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="bitwise_invert"><a class="viewcode-back" href="../../../array/array_methods/bitwise_invert.html#ivy.array.array_methods.bitwise_invert">[docs]</a><span class="k">def</span> <span class="nf">bitwise_invert</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -265,7 +287,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="bitwise_right_shift"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_right_shift/bitwise_right_shift_array.html#ivy.array.array_methods.bitwise_right_shift">[docs]</a><span class="k">def</span> <span class="nf">bitwise_right_shift</span><span class="p">(</span>
+<div class="viewcode-block" id="bitwise_right_shift"><a class="viewcode-back" href="../../../array/array_methods/bitwise_right_shift.html#ivy.array.array_methods.bitwise_right_shift">[docs]</a><span class="k">def</span> <span class="nf">bitwise_right_shift</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -281,7 +303,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="ceil"><a class="viewcode-back" href="../../../functional/ivy/elementwise/ceil/ceil_array.html#ivy.array.array_methods.ceil">[docs]</a><span class="k">def</span> <span class="nf">ceil</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="ceil"><a class="viewcode-back" href="../../../array/array_methods/ceil.html#ivy.array.array_methods.ceil">[docs]</a><span class="k">def</span> <span class="nf">ceil</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.ceil. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.ceil also applies to this method</span>
@@ -297,15 +319,15 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="cos"><a class="viewcode-back" href="../../../functional/ivy/elementwise/cosh/cosh_functional.html#ivy.array.array_methods.cos">[docs]</a><span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="cos"><a class="viewcode-back" href="../../../array/array_methods/cos.html#ivy.array.array_methods.cos">[docs]</a><span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="cosh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/cosh/cosh_array.html#ivy.array.array_methods.cosh">[docs]</a><span class="k">def</span> <span class="nf">cosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="cosh"><a class="viewcode-back" href="../../../array/array_methods/cosh.html#ivy.array.array_methods.cosh">[docs]</a><span class="k">def</span> <span class="nf">cosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="divide"><a class="viewcode-back" href="../../../functional/ivy/elementwise/floor_divide.html#ivy.array.array_methods.divide">[docs]</a><span class="k">def</span> <span class="nf">divide</span><span class="p">(</span>
+<div class="viewcode-block" id="divide"><a class="viewcode-back" href="../../../array/array_methods/divide.html#ivy.array.array_methods.divide">[docs]</a><span class="k">def</span> <span class="nf">divide</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -313,7 +335,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="equal"><a class="viewcode-back" href="../../../functional/ivy/elementwise/greater_equal.html#ivy.array.array_methods.equal">[docs]</a><span class="k">def</span> <span class="nf">equal</span><span class="p">(</span>
+<div class="viewcode-block" id="equal"><a class="viewcode-back" href="../../../array/array_methods/equal.html#ivy.array.array_methods.equal">[docs]</a><span class="k">def</span> <span class="nf">equal</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -321,19 +343,19 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logaddexp.html#ivy.array.array_methods.exp">[docs]</a><span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../array/array_methods/exp.html#ivy.array.array_methods.exp">[docs]</a><span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../functional/ivy/elementwise/expm1/expm1_array.html#ivy.array.array_methods.expm1">[docs]</a><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../array/array_methods/expm1.html#ivy.array.array_methods.expm1">[docs]</a><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="floor"><a class="viewcode-back" href="../../../functional/ivy/elementwise/floor_divide.html#ivy.array.array_methods.floor">[docs]</a><span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="floor"><a class="viewcode-back" href="../../../array/array_methods/floor.html#ivy.array.array_methods.floor">[docs]</a><span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="floor_divide"><a class="viewcode-back" href="../../../functional/ivy/elementwise/floor_divide/floor_divide_array.html#ivy.array.array_methods.floor_divide">[docs]</a><span class="k">def</span> <span class="nf">floor_divide</span><span class="p">(</span>
+<div class="viewcode-block" id="floor_divide"><a class="viewcode-back" href="../../../array/array_methods/floor_divide.html#ivy.array.array_methods.floor_divide">[docs]</a><span class="k">def</span> <span class="nf">floor_divide</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -341,7 +363,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="greater"><a class="viewcode-back" href="../../../functional/ivy/elementwise/greater_equal.html#ivy.array.array_methods.greater">[docs]</a><span class="k">def</span> <span class="nf">greater</span><span class="p">(</span>
+<div class="viewcode-block" id="greater"><a class="viewcode-back" href="../../../array/array_methods/greater.html#ivy.array.array_methods.greater">[docs]</a><span class="k">def</span> <span class="nf">greater</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -349,7 +371,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="greater_equal"><a class="viewcode-back" href="../../../functional/ivy/elementwise/greater_equal/greater_equal_array.html#ivy.array.array_methods.greater_equal">[docs]</a><span class="k">def</span> <span class="nf">greater_equal</span><span class="p">(</span>
+<div class="viewcode-block" id="greater_equal"><a class="viewcode-back" href="../../../array/array_methods/greater_equal.html#ivy.array.array_methods.greater_equal">[docs]</a><span class="k">def</span> <span class="nf">greater_equal</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -357,19 +379,19 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isfinite/isfinite_array.html#ivy.array.array_methods.isfinite">[docs]</a><span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../array/array_methods/isfinite.html#ivy.array.array_methods.isfinite">[docs]</a><span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="isinf"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isinf/isinf_array.html#ivy.array.array_methods.isinf">[docs]</a><span class="k">def</span> <span class="nf">isinf</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="isinf"><a class="viewcode-back" href="../../../array/array_methods/isinf.html#ivy.array.array_methods.isinf">[docs]</a><span class="k">def</span> <span class="nf">isinf</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isnan/isnan_array.html#ivy.array.array_methods.isnan">[docs]</a><span class="k">def</span> <span class="nf">isnan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../array/array_methods/isnan.html#ivy.array.array_methods.isnan">[docs]</a><span class="k">def</span> <span class="nf">isnan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="less"><a class="viewcode-back" href="../../../functional/ivy/elementwise/less/less_array.html#ivy.array.array_methods.less">[docs]</a><span class="k">def</span> <span class="nf">less</span><span class="p">(</span>
+<div class="viewcode-block" id="less"><a class="viewcode-back" href="../../../array/array_methods/less.html#ivy.array.array_methods.less">[docs]</a><span class="k">def</span> <span class="nf">less</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -377,7 +399,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="less_equal"><a class="viewcode-back" href="../../../functional/ivy/elementwise/less_equal/less_equal_array.html#ivy.array.array_methods.less_equal">[docs]</a><span class="k">def</span> <span class="nf">less_equal</span><span class="p">(</span>
+<div class="viewcode-block" id="less_equal"><a class="viewcode-back" href="../../../array/array_methods/less_equal.html#ivy.array.array_methods.less_equal">[docs]</a><span class="k">def</span> <span class="nf">less_equal</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -389,7 +411,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="log1p"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log1p/log1p_array.html#ivy.array.array_methods.log1p">[docs]</a><span class="k">def</span> <span class="nf">log1p</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="log1p"><a class="viewcode-back" href="../../../array/array_methods/log1p.html#ivy.array.array_methods.log1p">[docs]</a><span class="k">def</span> <span class="nf">log1p</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -397,11 +419,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="log10"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log10/log10_array.html#ivy.array.array_methods.log10">[docs]</a><span class="k">def</span> <span class="nf">log10</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="log10"><a class="viewcode-back" href="../../../array/array_methods/log10.html#ivy.array.array_methods.log10">[docs]</a><span class="k">def</span> <span class="nf">log10</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="logaddexp"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logaddexp/logaddexp_array.html#ivy.array.array_methods.logaddexp">[docs]</a><span class="k">def</span> <span class="nf">logaddexp</span><span class="p">(</span>
+<div class="viewcode-block" id="logaddexp"><a class="viewcode-back" href="../../../array/array_methods/logaddexp.html#ivy.array.array_methods.logaddexp">[docs]</a><span class="k">def</span> <span class="nf">logaddexp</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -409,7 +431,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="logical_and"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logical_and/logical_and_array.html#ivy.array.array_methods.logical_and">[docs]</a><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span>
+<div class="viewcode-block" id="logical_and"><a class="viewcode-back" href="../../../array/array_methods/logical_and.html#ivy.array.array_methods.logical_and">[docs]</a><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -417,7 +439,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="logical_not"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logical_not/logical_not_array.html#ivy.array.array_methods.logical_not">[docs]</a><span class="k">def</span> <span class="nf">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="logical_not"><a class="viewcode-back" href="../../../array/array_methods/logical_not.html#ivy.array.array_methods.logical_not">[docs]</a><span class="k">def</span> <span class="nf">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -429,7 +451,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="logical_xor"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logical_xor/logical_xor_array.html#ivy.array.array_methods.logical_xor">[docs]</a><span class="k">def</span> <span class="nf">logical_xor</span><span class="p">(</span>
+<div class="viewcode-block" id="logical_xor"><a class="viewcode-back" href="../../../array/array_methods/logical_xor.html#ivy.array.array_methods.logical_xor">[docs]</a><span class="k">def</span> <span class="nf">logical_xor</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -437,7 +459,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="multiply"><a class="viewcode-back" href="../../../functional/ivy/elementwise/multiply/multiply_array.html#ivy.array.array_methods.multiply">[docs]</a><span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span>
+<div class="viewcode-block" id="multiply"><a class="viewcode-back" href="../../../array/array_methods/multiply.html#ivy.array.array_methods.multiply">[docs]</a><span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -445,11 +467,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="negative"><a class="viewcode-back" href="../../../functional/ivy/elementwise/negative/negative_array.html#ivy.array.array_methods.negative">[docs]</a><span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="negative"><a class="viewcode-back" href="../../../array/array_methods/negative.html#ivy.array.array_methods.negative">[docs]</a><span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="not_equal"><a class="viewcode-back" href="../../../functional/ivy/elementwise/not_equal/not_equal_array.html#ivy.array.array_methods.not_equal">[docs]</a><span class="k">def</span> <span class="nf">not_equal</span><span class="p">(</span>
+<div class="viewcode-block" id="not_equal"><a class="viewcode-back" href="../../../array/array_methods/not_equal.html#ivy.array.array_methods.not_equal">[docs]</a><span class="k">def</span> <span class="nf">not_equal</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -457,11 +479,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="positive"><a class="viewcode-back" href="../../../functional/ivy/elementwise/positive/positive_array.html#ivy.array.array_methods.positive">[docs]</a><span class="k">def</span> <span class="nf">positive</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="positive"><a class="viewcode-back" href="../../../array/array_methods/positive.html#ivy.array.array_methods.positive">[docs]</a><span class="k">def</span> <span class="nf">positive</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="pow"><a class="viewcode-back" href="../../../functional/ivy/elementwise/pow/pow_array.html#ivy.array.array_methods.pow">[docs]</a><span class="k">def</span> <span class="nf">pow</span><span class="p">(</span>
+<div class="viewcode-block" id="pow"><a class="viewcode-back" href="../../../array/array_methods/pow.html#ivy.array.array_methods.pow">[docs]</a><span class="k">def</span> <span class="nf">pow</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -469,7 +491,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="remainder"><a class="viewcode-back" href="../../../functional/ivy/elementwise/remainder/remainder_array.html#ivy.array.array_methods.remainder">[docs]</a><span class="k">def</span> <span class="nf">remainder</span><span class="p">(</span>
+<div class="viewcode-block" id="remainder"><a class="viewcode-back" href="../../../array/array_methods/remainder.html#ivy.array.array_methods.remainder">[docs]</a><span class="k">def</span> <span class="nf">remainder</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -477,11 +499,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="round"><a class="viewcode-back" href="../../../functional/ivy/elementwise/round/round_array.html#ivy.array.array_methods.round">[docs]</a><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="round"><a class="viewcode-back" href="../../../array/array_methods/round.html#ivy.array.array_methods.round">[docs]</a><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="sign"><a class="viewcode-back" href="../../../functional/ivy/elementwise/sign/sign_array.html#ivy.array.array_methods.sign">[docs]</a><span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="sign"><a class="viewcode-back" href="../../../array/array_methods/sign.html#ivy.array.array_methods.sign">[docs]</a><span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -489,7 +511,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="sinh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/sinh/sinh_array.html#ivy.array.array_methods.sinh">[docs]</a><span class="k">def</span> <span class="nf">sinh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="sinh"><a class="viewcode-back" href="../../../array/array_methods/sinh.html#ivy.array.array_methods.sinh">[docs]</a><span class="k">def</span> <span class="nf">sinh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -497,11 +519,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../functional/ivy/elementwise/sqrt/sqrt_array.html#ivy.array.array_methods.sqrt">[docs]</a><span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../array/array_methods/sqrt.html#ivy.array.array_methods.sqrt">[docs]</a><span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="subtract"><a class="viewcode-back" href="../../../functional/ivy/elementwise/subtract/subtract_array.html#ivy.array.array_methods.subtract">[docs]</a><span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span>
+<div class="viewcode-block" id="subtract"><a class="viewcode-back" href="../../../array/array_methods/subtract.html#ivy.array.array_methods.subtract">[docs]</a><span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -509,7 +531,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="tan"><a class="viewcode-back" href="../../../functional/ivy/elementwise/tanh/tanh_functional.html#ivy.array.array_methods.tan">[docs]</a><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tan"><a class="viewcode-back" href="../../../array/array_methods/tan.html#ivy.array.array_methods.tan">[docs]</a><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.tan. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.tan also applies to this method</span>
@@ -525,11 +547,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/tanh/tanh_array.html#ivy.array.array_methods.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../array/array_methods/tanh.html#ivy.array.array_methods.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../functional/ivy/elementwise/trunc/trunc_array.html#ivy.array.array_methods.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../array/array_methods/trunc.html#ivy.array.array_methods.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -541,7 +563,7 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../functional/ivy/general/all_equal/all_equal_array.html#ivy.array.array_methods.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span>
+<div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../array/array_methods/all_equal.html#ivy.array.array_methods.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -577,7 +599,7 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matmul/matmul_array.html#ivy.array.array_methods.matmul">[docs]</a><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
+<div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../array/array_methods/matmul.html#ivy.array.array_methods.matmul">[docs]</a><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -600,7 +622,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../functional/ivy/losses/binary_cross_entropy/binary_cross_entropy_array.html#ivy.array.array_methods.binary_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span>
+<div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../array/array_methods/binary_cross_entropy.html#ivy.array.array_methods.binary_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
@@ -609,7 +631,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="sparse_cross_entropy"><a class="viewcode-back" href="../../../functional/ivy/losses/sparse_cross_entropy/sparse_cross_entropy_array.html#ivy.array.array_methods.sparse_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">sparse_cross_entropy</span><span class="p">(</span>
+<div class="viewcode-block" id="sparse_cross_entropy"><a class="viewcode-back" href="../../../array/array_methods/sparse_cross_entropy.html#ivy.array.array_methods.sparse_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">sparse_cross_entropy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -636,7 +658,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../functional/ivy/manipulation/flip/flip_array.html#ivy.array.array_methods.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span>
+<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../array/array_methods/flip.html#ivy.array.array_methods.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -644,7 +666,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../functional/ivy/manipulation/expand_dims/expand_dims_array.html#ivy.array.array_methods.expand_dims">[docs]</a><span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span>
+<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../array/array_methods/expand_dims.html#ivy.array.array_methods.expand_dims">[docs]</a><span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -660,7 +682,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="permute_dims"><a class="viewcode-back" href="../../../functional/ivy/manipulation/permute_dims/permute_dims_array.html#ivy.array.array_methods.permute_dims">[docs]</a><span class="k">def</span> <span class="nf">permute_dims</span><span class="p">(</span>
+<div class="viewcode-block" id="permute_dims"><a class="viewcode-back" href="../../../array/array_methods/permute_dims.html#ivy.array.array_methods.permute_dims">[docs]</a><span class="k">def</span> <span class="nf">permute_dims</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axes</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -668,7 +690,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="roll"><a class="viewcode-back" href="../../../functional/ivy/manipulation/roll/roll_array.html#ivy.array.array_methods.roll">[docs]</a><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
+<div class="viewcode-block" id="roll"><a class="viewcode-back" href="../../../array/array_methods/roll.html#ivy.array.array_methods.roll">[docs]</a><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -690,7 +712,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../functional/ivy/manipulation/squeeze/squeeze_array.html#ivy.array.array_methods.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span>
+<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../array/array_methods/squeeze.html#ivy.array.array_methods.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -698,7 +720,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="stack"><a class="viewcode-back" href="../../../functional/ivy/manipulation/stack/stack_array.html#ivy.array.array_methods.stack">[docs]</a><span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
+<div class="viewcode-block" id="stack"><a class="viewcode-back" href="../../../array/array_methods/stack.html#ivy.array.array_methods.stack">[docs]</a><span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
         <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
@@ -710,7 +732,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="clip"><a class="viewcode-back" href="../../../functional/ivy/manipulation/clip/clip_array.html#ivy.array.array_methods.clip">[docs]</a><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
+<div class="viewcode-block" id="clip"><a class="viewcode-back" href="../../../array/array_methods/clip.html#ivy.array.array_methods.clip">[docs]</a><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
     <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
@@ -732,7 +754,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="repeat"><a class="viewcode-back" href="../../../functional/ivy/manipulation/repeat/repeat_array.html#ivy.array.array_methods.repeat">[docs]</a><span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span>
+<div class="viewcode-block" id="repeat"><a class="viewcode-back" href="../../../array/array_methods/repeat.html#ivy.array.array_methods.repeat">[docs]</a><span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">repeats</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -741,7 +763,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../functional/ivy/manipulation/tile/tile_array.html#ivy.array.array_methods.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span>
+<div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../array/array_methods/tile.html#ivy.array.array_methods.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">reps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -749,7 +771,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../functional/ivy/manipulation/constant_pad/constant_pad_array.html#ivy.array.array_methods.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span>
+<div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../array/array_methods/constant_pad.html#ivy.array.array_methods.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -758,7 +780,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../functional/ivy/manipulation/zero_pad/zero_pad_array.html#ivy.array.array_methods.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span>
+<div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../array/array_methods/zero_pad.html#ivy.array.array_methods.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -766,7 +788,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../functional/ivy/manipulation/swapaxes/swapaxes_array.html#ivy.array.array_methods.swapaxes">[docs]</a><span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span>
+<div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../array/array_methods/swapaxes.html#ivy.array.array_methods.swapaxes">[docs]</a><span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis0</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -779,7 +801,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_array.html#ivy.array.array_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
+<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../array/array_methods/layer_norm.html#ivy.array.array_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
@@ -795,7 +817,7 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="argsort"><a class="viewcode-back" href="../../../functional/ivy/sorting/argsort/argsort_array.html#ivy.array.array_methods.argsort">[docs]</a><span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span>
+<div class="viewcode-block" id="argsort"><a class="viewcode-back" href="../../../array/array_methods/argsort.html#ivy.array.array_methods.argsort">[docs]</a><span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -805,7 +827,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="sort"><a class="viewcode-back" href="../../../functional/ivy/sorting/sort/sort_array.html#ivy.array.array_methods.sort">[docs]</a><span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
+<div class="viewcode-block" id="sort"><a class="viewcode-back" href="../../../array/array_methods/sort.html#ivy.array.array_methods.sort">[docs]</a><span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -819,7 +841,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../functional/ivy/statistical/min/min_array.html#ivy.array.array_methods.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
+<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../array/array_methods/min.html#ivy.array.array_methods.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -828,7 +850,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../functional/ivy/statistical/max/max_array.html#ivy.array.array_methods.max">[docs]</a><span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
+<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../../array/array_methods/max.html#ivy.array.array_methods.max">[docs]</a><span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -837,7 +859,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../functional/ivy/statistical/mean/mean_array.html#ivy.array.array_methods.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../array/array_methods/mean.html#ivy.array.array_methods.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -846,37 +868,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../functional/ivy/statistical/var/var_array.html#ivy.array.array_methods.var">[docs]</a><span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../functional/ivy/statistical/prod/prod_array.html#ivy.array.array_methods.prod">[docs]</a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../functional/ivy/statistical/sum/sum_array.html#ivy.array.array_methods.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../functional/ivy/statistical/std/std_array.html#ivy.array.array_methods.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
+<div class="viewcode-block" id="var"><a class="viewcode-back" href="../../../array/array_methods/var.html#ivy.array.array_methods.var">[docs]</a><span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -886,7 +878,37 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../functional/ivy/statistical/sum/sum_functional.html#ivy.array.array_methods.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>
+<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../array/array_methods/prod.html#ivy.array.array_methods.prod">[docs]</a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../array/array_methods/sum.html#ivy.array.array_methods.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../array/array_methods/std.html#ivy.array.array_methods.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../array/array_methods/einsum.html#ivy.array.array_methods.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -908,7 +930,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="any"><a class="viewcode-back" href="../../../functional/ivy/utility/any/any_array.html#ivy.array.array_methods.any">[docs]</a><span class="k">def</span> <span class="nf">any</span><span class="p">(</span>
+<div class="viewcode-block" id="any"><a class="viewcode-back" href="../../../array/array_methods/any.html#ivy.array.array_methods.any">[docs]</a><span class="k">def</span> <span class="nf">any</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

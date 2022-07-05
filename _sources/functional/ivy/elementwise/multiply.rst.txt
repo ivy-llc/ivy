@@ -2,8 +2,6 @@ multiply
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.multiply
-
-.. autofunction:: ivy.array.array_methods.multiply
 |
 | **Supported Frameworks:**
 
@@ -23,13 +21,3 @@ multiply
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: multiply
-
-   multiply/multiply_array.rst
-   multiply/multiply_functional.rst
-

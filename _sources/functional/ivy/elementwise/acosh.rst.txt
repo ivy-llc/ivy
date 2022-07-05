@@ -2,14 +2,6 @@ acosh
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.acosh
-
-.. autofunction:: ivy.array.array_methods.acos
-
-.. autofunction:: ivy.array.array_methods.cosh
-
-.. autofunction:: ivy.array.array_methods.cos
-
-.. autofunction:: ivy.array.array_methods.acosh
 |
 | **Supported Frameworks:**
 
@@ -29,13 +21,3 @@ acosh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: acosh
-
-   acosh/acosh_functional.rst
-   acosh/acosh_array.rst
-

@@ -53,6 +53,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../array/data_types.html">Data types</a></li>
@@ -79,6 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data types</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_types/ContainerWithDataTypes.html">ContainerWithDataTypes</a></li>
@@ -181,6 +183,58 @@
 <dt class="sig sig-object py" id="ivy.container.data_types.ContainerWithDataTypes">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.container.data_types.</span></span><span class="sig-name descname"><span class="pre">ContainerWithDataTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_load_sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_combine_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'list_join'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_length_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_line_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_key_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword_color_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_child_containers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types_to_iteratively_nest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabetical_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/data_types.html#ContainerWithDataTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.data_types.ContainerWithDataTypes" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="base/ContainerBase.html#ivy.container.base.ContainerBase" title="ivy.container.base.ContainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.data_types.ContainerWithDataTypes.can_cast">
+<span class="sig-name descname"><span class="pre">can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/data_types.html#ContainerWithDataTypes.can_cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.data_types.ContainerWithDataTypes.can_cast" title="Permalink to this definition"></a></dt>
+<dd><p><cite>ivy.Container</cite> instance method variant of <cite>ivy.can_cast</cite>. This method simply
+wraps the function, and so the docstring for <cite>ivy.can_cast</cite> also applies to
+this method with minimal changes.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>             <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="go">float32 int32</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">))</span>
+<span class="go">{</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: true</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.data_types.ContainerWithDataTypes.static_can_cast">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/data_types.html#ContainerWithDataTypes.static_can_cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.data_types.ContainerWithDataTypes.static_can_cast" title="Permalink to this definition"></a></dt>
+<dd><p><cite>ivy.Container</cite> static method variant of <cite>ivy.can_cast</cite>. This method simply
+wraps the function, and so the docstring for <cite>ivy.can_cast</cite> also applies to
+this method with minimal changes.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>             <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="go">float32 int32</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_can_cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">))</span>
+<span class="go">{</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: true</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <div class="toctree-wrapper compound">
