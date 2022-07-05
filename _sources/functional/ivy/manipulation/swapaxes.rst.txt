@@ -2,6 +2,10 @@ swapaxes
 ========
 
 .. autofunction:: ivy.functional.ivy.manipulation.swapaxes
+
+.. autofunction:: ivy.array.array_methods.swapaxes
+
+.. autofunction:: ivy.container.container_methods.swapaxes
 |
 | **Supported Frameworks:**
 

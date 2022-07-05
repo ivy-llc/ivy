@@ -2,6 +2,10 @@ stack
 =====
 
 .. autofunction:: ivy.functional.ivy.manipulation.stack
+
+.. autofunction:: ivy.array.array_methods.stack
+
+.. autofunction:: ivy.container.container_methods.stack
 |
 | **Supported Frameworks:**
 

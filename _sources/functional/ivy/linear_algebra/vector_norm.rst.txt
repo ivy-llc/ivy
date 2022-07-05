@@ -2,6 +2,8 @@ vector_norm
 ===========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_norm
+
+.. autofunction:: ivy.array.array_methods.vector_norm
 |
 | **Supported Frameworks:**
 

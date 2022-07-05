@@ -2,6 +2,10 @@ zero_pad
 ========
 
 .. autofunction:: ivy.functional.ivy.manipulation.zero_pad
+
+.. autofunction:: ivy.array.array_methods.zero_pad
+
+.. autofunction:: ivy.container.container_methods.zero_pad
 |
 | **Supported Frameworks:**
 

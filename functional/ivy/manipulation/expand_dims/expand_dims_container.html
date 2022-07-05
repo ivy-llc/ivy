@@ -20,9 +20,7 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="flip" href="../flip.html" />
-    <link rel="prev" title="expand_dims array" href="expand_dims_array.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,6 +51,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/data_type.html">Data type</a></li>
@@ -79,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/device.html">Device</a></li>
@@ -100,7 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -113,29 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../manipulation.html">Manipulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../concat.html">concat</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../expand_dims.html">expand_dims</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="expand_dims_functional.html">expand_dims functional</a></li>
-<li class="toctree-l3"><a class="reference internal" href="expand_dims_array.html">expand_dims array</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">expand_dims container</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../flip.html">flip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../permute_dims.html">permute_dims</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reshape.html">reshape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../roll.html">roll</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../squeeze.html">squeeze</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../stack.html">stack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../clip.html">clip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../constant_pad.html">constant_pad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../repeat.html">repeat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../split.html">split</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../swapaxes.html">swapaxes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tile.html">tile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../zero_pad.html">zero_pad</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
@@ -184,8 +162,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-                    <li><a href="../../manipulation.html">Manipulation</a> &raquo;</li>
-          <li><a href="../expand_dims.html">expand_dims</a> &raquo;</li>
       <li>expand_dims container</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/manipulation/expand_dims/expand_dims_container.rst.txt" rel="nofollow"> View page source</a>
@@ -218,10 +194,7 @@
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="expand_dims_array.html" class="btn btn-neutral float-left" title="expand_dims array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../flip.html" class="btn btn-neutral float-right" title="flip" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

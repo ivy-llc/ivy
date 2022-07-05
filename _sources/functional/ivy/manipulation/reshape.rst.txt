@@ -2,6 +2,10 @@ reshape
 =======
 
 .. autofunction:: ivy.functional.ivy.manipulation.reshape
+
+.. autofunction:: ivy.array.array_methods.reshape
+
+.. autofunction:: ivy.container.container_methods.reshape
 |
 | **Supported Frameworks:**
 

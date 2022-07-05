@@ -2,6 +2,10 @@ logical_and
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_and
+
+.. autofunction:: ivy.array.array_methods.logical_and
+
+.. autofunction:: ivy.container.container_methods.logical_and
 |
 | **Supported Frameworks:**
 

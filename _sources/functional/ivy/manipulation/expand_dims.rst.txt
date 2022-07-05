@@ -2,6 +2,10 @@ expand_dims
 ===========
 
 .. autofunction:: ivy.functional.ivy.manipulation.expand_dims
+
+.. autofunction:: ivy.array.array_methods.expand_dims
+
+.. autofunction:: ivy.container.container_methods.expand_dims
 |
 | **Supported Frameworks:**
 

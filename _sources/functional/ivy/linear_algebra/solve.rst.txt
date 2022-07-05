@@ -2,6 +2,8 @@ solve
 =====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.solve
+
+.. autofunction:: ivy.array.array_methods.solve
 |
 | **Supported Frameworks:**
 

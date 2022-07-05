@@ -2,6 +2,10 @@ asinh
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.asinh
+
+.. autofunction:: ivy.array.array_methods.asinh
+
+.. autofunction:: ivy.container.container_methods.asinh
 |
 | **Supported Frameworks:**
 

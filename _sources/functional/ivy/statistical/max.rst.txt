@@ -2,6 +2,10 @@ max
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.max
+
+.. autofunction:: ivy.array.array_methods.max
+
+.. autofunction:: ivy.container.container_methods.max
 |
 | **Supported Frameworks:**
 

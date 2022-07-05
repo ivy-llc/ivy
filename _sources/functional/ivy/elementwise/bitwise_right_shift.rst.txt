@@ -2,6 +2,10 @@ bitwise_right_shift
 ===================
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_right_shift
+
+.. autofunction:: ivy.array.array_methods.bitwise_right_shift
+
+.. autofunction:: ivy.container.container_methods.bitwise_right_shift
 |
 | **Supported Frameworks:**
 

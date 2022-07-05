@@ -2,6 +2,10 @@ expm1
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.expm1
+
+.. autofunction:: ivy.array.array_methods.expm1
+
+.. autofunction:: ivy.container.container_methods.expm1
 |
 | **Supported Frameworks:**
 

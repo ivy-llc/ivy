@@ -2,6 +2,8 @@ clip_vector_norm
 ================
 
 .. autofunction:: ivy.functional.ivy.general.clip_vector_norm
+
+.. autofunction:: ivy.container.container_methods.clip_vector_norm
 |
 | **Supported Frameworks:**
 

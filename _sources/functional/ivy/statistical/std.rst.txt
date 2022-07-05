@@ -2,6 +2,10 @@ std
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.std
+
+.. autofunction:: ivy.array.array_methods.std
+
+.. autofunction:: ivy.container.container_methods.std
 |
 | **Supported Frameworks:**
 

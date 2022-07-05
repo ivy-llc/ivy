@@ -2,6 +2,22 @@ acosh
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.acosh
+
+.. autofunction:: ivy.array.array_methods.acos
+
+.. autofunction:: ivy.array.array_methods.cosh
+
+.. autofunction:: ivy.array.array_methods.cos
+
+.. autofunction:: ivy.array.array_methods.acosh
+
+.. autofunction:: ivy.container.container_methods.acos
+
+.. autofunction:: ivy.container.container_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.cos
+
+.. autofunction:: ivy.container.container_methods.acosh
 |
 | **Supported Frameworks:**
 

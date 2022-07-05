@@ -2,6 +2,10 @@ min
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.min
+
+.. autofunction:: ivy.array.array_methods.min
+
+.. autofunction:: ivy.container.container_methods.min
 |
 | **Supported Frameworks:**
 

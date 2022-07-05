@@ -2,6 +2,8 @@ trace
 =====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.trace
+
+.. autofunction:: ivy.array.array_methods.trace
 |
 | **Supported Frameworks:**
 

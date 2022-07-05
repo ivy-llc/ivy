@@ -2,6 +2,10 @@ bitwise_and
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_and
+
+.. autofunction:: ivy.array.array_methods.bitwise_and
+
+.. autofunction:: ivy.container.container_methods.bitwise_and
 |
 | **Supported Frameworks:**
 

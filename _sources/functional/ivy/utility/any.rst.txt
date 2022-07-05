@@ -2,6 +2,10 @@ any
 ===
 
 .. autofunction:: ivy.functional.ivy.utility.any
+
+.. autofunction:: ivy.array.array_methods.any
+
+.. autofunction:: ivy.container.container_methods.any
 |
 | **Supported Frameworks:**
 

@@ -2,6 +2,8 @@ tensordot
 =========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.tensordot
+
+.. autofunction:: ivy.array.array_methods.tensordot
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ tensordot
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: tensordot
+
+   tensordot/tensordot_functional.rst
+   tensordot/tensordot_array.rst
+

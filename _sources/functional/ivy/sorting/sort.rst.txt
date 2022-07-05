@@ -2,6 +2,12 @@ sort
 ====
 
 .. autofunction:: ivy.functional.ivy.sorting.sort
+
+.. autofunction:: ivy.array.array_methods.sort
+
+.. autofunction:: ivy.container.container_methods.static_sort
+
+.. autofunction:: ivy.container.container_methods.sort
 |
 | **Supported Frameworks:**
 

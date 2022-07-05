@@ -82,6 +82,8 @@ Container methods
    container_methods/clip_vector_norm.rst
    container_methods/static_all_equal.rst
    container_methods/all_equal.rst
+   container_methods/static_gather_nd.rst
+   container_methods/gather_nd.rst
    container_methods/static_optimizer_update.rst
    container_methods/optimizer_update.rst
    container_methods/static_gradient_descent_update.rst

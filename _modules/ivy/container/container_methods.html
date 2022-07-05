@@ -50,6 +50,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/data_type.html">Data type</a></li>
@@ -76,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
@@ -247,7 +249,7 @@
     <span class="k">pass</span>
 
 
-<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="__add__"><a class="viewcode-back" href="../../../container/container_methods.html#ivy.container.container_methods.__add__">[docs]</a><span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Container special method for the add operator, calling :code:`operator.add`</span>
 <span class="sd">    for each of the corresponding leaves of the two containers.</span>
@@ -294,10 +296,10 @@
 <span class="sd">                      [8.1, 9.3, 3.4]])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">pass</span></div>
 
 
-<span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="__radd__"><a class="viewcode-back" href="../../../container/container_methods.html#ivy.container.container_methods.__radd__">[docs]</a><span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Container reverse special method for the add operator, calling</span>
 <span class="sd">    :code:`operator.add` for each of the corresponding leaves of the two containers.</span>
@@ -313,7 +315,7 @@
 <span class="sd">        b: 5</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">pass</span></div>
 
 
 <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -412,7 +414,7 @@
     <span class="k">pass</span>
 
 
-<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="__init__"><a class="viewcode-back" href="../../../container/container_methods.html#ivy.container.container_methods.__init__">[docs]</a><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dict_in</span><span class="p">,</span>
     <span class="n">devs</span><span class="p">,</span>
@@ -432,15 +434,15 @@
     <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">pass</span></div>
 
 
-<span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="at_dev"><a class="viewcode-back" href="../../../container/container_methods/at_dev.html#ivy.container.container_methods.at_dev">[docs]</a><span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
-<span class="k">def</span> <span class="nf">at_devs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="at_devs"><a class="viewcode-back" href="../../../container/container_methods/at_devs.html#ivy.container.container_methods.at_devs">[docs]</a><span class="k">def</span> <span class="nf">at_devs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
 <span class="c1">#ivy.container.data_type</span>

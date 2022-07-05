@@ -2,6 +2,12 @@ clip
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.clip
+
+.. autofunction:: ivy.array.array_methods.clip
+
+.. autofunction:: ivy.container.container_methods.clip
+
+.. autofunction:: ivy.container.container_methods.static_clip
 |
 | **Supported Frameworks:**
 

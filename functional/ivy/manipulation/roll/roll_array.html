@@ -20,9 +20,7 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="roll container" href="roll_container.html" />
-    <link rel="prev" title="roll" href="../roll.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,6 +51,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../array/data_type.html">Data type</a></li>
@@ -79,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/device.html">Device</a></li>
@@ -100,7 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -113,30 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../manipulation.html">Manipulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../concat.html">concat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../expand_dims.html">expand_dims</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flip.html">flip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../permute_dims.html">permute_dims</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reshape.html">reshape</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../roll.html">roll</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">roll array</a></li>
-<li class="toctree-l3"><a class="reference internal" href="roll_container.html">roll container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="roll_functional.html">roll functional</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_roll_container.html">static_roll container</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../squeeze.html">squeeze</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../stack.html">stack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../clip.html">clip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../constant_pad.html">constant_pad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../repeat.html">repeat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../split.html">split</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../swapaxes.html">swapaxes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tile.html">tile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../zero_pad.html">zero_pad</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
@@ -185,8 +162,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-                    <li><a href="../../manipulation.html">Manipulation</a> &raquo;</li>
-          <li><a href="../roll.html">roll</a> &raquo;</li>
       <li>roll array</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/manipulation/roll/roll_array.rst.txt" rel="nofollow"> View page source</a>
@@ -199,26 +174,6 @@
              
   <section id="roll-array">
 <h1>roll array<a class="headerlink" href="#roll-array" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.roll">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">roll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/array_methods.html#roll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.roll" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.roll. This method simply wraps the
-function, and so the docstring for ivy.roll also applies to this method
-with minimal changes.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([2., 0., 1.])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -229,10 +184,7 @@ with minimal changes.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../roll.html" class="btn btn-neutral float-left" title="roll" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="roll_container.html" class="btn btn-neutral float-right" title="roll container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

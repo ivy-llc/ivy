@@ -2,6 +2,8 @@ matrix_rank
 ===========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_rank
+
+.. autofunction:: ivy.array.array_methods.matrix_rank
 |
 | **Supported Frameworks:**
 

@@ -72,7 +72,29 @@ Array methods
    array_methods/trunc.rst
    array_methods/erf.rst
    array_methods/all_equal.rst
+   array_methods/gather_nd.rst
    array_methods/matmul.rst
+   array_methods/cholesky.rst
+   array_methods/cross.rst
+   array_methods/det.rst
+   array_methods/diagonal.rst
+   array_methods/eigh.rst
+   array_methods/eigvalsh.rst
+   array_methods/inv.rst
+   array_methods/matrix_norm.rst
+   array_methods/matrix_rank.rst
+   array_methods/matrix_transpose.rst
+   array_methods/outer.rst
+   array_methods/pinv.rst
+   array_methods/qr.rst
+   array_methods/solve.rst
+   array_methods/svd.rst
+   array_methods/svdvals.rst
+   array_methods/tensordot.rst
+   array_methods/trace.rst
+   array_methods/vecdot.rst
+   array_methods/vector_norm.rst
+   array_methods/vector_to_skew_symmetric_matrix.rst
    array_methods/cross_entropy.rst
    array_methods/binary_cross_entropy.rst
    array_methods/sparse_cross_entropy.rst

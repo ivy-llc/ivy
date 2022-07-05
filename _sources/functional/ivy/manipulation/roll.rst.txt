@@ -2,6 +2,12 @@ roll
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.roll
+
+.. autofunction:: ivy.array.array_methods.roll
+
+.. autofunction:: ivy.container.container_methods.static_roll
+
+.. autofunction:: ivy.container.container_methods.roll
 |
 | **Supported Frameworks:**
 

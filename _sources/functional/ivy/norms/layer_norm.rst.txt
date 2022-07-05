@@ -2,6 +2,10 @@ layer_norm
 ==========
 
 .. autofunction:: ivy.functional.ivy.norms.layer_norm
+
+.. autofunction:: ivy.array.array_methods.layer_norm
+
+.. autofunction:: ivy.container.container_methods.layer_norm
 |
 | **Supported Frameworks:**
 

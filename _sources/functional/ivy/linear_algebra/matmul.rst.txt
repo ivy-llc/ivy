@@ -2,6 +2,10 @@ matmul
 ======
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matmul
+
+.. autofunction:: ivy.array.array_methods.matmul
+
+.. autofunction:: ivy.container.container_methods.matmul
 |
 | **Supported Frameworks:**
 

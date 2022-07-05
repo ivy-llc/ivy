@@ -2,6 +2,10 @@ random_uniform
 ==============
 
 .. autofunction:: ivy.functional.ivy.random.random_uniform
+
+.. autofunction:: ivy.container.container_methods.random_uniform
+
+.. autofunction:: ivy.container.container_methods.static_random_uniform
 |
 | **Supported Frameworks:**
 

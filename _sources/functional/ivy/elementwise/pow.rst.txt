@@ -2,6 +2,10 @@ pow
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.pow
+
+.. autofunction:: ivy.array.array_methods.pow
+
+.. autofunction:: ivy.container.container_methods.pow
 |
 | **Supported Frameworks:**
 

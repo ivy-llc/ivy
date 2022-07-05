@@ -2,6 +2,8 @@ matrix_transpose
 ================
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_transpose
+
+.. autofunction:: ivy.array.array_methods.matrix_transpose
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ matrix_transpose
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: matrix_transpose
+
+   matrix_transpose/matrix_transpose_functional.rst
+   matrix_transpose/matrix_transpose_array.rst
+

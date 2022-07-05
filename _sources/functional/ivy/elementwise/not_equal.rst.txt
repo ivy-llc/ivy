@@ -2,6 +2,10 @@ not_equal
 =========
 
 .. autofunction:: ivy.functional.ivy.elementwise.not_equal
+
+.. autofunction:: ivy.array.array_methods.not_equal
+
+.. autofunction:: ivy.container.container_methods.not_equal
 |
 | **Supported Frameworks:**
 
