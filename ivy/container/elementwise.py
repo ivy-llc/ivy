@@ -439,6 +439,22 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.ceil. This method simply wraps the
+        function, and so the docstring for ivy.ceil also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = x.ceil()
+        >>> print(y)
+        {
+            a: ivy.array([3., 1., -1.]),
+            b: ivy.array([6., -3., 6.])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.ceil(x_) if ivy.is_array(x_) else x_,
@@ -1059,26 +1075,6 @@ class ContainerWithElementwise(ContainerBase):
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
-    @staticmethod
-    def static_negative(
-        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
-            "negative",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
     def negative(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1087,13 +1083,15 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_negative(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.negative(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
         )
 
     def not_equal(
