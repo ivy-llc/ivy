@@ -173,6 +173,8 @@ def broadcast_to(
         array shape. Must be compatible with x (see Broadcasting). If
         the array is incompatible with the specified shape, the function should raise an
         exception.
+    out
+        The output array to hold the result
 
     Returns
     -------
