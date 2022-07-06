@@ -400,7 +400,10 @@ def logaddexp(
 logaddexp.unsupported_dtypes = ("float16",)
 
 
-def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tan(x: torch.Tensor,
+        *,
+        out: Optional[torch.Tensor] = None
+        ) -> torch.Tensor:
     return torch.tan(x, out=out)
 
 

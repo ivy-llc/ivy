@@ -444,7 +444,10 @@ def bitwise_left_shift(
 
 
 @_handle_0_dim_output
-def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tan(x: np.ndarray,
+        *,
+        out: Optional[np.ndarray] = None
+        ) -> np.ndarray:
     return np.tan(x, out=out)
 
 
