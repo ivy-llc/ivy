@@ -68,8 +68,11 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.asinh. This method simply wraps the
         function, and so the docstring for ivy.asinh also applies to this method
         with minimal changes.
+
         Examples
         --------
+        Using :code:`ivy.Array` instance method:
+
         >>> x = ivy.array([-1, 0, 3])
         >>> y = x.asinh()
         >>> print(y)

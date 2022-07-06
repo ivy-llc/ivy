@@ -251,9 +251,11 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container static method variant of ivy.asinh. This method simply wraps the
         function, and so the docstring for ivy.asinh also applies to this method
         with minimal changes.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),\
                             b=ivy.array([3.4, -5.3, -0, -2.8]))
         >>> y = ivy.Container.static_asinh(x)
@@ -286,9 +288,11 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.asinh. This method simply wraps the
         function, and so the docstring for ivy.asinh also applies to this method
         with minimal changes.
+
         Examples
         --------
         Using :code:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),\
                             b=ivy.array([4.5, -2.4, -1.5]))
         >>> y = x.asinh()
