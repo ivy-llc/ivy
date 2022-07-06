@@ -56,7 +56,7 @@ def test_concat(
         ).astype(dt)
         for ud, dt in zip(unique_dims, input_dtype)
     ]
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -103,7 +103,7 @@ def test_expand_dims(
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -150,7 +150,7 @@ def test_flip(
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -197,7 +197,7 @@ def test_permute_dims(
     x = np.random.uniform(size=array_shape).astype(input_dtype)
     axes = np.random.permutation(len(array_shape)).tolist()
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -246,7 +246,7 @@ def test_reshape(
     # draw a valid reshape shape
     shape = data.draw(helpers.reshape_shapes(x.shape))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -313,7 +313,7 @@ def test_roll(
     # draw any valid axis
     axis = data.draw(valid_axis)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -368,7 +368,7 @@ def test_squeeze(
         if len(axis) == 0:
             return
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -418,7 +418,7 @@ def test_stack(
     ndim = len(xs[0].shape)
     axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -478,7 +478,7 @@ def test_repeat(
 
     repeats = data.draw(st.integers(1, 3))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -535,7 +535,7 @@ def test_tile(
             helpers.nph.broadcastable_shapes(shape=x.shape, min_dims=len(x.shape))
         )
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -583,7 +583,7 @@ def test_constant_pad(
     ]
     constant = data.draw(st.integers(0, 10))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -631,7 +631,7 @@ def test_zero_pad(
         for _ in range(len(x.shape))
     ]
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -677,7 +677,7 @@ def test_swapaxes(
     axis0 = data.draw(valid_axes)
     axis1 = data.draw(valid_axes)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -739,7 +739,7 @@ def test_clip(
         or np.isscalar(x)
     ):
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,

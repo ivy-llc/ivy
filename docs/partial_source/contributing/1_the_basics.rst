@@ -176,6 +176,51 @@ check out this `Atlassian tutorial`_.
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
+Who To Ask
+-------------
+
+Quite often, you would like to get a better understanding of the logic in the
+implementation of Ivy, raising issues or starting discussions with the context
+of who made what changes. Here is a common workflow to help get around the
+problem of "who to ask" by using,
+
+With Command Line:
+****
+**git blame** - Show what revision and author last modified each line of a file
+
+**git log**   - Show commit logs
+
+.. code-block:: none
+
+    # Eg: From line 16 to next 5 lines since past 2 weeks
+    git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
+    # Deeper look at what author changed in the files in commit retrieved from above step
+    git log <commit_id> -p
+
+With Browser:
+****
+**Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
+or view the revision history of a single line within a file.
+
+.. image:: content/git_blame_1.png
+   :width: 420
+
+This view can be toggled from option in left vertical pane or from the "blame" icon in top-right
+as highlighted above.
+
+.. image:: content/git_blame_2.png
+   :width: 420
+
+Each time you click the highlighted icon, the previous revision information
+for that line, including who committed the change and when is shown.
+
+.. image:: content/git_blame_3.png
+   :width: 420
+
+Whenever starting a discussion or creating an issue, you are welcome to tag
+members using "@" in our team, who you think would be best suited to interact
+with based on the information gained from above steps.
+
 Pull Requests
 -------------
 
