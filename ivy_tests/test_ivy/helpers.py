@@ -851,7 +851,7 @@ def test_function(
             try:
                 instance.__getattribute__(fn_name)(*args, **kwargs)
                 assert False
-            except Exception as e:
+            except:
                 return
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
@@ -859,7 +859,7 @@ def test_function(
             try:
                 ivy.__dict__[fn_name](*args, **kwargs)
                 assert False
-            except Exception as e:
+            except:
                 return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
 
