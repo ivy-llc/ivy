@@ -150,9 +150,10 @@ class Container(
                           [8.1, 9.3, 3.4]])
         }
         """
-        return ivy.Container.multi_map(
-            lambda xs, _: operator.add(xs[0], xs[1]), [self, other], map_nests=True
-        )
+        # return ivy.Container.multi_map(
+        #     lambda xs, _: operator.add(xs[0], xs[1]), [self, other], map_nests=True
+        # )
+        return self.static_add(self, other)
 
     def __radd__(self, other):
         """
@@ -170,9 +171,10 @@ class Container(
             b: 5
         }
         """
-        return ivy.Container.multi_map(
-            lambda xs, _: operator.add(xs[0], xs[1]), [other, self], map_nests=True
-        )
+        # return ivy.Container.multi_map(
+        #     lambda xs, _: operator.add(xs[0], xs[1]), [other, self], map_nests=True
+        # )
+        return self.static_add(other, self)
 
     def __sub__(self, other):
         return self.static_subtract(self, other)
