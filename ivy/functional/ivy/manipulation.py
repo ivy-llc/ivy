@@ -683,6 +683,7 @@ def clip(
     }
 
     """
+    assert ivy.less(x_min, x_max)
     res = current_backend(x).clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
