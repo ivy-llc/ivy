@@ -33,7 +33,7 @@ def random_uniform(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype=None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
     other words, any value within the given interval is equally likely to be drawn by
@@ -53,6 +53,9 @@ def random_uniform(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -125,6 +128,9 @@ def random_normal(
         samples are drawn. If size is ``None`` (default), a single value is returned.
     device
         (Default value = ``None``)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -203,6 +209,9 @@ def multinomial(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -261,7 +270,7 @@ def multinomial(
     )
 
 
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
 @handle_nestable
@@ -299,29 +308,31 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, 1)
+    >>> y = ivy.randint(0, 9, (1,1))
     >>> print(y)
-    ivy.array([3])
+    ivy.array([[5]])
 
-    >>> y = ivy.randint(2, 20, (2, 2), 'cpu')
+    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
-    ivy.array([[ 7,  5],
-               [15, 15]])
+    ivy.array([[5,8],[9,3]])
 
-    >>> x = ivy.Array([1, 2, 3])
+    >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, (3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
-    >>> y = ivy.zeros(3, 3)
-    >>> ivy.randint(3, 15, (3, 3), 'gpu:1', out=y)
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device, out=out)
+    res = current_backend().randint(low, high, shape, device=device, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
@@ -354,6 +365,9 @@ def shuffle(
     ----------
     x
         Input array. Should have a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

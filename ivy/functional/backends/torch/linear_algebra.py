@@ -39,7 +39,7 @@ def cross(
     promote_type = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(promote_type)
     x2 = x2.type(promote_type)
-    return torch.cross(input=x1, other=x2, dim=axis, out=out)
+    return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
 
 def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -96,6 +96,7 @@ def matrix_rank(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    # ToDo: add support for default rtol value here, for the case where None is provided
     return torch.linalg.matrix_rank(x, rtol, out=out)
 
 
@@ -177,11 +178,11 @@ def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, full_matrices: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices, out=out)
+    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
     ret = results(U, D, VT)
     return ret
 
