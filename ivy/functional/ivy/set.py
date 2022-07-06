@@ -277,7 +277,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the unique elements of an input array ``x``.
 
@@ -307,6 +307,9 @@ def unique_values(
     x
         input array. If ``x`` has more than one dimension, the function must flatten
         ``x`` and return the unique elements of the flattened array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
