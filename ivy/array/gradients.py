@@ -25,7 +25,6 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-
         With :code:`ivy.Array` inputs:
 
         >>> dcdw = ivy.array([[[1.1], [3.2], [-6.3]]])
