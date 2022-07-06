@@ -35,14 +35,3 @@ floor_divide
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: floor_divide
-
-   floor_divide/floor_divide_functional.rst
-   floor_divide/floor_divide_array.rst
-   floor_divide/floor_divide_container.rst
-
