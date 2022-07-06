@@ -2461,13 +2461,13 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 1., 1., 1.])
+    ivy.array([1., 0., 0., 1.])
 
     >>> x1 = ivy.array([1, -1, 1, -1])
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out=x1)
     >>> print(y)
-    ivy.array([1, 1, 1, 1])
+    ivy.array([1, 0, 0, 1])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -2488,13 +2488,14 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 1., 1., 1.])
+    ivy.array([1., 0., 0., 1.])
 
-    >>> x1 = ivy.native_array([1, -1, 1, -1])
-    >>> x2 = ivy.native_array([0, -1, 1, 0])
-    >>> y = ivy.not_equal(x1, x2, out=x1)
+    >>> x1 = ivy.native_array([1, 2, 3, 4])
+    >>> x2 = ivy.native_array([0, 2, 3, 4])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1, 1, 1, 1])
+    ivy.array([1., 0., 0., 0.])
 
     With :code:`ivy.Container` input:
 
