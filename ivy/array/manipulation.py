@@ -109,7 +109,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.clip(self._data, x_min=x_min, x_max=x_max, out=out)
 
-    def repeats(
+    def repeat(
         self: ivy.Array,
         repeats: Union[int, Iterable[int]],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
