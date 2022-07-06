@@ -33,7 +33,7 @@ def test_vector_to_skew_symmetric_matrix(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -73,7 +73,7 @@ def test_matrix_power(
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -83,8 +83,8 @@ def test_matrix_power(
         instance_method,
         fw,
         "matrix_power",
-        rtol=1e-03,
-        atol=1e-03,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         n=n,
     )
@@ -121,7 +121,7 @@ def test_matmul(
     np.random.seed(seed)
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -131,8 +131,8 @@ def test_matmul(
         instance_method,
         fw,
         "matmul",
-        rtol=5e-02,
-        atol=5e-02,
+        test_rtol=5e-02,
+        test_atol=5e-02,
         x1=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
         x2=np.random.uniform(size=(b, c)).astype(input_dtype[1]),
     )
@@ -165,7 +165,7 @@ def test_det(
     if "float16" in input_dtype:
         return
     x = np.random.uniform(size=(b, a, a)).astype(input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -175,8 +175,8 @@ def test_det(
         instance_method,
         fw,
         "det",
-        rtol=1e-04,
-        atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x=x,
     )
 
@@ -205,7 +205,7 @@ def test_eigh(
         return
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
     x = (x + x.T) / 2
-    helpers.test_array_function(
+    ret, ret_from_np = helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -215,10 +215,20 @@ def test_eigh(
         instance_method,
         fw,
         "eigh",
-        rtol=1e-02,
-        atol=1e-02,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=x,
+        test_values=False,
     )
+
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat =\
+        helpers.get_flattened_array_returns(ret, ret_from_np)
+
+    # value test
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        helpers.assert_all_close(
+            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2)
 
 
 # eigvalsh
@@ -247,7 +257,7 @@ def test_eigvalsh(
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -257,8 +267,8 @@ def test_eigvalsh(
         instance_method,
         fw,
         "eigvalsh",
-        rtol=0.01,
-        atol=0.01,
+        test_rtol=0.01,
+        test_atol=0.01,
         x=np.random.uniform(size=(b, a, a)).astype(input_dtype),
     )
 
@@ -289,7 +299,7 @@ def test_inv(
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -299,8 +309,8 @@ def test_inv(
         instance_method,
         fw,
         "inv",
-        rtol=1e-02,
-        atol=1e-02,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=np.random.uniform(size=(b, a, a)).astype(input_dtype[0]),
     )
 
@@ -331,7 +341,7 @@ def test_matrix_transpose(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -371,7 +381,7 @@ def test_outer(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -408,7 +418,7 @@ def test_slogdet(
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -419,6 +429,8 @@ def test_slogdet(
         fw,
         "slogdet",
         x=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
+        test_rtol=1e-3,
+        test_atol=1e-3,
     )
 
 
@@ -446,7 +458,7 @@ def test_solve(
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -456,8 +468,8 @@ def test_solve(
         instance_method,
         fw,
         "solve",
-        rtol=1e-04,
-        atol=1e-04,
+        test_rtol=1e-03,
+        test_atol=1e-03,
         x1=np.random.uniform(size=(a, a)).astype(input_dtype[0]),
         x2=np.random.uniform(size=(a, 1)).astype(input_dtype[1]),
     )
@@ -489,7 +501,7 @@ def test_svdvals(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -533,7 +545,7 @@ def test_tensordot(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -579,7 +591,7 @@ def test_trace(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -622,7 +634,7 @@ def test_vecdot(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -669,7 +681,7 @@ def test_vector_norm(
         return
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -714,7 +726,7 @@ def test_pinv(
         return
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -724,8 +736,8 @@ def test_pinv(
         instance_method,
         fw,
         "pinv",
-        rtol=1e-04,
-        atol=1e-04,
+        test_rtol=1e-04,
+        test_atol=1e-04,
         x=x,
     )
 
@@ -757,7 +769,7 @@ def test_qr(
     if "float16" in input_dtype:
         return
     x = np.random.uniform(size=(a, b)).astype(input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -800,7 +812,7 @@ def test_svd(
         return
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
-    helpers.test_array_function(
+    ret, ret_from_np = helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -810,11 +822,24 @@ def test_svd(
         instance_method,
         fw,
         "svd",
-        rtol=1e-01,
-        atol=1e-01,
         x=x,
         full_matrices=fm,
+        test_values=False,
     )
+    # flattened array returns
+    ret_np_flat, ret_from_np_flat =\
+        helpers.get_flattened_array_returns(ret, ret_from_np)
+
+    # value test
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        num_cols = ret_np.shape[-2]
+        for col_idx in range(num_cols):
+            ret_np_col = ret_np[..., col_idx, :]
+            ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
+            ret_from_np_col = ret_from_np[..., col_idx, :]
+            ret_from_np_col = np.where(
+                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col)
+            helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-1, atol=1e-1)
 
 
 # matrix_norm
@@ -847,7 +872,7 @@ def test_matrix_norm(
         return
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -877,6 +902,7 @@ def test_matrix_norm(
     a=st.integers(1, 50),
     b=st.integers(1, 50),
     c=st.integers(1, 50),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     input_dtype,
@@ -890,10 +916,11 @@ def test_matrix_rank(
     a,
     b,
     c,
+    rtol,
 ):
     if "float16" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -903,9 +930,10 @@ def test_matrix_rank(
         instance_method,
         fw,
         "matrix_rank",
-        atol=1e-04,
-        rtol=1e-04,
+        test_atol=1e-04,
+        test_rtol=1e-04,
         x=np.random.uniform(size=(a, b, c)).astype(input_dtype[0]),
+        rtol=rtol,
     )
 
 
@@ -935,7 +963,7 @@ def test_cholesky(
         return
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
     x = np.matmul(x, x.T + 1e-3)  # make symmetric positive-definite
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -945,8 +973,8 @@ def test_cholesky(
         instance_method,
         fw,
         "cholesky",
-        rtol=1e-02,
-        atol=1e-02,
+        test_rtol=1e-02,
+        test_atol=1e-02,
         x=x,
         upper=upper,
     )
@@ -980,7 +1008,7 @@ def test_cross(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1026,7 +1054,7 @@ def test_diagonal(
 ):
     if "float16" or "int8" in input_dtype:
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,

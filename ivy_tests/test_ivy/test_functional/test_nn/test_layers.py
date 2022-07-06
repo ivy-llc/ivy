@@ -52,7 +52,7 @@ def test_linear(
     ).astype(dtype[1])
     bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
 
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -62,6 +62,7 @@ def test_linear(
         instance_method,
         fw,
         "linear",
+        test_rtol=1e-03,
         x=x,
         weight=weight,
         bias=bias,
@@ -145,7 +146,7 @@ def test_scaled_dot_product_attention(batch_shape,
     ).astype(dtype[3])
     scale = np.random.uniform(size=[1]).astype(dtype[4])
 
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -322,7 +323,7 @@ def test_conv2d(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -388,7 +389,7 @@ def test_conv2d_transpose(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -702,7 +703,7 @@ def test_conv3d_transpose(
     filters = np.random.uniform(
         size=(filter_shape, filter_shape, filter_shape, 1, 1)
     ).astype(dtype[1])
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -763,7 +764,7 @@ def test_lstm(
     recurrent_kernel = (
         ivy.variable(ivy.ones([hidden_channel, 4 * hidden_channel])) * 0.5
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
