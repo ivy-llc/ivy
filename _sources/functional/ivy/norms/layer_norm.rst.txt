@@ -25,3 +25,14 @@ layer_norm
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: layer_norm
+
+   layer_norm/layer_norm_array.rst
+   layer_norm/layer_norm_container.rst
+   layer_norm/layer_norm_functional.rst
+

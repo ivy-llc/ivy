@@ -25,3 +25,14 @@ std
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: std
+
+   std/std_array.rst
+   std/std_container.rst
+   std/std_functional.rst
+
