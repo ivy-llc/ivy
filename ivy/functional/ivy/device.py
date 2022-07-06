@@ -669,7 +669,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
-    
+
     >>> ivy.set_backend("torch")
     >>> ivy.set_default_device("gpu:0")
     >>> ivy.default_device(as_native=True)
