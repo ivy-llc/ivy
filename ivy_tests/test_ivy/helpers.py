@@ -753,8 +753,9 @@ def test_function(
     # check for unsupported dtypes
     fn = getattr(ivy, fn_name)
     test_unsupported = False
+    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(fn):
+        if d in unsupported_dtypes_fn:
             test_unsupported = True
             break
     if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
