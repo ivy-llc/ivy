@@ -62,6 +62,9 @@ def arange(
         None.
     device
         device on which to place the created array. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -131,6 +134,9 @@ def zeros(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
+    out
+       optional output array, for writing the result to. It must have a shape that the
+       inputs broadcast to.
 
     Returns
     -------
@@ -173,6 +179,9 @@ def ones(
         must be the default floating-point data type. Default  ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -219,6 +228,9 @@ def full_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -265,6 +277,9 @@ def ones_like(
     device
         device on which to place the created array. If device is ``None``, the output
         array device must be inferred from x. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -307,6 +322,9 @@ def zeros_like(
     device
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -329,7 +347,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -342,6 +360,9 @@ def tril(
         diagonal above which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -358,7 +379,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -371,6 +392,9 @@ def triu(
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -406,6 +430,9 @@ def empty(
         default floating-point data type. Default: None.
     device
         device on which to place the created array. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -440,6 +467,9 @@ def empty_like(
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -481,6 +511,9 @@ def eye(
         default floating-point data type. Default: None.
     device
          device on which to place the created array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -505,6 +538,7 @@ def linspace(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
@@ -524,6 +558,9 @@ def linspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -532,7 +569,7 @@ def linspace(
 
     """
     return current_backend(start).linspace(
-        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device
+        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device, out=out
     )
 
 
@@ -662,6 +699,9 @@ def full(
         type. Default: ``None``.
     device
         device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -685,7 +725,9 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def from_dlpack(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
@@ -693,6 +735,9 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     ----------
     x  object
         input (array) object.
+    out
+       optional output array, for writing the result to. It must have a shape that the
+       inputs broadcast to.
 
     Returns
     -------
@@ -706,7 +751,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            :ref:`data-interchange` for details.
 
     """
-    return current_backend(x).from_dlpack(x)
+    return current_backend(x).from_dlpack(x, out=out)
 
 
 # Extra #
@@ -759,6 +804,7 @@ def logspace(
     axis: int = None,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
@@ -780,6 +826,9 @@ def logspace(
         Axis along which the operation is performed.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -787,4 +836,6 @@ def logspace(
         Tensor of evenly-spaced values.
 
     """
-    return current_backend(start).logspace(start, stop, num, base, axis, device=device)
+    return current_backend(start).logspace(
+        start, stop, num, base, axis, device=device, out=out
+    )
