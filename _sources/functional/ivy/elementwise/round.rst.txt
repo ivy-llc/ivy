@@ -25,14 +25,3 @@ round
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: round
-
-   round/round_functional.rst
-   round/round_array.rst
-   round/round_container.rst
-
