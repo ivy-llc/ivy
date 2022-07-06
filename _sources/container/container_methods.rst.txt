@@ -17,6 +17,7 @@ Container methods
    container_methods/at_devs.rst
    container_methods/static_can_cast.rst
    container_methods/can_cast.rst
+   container_methods/static_abs.rst
    container_methods/abs.rst
    container_methods/acosh.rst
    container_methods/acos.rst
