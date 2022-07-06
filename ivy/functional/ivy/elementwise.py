@@ -54,7 +54,7 @@ def abs(
         an array containing the absolute value of each element in ``x``. The returned
         array must have the same data type as ``x``.
 
-    Functional Examples
+    Examples
     -------------------
 
     With :code:`ivy.Array` input:
