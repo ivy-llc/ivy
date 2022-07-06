@@ -211,9 +211,9 @@ def execute_with_gradients(func, xs, retain_grads=False):
 @to_native_arrays_and_back
 @handle_nestable
 def adam_step(
-    dcdw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-    mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-    vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+    dcdw: Union[ivy.Array, ivy.NativeArray],
+    mw: Union[ivy.Array, ivy.NativeArray],
+    vw: Union[ivy.Array, ivy.NativeArray],
     step: Union[int, float],
     beta1=0.9,
     beta2=0.999,
@@ -324,38 +324,28 @@ def adam_step(
         ivy.array([0.001, 0.004, 0.009]))
 
     with :code: 'ivy.container' inputs:
-    >>> ivy.set_backend('torch')
-    >>> ivy.get_backend()
-        <module 'ivy.functional.backends.torch'
-        from '/ivy/ivy/functional/backends/torch/__init__.py'>
-    >>> dcdw = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                                            b=ivy.array([[5.], [6.], [7.]]))
-    >>> mw = ivy.array([[0., 0., 0.]])
-    >>> vw = ivy.array([[0., 0., 0.]])
+    >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                             b=ivy.array([3., 4., 5.]))
+    >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                           b=ivy.array([0., 0., 0.]))
+    >>> vw = ivy.Container(a=ivy.array([0.,]),\
+                           b=ivy.array([0.,]))
     >>> step = ivy.array([3.4])
     >>> beta1 = 0.87
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
-    >>> adam_step_delta= ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        ({a:ivy.array([[0.626,0.626,0.626],
-                    [0.626,0.626,0.626],
-                    [0.626,0.626,0.626]]),
-        b:ivy.array([[0.626,0.626,0.626],
-                    [0.626,0.626,0.626],
-                    [0.626,0.626,0.626]])},
-        {a:ivy.array([[0.52,0.52,0.52],
-                    [0.65,0.65,0.65],
-                    [0.78,0.78,0.78]]),
-        b:ivy.array([[0.65,0.65,0.65],
-                    [0.78,0.78,0.78],
-                    [0.91,0.91,0.91]])},
-        {a:ivy.array([[0.384,0.384,0.384],
-                    [0.6,0.6,0.6],
-                    [0.864,0.864,0.864]]),
-        b:ivy.array([[0.6,0.6,0.6],
-                    [0.864,0.864,0.864],
-                    [1.18,1.18,1.18]])})
+        ({
+            a: ivy.array([0., 0.626, 0.626]),
+            b: ivy.array([0.626, 0.626, 0.626])
+        }, {
+            a: ivy.array([0., 0.13, 0.26]),
+            b: ivy.array([0.39, 0.52, 0.65])
+        }, {
+            a: ivy.array([0., 0.024, 0.096]),
+            b: ivy.array([0.216, 0.384, 0.6])
+        })
     """
     step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
