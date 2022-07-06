@@ -16,25 +16,23 @@ import ivy.functional.backends.numpy as ivy_np
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_relu(
     dtype_and_x,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
     container,
     instance_method,
+    native_array,
     fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_function(
@@ -54,12 +52,12 @@ def test_relu(
 # leaky_relu
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    alpha=st.floats(),
     as_variable=helpers.list_of_length(st.booleans(), 2),
-    native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    alpha=st.floats(),
+    native_array=st.booleans(),
 )
 def test_leaky_relu(
     dtype_and_x,
@@ -72,8 +70,6 @@ def test_leaky_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
-        return
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_function(
@@ -95,11 +91,11 @@ def test_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
-    native_array=st.booleans(),
+    approximate=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
-    approximate=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_gelu(
     dtype_and_x,
@@ -132,10 +128,10 @@ def test_gelu(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_tanh(
     dtype_and_x,
@@ -167,10 +163,10 @@ def test_tanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_sigmoid(
     dtype_and_x,
@@ -200,16 +196,18 @@ def test_sigmoid(
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes,min_num_dims=1),
     as_variable=st.booleans(),
-    native_array=st.booleans(),
+    axis=st.integers(-1,0),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_softmax(
     dtype_and_x,
     as_variable,
+    axis,
     num_positional_args,
     container,
     instance_method,
@@ -217,12 +215,9 @@ def test_softmax(
     fw,
 ):
     dtype, x = dtype_and_x
-    axis = -1
     if fw == "torch" and dtype == "float16":
         return
     x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
     helpers.test_function(
         dtype,
         as_variable,
@@ -242,10 +237,10 @@ def test_softmax(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
+    native_array=st.booleans(),
 )
 def test_softplus(
     dtype_and_x,
