@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from typing import Union
+from typing import Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -84,7 +84,6 @@ def unset_with_grads():
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
@@ -153,8 +152,10 @@ def variable_data(x):
 @handle_out_argument
 @handle_nestable
 def stop_gradient(
-        x: Union[ivy.Array, ivy.NativeArray],
-        preserve_type: bool = True,
+    x: Union[ivy.Array, ivy.NativeArray],
+    preserve_type: bool = True,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Stops gradient computation.
 
@@ -167,6 +168,9 @@ def stop_gradient(
         otherwise an array is always returned. Default is True.
     preserve_type
         bool, optional (Default value = True)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -174,7 +178,7 @@ def stop_gradient(
         The same array x, but with no gradient information.
 
     """
-    return current_backend(x).stop_gradient(x, preserve_type)
+    return current_backend(x).stop_gradient(x, preserve_type, out=out)
 
 
 # AutoGrad #
