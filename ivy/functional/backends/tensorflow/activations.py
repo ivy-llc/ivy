@@ -19,7 +19,8 @@ def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
+def gelu(x: Tensor, approximate: Optional[bool] = True) -> Tensor:
+    return tf.nn.gelu(x, approximate)
 
 
 def sigmoid(x: Tensor) -> Tensor:
@@ -30,8 +31,8 @@ def tanh(x: Tensor) -> Tensor:
     return tf.nn.tanh(x)
 
 
-def softmax(x: Tensor, axis: Optional[int] = -1) -> Tensor:
-    return tf.nn.softmax(x, axis)
+def softmax(x: Tensor, axis: Optional[int] = None) -> Tensor:
+    return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
 
 
 def softplus(x: Tensor) -> Tensor:

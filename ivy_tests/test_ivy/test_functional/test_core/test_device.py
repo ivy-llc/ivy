@@ -3,15 +3,18 @@
 # global
 import os
 import math
+
+import psutil
+import nvidia_smi
 import pytest
 import time
 import numpy as np
 from numbers import Number
 from hypothesis import strategies as st, given
+import multiprocessing
 
 # local
 import ivy
-import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -162,8 +165,9 @@ def test_default_device(device, call):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
+    stream=st.integers(0, 50),
 )
-def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
+def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -180,7 +184,7 @@ def test_to_dev(array_shape, dtype, as_variable, with_out, fw, device, call):
     out = ivy.zeros(ivy.shape(x)) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, device=device, out=out)
+    x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
@@ -438,8 +442,11 @@ def test_unify_array(array_shape, dtype, as_variable, fw, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -479,8 +486,11 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
     # inputs
-    args = [tensor_fn(args[0], "float32", device)] + args[1:]
-    kwargs = {"a": tensor_fn(kwargs["a"], "float32", device), "b": kwargs["b"]}
+    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
+    kwargs = {
+        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
+        "b": kwargs["b"],
+    }
 
     # devices
     devices = list()
@@ -524,9 +534,9 @@ def test_unify_nest(args, kwargs, axis, tensor_fn, device, call):
     dev0 = device
     devices.append(dev0)
     args_dict = dict()
-    args_dict[dev0] = tensor_fn(args[0][0], "float32", dev0)
+    args_dict[dev0] = tensor_fn(args[0][0], dtype="float32", device=dev0)
     kwargs_dict = dict()
-    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], "float32", dev0)
+    kwargs_dict[dev0] = tensor_fn(kwargs["a"][0], dtype="float32", device=dev0)
     if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
@@ -585,18 +595,73 @@ def test_profiler(device, call):
         time.sleep(1)  # required by MXNet for some reason
 
 
+@given(num=st.integers(0, 5))
+def test_num_arrays_on_dev(num, device):
+    arrays = [
+        ivy.array(np.random.uniform(size=2).tolist(), device=device) for _ in range(num)
+    ]
+    assert ivy.num_ivy_arrays_on_dev(device) == num
+    arrays.clear()
+
+
+@given(num=st.integers(0, 5))
+def test_get_all_arrays_on_dev(num, device):
+    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
+    for a in arrays:
+        assert id(a) in arr_ids_on_dev
+
+
+def test_total_mem_on_dev(device):
+    if "cpu" in device:
+        assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
+    elif "gpu" in device:
+        gpu_mem = nvidia_smi.nvmlDeviceGetMemoryInfo(device)
+        assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
+
+
+def test_gpu_is_availble(fw):
+
+    # If gpu is available but cannot be initialised it will fail the test
+    if ivy.gpu_is_available():
+        try:
+            nvidia_smi.nvmlInit()
+        except (
+            nvidia_smi.NVMLError_LibraryNotFound,
+            nvidia_smi.NVMLError_DriverNotLoaded,
+        ):
+            assert False
+
+    # if gpu is returned not available but can be somehow initialised it must fail
+    elif ivy.gpu_is_available() is False:
+        try:
+            nvidia_smi.nvmlInit()
+            assert False
+        except (
+            nvidia_smi.NVMLError_LibraryNotFound,
+            nvidia_smi.NVMLError_DriverNotLoaded,
+        ):
+            pass
+
+
+def test_num_cpu_cores():
+    # using multiprocessing module too because ivy uses psutil as basis.
+    p_cpu_cores = psutil.cpu_count()
+    m_cpu_cores = multiprocessing.cpu_count()
+    assert type(ivy.num_cpu_cores()) == int
+    assert ivy.num_cpu_cores() == p_cpu_cores
+    assert ivy.num_cpu_cores() == m_cpu_cores
+
+
 # Still to Add #
 # ---------------#
 
-# get_all_arrays_on_dev
-# num_arrays_on_dev
+
 # print_all_arrays_on_dev
 # clear_mem_on_dev
-# total_mem_on_dev
-# used_mem_on_dev
-# percent_used_mem_on_dev
-# dev_util
-# gpu_is_available
+# used_mem_on_dev # working fine for cpu
+# percent_used_mem_on_dev # working fine for cpu
+# dev_util # working fine for cpu
 # num_cpu_cores
 # num_gpus
 # tpu_is_available
@@ -605,7 +670,6 @@ def test_profiler(device, call):
 # unset_default_device
 # split_factor
 # set_split_factor
-# isinstance
 # Class MultiDev
 # class MultiDevItem
 # class MultiDevIter
