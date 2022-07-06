@@ -20,7 +20,9 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Container.random_uniform" href="random_uniform_container.html" />
+    <link rel="prev" title="random_uniform" href="../random_uniform.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -100,7 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -117,7 +119,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../random.html">Random</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../random.html">Random</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../random_uniform.html">random_uniform</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.random_uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="random_uniform_container.html">ivy.Container.random_uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_random_uniform_container.html">ivy.Container.static_random_uniform</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../random_normal.html">random_normal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multinomial.html">multinomial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../randint.html">randint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../seed.html">seed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../shuffle.html">shuffle</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../searching.html">Searching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../set.html">Set</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sorting.html">Sorting</a></li>
@@ -162,6 +177,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../random.html">Random</a> &raquo;</li>
+          <li><a href="../random_uniform.html">random_uniform</a> &raquo;</li>
       <li>ivy.random_uniform</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/random/random_uniform/random_uniform_functional.rst.txt" rel="nofollow"> View page source</a>
@@ -192,12 +209,10 @@ than <code class="docutils literal notranslate"><span class="pre">high</span></c
 If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> (Default), a single value is returned.</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 (Default value = None).</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+<dd class="field-even"><p>&lt;module ‘ivy.array’ from ‘/home/root/project/ivy/array/__init__.py’&gt;</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Drawn samples from the parameterized uniform distribution.</p>
@@ -247,7 +262,10 @@ inputs broadcast to.</p></li>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../random_uniform.html" class="btn btn-neutral float-left" title="random_uniform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="random_uniform_container.html" class="btn btn-neutral float-right" title="ivy.Container.random_uniform" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

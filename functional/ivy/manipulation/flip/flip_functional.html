@@ -20,7 +20,9 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Array.flip" href="flip_array.html" />
+    <link rel="prev" title="flip" href="../flip.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -100,7 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -113,7 +115,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../manipulation.html">Manipulation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concat.html">concat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../flip.html">flip</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.flip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flip_array.html">ivy.Array.flip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flip_container.html">ivy.Container.flip</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../permute_dims.html">permute_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../roll.html">roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../squeeze.html">squeeze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stack.html">stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clip.html">clip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../constant_pad.html">constant_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../repeat.html">repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zero_pad.html">zero_pad</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
@@ -162,6 +186,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../manipulation.html">Manipulation</a> &raquo;</li>
+          <li><a href="../flip.html">flip</a> &raquo;</li>
       <li>ivy.flip</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/manipulation/flip/flip_functional.rst.txt" rel="nofollow"> View page source</a>
@@ -187,7 +213,7 @@ array must be preserved.</p>
 flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from
 the last dimension. If provided more than one axis, the function must flip only
 the specified axes. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 inputs broadcast to.</p></li>
 </ul>
 </dd>
@@ -285,7 +311,10 @@ b: ivy.array([5., 4., 3.])</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../flip.html" class="btn btn-neutral float-left" title="flip" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flip_array.html" class="btn btn-neutral float-right" title="ivy.Array.flip" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

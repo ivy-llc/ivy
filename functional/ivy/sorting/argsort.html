@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="sort" href="sort.html" />
+    <link rel="next" title="ivy.argsort" href="argsort/argsort_functional.html" />
     <link rel="prev" title="Sorting" href="../sorting.html" /> 
 </head>
 
@@ -123,7 +123,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../sorting.html">Sorting</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">argsort</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">argsort</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="argsort/argsort_functional.html">ivy.argsort</a></li>
+<li class="toctree-l3"><a class="reference internal" href="argsort/argsort_array.html">ivy.Array.argsort</a></li>
+<li class="toctree-l3"><a class="reference internal" href="argsort/argsort_container.html">ivy.Container.argsort</a></li>
+<li class="toctree-l3"><a class="reference internal" href="argsort/static_argsort_container.html">ivy.Container.static_argsort</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="sort.html">sort</a></li>
 </ul>
 </li>
@@ -255,7 +261,7 @@ returned array must have the default array index data type.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.argsort">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">argsort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/array_methods.html#argsort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.argsort" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">argsort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/array_methods.html#argsort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.argsort" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
@@ -288,6 +294,8 @@ returned array must have the default array index data type.</p></li>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -295,7 +303,7 @@ returned array must have the default array index data type.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../sorting.html" class="btn btn-neutral float-left" title="Sorting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sort.html" class="btn btn-neutral float-right" title="sort" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="argsort/argsort_functional.html" class="btn btn-neutral float-right" title="ivy.argsort" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
