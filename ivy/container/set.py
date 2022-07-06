@@ -16,8 +16,7 @@ class ContainerWithSet(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *
+        map_sequences: bool = False
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_counts. This method simply 
@@ -52,8 +51,7 @@ class ContainerWithSet(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *
+        map_sequences: bool = False
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_counts. This method 
