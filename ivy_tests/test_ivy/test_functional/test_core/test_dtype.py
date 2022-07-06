@@ -70,7 +70,7 @@ def test_astype(
 # broadcast_to
 @given(
     in_shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
@@ -79,9 +79,9 @@ def test_astype(
     instance_method=st.booleans(),
 )
 def test_broadcast_to(
-    data,
-    input_dtype,
     in_shape,
+    dtype,
+    data,
     as_variable,
     num_positional_args,
     native_array,
@@ -90,9 +90,9 @@ def test_broadcast_to(
     fw,
 ):
     # smoke for torch uints
-    if fw == "torch" and "u" in str(input_dtype):
+    if fw == "torch" and "u" in str(dtype):
         return
-    x = data.draw(helpers.nph.arrays(shape=in_shape, dtype=input_dtype))
+    x = data.draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
     to_shape = data.draw(
         helpers.mutually_broadcastable_shapes(1, base_shape=in_shape)
         .map(lambda S: S[0])
@@ -100,7 +100,7 @@ def test_broadcast_to(
         label="shape",
     )
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         num_positional_args,
