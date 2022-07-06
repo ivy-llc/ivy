@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple, Union, List, Any
 
 # local
 import ivy
@@ -951,8 +951,14 @@ def conv3d_transpose(
 @to_native_arrays_and_back
 @handle_nestable
 def lstm_update(
-    x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
-):
+    x: Union[ivy.Array, ivy.NativeArray],
+    init_h: Union[ivy.Array, ivy.NativeArray],
+    init_c: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[ivy.Array, ivy.NativeArray],
+    recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
