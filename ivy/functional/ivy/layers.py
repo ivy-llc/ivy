@@ -226,6 +226,21 @@ def multi_head_attention(
         [1.3 , 6.01],
         [1.3 , 6.1 ],
         [1.3 , 5.92]]], dev=gpu:0)
+
+    >>> x = ivy.random_normal(shape=(1, 4, 4))
+    >>> context = ivy.random_normal(shape=(1, 4, 4))
+    >>> mask = ivy.random_normal(shape=(1, 4, 4))
+    >>> linear_q = ivy.Linear(4, 4)
+    >>> linear_kv = ivy.Linear(4, 4)
+    >>> linear_out = ivy.Linear(2, 2)
+    >>> result = multi_head_attention(x, scale=1, num_heads=2, context=context, mask=mask, to_q_fn=linear_q, to_kv_fn=linear_kv, to_out_fn=linear_out, to_q_v=None, to_kv_v=None, to_out_v=None)
+    >>> print(result.shape)
+    (1, 4, 2)
+    >>> print(result)
+    ivy.array([[[-0.243 , -0.171 ],
+            [-0.395 , -0.0159],
+            [-0.397 ,  0.0797],
+            [-0.575 ,  0.098 ]]], dev=gpu:0)
     
     With :code:`ivy.NativeArray` input:
 
@@ -249,11 +264,23 @@ def multi_head_attention(
         [1.3 , 6.01],
         [1.3 , 6.1 ],
         [1.3 , 5.92]]], dev=gpu:0)
+    
+    >>> x = ivy.random_normal(shape=(1, 4, 4))
+    >>> context = ivy.random_normal(shape=(1, 4, 4))
+    >>> mask = ivy.random_normal(shape=(1, 4, 4))
+    >>> linear_q = ivy.Linear(4, 4)
+    >>> linear_kv = ivy.Linear(4, 4)
+    >>> linear_out = ivy.Linear(2, 2)
+    >>> result = multi_head_attention(x, scale=1, num_heads=2, context=context, mask=mask, to_q_fn=linear_q, to_kv_fn=linear_kv, to_out_fn=linear_out, to_q_v=None, to_kv_v=None, to_out_v=None)
+    >>> print(result.shape)
+    (1, 4, 2)
+    >>> print(result)
+    ivy.array([[[-0.243 , -0.171 ],
+            [-0.395 , -0.0159],
+            [-0.397 ,  0.0797],
+            [-0.575 ,  0.098 ]]], dev=gpu:0)
 
     With :code:`ivy.NativeArray` input:
-
-
-    With :code:`ivy.Container` input:
 
     >>> x = ivy.native_array([[[0.2, 2., 5.3, 1.2], [2.2, 3., 1.7, 1.2],[4.4, 5.6, 4.1, 6.1],[7.1, 4.2, 1.3, 1.1]]])
     >>> result = ivy.multi_head_attention(x, scale=1, num_heads=2)
