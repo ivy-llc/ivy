@@ -42,8 +42,6 @@ class ContainerWithGradients(ContainerBase):
             a: (list[3], <class ivy.array.Array> shape=[3]),
             b: (list[3], <class ivy.array.Array> shape=[3])
         }
-
-
         """
         return ContainerBase.multi_map_in_static_method(
             "adam_update",
