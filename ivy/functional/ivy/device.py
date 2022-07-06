@@ -61,7 +61,9 @@ class DefaultDevice:
         """
         self._dev = device
 
-    def __enter__(self):
+    def __enter__(
+            self,
+            device: Union[ivy.Device, ivy.NativeDevice]):
         """Enter the runtime context related to the specified device.
 
         Returns
