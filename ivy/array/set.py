@@ -11,8 +11,7 @@ import ivy
 class ArrayWithSet(abc.ABC):
     def unique_counts(
         self: ivy.Array,
-        *,
-        out: Optional[Tuple[ivy.Array, ivy.Array]] = None
+        *
     ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_counts. This method simply 

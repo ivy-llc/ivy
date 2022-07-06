@@ -17,8 +17,7 @@ class ContainerWithSet(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+        *
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_counts. This method simply 
@@ -31,7 +30,7 @@ class ContainerWithSet(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                               b=ivy.array([1,2,1,3,4,1,3]))
-        >>> y = x.static_unique_counts()
+        >>> y = ivy.static_unique_counts(x)
         >>> print(y)
         {
             a: (list[2],<classivy.array.Array>shape=[4]),
@@ -54,8 +53,7 @@ class ContainerWithSet(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        *
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_counts. This method 
