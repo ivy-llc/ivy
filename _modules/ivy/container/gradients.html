@@ -181,6 +181,85 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithGradients"><a class="viewcode-back" href="../../../container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithGradients</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerWithGradients.static_adam_step"><a class="viewcode-back" href="../../../container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients.static_adam_step">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_adam_step</span><span class="p">(</span>
+        <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">        adam_step also applies to this method with minimal changes</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        with :code: &#39;ivy.container&#39; inputs:</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                         b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                               b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">        &gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),\</span>
+<span class="sd">                               b=ivy.array([0.,]))</span>
+<span class="sd">        &gt;&gt;&gt; step = ivy.array([3.4])</span>
+<span class="sd">        &gt;&gt;&gt; beta1 = 0.87</span>
+<span class="sd">        &gt;&gt;&gt; beta2 = 0.976</span>
+<span class="sd">        &gt;&gt;&gt; epsilon = 1e-5</span>
+<span class="sd">        &gt;&gt;&gt; adam_step_delta = ivy.Container.static_adam_step(dcdw,\</span>
+<span class="sd">                                mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">        &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),</span>
+<span class="sd">            b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;adam_update&quot;</span><span class="p">,</span>
+            <span class="n">dcdw</span><span class="p">,</span>
+            <span class="n">mw</span><span class="p">,</span>
+            <span class="n">vw</span><span class="p">,</span>
+            <span class="n">step</span><span class="p">,</span>
+            <span class="n">beta1</span><span class="p">,</span>
+            <span class="n">beta2</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithGradients.adam_step"><a class="viewcode-back" href="../../../container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients.adam_step">[docs]</a>    <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">        adam_step also applies to this method with minimal changes</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        with :code: &#39;ivy.container&#39; inputs:</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                         b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                               b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">        &gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),\</span>
+<span class="sd">                               b=ivy.array([0.,]))</span>
+<span class="sd">        &gt;&gt;&gt; step = ivy.array(1)</span>
+<span class="sd">        &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),</span>
+<span class="sd">            b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_adam_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ContainerWithGradients.static_optimizer_update"><a class="viewcode-back" href="../../../container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients.static_optimizer_update">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_optimizer_update</span><span class="p">(</span>
         <span class="n">w</span><span class="p">,</span>

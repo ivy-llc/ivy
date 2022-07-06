@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="inv" href="inv.html" />
-    <link rel="prev" title="eigh" href="eigh.html" /> 
+    <link rel="next" title="ivy.eigvalsh" href="eigvalsh/eigvalsh_functional.html" />
+    <link rel="prev" title="ivy.Array.eigh" href="eigh/eigh_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -119,7 +119,11 @@
 <li class="toctree-l2"><a class="reference internal" href="det.html">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eigh.html">eigh</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">eigvalsh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">eigvalsh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eigvalsh/eigvalsh_functional.html">ivy.eigvalsh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eigvalsh/eigvalsh_array.html">ivy.Array.eigvalsh</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
@@ -210,8 +214,12 @@
 x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
-square matrices. Must have floating-point data type.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
+square matrices. Must have floating-point data type.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
@@ -238,14 +246,16 @@ square matrices. Must have floating-point data type.</p>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="eigh.html" class="btn btn-neutral float-left" title="eigh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="inv.html" class="btn btn-neutral float-right" title="inv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="eigh/eigh_array.html" class="btn btn-neutral float-left" title="ivy.Array.eigh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eigvalsh/eigvalsh_functional.html" class="btn btn-neutral float-right" title="ivy.eigvalsh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
