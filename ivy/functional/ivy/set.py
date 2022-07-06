@@ -413,8 +413,8 @@ def unique_counts(
     >>> y = ivy.unique_counts(x)
     >>> print(y)
     {
-        a: Tuple([0., 1., 2., 3.],[2,2,1,1]),
-        b: Tuple([1,2,3,4],[3,1,2,1])
+        a: (list[2],<classivy.array.Array>shape=[4]),
+        b: (list[2],<classivy.array.Array>shape=[4])
     }
     """
     return current_backend(x).unique_counts(x)
