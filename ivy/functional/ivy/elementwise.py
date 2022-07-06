@@ -1457,7 +1457,8 @@ def floor(
 
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
-    - If ``x_i`` is ``0``, the result is ``0``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
 
     Parameters
@@ -1525,25 +1526,6 @@ def floor(
         b: ivy.array([3., -5., 0., -2.])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1.5, -5.5, 0.5, -0])
-    >>> y = x.floor()
-    >>> print(y)
-    ivy.array([ 1., -6.,  0.,  0.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, -2.4]), b=ivy.array([3.4, -4.2, 1.2]))
-    >>> y = x.floor()
-    >>> print(y)
-    {
-        a: ivy.array([0., 1., -3.]),
-        b: ivy.array([3., -5., 1.])
-    }
     """
     return current_backend(x).floor(x, out=out)
 
@@ -2469,6 +2451,233 @@ def not_equal(
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.not_equal.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, False, True, True])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, True, True, True])
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([1., 0., 0., 1.])
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.not_equal(x1, x2, out=x1)
+    >>> print(y)
+    ivy.array([1, 0, 0, 1])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 2])
+    >>> x2 = ivy.array([1, 2])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, False])
+
+    >>> x1 = ivy.native_array([1, -1])
+    >>> x2 = ivy.array([0, 1])
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, True])
+
+    >>> x1 = ivy.native_array([1, -1, 1, -1])
+    >>> x2 = ivy.native_array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([1., 0., 0., 1.])
+
+    >>> x1 = ivy.native_array([1, 2, 3, 4])
+    >>> x2 = ivy.native_array([0, 2, 3, 4])
+    >>> y = ivy.zeros(4)
+    >>> ivy.not_equal(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([1., 0., 0., 0.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 0, 3]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False]),
+        c: ivy.array([False, False, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.native_array([0, 1, 0]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1.0, 2.0, 4.0]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.native_array([1.1, 2.1, 3.1]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([True, True, True]),
+        c: ivy.array([False, False, False])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = ivy.not_equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y = x1.not_equal(x2, out=x2)
+    >>> print(y)
+    ivy.array([0, 0, 1, 1])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = x1.not_equal(x2, out=x2)
+    >>> print(y)
+    ivy.array([1, 1, 1, 1])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = x1.not_equal(x2, out=x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = x1.not_equal(x2, out=x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y = (x1 != x2)
+    >>> print(y)
+    ivy.array([False, False, True, True])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = (x1 != x2)
+    >>> print(y)
+    ivy.array([True, True, True, True])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = (x1 != x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = (x1 != x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = (x1 != x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, True, False])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = (x1 != x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
     """
     return current_backend(x1, x2).not_equal(x1, x2, out=out)
 
@@ -2931,6 +3140,71 @@ def sqrt(
         an array containing the square root of each element in ``x``. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([0, 4., 8.])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([0., 2., 2.83])
+
+    >>> x = ivy.array([1, 2., 4.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sqrt(x, out=y)
+    ivy.array([1., 1.41, 2.])
+
+    >>> X = ivy.array([40., 24., 100.])
+    >>> ivy.sqrt(x, out=x)
+    >>> ivy.array([6.32455532, 4.89897949, 10.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-50., 1000., 34.])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([nan, 31.6, 5.83])
+
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    {
+        a: ivy.array([6.63, 7.48, 13.]),
+        b: ivy.array([[7., 1.],
+                      [0., 4.47]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([[1., 2.],  [3., 4.]])
+    >>> y = x.sqrt()
+    >>> print(y)
+    ivy.array([[1.  , 1.41],
+               [1.73, 2.  ]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
+    >>> y = x.sqrt()
+    >>> print(y)
+    {
+        a: ivy.array([0., 10., 5.2]),
+        b: ivy.array([9.64, 7.35, 5.])
+    }
+    
     """
     return current_backend(x).sqrt(x, out=out)
 
@@ -3165,21 +3439,81 @@ def tanh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array with the hyperbolic tangent of the elements of x.
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+1``.
+    - If ``x_i`` is ``-infinity``, the result is ``-1``.
 
     Parameters
     ----------
     x
-        Input array.
+        input array whose elements each represent a hyperbolic angle. Should have a real-valued floating-point data
+        type.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
-        A new array with the hyperbolic tangent of the elements of x.
+        an array containing the hyperbolic tangent of each element in ``x``. The returned array must have a real-valued
+        floating-point data type determined by :ref:`type-promotion`.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([0., 0.762, 0.964])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.tanh(x, out=y)
+    >>> print(y)
+    ivy.array([0.462, -0.604, 0.984])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                      [-4.4, -5.5, -6.6]])
+    >>> ivy.tanh(x, out=x)
+    >>> print(x)
+    ivy.array([[0.8, 0.976, 0.997],
+              [-1., -1., -1.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([0., 0.762, 0.964])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.762, 0.964]),
+        b: ivy.array([0.995, 0.999, 1.])
+    }
     """
     return current_backend(x).tanh(x, out=out)
 

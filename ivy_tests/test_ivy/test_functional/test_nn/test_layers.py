@@ -62,6 +62,7 @@ def test_linear(
         instance_method,
         fw,
         "linear",
+        test_rtol=1e-03,
         x=x,
         weight=weight,
         bias=bias,
@@ -729,15 +730,15 @@ def test_conv3d_transpose(
 
 # lstm
 @given(
-    b=st.integers(min_value=1, max_value=5),
+    b=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
     t=st.integers(min_value=1, max_value=5),
     input_channel=st.integers(min_value=1, max_value=5),
     hidden_channel=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(st.booleans(), 7),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 7),
+    container=helpers.list_of_length(st.booleans(), 7),
     instance_method=st.booleans(),
 )
 def test_lstm(
@@ -754,17 +755,33 @@ def test_lstm(
     fw,
     device,
 ):
+    dtype = [dtype] * 7
+
     # smoke test
-    x = ivy.asarray(
-        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channel),
-        dtype=dtype,
-    )
-    init_h = ivy.ones([b, hidden_channel])
-    init_c = ivy.ones([b, hidden_channel])
-    kernel = ivy.variable(ivy.ones([input_channel, 4 * hidden_channel])) * 0.5
+    if fw == 'torch' and device == 'cpu' and 'float16' in dtype:
+        # "sigmoid_cpu" not implemented for 'Half'
+        return
+
+    x = np.random.uniform(size=b + [t] + [input_channel]).astype(dtype[0])
+    init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
+    init_c = np.ones(b + [hidden_channel]).astype(dtype[2])
+
+    kernel = np.array(
+        np.ones([input_channel, 4 * hidden_channel])
+    ).astype(dtype[3]) * 0.5
+
     recurrent_kernel = (
-        ivy.variable(ivy.ones([hidden_channel, 4 * hidden_channel])) * 0.5
+        np.array(
+            np.ones([hidden_channel, 4 * hidden_channel])
+        ).astype(dtype[4]) * 0.5
     )
+
+    bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
+
+    recurrent_bias = np.random.uniform(
+        size=[4 * hidden_channel]
+    ).astype(dtype[6])
+
     helpers.test_function(
         dtype,
         as_variable,
@@ -780,4 +797,6 @@ def test_lstm(
         init_c=init_c,
         kernel=kernel,
         recurrent_kernel=recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias
     )
