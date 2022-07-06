@@ -615,6 +615,22 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = x.floor()
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., -2.]),
+            b: ivy.array([5., -4., 5.])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.floor(x_) if ivy.is_array(x_) else x_,
@@ -1415,23 +1431,70 @@ class ContainerWithElementwise(ContainerBase):
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    @staticmethod
+    def static_tanh(
+            x: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_tanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.76, 0.96]),
+            b: ivy.array([0.995, 0.999, 0.9999])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "tanh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def tanh(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.tanh(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = x.tanh()
+        >>> print(y)
+        {
+            a:ivy.array([0., 0.762, 0.964]),
+            b:ivy.array([0.995, 0.999, 1.])
+        }
+        """
+        return self.static_tanh(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def trunc(
