@@ -1,13 +1,27 @@
 # global
 import abc
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List, Union
+
 # local
 import ivy
 
-# ToDo: implement all methods here as public instance methods
-
 
 class ArrayWithDataTypes(abc.ABC):
+    def astype(
+        self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
+    ) -> ivy.Array:
+        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+
+    def broadcast_arrays(
+        self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
+    ) -> List[ivy.Array]:
+        return ivy.broadcast_arrays(self._data, *arrays)
+
+    def broadcast_to(
+        self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        return ivy.broadcast_to(x=self._data, shape=shape, out=out)
+
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:
         """
         `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps
@@ -25,40 +39,23 @@ class ArrayWithDataTypes(abc.ABC):
         """
         return ivy.can_cast(from_=self._data, to=to)
 
-    def broadcast_to(
-        self: ivy.Array,
-        shape: Tuple[int, ...],
-        out: Optional[ivy.Array] = None
-    ):
-        return ivy.broadcast_to(x=self._data, shape= shape, out=out)
-
     def dtype(self: ivy.Array, as_native: Optional[bool] = False) -> ivy.Dtype:
         return ivy.dtype(self._data, as_native)
 
-    def astype(
-        self: ivy.Array,
-        dtype: ivy.Dtype,
-        copy: bool = True,
-        out: ivy.Array = None
-    ) -> ivy.Array:
-        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+    def finfo(self: ivy.Array):
+        return ivy.finfo(self._data)
 
-    def dtype_bits(self: ivy.Array) -> int:
-        return ivy.dtype_bits(self._dtype)
-
-    def as_ivy_dtype(self: ivy.Array) -> ivy.Dtype:
-        return ivy.as_ivy_dtype(self._dtype)
-
-    def as_native_dtype(self: ivy.Array) -> ivy.NativeDtype:
-        return ivy.as_native_dtype(self._dtype)
-
-    def is_int_dtype(self: ivy.Array) -> bool:
-        return ivy.is_int_dtype(self._data)
+    def iinfo(self: ivy.Array):
+        return ivy.iinfo(self._data)
 
     def is_float_dtype(self: ivy.Array) -> bool:
         return ivy.is_float_dtype(self._data)
 
+    def is_int_dtype(self: ivy.Array) -> bool:
+        return ivy.is_int_dtype(self._data)
 
-
-
-
+    def result_type(
+        self: ivy.Array,
+        *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+    ) -> ivy.Dtype:
+        return ivy.result_type(self._data, *arrays_and_dtypes)
