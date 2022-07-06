@@ -144,6 +144,18 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.expm1(self._data, out=out)
 
     def floor(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([5.5, -2.5, 1.5, -0])
+        >>> y = x.floor()
+        >>> print(y)
+        ivy.array([ 5., -3.,  1.,  0.])
+        """
         return ivy.floor(self._data, out=out)
 
     def floor_divide(
