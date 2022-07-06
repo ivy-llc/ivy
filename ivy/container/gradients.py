@@ -35,8 +35,8 @@ class ContainerWithGradients(ContainerBase):
         >>> beta1 = 0.87
         >>> beta2 = 0.976
         >>> epsilon = 1e-5
-        >>> adam_step_delta = ivy.Container.static_adam_step(\
-            dcdw, mw, vw, step, beta1, beta2, epsilon)
+        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw,\
+                                mw, vw, step, beta1, beta2, epsilon)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),
@@ -80,10 +80,7 @@ class ContainerWithGradients(ContainerBase):
         >>> vw = ivy.Container(a=ivy.array([0.,]),\
                                b=ivy.array([0.,]))
         >>> step = ivy.array([3.4])
-        >>> beta1 = 0.87
-        >>> beta2 = 0.976
-        >>> epsilon = 1e-5
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),
