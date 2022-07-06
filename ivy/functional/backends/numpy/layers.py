@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple
 
 
 def conv1d(
