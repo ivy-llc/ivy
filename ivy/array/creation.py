@@ -65,9 +65,14 @@ class ArrayWithCreation(abc.ABC):
         return ivy.empty_like(self._data, dtype=dtype, device=device, out=out)
 
     def meshgrid(
-        *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
+        self: ivy.Array,
+        *arrays: Union[ivy.Array, ivy.NativeArray],
+        indexing: Optional[str] = "xy",
     ) -> List[ivy.Array]:
-        return ivy.meshgrid(*arrays, indexing=indexing)
+        list = [self]
+        for array in arrays:
+            list.append(array)
+        return ivy.meshgrid(list, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
