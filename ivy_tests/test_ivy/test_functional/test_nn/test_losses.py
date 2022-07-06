@@ -30,7 +30,7 @@ import ivy_tests.test_ivy.helpers as helpers
         min_dim_size=2,
     ),
     axis=helpers.integers(min_value=-1, max_value=0),
-    epsilon=st.floats(min_value=0, max_value=0.5, exclude_max=True),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
@@ -54,6 +54,8 @@ def test_cross_entropy(
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
+    true = true[:length]
+    pred = pred[:length]
     helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,
@@ -64,8 +66,8 @@ def test_cross_entropy(
         instance_method,
         fw,
         "cross_entropy",
-        true=np.asarray(true[:length], dtype=true_dtype),
-        pred=np.asarray(pred[:length], dtype=pred_dtype),
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
         test_rtol=1e-04,
@@ -94,7 +96,7 @@ def test_cross_entropy(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    epsilon=st.floats(min_value=0, max_value=0.5, exclude_max=True),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
@@ -117,6 +119,8 @@ def test_binary_cross_entropy(
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
+    true = true[:length]
+    pred = pred[:length]
     helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,
@@ -127,8 +131,8 @@ def test_binary_cross_entropy(
         instance_method,
         fw,
         "binary_cross_entropy",
-        true=np.asarray(true[:length], dtype=true_dtype),
-        pred=np.asarray(pred[:length], dtype=pred_dtype),
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
         epsilon=epsilon,
     )
 
@@ -159,7 +163,7 @@ def test_binary_cross_entropy(
         min_dim_size=2,
     ),
     axis=helpers.integers(min_value=-1, max_value=0),
-    epsilon=st.floats(min_value=0, max_value=0.5, exclude_max=True),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
