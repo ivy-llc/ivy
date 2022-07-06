@@ -186,7 +186,23 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.asinh. This method simply wraps the
+        function, and so the docstring for ivy.asinh also applies to this method
+        with minimal changes.
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),\
+                            b=ivy.array([3.4, -5.3, -0, -2.8]))
+        >>> y = ivy.Container.static_asinh(x)
+        >>> print(y)
+        {
+            a: ivy.array([1.19, 0., -1.97]),
+            b: ivy.array([1.94, -2.37, 0., -1.75])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "asinh",
             x,
@@ -206,6 +222,22 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.asinh. This method simply wraps the
+        function, and so the docstring for ivy.asinh also applies to this method
+        with minimal changes.
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),\
+                            b=ivy.array([4.5, -2.4, -1.5]))
+        >>> y = x.asinh()
+        >>> print(y)
+        {
+            a: ivy.array([-0.881, 2.02, -2.33]),
+            b: ivy.array([2.21, -1.61, -1.19])
+        }
+        """
         return self.static_asinh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
