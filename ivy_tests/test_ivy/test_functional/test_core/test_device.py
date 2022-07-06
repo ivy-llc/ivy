@@ -597,10 +597,10 @@ def test_profiler(device, call):
 
 @given(num=st.integers(0, 5))
 def test_num_arrays_on_dev(num, device):
-    arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
+    arrays = [ivy.array(np.random.uniform(size=2).tolist(), device=device)
+              for _ in range(num)]
     assert ivy.num_ivy_arrays_on_dev(device) == num
-    # to satisfy lint requirements
-    del arrays
+    arrays.clear()
 
 
 @given(num=st.integers(0, 5))
