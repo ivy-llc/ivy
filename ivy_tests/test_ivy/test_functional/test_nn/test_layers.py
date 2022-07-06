@@ -119,31 +119,33 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
     container=helpers.list_of_length(st.booleans(), 5),
     instance_method=st.booleans(),
 )
-def test_scaled_dot_product_attention(batch_shape,
-                                      num_queries,
-                                      num_keys,
-                                      feat_dim,
-                                      dtype,
-                                      as_variable,
-                                      num_positional_args,
-                                      with_out,
-                                      native_array,
-                                      container,
-                                      instance_method,
-                                      fw,
-                                      device):
+def test_scaled_dot_product_attention(
+    batch_shape,
+    num_queries,
+    num_keys,
+    feat_dim,
+    dtype,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
 
     dtype = [dtype] * 5
-    if fw == 'torch' and 'float16' in dtype:
+    if fw == "torch" and "float16" in dtype:
         return
-    q = np.random.uniform(
-        size=batch_shape + [num_queries] + [feat_dim]
-    ).astype(dtype[0])
+    q = np.random.uniform(size=batch_shape + [num_queries] + [feat_dim]).astype(
+        dtype[0]
+    )
     k = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[1])
     v = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[2])
-    mask = np.random.uniform(
-        size=batch_shape + [num_queries] + [num_keys]
-    ).astype(dtype[3])
+    mask = np.random.uniform(size=batch_shape + [num_queries] + [num_keys]).astype(
+        dtype[3]
+    )
     scale = np.random.uniform(size=[1]).astype(dtype[4])
 
     helpers.test_function(
@@ -160,7 +162,7 @@ def test_scaled_dot_product_attention(batch_shape,
         k=k,
         v=v,
         scale=scale,
-        mask=mask
+        mask=mask,
     )
 
 
