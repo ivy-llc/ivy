@@ -2472,7 +2472,7 @@ def not_equal(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
-    input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``. 
+    input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
