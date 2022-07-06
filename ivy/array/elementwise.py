@@ -58,10 +58,10 @@ class ArrayWithElementwise(abc.ABC):
         with minimal changes.
         Examples
         --------
-        >>> x = ivy.array([1, 2, 3])
+        >>> x = ivy.array([-1, 0, 3])
         >>> y = x.asinh()
         >>> print(y)
-        ivy.array([0.881, 1.44 , 1.82 ])
+        ivy.array([-0.881,  0.   ,  1.82 ])
         """
         return ivy.asinh(self._data, out=out)
 
