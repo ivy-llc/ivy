@@ -310,7 +310,6 @@ def adam_step(
          ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),
          ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05]))
 
-
     with mixture of both :code:`ivy.NativeArray`  and :code:'ivy.Array' inputs:
 
     >>> dcdw = ivy.array([1, 2, 3])
@@ -336,16 +335,16 @@ def adam_step(
     >>> epsilon = 1e-5
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
     >>> print(adam_step_delta)
-        ({
-            a: ivy.array([0., 0.626, 0.626]),
-            b: ivy.array([0.626, 0.626, 0.626])
-        }, {
-            a: ivy.array([0., 0.13, 0.26]),
-            b: ivy.array([0.39, 0.52, 0.65])
-        }, {
-            a: ivy.array([0., 0.024, 0.096]),
-            b: ivy.array([0.216, 0.384, 0.6])
-        })
+    ({
+        a: ivy.array([0., 0.626, 0.626]),
+        b: ivy.array([0.626, 0.626, 0.626])
+    }, {
+        a: ivy.array([0., 0.13, 0.26]),
+        b: ivy.array([0.39, 0.52, 0.65])
+    }, {
+        a: ivy.array([0., 0.024, 0.096]),
+        b: ivy.array([0.216, 0.384, 0.6])
+    })
     """
     step = float(ivy.to_scalar(step))
     mw = beta1 * mw + (1 - beta1) * dcdw
