@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.matrix_transpose" href="matrix_transpose/matrix_transpose_functional.html" />
-    <link rel="prev" title="ivy.Array.matrix_rank" href="matrix_rank/matrix_rank_array.html" /> 
+    <link rel="next" title="outer" href="outer.html" />
+    <link rel="prev" title="matrix_rank" href="matrix_rank.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -125,11 +125,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_power.html">matrix_power</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_rank.html">matrix_rank</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_transpose</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="matrix_transpose/matrix_transpose_functional.html">ivy.matrix_transpose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="matrix_transpose/matrix_transpose_array.html">ivy.Array.matrix_transpose</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pinv.html">pinv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
@@ -213,8 +209,12 @@
 <dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
-<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
@@ -241,16 +241,14 @@
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="matrix_rank/matrix_rank_array.html" class="btn btn-neutral float-left" title="ivy.Array.matrix_rank" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="matrix_transpose/matrix_transpose_functional.html" class="btn btn-neutral float-right" title="ivy.matrix_transpose" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="matrix_rank.html" class="btn btn-neutral float-left" title="matrix_rank" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="outer.html" class="btn btn-neutral float-right" title="outer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

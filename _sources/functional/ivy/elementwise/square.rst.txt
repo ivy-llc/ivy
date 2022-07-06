@@ -25,14 +25,3 @@ square
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: square
-
-   square/square_functional.rst
-   square/square_array.rst
-   square/square_container.rst
-

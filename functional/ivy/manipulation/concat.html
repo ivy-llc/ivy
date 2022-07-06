@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.concat" href="concat/concat_functional.html" />
+    <link rel="next" title="expand_dims" href="expand_dims.html" />
     <link rel="prev" title="Manipulation" href="../manipulation.html" /> 
 </head>
 
@@ -116,12 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../manipulation.html">Manipulation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">concat</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="concat/concat_functional.html">ivy.concat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="concat/concat_array.html">ivy.Array.concat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="concat/concat_container.html">ivy.Container.concat</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">concat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="permute_dims.html">permute_dims</a></li>
@@ -209,6 +204,8 @@
 <li><p><strong>xs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]]) – The input arrays must have the same shape, except in the dimension corresponding
 to axis (the first, by default).</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The axis along which the arrays will be joined. Default is -1. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -254,8 +251,6 @@ to axis (the first, by default).</p></li>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
@@ -263,7 +258,7 @@ to axis (the first, by default).</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../manipulation.html" class="btn btn-neutral float-left" title="Manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="concat/concat_functional.html" class="btn btn-neutral float-right" title="ivy.concat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="expand_dims.html" class="btn btn-neutral float-right" title="expand_dims" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
