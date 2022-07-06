@@ -24,6 +24,6 @@ class ArrayWithSet(abc.ABC):
         >>> x = ivy.array([0., 1., 3. , 2. , 1. , 0.])
         >>> y = x.unique_counts()
         >>> print(y)
-        Tuple([0., 1., 2., 3.],[2,2,1,1])
+        uc(values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])) 
         """
         return ivy.unique_counts(self._data)
