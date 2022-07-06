@@ -11,12 +11,12 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithActivations(ContainerBase):
     def relu(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
@@ -30,17 +30,17 @@ class ContainerWithActivations(ContainerBase):
         )
 
     def leaky_relu(
-            self: ivy.Container,
-            alpha: Optional[ivy.Container] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        alpha: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_ , _: ivy.leaky_relu(x_,alpha) if ivy.is_array(x_) else x_, 
+                lambda x_, _: ivy.leaky_relu(x_, alpha) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -50,17 +50,17 @@ class ContainerWithActivations(ContainerBase):
         )
 
     def gelu(
-            self: ivy.Container,
-            approximate:Optional[bool] = True,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        approximate: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_ , _: ivy.gelu(x_,approximate) if ivy.is_array(x_) else x_ ,
+                lambda x_, _: ivy.gelu(x_, approximate) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -70,12 +70,12 @@ class ContainerWithActivations(ContainerBase):
         )
 
     def tanh(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
@@ -89,12 +89,12 @@ class ContainerWithActivations(ContainerBase):
         )
 
     def sigmoid(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
@@ -107,19 +107,18 @@ class ContainerWithActivations(ContainerBase):
             out,
         )
 
-
     def softmax(
-            self: ivy.Container,
-            axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.softmax(x_,axis) if ivy.is_array(x_) else x_,
+                lambda x_, _: ivy.softmax(x_, axis) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -129,12 +128,12 @@ class ContainerWithActivations(ContainerBase):
         )
 
     def softplus(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(

@@ -13,11 +13,11 @@ except (ImportError, ModuleNotFoundError):
 
 
 def relu(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.asarray(np.maximum(x, 0, out=out),dtype=x.dtype)
+    return np.asarray(np.maximum(x, 0, out=out), dtype=x.dtype)
 
 
 def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2) -> np.ndarray:
-    return np.asarray(np.where(x > 0, x, x * alpha),x.dtype)
+    return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
 
 
 def gelu(x, approximate: Optional[bool] = True):

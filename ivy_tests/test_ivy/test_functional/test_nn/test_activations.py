@@ -33,7 +33,7 @@ def test_relu(
 ):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
-        return  
+        return
     helpers.test_function(
         dtype,
         as_variable,
@@ -108,7 +108,7 @@ def test_gelu(
 ):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
-        return    
+        return
     helpers.test_function(
         dtype,
         as_variable,
@@ -119,9 +119,11 @@ def test_gelu(
         container,
         instance_method,
         "gelu",
-        x = np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
+
+
 # tanh
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -194,9 +196,9 @@ def test_sigmoid(
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes,min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
-    axis=st.integers(-1,0),
+    axis=st.integers(-1, 0),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -225,8 +227,8 @@ def test_softmax(
         container,
         instance_method,
         "softmax",
-        x = np.asarray(x, dtype=dtype),
-        axis = axis
+        x=np.asarray(x, dtype=dtype),
+        axis=axis,
     )
 
 
