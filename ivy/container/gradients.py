@@ -73,14 +73,11 @@ class ContainerWithGradients(ContainerBase):
         Examples
         --------
         with :code: 'ivy.container' inputs:
-        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                         b=ivy.array([3., 4., 5.]))
-        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                               b=ivy.array([0., 0., 0.]))
-        >>> vw = ivy.Container(a=ivy.array([0.,]),\
-                               b=ivy.array([0.,]))
+        >>> dcdw = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> mw = ivy.array([0.,])
+        >>> vw = ivy.array([0.,])
         >>> step = ivy.array([3.4])
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
+        >>> adam_step_delta= dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
         {
             a: (list[3], <class ivy.array.Array> shape=[3]),
