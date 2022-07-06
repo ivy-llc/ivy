@@ -3412,20 +3412,83 @@ def tan(
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array with the hyperbolic tangent of the elements of x.
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+1``.
+    - If ``x_i`` is ``-infinity``, the result is ``-1``.
 
     Parameters
     ----------
     x
-        Input array.
+        input array whose elements each represent a hyperbolic angle. Should have a real-valued floating-point data
+        type.
+    out
+        optional output, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
     ret
-        A new array with the hyperbolic tangent of the elements of x.
+        an array containing the hyperbolic tangent of each element in ``x``. The returned array must have a real-valued
+        floating-point data type determined by :ref:`type-promotion`.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([0., 0.762, 0.964])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.tanh(x, out=y)
+    >>> print(y)
+    ivy.array([0.462, -0.604, 0.984])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                      [-4.4, -5.5, -6.6]])
+    >>> ivy.tanh(x, out=x)
+    >>> print(x)
+    ivy.array([[0.8, 0.976, 0.997],
+              [-1., -1., -1.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    ivy.array([0., 0.762, 0.964])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.762, 0.964]),
+        b: ivy.array([0.995, 0.999, 1.])
+    }
     """
     return current_backend(x).tanh(x, out=out)
 
