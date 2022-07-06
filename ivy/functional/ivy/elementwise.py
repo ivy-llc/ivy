@@ -93,28 +93,6 @@ def abs(
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([2.6, -6.6, 1.6, -0])
-    >>> y = x.abs()
-    >>> print(y)
-    ivy.array([ 2.6, 6.6, 1.6, 0.])
-
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
-                        b=ivy.array([4.5, -5.3, -2.3]))
-    >>> y = x.abs()
-    >>> print(y)
-    {
-        a: ivy.array([1.6, 2.6, 3.5]),
-        b: ivy.array([4.5, 5.3, 2.3])
-    }
-
     """
     return current_backend(x).abs(x, out=out)
 
