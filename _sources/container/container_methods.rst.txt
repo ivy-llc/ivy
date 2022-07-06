@@ -76,6 +76,7 @@ Container methods
    container_methods/subtract.rst
    container_methods/static_tan.rst
    container_methods/tan.rst
+   container_methods/static_tanh.rst
    container_methods/tanh.rst
    container_methods/trunc.rst
    container_methods/erf.rst

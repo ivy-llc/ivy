@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="fomaml_step" href="meta/fomaml_step.html" />
-    <link rel="prev" title="zero_pad functional" href="manipulation/zero_pad/zero_pad_functional.html" /> 
+    <link rel="prev" title="zero_pad" href="manipulation/zero_pad.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -197,7 +197,7 @@ optimized in the outer loop.</p></li>
 <li><p><strong>variables</strong> (<a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Variables to be optimized during the meta step</p></li>
 <li><p><strong>inner_grad_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of gradient steps to perform during the inner loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate of the inner loop.</p></li>
-<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7ffabab05670&gt;</span></code>)
+<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7feac8a16700&gt;</span></code>)
 Default is ivy.gradient_descent_update.</p></li>
 <li><p><strong>inner_batch_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – Function to apply to the task sub-batch, before passing to the inner_cost_fn. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 Default is None.</p></li>
@@ -248,7 +248,7 @@ optimized in the outer loop.</p></li>
 <li><p><strong>variables</strong> (<a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Variables to be optimized during the meta step</p></li>
 <li><p><strong>inner_grad_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of gradient steps to perform during the inner loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate of the inner loop.</p></li>
-<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7ffabab05670&gt;</span></code>)
+<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7feac8a16700&gt;</span></code>)
 Default is ivy.gradient_descent_update.</p></li>
 <li><p><strong>inner_batch_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – Function to apply to the task sub-batch, before passing to the inner_cost_fn. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 Default is None.</p></li>
@@ -296,7 +296,7 @@ variables</p></li>
 <li><p><strong>variables</strong> (<a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Variables to be optimized</p></li>
 <li><p><strong>inner_grad_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of gradient steps to perform during the inner loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate of the inner loop.</p></li>
-<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7ffabab05670&gt;</span></code>)
+<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7feac8a16700&gt;</span></code>)
 Default is ivy.gradient_descent_update.</p></li>
 <li><p><strong>batched</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to batch along the time dimension, and run the meta steps in batch. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 Default is True.</p></li>
@@ -325,7 +325,7 @@ batch by default.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="manipulation/zero_pad/zero_pad_functional.html" class="btn btn-neutral float-left" title="zero_pad functional" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="manipulation/zero_pad.html" class="btn btn-neutral float-left" title="zero_pad" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="meta/fomaml_step.html" class="btn btn-neutral float-right" title="fomaml_step" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
