@@ -69,9 +69,9 @@ class ArrayWithCreation(abc.ABC):
         *arrays: Union[ivy.Array, ivy.NativeArray],
         indexing: Optional[str] = "xy",
     ) -> List[ivy.Array]:
-        list = [self]
+        list = [self._data]
         for array in arrays:
-            list.append(array)
+            list.append(array._data)
         return ivy.meshgrid(*list, indexing=indexing)
 
     def from_dlpack(
