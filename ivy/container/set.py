@@ -27,15 +27,15 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :code:`ivy.Container` static instance method:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                               b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.static_unique_counts()
         >>> print(y)
         {
-            a: Tuple([0., 1., 2., 3.],[2,2,1,1]),
-            b: Tuple([1,2,3,4],[3,1,2,1])
+            a: (list[2],<classivy.array.Array>shape=[4]),
+            b: (list[2],<classivy.array.Array>shape=[4])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -64,15 +64,15 @@ class ContainerWithSet(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :code:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                               b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_counts()
         >>> print(y)
         {
-            a: Tuple([0., 1., 2., 3.],[2,2,1,1]),
-            b: Tuple([1,2,3,4],[3,1,2,1])
+            a: (list[2],<classivy.array.Array>shape=[4]),
+            b: (list[2],<classivy.array.Array>shape=[4])
         }
         """
         return self.static_unique_counts(
