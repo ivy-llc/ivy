@@ -173,7 +173,9 @@ def multi_head_attention(
     to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+):
 
     """Applies multi-head attention to inputs x.
 
