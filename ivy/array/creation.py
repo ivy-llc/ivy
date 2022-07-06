@@ -72,7 +72,7 @@ class ArrayWithCreation(abc.ABC):
         list = [self]
         for array in arrays:
             list.append(array)
-        return ivy.meshgrid(list, indexing=indexing)
+        return ivy.meshgrid(*list, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
