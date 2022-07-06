@@ -17,8 +17,10 @@ import ivy.functional.backends.torch as ivy_torch
             )
         ),
         2,
+        max_value=1000,
+        allow_inf=False,
     ),
-    alpha=st.floats(),
+    alpha=st.floats(max_value=1000),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
