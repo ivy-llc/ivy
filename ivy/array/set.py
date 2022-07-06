@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple
+from typing import Tuple
 
 # local
 import ivy
@@ -26,4 +26,4 @@ class ArrayWithSet(abc.ABC):
         >>> print(y)
         Tuple([0., 1., 2., 3.],[2,2,1,1])
         """
-        return ivy.unique_counts(self._data, out=out)
+        return ivy.unique_counts(self._data)
