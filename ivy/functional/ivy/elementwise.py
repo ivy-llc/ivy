@@ -90,7 +90,7 @@ def abs(
     >>> print(y)
     {
         a: ivy.array([0., 2.6, 3.5]),
-        b: ivy.array([4.5, 5.3, 0, 2.3])
+        b: ivy.array([4.5, 5.3, 0., 2.3])
     }
 
     Instance Method Examples
@@ -109,7 +109,7 @@ def abs(
     >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
     >>> y = x.abs()
     >>> print(y)
-    ivy.array([ 0., 0., 2.6, 1., 1., 3.6])
+    ivy.array([ 0.0000, 0.0000, 2.6000, 1.0000, 1.0000, 3.6000])
 
     Using :code:`ivy.Container` instance method:
 
