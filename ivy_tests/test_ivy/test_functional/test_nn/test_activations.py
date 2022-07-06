@@ -32,9 +32,8 @@ def test_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
     if fw == "torch" and dtype == "float16":
-        return
+        return  
     helpers.test_function(
         dtype,
         as_variable,
@@ -109,8 +108,7 @@ def test_gelu(
 ):
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
-        return
-    x = np.asarray(x, dtype=dtype)
+        return    
     helpers.test_function(
         dtype,
         as_variable,
@@ -217,7 +215,6 @@ def test_softmax(
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
         return
-    x = np.asarray(x, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
