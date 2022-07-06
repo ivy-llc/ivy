@@ -89,4 +89,4 @@ class ArrayWithCreation(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.NativeArray:
-        return ivy.to_native(ivy.asarray(self._data, dtype=dtype, device=device))
+        return ivy.to_native(self._data, dtype=dtype, device=device)
