@@ -55,7 +55,7 @@ def abs(
         array must have the same data type as ``x``.
 
     Examples
-    -------------------
+    --------
 
     With :code:`ivy.Array` input:
 
