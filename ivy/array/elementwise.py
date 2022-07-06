@@ -26,7 +26,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([2.6, -6.6, 1.6, -0])
         >>> y = x.abs()
         >>> print(y)
-        ivy.array([ 2.6, 6.6, 1.6, 0])
+        ivy.array([ 2.6, 6.6, 1.6, 0.])
         """
         return ivy.abs(self, out=out)
 

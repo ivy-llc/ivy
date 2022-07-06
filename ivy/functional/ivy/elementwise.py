@@ -67,7 +67,7 @@ def abs(
     >>> x = ivy.array([3.7, -7.7, 0, -2, -0])
     >>> y = ivy.abs(x)
     >>> print(y)
-    ivy.array([ 3.7, 7.7, 0, 2, 0])
+    ivy.array([ 3.7, 7.7, 0., 2., 0.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
     >>> ivy.abs(x, out=x)
@@ -80,7 +80,7 @@ def abs(
     >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
     >>> y = ivy.abs(x)
     >>> print(y)
-    ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
+    ivy.array([ 0., 0., 2.6, 1., 1., 3.6])
 
     With :code:`ivy.Container` input:
 
@@ -101,7 +101,7 @@ def abs(
     >>> x = ivy.array([2.6, -6.6, 1.6, -0])
     >>> y = x.abs()
     >>> print(y)
-    ivy.array([ 2.6, 6.6, 1.6, 0])
+    ivy.array([ 2.6, 6.6, 1.6, 0.])
 
 
     With :code:`ivy.NativeArray` instance method:
@@ -109,7 +109,7 @@ def abs(
     >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
     >>> y = x.abs()
     >>> print(y)
-    ivy.array([ 0, 0, 2.6, 1, 1, 3.6])
+    ivy.array([ 0., 0., 2.6, 1., 1., 3.6])
 
     Using :code:`ivy.Container` instance method:
 
