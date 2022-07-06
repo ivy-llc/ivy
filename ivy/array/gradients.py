@@ -35,4 +35,4 @@ class ArrayWithGradients(abc.ABC):
             ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),
             ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))
         """
-        return ivy.adam_step(self._data, mw, vw, step, beta1, beta2, epsilon)
+        return ivy.adam_step(self, mw, vw, step, beta1, beta2, epsilon)
