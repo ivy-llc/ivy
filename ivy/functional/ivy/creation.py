@@ -28,9 +28,9 @@ def arange(
     start: Number,
     stop: Optional[Number] = None,
     step: Number = 1,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being
@@ -94,7 +94,6 @@ def arange(
 @handle_nestable
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -139,9 +138,9 @@ def asarray(
 @handle_nestable
 def zeros(
     shape: Union[int, Tuple[int], List[int]],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with zeros.
@@ -193,9 +192,9 @@ def zeros(
 @handle_nestable
 def ones(
     shape: Union[int, Tuple[int], List[int]],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ones.
@@ -247,9 +246,9 @@ def ones(
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     fill_value: Union[int, float],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
@@ -307,9 +306,9 @@ def full_like(
 @handle_nestable
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ones and having the same shape as an input array
@@ -361,9 +360,9 @@ def ones_like(
 @handle_nestable
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with zeros and having the same ``shape`` as an input
@@ -413,7 +412,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -454,7 +453,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -462,7 +461,7 @@ def triu(
     ----------
     x
         input array having shape (..., M, N) and whose innermost two dimensions form MxN
-        matrices.
+        matrices.    *,
     k
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
@@ -498,9 +497,9 @@ def triu(
 @handle_nestable
 def empty(
     shape: Union[int, Tuple[int], List[int]],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a new array of given shape and type, filled with zeros.
@@ -543,9 +542,9 @@ def empty(
 @handle_nestable
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
@@ -591,9 +590,9 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.
@@ -646,9 +645,9 @@ def linspace(
     num: int,
     axis: int = None,
     endpoint: bool = True,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given
@@ -797,9 +796,9 @@ def meshgrid(
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array having a specified ``shape`` and filled with ``fill_value``.
@@ -856,6 +855,7 @@ def full(
 @handle_nestable
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
@@ -902,7 +902,6 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
@@ -941,8 +940,8 @@ def logspace(
     num: int,
     base: float = 10.0,
     axis: int = None,
-    *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval
