@@ -1,6 +1,5 @@
-square container
-================
-
+ivy.Container.square
+====================
 .. autofunction:: ivy.container.container_methods.square
 |
 | **Supported Frameworks:**

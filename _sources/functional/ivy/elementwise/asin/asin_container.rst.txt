@@ -1,6 +1,5 @@
-asin container
-==============
-
+ivy.Container.asin
+==================
 .. autofunction:: ivy.container.container_methods.asin
 |
 | **Supported Frameworks:**

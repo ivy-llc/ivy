@@ -1,5 +1,5 @@
-mean functional
-===============
+ivy.mean
+========
 .. autofunction:: ivy.functional.ivy.statistical.mean
 |
 | **Supported Frameworks:**

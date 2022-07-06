@@ -1,5 +1,5 @@
-log functional
-==============
+ivy.log
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.log
 |
 | **Supported Frameworks:**

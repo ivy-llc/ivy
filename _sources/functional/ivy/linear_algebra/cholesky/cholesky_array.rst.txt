@@ -1,6 +1,5 @@
-cholesky array
-==============
-
+ivy.Array.cholesky
+==================
 .. autofunction:: ivy.array.array_methods.cholesky
 |
 | **Supported Frameworks:**

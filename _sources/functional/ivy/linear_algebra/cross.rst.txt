@@ -30,6 +30,6 @@ cross
    :maxdepth: -1
    :caption: cross
 
-   cross/cross_array.rst
    cross/cross_functional.rst
+   cross/cross_array.rst
 

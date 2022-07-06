@@ -1,6 +1,5 @@
-cos array
-=========
-
+ivy.Array.cos
+=============
 .. autofunction:: ivy.array.array_methods.cos
 |
 | **Supported Frameworks:**

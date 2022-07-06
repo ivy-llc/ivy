@@ -1,6 +1,5 @@
-matrix_norm array
-=================
-
+ivy.Array.matrix_norm
+=====================
 .. autofunction:: ivy.array.array_methods.matrix_norm
 |
 | **Supported Frameworks:**

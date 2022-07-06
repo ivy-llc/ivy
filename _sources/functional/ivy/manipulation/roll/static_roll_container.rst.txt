@@ -1,6 +1,5 @@
-static_roll container
-=====================
-
+ivy.Container.static_roll
+=========================
 .. autofunction:: ivy.container.container_methods.static_roll
 |
 | **Supported Frameworks:**

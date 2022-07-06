@@ -1,6 +1,5 @@
-less_equal container
-====================
-
+ivy.Container.less_equal
+========================
 .. autofunction:: ivy.container.container_methods.less_equal
 |
 | **Supported Frameworks:**

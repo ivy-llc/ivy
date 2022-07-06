@@ -1,6 +1,5 @@
-static_random_uniform container
-===============================
-
+ivy.Container.static_random_uniform
+===================================
 .. autofunction:: ivy.container.container_methods.static_random_uniform
 |
 | **Supported Frameworks:**

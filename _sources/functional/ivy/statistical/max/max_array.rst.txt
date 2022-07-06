@@ -1,6 +1,5 @@
-max array
-=========
-
+ivy.Array.max
+=============
 .. autofunction:: ivy.array.array_methods.max
 |
 | **Supported Frameworks:**

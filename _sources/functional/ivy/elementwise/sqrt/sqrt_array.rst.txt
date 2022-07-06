@@ -1,6 +1,5 @@
-sqrt array
-==========
-
+ivy.Array.sqrt
+==============
 .. autofunction:: ivy.array.array_methods.sqrt
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-erf array
-=========
-
+ivy.Array.erf
+=============
 .. autofunction:: ivy.array.array_methods.erf
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-round container
-===============
-
+ivy.Container.round
+===================
 .. autofunction:: ivy.container.container_methods.round
 |
 | **Supported Frameworks:**

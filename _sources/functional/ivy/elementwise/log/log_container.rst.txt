@@ -1,6 +1,5 @@
-log container
-=============
-
+ivy.Container.log
+=================
 .. autofunction:: ivy.container.container_methods.log
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-multiply array
-==============
-
+ivy.Array.multiply
+==================
 .. autofunction:: ivy.array.array_methods.multiply
 |
 | **Supported Frameworks:**

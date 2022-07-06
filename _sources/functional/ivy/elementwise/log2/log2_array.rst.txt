@@ -1,6 +1,5 @@
-log2 array
-==========
-
+ivy.Array.log2
+==============
 .. autofunction:: ivy.array.array_methods.log2
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-min array
-=========
-
+ivy.Array.min
+=============
 .. autofunction:: ivy.array.array_methods.min
 |
 | **Supported Frameworks:**

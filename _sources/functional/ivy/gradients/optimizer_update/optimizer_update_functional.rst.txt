@@ -1,5 +1,5 @@
-optimizer_update functional
-===========================
+ivy.optimizer_update
+====================
 .. autofunction:: ivy.functional.ivy.gradients.optimizer_update
 |
 | **Supported Frameworks:**

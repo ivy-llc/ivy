@@ -1,5 +1,5 @@
-abs functional
-==============
+ivy.abs
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.abs
 |
 | **Supported Frameworks:**

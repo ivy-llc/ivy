@@ -1,6 +1,5 @@
-cosh container
-==============
-
+ivy.Container.cosh
+==================
 .. autofunction:: ivy.container.container_methods.cosh
 |
 | **Supported Frameworks:**

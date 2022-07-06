@@ -1,6 +1,5 @@
-sin array
-=========
-
+ivy.Array.sin
+=============
 .. autofunction:: ivy.array.array_methods.sin
 |
 | **Supported Frameworks:**

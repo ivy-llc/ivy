@@ -1,5 +1,5 @@
-lamb_update functional
-======================
+ivy.lamb_update
+===============
 .. autofunction:: ivy.functional.ivy.gradients.lamb_update
 |
 | **Supported Frameworks:**

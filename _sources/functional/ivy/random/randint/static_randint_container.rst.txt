@@ -1,6 +1,5 @@
-static_randint container
-========================
-
+ivy.Container.static_randint
+============================
 .. autofunction:: ivy.container.container_methods.static_randint
 |
 | **Supported Frameworks:**

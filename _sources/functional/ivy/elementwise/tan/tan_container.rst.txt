@@ -1,6 +1,5 @@
-tan container
-=============
-
+ivy.Container.tan
+=================
 .. autofunction:: ivy.container.container_methods.tan
 |
 | **Supported Frameworks:**

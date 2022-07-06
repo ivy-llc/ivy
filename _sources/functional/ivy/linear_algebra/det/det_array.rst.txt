@@ -1,6 +1,5 @@
-det array
-=========
-
+ivy.Array.det
+=============
 .. autofunction:: ivy.array.array_methods.det
 |
 | **Supported Frameworks:**

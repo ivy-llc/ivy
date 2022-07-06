@@ -1,6 +1,5 @@
-bitwise_invert array
-====================
-
+ivy.Array.bitwise_invert
+========================
 .. autofunction:: ivy.array.array_methods.bitwise_invert
 |
 | **Supported Frameworks:**

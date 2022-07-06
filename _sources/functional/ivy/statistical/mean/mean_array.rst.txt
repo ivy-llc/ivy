@@ -1,6 +1,5 @@
-mean array
-==========
-
+ivy.Array.mean
+==============
 .. autofunction:: ivy.array.array_methods.mean
 |
 | **Supported Frameworks:**

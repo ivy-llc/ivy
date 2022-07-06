@@ -1,6 +1,5 @@
-clip container
-==============
-
+ivy.Container.clip
+==================
 .. autofunction:: ivy.container.container_methods.clip
 |
 | **Supported Frameworks:**

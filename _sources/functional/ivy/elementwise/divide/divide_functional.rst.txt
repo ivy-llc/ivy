@@ -1,5 +1,5 @@
-floor_divide functional
-=======================
+ivy.divide
+==========
 .. autofunction:: ivy.functional.ivy.elementwise.floor_divide
 
 .. autofunction:: ivy.container.container_methods.floor_divide

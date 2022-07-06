@@ -1,6 +1,5 @@
-reshape container
-=================
-
+ivy.Container.reshape
+=====================
 .. autofunction:: ivy.container.container_methods.reshape
 |
 | **Supported Frameworks:**

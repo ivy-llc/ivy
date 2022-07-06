@@ -1,6 +1,5 @@
-static_gather_nd container
-==========================
-
+ivy.Container.static_gather_nd
+==============================
 .. autofunction:: ivy.container.container_methods.static_gather_nd
 |
 | **Supported Frameworks:**

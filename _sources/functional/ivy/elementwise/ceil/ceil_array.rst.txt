@@ -1,6 +1,5 @@
-ceil array
-==========
-
+ivy.Array.ceil
+==============
 .. autofunction:: ivy.array.array_methods.ceil
 |
 | **Supported Frameworks:**

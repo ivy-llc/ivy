@@ -1,6 +1,5 @@
-repeat container
-================
-
+ivy.Container.repeat
+====================
 .. autofunction:: ivy.container.container_methods.repeat
 |
 | **Supported Frameworks:**

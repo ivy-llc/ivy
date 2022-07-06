@@ -1,6 +1,5 @@
-bitwise_left_shift array
-========================
-
+ivy.Array.bitwise_left_shift
+============================
 .. autofunction:: ivy.array.array_methods.bitwise_left_shift
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-gather_nd functional
-====================
+ivy.gather_nd
+=============
 .. autofunction:: ivy.functional.ivy.general.gather_nd
 |
 | **Supported Frameworks:**

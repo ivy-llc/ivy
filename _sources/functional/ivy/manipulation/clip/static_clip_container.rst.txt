@@ -1,6 +1,5 @@
-static_clip container
-=====================
-
+ivy.Container.static_clip
+=========================
 .. autofunction:: ivy.container.container_methods.static_clip
 |
 | **Supported Frameworks:**

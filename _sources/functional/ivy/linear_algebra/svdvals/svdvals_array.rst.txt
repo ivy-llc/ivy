@@ -1,6 +1,5 @@
-svdvals array
-=============
-
+ivy.Array.svdvals
+=================
 .. autofunction:: ivy.array.array_methods.svdvals
 |
 | **Supported Frameworks:**

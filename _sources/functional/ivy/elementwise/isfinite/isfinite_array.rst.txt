@@ -1,6 +1,5 @@
-isfinite array
-==============
-
+ivy.Array.isfinite
+==================
 .. autofunction:: ivy.array.array_methods.isfinite
 |
 | **Supported Frameworks:**

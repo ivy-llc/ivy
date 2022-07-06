@@ -1,6 +1,5 @@
-cosh array
-==========
-
+ivy.Array.cosh
+==============
 .. autofunction:: ivy.array.array_methods.cosh
 |
 | **Supported Frameworks:**

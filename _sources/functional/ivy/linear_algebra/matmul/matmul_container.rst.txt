@@ -1,6 +1,5 @@
-matmul container
-================
-
+ivy.Container.matmul
+====================
 .. autofunction:: ivy.container.container_methods.matmul
 |
 | **Supported Frameworks:**

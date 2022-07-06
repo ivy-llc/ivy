@@ -1,6 +1,5 @@
-exp container
-=============
-
+ivy.Container.exp
+=================
 .. autofunction:: ivy.container.container_methods.exp
 |
 | **Supported Frameworks:**

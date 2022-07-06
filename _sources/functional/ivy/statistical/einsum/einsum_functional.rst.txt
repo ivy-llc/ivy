@@ -1,5 +1,5 @@
-einsum functional
-=================
+ivy.einsum
+==========
 .. autofunction:: ivy.functional.ivy.statistical.einsum
 |
 | **Supported Frameworks:**

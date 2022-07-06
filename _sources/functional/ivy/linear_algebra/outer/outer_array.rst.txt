@@ -1,6 +1,5 @@
-outer array
-===========
-
+ivy.Array.outer
+===============
 .. autofunction:: ivy.array.array_methods.outer
 |
 | **Supported Frameworks:**

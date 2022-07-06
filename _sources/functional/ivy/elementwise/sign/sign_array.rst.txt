@@ -1,6 +1,5 @@
-sign array
-==========
-
+ivy.Array.sign
+==============
 .. autofunction:: ivy.array.array_methods.sign
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-std container
-=============
-
+ivy.Container.std
+=================
 .. autofunction:: ivy.container.container_methods.std
 |
 | **Supported Frameworks:**

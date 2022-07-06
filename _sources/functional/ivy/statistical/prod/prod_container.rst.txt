@@ -1,6 +1,5 @@
-prod container
-==============
-
+ivy.Container.prod
+==================
 .. autofunction:: ivy.container.container_methods.prod
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-gradient_descent_update container
-=================================
-
+ivy.Container.gradient_descent_update
+=====================================
 .. autofunction:: ivy.container.container_methods.gradient_descent_update
 |
 | **Supported Frameworks:**

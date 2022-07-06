@@ -1,6 +1,5 @@
-adam_update container
-=====================
-
+ivy.Container.adam_update
+=========================
 .. autofunction:: ivy.container.container_methods.adam_update
 |
 | **Supported Frameworks:**

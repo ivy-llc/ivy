@@ -1,6 +1,5 @@
-cross array
-===========
-
+ivy.Array.cross
+===============
 .. autofunction:: ivy.array.array_methods.cross
 |
 | **Supported Frameworks:**

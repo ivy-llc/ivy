@@ -1,6 +1,5 @@
-expand_dims container
-=====================
-
+ivy.Container.expand_dims
+=========================
 .. autofunction:: ivy.container.container_methods.expand_dims
 |
 | **Supported Frameworks:**

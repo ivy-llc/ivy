@@ -1,6 +1,5 @@
-matrix_transpose array
-======================
-
+ivy.Array.matrix_transpose
+==========================
 .. autofunction:: ivy.array.array_methods.matrix_transpose
 |
 | **Supported Frameworks:**

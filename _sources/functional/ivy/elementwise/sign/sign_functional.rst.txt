@@ -1,5 +1,5 @@
-sign functional
-===============
+ivy.sign
+========
 .. autofunction:: ivy.functional.ivy.elementwise.sign
 |
 | **Supported Frameworks:**

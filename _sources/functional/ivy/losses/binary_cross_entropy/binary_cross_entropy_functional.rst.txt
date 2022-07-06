@@ -1,5 +1,5 @@
-binary_cross_entropy functional
-===============================
+ivy.binary_cross_entropy
+========================
 .. autofunction:: ivy.functional.ivy.losses.binary_cross_entropy
 |
 | **Supported Frameworks:**

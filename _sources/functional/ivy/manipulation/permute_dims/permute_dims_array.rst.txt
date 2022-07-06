@@ -1,6 +1,5 @@
-permute_dims array
-==================
-
+ivy.Array.permute_dims
+======================
 .. autofunction:: ivy.array.array_methods.permute_dims
 |
 | **Supported Frameworks:**

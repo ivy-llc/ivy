@@ -1,6 +1,5 @@
-static_subtract container
-=========================
-
+ivy.Container.static_subtract
+=============================
 .. autofunction:: ivy.container.container_methods.static_subtract
 |
 | **Supported Frameworks:**

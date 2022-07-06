@@ -1,6 +1,5 @@
-roll array
-==========
-
+ivy.Array.roll
+==============
 .. autofunction:: ivy.array.array_methods.roll
 |
 | **Supported Frameworks:**

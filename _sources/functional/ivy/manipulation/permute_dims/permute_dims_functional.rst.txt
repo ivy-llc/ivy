@@ -1,5 +1,5 @@
-permute_dims functional
-=======================
+ivy.permute_dims
+================
 .. autofunction:: ivy.functional.ivy.manipulation.permute_dims
 |
 | **Supported Frameworks:**

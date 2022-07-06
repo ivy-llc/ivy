@@ -1,6 +1,5 @@
-trunc container
-===============
-
+ivy.Container.trunc
+===================
 .. autofunction:: ivy.container.container_methods.trunc
 |
 | **Supported Frameworks:**

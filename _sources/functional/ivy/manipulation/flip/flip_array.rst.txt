@@ -1,6 +1,5 @@
-flip array
-==========
-
+ivy.Array.flip
+==============
 .. autofunction:: ivy.array.array_methods.flip
 |
 | **Supported Frameworks:**

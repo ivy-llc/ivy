@@ -1,6 +1,5 @@
-logaddexp array
-===============
-
+ivy.Array.logaddexp
+===================
 .. autofunction:: ivy.array.array_methods.logaddexp
 |
 | **Supported Frameworks:**

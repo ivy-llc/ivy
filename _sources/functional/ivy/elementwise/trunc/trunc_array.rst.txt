@@ -1,6 +1,5 @@
-trunc array
-===========
-
+ivy.Array.trunc
+===============
 .. autofunction:: ivy.array.array_methods.trunc
 |
 | **Supported Frameworks:**

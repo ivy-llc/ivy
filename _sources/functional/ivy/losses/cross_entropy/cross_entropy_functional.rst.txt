@@ -1,5 +1,5 @@
-cross_entropy functional
-========================
+ivy.cross_entropy
+=================
 .. autofunction:: ivy.functional.ivy.losses.cross_entropy
 |
 | **Supported Frameworks:**

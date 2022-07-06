@@ -1,5 +1,5 @@
-isfinite functional
-===================
+ivy.isfinite
+============
 .. autofunction:: ivy.functional.ivy.elementwise.isfinite
 |
 | **Supported Frameworks:**

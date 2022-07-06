@@ -1,5 +1,5 @@
-atanh functional
-================
+ivy.tanh
+========
 .. autofunction:: ivy.functional.ivy.elementwise.atanh
 
 .. autofunction:: ivy.container.container_methods.static_tan

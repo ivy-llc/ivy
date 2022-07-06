@@ -1,6 +1,5 @@
-max container
-=============
-
+ivy.Container.max
+=================
 .. autofunction:: ivy.container.container_methods.max
 |
 | **Supported Frameworks:**

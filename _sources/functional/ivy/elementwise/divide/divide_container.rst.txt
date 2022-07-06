@@ -1,6 +1,5 @@
-divide container
-================
-
+ivy.Container.divide
+====================
 .. autofunction:: ivy.container.container_methods.divide
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-max functional
-==============
+ivy.max
+=======
 .. autofunction:: ivy.functional.ivy.statistical.max
 |
 | **Supported Frameworks:**

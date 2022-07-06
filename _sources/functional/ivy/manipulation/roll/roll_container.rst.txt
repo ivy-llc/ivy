@@ -1,6 +1,5 @@
-roll container
-==============
-
+ivy.Container.roll
+==================
 .. autofunction:: ivy.container.container_methods.roll
 |
 | **Supported Frameworks:**

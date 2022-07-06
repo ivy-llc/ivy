@@ -1,6 +1,5 @@
-matmul array
-============
-
+ivy.Array.matmul
+================
 .. autofunction:: ivy.array.array_methods.matmul
 |
 | **Supported Frameworks:**

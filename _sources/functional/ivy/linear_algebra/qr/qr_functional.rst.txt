@@ -1,5 +1,5 @@
-qr functional
-=============
+ivy.qr
+======
 .. autofunction:: ivy.functional.ivy.linear_algebra.qr
 |
 | **Supported Frameworks:**

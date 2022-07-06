@@ -1,6 +1,5 @@
-floor array
-===========
-
+ivy.Array.floor
+===============
 .. autofunction:: ivy.array.array_methods.floor
 |
 | **Supported Frameworks:**

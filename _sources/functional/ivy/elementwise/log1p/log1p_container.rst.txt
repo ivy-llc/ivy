@@ -1,6 +1,5 @@
-log1p container
-===============
-
+ivy.Container.log1p
+===================
 .. autofunction:: ivy.container.container_methods.log1p
 |
 | **Supported Frameworks:**

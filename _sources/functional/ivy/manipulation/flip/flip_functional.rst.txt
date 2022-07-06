@@ -1,5 +1,5 @@
-flip functional
-===============
+ivy.flip
+========
 .. autofunction:: ivy.functional.ivy.manipulation.flip
 |
 | **Supported Frameworks:**

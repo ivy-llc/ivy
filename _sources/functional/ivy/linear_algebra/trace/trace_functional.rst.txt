@@ -1,5 +1,5 @@
-trace functional
-================
+ivy.trace
+=========
 .. autofunction:: ivy.functional.ivy.linear_algebra.trace
 |
 | **Supported Frameworks:**

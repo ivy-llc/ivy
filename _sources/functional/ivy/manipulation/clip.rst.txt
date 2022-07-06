@@ -34,8 +34,8 @@ clip
    :maxdepth: -1
    :caption: clip
 
-   clip/clip_container.rst
-   clip/clip_array.rst
    clip/clip_functional.rst
+   clip/clip_array.rst
+   clip/clip_container.rst
    clip/static_clip_container.rst
 

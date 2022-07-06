@@ -32,7 +32,7 @@ gradient_descent_update
    :maxdepth: -1
    :caption: gradient_descent_update
 
-   gradient_descent_update/static_gradient_descent_update_container.rst
-   gradient_descent_update/gradient_descent_update_container.rst
    gradient_descent_update/gradient_descent_update_functional.rst
+   gradient_descent_update/gradient_descent_update_container.rst
+   gradient_descent_update/static_gradient_descent_update_container.rst
 

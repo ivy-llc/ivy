@@ -1,5 +1,5 @@
-random_uniform functional
-=========================
+ivy.random_uniform
+==================
 .. autofunction:: ivy.functional.ivy.random.random_uniform
 |
 | **Supported Frameworks:**

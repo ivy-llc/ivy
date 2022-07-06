@@ -1,5 +1,5 @@
-expm1 functional
-================
+ivy.expm1
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.expm1
 |
 | **Supported Frameworks:**

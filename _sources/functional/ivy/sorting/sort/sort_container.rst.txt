@@ -1,6 +1,5 @@
-sort container
-==============
-
+ivy.Container.sort
+==================
 .. autofunction:: ivy.container.container_methods.sort
 |
 | **Supported Frameworks:**

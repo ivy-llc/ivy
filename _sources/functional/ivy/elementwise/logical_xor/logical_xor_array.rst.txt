@@ -1,6 +1,5 @@
-logical_xor array
-=================
-
+ivy.Array.logical_xor
+=====================
 .. autofunction:: ivy.array.array_methods.logical_xor
 |
 | **Supported Frameworks:**

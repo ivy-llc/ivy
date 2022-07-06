@@ -1,6 +1,5 @@
-reshape array
-=============
-
+ivy.Array.reshape
+=================
 .. autofunction:: ivy.array.array_methods.reshape
 |
 | **Supported Frameworks:**

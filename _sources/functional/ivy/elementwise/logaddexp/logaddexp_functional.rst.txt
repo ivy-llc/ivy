@@ -1,5 +1,5 @@
-logaddexp functional
-====================
+ivy.logaddexp
+=============
 .. autofunction:: ivy.functional.ivy.elementwise.logaddexp
 |
 | **Supported Frameworks:**

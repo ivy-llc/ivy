@@ -1,6 +1,5 @@
-sort array
-==========
-
+ivy.Array.sort
+==============
 .. autofunction:: ivy.array.array_methods.sort
 |
 | **Supported Frameworks:**

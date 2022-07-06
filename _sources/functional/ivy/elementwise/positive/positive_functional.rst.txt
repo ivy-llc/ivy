@@ -1,5 +1,5 @@
-positive functional
-===================
+ivy.positive
+============
 .. autofunction:: ivy.functional.ivy.elementwise.positive
 |
 | **Supported Frameworks:**

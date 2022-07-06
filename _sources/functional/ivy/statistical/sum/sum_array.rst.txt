@@ -1,6 +1,5 @@
-sum array
-=========
-
+ivy.Array.sum
+=============
 .. autofunction:: ivy.array.array_methods.sum
 |
 | **Supported Frameworks:**

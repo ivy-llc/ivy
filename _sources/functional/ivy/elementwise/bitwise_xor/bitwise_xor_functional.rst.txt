@@ -1,5 +1,5 @@
-bitwise_xor functional
-======================
+ivy.bitwise_xor
+===============
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_xor
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-diagonal functional
-===================
+ivy.diagonal
+============
 .. autofunction:: ivy.functional.ivy.linear_algebra.diagonal
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-floor container
-===============
-
+ivy.Container.floor
+===================
 .. autofunction:: ivy.container.container_methods.floor
 |
 | **Supported Frameworks:**

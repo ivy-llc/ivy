@@ -1,6 +1,5 @@
-sqrt container
-==============
-
+ivy.Container.sqrt
+==================
 .. autofunction:: ivy.container.container_methods.sqrt
 |
 | **Supported Frameworks:**

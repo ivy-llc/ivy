@@ -1,6 +1,5 @@
-isinf container
-===============
-
+ivy.Container.isinf
+===================
 .. autofunction:: ivy.container.container_methods.isinf
 |
 | **Supported Frameworks:**

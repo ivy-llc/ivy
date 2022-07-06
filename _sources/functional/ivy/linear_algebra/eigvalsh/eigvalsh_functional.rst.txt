@@ -1,5 +1,5 @@
-eigvalsh functional
-===================
+ivy.eigvalsh
+============
 .. autofunction:: ivy.functional.ivy.linear_algebra.eigvalsh
 |
 | **Supported Frameworks:**

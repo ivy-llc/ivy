@@ -1,6 +1,5 @@
-isnan array
-===========
-
+ivy.Array.isnan
+===============
 .. autofunction:: ivy.array.array_methods.isnan
 |
 | **Supported Frameworks:**

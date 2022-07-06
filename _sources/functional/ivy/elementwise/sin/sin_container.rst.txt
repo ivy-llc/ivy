@@ -1,6 +1,5 @@
-sin container
-=============
-
+ivy.Container.sin
+=================
 .. autofunction:: ivy.container.container_methods.sin
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-concat array
-============
-
+ivy.Array.concat
+================
 .. autofunction:: ivy.array.array_methods.concat
 |
 | **Supported Frameworks:**

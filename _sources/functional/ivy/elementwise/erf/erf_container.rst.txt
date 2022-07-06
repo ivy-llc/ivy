@@ -1,6 +1,5 @@
-erf container
-=============
-
+ivy.Container.erf
+=================
 .. autofunction:: ivy.container.container_methods.erf
 |
 | **Supported Frameworks:**

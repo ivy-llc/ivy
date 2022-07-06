@@ -1,6 +1,5 @@
-trace array
-===========
-
+ivy.Array.trace
+===============
 .. autofunction:: ivy.array.array_methods.trace
 |
 | **Supported Frameworks:**

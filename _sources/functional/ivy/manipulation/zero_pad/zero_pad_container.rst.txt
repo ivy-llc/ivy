@@ -1,6 +1,5 @@
-zero_pad container
-==================
-
+ivy.Container.zero_pad
+======================
 .. autofunction:: ivy.container.container_methods.zero_pad
 |
 | **Supported Frameworks:**

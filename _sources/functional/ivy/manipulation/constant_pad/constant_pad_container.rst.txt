@@ -1,6 +1,5 @@
-constant_pad container
-======================
-
+ivy.Container.constant_pad
+==========================
 .. autofunction:: ivy.container.container_methods.constant_pad
 |
 | **Supported Frameworks:**

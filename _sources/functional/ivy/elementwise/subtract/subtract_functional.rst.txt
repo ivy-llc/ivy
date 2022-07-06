@@ -1,5 +1,5 @@
-subtract functional
-===================
+ivy.subtract
+============
 .. autofunction:: ivy.functional.ivy.elementwise.subtract
 |
 | **Supported Frameworks:**

@@ -32,7 +32,7 @@ max
    :maxdepth: -1
    :caption: max
 
+   max/max_functional.rst
    max/max_array.rst
    max/max_container.rst
-   max/max_functional.rst
 

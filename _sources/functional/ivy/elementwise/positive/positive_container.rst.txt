@@ -1,6 +1,5 @@
-positive container
-==================
-
+ivy.Container.positive
+======================
 .. autofunction:: ivy.container.container_methods.positive
 |
 | **Supported Frameworks:**

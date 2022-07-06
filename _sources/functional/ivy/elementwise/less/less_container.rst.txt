@@ -1,6 +1,5 @@
-less container
-==============
-
+ivy.Container.less
+==================
 .. autofunction:: ivy.container.container_methods.less
 |
 | **Supported Frameworks:**

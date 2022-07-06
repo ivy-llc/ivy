@@ -1,6 +1,5 @@
-subtract container
-==================
-
+ivy.Container.subtract
+======================
 .. autofunction:: ivy.container.container_methods.subtract
 |
 | **Supported Frameworks:**

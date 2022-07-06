@@ -34,8 +34,8 @@ gather_nd
    :maxdepth: -1
    :caption: gather_nd
 
-   gather_nd/static_gather_nd_container.rst
+   gather_nd/gather_nd_functional.rst
    gather_nd/gather_nd_array.rst
    gather_nd/gather_nd_container.rst
-   gather_nd/gather_nd_functional.rst
+   gather_nd/static_gather_nd_container.rst
 

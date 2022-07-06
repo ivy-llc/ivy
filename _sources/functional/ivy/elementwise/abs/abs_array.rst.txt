@@ -1,6 +1,5 @@
-abs array
-=========
-
+ivy.Array.abs
+=============
 .. autofunction:: ivy.array.array_methods.abs
 |
 | **Supported Frameworks:**

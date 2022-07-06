@@ -1,6 +1,5 @@
-random_uniform container
-========================
-
+ivy.Container.random_uniform
+============================
 .. autofunction:: ivy.container.container_methods.random_uniform
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-min functional
-==============
+ivy.min
+=======
 .. autofunction:: ivy.functional.ivy.statistical.min
 |
 | **Supported Frameworks:**

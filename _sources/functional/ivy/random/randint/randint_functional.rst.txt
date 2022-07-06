@@ -1,5 +1,5 @@
-randint functional
-==================
+ivy.randint
+===========
 .. autofunction:: ivy.functional.ivy.random.randint
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-constant_pad functional
-=======================
+ivy.constant_pad
+================
 .. autofunction:: ivy.functional.ivy.manipulation.constant_pad
 |
 | **Supported Frameworks:**

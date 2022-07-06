@@ -1,6 +1,5 @@
-std array
-=========
-
+ivy.Array.std
+=============
 .. autofunction:: ivy.array.array_methods.std
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-sinh array
-==========
-
+ivy.Array.sinh
+==============
 .. autofunction:: ivy.array.array_methods.sinh
 |
 | **Supported Frameworks:**

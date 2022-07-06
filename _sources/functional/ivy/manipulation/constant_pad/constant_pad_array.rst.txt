@@ -1,6 +1,5 @@
-constant_pad array
-==================
-
+ivy.Array.constant_pad
+======================
 .. autofunction:: ivy.array.array_methods.constant_pad
 |
 | **Supported Frameworks:**

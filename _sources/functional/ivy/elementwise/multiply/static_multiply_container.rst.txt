@@ -1,6 +1,5 @@
-static_multiply container
-=========================
-
+ivy.Container.static_multiply
+=============================
 .. autofunction:: ivy.container.container_methods.static_multiply
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-std functional
-==============
+ivy.std
+=======
 .. autofunction:: ivy.functional.ivy.statistical.std
 |
 | **Supported Frameworks:**

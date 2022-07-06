@@ -1,5 +1,5 @@
-logical_and functional
-======================
+ivy.logical_and
+===============
 .. autofunction:: ivy.functional.ivy.elementwise.logical_and
 |
 | **Supported Frameworks:**

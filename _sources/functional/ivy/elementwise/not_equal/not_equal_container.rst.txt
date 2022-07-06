@@ -1,6 +1,5 @@
-not_equal container
-===================
-
+ivy.Container.not_equal
+=======================
 .. autofunction:: ivy.container.container_methods.not_equal
 |
 | **Supported Frameworks:**

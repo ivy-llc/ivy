@@ -1,6 +1,5 @@
-square array
-============
-
+ivy.Array.square
+================
 .. autofunction:: ivy.array.array_methods.square
 |
 | **Supported Frameworks:**

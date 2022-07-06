@@ -1,5 +1,5 @@
-roll functional
-===============
+ivy.roll
+========
 .. autofunction:: ivy.functional.ivy.manipulation.roll
 |
 | **Supported Frameworks:**

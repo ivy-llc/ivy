@@ -1,6 +1,5 @@
-min container
-=============
-
+ivy.Container.min
+=================
 .. autofunction:: ivy.container.container_methods.min
 |
 | **Supported Frameworks:**

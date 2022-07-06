@@ -1,6 +1,5 @@
-argsort array
-=============
-
+ivy.Array.argsort
+=================
 .. autofunction:: ivy.array.array_methods.argsort
 |
 | **Supported Frameworks:**

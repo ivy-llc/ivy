@@ -1,6 +1,5 @@
-sum container
-=============
-
+ivy.Container.sum
+=================
 .. autofunction:: ivy.container.container_methods.sum
 |
 | **Supported Frameworks:**

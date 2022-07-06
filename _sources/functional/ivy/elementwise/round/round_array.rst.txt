@@ -1,6 +1,5 @@
-round array
-===========
-
+ivy.Array.round
+===============
 .. autofunction:: ivy.array.array_methods.round
 |
 | **Supported Frameworks:**

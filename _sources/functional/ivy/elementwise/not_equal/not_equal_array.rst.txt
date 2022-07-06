@@ -1,6 +1,5 @@
-not_equal array
-===============
-
+ivy.Array.not_equal
+===================
 .. autofunction:: ivy.array.array_methods.not_equal
 |
 | **Supported Frameworks:**

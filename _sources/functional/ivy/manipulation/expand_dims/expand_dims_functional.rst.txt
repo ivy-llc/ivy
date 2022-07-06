@@ -1,5 +1,5 @@
-expand_dims functional
-======================
+ivy.expand_dims
+===============
 .. autofunction:: ivy.functional.ivy.manipulation.expand_dims
 |
 | **Supported Frameworks:**

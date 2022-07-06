@@ -1,6 +1,5 @@
-logical_not array
-=================
-
+ivy.Array.logical_not
+=====================
 .. autofunction:: ivy.array.array_methods.logical_not
 |
 | **Supported Frameworks:**

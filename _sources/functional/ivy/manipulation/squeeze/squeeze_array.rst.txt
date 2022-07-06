@@ -1,6 +1,5 @@
-squeeze array
-=============
-
+ivy.Array.squeeze
+=================
 .. autofunction:: ivy.array.array_methods.squeeze
 |
 | **Supported Frameworks:**

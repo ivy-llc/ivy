@@ -1,6 +1,5 @@
-logical_and container
-=====================
-
+ivy.Container.logical_and
+=========================
 .. autofunction:: ivy.container.container_methods.logical_and
 |
 | **Supported Frameworks:**

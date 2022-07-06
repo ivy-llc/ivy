@@ -1,5 +1,5 @@
-cross functional
-================
+ivy.cross
+=========
 .. autofunction:: ivy.functional.ivy.linear_algebra.cross
 |
 | **Supported Frameworks:**

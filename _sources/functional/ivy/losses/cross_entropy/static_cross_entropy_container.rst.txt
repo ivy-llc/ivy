@@ -1,6 +1,5 @@
-static_cross_entropy container
-==============================
-
+ivy.Container.static_cross_entropy
+==================================
 .. autofunction:: ivy.container.container_methods.static_cross_entropy
 |
 | **Supported Frameworks:**

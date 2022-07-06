@@ -1,6 +1,5 @@
-static_optimizer_update container
-=================================
-
+ivy.Container.static_optimizer_update
+=====================================
 .. autofunction:: ivy.container.container_methods.static_optimizer_update
 |
 | **Supported Frameworks:**

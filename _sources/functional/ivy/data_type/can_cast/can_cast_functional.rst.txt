@@ -1,5 +1,5 @@
-can_cast functional
-===================
+ivy.can_cast
+============
 .. autofunction:: ivy.functional.ivy.data_type.can_cast
 |
 | **Supported Frameworks:**

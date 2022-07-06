@@ -1,6 +1,5 @@
-bitwise_and container
-=====================
-
+ivy.Container.bitwise_and
+=========================
 .. autofunction:: ivy.container.container_methods.bitwise_and
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-greater array
-=============
-
+ivy.Array.greater
+=================
 .. autofunction:: ivy.array.array_methods.greater
 |
 | **Supported Frameworks:**

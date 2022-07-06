@@ -1,6 +1,5 @@
-logaddexp container
-===================
-
+ivy.Container.logaddexp
+=======================
 .. autofunction:: ivy.container.container_methods.logaddexp
 |
 | **Supported Frameworks:**

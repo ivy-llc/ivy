@@ -1,6 +1,5 @@
-matrix_rank array
-=================
-
+ivy.Array.matrix_rank
+=====================
 .. autofunction:: ivy.array.array_methods.matrix_rank
 |
 | **Supported Frameworks:**

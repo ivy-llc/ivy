@@ -32,7 +32,7 @@ lars_update
    :maxdepth: -1
    :caption: lars_update
 
-   lars_update/lars_update_container.rst
    lars_update/lars_update_functional.rst
+   lars_update/lars_update_container.rst
    lars_update/static_lars_update_container.rst
 

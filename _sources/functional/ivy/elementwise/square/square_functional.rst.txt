@@ -1,5 +1,5 @@
-square functional
-=================
+ivy.square
+==========
 .. autofunction:: ivy.functional.ivy.elementwise.square
 |
 | **Supported Frameworks:**

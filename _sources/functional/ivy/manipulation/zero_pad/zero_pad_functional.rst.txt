@@ -1,5 +1,5 @@
-zero_pad functional
-===================
+ivy.zero_pad
+============
 .. autofunction:: ivy.functional.ivy.manipulation.zero_pad
 |
 | **Supported Frameworks:**

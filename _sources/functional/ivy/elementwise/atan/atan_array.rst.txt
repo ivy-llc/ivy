@@ -1,6 +1,5 @@
-atan array
-==========
-
+ivy.Array.atan
+==============
 .. autofunction:: ivy.array.array_methods.atan
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-eigvalsh array
-==============
-
+ivy.Array.eigvalsh
+==================
 .. autofunction:: ivy.array.array_methods.eigvalsh
 |
 | **Supported Frameworks:**

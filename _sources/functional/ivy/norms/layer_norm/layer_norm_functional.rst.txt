@@ -1,5 +1,5 @@
-layer_norm functional
-=====================
+ivy.layer_norm
+==============
 .. autofunction:: ivy.functional.ivy.norms.layer_norm
 |
 | **Supported Frameworks:**

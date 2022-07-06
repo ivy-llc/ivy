@@ -1,5 +1,5 @@
-atan2 functional
-================
+ivy.atan2
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.atan2
 |
 | **Supported Frameworks:**

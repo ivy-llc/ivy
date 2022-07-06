@@ -1,6 +1,5 @@
-less array
-==========
-
+ivy.Array.less
+==============
 .. autofunction:: ivy.array.array_methods.less
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-isnan functional
-================
+ivy.isnan
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.isnan
 |
 | **Supported Frameworks:**

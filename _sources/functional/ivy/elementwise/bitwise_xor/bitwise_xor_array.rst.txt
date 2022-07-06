@@ -1,6 +1,5 @@
-bitwise_xor array
-=================
-
+ivy.Array.bitwise_xor
+=====================
 .. autofunction:: ivy.array.array_methods.bitwise_xor
 |
 | **Supported Frameworks:**

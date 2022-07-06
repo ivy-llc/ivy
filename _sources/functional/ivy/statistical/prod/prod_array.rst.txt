@@ -1,6 +1,5 @@
-prod array
-==========
-
+ivy.Array.prod
+==============
 .. autofunction:: ivy.array.array_methods.prod
 |
 | **Supported Frameworks:**

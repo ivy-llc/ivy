@@ -1,6 +1,5 @@
-svd array
-=========
-
+ivy.Array.svd
+=============
 .. autofunction:: ivy.array.array_methods.svd
 |
 | **Supported Frameworks:**

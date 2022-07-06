@@ -1,6 +1,5 @@
-var container
-=============
-
+ivy.Container.var
+=================
 .. autofunction:: ivy.container.container_methods.var
 |
 | **Supported Frameworks:**

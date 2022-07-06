@@ -1,5 +1,5 @@
-vector_norm functional
-======================
+ivy.vector_norm
+===============
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_norm
 |
 | **Supported Frameworks:**

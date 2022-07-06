@@ -1,6 +1,5 @@
-acosh container
-===============
-
+ivy.Container.acosh
+===================
 .. autofunction:: ivy.container.container_methods.acosh
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-var functional
-==============
+ivy.var
+=======
 .. autofunction:: ivy.functional.ivy.statistical.var
 |
 | **Supported Frameworks:**

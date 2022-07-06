@@ -1,6 +1,5 @@
-negative container
-==================
-
+ivy.Container.negative
+======================
 .. autofunction:: ivy.container.container_methods.negative
 |
 | **Supported Frameworks:**

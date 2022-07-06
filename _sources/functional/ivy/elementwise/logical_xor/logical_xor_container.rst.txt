@@ -1,6 +1,5 @@
-logical_xor container
-=====================
-
+ivy.Container.logical_xor
+=========================
 .. autofunction:: ivy.container.container_methods.logical_xor
 |
 | **Supported Frameworks:**

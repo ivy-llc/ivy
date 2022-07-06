@@ -1,6 +1,5 @@
-remainder container
-===================
-
+ivy.Container.remainder
+=======================
 .. autofunction:: ivy.container.container_methods.remainder
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-expand_dims array
-=================
-
+ivy.Array.expand_dims
+=====================
 .. autofunction:: ivy.array.array_methods.expand_dims
 |
 | **Supported Frameworks:**

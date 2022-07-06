@@ -1,6 +1,5 @@
-asinh array
-===========
-
+ivy.Array.asinh
+===============
 .. autofunction:: ivy.array.array_methods.asinh
 |
 | **Supported Frameworks:**

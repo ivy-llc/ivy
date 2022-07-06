@@ -1,6 +1,5 @@
-var array
-=========
-
+ivy.Array.var
+=============
 .. autofunction:: ivy.array.array_methods.var
 |
 | **Supported Frameworks:**

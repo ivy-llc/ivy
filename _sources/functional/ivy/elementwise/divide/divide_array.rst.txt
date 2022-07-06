@@ -1,6 +1,5 @@
-divide array
-============
-
+ivy.Array.divide
+================
 .. autofunction:: ivy.array.array_methods.divide
 |
 | **Supported Frameworks:**

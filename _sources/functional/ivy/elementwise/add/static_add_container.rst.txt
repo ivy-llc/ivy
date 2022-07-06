@@ -1,6 +1,5 @@
-static_add container
-====================
-
+ivy.Container.static_add
+========================
 .. autofunction:: ivy.container.container_methods.static_add
 |
 | **Supported Frameworks:**

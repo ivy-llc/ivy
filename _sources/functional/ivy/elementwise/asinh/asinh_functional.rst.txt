@@ -1,5 +1,5 @@
-asinh functional
-================
+ivy.asinh
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.asinh
 |
 | **Supported Frameworks:**

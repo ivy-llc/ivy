@@ -1,6 +1,5 @@
-positive array
-==============
-
+ivy.Array.positive
+==================
 .. autofunction:: ivy.array.array_methods.positive
 |
 | **Supported Frameworks:**

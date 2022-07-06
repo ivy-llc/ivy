@@ -1,6 +1,5 @@
-squeeze container
-=================
-
+ivy.Container.squeeze
+=====================
 .. autofunction:: ivy.container.container_methods.squeeze
 |
 | **Supported Frameworks:**

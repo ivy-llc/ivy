@@ -1,6 +1,5 @@
-flip container
-==============
-
+ivy.Container.flip
+==================
 .. autofunction:: ivy.container.container_methods.flip
 |
 | **Supported Frameworks:**

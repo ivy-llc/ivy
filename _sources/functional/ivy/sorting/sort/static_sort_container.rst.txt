@@ -1,6 +1,5 @@
-static_sort container
-=====================
-
+ivy.Container.static_sort
+=========================
 .. autofunction:: ivy.container.container_methods.static_sort
 |
 | **Supported Frameworks:**

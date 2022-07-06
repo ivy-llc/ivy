@@ -1,6 +1,5 @@
-pinv array
-==========
-
+ivy.Array.pinv
+==============
 .. autofunction:: ivy.array.array_methods.pinv
 |
 | **Supported Frameworks:**

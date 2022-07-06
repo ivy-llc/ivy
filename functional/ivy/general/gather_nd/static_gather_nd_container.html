@@ -5,7 +5,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>static_gather_nd container &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.Container.static_gather_nd &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="gather_nd array" href="gather_nd_array.html" />
-    <link rel="prev" title="gather_nd" href="../gather_nd.html" /> 
+    <link rel="next" title="multiprocessing" href="../multiprocessing.html" />
+    <link rel="prev" title="ivy.Container.gather_nd" href="gather_nd_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -168,10 +168,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gather.html">gather</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../gather_nd.html">gather_nd</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">static_gather_nd container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gather_nd_array.html">gather_nd array</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gather_nd_container.html">gather_nd container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gather_nd_functional.html">gather_nd functional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gather_nd_functional.html">ivy.gather_nd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gather_nd_array.html">ivy.Array.gather_nd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gather_nd_container.html">ivy.Container.gather_nd</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_gather_nd</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../multiprocessing.html">multiprocessing</a></li>
@@ -237,7 +237,7 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../general.html">General</a> &raquo;</li>
           <li><a href="../gather_nd.html">gather_nd</a> &raquo;</li>
-      <li>static_gather_nd container</li>
+      <li>ivy.Container.static_gather_nd</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/general/gather_nd/static_gather_nd_container.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -247,8 +247,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="static-gather-nd-container">
-<h1>static_gather_nd container<a class="headerlink" href="#static-gather-nd-container" title="Permalink to this heading"></a></h1>
+  <section id="ivy-container-static-gather-nd">
+<h1>ivy.Container.static_gather_nd<a class="headerlink" href="#ivy-container-static-gather-nd" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.static_gather_nd">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_gather_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/container_methods.html#static_gather_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_gather_nd" title="Permalink to this definition"></a></dt>
@@ -297,8 +297,8 @@ with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../gather_nd.html" class="btn btn-neutral float-left" title="gather_nd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gather_nd_array.html" class="btn btn-neutral float-right" title="gather_nd array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gather_nd_container.html" class="btn btn-neutral float-left" title="ivy.Container.gather_nd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../multiprocessing.html" class="btn btn-neutral float-right" title="multiprocessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

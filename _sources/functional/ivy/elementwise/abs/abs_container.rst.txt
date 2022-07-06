@@ -1,6 +1,5 @@
-abs container
-=============
-
+ivy.Container.abs
+=================
 .. autofunction:: ivy.container.container_methods.abs
 |
 | **Supported Frameworks:**

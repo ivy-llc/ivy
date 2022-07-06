@@ -1,6 +1,5 @@
-solve array
-===========
-
+ivy.Array.solve
+===============
 .. autofunction:: ivy.array.array_methods.solve
 |
 | **Supported Frameworks:**

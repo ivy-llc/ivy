@@ -1,5 +1,5 @@
-tensordot functional
-====================
+ivy.tensordot
+=============
 .. autofunction:: ivy.functional.ivy.linear_algebra.tensordot
 |
 | **Supported Frameworks:**

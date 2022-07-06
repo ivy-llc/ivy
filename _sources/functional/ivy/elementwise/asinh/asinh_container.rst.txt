@@ -1,6 +1,5 @@
-asinh container
-===============
-
+ivy.Container.asinh
+===================
 .. autofunction:: ivy.container.container_methods.asinh
 |
 | **Supported Frameworks:**

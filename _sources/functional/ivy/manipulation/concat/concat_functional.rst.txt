@@ -1,5 +1,5 @@
-concat functional
-=================
+ivy.concat
+==========
 .. autofunction:: ivy.functional.ivy.manipulation.concat
 |
 | **Supported Frameworks:**

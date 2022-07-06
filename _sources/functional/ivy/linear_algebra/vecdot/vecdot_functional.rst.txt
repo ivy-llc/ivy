@@ -1,5 +1,5 @@
-vecdot functional
-=================
+ivy.vecdot
+==========
 .. autofunction:: ivy.functional.ivy.linear_algebra.vecdot
 |
 | **Supported Frameworks:**

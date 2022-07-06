@@ -1,5 +1,5 @@
-matrix_transpose functional
-===========================
+ivy.matrix_transpose
+====================
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_transpose
 |
 | **Supported Frameworks:**

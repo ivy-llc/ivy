@@ -1,6 +1,5 @@
-swapaxes array
-==============
-
+ivy.Array.swapaxes
+==================
 .. autofunction:: ivy.array.array_methods.swapaxes
 |
 | **Supported Frameworks:**

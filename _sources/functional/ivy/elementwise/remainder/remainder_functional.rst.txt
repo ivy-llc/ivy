@@ -1,5 +1,5 @@
-remainder functional
-====================
+ivy.remainder
+=============
 .. autofunction:: ivy.functional.ivy.elementwise.remainder
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-swapaxes container
-==================
-
+ivy.Container.swapaxes
+======================
 .. autofunction:: ivy.container.container_methods.swapaxes
 |
 | **Supported Frameworks:**

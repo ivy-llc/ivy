@@ -1,6 +1,5 @@
-multiply container
-==================
-
+ivy.Container.multiply
+======================
 .. autofunction:: ivy.container.container_methods.multiply
 |
 | **Supported Frameworks:**

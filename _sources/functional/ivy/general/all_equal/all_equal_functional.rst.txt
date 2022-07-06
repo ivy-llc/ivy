@@ -1,5 +1,5 @@
-all_equal functional
-====================
+ivy.all_equal
+=============
 .. autofunction:: ivy.functional.ivy.general.all_equal
 |
 | **Supported Frameworks:**

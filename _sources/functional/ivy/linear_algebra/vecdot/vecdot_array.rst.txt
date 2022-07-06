@@ -1,6 +1,5 @@
-vecdot array
-============
-
+ivy.Array.vecdot
+================
 .. autofunction:: ivy.array.array_methods.vecdot
 |
 | **Supported Frameworks:**

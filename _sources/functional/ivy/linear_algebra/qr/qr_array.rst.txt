@@ -1,6 +1,5 @@
-qr array
-========
-
+ivy.Array.qr
+============
 .. autofunction:: ivy.array.array_methods.qr
 |
 | **Supported Frameworks:**

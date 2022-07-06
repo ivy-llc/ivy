@@ -1,5 +1,5 @@
-all functional
-==============
+ivy.all
+=======
 .. autofunction:: ivy.functional.ivy.utility.all
 |
 | **Supported Frameworks:**

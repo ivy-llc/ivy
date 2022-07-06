@@ -1,6 +1,5 @@
-acos container
-==============
-
+ivy.Container.acos
+==================
 .. autofunction:: ivy.container.container_methods.acos
 |
 | **Supported Frameworks:**

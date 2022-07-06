@@ -1,6 +1,5 @@
-binary_cross_entropy array
-==========================
-
+ivy.Array.binary_cross_entropy
+==============================
 .. autofunction:: ivy.array.array_methods.binary_cross_entropy
 |
 | **Supported Frameworks:**

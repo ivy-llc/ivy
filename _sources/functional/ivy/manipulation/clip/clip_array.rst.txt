@@ -1,6 +1,5 @@
-clip array
-==========
-
+ivy.Array.clip
+==============
 .. autofunction:: ivy.array.array_methods.clip
 |
 | **Supported Frameworks:**

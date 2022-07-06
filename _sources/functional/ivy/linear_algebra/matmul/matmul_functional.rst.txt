@@ -1,5 +1,5 @@
-matmul functional
-=================
+ivy.matmul
+==========
 .. autofunction:: ivy.functional.ivy.linear_algebra.matmul
 |
 | **Supported Frameworks:**

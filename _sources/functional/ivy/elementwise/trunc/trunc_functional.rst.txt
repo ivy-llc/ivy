@@ -1,5 +1,5 @@
-trunc functional
-================
+ivy.trunc
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.trunc
 |
 | **Supported Frameworks:**

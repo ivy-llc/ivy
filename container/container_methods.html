@@ -153,6 +153,8 @@
 <li class="toctree-l2"><a class="reference internal" href="container_methods/all_equal.html">all_equal container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/static_gather_nd.html">static_gather_nd container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/gather_nd.html">gather_nd container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="container_methods/static_adam_step.html">static_adam_step container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="container_methods/adam_step.html">adam_step container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/static_optimizer_update.html">static_optimizer_update container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/optimizer_update.html">optimizer_update container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/static_gradient_descent_update.html">static_gradient_descent_update container</a></li>
@@ -204,6 +206,7 @@
 <li class="toctree-l2"><a class="reference internal" href="container_methods/einsum.html">einsum container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/all.html">all container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_methods/any.html">any container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="container_methods/add_ivy_container_instance_methods.html">add_ivy_container_instance_methods container</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
@@ -301,6 +304,7 @@
              
   <section id="module-ivy.container.container_methods">
 <span id="container-methods"></span><h1>Container methods<a class="headerlink" href="#module-ivy.container.container_methods" title="Permalink to this heading"></a></h1>
+<p>Base Container Object.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.__add__">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.__add__" title="Permalink to this definition"></a></dt>
@@ -400,6 +404,32 @@ for each of the corresponding leaves of the two containers.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.adam_step">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.adam_step" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.adam_step.
+This method simply wraps the function, and so the docstring for ivy.
+adam_step also applies to this method with minimal changes</p>
+<p class="rubric">Examples</p>
+<p>with :code: ‘ivy.container’ inputs:
+&gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),                     b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),                           b=ivy.array([0., 0., 0.]))
+&gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),                           b=ivy.array([0.,]))
+&gt;&gt;&gt; step = ivy.array(1)
+&gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
+{</p>
+<blockquote>
+<div><p>a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),
+b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</p>
+</div></blockquote>
+<p>}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.adam_update">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">adam_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.adam_update" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -428,6 +458,33 @@ with minimal changes.</p>
 <dd class="field-odd"><p><a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.add_ivy_container_instance_methods">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">add_ivy_container_instance_methods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#add_ivy_container_instance_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.add_ivy_container_instance_methods" title="Permalink to this definition"></a></dt>
+<dd><p>Loop over all ivy modules such as activations, general, etc. and add
+the module functions to ivy container as instance methods using _wrap_function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – the class we want to add the instance methods to.</p></li>
+<li><p><strong>modules</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">module</span></code>]) – the modules to loop over: activations, general etc.</p></li>
+<li><p><strong>static</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – whether the function should be added as a static method. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>to_ignore</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – any functions we don’t want to add an instance method for. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>As shown, <cite>add_ivy_container_instance_methods</cite> adds all the appropriate functions
+from the statistical module as instance methods to our toy <cite>ContainerExample</cite> class:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ivy.functional.ivy</span> <span class="kn">import</span> <span class="n">statistical</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ContainerExample</span><span class="p">:</span>             <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">add_ivy_container_instance_methods</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="p">[</span><span class="n">statistical</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">),</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="s2">&quot;var&quot;</span><span class="p">))</span>
+<span class="go">True True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1373,6 +1430,36 @@ with minimal changes.</p>
 <dt class="sig sig-object py" id="ivy.container.container_methods.stack">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.stack" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_adam_step">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container_methods.html#static_adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_adam_step" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.adam_step.
+This method simply wraps the function, and so the docstring for ivy.
+adam_step also applies to this method with minimal changes</p>
+<p class="rubric">Examples</p>
+<p>with :code: ‘ivy.container’ inputs:
+&gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),                     b=ivy.array([3., 4., 5.]))
+&gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),                           b=ivy.array([0., 0., 0.]))
+&gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),                           b=ivy.array([0.,]))
+&gt;&gt;&gt; step = ivy.array([3.4])
+&gt;&gt;&gt; beta1 = 0.87
+&gt;&gt;&gt; beta2 = 0.976
+&gt;&gt;&gt; epsilon = 1e-5
+&gt;&gt;&gt; adam_step_delta = ivy.Container.static_adam_step(dcdw,                            mw, vw, step, beta1, beta2, epsilon)
+&gt;&gt;&gt; print(adam_step_delta)
+{</p>
+<blockquote>
+<div><p>a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),
+b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</p>
+</div></blockquote>
+<p>}</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>

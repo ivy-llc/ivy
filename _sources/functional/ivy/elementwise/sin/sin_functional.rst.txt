@@ -1,5 +1,5 @@
-sin functional
-==============
+ivy.sin
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.sin
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-add container
-=============
-
+ivy.Container.add
+=================
 .. autofunction:: ivy.container.container_methods.add
 |
 | **Supported Frameworks:**

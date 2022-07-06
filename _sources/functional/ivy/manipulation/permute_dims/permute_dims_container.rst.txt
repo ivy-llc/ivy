@@ -1,6 +1,5 @@
-permute_dims container
-======================
-
+ivy.Container.permute_dims
+==========================
 .. autofunction:: ivy.container.container_methods.permute_dims
 |
 | **Supported Frameworks:**

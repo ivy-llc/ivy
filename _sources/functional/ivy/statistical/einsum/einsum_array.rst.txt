@@ -1,6 +1,5 @@
-einsum array
-============
-
+ivy.Array.einsum
+================
 .. autofunction:: ivy.array.array_methods.einsum
 |
 | **Supported Frameworks:**

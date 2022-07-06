@@ -1,6 +1,5 @@
-tensordot array
-===============
-
+ivy.Array.tensordot
+===================
 .. autofunction:: ivy.array.array_methods.tensordot
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-sign container
-==============
-
+ivy.Container.sign
+==================
 .. autofunction:: ivy.container.container_methods.sign
 |
 | **Supported Frameworks:**

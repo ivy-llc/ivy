@@ -1,6 +1,5 @@
-tanh array
-==========
-
+ivy.Array.tanh
+==============
 .. autofunction:: ivy.array.array_methods.tanh
 |
 | **Supported Frameworks:**

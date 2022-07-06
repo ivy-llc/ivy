@@ -1,6 +1,5 @@
-remainder array
-===============
-
+ivy.Array.remainder
+===================
 .. autofunction:: ivy.array.array_methods.remainder
 |
 | **Supported Frameworks:**

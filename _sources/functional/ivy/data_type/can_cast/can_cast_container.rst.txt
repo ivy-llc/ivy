@@ -1,6 +1,5 @@
-can_cast container
-==================
-
+ivy.Container.can_cast
+======================
 .. autofunction:: ivy.container.container_methods.can_cast
 |
 | **Supported Frameworks:**

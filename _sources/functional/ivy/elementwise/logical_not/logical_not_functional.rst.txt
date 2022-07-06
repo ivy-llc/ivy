@@ -1,5 +1,5 @@
-logical_not functional
-======================
+ivy.logical_not
+===============
 .. autofunction:: ivy.functional.ivy.elementwise.logical_not
 |
 | **Supported Frameworks:**

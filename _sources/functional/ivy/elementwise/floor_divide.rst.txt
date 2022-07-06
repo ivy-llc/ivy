@@ -42,7 +42,7 @@ floor_divide
    :maxdepth: -1
    :caption: floor_divide
 
-   floor_divide/floor_divide_container.rst
-   floor_divide/floor_divide_array.rst
    floor_divide/floor_divide_functional.rst
+   floor_divide/floor_divide_array.rst
+   floor_divide/floor_divide_container.rst
 

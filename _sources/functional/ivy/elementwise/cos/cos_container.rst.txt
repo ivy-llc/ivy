@@ -1,6 +1,5 @@
-cos container
-=============
-
+ivy.Container.cos
+=================
 .. autofunction:: ivy.container.container_methods.cos
 |
 | **Supported Frameworks:**

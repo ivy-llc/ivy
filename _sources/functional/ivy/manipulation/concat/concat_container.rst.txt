@@ -1,6 +1,5 @@
-concat container
-================
-
+ivy.Container.concat
+====================
 .. autofunction:: ivy.container.container_methods.concat
 |
 | **Supported Frameworks:**

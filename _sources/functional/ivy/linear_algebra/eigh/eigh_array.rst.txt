@@ -1,6 +1,5 @@
-eigh array
-==========
-
+ivy.Array.eigh
+==============
 .. autofunction:: ivy.array.array_methods.eigh
 |
 | **Supported Frameworks:**

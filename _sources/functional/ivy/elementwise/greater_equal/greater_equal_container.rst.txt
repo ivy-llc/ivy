@@ -1,6 +1,5 @@
-greater_equal container
-=======================
-
+ivy.Container.greater_equal
+===========================
 .. autofunction:: ivy.container.container_methods.greater_equal
 |
 | **Supported Frameworks:**

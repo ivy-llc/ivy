@@ -32,7 +32,7 @@ all
    :maxdepth: -1
    :caption: all
 
-   all/all_container.rst
-   all/all_array.rst
    all/all_functional.rst
+   all/all_array.rst
+   all/all_container.rst
 

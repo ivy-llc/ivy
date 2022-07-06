@@ -1,5 +1,5 @@
-tile functional
-===============
+ivy.tile
+========
 .. autofunction:: ivy.functional.ivy.manipulation.tile
 |
 | **Supported Frameworks:**

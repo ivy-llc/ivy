@@ -1,6 +1,5 @@
-bitwise_invert container
-========================
-
+ivy.Container.bitwise_invert
+============================
 .. autofunction:: ivy.container.container_methods.bitwise_invert
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-cholesky functional
-===================
+ivy.cholesky
+============
 .. autofunction:: ivy.functional.ivy.linear_algebra.cholesky
 |
 | **Supported Frameworks:**

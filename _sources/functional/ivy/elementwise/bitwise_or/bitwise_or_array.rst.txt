@@ -1,6 +1,5 @@
-bitwise_or array
-================
-
+ivy.Array.bitwise_or
+====================
 .. autofunction:: ivy.array.array_methods.bitwise_or
 |
 | **Supported Frameworks:**

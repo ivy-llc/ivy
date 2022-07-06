@@ -50,6 +50,7 @@
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../array/data_type.html">Data type</a></li>
@@ -76,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/container_methods.html">Container methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
@@ -171,8 +173,15 @@
              
   <h1>Source code for ivy.array.array_methods</h1><div class="highlight"><pre>
 <span></span><span class="c1">#ivy.array.data_type</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="can_cast"><a class="viewcode-back" href="../../../functional/ivy/data_type/can_cast/can_cast_array.html#ivy.array.array_methods.can_cast">[docs]</a><span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps</span>
@@ -191,9 +200,17 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span></div>
 
 <span class="c1">#ivy.array.elementwise</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyUnresolvedReferences</span>
 <div class="viewcode-block" id="abs"><a class="viewcode-back" href="../../../functional/ivy/elementwise/abs/abs_array.html#ivy.array.array_methods.abs">[docs]</a><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.abs. This method simply wraps the</span>
@@ -557,7 +574,19 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/tanh/tanh_array.html#ivy.array.array_methods.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/tanh/tanh_array.html#ivy.array.array_methods.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.tanh. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.tanh also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.tanh()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([0., 0.762, 0.964])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -570,9 +599,16 @@
 
 
 <span class="c1">#ivy.array.general</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+
 <div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../functional/ivy/general/all_equal/all_equal_array.html#ivy.array.array_methods.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
@@ -626,22 +662,239 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<span class="c1">#ivy.array.linear_algebra</span>
+<span class="c1">#ivy.array.gradients</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../functional/ivy/gradients/adam_step/adam_step_array.html#ivy.array.array_methods.adam_step">[docs]</a><span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.adam_step. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.adam_step also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([[[1.1], [3.2], [-6.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.array([[0.], [0.], [0.]])</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.array([[0.], [0.], [0.]])</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array(3)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),</span>
+<span class="sd">        ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
+<span class="sd">        ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="c1">#ivy.array.linear_algebra</span>
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="n">inf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matmul/matmul_array.html#ivy.array.array_methods.matmul">[docs]</a><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/cholesky/cholesky_array.html#ivy.array.array_methods.cholesky">[docs]</a><span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/cross/cross_array.html#ivy.array.array_methods.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/slogdet.html#ivy.array.array_methods.det">[docs]</a><span class="k">def</span> <span class="nf">det</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/diagonal/diagonal_array.html#ivy.array.array_methods.diagonal">[docs]</a><span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="eigh"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/eigh/eigh_array.html#ivy.array.array_methods.eigh">[docs]</a><span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="eigvalsh"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/eigvalsh/eigvalsh_array.html#ivy.array.array_methods.eigvalsh">[docs]</a><span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/pinv.html#ivy.array.array_methods.inv">[docs]</a><span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="matrix_norm"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matrix_norm/matrix_norm_array.html#ivy.array.array_methods.matrix_norm">[docs]</a><span class="k">def</span> <span class="nf">matrix_norm</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="nb">ord</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">,</span> <span class="s2">&quot;fro&quot;</span><span class="p">,</span> <span class="s2">&quot;nuc&quot;</span><span class="p">]]]</span> <span class="o">=</span> <span class="s2">&quot;fro&quot;</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="matrix_rank"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matrix_rank/matrix_rank_array.html#ivy.array.array_methods.matrix_rank">[docs]</a><span class="k">def</span> <span class="nf">matrix_rank</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="matrix_transpose"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matrix_transpose/matrix_transpose_array.html#ivy.array.array_methods.matrix_transpose">[docs]</a><span class="k">def</span> <span class="nf">matrix_transpose</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="outer"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/outer/outer_array.html#ivy.array.array_methods.outer">[docs]</a><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="pinv"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/pinv/pinv_array.html#ivy.array.array_methods.pinv">[docs]</a><span class="k">def</span> <span class="nf">pinv</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/qr/qr_array.html#ivy.array.array_methods.qr">[docs]</a><span class="k">def</span> <span class="nf">qr</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reduced&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="solve"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/solve/solve_array.html#ivy.array.array_methods.solve">[docs]</a><span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/svdvals.html#ivy.array.array_methods.svd">[docs]</a><span class="k">def</span> <span class="nf">svd</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/svdvals/svdvals_array.html#ivy.array.array_methods.svdvals">[docs]</a><span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="tensordot"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/tensordot/tensordot_array.html#ivy.array.array_methods.tensordot">[docs]</a><span class="k">def</span> <span class="nf">tensordot</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/trace/trace_array.html#ivy.array.array_methods.trace">[docs]</a><span class="k">def</span> <span class="nf">trace</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="vecdot"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/vecdot/vecdot_array.html#ivy.array.array_methods.vecdot">[docs]</a><span class="k">def</span> <span class="nf">vecdot</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="vector_norm"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/vector_norm/vector_norm_array.html#ivy.array.array_methods.vector_norm">[docs]</a><span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="nb">ord</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="vector_to_skew_symmetric_matrix"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/vector_to_skew_symmetric_matrix/vector_to_skew_symmetric_matrix_array.html#ivy.array.array_methods.vector_to_skew_symmetric_matrix">[docs]</a><span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
 <span class="c1">#ivy.array.losses</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+
 <div class="viewcode-block" id="cross_entropy"><a class="viewcode-back" href="../../../functional/ivy/losses/cross_entropy/cross_entropy_array.html#ivy.array.array_methods.cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -673,10 +926,17 @@
 
 
 <span class="c1">#ivy.array.manipulation</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../functional/ivy/manipulation/concat/concat_array.html#ivy.array.array_methods.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">xs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
@@ -829,9 +1089,16 @@
 
 
 <span class="c1">#ivy.array.norms</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_array.html#ivy.array.array_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -845,9 +1112,14 @@
 
 
 <span class="c1">#ivy.array.sorting</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="argsort"><a class="viewcode-back" href="../../../functional/ivy/sorting/argsort/argsort_array.html#ivy.array.array_methods.argsort">[docs]</a><span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -869,9 +1141,16 @@
 
 
 <span class="c1">#ivy.array.statistical</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../functional/ivy/statistical/min/min_array.html#ivy.array.array_methods.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -948,9 +1227,16 @@
 
 
 <span class="c1">#ivy.array.utility</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
 <div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../functional/ivy/utility/all/all_array.html#ivy.array.array_methods.all">[docs]</a><span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -972,9 +1258,110 @@
 
 
 <span class="c1">#ivy.array.wrapping</span>
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wraps the function called `function_name`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function_name</span>
+<span class="sd">        the name of the function e.g. &quot;abs&quot;, &quot;mean&quot; etc.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    new_function</span>
+<span class="sd">        the wrapped function.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; from ivy.array.wrapping import _wrap_function</span>
+<span class="sd">    &gt;&gt;&gt; absolute = _wrap_function(&quot;abs&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1])</span>
+<span class="sd">    &gt;&gt;&gt; print(absolute(x))</span>
+<span class="sd">    ivy.array([1])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the data of the current array from which the instance function is invoked</span>
+<span class="sd">        as the first arg parameter or kwarg parameter. Return the new function with</span>
+<span class="sd">        the name function_name and the new args variable or kwargs as the new inputs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">function_name</span><span class="p">]</span>
+        <span class="c1"># gives us the position and name of the array argument</span>
+        <span class="n">data_idx</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">array_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">data_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="p">]</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">data_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">data_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="p">]</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">data_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
+
+
+<div class="viewcode-block" id="add_ivy_array_instance_methods"><a class="viewcode-back" href="../../../array/array_methods/add_ivy_array_instance_methods.html#ivy.array.array_methods.add_ivy_array_instance_methods">[docs]</a><span class="k">def</span> <span class="nf">add_ivy_array_instance_methods</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="n">modules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">],</span> <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loop over all ivy modules such as activations, general, etc. and add</span>
+<span class="sd">    the module functions to ivy arrays as instance methods using _wrap_function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls</span>
+<span class="sd">        the class we want to add the instance methods to.</span>
+<span class="sd">    modules</span>
+<span class="sd">        the modules to loop over: activations, general etc.</span>
+<span class="sd">    to_ignore</span>
+<span class="sd">        any items we don&#39;t want to add an instance method for.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    As shown, `add_ivy_array_instance_methods` adds all the appropriate functions from</span>
+<span class="sd">    the activations module as instance methods to our toy `ArrayExample` class:</span>
+
+<span class="sd">    &gt;&gt;&gt; from ivy.functional.ivy import activations</span>
+<span class="sd">    &gt;&gt;&gt; class ArrayExample: \</span>
+<span class="sd">            pass</span>
+<span class="sd">    &gt;&gt;&gt; ivy.add_ivy_array_instance_methods(ArrayExample, [activations])</span>
+<span class="sd">    &gt;&gt;&gt; print(hasattr(ArrayExample, &quot;relu&quot;), hasattr(ArrayExample, &quot;softmax&quot;))</span>
+<span class="sd">    True True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># we skip the cases where the function is protected, the instance</span>
+            <span class="c1"># method has already been added manually and a few other cases</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span>
+                <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">to_ignore</span>
+                <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">_wrap_function</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
 </pre></div>
 
            </div>

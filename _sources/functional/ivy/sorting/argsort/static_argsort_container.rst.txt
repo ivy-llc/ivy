@@ -1,6 +1,5 @@
-static_argsort container
-========================
-
+ivy.Container.static_argsort
+============================
 .. autofunction:: ivy.container.container_methods.static_argsort
 |
 | **Supported Frameworks:**

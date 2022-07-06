@@ -1,5 +1,5 @@
-erf functional
-==============
+ivy.erf
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.erf
 |
 | **Supported Frameworks:**

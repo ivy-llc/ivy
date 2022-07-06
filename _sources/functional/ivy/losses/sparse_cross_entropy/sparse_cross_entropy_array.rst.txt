@@ -1,6 +1,5 @@
-sparse_cross_entropy array
-==========================
-
+ivy.Array.sparse_cross_entropy
+==============================
 .. autofunction:: ivy.array.array_methods.sparse_cross_entropy
 |
 | **Supported Frameworks:**

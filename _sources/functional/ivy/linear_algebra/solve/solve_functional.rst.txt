@@ -1,5 +1,5 @@
-solve functional
-================
+ivy.solve
+=========
 .. autofunction:: ivy.functional.ivy.linear_algebra.solve
 |
 | **Supported Frameworks:**

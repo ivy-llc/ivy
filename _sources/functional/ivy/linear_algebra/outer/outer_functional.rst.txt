@@ -1,5 +1,5 @@
-outer functional
-================
+ivy.outer
+=========
 .. autofunction:: ivy.functional.ivy.linear_algebra.outer
 |
 | **Supported Frameworks:**

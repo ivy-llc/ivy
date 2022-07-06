@@ -1,6 +1,5 @@
-pow array
-=========
-
+ivy.Array.pow
+=============
 .. autofunction:: ivy.array.array_methods.pow
 |
 | **Supported Frameworks:**

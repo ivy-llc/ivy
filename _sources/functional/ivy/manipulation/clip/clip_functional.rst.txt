@@ -1,5 +1,5 @@
-clip functional
-===============
+ivy.clip
+========
 .. autofunction:: ivy.functional.ivy.manipulation.clip
 |
 | **Supported Frameworks:**

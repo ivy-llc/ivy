@@ -1,6 +1,5 @@
-static_all_equal container
-==========================
-
+ivy.Container.static_all_equal
+==============================
 .. autofunction:: ivy.container.container_methods.static_all_equal
 |
 | **Supported Frameworks:**

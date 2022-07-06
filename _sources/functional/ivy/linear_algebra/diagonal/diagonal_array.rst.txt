@@ -1,6 +1,5 @@
-diagonal array
-==============
-
+ivy.Array.diagonal
+==================
 .. autofunction:: ivy.array.array_methods.diagonal
 |
 | **Supported Frameworks:**

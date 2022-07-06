@@ -1,6 +1,5 @@
-tile container
-==============
-
+ivy.Container.tile
+==================
 .. autofunction:: ivy.container.container_methods.tile
 |
 | **Supported Frameworks:**

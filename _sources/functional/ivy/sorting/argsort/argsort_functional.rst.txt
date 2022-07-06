@@ -1,5 +1,5 @@
-argsort functional
-==================
+ivy.argsort
+===========
 .. autofunction:: ivy.functional.ivy.sorting.argsort
 |
 | **Supported Frameworks:**

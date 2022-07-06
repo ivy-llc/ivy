@@ -1,6 +1,5 @@
-einsum container
-================
-
+ivy.Container.einsum
+====================
 .. autofunction:: ivy.container.container_methods.einsum
 |
 | **Supported Frameworks:**

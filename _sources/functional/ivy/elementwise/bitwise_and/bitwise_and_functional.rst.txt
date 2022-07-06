@@ -1,5 +1,5 @@
-bitwise_and functional
-======================
+ivy.bitwise_and
+===============
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_and
 |
 | **Supported Frameworks:**

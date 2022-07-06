@@ -1,6 +1,5 @@
-floor_divide container
-======================
-
+ivy.Container.floor_divide
+==========================
 .. autofunction:: ivy.container.container_methods.floor_divide
 |
 | **Supported Frameworks:**

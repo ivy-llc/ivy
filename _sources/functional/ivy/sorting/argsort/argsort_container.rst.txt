@@ -1,6 +1,5 @@
-argsort container
-=================
-
+ivy.Container.argsort
+=====================
 .. autofunction:: ivy.container.container_methods.argsort
 |
 | **Supported Frameworks:**

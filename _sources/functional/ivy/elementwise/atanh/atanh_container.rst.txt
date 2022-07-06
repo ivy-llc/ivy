@@ -1,6 +1,5 @@
-atanh container
-===============
-
+ivy.Container.atanh
+===================
 .. autofunction:: ivy.container.container_methods.atanh
 |
 | **Supported Frameworks:**

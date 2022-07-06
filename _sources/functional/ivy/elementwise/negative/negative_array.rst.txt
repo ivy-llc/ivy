@@ -1,6 +1,5 @@
-negative array
-==============
-
+ivy.Array.negative
+==================
 .. autofunction:: ivy.array.array_methods.negative
 |
 | **Supported Frameworks:**

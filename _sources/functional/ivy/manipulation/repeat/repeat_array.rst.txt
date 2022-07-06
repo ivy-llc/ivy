@@ -1,6 +1,5 @@
-repeat array
-============
-
+ivy.Array.repeat
+================
 .. autofunction:: ivy.array.array_methods.repeat
 |
 | **Supported Frameworks:**

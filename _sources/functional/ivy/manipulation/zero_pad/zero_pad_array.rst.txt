@@ -1,6 +1,5 @@
-zero_pad array
-==============
-
+ivy.Array.zero_pad
+==================
 .. autofunction:: ivy.array.array_methods.zero_pad
 |
 | **Supported Frameworks:**

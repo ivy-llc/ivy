@@ -1,6 +1,5 @@
-mean container
-==============
-
+ivy.Container.mean
+==================
 .. autofunction:: ivy.container.container_methods.mean
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-can_cast array
-==============
-
+ivy.Array.can_cast
+==================
 .. autofunction:: ivy.array.array_methods.can_cast
 |
 | **Supported Frameworks:**

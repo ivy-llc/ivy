@@ -1,6 +1,5 @@
-all_equal container
-===================
-
+ivy.Container.all_equal
+=======================
 .. autofunction:: ivy.container.container_methods.all_equal
 |
 | **Supported Frameworks:**

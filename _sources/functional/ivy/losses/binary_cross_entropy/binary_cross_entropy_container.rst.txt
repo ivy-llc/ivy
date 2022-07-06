@@ -1,6 +1,5 @@
-binary_cross_entropy container
-==============================
-
+ivy.Container.binary_cross_entropy
+==================================
 .. autofunction:: ivy.container.container_methods.binary_cross_entropy
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-gather_nd array
-===============
-
+ivy.Array.gather_nd
+===================
 .. autofunction:: ivy.array.array_methods.gather_nd
 |
 | **Supported Frameworks:**

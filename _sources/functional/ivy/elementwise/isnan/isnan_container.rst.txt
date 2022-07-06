@@ -1,6 +1,5 @@
-isnan container
-===============
-
+ivy.Container.isnan
+===================
 .. autofunction:: ivy.container.container_methods.isnan
 |
 | **Supported Frameworks:**

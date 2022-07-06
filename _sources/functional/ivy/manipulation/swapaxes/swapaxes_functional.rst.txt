@@ -1,5 +1,5 @@
-swapaxes functional
-===================
+ivy.swapaxes
+============
 .. autofunction:: ivy.functional.ivy.manipulation.swapaxes
 |
 | **Supported Frameworks:**

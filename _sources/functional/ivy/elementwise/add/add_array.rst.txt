@@ -1,6 +1,5 @@
-add array
-=========
-
+ivy.Array.add
+=============
 .. autofunction:: ivy.array.array_methods.add
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-atan container
-==============
-
+ivy.Container.atan
+==================
 .. autofunction:: ivy.container.container_methods.atan
 |
 | **Supported Frameworks:**

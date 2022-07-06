@@ -34,8 +34,8 @@ can_cast
    :maxdepth: -1
    :caption: can_cast
 
+   can_cast/can_cast_functional.rst
    can_cast/can_cast_array.rst
    can_cast/can_cast_container.rst
-   can_cast/can_cast_functional.rst
    can_cast/static_can_cast_container.rst
 

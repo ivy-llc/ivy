@@ -1,6 +1,5 @@
-isinf array
-===========
-
+ivy.Array.isinf
+===============
 .. autofunction:: ivy.array.array_methods.isinf
 |
 | **Supported Frameworks:**

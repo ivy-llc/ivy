@@ -1,6 +1,5 @@
-layer_norm container
-====================
-
+ivy.Container.layer_norm
+========================
 .. autofunction:: ivy.container.container_methods.layer_norm
 |
 | **Supported Frameworks:**

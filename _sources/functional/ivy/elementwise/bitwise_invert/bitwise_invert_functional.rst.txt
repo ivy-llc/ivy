@@ -1,5 +1,5 @@
-bitwise_invert functional
-=========================
+ivy.bitwise_invert
+==================
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_invert
 |
 | **Supported Frameworks:**

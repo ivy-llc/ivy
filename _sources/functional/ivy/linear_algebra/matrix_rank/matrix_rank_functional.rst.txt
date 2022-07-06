@@ -1,5 +1,5 @@
-matrix_rank functional
-======================
+ivy.matrix_rank
+===============
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_rank
 |
 | **Supported Frameworks:**

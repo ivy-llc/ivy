@@ -73,6 +73,7 @@ Array methods
    array_methods/erf.rst
    array_methods/all_equal.rst
    array_methods/gather_nd.rst
+   array_methods/adam_step.rst
    array_methods/matmul.rst
    array_methods/cholesky.rst
    array_methods/cross.rst
@@ -125,4 +126,5 @@ Array methods
    array_methods/einsum.rst
    array_methods/all.rst
    array_methods/any.rst
+   array_methods/add_ivy_array_instance_methods.rst
 

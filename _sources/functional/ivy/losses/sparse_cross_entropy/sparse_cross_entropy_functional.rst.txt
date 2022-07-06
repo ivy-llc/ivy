@@ -1,5 +1,5 @@
-sparse_cross_entropy functional
-===============================
+ivy.sparse_cross_entropy
+========================
 .. autofunction:: ivy.functional.ivy.losses.sparse_cross_entropy
 |
 | **Supported Frameworks:**

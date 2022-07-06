@@ -1,6 +1,5 @@
-static_tanh container
-=====================
-
+ivy.Container.static_tanh
+=========================
 .. autofunction:: ivy.container.container_methods.static_tanh
 |
 | **Supported Frameworks:**

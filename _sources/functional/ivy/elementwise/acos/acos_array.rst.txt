@@ -1,6 +1,5 @@
-acos array
-==========
-
+ivy.Array.acos
+==============
 .. autofunction:: ivy.array.array_methods.acos
 |
 | **Supported Frameworks:**

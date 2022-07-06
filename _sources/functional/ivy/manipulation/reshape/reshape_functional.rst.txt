@@ -1,5 +1,5 @@
-reshape functional
-==================
+ivy.reshape
+===========
 .. autofunction:: ivy.functional.ivy.manipulation.reshape
 |
 | **Supported Frameworks:**

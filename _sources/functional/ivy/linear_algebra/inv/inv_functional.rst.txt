@@ -1,5 +1,5 @@
-pinv functional
-===============
+ivy.inv
+=======
 .. autofunction:: ivy.functional.ivy.linear_algebra.pinv
 
 .. autofunction:: ivy.array.array_methods.pinv

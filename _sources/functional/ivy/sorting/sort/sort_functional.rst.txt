@@ -1,5 +1,5 @@
-sort functional
-===============
+ivy.sort
+========
 .. autofunction:: ivy.functional.ivy.sorting.sort
 |
 | **Supported Frameworks:**

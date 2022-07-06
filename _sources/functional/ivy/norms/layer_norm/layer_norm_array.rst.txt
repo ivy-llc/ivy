@@ -1,6 +1,5 @@
-layer_norm array
-================
-
+ivy.Array.layer_norm
+====================
 .. autofunction:: ivy.array.array_methods.layer_norm
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-bitwise_right_shift container
-=============================
-
+ivy.Container.bitwise_right_shift
+=================================
 .. autofunction:: ivy.container.container_methods.bitwise_right_shift
 |
 | **Supported Frameworks:**

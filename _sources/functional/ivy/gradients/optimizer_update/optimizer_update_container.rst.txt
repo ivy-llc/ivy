@@ -1,6 +1,5 @@
-optimizer_update container
-==========================
-
+ivy.Container.optimizer_update
+==============================
 .. autofunction:: ivy.container.container_methods.optimizer_update
 |
 | **Supported Frameworks:**

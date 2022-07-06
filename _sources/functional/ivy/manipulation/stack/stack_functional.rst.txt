@@ -1,5 +1,5 @@
-stack functional
-================
+ivy.stack
+=========
 .. autofunction:: ivy.functional.ivy.manipulation.stack
 |
 | **Supported Frameworks:**

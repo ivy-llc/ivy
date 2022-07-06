@@ -1,5 +1,5 @@
-vector_to_skew_symmetric_matrix functional
-==========================================
+ivy.vector_to_skew_symmetric_matrix
+===================================
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix
 |
 | **Supported Frameworks:**

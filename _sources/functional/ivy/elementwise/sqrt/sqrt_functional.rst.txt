@@ -1,5 +1,5 @@
-sqrt functional
-===============
+ivy.sqrt
+========
 .. autofunction:: ivy.functional.ivy.elementwise.sqrt
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-lars_update container
-=====================
-
+ivy.Container.lars_update
+=========================
 .. autofunction:: ivy.container.container_methods.lars_update
 |
 | **Supported Frameworks:**

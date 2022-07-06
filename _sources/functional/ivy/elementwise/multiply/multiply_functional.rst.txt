@@ -1,5 +1,5 @@
-multiply functional
-===================
+ivy.multiply
+============
 .. autofunction:: ivy.functional.ivy.elementwise.multiply
 |
 | **Supported Frameworks:**

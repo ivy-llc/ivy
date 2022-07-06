@@ -1,5 +1,5 @@
-ceil functional
-===============
+ivy.ceil
+========
 .. autofunction:: ivy.functional.ivy.elementwise.ceil
 |
 | **Supported Frameworks:**

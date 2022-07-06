@@ -1,6 +1,5 @@
-equal array
-===========
-
+ivy.Array.equal
+===============
 .. autofunction:: ivy.array.array_methods.equal
 |
 | **Supported Frameworks:**

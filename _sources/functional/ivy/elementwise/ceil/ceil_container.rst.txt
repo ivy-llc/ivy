@@ -1,6 +1,5 @@
-ceil container
-==============
-
+ivy.Container.ceil
+==================
 .. autofunction:: ivy.container.container_methods.ceil
 |
 | **Supported Frameworks:**

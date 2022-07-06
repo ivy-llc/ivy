@@ -1,6 +1,5 @@
-logical_or container
-====================
-
+ivy.Container.logical_or
+========================
 .. autofunction:: ivy.container.container_methods.logical_or
 |
 | **Supported Frameworks:**

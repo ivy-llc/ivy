@@ -1,6 +1,5 @@
-stack array
-===========
-
+ivy.Array.stack
+===============
 .. autofunction:: ivy.array.array_methods.stack
 |
 | **Supported Frameworks:**

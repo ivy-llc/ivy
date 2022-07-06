@@ -173,23 +173,57 @@
              
   <h1>Source code for ivy.container.container_methods</h1><div class="highlight"><pre>
 <span></span><span class="c1">#ivy.container.base</span>
+<span class="sd">&quot;&quot;&quot;Base Container Object.&quot;&quot;&quot;</span>
+
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># noinspection PyPackageRequirements</span>
+    <span class="kn">import</span> <span class="nn">h5py</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="n">h5py</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">set</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">ivy.functional.backends.numpy</span>
+
+
+<span class="n">ansi_escape</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\x1B(?:[@-Z</span><span class="se">\\</span><span class="s2">-_]|\[[0-?]*[ -/]*[@-~])&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_jsonable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span> <span class="nf">_repr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <span class="c1">#ivy.container.container</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">.activations</span> <span class="kn">import</span> <span class="n">ContainerWithActivations</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
@@ -211,6 +245,8 @@
 <span class="kn">from</span> <span class="nn">.sorting</span> <span class="kn">import</span> <span class="n">ContainerWithSorting</span>
 <span class="kn">from</span> <span class="nn">.statistical</span> <span class="kn">import</span> <span class="n">ContainerWithStatistical</span>
 <span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">ContainerWithUtility</span>
+
+
 <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -446,9 +482,17 @@
 
 
 <span class="c1">#ivy.container.data_type</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="static_can_cast"><a class="viewcode-back" href="../../../functional/ivy/data_type/can_cast/static_can_cast_container.html#ivy.container.container_methods.static_can_cast">[docs]</a><span class="k">def</span> <span class="nf">static_can_cast</span><span class="p">(</span>
     <span class="n">from_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span>
@@ -508,9 +552,17 @@
 
 
 <span class="c1">#ivy.container.elementwise</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="abs"><a class="viewcode-back" href="../../../functional/ivy/elementwise/abs/abs_container.html#ivy.container.container_methods.abs">[docs]</a><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1396,9 +1448,17 @@
 
 
 <span class="c1">#ivy.container.general</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="clip_vector_norm"><a class="viewcode-back" href="../../../functional/ivy/general/clip_vector_norm/clip_vector_norm_container.html#ivy.container.container_methods.clip_vector_norm">[docs]</a><span class="k">def</span> <span class="nf">clip_vector_norm</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">max_norm</span><span class="p">,</span>
@@ -1601,8 +1661,84 @@
 
 <span class="c1">#ivy.container.gradients</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
+<div class="viewcode-block" id="static_adam_step"><a class="viewcode-back" href="../../../functional/ivy/gradients/adam_step/static_adam_step_container.html#ivy.container.container_methods.static_adam_step">[docs]</a><span class="k">def</span> <span class="nf">static_adam_step</span><span class="p">(</span>
+    <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">    adam_step also applies to this method with minimal changes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    with :code: &#39;ivy.container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                     b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                           b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),\</span>
+<span class="sd">                           b=ivy.array([0.,]))</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array([3.4])</span>
+<span class="sd">    &gt;&gt;&gt; beta1 = 0.87</span>
+<span class="sd">    &gt;&gt;&gt; beta2 = 0.976</span>
+<span class="sd">    &gt;&gt;&gt; epsilon = 1e-5</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.Container.static_adam_step(dcdw,\</span>
+<span class="sd">                            mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),</span>
+<span class="sd">        b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../functional/ivy/gradients/adam_step/adam_step_container.html#ivy.container.container_methods.adam_step">[docs]</a><span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">    adam_step also applies to this method with minimal changes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    with :code: &#39;ivy.container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                     b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                           b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),\</span>
+<span class="sd">                           b=ivy.array([0.,]))</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array(1)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: (list[3], &lt;class ivy.array.Array&gt; shape=[3]),</span>
+<span class="sd">        b: (list[3], &lt;class ivy.array.Array&gt; shape=[3])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="static_optimizer_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/optimizer_update/static_optimizer_update_container.html#ivy.container.container_methods.static_optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">static_optimizer_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">,</span>
     <span class="n">effective_grad</span><span class="p">,</span>
@@ -1774,9 +1910,17 @@
 
 
 <span class="c1">#ivy.container.linear_algebra</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor,PyMethodParameters</span>
 <div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../functional/ivy/linear_algebra/matmul/matmul_container.html#ivy.container.container_methods.matmul">[docs]</a><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1790,9 +1934,14 @@
 
 
 <span class="c1">#ivy.container.losses</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+
 <div class="viewcode-block" id="static_cross_entropy"><a class="viewcode-back" href="../../../functional/ivy/losses/cross_entropy/static_cross_entropy_container.html#ivy.container.container_methods.static_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">static_cross_entropy</span><span class="p">(</span>
     <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1878,10 +2027,18 @@
 
 
 <span class="c1">#ivy.container.manipulation</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../functional/ivy/manipulation/concat/concat_container.html#ivy.container.container_methods.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">xs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
@@ -2186,9 +2343,17 @@
 
 
 <span class="c1">#ivy.container.norms</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_container.html#ivy.container.container_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -2206,9 +2371,17 @@
 
 
 <span class="c1">#ivy.container.random</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="static_random_uniform"><a class="viewcode-back" href="../../../functional/ivy/random/random_uniform/static_random_uniform_container.html#ivy.container.container_methods.static_random_uniform">[docs]</a><span class="k">def</span> <span class="nf">static_random_uniform</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -2312,9 +2485,14 @@
 
 
 <span class="c1">#ivy.container.sorting</span>
+<span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="static_argsort"><a class="viewcode-back" href="../../../functional/ivy/sorting/argsort/static_argsort_container.html#ivy.container.container_methods.static_argsort">[docs]</a><span class="k">def</span> <span class="nf">static_argsort</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -2376,9 +2554,17 @@
 
 
 <span class="c1">#ivy.container.statistical</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../functional/ivy/statistical/min/min_container.html#ivy.container.container_methods.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2487,9 +2673,17 @@
 
 
 <span class="c1">#ivy.container.utility</span>
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../functional/ivy/utility/all/all_container.html#ivy.container.container_methods.all">[docs]</a><span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2517,9 +2711,137 @@
 
 
 <span class="c1">#ivy.container.wrapping</span>
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="n">TO_IGNORE</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;is_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;is_ivy_array&quot;</span><span class="p">,</span> <span class="s2">&quot;is_native_array&quot;</span><span class="p">,</span> <span class="s2">&quot;is_array&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">static</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wraps the function called `function_name`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function_name</span>
+<span class="sd">        the name of the function e.g. &quot;abs&quot;, &quot;mean&quot; etc.</span>
+<span class="sd">    static</span>
+<span class="sd">        whether the function being wrapped will be added as a static method.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    new_function</span>
+<span class="sd">        the wrapped function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">function_name</span><span class="p">]</span>
+        <span class="n">data_idx</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">array_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="p">(</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">args</span>
+            <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">static</span>
+        <span class="p">):</span>
+            <span class="c1"># if the method has been called as an instance method, and self should not</span>
+            <span class="c1"># be the first positional arg, then we need to re-arrange and place self</span>
+            <span class="c1"># in the correct location in the args or kwargs</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">data_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                    <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="p">]</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">data_idx</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">data_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                    <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="p">]</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">data_idx</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># return function multi-mapped across the corresponding leaves of the containers</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="n">function_name</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
+
+
+<div class="viewcode-block" id="add_ivy_container_instance_methods"><a class="viewcode-back" href="../../../container/container_methods/add_ivy_container_instance_methods.html#ivy.container.container_methods.add_ivy_container_instance_methods">[docs]</a><span class="k">def</span> <span class="nf">add_ivy_container_instance_methods</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">modules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">],</span>
+    <span class="n">static</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loop over all ivy modules such as activations, general, etc. and add</span>
+<span class="sd">    the module functions to ivy container as instance methods using _wrap_function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls</span>
+<span class="sd">        the class we want to add the instance methods to.</span>
+<span class="sd">    modules</span>
+<span class="sd">        the modules to loop over: activations, general etc.</span>
+<span class="sd">    static</span>
+<span class="sd">        whether the function should be added as a static method.</span>
+<span class="sd">    to_ignore</span>
+<span class="sd">        any functions we don&#39;t want to add an instance method for.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    As shown, `add_ivy_container_instance_methods` adds all the appropriate functions</span>
+<span class="sd">    from the statistical module as instance methods to our toy `ContainerExample` class:</span>
+
+<span class="sd">    &gt;&gt;&gt; from ivy.functional.ivy import statistical</span>
+<span class="sd">    &gt;&gt;&gt; class ContainerExample: \</span>
+<span class="sd">            pass</span>
+<span class="sd">    &gt;&gt;&gt; ivy.add_ivy_container_instance_methods(ContainerExample, [statistical])</span>
+<span class="sd">    &gt;&gt;&gt; print(hasattr(ContainerExample, &quot;mean&quot;), hasattr(ContainerExample, &quot;var&quot;))</span>
+<span class="sd">    True True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_ignore</span> <span class="o">=</span> <span class="n">TO_IGNORE</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_ignore</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">full_key</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;static_&quot;</span> <span class="k">if</span> <span class="n">static</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">key</span>
+            <span class="c1"># skip cases where the function is protected, or first letter is uppercase</span>
+            <span class="c1"># (i.e. is a class), or if the instance method already exists etc</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">full_key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span>
+                <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">full_key</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">full_key</span> <span class="ow">in</span> <span class="n">to_ignore</span>
+                <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">full_key</span><span class="p">,</span> <span class="n">_wrap_function</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">static</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
 </pre></div>
 
            </div>

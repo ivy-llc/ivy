@@ -1,6 +1,5 @@
-static_divide container
-=======================
-
+ivy.Container.static_divide
+===========================
 .. autofunction:: ivy.container.container_methods.static_divide
 |
 | **Supported Frameworks:**

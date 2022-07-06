@@ -1,5 +1,5 @@
-logical_or functional
-=====================
+ivy.logical_or
+==============
 .. autofunction:: ivy.functional.ivy.elementwise.logical_or
 |
 | **Supported Frameworks:**

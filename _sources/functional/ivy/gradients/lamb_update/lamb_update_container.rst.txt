@@ -1,6 +1,5 @@
-lamb_update container
-=====================
-
+ivy.Container.lamb_update
+=========================
 .. autofunction:: ivy.container.container_methods.lamb_update
 |
 | **Supported Frameworks:**

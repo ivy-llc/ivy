@@ -1,6 +1,5 @@
-isfinite container
-==================
-
+ivy.Container.isfinite
+======================
 .. autofunction:: ivy.container.container_methods.isfinite
 |
 | **Supported Frameworks:**

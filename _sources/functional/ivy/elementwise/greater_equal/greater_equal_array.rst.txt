@@ -1,6 +1,5 @@
-greater_equal array
-===================
-
+ivy.Array.greater_equal
+=======================
 .. autofunction:: ivy.array.array_methods.greater_equal
 |
 | **Supported Frameworks:**

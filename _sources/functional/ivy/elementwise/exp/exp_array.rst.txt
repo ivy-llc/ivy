@@ -1,6 +1,5 @@
-exp array
-=========
-
+ivy.Array.exp
+=============
 .. autofunction:: ivy.array.array_methods.exp
 |
 | **Supported Frameworks:**

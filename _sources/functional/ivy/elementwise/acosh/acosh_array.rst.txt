@@ -1,6 +1,5 @@
-acosh array
-===========
-
+ivy.Array.acosh
+===============
 .. autofunction:: ivy.array.array_methods.acosh
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-prod functional
-===============
+ivy.prod
+========
 .. autofunction:: ivy.functional.ivy.statistical.prod
 |
 | **Supported Frameworks:**

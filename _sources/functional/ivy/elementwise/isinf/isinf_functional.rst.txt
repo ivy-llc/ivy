@@ -1,5 +1,5 @@
-isinf functional
-================
+ivy.isinf
+=========
 .. autofunction:: ivy.functional.ivy.elementwise.isinf
 |
 | **Supported Frameworks:**

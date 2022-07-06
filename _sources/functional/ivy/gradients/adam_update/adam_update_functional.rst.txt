@@ -1,5 +1,5 @@
-adam_update functional
-======================
+ivy.adam_update
+===============
 .. autofunction:: ivy.functional.ivy.gradients.adam_update
 |
 | **Supported Frameworks:**

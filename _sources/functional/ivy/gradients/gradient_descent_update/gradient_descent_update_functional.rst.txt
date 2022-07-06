@@ -1,5 +1,5 @@
-gradient_descent_update functional
-==================================
+ivy.gradient_descent_update
+===========================
 .. autofunction:: ivy.functional.ivy.gradients.gradient_descent_update
 |
 | **Supported Frameworks:**

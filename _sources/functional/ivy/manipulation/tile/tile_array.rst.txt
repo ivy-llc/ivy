@@ -1,6 +1,5 @@
-tile array
-==========
-
+ivy.Array.tile
+==============
 .. autofunction:: ivy.array.array_methods.tile
 |
 | **Supported Frameworks:**

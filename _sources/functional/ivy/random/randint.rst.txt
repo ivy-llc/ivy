@@ -30,6 +30,6 @@ randint
    :maxdepth: -1
    :caption: randint
 
-   randint/static_randint_container.rst
    randint/randint_functional.rst
+   randint/static_randint_container.rst
 

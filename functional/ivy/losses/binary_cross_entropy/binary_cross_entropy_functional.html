@@ -5,7 +5,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>binary_cross_entropy functional &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.binary_cross_entropy &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -20,7 +20,9 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Array.binary_cross_entropy" href="binary_cross_entropy_array.html" />
+    <link rel="prev" title="binary_cross_entropy" href="../binary_cross_entropy.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -100,7 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -112,7 +114,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../losses.html">Losses</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cross_entropy.html">cross_entropy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../binary_cross_entropy.html">binary_cross_entropy</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.binary_cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary_cross_entropy_array.html">ivy.Array.binary_cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary_cross_entropy_container.html">ivy.Container.binary_cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_binary_cross_entropy_container.html">ivy.Container.static_binary_cross_entropy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sparse_cross_entropy.html">sparse_cross_entropy</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
@@ -162,7 +175,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>binary_cross_entropy functional</li>
+                    <li><a href="../../losses.html">Losses</a> &raquo;</li>
+          <li><a href="../binary_cross_entropy.html">binary_cross_entropy</a> &raquo;</li>
+      <li>ivy.binary_cross_entropy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/losses/binary_cross_entropy/binary_cross_entropy_functional.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -172,8 +187,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="binary-cross-entropy-functional">
-<h1>binary_cross_entropy functional<a class="headerlink" href="#binary-cross-entropy-functional" title="Permalink to this heading"></a></h1>
+  <section id="ivy-binary-cross-entropy">
+<h1>ivy.binary_cross_entropy<a class="headerlink" href="#ivy-binary-cross-entropy" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.losses.binary_cross_entropy">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">binary_cross_entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/losses.html#binary_cross_entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.losses.binary_cross_entropy" title="Permalink to this definition"></a></dt>
@@ -267,7 +282,10 @@ that the inputs broadcast to.</p></li>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../binary_cross_entropy.html" class="btn btn-neutral float-left" title="binary_cross_entropy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="binary_cross_entropy_array.html" class="btn btn-neutral float-right" title="ivy.Array.binary_cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -1,5 +1,5 @@
-repeat functional
-=================
+ivy.repeat
+==========
 .. autofunction:: ivy.functional.ivy.manipulation.repeat
 |
 | **Supported Frameworks:**

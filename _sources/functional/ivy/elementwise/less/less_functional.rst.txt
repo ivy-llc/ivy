@@ -1,5 +1,5 @@
-less functional
-===============
+ivy.less
+========
 .. autofunction:: ivy.functional.ivy.elementwise.less
 |
 | **Supported Frameworks:**

@@ -1,6 +1,5 @@
-floor_divide array
-==================
-
+ivy.Array.floor_divide
+======================
 .. autofunction:: ivy.array.array_methods.floor_divide
 |
 | **Supported Frameworks:**

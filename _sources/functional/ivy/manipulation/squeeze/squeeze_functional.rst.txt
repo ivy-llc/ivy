@@ -1,5 +1,5 @@
-squeeze functional
-==================
+ivy.squeeze
+===========
 .. autofunction:: ivy.functional.ivy.manipulation.squeeze
 |
 | **Supported Frameworks:**

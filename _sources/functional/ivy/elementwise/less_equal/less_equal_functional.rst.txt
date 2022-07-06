@@ -1,5 +1,5 @@
-less_equal functional
-=====================
+ivy.less_equal
+==============
 .. autofunction:: ivy.functional.ivy.elementwise.less_equal
 |
 | **Supported Frameworks:**

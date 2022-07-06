@@ -1,6 +1,5 @@
-greater container
-=================
-
+ivy.Container.greater
+=====================
 .. autofunction:: ivy.container.container_methods.greater
 |
 | **Supported Frameworks:**

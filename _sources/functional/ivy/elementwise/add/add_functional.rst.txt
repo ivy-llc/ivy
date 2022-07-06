@@ -1,5 +1,5 @@
-logaddexp functional
-====================
+ivy.add
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.logaddexp
 
 .. autofunction:: ivy.container.container_methods.exp

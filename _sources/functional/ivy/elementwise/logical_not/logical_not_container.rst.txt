@@ -1,6 +1,5 @@
-logical_not container
-=====================
-
+ivy.Container.logical_not
+=========================
 .. autofunction:: ivy.container.container_methods.logical_not
 |
 | **Supported Frameworks:**

@@ -1,5 +1,5 @@
-pow functional
-==============
+ivy.pow
+=======
 .. autofunction:: ivy.functional.ivy.elementwise.pow
 |
 | **Supported Frameworks:**

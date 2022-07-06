@@ -1,6 +1,5 @@
-logical_or array
-================
-
+ivy.Array.logical_or
+====================
 .. autofunction:: ivy.array.array_methods.logical_or
 |
 | **Supported Frameworks:**
