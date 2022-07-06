@@ -32,7 +32,12 @@ def test_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    x = np.asarray(x, dtype=dtype)
+    if x.shape == ():
+        return
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -67,7 +72,11 @@ def test_leaky_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
+        return
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -103,7 +112,10 @@ def test_gelu(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if fw == "torch" and dtype == "float16":
+        return
+    x = np.asarray(x, dtype=dtype)
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -135,7 +147,9 @@ def test_tanh(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -168,7 +182,9 @@ def test_sigmoid(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -201,8 +217,13 @@ def test_softmax(
     fw,
 ):
     dtype, x = dtype_and_x
-    axis = None
-    helpers.test_array_function(
+    axis = -1
+    if fw == "torch" and dtype == "float16":
+        return
+    x = np.asarray(x, dtype=dtype)
+    if x.shape == ():
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -236,7 +257,9 @@ def test_softplus(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_array_function(
+    if fw == "torch" and dtype == "float16":
+        return
+    helpers.test_function(
         dtype,
         as_variable,
         False,

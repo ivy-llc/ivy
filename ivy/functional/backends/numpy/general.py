@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import dev, _to_device
+from ivy.functional.backends.numpy.device import _to_device
 
 # Helpers #
 # --------#
@@ -106,28 +106,31 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x: np.ndarray, axis: int = 0) -> np.ndarray:
-    return np.cumsum(x, axis)
+def cumsum(
+    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.cumsum(x, axis, out=out)
 
 
 def cumprod(
-    x: np.ndarray, axis: int = 0, exclusive: Optional[bool] = False
+    x: np.ndarray,
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
+        res = np.cumprod(x, -1, out=out)
         return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+    return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = dev(updates)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -156,17 +159,15 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -198,20 +199,18 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 def gather(
-    params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
+    params: np.ndarray,
+    indices: np.ndarray,
+    axis: Optional[int] = -1,
 ) -> np.ndarray:
-    if device is None:
-        device = dev(params)
-    return _to_device(np.take_along_axis(params, indices, axis), device)
+    return _to_device(np.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
+def gather_nd(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -236,7 +235,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_device(res, device)
+    return _to_device(res)
 
 
 def multiprocessing(context=None):
@@ -245,11 +244,11 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x):
+def indices_where(x, out: Optional[np.ndarray] = None):
     where_x = np.where(x)
     if len(where_x) == 1:
         return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
     return res
 
 
@@ -260,8 +259,8 @@ def one_hot(indices, depth, *, device):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
-    if as_tensor:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[np.ndarray, List[int]]:
+    if as_array:
         return np.asarray(np.shape(x))
     else:
         return x.shape

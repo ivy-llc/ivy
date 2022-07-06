@@ -11,6 +11,11 @@ import ivy
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
     def abs(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method
+        with minimal changes.
+        """
         return ivy.abs(self._data, out=out)
 
     def acosh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -25,6 +30,19 @@ class ArrayWithElementwise(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.add(y)
+        >>> print(z)
+        ivy.array([5, 7, 9])
+        """
         return ivy.add(self._data, x2, out=out)
 
     def asin(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -85,6 +103,18 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.bitwise_xor(self._data, x2, out=out)
 
     def ceil(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.ceil. This method simply wraps the
+        function, and so the docstring for ivy.ceil also applies to this method
+        with minimal changes.
+        
+        Examples
+        --------
+        >>> x = ivy.array([5.5, -2.5, 1.5, -0])
+        >>> y = x.ceil()
+        >>> print(y)
+        ivy.array([ 6., -2.,  2.,  0.])
+        """
         return ivy.ceil(self._data, out=out)
 
     def cos(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -114,6 +144,18 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.expm1(self._data, out=out)
 
     def floor(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([5.5, -2.5, 1.5, -0])
+        >>> y = x.floor()
+        >>> print(y)
+        ivy.array([ 5., -3.,  1.,  0.])
+        """
         return ivy.floor(self._data, out=out)
 
     def floor_divide(
@@ -263,9 +305,33 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.subtract(self._data, x2, out=out)
 
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tan. This method simply wraps the
+        function, and so the docstring for ivy.tan also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.tan()
+        >>> print(y)
+        ivy.array([0., 1.56, -2.19])
+        """
         return ivy.tan(self._data, out=out)
 
-    def tanh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.tanh()
+        >>> print(y)
+        ivy.array([0., 0.762, 0.964])
+        """
         return ivy.tanh(self._data, out=out)
 
     def trunc(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
