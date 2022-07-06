@@ -54,9 +54,17 @@ def abs(
         an array containing the absolute value of each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1,0,-6])
