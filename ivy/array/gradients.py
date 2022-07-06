@@ -9,14 +9,15 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def adam_step(self: ivy.Array,
-                  mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-                  vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-                  step: Union[int, float],
-                  beta1=0.9,
-                  beta2=0.999,
-                  epsilon=1e-7,
-                  ) -> ivy.Array:
+    def adam_step(
+        self: ivy.Array,
+        mw: Union[ivy.Array, ivy.NativeArray],
+        vw: Union[ivy.Array, ivy.NativeArray],
+        step: Union[int, float],
+        beta1=0.9,
+        beta2=0.999,
+        epsilon=1e-7,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.adam_step. This method simply wraps the
         function, and so the docstring for ivy.adam_step also applies to this method
