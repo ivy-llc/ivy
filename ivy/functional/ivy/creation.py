@@ -66,7 +66,6 @@ def arange(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-
     Returns
     -------
     ret
@@ -209,8 +208,8 @@ def ones(
     device
         device on which to place the created array. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -560,8 +559,8 @@ def empty_like(
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -613,8 +612,8 @@ def eye(
     device
          device on which to place the created array.
     out
-        optional output array, for writing the result to. It must have a shape that the inputs
-        broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

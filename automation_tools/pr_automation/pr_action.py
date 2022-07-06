@@ -33,7 +33,7 @@ def main():
             pass
 
     unique_names = set(all_names)
-    count = {}
+    count = {intern_: 0 for intern_ in interns_assigned_volunteers.keys()}
     for name in unique_names:
         count[name] = int(all_names.count(name) * 100 / len(all_names))
 
