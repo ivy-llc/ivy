@@ -56,7 +56,7 @@ def test_cross_entropy(
         return
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
-    helpers.test_array_function(
+    helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,
         with_out,
@@ -70,7 +70,7 @@ def test_cross_entropy(
         pred=np.asarray(pred[:length], dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
-        rtol=1e-04,
+        test_rtol=1e-04,
     )
 
 
@@ -121,7 +121,7 @@ def test_binary_cross_entropy(
         return
     true_dtype, true = dtype_and_true
     length = min(len(true), len(pred))
-    helpers.test_array_function(
+    helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,
         with_out,
@@ -189,7 +189,7 @@ def test_sparse_cross_entropy(
     if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
         return
     min_true = min(true[0], len(pred) - 1)
-    helpers.test_array_function(
+    helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,
         with_out,

@@ -76,7 +76,7 @@ def max(
     instances in place of any of the arguments.
 
     >>> x = ivy.array([0, 1, 2])
-    >>> z = ivy.array()
+    >>> z = ivy.array([0,0,0])
     >>> y = ivy.max(x, out=z)
     >>> print(z)
     ivy.array(2)
@@ -86,10 +86,10 @@ def max(
     >>> print(y)
     ivy.array([[4, 6, 10]])
 
-    >>> x = ivy.native_array([[[5, 6, 1, 2], [5, 5, 3, 6]], [5, 2, 3, 3], [7, 5, 7, 4]])
-    >>> y = ivy.max(x, (0, 2), out=x)
-    >>> print(x)
-    >>> ivy.array([6, 7])
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.max(x)
+    >>> print(y)
+    ivy.array(10)
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.max(x)

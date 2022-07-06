@@ -37,7 +37,7 @@ def test_relu(
         return
     if fw == "torch" and dtype == "float16":
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -76,7 +76,7 @@ def test_leaky_relu(
         return
     if fw == "torch" and dtype == "float16":
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -115,7 +115,7 @@ def test_gelu(
     if fw == "torch" and dtype == "float16":
         return
     x = np.asarray(x, dtype=dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -151,7 +151,7 @@ def test_tanh(
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -186,7 +186,7 @@ def test_sigmoid(
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -225,7 +225,7 @@ def test_softmax(
     x = np.asarray(x, dtype=dtype)
     if x.shape == ():
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -261,7 +261,7 @@ def test_softplus(
     dtype, x = dtype_and_x
     if fw == "torch" and dtype == "float16":
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,

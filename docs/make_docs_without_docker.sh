@@ -3,7 +3,7 @@
 # $1 : Path to the doc-builder folder relative to the ivy/docs folder
 
 # install libraries for the doc-builder
-cat $1/requirements.txt | xargs -n 1 pip3 install;
+cat $1/requirements.txt | xargs -n 1 pip install;
 
 # install libraries for ivy
 pip install -r ../requirements.txt
