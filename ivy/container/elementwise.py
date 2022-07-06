@@ -10,6 +10,45 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
+    @staticmethod
+    def static_abs(
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container.static_abs(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 2.6, 3.5]),
+            b: ivy.array([4.5, 5.3, 0, 2.3])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "abs",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
     def abs(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -19,15 +58,32 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.abs(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -2.3]))
+        >>> y = x.abs()
+        >>> print(y)
+        {
+            a: ivy.array([1.6, 2.6, 3.5]),
+            b: ivy.array([4.5, 5.3, 2.3])
+        }
+
+        """
+        return self.static_abs(
+            self, 
+            key_chains, 
+            to_apply, 
+            prune_unapplied, 
+            map_sequences, 
+            out=out
         )
 
     def acosh(
