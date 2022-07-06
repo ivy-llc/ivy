@@ -329,7 +329,8 @@ def unique_counts(
     *,
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns the unique elements of an input array ``x`` and the corresponding counts for
+    """
+    Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
@@ -386,7 +387,6 @@ def unique_counts(
 
     Examples
     --------
-
     With :code: 'ivy.Array' input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
@@ -417,4 +417,4 @@ def unique_counts(
         b: Tuple([1,2,3,4],[3,1,2,1])
     }
     """
-    return current_backend(x).unique_counts(x, out=out)
+    return current_backend(x).unique_counts(x)

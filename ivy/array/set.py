@@ -15,9 +15,9 @@ class ArrayWithSet(abc.ABC):
         out: Optional[Tuple[ivy.Array, ivy.Array]] = None
     ) -> Tuple[ivy.Array, ivy.Array]:
         """
-        ivy.Array instance method variant of ivy.unique_counts. This method simply wraps the
-        function, and so the docstring for ivy.unique_counts also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.unique_counts. This method simply 
+        wraps the function, and so the docstring for ivy.unique_counts also applies 
+        to this method with minimal changes.
 
         Examples
         --------
