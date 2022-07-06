@@ -37,7 +37,6 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-@handle_nestable
 def with_grads(with_grads=None):
     """Summary.
 
@@ -61,7 +60,6 @@ def with_grads(with_grads=None):
 
 
 # noinspection PyShadowingNames
-@handle_nestable
 def set_with_grads(with_grads):
     """Summary.
 
@@ -75,7 +73,6 @@ def set_with_grads(with_grads):
     with_grads_stack.append(with_grads)
 
 
-@handle_nestable
 def unset_with_grads():
     """"""
     global with_grads_stack
@@ -107,6 +104,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def is_variable(x, exclusive=False):
     """Determines whether the input is a variable or not.
 
@@ -154,7 +152,10 @@ def variable_data(x):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+        x: Union[ivy.Array, ivy.NativeArray],
+        preserve_type: bool = True,
+) -> ivy.Array:
     """Stops gradient computation.
 
     Parameters
@@ -209,7 +210,6 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -261,7 +261,6 @@ def adam_step(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -311,7 +310,6 @@ def optimizer_update(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -351,7 +349,6 @@ def gradient_descent_update(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -399,7 +396,6 @@ def lars_update(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -463,7 +459,6 @@ def adam_update(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
