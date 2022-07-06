@@ -25,3 +25,14 @@ zero_pad
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: zero_pad
+
+   zero_pad/zero_pad_container.rst
+   zero_pad/zero_pad_array.rst
+   zero_pad/zero_pad_functional.rst
+
