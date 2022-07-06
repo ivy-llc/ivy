@@ -27,15 +27,3 @@ multiply
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: multiply
-
-   multiply/multiply_container.rst
-   multiply/multiply_array.rst
-   multiply/multiply_functional.rst
-   multiply/static_multiply_container.rst
-

@@ -27,15 +27,3 @@ all_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: all_equal
-
-   all_equal/static_all_equal_container.rst
-   all_equal/all_equal_array.rst
-   all_equal/all_equal_container.rst
-   all_equal/all_equal_functional.rst
-
