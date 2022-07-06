@@ -4,6 +4,7 @@
 import numpy as np
 from typing import Union, Tuple, Optional
 
+
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,

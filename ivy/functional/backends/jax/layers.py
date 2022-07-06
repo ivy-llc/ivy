@@ -7,6 +7,7 @@ import jax.lax as jlax
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple
 
+
 def conv1d(
     x: JaxArray,
     filters: JaxArray,

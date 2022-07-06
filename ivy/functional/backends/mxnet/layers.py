@@ -5,6 +5,7 @@ import math
 import mxnet as mx
 from typing import Optional, Tuple, Union
 
+
 def conv1d(
     x: mx.nd.NDArray,
     filters: mx.nd.NDArray,
