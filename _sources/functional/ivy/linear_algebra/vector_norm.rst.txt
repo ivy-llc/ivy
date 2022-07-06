@@ -23,3 +23,13 @@ vector_norm
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: vector_norm
+
+   vector_norm/vector_norm_array.rst
+   vector_norm/vector_norm_functional.rst
+
