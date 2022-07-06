@@ -48,7 +48,21 @@ class ArrayWithElementwise(abc.ABC):
     def asin(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.asin(self._data, out=out)
 
-    def asinh(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def asinh(
+            self: ivy.Array,
+            out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.asinh. This method simply wraps the
+        function, and so the docstring for ivy.asinh also applies to this method
+        with minimal changes.
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.asinh()
+        >>> print(y)
+        ivy.array([0.881, 1.44 , 1.82 ])
+        """
         return ivy.asinh(self._data, out=out)
 
     def atan(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
