@@ -63,7 +63,7 @@ def arange(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
 
@@ -111,7 +111,7 @@ def asarray(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -156,7 +156,7 @@ def zeros(
     device
        device on which to place the created array. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -268,7 +268,7 @@ def full_like(
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -326,7 +326,7 @@ def ones_like(
         device on which to place the created array. If device is ``None``, the output
         array device must be inferred from x. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -380,7 +380,7 @@ def zeros_like(
         device on which to place the created array. If ``device`` is ``None``, the
         output array device must be inferred from ``x``. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -413,9 +413,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray],
-    k: int = 0,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -429,7 +427,7 @@ def tril(
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -456,9 +454,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    k: int = 0,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -472,7 +468,7 @@ def triu(
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
         diagonal is above the main diagonal. Default: 0.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -519,7 +515,7 @@ def empty(
     device
         device on which to place the created array. Default: None.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -674,7 +670,7 @@ def linspace(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -700,8 +696,7 @@ def linspace(
 @to_native_arrays_and_back
 @handle_nestable
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray],
-    indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -741,7 +736,7 @@ def meshgrid(
         Each returned array should have the same data type as the input arrays.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of 
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
         the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
         in the standard.
 
@@ -825,7 +820,7 @@ def full(
     device
         device on which to place the created array. Default: ``None``.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -871,7 +866,7 @@ def from_dlpack(
     x  object
         input (array) object.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -971,7 +966,7 @@ def logspace(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
-        optional output array, for writing the result to. It must have a shape that the 
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
@@ -986,4 +981,4 @@ def logspace(
     """
     return current_backend(start).logspace(
         start, stop, num, base, axis, device=device, out=out
-        )
+    )
