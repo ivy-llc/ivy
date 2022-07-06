@@ -234,14 +234,14 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def gather_nd(
-        self: ivy.Container,
-        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gather_nd.
