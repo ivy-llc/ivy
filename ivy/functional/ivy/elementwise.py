@@ -3087,119 +3087,99 @@ def sqrt(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Calculates the square root, having domain ``[0, +infinity]`` and codomain
-        ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
-        rounding, each result must be indistinguishable from the infinitely precise result
-        (as required by IEEE 754).
+    ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
+    rounding, each result must be indistinguishable from the infinitely precise result
+    (as required by IEEE 754).
 
-        **Special cases**
+    **Special cases**
 
-        For floating-point operands,
+    For floating-point operands,
 
-        - If ``x_i`` is ``NaN``, the result is ``NaN``.
-        - If ``x_i`` is less than ``0``, the result is ``NaN``.
-        - If ``x_i`` is ``+0``, the result is ``+0``.
-        - If ``x_i`` is ``-0``, the result is ``-0``.
-        - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``0``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
-        Parameters
-        ----------
-        x
-            input array. Should have a floating-point data type.
-        out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
-        Returns
-        -------
-        ret
-            an array containing the square root of each element in ``x``. The returned array
-            must have a floating-point data type determined by :ref:`type-promotion`.
+    Returns
+    -------
+    ret
+        an array containing the square root of each element in ``x``. The returned array
+        must have a floating-point data type determined by :ref:`type-promotion`.
 
-        This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
-        in the standard.
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-        instances in place of any of the arguments.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
-        Functional Examples
-        -------------------
-        With :code:`ivy.Array` input:
-    <<<<<<< HEAD
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
 
-    =======
+    >>> x = ivy.array([0, 4., 8.])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([0., 2., 2.83])
 
-    >>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
-        >>> x = ivy.array([0, 4., 8.])
-        >>> y = ivy.sqrt(x)
-        >>> print(y)
-        ivy.array([0., 2., 2.83])
+    >>> x = ivy.array([1, 2., 4.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sqrt(x, out=y)
+    ivy.array([1., 1.41, 2.])
 
-        >>> x = ivy.array([1, 2., 4.])
-        >>> y = ivy.zeros(3)
-        >>> ivy.sqrt(x, out=y)
-        ivy.array([1., 1.41, 2.])
+    >>> X = ivy.array([40., 24., 100.])
+    >>> ivy.sqrt(x, out=x)
+    >>> ivy.array([6.32455532, 4.89897949, 10.])
 
-        >>> X = ivy.array([40., 24., 100.])
-        >>> ivy.sqrt(x, out=x)
-        >>> ivy.array([6.32455532, 4.89897949, 10.])
+    With :code:`ivy.NativeArray` input:
 
-        With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([-50., 1000., 34.])
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    ivy.array([nan, 31.6, 5.83])
 
-        >>> x = ivy.native_array([-50., 1000., 34.])
-        >>> y = ivy.sqrt(x)
-        >>> print(y)
-        ivy.array([nan, 31.6, 5.83])
+    With :code:`ivy.Container` input:
 
-        With :code:`ivy.Container` input:
-    <<<<<<< HEAD
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
+    >>> y = ivy.sqrt(x)
+    >>> print(y)
+    {
+        a: ivy.array([6.63, 7.48, 13.]),
+        b: ivy.array([[7., 1.],
+                      [0., 4.47]])
+    }
 
-    =======
+    Instance Method Examples
+    ------------------------
 
-    >>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
-        >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
-        >>> y = ivy.sqrt(x)
-        >>> print(y)
-        {
-            a: ivy.array([6.63, 7.48, 13.]),
-            b: ivy.array([[7., 1.],
-                          [0., 4.47]])
-        }
+    Using :code:`ivy.Array` instance method:
 
-        Instance Method Examples
-        ------------------------
+    >>> x = ivy.array([[1., 2.],  [3., 4.]])
+    >>> y = x.sqrt()
+    >>> print(y)
+    ivy.array([[1.  , 1.41],
+               [1.73, 2.  ]])
 
-        Using :code:`ivy.Array` instance method:
-    <<<<<<< HEAD
+    Using :code:`ivy.Container` instance method:
 
-    =======
+    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
+    >>> y = x.sqrt()
+    >>> print(y)
+    {
+        a: ivy.array([0., 10., 5.2]),
+        b: ivy.array([9.64, 7.35, 5.])
+    }
 
-    >>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
-        >>> x = ivy.array([[1., 2.],  [3., 4.]])
-        >>> y = x.sqrt()
-        >>> print(y)
-        ivy.array([[1.  , 1.41],
-                   [1.73, 2.  ]])
-
-        Using :code:`ivy.Container` instance method:
-    <<<<<<< HEAD
-
-    =======
-
-    >>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
-        >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
-        >>> y = x.sqrt()
-        >>> print(y)
-        {
-            a: ivy.array([0., 10., 5.2]),
-            b: ivy.array([9.64, 7.35, 5.])
-        }
-    <<<<<<< HEAD
-
-    =======
-
-    >>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
     """
     return current_backend(x).sqrt(x, out=out)
 
@@ -3468,7 +3448,6 @@ def tanh(
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
-<<<<<<< HEAD
 
 
     Examples
@@ -3486,25 +3465,6 @@ def tanh(
     >>> print(y)
     ivy.array([0.462, -0.604, 0.984])
 
-=======
-
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = ivy.tanh(x)
-    >>> print(y)
-    ivy.array([0., 0.762, 0.964])
-
-    >>> x = ivy.array([0.5, -0.7, 2.4])
-    >>> y = ivy.zeros(3)
-    >>> ivy.tanh(x, out=y)
-    >>> print(y)
-    ivy.array([0.462, -0.604, 0.984])
-
->>>>>>> 103f314708581b5b70e0a8f20b4a865b2f3956b7
     >>> x = ivy.array([[1.1, 2.2, 3.3],\
                       [-4.4, -5.5, -6.6]])
     >>> ivy.tanh(x, out=x)
