@@ -752,14 +752,16 @@ def test_function(
 
     # check for unsupported dtypes
     fn = getattr(ivy, fn_name)
+    test_unsupported = False
+    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(fn):
-            return
+        if d in unsupported_dtypes_fn:
+            test_unsupported = True
+            break
     if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
         "dtype"
     ] in ivy.function_unsupported_dtypes(fn):
-        return
-
+        test_unsupported = True
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
@@ -845,8 +847,20 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
+        if test_unsupported:
+            try:
+                instance.__getattribute__(fn_name)(*args, **kwargs)
+                assert False
+            except Exception:
+                return
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
+        if test_unsupported:
+            try:
+                ivy.__dict__[fn_name](*args, **kwargs)
+                assert False
+            except Exception:
+                return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided

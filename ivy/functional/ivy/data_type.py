@@ -161,6 +161,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int, ...],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Broadcasts an array to a specified shape.
@@ -174,7 +175,8 @@ def broadcast_to(
         the array is incompatible with the specified shape, the function should raise an
         exception.
     out
-        The output array to hold the result
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -234,7 +236,7 @@ def astype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
     *,
     copy: bool = True,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -263,6 +265,9 @@ def astype(
         be returned. If ``False`` and the specified ``dtype`` matches the data type of
         the input array, the input array must be returned; otherwise, a newly allocated
         must be returned. Default: ``True``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
