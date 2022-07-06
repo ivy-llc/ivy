@@ -23,13 +23,3 @@ matrix_rank
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: matrix_rank
-
-   matrix_rank/matrix_rank_functional.rst
-   matrix_rank/matrix_rank_array.rst
-

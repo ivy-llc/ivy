@@ -25,14 +25,3 @@ sqrt
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: sqrt
-
-   sqrt/sqrt_functional.rst
-   sqrt/sqrt_array.rst
-   sqrt/sqrt_container.rst
-
