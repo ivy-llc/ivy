@@ -61,8 +61,6 @@ def with_grads(with_grads: bool = None) -> bool:
 
     Examples
     --------
-    Can be used by calling with ivy.with_grads(with_grads=...)
-
     >>> import ivy
     >>> print(ivy.with_grads(with_grads=None))
     True
