@@ -9,7 +9,9 @@ import re
 import inspect
 import numpy as np
 import math
-from typing import Union, List
+from typing import Union, List, Optional, Tuple
+from functools import reduce
+from operator import mul
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
@@ -639,7 +641,7 @@ def test_function(
     test_rtol: float = None,
     test_atol: float = 1e-06,
     test_values: bool = True,
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -915,7 +917,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
     the function in the associated framework.
@@ -1593,4 +1595,88 @@ def num_positional_args(draw, fn_name: str = None):
             num_keyword_only += 1
     return draw(
         integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+# taken from
+# https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/hypothesis_helpers.py
+def _broadcast_shapes(
+    shape1: Tuple[int, ...], shape2: Tuple[int, ...]
+) -> Tuple[int, ...]:
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# taken from
+# https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/hypothesis_helpers.py
+def broadcast_shapes(*shapes: Tuple[int, ...]):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# taken from
+# https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/hypothesis_helpers.py
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape: Tuple[int, ...] = (),
+    min_dims: int = 0,
+    max_dims: Optional[int] = None,
+    min_side: int = 0,
+    max_side: Optional[int] = None,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
     )
