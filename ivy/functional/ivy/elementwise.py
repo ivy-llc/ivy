@@ -2495,7 +2495,7 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 0., 0, 0.])
+    ivy.array([1., 0., 0., 0.])
 
     With :code:`ivy.Container` input:
 
