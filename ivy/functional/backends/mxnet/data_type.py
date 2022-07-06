@@ -86,7 +86,9 @@ def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
-def broadcast_to(x: mx.nd.NDArray, new_shape: Tuple[int, ...], out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
+def broadcast_to(
+    x: mx.nd.NDArray, new_shape: Tuple[int, ...], out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
     num_shape_dims = len(new_shape)
