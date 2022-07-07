@@ -2,6 +2,12 @@ unique_counts
 =============
 
 .. autofunction:: ivy.functional.ivy.set.unique_counts
+
+.. autofunction:: ivy.array.array_methods.unique_counts
+
+.. autofunction:: ivy.container.container_methods.static_unique_counts
+
+.. autofunction:: ivy.container.container_methods.unique_counts
 |
 | **Supported Frameworks:**
 

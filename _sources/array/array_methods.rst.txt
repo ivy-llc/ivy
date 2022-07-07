@@ -114,6 +114,7 @@ Array methods
    array_methods/zero_pad.rst
    array_methods/swapaxes.rst
    array_methods/layer_norm.rst
+   array_methods/unique_counts.rst
    array_methods/argsort.rst
    array_methods/sort.rst
    array_methods/min.rst

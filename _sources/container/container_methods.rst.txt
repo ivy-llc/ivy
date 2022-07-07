@@ -127,6 +127,8 @@ Container methods
    container_methods/static_random_uniform.rst
    container_methods/random_uniform.rst
    container_methods/static_randint.rst
+   container_methods/static_unique_counts.rst
+   container_methods/unique_counts.rst
    container_methods/static_argsort.rst
    container_methods/argsort.rst
    container_methods/static_sort.rst

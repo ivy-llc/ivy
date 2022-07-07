@@ -25,3 +25,14 @@ matmul
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: matmul
+
+   matmul/matmul_functional.rst
+   matmul/matmul_array.rst
+   matmul/matmul_container.rst
+
