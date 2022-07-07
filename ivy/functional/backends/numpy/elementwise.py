@@ -398,7 +398,11 @@ def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def abs(x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def abs(
+    x: Union[float, np.ndarray], 
+    *, 
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.absolute(x, out=out)
 
 
