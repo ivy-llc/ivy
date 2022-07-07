@@ -17,7 +17,6 @@ Container methods
    container_methods/at_devs.rst
    container_methods/static_can_cast.rst
    container_methods/can_cast.rst
-   container_methods/static_abs.rst
    container_methods/abs.rst
    container_methods/acosh.rst
    container_methods/acos.rst
@@ -77,7 +76,6 @@ Container methods
    container_methods/subtract.rst
    container_methods/static_tan.rst
    container_methods/tan.rst
-   container_methods/static_tanh.rst
    container_methods/tanh.rst
    container_methods/trunc.rst
    container_methods/erf.rst
@@ -86,8 +84,6 @@ Container methods
    container_methods/all_equal.rst
    container_methods/static_gather_nd.rst
    container_methods/gather_nd.rst
-   container_methods/static_adam_step.rst
-   container_methods/adam_step.rst
    container_methods/static_optimizer_update.rst
    container_methods/optimizer_update.rst
    container_methods/static_gradient_descent_update.rst

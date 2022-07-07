@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="vecdot" href="vecdot.html" />
-    <link rel="prev" title="tensordot" href="tensordot.html" /> 
+    <link rel="next" title="ivy.trace" href="trace/trace_functional.html" />
+    <link rel="prev" title="ivy.Array.tensordot" href="tensordot/tensordot_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -134,7 +134,11 @@
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tensordot.html">tensordot</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">trace</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">trace</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trace/trace_functional.html">ivy.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="trace/trace_array.html">ivy.Array.trace</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="vecdot.html">vecdot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
@@ -219,8 +223,6 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 -   <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>: off-diagonal below the main diagonal.</p>
 <p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -263,14 +265,16 @@ output array has rank <code class="docutils literal notranslate"><span class="pr
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tensordot.html" class="btn btn-neutral float-left" title="tensordot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="vecdot.html" class="btn btn-neutral float-right" title="vecdot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tensordot/tensordot_array.html" class="btn btn-neutral float-left" title="ivy.Array.tensordot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="trace/trace_functional.html" class="btn btn-neutral float-right" title="ivy.trace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

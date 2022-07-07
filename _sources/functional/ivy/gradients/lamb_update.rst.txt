@@ -25,3 +25,14 @@ lamb_update
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: lamb_update
+
+   lamb_update/lamb_update_functional.rst
+   lamb_update/lamb_update_container.rst
+   lamb_update/static_lamb_update_container.rst
+

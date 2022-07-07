@@ -20,7 +20,9 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Array.solve" href="solve_array.html" />
+    <link rel="prev" title="solve" href="../solve.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -100,7 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -111,7 +113,37 @@
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cholesky.html">cholesky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cross.html">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../det.html">det</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diagonal.html">diagonal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eigh.html">eigh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eigvalsh.html">eigvalsh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inv.html">inv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_norm.html">matrix_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_power.html">matrix_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_rank.html">matrix_rank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_transpose.html">matrix_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../outer.html">outer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pinv.html">pinv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qr.html">qr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../slogdet.html">slogdet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../solve.html">solve</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.solve</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solve_array.html">ivy.Array.solve</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../svdvals.html">svdvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tensordot.html">tensordot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trace.html">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vecdot.html">vecdot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vector_norm.html">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
@@ -162,6 +194,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../linear_algebra.html">Linear algebra</a> &raquo;</li>
+          <li><a href="../solve.html">solve</a> &raquo;</li>
       <li>ivy.solve</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/linear_algebra/solve/solve_functional.rst.txt" rel="nofollow"> View page source</a>
@@ -190,8 +224,6 @@ equivalent to an array having shape (…, M, 1). If x2 has shape (…, M, K),
 each column k defines a set of ordinate values for which to compute a solution,
 and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
 Should have a floating-point data type.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -216,7 +248,10 @@ Rules.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../solve.html" class="btn btn-neutral float-left" title="solve" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="solve_array.html" class="btn btn-neutral float-right" title="ivy.Array.solve" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
