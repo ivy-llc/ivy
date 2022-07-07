@@ -131,10 +131,6 @@ def test_logspace(
     container,
     fw,
 ):
-    test_rtol = (1,)  # if its less then one it'll test for inf
-    test_atol = (1e-06,)
-    test_values = True
-
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
         dtype,
@@ -146,9 +142,9 @@ def test_logspace(
         False,
         fw,
         "logspace",
-        test_rtol,
-        test_atol,
-        test_values,
+        test_rtol=(1,),  # if its less then one it'll test for inf
+        test_atol=(1e-06,),
+        test_values=True,
         start=start_stop[0],
         stop=start_stop[1],
         num=num,
