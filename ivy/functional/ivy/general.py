@@ -340,7 +340,7 @@ def copy_array(
     ivy.array([1, 0, 1, -1])
 
     """
-    return current_backend(x).copy_array(x)
+    return current_backend(x).copy_array(x, out=out)
 
 
 @inputs_to_native_arrays
@@ -853,22 +853,22 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 @handle_nestable
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
-    
+
     Parameters
     ----------
     x
         Input array.
-        
+
     Returns
     -------
     ret
         A list representation of the input array ``x``.
-        
+
     Functional Examples
     ------------------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
@@ -876,7 +876,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.array([[ 1.1,  2.2,  3.3], \
                        [-4.4, -5.5, -6.6]])
     >>> y = ivy.to_list(x)
@@ -885,7 +885,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.array([[[-1,  0,  1],\
                         [ 1,  0, -1]], \
                        [[ 1, -1,  0], \
@@ -896,9 +896,9 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([-1, 0, 1])
     >>> y = ivy.to_list(x)
     >>> print(y)
@@ -906,7 +906,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.native_array([[-1, 0, 1], \
                               [-1, 0, 1], \
                               [ 1, 0, -1]])
@@ -916,7 +916,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     >>> x = ivy.native_array([[[-1, 0, 1], \
                                [1, 0, -1]], \
                               [[1, -1, 0], \
@@ -927,16 +927,16 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
     >>> print(isinstance(y, list))
     True
-    
+
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [-1, 0, 1]
     }
-    
+
     >>> x = ivy.Container(a=ivy.array([[-1, 0, 1], \
                                        [-1, 0, 1], \
                                        [1, 0, -1]]))
@@ -945,7 +945,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
-    
+
     >>> x = \
     ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
@@ -953,23 +953,23 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
-    
+
     With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [-1, 0, 1]
     }
-    
+
     >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1],[-1, 0, 1],[1, 0, -1]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
         a: [[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]
     }
-    
+
     >>> x =\
     ivy.Container(a=ivy.native_array([[[-1 ,0, 1],[1, 0 ,-1]],[[1, -1, 0],[1,0 ,-1]]]))
     >>> y = ivy.to_list(x)
@@ -1044,6 +1044,7 @@ def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
     p: float = 2.0,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
@@ -1056,7 +1057,10 @@ def clip_matrix_norm(
         The maximum value of the array norm.
     p
         The p-value for computing the p-norm. Default is 2.
-
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+        
     Returns
     -------
     ret
@@ -1573,6 +1577,7 @@ def current_backend_str() -> Union[str, None]:
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
+    *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
@@ -1586,6 +1591,9 @@ def einops_rearrange(
         Rearrangement pattern.
     axes_lengths
         Any additional specifications for dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1605,6 +1613,7 @@ def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
+    *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
@@ -1620,6 +1629,9 @@ def einops_reduce(
         One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
     axes_lengths
         Any additional specifications for dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1638,6 +1650,7 @@ def einops_reduce(
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
+    *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1651,6 +1664,9 @@ def einops_repeat(
         Rearrangement pattern.
     axes_lengths
         Any additional specifications for dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2052,17 +2068,20 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    
     Returns
     -------
     ret
         Input array with cumulatively multiplied elements along axis.
-        
+
     Functional Examples
     --------
-    
+
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([2, 3, 4])
     >>> y = ivy.cumprod(x)
     >>> print(y)
@@ -2073,9 +2092,9 @@ def cumprod(
     >>> y = ivy.cumprod(x, exclusive=exclusive)
     >>> print(y)
     ivy.array([1, 2, 6])
-    
+
     Example specifying axes
-    
+
     >>> x = ivy.array([[2, 3], \
                        [5, 7], \
                        [11, 13]])
@@ -2084,24 +2103,24 @@ def cumprod(
     >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
     >>> print(y)
     ivy.array([[1.,2.],[1.,5.],[1.,11.]])
-     
+
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> exclusive = True
     >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
     >>> print(x)
     ivy.array([[1,  1],
-               [2,  3], 
+               [2,  3],
                [10, 21]])
-     
-     
+
+
      With :code:`ivy.NativeArray` input:
-     
+
      >>> x = ivy.native_array([2, 3, 4])
      >>> y = ivy.cumprod(x)
      >>> print(y)
      ivy.array([2, 6, 24])
-     
-     
+
+
      With :code:`ivy.Container` input:
      >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
      >>> y = ivy.cumprod(x)
@@ -2124,6 +2143,8 @@ def scatter_flat(
     size: Optional[int] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -2144,6 +2165,9 @@ def scatter_flat(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
         updates if None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2152,7 +2176,7 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction
+        indices, updates, size, tensor, reduction, out=out
     )
 
 
@@ -2165,6 +2189,8 @@ def scatter_nd(
     shape: Optional[Iterable[int]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -2186,6 +2212,9 @@ def scatter_nd(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
         updates if None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2194,7 +2223,7 @@ def scatter_nd(
 
     """
     return current_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction
+        indices, updates, shape, tensor, reduction, out=out
     )
 
 
@@ -2236,7 +2265,7 @@ def gather(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -2353,6 +2382,9 @@ def gather_nd(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2443,6 +2475,9 @@ def indices_where(
     ----------
     x
         Boolean array, for which indices are desired.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2475,6 +2510,9 @@ def one_hot(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
