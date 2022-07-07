@@ -1,10 +1,9 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Tuple
 
 # local
 import ivy
-from ivy.container.base import ContainerBase
-
+from ivy.container.base import Conta
 # ToDo: implement all methods here as public instance methods
 
 
@@ -52,8 +51,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cholesky. This method simply wraps the
-        function, and so the docstring for ivy.cholesky also applies to this method
+        ivy.Container static method variant of ivy.cholesky.
+        This method simply wraps the function, and so the docstring
+        for ivy.cholesky also applies to this method
         with minimal changes.
 
         Examples
@@ -107,8 +107,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cholesky. This method simply wraps the
-        function, and so the docstring for ivy.cholesky also applies to this method
+        ivy.Container instance method variant of ivy.cholesky.
+        This method simply wraps the function, and so the docstring for
+        ivy.cholesky also applies to this method
         with minimal changes.
 
         Examples
