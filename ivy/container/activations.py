@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -12,18 +12,30 @@ from ivy.container.base import ContainerBase
 class ContainerWithActivations(ContainerBase):
     def softplus(
         self: ivy.Container,
-        out: Optional[ivy.Container] = None
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.softplus. 
         This method simply wraps the function, and so the docstring
         for ivy.softplus also applies to this method with minimal changes.
         """
-        return ContainerWithActivations.static_softplus(self, out=out)
+        return ContainerWithActivations.static_softplus(
+          self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
     
     @staticmethod
     def static_softplus(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
@@ -34,5 +46,9 @@ class ContainerWithActivations(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "softplus",
             x,
-            out=out
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
