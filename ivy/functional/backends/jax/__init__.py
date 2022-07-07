@@ -42,6 +42,7 @@ NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
+NativeShape = tuple
 
 # native data types
 native_int8 = jnp.dtype("int8")
