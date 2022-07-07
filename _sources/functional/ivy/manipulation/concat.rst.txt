@@ -25,14 +25,3 @@ concat
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: concat
-
-   concat/concat_functional.rst
-   concat/concat_array.rst
-   concat/concat_container.rst
-

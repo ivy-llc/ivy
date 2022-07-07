@@ -388,7 +388,7 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Classes
+   :caption: Stateful
 
    stateful/activations.rst
    stateful/converters.rst
