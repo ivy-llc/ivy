@@ -8,6 +8,118 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithGradients(ContainerBase):
     @staticmethod
+    def static_is_variable(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "is_variable",
+            x,
+            exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def is_variable(
+        self: ivy.Container,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return self.static_is_variable(
+            self, exclusive, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_adam_step(
+        dcdw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        mw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        vw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        step: Union[int, float],
+        beta1=0.9,
+        beta2=0.999,
+        epsilon=1e-7,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.adam_step.
+        This method simply wraps the function, and so the docstring for ivy.
+        adam_step also applies to this method with minimal changes
+
+        Examples
+        --------
+        with :code: `ivy.container` inputs:
+
+        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                         b=ivy.array([3., 4., 5.]))
+        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                               b=ivy.array([0., 0., 0.]))
+        >>> vw = ivy.Container(a=ivy.array([0.,]),\
+                               b=ivy.array([0.,]))
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.87
+        >>> beta2 = 0.976
+        >>> epsilon = 1e-5
+        >>> adam_step_delta = ivy.Container.static_adam_step(dcdw,\
+                                mw, vw, step, beta1, beta2, epsilon)
+        >>> print(adam_step_delta)
+        {
+            a: (list[3], <class ivy.array.Array> shape=[3]),
+            b: (list[3], <class ivy.array.Array> shape=[3])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "adam_update",
+            dcdw,
+            mw,
+            vw,
+            step,
+            beta1,
+            beta2,
+            epsilon,
+        )
+
+    def adam_step(
+        self: ivy.Container,
+        mw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        vw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        step: Union[int, float],
+        beta1=0.9,
+        beta2=0.999,
+        epsilon=1e-7,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.adam_step.
+        This method simply wraps the function, and so the docstring for ivy.
+        adam_step also applies to this method with minimal changes
+
+        Examples
+        --------
+        with :code: `ivy.container` inputs:
+
+        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                         b=ivy.array([3., 4., 5.]))
+        >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                               b=ivy.array([0., 0., 0.]))
+        >>> vw = ivy.Container(a=ivy.array([0.,]),\
+                               b=ivy.array([0.,]))
+        >>> step = ivy.array(1)
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
+        {
+            a: (list[3], <class ivy.array.Array> shape=[3]),
+            b: (list[3], <class ivy.array.Array> shape=[3])
+        }
+        """
+        return self.static_adam_step(self, mw, vw, step, beta1, beta2, epsilon)
+
+    @staticmethod
     def static_optimizer_update(
         w,
         effective_grad,
