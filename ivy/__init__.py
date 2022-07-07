@@ -59,6 +59,14 @@ class Dtype(str):
         return str.__new__(cls, dtype_str)
 
 
+class Shape(tuple):
+    def __new__(cls, shape_tup):
+        assert isinstance(shape_tup, tuple)
+        for v in shape_tup:
+            assert isinstance(v, int)
+        return tuple.__new__(cls, shape_tup)
+
+
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
         assert "int" in dtype_str
