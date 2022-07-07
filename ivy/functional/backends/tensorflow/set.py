@@ -57,9 +57,6 @@ def unique_counts(
 ) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     uc = namedtuple("uc", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
-
-    # tensorflow sorts values by order appeared - re-sort to standardize output
-    v = tf.sort(v)
     return uc(v, c)
 
 
