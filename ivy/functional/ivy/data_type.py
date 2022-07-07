@@ -564,13 +564,17 @@ def unset_default_dtype():
 
 
 # noinspection PyShadowingNames
-def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
-    """Summary.
+def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]) -> None:
+    """Default the type to int and append the type to stack.
 
     Parameters
     ----------
     int_dtype
+        int data type
 
+    Returns
+    -------
+        Return None
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
