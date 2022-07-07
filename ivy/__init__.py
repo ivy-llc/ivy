@@ -44,6 +44,10 @@ class NativeDtype:
     pass
 
 
+class NativeShape:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
