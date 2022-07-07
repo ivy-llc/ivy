@@ -82,9 +82,6 @@ class DefaultDevice:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Resets the default device to cpu
-        """
         unset_default_device()
         return self
 
@@ -93,19 +90,6 @@ class DefaultDevice:
 
 # noinspection PyShadowingNames
 def _get_nvml_gpu_handle(device):
-    """Gets NVIDIA Management Library (NVML) GPU handle for the specified device
-
-    Parameters
-    ---------
-    device
-        The device handle from which to get NVML gpu handle
-
-    Returns
-    -------
-    ret
-        Device's gpu handle from Nvidia System Management Interface Library
-        
-    """
     global dev_handles
     if device in dev_handles:
         return dev_handles[device]
