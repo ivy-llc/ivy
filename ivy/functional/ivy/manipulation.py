@@ -354,6 +354,7 @@ def permute_dims(
     
     With one :code:`ivy.Container` input:
 
+    >>> ivy.set_backend('torch')
     >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b=ivy.array([[3.,4.,5.]]))
     >>> y = ivy.permute_dims(x, axes=(1,0))
     >>> print(y)
@@ -366,6 +367,7 @@ def permute_dims(
                   [5.]])
     }
 
+    >>> ivy.set_backend('torch')
     >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b = ivy.array([[3.,4.,5.]]))
     >>> y = ivy.permute_dims(x, axes=(1,0), out=x)
     >>> print(y)
@@ -378,6 +380,7 @@ def permute_dims(
                   [5.]])
     }
 
+    >>> ivy.set_backend('torch')
     >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b=ivy.array([[3.,4.,5.]]))
     >>> y = ivy.permute_dims(x, axes=(1,0), out=ivy.zeros((2,3)))
     >>> print(y)
