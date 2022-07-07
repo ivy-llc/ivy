@@ -23,6 +23,19 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
+        function, and so the docstring for ivy.cholesky also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., -2.], [2., 5.]])
+        >>> y = x.cholesky('false')
+        >>> print(y)
+        ivy.array([[ 1., -2.],
+                   [ 0.,  1.]])
+        """
         return ivy.cholesky(self._data, upper, out=out)
 
     def cross(

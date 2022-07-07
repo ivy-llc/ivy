@@ -50,40 +50,89 @@ def cholesky(
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
 
-    Functional Examples
-     -------------------
-     With :code:`ivy.Array` input:
+    Examples
+    --------
+    With :code:`ivy.Array` input:
 
-     1. Returns a lower-triangular Cholesky factor L
-     >>> x = ivy.array([[1., -2.], [2., 5.]])
-     >>> l = ivy.cholesky(x)
-     >>> print(l)
-     ivy.array([[ 1., 0.], [ 2., 1.]])
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> l = ivy.cholesky(x, 'false')
+    >>> print(l)
+    ivy.array([[ 1., -2.],
+               [ 0.,  1.]])
 
-     With :code:`ivy.NativeArray` input:
+    >>> x = ivy.array([[2, 3],[4, 9]])
+    >>> y = ivy.zeros(3)
+    >>> ivy.cholesky(x, 'false', out=y)
+    >>> print(y)
+    ivy.array([3.01e+23, 1.93e+00, 0.00e+00])
 
-     2. Returns an upper-triangular cholesky factor U
-     >>> x = ivy.array([[1., -2.], [2., 5.]])
-     >>> u = ivy.cholesky(x, upper = True)
-     >>> print(u)
-     ivy.array([[ 1., -2.], [ 0.,  1.]])
+    >>> x = ivy.array([[7, 2], \
+                       [2, 1]])
+    >>> ivy.cholesky(x, 'false', out=x)
+    >>> print(x)
+    ivy.array([[-1450000000,  1070000000],
+               [ -425000000,  1070000000]])
 
-     Instance Method Examples
-     ------------------------
-     With :code:`ivy.Container` input:
+    With :code:`ivy.NativeArray` input:
 
-     3. Returns a lower-triangular Cholesky factor
-     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\
-                           b = ivy.array([[2., 1.], [1., 1.]]))
-     >>> y = x.cholesky()
-     >>> print(y)
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> u = ivy.cholesky(x, 'false')
+    >>> print(u)
+    ivy.array([[ 1., -2.],
+               [ 0.,  1.]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
+                          b=ivy.array([[2., 1.],[1., 1.]]))
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
     {
-         a: ivy.array([[1.73, 0.], [-0.577,  1.63]]),
-         b: ivy.array([[1.41, 0.], [0.707, 0.707]])
-     }
+        a: ivy.array([[1.73, -0.577],
+                      [0., 1.63]]),
+        b: ivy.array([[1.41, 0.707],
+                      [0., 0.707]])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
+                          b=ivy.array([[2., 1.],[1., 1.]]))
+    >>> upper = ivy.Container(a=1, b=-1)
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
+    {
+        a: ivy.array([[1.73, -0.577],
+                      [0., 1.63]]),
+        b: ivy.array([[1.41, 0.707],
+                      [0., 0.707]])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> upper = ivy.Container(a=1, b=-1)
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
+
+    ivy.array([[ 1., -2.],
+               [ 0.,  1.]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \
+                          b=ivy.array([[2., 1.], [1., 1.]]))
+    >>> y = x.cholesky('false')
+    >>> print(y)
+    {
+        a: ivy.array([[1.73, -0.577],
+                      [0., 1.63]]),
+        b: ivy.array([[1.41, 0.707],
+                      [0., 0.707]])
+    }
 
     """
-    return current_backend(x).cholesky(x, upper, out=out)
+    return current_backend(x).cholesky(x, upper)
 
 
 @to_native_arrays_and_back
