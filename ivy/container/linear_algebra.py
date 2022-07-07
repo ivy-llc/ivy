@@ -115,7 +115,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), b=ivy.array([[2., 1.],[1., 1.]]))
+        >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
+                              b=ivy.array([[2., 1.],[1., 1.]]))
         >>> y = x.cholesky('false')
         >>> print(y)
         {
