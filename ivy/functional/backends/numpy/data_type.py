@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import torch
 from typing import Union, Tuple, List
 
 # local
@@ -83,8 +82,6 @@ class Finfo:
 
 def astype(x: np.ndarray, dtype: np.dtype, *, copy: bool = True) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
-    if isinstance(x, torch.Tensor):
-        x = x.numpy()
     if copy:
         if x.dtype == dtype:
             new_tensor = np.copy(x)

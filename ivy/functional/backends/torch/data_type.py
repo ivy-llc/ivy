@@ -1,8 +1,5 @@
 # global
 import torch
-import jax
-import jaxlib
-import numpy as np
 from typing import Union, Tuple, List
 
 # local
@@ -42,13 +39,6 @@ def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.T
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)
-    if isinstance(x, np.ndarray):
-        x = torch.from_numpy(x)
-    elif isinstance(
-        x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray)
-    ):
-        x = np.asarray(x)
-        x = torch.from_numpy(x)
     if copy:
         if x.dtype == dtype:
             new_tensor = x.clone().detach()

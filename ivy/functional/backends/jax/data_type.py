@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import torch
 import jax
 import jaxlib
 import jax.numpy as jnp
@@ -87,8 +86,6 @@ class Finfo:
 
 def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
-    if isinstance(x, torch.Tensor):
-        x = x.numpy()
     if copy:
         if x.dtype == dtype:
             new_tensor = jnp.array(x)
