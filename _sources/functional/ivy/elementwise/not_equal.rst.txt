@@ -25,3 +25,14 @@ not_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: not_equal
+
+   not_equal/not_equal_functional.rst
+   not_equal/not_equal_array.rst
+   not_equal/not_equal_container.rst
+
