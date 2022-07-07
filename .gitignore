@@ -5,6 +5,7 @@
 **/.idea/shelf/
 **/.idea/markdown-navigator*
 .run
+.idea/
 __pycache__/
 .pytest_cache/
 build/
