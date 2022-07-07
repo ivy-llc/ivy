@@ -177,12 +177,15 @@ For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
 Who To Ask
--------------
+----------
 
-Quite often, you would like to get a better understanding of the logic in the
-implementation of Ivy, raising issues or starting discussions with the context
-of who made what changes. Here is a common workflow to help get around the
-problem of "who to ask" by using,
+When raising issues or starting discussions on the Ivy repo,
+it can be useful to know who in the team wrote which piece of code.
+Armed with this information, you can then for example directly tag (usuing @)
+the member of the team who worked on a particular piece of code,
+which you are trying to understand, or you would like to ask questions about.
+
+Here we describe a workflow to help navigate this question of "who to ask".
 
 With Command Line:
 ****
@@ -194,11 +197,8 @@ With Command Line:
 
     # Eg: From line 16 to next 5 lines since past 2 weeks
     git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
-    # Deeper look at what author changed in the files in commit retrieved from above step
+    # Deeper look at what each author changed in files retrieved from the above step
     git log <commit_id> -p
-
-You are welcome to tag members using "@" in our team, who you think would be best
-suited to interact with based on the information gained from above steps.
 
 With Browser:
 ****
@@ -208,17 +208,21 @@ or view the revision history of a single line within a file.
 .. image:: content/git_blame_1.png
    :width: 420
 
-This view can be toggled from option in left vertical pane or from the "blame" icon in top-right
-as highlighted above.
+This view can be toggled from the option in left vertical pane,
+or from the "blame" icon in top-right, as highlighted above.
 
 .. image:: content/git_blame_2.png
    :width: 420
 
 Each time you click the highlighted icon, the previous revision information
-for that line, including who committed the change and when is shown.
+for that line is shown, including who committed the change and when this happened.
 
 .. image:: content/git_blame_3.png
    :width: 420
+
+Whenever starting a discussion or creating an issue, you are very welcome to tag
+members of the Ivy team using "@", selecting the person you think would most suitable
+to interact with, based on the information gained from the above steps.
 
 Pull Requests
 -------------

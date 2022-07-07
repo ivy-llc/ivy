@@ -178,11 +178,11 @@ def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, full_matrices: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices, out=out)
+    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
     ret = results(U, D, VT)
     return ret
 
