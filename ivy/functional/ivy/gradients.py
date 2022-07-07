@@ -103,7 +103,6 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def is_variable(x, exclusive=False):
     """Determines whether the input is a variable or not.
 
