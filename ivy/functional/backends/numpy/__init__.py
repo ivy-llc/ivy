@@ -12,6 +12,7 @@ NativeArray = np.ndarray
 NativeVariable = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
+NativeShape = tuple
 
 # data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
