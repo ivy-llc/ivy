@@ -27,8 +27,7 @@ def _differentiable_linspace(
     num, 
     *
     device, 
-    dtype=None,
-    out: Optional[torch.Tensor] = None,
+    dtype=None
 ):
     if num == 1:
         return torch.unsqueeze(start, 0)
@@ -361,8 +360,7 @@ def linspace_helper(
 
 def meshgrid(
     *arrays: torch.Tensor, 
-    indexing="xy",
-    out: Optional[torch.Tensor] = None
+    indexing="xy"
 ) -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
