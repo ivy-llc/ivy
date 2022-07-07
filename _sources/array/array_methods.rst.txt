@@ -13,6 +13,7 @@ Array methods
    :maxdepth: -1
    :caption: Array methods
 
+   array_methods/softplus.rst
    array_methods/asarray.rst
    array_methods/full_like.rst
    array_methods/ones_like.rst

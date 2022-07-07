@@ -23,3 +23,13 @@ from_dlpack
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: from_dlpack
+
+   from_dlpack/from_dlpack_functional.rst
+   from_dlpack/from_dlpack_array.rst
+

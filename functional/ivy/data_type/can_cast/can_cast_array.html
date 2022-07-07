@@ -20,7 +20,9 @@
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Container.can_cast" href="can_cast_container.html" />
+    <link rel="prev" title="ivy.can_cast" href="can_cast_functional.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -100,12 +102,49 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../data_type.html">Data type</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../can_cast.html">can_cast</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="can_cast_functional.html">ivy.can_cast</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.can_cast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="can_cast_container.html">ivy.Container.can_cast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_can_cast_container.html">ivy.Container.static_can_cast</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../iinfo.html">iinfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finfo.html">finfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../broadcast_to.html">broadcast_to</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../broadcast_arrays.html">broadcast_arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../astype.html">astype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dtype_bits.html">dtype_bits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../as_ivy_dtype.html">as_ivy_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../as_native_dtype.html">as_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_int_dtype.html">default_int_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_float_dtype.html">default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_dtype.html">default_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_default_dtype.html">set_default_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_default_dtype.html">unset_default_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_default_int_dtype.html">set_default_int_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_default_int_dtype.html">unset_default_int_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../set_default_float_dtype.html">set_default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_default_float_dtype.html">unset_default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../closest_valid_dtype.html">closest_valid_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_int_dtype.html">is_int_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_float_dtype.html">is_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../result_type.html">result_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../valid_dtype.html">valid_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../invalid_dtype.html">invalid_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../function_supported_dtypes.html">function_supported_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../promote_types.html">promote_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../type_promote_arrays.html">type_promote_arrays</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
@@ -162,6 +201,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../data_type.html">Data type</a> &raquo;</li>
+          <li><a href="../can_cast.html">can_cast</a> &raquo;</li>
       <li>ivy.Array.can_cast</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/functional/ivy/data_type/can_cast/can_cast_array.rst.txt" rel="nofollow"> View page source</a>
@@ -207,7 +248,10 @@ method with minimal changes.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="can_cast_functional.html" class="btn btn-neutral float-left" title="ivy.can_cast" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="can_cast_container.html" class="btn btn-neutral float-right" title="ivy.Container.can_cast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

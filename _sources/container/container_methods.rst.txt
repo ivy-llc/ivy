@@ -13,6 +13,8 @@ Container methods
    :maxdepth: -1
    :caption: Container methods
 
+   container_methods/softplus.rst
+   container_methods/static_softplus.rst
    container_methods/at_dev.rst
    container_methods/at_devs.rst
    container_methods/static_can_cast.rst
