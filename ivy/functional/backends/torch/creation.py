@@ -25,7 +25,7 @@ def _differentiable_linspace(
     start, 
     stop, 
     num, 
-    *
+    *,
     device, 
     dtype=None
 ):
@@ -261,8 +261,7 @@ def linspace_helper(
     num, 
     axis=None, 
     device=None, 
-    dtype=None,
-    out: Optional[torch.Tensor] = None
+    dtype=None
 ):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
