@@ -67,6 +67,53 @@ def test_astype(
     )
 
 
+# broadcast arrays
+# an attempt - failing for torch due to TypeError: len() of unsized object
+@given(
+    shapes=st.shared(
+        st.integers(2, 5).flatmap(helpers.mutually_broadcastable_shapes),
+        key="num_arrays",
+    ),
+    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+    container=st.booleans(),
+)
+def test_broadcast_arrays(
+    shapes,
+    dtype,
+    data,
+    as_variable,
+    native_array,
+    container,
+    fw,
+):
+    arrays = []
+    for c, shape in enumerate(shapes, 1):
+        x = data.draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
+        arrays.append(x)
+
+    arrays = helpers.as_lists(*arrays)
+    kw = {}
+    for i, array in enumerate(zip(arrays)):
+        kw["x{}".format(i)] = ivy.asarray(array)
+    print("kw:", kw)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "broadcast_arrays",
+        **kw,
+    )
+
+
 # broadcast_to
 @given(
     in_shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
@@ -112,6 +159,58 @@ def test_broadcast_to(
         x=x,
         shape=to_shape,
     )
+
+
+# # broadcast_to - attempt to have only one data.draw in function
+# # fails for torch and tensorflow with KeyError
+# @given(
+#     arrays=helpers.nph.arrays(
+#         shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
+#         dtype=st.sampled_from(ivy_np.valid_dtypes),
+#     ),
+#     #in_shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
+#     #dtype=st.sampled_from(ivy_np.valid_dtypes),
+#     data=st.data(),
+#     as_variable=st.booleans(),
+#     num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
+#     native_array=st.booleans(),
+#     container=st.booleans(),
+#     instance_method=st.booleans(),
+# )
+# def test_broadcast_to(
+#     # in_shape,
+#     # dtype,
+#     arrays,
+#     data,
+#     as_variable,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     fw,
+# ):
+#     # smoke for torch uints
+#     if fw == "torch" and "u" in str(arrays.dtype):
+#         return
+#     to_shape = data.draw(
+#         helpers.mutually_broadcastable_shapes(1, base_shape=arrays.shape)
+#         .map(lambda S: S[0])
+#         .filter(lambda s: helpers.broadcast_shapes(arrays.shape, s) == s),
+#         label="shape",
+#     )
+#     helpers.test_function(
+#         arrays.dtype,
+#         as_variable,
+#         False,
+#         num_positional_args,
+#         native_array,
+#         container,
+#         instance_method,
+#         fw,
+#         "broadcast_to",
+#         x=arrays,
+#         shape=to_shape,
+#     )
 
 
 # can_cast
@@ -380,13 +479,12 @@ def test_result_type(
         False,
         fw,
         "result_type",
-        **kw
+        **kw,
     )
 
 
 # Still to Add #
 # -------------#
 
-# broadcast_arrays
 # promote_types
 # type_promote_arrays
