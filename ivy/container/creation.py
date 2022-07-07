@@ -256,8 +256,8 @@ class ContainerWithCreation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            device,
             dtype,
+            device,
             out,
         )
 
