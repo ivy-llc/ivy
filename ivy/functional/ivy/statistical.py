@@ -124,7 +124,7 @@ def mean(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
 
@@ -178,7 +178,7 @@ def min(
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.
 
@@ -232,7 +232,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the product of input array x elements.
 
@@ -286,7 +286,7 @@ def std(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the standard deviation of the input array ``x``.
 
@@ -357,7 +357,7 @@ def sum(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
 
@@ -435,7 +435,7 @@ def var(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the variance of the input array x.
 

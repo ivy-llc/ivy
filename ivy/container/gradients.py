@@ -24,7 +24,8 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code: 'ivy.container' inputs:
+        with :code: `ivy.container` inputs:
+
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
         >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
@@ -70,7 +71,8 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code: 'ivy.container' inputs:
+        with :code: `ivy.container` inputs:
+
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                          b=ivy.array([3., 4., 5.]))
         >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\

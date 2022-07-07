@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from typing import Union
+from typing import Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -84,7 +84,6 @@ def unset_with_grads():
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
@@ -104,7 +103,6 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def is_variable(x, exclusive=False):
     """Determines whether the input is a variable or not.
 
@@ -153,8 +151,10 @@ def variable_data(x):
 @handle_out_argument
 @handle_nestable
 def stop_gradient(
-        x: Union[ivy.Array, ivy.NativeArray],
-        preserve_type: bool = True,
+    x: Union[ivy.Array, ivy.NativeArray],
+    preserve_type: bool = True,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Stops gradient computation.
 
@@ -167,6 +167,9 @@ def stop_gradient(
         otherwise an array is always returned. Default is True.
     preserve_type
         bool, optional (Default value = True)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -174,7 +177,7 @@ def stop_gradient(
         The same array x, but with no gradient information.
 
     """
-    return current_backend(x).stop_gradient(x, preserve_type)
+    return current_backend(x).stop_gradient(x, preserve_type, out=out)
 
 
 # AutoGrad #
@@ -249,6 +252,7 @@ def adam_step(
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
+
     >>> dcdw = ivy.array([1, 2, 3])
     >>> mw = ivy.zeros(3)
     >>> vw = ivy.zeros(1)
@@ -322,7 +326,8 @@ def adam_step(
         ivy.array([0.1, 0.2, 0.3]),
         ivy.array([0.001, 0.004, 0.009]))
 
-    with :code: 'ivy.container' inputs:
+    with :code: `ivy.container` inputs:
+
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                              b=ivy.array([3., 4., 5.]))
     >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
