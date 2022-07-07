@@ -92,12 +92,16 @@ class DefaultDevice:
 
         Examples
         --------
-        >>> ivy.set_default_device("gpu:0")
-        >>> ivy.default_device()
-        "gpu:0"
+        A "gpu" as device:
+        >>> with ivy.DefaultDevice("gpu") as device:
+        >>>     # with block calls device.__exit__()
+        >>>     print(device._dev)
+        "cpu"
 
-        >>> ivy.unset_default_device()
-        >>> ivy.default_device()
+        A "tpu" as device:
+        >>> with ivy.DefaultDevice("tpu") as device:
+        >>>     # with block calls device.__exit__()
+        >>>     print(device._dev)
         "cpu"
 
         """
