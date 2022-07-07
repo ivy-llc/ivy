@@ -37,6 +37,9 @@ def concat(
         to axis (the first, by default).
     axis
         The axis along which the arrays will be joined. Default is -1.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -196,7 +199,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
     array must be preserved.
@@ -308,7 +311,7 @@ def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Permutes the axes (dimensions) of an array x.
 
@@ -341,7 +344,7 @@ def reshape(
     shape: Tuple[int, ...],
     copy: Optional[bool] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
 
@@ -349,10 +352,13 @@ def reshape(
     ----------
     x
         Tensor to be reshaped.
-    newshape
+    shape
         The new shape should be compatible with the original shape. One shape dimension
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -483,7 +489,7 @@ def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Removes singleton dimensions (axes) from ``x``.
 
@@ -526,7 +532,7 @@ def stack(
     ],
     axis: int = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
 
@@ -711,6 +717,9 @@ def constant_pad(
         axes of x.
     value
         The constant value to pad the array with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1027,7 +1036,7 @@ def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Constructs an array by repeating x the number of times given by reps.
 
@@ -1037,6 +1046,9 @@ def tile(
         Input array.
     reps
         The number of repetitions of x along each axis.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1065,6 +1077,9 @@ def zero_pad(
     pad_width
         Number of values padded to the edges of each axis. Specified as
         ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
