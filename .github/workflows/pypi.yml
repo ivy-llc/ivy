@@ -22,5 +22,5 @@ jobs:
         env:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          cd ivy_models
+          cd models
           bash deploy_pypi.sh
