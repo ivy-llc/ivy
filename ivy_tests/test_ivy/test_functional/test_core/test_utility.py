@@ -11,8 +11,9 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # all
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    axis=helpers.integers(min_value=-1, max_value=0),
+    dtype_x_axis=helpers.dtype_values_axis(
+        ivy_np.valid_float_dtypes, min_axis=-1, max_axis=0
+    ),
     keepdims=st.booleans(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -22,8 +23,7 @@ import ivy_tests.test_ivy.helpers as helpers
     instance_method=st.booleans(),
 )
 def test_all(
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     keepdims,
     as_variable,
     with_out,
@@ -33,9 +33,7 @@ def test_all(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    if not isinstance(x, list):
-        axis = None
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -54,8 +52,9 @@ def test_all(
 
 # any
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    axis=helpers.integers(min_value=-1, max_value=0),
+    dtype_x_axis=helpers.dtype_values_axis(
+        ivy_np.valid_float_dtypes, min_axis=-1, max_axis=0
+    ),
     keepdims=st.booleans(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -65,8 +64,7 @@ def test_all(
     instance_method=st.booleans(),
 )
 def test_any(
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     keepdims,
     as_variable,
     with_out,
@@ -76,9 +74,7 @@ def test_any(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    if not isinstance(x, list):
-        axis = None
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtype,
         as_variable,
