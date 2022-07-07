@@ -543,7 +543,6 @@ def test_meshgrid(
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
-    container=st.booleans(),
 )
 def test_ones(
     shape,
@@ -551,7 +550,6 @@ def test_ones(
     with_out,
     device,
     num_positional_args,
-    container,
     fw,
 ):
     helpers.test_function(
@@ -719,7 +717,6 @@ def test_triu(
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
-    container=st.booleans(),
 )
 def test_zeros(
     shape,
@@ -727,7 +724,6 @@ def test_zeros(
     device,
     with_out,
     num_positional_args,
-    container,
     fw,
 ):
     helpers.test_function(
