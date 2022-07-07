@@ -22,7 +22,7 @@ def arange(
     *,
     dtype: np.dtype = None,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ):
     if dtype:
         dtype = as_native_dtype(dtype)
@@ -41,7 +41,7 @@ def asarray(
     copy=None,
     dtype: np.dtype = None,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
@@ -71,7 +71,7 @@ def empty(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(
         np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -83,7 +83,7 @@ def empty_like(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -101,7 +101,7 @@ def eye(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_device(np.eye(n_rows, n_cols, k, dtype), device=device)
@@ -111,7 +111,7 @@ def eye(
 def from_dlpack(
     x,
     *,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ):
     return np.from_dlpack(x)
 
@@ -122,7 +122,7 @@ def full(
     *,
     dtype: np.dtype = None,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(
         np.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
@@ -136,7 +136,7 @@ def full_like(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -154,7 +154,7 @@ def linspace(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ):
     if axis is None:
         axis = -1
@@ -173,8 +173,7 @@ def linspace(
 
 def meshgrid(
     *arrays: np.ndarray,
-    indexing: str = "xy",
-    out :Optional[np.ndarray]=None
+    indexing: str = "xy"
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, indexing=indexing)
 
@@ -184,7 +183,7 @@ def ones(
     *,
     dtype: np.dtype,
     device: str,
-    out :Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_device(np.ones(shape, dtype), device=device)
@@ -195,7 +194,7 @@ def ones_like(
     *,
     dtype: np.dtype,
     device: str,
-    out :Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -210,7 +209,7 @@ def tril(
     x: np.ndarray,
     k: int = 0,
     *,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.tril(x, k)
 
@@ -219,7 +218,7 @@ def triu(
     x: np.ndarray,
     k: int = 0,
     *,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.triu(x, k)
 
@@ -229,7 +228,7 @@ def zeros(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
 
@@ -239,7 +238,7 @@ def zeros_like(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -263,7 +262,7 @@ def logspace(
     axis=None,
     *,
     device: str,
-    out: Optional[np.ndarray]=None
+    out: Optional[np.ndarray] = None
 ):
     if axis is None:
         axis = -1
