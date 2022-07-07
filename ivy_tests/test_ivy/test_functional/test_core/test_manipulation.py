@@ -103,6 +103,12 @@ def test_expand_dims(
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
 
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch" or fw == "jax":
+        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -149,6 +155,11 @@ def test_flip(
     np.random.seed(seed)
 
     x = np.random.uniform(size=array_shape).astype(input_dtype)
+
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
 
     helpers.test_function(
         input_dtype,
@@ -197,6 +208,11 @@ def test_permute_dims(
     x = np.random.uniform(size=array_shape).astype(input_dtype)
     axes = np.random.permutation(len(array_shape)).tolist()
 
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -212,10 +228,6 @@ def test_permute_dims(
     )
 
 
-# reshape
-@settings(
-    suppress_health_check=(HealthCheck.filter_too_much,)
-)  # cant figure this out ;-;
 @given(
     array_shape=helpers.lists(
         st.integers(1, 10), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
@@ -241,6 +253,12 @@ def test_reshape(
     instance_method,
     fw,
 ):
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
+
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # draw a valid reshape shape
@@ -287,6 +305,13 @@ def test_roll(
     instance_method,
     fw,
 ):
+
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
+
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     ndim = len(x.shape)
 
@@ -368,6 +393,13 @@ def test_squeeze(
         if len(axis) == 0:
             return
 
+
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -442,7 +474,8 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    input_dtype=st.data(),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
@@ -525,11 +558,17 @@ def test_tile(
     # tensorflow needs that reps is exactly of same dimensions as the input
     # other frameworks can broadcast the results
     if fw == "tensorflow":
+        if input_dtype == ivy.IntDtype("uint16"):
+            return
         reps = data.draw(
             helpers.nph.broadcastable_shapes(
                 shape=x.shape, min_dims=len(x.shape), max_dims=len(x.shape)
             )
         )
+    elif input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
     else:
         reps = data.draw(
             helpers.nph.broadcastable_shapes(shape=x.shape, min_dims=len(x.shape))
@@ -564,6 +603,8 @@ def test_tile(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
+
+# For Review
 def test_constant_pad(
     array_shape,
     input_dtype,
@@ -582,6 +623,12 @@ def test_constant_pad(
         for _ in range(len(x.shape))
     ]
     constant = data.draw(st.integers(0, 10))
+
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
 
     helpers.test_function(
         input_dtype,
@@ -631,6 +678,12 @@ def test_zero_pad(
         for _ in range(len(x.shape))
     ]
 
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -676,6 +729,11 @@ def test_swapaxes(
     valid_axes = st.integers(0, len(x.shape) - 1)
     axis0 = data.draw(valid_axes)
     axis1 = data.draw(valid_axes)
+
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
 
     helpers.test_function(
         input_dtype,
@@ -733,12 +791,14 @@ def test_clip(
     max_val1 = np.array(x_min_n_max[1][2], dtype=dtype[2])
     min_val = np.minimum(min_val1, max_val1)
     max_val = np.maximum(min_val1, max_val1)
-    if fw == "torch" and (
-        any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or np.isnan(max_val)
-        or np.isscalar(x)
-    ):
-        return
+
+    if fw == "torch":
+        if np.isnan(max_val).any() or np.isscalar(x):
+            return
+        for d in dtype:
+            if d in ["uint16", "uint32", "uint64", "float16"]:
+                return
+
     helpers.test_function(
         dtype,
         as_variable,
