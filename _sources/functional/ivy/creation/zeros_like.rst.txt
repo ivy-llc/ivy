@@ -2,6 +2,8 @@ zeros_like
 ==========
 
 .. autofunction:: ivy.functional.ivy.creation.zeros_like
+
+.. autofunction:: ivy.array.array_methods.zeros_like
 |
 | **Supported Frameworks:**
 

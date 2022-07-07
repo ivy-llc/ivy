@@ -13,6 +13,16 @@ Array methods
    :maxdepth: -1
    :caption: Array methods
 
+   array_methods/asarray.rst
+   array_methods/full_like.rst
+   array_methods/ones_like.rst
+   array_methods/zeros_like.rst
+   array_methods/tril.rst
+   array_methods/triu.rst
+   array_methods/empty_like.rst
+   array_methods/meshgrid.rst
+   array_methods/from_dlpack.rst
+   array_methods/native_array.rst
    array_methods/can_cast.rst
    array_methods/abs.rst
    array_methods/acosh.rst

@@ -2,6 +2,8 @@ empty_like
 ==========
 
 .. autofunction:: ivy.functional.ivy.creation.empty_like
+
+.. autofunction:: ivy.array.array_methods.empty_like
 |
 | **Supported Frameworks:**
 

@@ -25,14 +25,3 @@ random_uniform
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: random_uniform
-
-   random_uniform/random_uniform_functional.rst
-   random_uniform/random_uniform_container.rst
-   random_uniform/static_random_uniform_container.rst
-

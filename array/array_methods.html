@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="can_cast array" href="array_methods/can_cast.html" />
+    <link rel="next" title="asarray array" href="array_methods/asarray.html" />
     <link rel="prev" title="ArrayWithActivations" href="activations/ArrayWithActivations.html" /> 
 </head>
 
@@ -54,6 +54,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Array methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/asarray.html">asarray array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/full_like.html">full_like array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/ones_like.html">ones_like array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/zeros_like.html">zeros_like array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/tril.html">tril array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/triu.html">triu array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/empty_like.html">empty_like array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/meshgrid.html">meshgrid array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/from_dlpack.html">from_dlpack array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/native_array.html">native_array array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/can_cast.html">can_cast array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/abs.html">abs array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/acosh.html">acosh array</a></li>
@@ -463,6 +473,19 @@ ivy.all_equal also applies to this method with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.asarray">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">asarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#asarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.asarray" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.asarray. This method simply wraps the
+function, and so the docstring for ivy.asarray also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.asin">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">asin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#asin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.asin" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -776,6 +799,19 @@ with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.empty_like">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">empty_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#empty_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.empty_like" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.empty_like. This method simply wraps
+the function, and so the docstring for ivy.empty_like also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.equal">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.equal" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -859,6 +895,32 @@ with minimal changes.</p>
 <dt class="sig sig-object py" id="ivy.array.array_methods.floor_divide">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">floor_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#floor_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.floor_divide" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.from_dlpack">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">from_dlpack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#from_dlpack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.from_dlpack" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.from_dlpack. This method simply wraps
+the function, and so the docstring for ivy.from_dlpack also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.full_like">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">full_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#full_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.full_like" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.full_like. This method simply wraps the
+function, and so the docstring for ivy.full_like also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -1127,6 +1189,16 @@ with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.meshgrid">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.meshgrid" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.min">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.min" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1147,6 +1219,19 @@ with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.native_array">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">native_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#native_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.native_array" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.native_array. This method simply wraps
+the function, and so the docstring for ivy.native_array also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.negative">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">negative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#negative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.negative" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1160,6 +1245,19 @@ with minimal changes.</p>
 <dt class="sig sig-object py" id="ivy.array.array_methods.not_equal">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">not_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#not_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.not_equal" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.ones_like">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">ones_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#ones_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.ones_like" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.ones_like. This method simply wraps the
+function, and so the docstring for ivy.ones_like also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -1527,6 +1625,32 @@ with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.tril">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">tril</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#tril"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.tril" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.tril. This method simply wraps the
+function, and so the docstring for ivy.tril also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.triu">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">triu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#triu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.triu" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.triu. This method simply wraps the
+function, and so the docstring for ivy.triu also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.trunc">
 <span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">trunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#trunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.trunc" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1607,6 +1731,19 @@ to this method with minimal changes.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.zeros_like">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">zeros_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array_methods.html#zeros_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.zeros_like" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.zeros_like. This method simply wraps
+the function, and so the docstring for ivy.zeros_like also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -1616,7 +1753,7 @@ to this method with minimal changes.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="activations/ArrayWithActivations.html" class="btn btn-neutral float-left" title="ArrayWithActivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="array_methods/can_cast.html" class="btn btn-neutral float-right" title="can_cast array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="array_methods/asarray.html" class="btn btn-neutral float-right" title="asarray array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
