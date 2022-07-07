@@ -25,7 +25,7 @@ class ContainerWithActivations(ContainerBase):
         for ivy.softplus also applies to this method with minimal changes.
         """
         return ContainerWithActivations.static_softplus(
-          self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
     
     @staticmethod
