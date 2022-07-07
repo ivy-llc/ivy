@@ -638,14 +638,17 @@ class ContainerBase(dict, abc.ABC):
                 container0 = cont
                 break
         if container0 is None:
-            raise Exception('No containers found in the inputs to '
-                            'ivy.Container.multi_map')
+            raise Exception(
+                "No containers found in the inputs to " "ivy.Container.multi_map"
+            )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
         for key in container0.keys():
-            values = [cont[key] if isinstance(cont, ivy.Container) and key in cont
-                      else cont for cont in containers]
+            values = [
+                cont[key] if isinstance(cont, ivy.Container) and key in cont else cont
+                for cont in containers
+            ]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
@@ -4774,7 +4777,7 @@ class ContainerBase(dict, abc.ABC):
                     .replace(")dtype=", "), dtype=")
                     .replace(", ),", ",),")
                 )
-                json_dumped_str = re.sub('}, $', '}', json_dumped_str)
+                json_dumped_str = re.sub("}, $", "}", json_dumped_str)
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
