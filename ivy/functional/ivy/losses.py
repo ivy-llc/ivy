@@ -13,8 +13,8 @@ from ivy.func_wrapper import handle_nestable
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = -1,
-    epsilon: Optional[float] = 1e-7,
+    axis: int = -1,
+    epsilon: float = 1e-7,
     *,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -62,7 +62,7 @@ def cross_entropy(
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
-    epsilon: Optional[float] = 1e-7,
+    epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
@@ -159,8 +159,8 @@ def binary_cross_entropy(
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = -1,
-    epsilon: Optional[float] = 1e-7,
+    axis: int = -1,
+    epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.

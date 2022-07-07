@@ -10,7 +10,7 @@ from . import conversions
 from .conversions import *
 from .activations import ArrayWithActivations
 from .creation import ArrayWithCreation
-from .data_types import ArrayWithDataTypes
+from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
 from .general import ArrayWithGeneral

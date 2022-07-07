@@ -52,7 +52,7 @@ def test_linear(
     ).astype(dtype[1])
     bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
 
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -62,6 +62,7 @@ def test_linear(
         instance_method,
         fw,
         "linear",
+        test_rtol=1e-03,
         x=x,
         weight=weight,
         bias=bias,
@@ -118,34 +119,36 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
     container=helpers.list_of_length(st.booleans(), 5),
     instance_method=st.booleans(),
 )
-def test_scaled_dot_product_attention(batch_shape,
-                                      num_queries,
-                                      num_keys,
-                                      feat_dim,
-                                      dtype,
-                                      as_variable,
-                                      num_positional_args,
-                                      with_out,
-                                      native_array,
-                                      container,
-                                      instance_method,
-                                      fw,
-                                      device):
+def test_scaled_dot_product_attention(
+    batch_shape,
+    num_queries,
+    num_keys,
+    feat_dim,
+    dtype,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
 
     dtype = [dtype] * 5
-    if fw == 'torch' and 'float16' in dtype:
+    if fw == "torch" and "float16" in dtype:
         return
-    q = np.random.uniform(
-        size=batch_shape + [num_queries] + [feat_dim]
-    ).astype(dtype[0])
+    q = np.random.uniform(size=batch_shape + [num_queries] + [feat_dim]).astype(
+        dtype[0]
+    )
     k = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[1])
     v = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[2])
-    mask = np.random.uniform(
-        size=batch_shape + [num_queries] + [num_keys]
-    ).astype(dtype[3])
+    mask = np.random.uniform(size=batch_shape + [num_queries] + [num_keys]).astype(
+        dtype[3]
+    )
     scale = np.random.uniform(size=[1]).astype(dtype[4])
 
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         with_out,
@@ -159,7 +162,7 @@ def test_scaled_dot_product_attention(batch_shape,
         k=k,
         v=v,
         scale=scale,
-        mask=mask
+        mask=mask,
     )
 
 
@@ -322,7 +325,7 @@ def test_conv2d(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -388,7 +391,7 @@ def test_conv2d_transpose(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -702,7 +705,7 @@ def test_conv3d_transpose(
     filters = np.random.uniform(
         size=(filter_shape, filter_shape, filter_shape, 1, 1)
     ).astype(dtype[1])
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -727,15 +730,15 @@ def test_conv3d_transpose(
 
 # lstm
 @given(
-    b=st.integers(min_value=1, max_value=5),
+    b=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
     t=st.integers(min_value=1, max_value=5),
     input_channel=st.integers(min_value=1, max_value=5),
     hidden_channel=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(st.booleans(), 7),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 7),
+    container=helpers.list_of_length(st.booleans(), 7),
     instance_method=st.booleans(),
 )
 def test_lstm(
@@ -752,18 +755,34 @@ def test_lstm(
     fw,
     device,
 ):
+    dtype = [dtype] * 7
+
     # smoke test
-    x = ivy.asarray(
-        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channel),
-        dtype=dtype,
-    )
-    init_h = ivy.ones([b, hidden_channel])
-    init_c = ivy.ones([b, hidden_channel])
-    kernel = ivy.variable(ivy.ones([input_channel, 4 * hidden_channel])) * 0.5
+    if fw == 'torch' and device == 'cpu' and 'float16' in dtype:
+        # "sigmoid_cpu" not implemented for 'Half'
+        return
+
+    x = np.random.uniform(size=b + [t] + [input_channel]).astype(dtype[0])
+    init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
+    init_c = np.ones(b + [hidden_channel]).astype(dtype[2])
+
+    kernel = np.array(
+        np.ones([input_channel, 4 * hidden_channel])
+    ).astype(dtype[3]) * 0.5
+
     recurrent_kernel = (
-        ivy.variable(ivy.ones([hidden_channel, 4 * hidden_channel])) * 0.5
+        np.array(
+            np.ones([hidden_channel, 4 * hidden_channel])
+        ).astype(dtype[4]) * 0.5
     )
-    helpers.test_array_function(
+
+    bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
+
+    recurrent_bias = np.random.uniform(
+        size=[4 * hidden_channel]
+    ).astype(dtype[6])
+
+    helpers.test_function(
         dtype,
         as_variable,
         False,
@@ -778,4 +797,6 @@ def test_lstm(
         init_c=init_c,
         kernel=kernel,
         recurrent_kernel=recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias
     )
