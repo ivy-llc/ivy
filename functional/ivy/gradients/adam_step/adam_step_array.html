@@ -207,18 +207,18 @@
 function, and so the docstring for ivy.adam_step also applies to this method
 with minimal changes.</p>
 <p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:
-&gt;&gt;&gt; dcdw = ivy.array([[[1.1], [3.2], [-6.3]]])
-&gt;&gt;&gt; mw = ivy.array([[0.], [0.], [0.]])
-&gt;&gt;&gt; vw = ivy.array([[0.], [0.], [0.]])
-&gt;&gt;&gt; step = ivy.array(3)
-&gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step)
-&gt;&gt;&gt; print(adam_step_delta)</p>
-<blockquote>
-<div><p>(ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),
-ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),
-ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</p>
-</div></blockquote>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.2</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">6.3</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adam_step_delta</span> <span class="o">=</span> <span class="n">dcdw</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">adam_step_delta</span><span class="p">)</span>
+<span class="go">    (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),</span>
+<span class="go">    ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
+<span class="go">    ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>

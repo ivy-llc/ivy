@@ -27,3 +27,15 @@ roll
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: roll
+
+   roll/roll_functional.rst
+   roll/roll_array.rst
+   roll/roll_container.rst
+   roll/static_roll_container.rst
+
