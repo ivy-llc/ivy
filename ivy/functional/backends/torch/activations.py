@@ -11,21 +11,15 @@ import torch.nn
 # local
 
 
-import ivy
-
-
-def relu(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def relu(x: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.relu(x)
 
 
 def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-def gelu(x, approximate: bool = True):
+def gelu(x, approximate: bool = True) -> torch.Tensor:
     if approximate:
         return (
             0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
@@ -33,18 +27,16 @@ def gelu(x, approximate: bool = True):
     return torch.nn.functional.gelu(x)
 
 
-def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.tanh(x, out=out)
+def tanh(x: torch.Tensor) -> torch.Tensor:
+    return torch.tanh(x)
 
 
-def sigmoid(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.sigmoid(x, out=out)
+def sigmoid(x: torch.Tensor) -> torch.Tensor:
+    return torch.sigmoid(x)
 
 
-def softmax(
-    x: torch.Tensor, axis: Optional[int] = None, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    exp_x = torch.exp(x, out=out)
+def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
+    exp_x = torch.exp(x)
     return exp_x / torch.sum(exp_x, axis, keepdims=True)
 
 

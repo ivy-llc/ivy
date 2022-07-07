@@ -3,6 +3,7 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -30,6 +31,8 @@ def test_relu(
     fw,
 ):
     dtype, x = dtype_and_x
+    out = ivy.array(x)
+    ivy.leaky_relu(ivy.array(x), out=out)
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_function(
@@ -79,6 +82,7 @@ def test_leaky_relu(
         container,
         instance_method,
         "leaky_relu",
+        test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
     )
@@ -86,7 +90,7 @@ def test_leaky_relu(
 
 # gelu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, allow_inf=False),
     as_variable=st.booleans(),
     approximate=st.booleans(),
     num_positional_args=st.integers(0, 2),
@@ -117,6 +121,7 @@ def test_gelu(
         container,
         instance_method,
         "gelu",
+        test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
@@ -232,7 +237,7 @@ def test_softmax(
 
 # softplus
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
