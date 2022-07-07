@@ -104,13 +104,13 @@ class ArrayWithCreation(abc.ABC):
         *arrays: Union[ivy.Array, ivy.NativeArray],
         indexing: Optional[str] = "xy",
     ) -> List[ivy.Array]:
-        ret = [self._data] + list(arrays)
+        list_arrays = [self._data] + list(arrays)
         """
         ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the
         function, and so the docstring for ivy.meshgrid also applies to this method
         with minimal changes.
         """
-        return ivy.meshgrid(*ret, indexing=indexing)
+        return ivy.meshgrid(*list_arrays, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
