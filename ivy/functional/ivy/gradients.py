@@ -252,6 +252,7 @@ def adam_step(
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
+
     >>> dcdw = ivy.array([1, 2, 3])
     >>> mw = ivy.zeros(3)
     >>> vw = ivy.zeros(1)
@@ -325,7 +326,8 @@ def adam_step(
         ivy.array([0.1, 0.2, 0.3]),
         ivy.array([0.001, 0.004, 0.009]))
 
-    with :code: 'ivy.container' inputs:
+    with :code: `ivy.container` inputs:
+
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                              b=ivy.array([3., 4., 5.]))
     >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
