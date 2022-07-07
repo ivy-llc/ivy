@@ -2,6 +2,10 @@ is_variable
 ===========
 
 .. autofunction:: ivy.functional.ivy.gradients.is_variable
+
+.. autofunction:: ivy.container.container_methods.static_is_variable
+
+.. autofunction:: ivy.container.container_methods.is_variable
 |
 | **Supported Frameworks:**
 

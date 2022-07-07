@@ -176,7 +176,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
@@ -258,7 +258,6 @@
 
 
 <div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Creates a variable, which supports gradient computation.</span>
@@ -277,7 +276,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/is_variable.html#ivy.functional.ivy.gradients.is_variable">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/is_variable/is_variable_functional.html#ivy.functional.ivy.gradients.is_variable">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Determines whether the input is a variable or not.</span>
@@ -327,8 +326,10 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stops gradient computation.</span>
 
@@ -341,6 +342,9 @@
 <span class="sd">        otherwise an array is always returned. Default is True.</span>
 <span class="sd">    preserve_type</span>
 <span class="sd">        bool, optional (Default value = True)</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -348,7 +352,7 @@
 <span class="sd">        The same array x, but with no gradient information.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># AutoGrad #</span>
@@ -383,7 +387,7 @@
 <span class="c1"># Optimizer Steps #</span>
 
 
-<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step/adam_step_functional.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -393,8 +397,8 @@
     <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect to ws,</span>
-<span class="sd">    using ADAM update. `[reference]</span>
+    <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect</span>
+<span class="sd">    to weights ws, using ADAM update. `[reference]</span>
 
 <span class="sd">    &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
 
@@ -420,6 +424,107 @@
 <span class="sd">    ret</span>
 <span class="sd">        The adam step delta.</span>
 
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array(3)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([0.639, 0.639, 0.639]),</span>
+<span class="sd">        ivy.array([0.1, 0.2, 0.3]),</span>
+<span class="sd">        ivy.array([0.001, 0.004, 0.009]))</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.zeros((2,3))</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array(1)</span>
+<span class="sd">    &gt;&gt;&gt; beta1 = 0.86</span>
+<span class="sd">    &gt;&gt;&gt; beta2 = 0.95</span>
+<span class="sd">    &gt;&gt;&gt; epsilon = 1e-6</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([[1., 1., -1.],</span>
+<span class="sd">                    [1., 1., 1.]]),</span>
+<span class="sd">        ivy.array([[ 0.14, 0.56, -0.42],</span>
+<span class="sd">                  [ 0.28, 0.42, 0.07]]),</span>
+<span class="sd">        ivy.array([[0.05, 0.8, 0.45],</span>
+<span class="sd">                  [0.2, 0.45, 0.0125]]))</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([1, -2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array(3.6)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([ 0.601, -0.601, 0.601]),</span>
+<span class="sd">        ivy.array([ 0.1, -0.2, 0.3]),</span>
+<span class="sd">        ivy.array([0.001, 0.004, 0.009]))</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.native_array([2, 3, 5])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.native_array([0, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.native_array([0])</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.native_array([4])</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([0.581, 0.581, 0.581]),</span>
+<span class="sd">        ivy.array([0.2, 0.3, 0.5]),</span>
+<span class="sd">        ivy.array([0.004, 0.009, 0.025]))</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.native_array([3., -4., 1., 0., 2., -3., 2.6,])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.zeros([7])</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.native_array([2])</span>
+<span class="sd">    &gt;&gt;&gt; beta1 = 0.76</span>
+<span class="sd">    &gt;&gt;&gt; beta2 = 0.992</span>
+<span class="sd">    &gt;&gt;&gt; epsilon = 1e-5</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([0.209, -0.271, 0.0717, 0., 0.142, -0.209, 0.182]),</span>
+<span class="sd">         ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),</span>
+<span class="sd">         ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05]))</span>
+
+<span class="sd">    with mixture of both :code:`ivy.NativeArray`  and :code:&#39;ivy.Array&#39; inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.native_array([0, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.native_array([2])</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">        (ivy.array([0.744, 0.744, 0.744]),</span>
+<span class="sd">        ivy.array([0.1, 0.2, 0.3]),</span>
+<span class="sd">        ivy.array([0.001, 0.004, 0.009]))</span>
+
+<span class="sd">    with :code: `ivy.container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                             b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; mw = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                           b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; vw = ivy.Container(a=ivy.array([0.,]),\</span>
+<span class="sd">                           b=ivy.array([0.,]))</span>
+<span class="sd">    &gt;&gt;&gt; step = ivy.array([3.4])</span>
+<span class="sd">    &gt;&gt;&gt; beta1 = 0.87</span>
+<span class="sd">    &gt;&gt;&gt; beta2 = 0.976</span>
+<span class="sd">    &gt;&gt;&gt; epsilon = 1e-5</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
+<span class="sd">    ({</span>
+<span class="sd">        a: ivy.array([0., 0.626, 0.626]),</span>
+<span class="sd">        b: ivy.array([0.626, 0.626, 0.626])</span>
+<span class="sd">    }, {</span>
+<span class="sd">        a: ivy.array([0., 0.13, 0.26]),</span>
+<span class="sd">        b: ivy.array([0.39, 0.52, 0.65])</span>
+<span class="sd">    }, {</span>
+<span class="sd">        a: ivy.array([0., 0.024, 0.096]),</span>
+<span class="sd">        b: ivy.array([0.216, 0.384, 0.6])</span>
+<span class="sd">    })</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
     <span class="n">mw</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span>
