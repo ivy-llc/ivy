@@ -17,10 +17,11 @@ import ivy.functional.backends.torch as ivy_torch
             )
         ),
         2,
-        max_value=1000,
+        min_value=-1e04,
+        max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(max_value=1000),
+    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -51,6 +52,7 @@ def test_torch_add(
         other=np.asarray(x[1], dtype=input_dtype[1]),
         alpha=alpha,
         out=None,
+        rtol=1e-04,
     )
 
 
