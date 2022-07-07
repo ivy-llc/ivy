@@ -33,7 +33,7 @@ jobs:
           rm -rf .gitignore
           cd docs
           rsync -rav ../../ivy_doc_builder/docs/ .
-          bash make_docs.sh --root_dir "../ivy_models"
+          bash _make_docs.sh --root_dir "../ivy_models"
           cp .nojekyll build/
           cd ../..
 
