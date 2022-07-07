@@ -9,6 +9,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+import hypothesis.extra.numpy as hnp
 
 
 # native_array
@@ -106,11 +107,11 @@ def test_linspace(
     dtype_and_start_stop=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
         n_arrays=1,
+        allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
-        shared_dtype=True,
     ),
     num=st.integers(1, 5),
     base=st.floats(min_value=0.1, max_value=10.0),
@@ -492,16 +493,17 @@ def test_full_like(
 
 
 # meshgrid
+
+# allows for arrays of all 1d and same dtype
+array_size = st.shared(st.integers(min_value=1, max_value=5))
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes))
+
+
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
-        min_num_dims=2,
-        max_num_dims=4,
-        min_dim_size=2,
-        max_dim_size=4,
-        shared_dtype=True,
+    arrays=st.lists(
+        hnp.arrays(dtype=dtype_shared, shape=array_size), min_size=1, max_size=5
     ),
+    dtype=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="meshgrid"),
     native_array=st.booleans(),
@@ -509,7 +511,8 @@ def test_full_like(
     instance_method=st.booleans(),
 )
 def test_meshgrid(
-    dtype_and_x,
+    arrays,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -517,7 +520,6 @@ def test_meshgrid(
     instance_method,
     fw,
 ):
-    dtype, x = dtype_and_x
 
     helpers.test_function(
         dtype,
@@ -529,7 +531,7 @@ def test_meshgrid(
         False,
         fw,
         "meshgrid",
-        np.asarray(x, dtype=dtype),
+        arrays,
     )
 
 
