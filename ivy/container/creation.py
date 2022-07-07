@@ -1,13 +1,11 @@
 # global
 from typing import Optional, Union, List, Tuple, Dict
 from numbers import Number
+import numpy as np
 
 # local
 import ivy
 from ivy.container.base import ContainerBase
-import numpy as np
-
-# ToDo: implement all methods here as public instance methods
 
 
 # noinspection PyMissingConstructor
