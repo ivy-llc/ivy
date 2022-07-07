@@ -914,7 +914,7 @@ def conv3d_transpose(
     (1, 10, 10, 10, 128)
 
     Instance Method Examples
-    ------------------------
+    --------------------------
 
     Using :code:`ivy.Array` instance method:
 
