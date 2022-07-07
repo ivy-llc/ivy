@@ -21,7 +21,7 @@ class ArrayWithCreation(abc.ABC):
 
     def full_like(
         self: ivy.Array,
-        fill_value: Union[int, float],
+        fill_value: float,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -69,10 +69,8 @@ class ArrayWithCreation(abc.ABC):
         *arrays: Union[ivy.Array, ivy.NativeArray],
         indexing: Optional[str] = "xy",
     ) -> List[ivy.Array]:
-        list = [self._data]
-        for array in arrays:
-            list.append(array._data)
-        return ivy.meshgrid(*list, indexing=indexing)
+        ret = [self._data] + list(arrays)
+        return ivy.meshgrid(*ret, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
