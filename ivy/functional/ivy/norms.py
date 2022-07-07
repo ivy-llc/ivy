@@ -20,6 +20,7 @@ def layer_norm(
     scale: float = None,
     offset: float = None,
     new_std: float = 1.0,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies Layer Normalization over a mini-batch of inputs
@@ -39,7 +40,8 @@ def layer_norm(
     new_std
         The standard deviation of the new normalized values. Default is 1.
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
