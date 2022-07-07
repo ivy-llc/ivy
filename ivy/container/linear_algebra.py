@@ -2,6 +2,7 @@
 from typing import Optional, Union, List, Dict, Tuple
 
 # local
+from ivy.container.base import ContainerBase
 import ivy
 from ivy.container.base import Conta
 # ToDo: implement all methods here as public instance methods
@@ -108,8 +109,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cholesky.
-        This method simply wraps the function, and so the docstring for
-        ivy.cholesky also applies to this method
+        This method simply wraps the function, and so the docstring
+        for ivy.cholesky also applies to this method
         with minimal changes.
 
         Examples
