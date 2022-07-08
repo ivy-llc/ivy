@@ -54,6 +54,7 @@ def asin(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
 def asinh(
         x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
+    x = tf.cast(x, tf.float32)
     return tf.asinh(x)
 
 
