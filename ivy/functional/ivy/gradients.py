@@ -64,11 +64,14 @@ def with_grads(with_grads: bool = None) -> bool:
     >>> import ivy
     >>> print(ivy.with_grads(with_grads=None))
     True
+    
     >>> ivy.set_with_grads(False)
     >>> print(ivy.with_grads(with_grads=None))
     False
+    
     >>> print(ivy.with_grads(with_grads=True))
     True
+    
     >>> print(ivy.with_grads(with_grads=False))
     False
 
