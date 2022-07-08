@@ -325,7 +325,7 @@ def optimizer_update(
         w = w - deltas
 
     if stop_gradients:
-        return stop_gradient(w, preserve_type=True)
+        return ivy.stop_gradient(w, preserve_type=True)
     return w
 
 
