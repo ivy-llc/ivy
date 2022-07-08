@@ -409,7 +409,7 @@ def optimizer_update(
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
     >>> print(wsnew)
     ivy.array([1., 2., 3.])
     
@@ -417,7 +417,7 @@ def optimizer_update(
     >>> w = ivy.array([[1., 2.],[4., 5.]])
     >>> effective_grad = ivy.array([[4., 5.],[7., 8.]])
     >>> lr = ivy.array([3e-4,1e-2])
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
     >>> print(wsnew)
     ivy.array([[0.999, 1.95 ],
             [4.   , 4.92 ]])
@@ -426,7 +426,8 @@ def optimizer_update(
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False)
     >>> print(wsnew)
     ivy.array([1., 2., 3.])
     
@@ -434,7 +435,8 @@ def optimizer_update(
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.array([4., 5., 6.])
     >>> lr = ivy.array([3e-4])
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False)
     >>> print(wsnew)
     ivy.array([0.999, 2.   , 3.   ])
     
@@ -444,7 +446,7 @@ def optimizer_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
     >>> print(wsnew)
     ivy.array([1., 2., 3.])
     
@@ -452,7 +454,7 @@ def optimizer_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> effective_grad = ivy.native_array([4., 5., 6.])
     >>> lr = ivy.native_array([3e-4])
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
     >>> print(wsnew)
     ivy.array([0.999, 2.   , 3.   ])
     
@@ -460,7 +462,8 @@ def optimizer_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False)
     >>> print(wsnew)
     ivy.array([1., 2., 3.])
     
@@ -468,7 +471,8 @@ def optimizer_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> effective_grad = ivy.native_array([4., 5., 6.])
     >>> lr = 3e-4
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False)
     >>> print(wsnew)
     ivy.array([0.999, 2.   , 3.   ])
     
@@ -493,7 +497,8 @@ def optimizer_update(
     >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
                            b=ivy.array([0., 0., 0.]))
     >>> lr = ivy.array([3e-4])
-    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False)
     >>> print(wsnew)
     {
         a: ivy.array([0., 1., 2.]),
