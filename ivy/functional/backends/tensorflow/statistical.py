@@ -1,15 +1,10 @@
-"""Collection of tests for statistical functions."""
 # global
 _round = round
 import tensorflow as tf
 from typing import Tuple, Union, Optional
-import numpy as np
-from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 
 
 # Array API Standard #
