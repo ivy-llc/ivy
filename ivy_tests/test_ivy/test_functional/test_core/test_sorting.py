@@ -47,7 +47,7 @@ def test_argsort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -102,7 +102,7 @@ def test_sort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
