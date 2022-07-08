@@ -16,7 +16,7 @@ def max(
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
@@ -26,7 +26,7 @@ def mean(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
@@ -41,7 +41,7 @@ def min(
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
@@ -49,7 +49,7 @@ def min(
 def prod(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Tensor] = None,
+    out: Optional[tf.Tensor] = None,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: tf.DType = None,
     keepdims: bool = False,
@@ -73,7 +73,7 @@ def std(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.std(x, axis, keepdims)
 
@@ -81,7 +81,7 @@ def std(
 def sum(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Tensor] = None,
+    out: Optional[tf.Tensor] = None,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: tf.DType = None,
     keepdims: bool = False,
@@ -105,7 +105,7 @@ def var(
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     *,
-    out: Optional[Tensor] = None
+    out: Optional[tf.Tensor] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
 
