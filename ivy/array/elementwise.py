@@ -62,6 +62,7 @@ class ArrayWithElementwise(abc.ABC):
 
     def asinh(
             self: ivy.Array,
+            *,
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
