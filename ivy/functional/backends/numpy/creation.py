@@ -83,7 +83,7 @@ def eye(
         n_cols = n_rows
     i = np.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
-        return  _to_device(i, device=device)
+        return _to_device(i, device=device)
     else:
         reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
         tile_dims = list(batch_shape) + [1, 1]

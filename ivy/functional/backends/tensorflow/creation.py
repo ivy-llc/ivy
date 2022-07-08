@@ -145,14 +145,15 @@ def eye(
             return i
         elif -n_rows < k < 0:
             return tf.concat(
-                [tf.zeros(batch_shape+[-k, n_cols], dtype=dtype), 
-                i[:, : n_rows + k]], 
-                1
+                [tf.zeros(batch_shape + [-k, n_cols], dtype=dtype), i[:, : n_rows + k]],
+                1,
             )
         elif 0 < k < n_cols:
             return tf.concat(
-               [tf.zeros(batch_shape+[n_rows, k], dtype=dtype),
-                i[:, :, :n_cols - k]],
+                [
+                    tf.zeros(batch_shape + [n_rows, k], dtype=dtype),
+                    i[:, :, : n_cols - k],
+                ],
                 -1,
             )
         else:

@@ -157,9 +157,9 @@ def eye(
         return torch.concat(
             [
                 torch.zeros(
-                    batch_shape+[-k, n_cols], dtype=dtype, device=device, out=out
+                    batch_shape + [-k, n_cols], dtype=dtype, device=device, out=out
                 ),
-                return_mat[:, :n_rows + k],
+                return_mat[:, : n_rows + k],
             ],
             1,
         )
@@ -167,16 +167,14 @@ def eye(
         return torch.concat(
             [
                 torch.zeros(
-                    batch_shape+[n_rows, k], dtype=dtype, device=device, out=out
+                    batch_shape + [n_rows, k], dtype=dtype, device=device, out=out
                 ),
-                return_mat[:, :, :n_cols - k],
+                return_mat[:, :, : n_cols - k],
             ],
             -1,
         )
     else:
-        return torch.zeros(
-            reshape_dims, dtype=dtype, device=device, out=out
-        )
+        return torch.zeros(reshape_dims, dtype=dtype, device=device, out=out)
 
 
 def from_dlpack(x):
