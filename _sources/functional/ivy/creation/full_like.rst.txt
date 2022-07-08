@@ -2,6 +2,12 @@ full_like
 =========
 
 .. autofunction:: ivy.functional.ivy.creation.full_like
+
+.. autofunction:: ivy.array.array_methods.full_like
+
+.. autofunction:: ivy.container.container_methods.full_like
+
+.. autofunction:: ivy.container.container_methods.static_full_like
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ full_like
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: full_like
+
+   full_like/full_like_functional.rst
+   full_like/full_like_array.rst
+   full_like/full_like_container.rst
+   full_like/static_full_like_container.rst
+

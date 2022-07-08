@@ -2,6 +2,12 @@ unique_counts
 =============
 
 .. autofunction:: ivy.functional.ivy.set.unique_counts
+
+.. autofunction:: ivy.array.array_methods.unique_counts
+
+.. autofunction:: ivy.container.container_methods.static_unique_counts
+
+.. autofunction:: ivy.container.container_methods.unique_counts
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ unique_counts
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: unique_counts
+
+   unique_counts/unique_counts_functional.rst
+   unique_counts/static_unique_counts_container.rst
+   unique_counts/unique_counts_array.rst
+   unique_counts/unique_counts_container.rst
+

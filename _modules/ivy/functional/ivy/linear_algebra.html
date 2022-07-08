@@ -154,6 +154,9 @@
 <span class="sd">    upper</span>
 <span class="sd">        If True, the result must be the upper-triangular Cholesky factor U. If False,</span>
 <span class="sd">        the result must be the lower-triangular Cholesky factor L. Default: False.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -164,37 +167,97 @@
 <span class="sd">        have a floating-point data type determined by Type Promotion Rules and must have</span>
 <span class="sd">        the same shape as x.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">     -------------------</span>
-<span class="sd">     With :code:`ivy.Array` input:</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">     1. Returns a lower-triangular Cholesky factor L</span>
-<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
-<span class="sd">     &gt;&gt;&gt; l = ivy.cholesky(x)</span>
-<span class="sd">     &gt;&gt;&gt; print(l)</span>
-<span class="sd">     ivy.array([[ 1., 0.], [ 2., 1.]])</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">     With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \</span>
+<span class="sd">                       [1.0, 0.5, 0.0, 0.0, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 3.0, 0.0, 0.0], \</span>
+<span class="sd">                       [0.5, 0.0, 0.0, 0.625, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; l = ivy.cholesky(x, &#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(l)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
 
-<span class="sd">     2. Returns an upper-triangular cholesky factor U</span>
-<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
-<span class="sd">     &gt;&gt;&gt; u = ivy.cholesky(x, upper = True)</span>
-<span class="sd">     &gt;&gt;&gt; print(u)</span>
-<span class="sd">     ivy.array([[ 1., -2.], [ 0.,  1.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \</span>
+<span class="sd">                       [1.0, 0.5, 0.0, 0.0, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 3.0, 0.0, 0.0], \</span>
+<span class="sd">                       [0.5, 0.0, 0.0, 0.625, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros([5,5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.cholesky(x, &#39;false&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
 
-<span class="sd">     Instance Method Examples</span>
-<span class="sd">     ------------------------</span>
-<span class="sd">     With :code:`ivy.Container` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \</span>
+<span class="sd">                       [1.0, 0.5, 0.0, 0.0, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 3.0, 0.0, 0.0], \</span>
+<span class="sd">                       [0.5, 0.0, 0.0, 0.625, 0.0], \</span>
+<span class="sd">                       [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.cholesky(x, &#39;false&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
 
-<span class="sd">     3. Returns a lower-triangular Cholesky factor</span>
-<span class="sd">     &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\</span>
-<span class="sd">                           b = ivy.array([[2., 1.], [1., 1.]]))</span>
-<span class="sd">     &gt;&gt;&gt; y = x.cholesky()</span>
-<span class="sd">     &gt;&gt;&gt; print(y)</span>
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; u = ivy.cholesky(x, &#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(u)</span>
+<span class="sd">    ivy.array([[ 1., -2.],</span>
+<span class="sd">               [ 0.,  1.]])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \</span>
+<span class="sd">                          b=ivy.array([[2., 1.],[1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, &#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">         a: ivy.array([[1.73, 0.], [-0.577,  1.63]]),</span>
-<span class="sd">         b: ivy.array([[1.41, 0.], [0.707, 0.707]])</span>
-<span class="sd">     }</span>
+<span class="sd">        a: ivy.array([[1.73, -0.577],</span>
+<span class="sd">                        [0., 1.63]]),</span>
+<span class="sd">        b: ivy.array([[1.41, 0.707],</span>
+<span class="sd">                        [0., 0.707]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \</span>
+<span class="sd">                          b=ivy.array([[2., 1.],[1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, &#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[1.73, -0.577],</span>
+<span class="sd">                        [0., 1.63]]),</span>
+<span class="sd">        b: ivy.array([[1.41, 0.707],</span>
+<span class="sd">                        [0., 0.707]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, &#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 1., -2.],</span>
+<span class="sd">               [ 0.,  1.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -225,6 +288,9 @@
 <span class="sd">        the axis (dimension) of x1 and x2 containing the vectors for which to compute</span>
 <span class="sd">        the cross product.vIf set to -1, the function computes the cross product for</span>
 <span class="sd">        vectors defined by the last axis (dimension). Default: -1.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -323,9 +389,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">det</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices)``x``.</span>
 
@@ -334,6 +398,9 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions </span>
 <span class="sd">        form square matrices. Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -434,6 +501,13 @@
 <span class="sd">    axis2</span>
 <span class="sd">        axis to be used as the second axis of the 2-D sub-arrays from which the</span>
 <span class="sd">        diagonals should be taken. Defaults to second axis (-1).</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    out</span>
+<span class="sd">        optional output array to write the result in. Must have the same number</span>
+<span class="sd">        of dimensions as the function output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -442,6 +516,14 @@
 <span class="sd">        last two dimensions and appending a dimension equal to the size of the resulting</span>
 <span class="sd">        diagonals. The returned array must have the same data type as ``x``.</span>
 
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    ------------------</span>
@@ -544,6 +626,22 @@
 <span class="sd">    ivy.array([0, 4, 8])</span>
 
 
+<span class="sd">    With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(\</span>
+<span class="sd">            a = ivy.array([[7, 1, 2],\</span>
+<span class="sd">                           [1, 3, 5],\</span>
+<span class="sd">                           [0, 7, 4]]),\</span>
+<span class="sd">            b = ivy.array([[4, 3, 2],\</span>
+<span class="sd">                           [1, 9, 5],\</span>
+<span class="sd">                           [7, 0, 6]])\</span>
+<span class="sd">        )</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([7, 3, 4]),</span>
+<span class="sd">        b: ivy.array([4, 9, 6])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -598,9 +696,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)</span>
 <span class="sd">    x.</span>
@@ -610,6 +706,9 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
 <span class="sd">        square matrices. Must have floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -625,9 +724,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the multiplicative inverse of a square matrix (or a stack of square</span>
 <span class="sd">    matrices) ``x``.</span>
@@ -637,6 +734,9 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
 <span class="sd">        square matrices. Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -682,6 +782,9 @@
 <span class="sd">    x2</span>
 <span class="sd">         second input array. Should have a numeric data type. Must have at least one</span>
 <span class="sd">         dimension.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -750,6 +853,9 @@
 <span class="sd">        If this is set to True, the axes which are normed over are left in the result as</span>
 <span class="sd">        dimensions with size one. With this option the result will broadcast correctly</span>
 <span class="sd">        against the original x. Default is False.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -764,10 +870,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">matrix_power</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer power</span>
 <span class="sd">    n.</span>
@@ -804,6 +907,9 @@
 <span class="sd">        where ``eps`` must be the machine epsilon associated with the floating-point</span>
 <span class="sd">        data type determined by :ref:`type-promotion` (as applied to ``x``).</span>
 <span class="sd">        Default: ``None``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -826,9 +932,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">matrix_transpose</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Transposes a matrix (or a stack of matrices) ``x``.</span>
 
@@ -837,6 +941,9 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
 <span class="sd">        ``MxN`` matrices.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -869,6 +976,9 @@
 <span class="sd">        second one-dimensional input array of size M. Should have a numeric data type.</span>
 <span class="sd">        b(M,) array_like</span>
 <span class="sd">        Second input vector. Input is flattened if not already 1-dimensional.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -949,6 +1059,9 @@
 <span class="sd">        ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with</span>
 <span class="sd">        the floating-point data type determined by :ref:`type-promotion` (as applied to</span>
 <span class="sd">        ``x``). Default: ``None``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1010,9 +1123,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">slogdet</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes the sign and natural logarithm of the determinant of an array.</span>
 
@@ -1020,6 +1131,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        This is a 2D array, and it has to be square</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1060,6 +1174,9 @@
 <span class="sd">        each column k defines a set of ordinate values for which to compute a solution,</span>
 <span class="sd">        and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).</span>
 <span class="sd">        Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1078,8 +1195,6 @@
 <span class="k">def</span> <span class="nf">svd</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of</span>
 <span class="sd">    matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal</span>
@@ -1098,6 +1213,9 @@
 <span class="sd">        the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``</span>
 <span class="sd">        and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.</span>
 <span class="sd">        Default: ``True``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1147,16 +1265,14 @@
 <span class="sd">    ivy.array(0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svdvals/svdvals_functional.html#ivy.functional.ivy.linear_algebra.svdvals">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the singular values of a matrix (or a stack of matrices) ``x``.</span>
 
@@ -1165,6 +1281,9 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
 <span class="sd">        ``MxN`` matrices.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1198,8 +1317,10 @@
 <span class="sd">        Should have a numeric data type.</span>
 <span class="sd">    axes</span>
 <span class="sd">        The axes to contract over.</span>
-
 <span class="sd">        Default is 2.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1271,6 +1392,9 @@
 <span class="sd">        -   ``offset &lt; 0``: off-diagonal below the main diagonal.</span>
 
 <span class="sd">        Default: ``0``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1325,6 +1449,9 @@
 <span class="sd">        counting backward from the last dimension (where ``-1`` refers to the last</span>
 <span class="sd">        dimension). By default, the function must compute the dot product over the last</span>
 <span class="sd">        axis. Default: ``-1``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1406,6 +1533,9 @@
 <span class="sd">        +------------------+--------------------------------+</span>
 
 <span class="sd">        Default: ``2``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1429,9 +1559,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span>
-    <span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric</span>
 <span class="sd">    matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying</span>
@@ -1442,6 +1570,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    vector</span>
 <span class="sd">        Vector to convert *[batch_shape,3]*.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

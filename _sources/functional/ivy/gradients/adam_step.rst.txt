@@ -2,6 +2,12 @@ adam_step
 =========
 
 .. autofunction:: ivy.functional.ivy.gradients.adam_step
+
+.. autofunction:: ivy.array.array_methods.adam_step
+
+.. autofunction:: ivy.container.container_methods.static_adam_step
+
+.. autofunction:: ivy.container.container_methods.adam_step
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ adam_step
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: adam_step
+
+   adam_step/adam_step_functional.rst
+   adam_step/adam_step_array.rst
+   adam_step/adam_step_container.rst
+   adam_step/static_adam_step_container.rst
+

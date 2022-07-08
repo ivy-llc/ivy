@@ -2,6 +2,12 @@ tril
 ====
 
 .. autofunction:: ivy.functional.ivy.creation.tril
+
+.. autofunction:: ivy.array.array_methods.tril
+
+.. autofunction:: ivy.container.container_methods.static_tril
+
+.. autofunction:: ivy.container.container_methods.tril
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ tril
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: tril
+
+   tril/tril_functional.rst
+   tril/static_tril_container.rst
+   tril/tril_array.rst
+   tril/tril_container.rst
+

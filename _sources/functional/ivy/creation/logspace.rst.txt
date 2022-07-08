@@ -2,6 +2,8 @@ logspace
 ========
 
 .. autofunction:: ivy.functional.ivy.creation.logspace
+
+.. autofunction:: ivy.container.container_methods.static_logspace
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ logspace
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: logspace
+
+   logspace/logspace_functional.rst
+   logspace/static_logspace_container.rst
+

@@ -2,6 +2,10 @@ is_variable
 ===========
 
 .. autofunction:: ivy.functional.ivy.gradients.is_variable
+
+.. autofunction:: ivy.container.container_methods.static_is_variable
+
+.. autofunction:: ivy.container.container_methods.is_variable
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ is_variable
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: is_variable
+
+   is_variable/is_variable_functional.rst
+   is_variable/is_variable_container.rst
+   is_variable/static_is_variable_container.rst
+

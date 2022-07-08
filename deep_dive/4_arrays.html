@@ -154,9 +154,9 @@ When a framework is set, this is <a class="reference external" href="https://git
 <h2>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> is a simple wrapper class, which wraps around the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>,
 storing it in <a class="reference external" href="https://github.com/unifyai/ivy/blob/529c8c0f128ff28331da7c8f52912d777d786cbe/ivy/array/__init__.py#L89">self._data</a>.</p>
-<p>Most functions in the Ivy functional API which accept <em>at least one array argument</em> in
+<p>All functions in the Ivy functional API which accept <em>at least one array argument</em> in
 the input are implemented as instance methods in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
-The exceptions to this are functions in the
+The only exceptions to this are functions in the
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py">nest</a>
 module and the
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/meta.py">meta</a>

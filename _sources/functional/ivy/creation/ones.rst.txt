@@ -2,6 +2,8 @@ ones
 ====
 
 .. autofunction:: ivy.functional.ivy.creation.ones
+
+.. autofunction:: ivy.container.container_methods.static_ones
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ ones
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: ones
+
+   ones/ones_functional.rst
+   ones/static_ones_container.rst
+

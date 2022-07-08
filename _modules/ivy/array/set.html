@@ -117,12 +117,33 @@
   <h1>Source code for ivy.array.set</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
 <div class="viewcode-block" id="ArrayWithSet"><a class="viewcode-back" href="../../../classes/data_classes/array/set/ArrayWithSet.html#ivy.array.set.ArrayWithSet">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithSet</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="ArrayWithSet.unique_counts"><a class="viewcode-back" href="../../../classes/data_classes/array/set/ArrayWithSet.html#ivy.array.set.ArrayWithSet.unique_counts">[docs]</a>    <span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.unique_counts. This method simply </span>
+<span class="sd">        wraps the function, and so the docstring for ivy.unique_counts also applies </span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0., 1., 2. , 1. , 0.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.unique_counts()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        uc(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1])) </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
