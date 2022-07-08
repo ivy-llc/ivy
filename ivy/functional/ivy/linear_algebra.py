@@ -135,7 +135,6 @@ def cholesky(
     >>> upper = ivy.Container(a=1, b=-1)
     >>> y = ivy.cholesky(x, 'false')
     >>> print(y)
-
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
 
