@@ -151,11 +151,9 @@ def test_fomaml_step_unique_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     if return_inner_v:
@@ -320,11 +318,9 @@ def test_fomaml_step_shared_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -474,11 +470,9 @@ def test_fomaml_step_overlapping_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
@@ -585,11 +579,9 @@ def test_reptile_step(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -738,11 +730,9 @@ def test_maml_step_unique_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.weight), np.array(true_outer_grad))
     if return_inner_v:
@@ -953,11 +943,9 @@ def test_maml_step_shared_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(
         ivy.to_numpy(outer_grads.latent), ivy.to_numpy(true_outer_grad[0])
@@ -1110,11 +1098,9 @@ def test_maml_step_overlapping_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        # assert not ivy.is_variable(calc_cost, exclusive=True)
         assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
-    # assert not ivy.is_variable(outer_grads)
     assert ivy.equal(ivy.is_variable(outer_grads), False)
     assert np.allclose(ivy.to_numpy(outer_grads.weight), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent), np.array(true_latent_grad))
