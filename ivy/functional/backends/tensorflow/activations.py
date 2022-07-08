@@ -11,6 +11,14 @@ from tensorflow.python.types.core import Tensor
 # local
 
 
+def linear(x: Tensor) -> Tensor:
+    return tf.keras.activations.linear(x)
+
+
+def hard_sigmoid(x: Tensor) -> Tensor:
+    return tf.keras.activations.hard_sigmoid(x)
+
+
 def relu(x: Tensor) -> Tensor:
     return tf.nn.relu(x)
 

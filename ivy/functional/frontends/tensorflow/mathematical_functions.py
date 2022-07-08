@@ -14,3 +14,9 @@ def tan(x, name=None):
 
 
 tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+
+
+
+
