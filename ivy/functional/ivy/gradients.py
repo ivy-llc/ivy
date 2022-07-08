@@ -401,6 +401,104 @@ def optimizer_update(
     ret
         The new function weights ws_new, following the optimizer updates.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> print(wsnew)
+    ivy.array([1., 2., 3.])
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.array([4., 5., 6.])
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> print(wsnew)
+    ivy.array([0.999, 2.   , 3.   ])
+    
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> print(wsnew)
+    ivy.array([1., 2., 3.])
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.array([4., 5., 6.])
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> print(wsnew)
+    ivy.array([0.999, 2.   , 3.   ])
+    
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.native_array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> print(wsnew)
+    ivy.array([1., 2., 3.])
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.native_array([1., 2., 3.])
+    >>> effective_grad = ivy.native_array([4., 5., 6.])
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad = effective_grad, lr = lr)
+    >>> print(wsnew)
+    ivy.array([0.999, 2.   , 3.   ])
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.native_array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> print(wsnew)
+    ivy.array([1., 2., 3.])
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.native_array([1., 2., 3.])
+    >>> effective_grad = ivy.native_array([4., 5., 6.])
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> print(wsnew)
+    ivy.array([0.999, 2.   , 3.   ])
+    
+    with :code: `ivy.container` inputs:
+
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                             b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                           b=ivy.array([0., 0., 0.]))
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
+    >>> print(wsnew)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+    
+    >>> ivy.set_backend('torch')
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                             b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                           b=ivy.array([0., 0., 0.]))
+    >>> lr = 3e-4
+    >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr, stop_gradients=False)
+    >>> print(wsnew)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+
     """
     inplace = ivy.default(inplace, ivy.inplace_variables_supported())
     deltas = effective_grad * lr
@@ -410,7 +508,7 @@ def optimizer_update(
         w = w - deltas
 
     if stop_gradients:
-        return stop_gradient(w, preserve_type=True)
+        return ivy.stop_gradient(w, preserve_type=True)
     return w
 
 
