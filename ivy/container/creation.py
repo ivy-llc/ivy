@@ -90,7 +90,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -188,7 +188,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -234,7 +234,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -280,7 +280,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -366,7 +366,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -410,7 +410,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -470,7 +470,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -496,7 +496,6 @@ class ContainerWithCreation(ContainerBase):
             out,
         )
 
-    @staticmethod
     def meshgrid(
         self: ivy.Container,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
@@ -555,7 +554,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
+            out=out,
         )
 
     @staticmethod
