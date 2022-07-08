@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional
+from typing import Sequence, Union, Tuple, List, Optional
 
 # local
 import ivy
@@ -127,7 +127,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    batch_shape: Optional[Union[int, Tuple[int], List[int]]] = None,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: tf.DType,
     device: str,
@@ -140,19 +140,23 @@ def eye(
         if batch_shape is None:
             batch_shape = []
         i = tf.eye(n_rows, n_cols, batch_shape, dtype=dtype)
+        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
         if k == 0:
             return i
         elif -n_rows < k < 0:
             return tf.concat(
-                [tf.zeros(batch_shape + [-k, n_cols], dtype=dtype), i[: n_rows + k]], 0
+                [tf.zeros(batch_shape+[-k, n_cols], dtype=dtype), 
+                i[:, : n_rows + k]], 
+                1
             )
         elif 0 < k < n_cols:
             return tf.concat(
-                [tf.zeros(batch_shape + [n_rows, k], dtype=dtype), i[:, : n_cols - k]],
-                1,
+               [tf.zeros(batch_shape+[n_rows, k], dtype=dtype),
+                i[:, :, :n_cols - k]],
+                -1,
             )
         else:
-            return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
+            return tf.zeros(reshape_dims, dtype=dtype)
 
 
 # noinspection PyShadowingNames
