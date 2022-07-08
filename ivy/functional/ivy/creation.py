@@ -137,7 +137,7 @@ def asarray(
 @infer_device
 @handle_nestable
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -191,7 +191,7 @@ def zeros(
 @infer_device
 @handle_nestable
 def ones(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -496,7 +496,7 @@ def triu(
 @infer_device
 @handle_nestable
 def empty(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -794,7 +794,7 @@ def meshgrid(
 @infer_device
 @handle_nestable
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
