@@ -303,8 +303,7 @@ def docstring_examples_run(fn, from_container=False, from_array=False):
             try:
                 exec(line)
             except Exception as e:
-                # print(e," ",ivy.current_backend_str(), line)
-                raise e
+                print(e, " ", ivy.current_backend_str(), " ", line)
 
     output = f.getvalue()
     output = output.rstrip()
@@ -753,14 +752,16 @@ def test_function(
 
     # check for unsupported dtypes
     fn = getattr(ivy, fn_name)
+    test_unsupported = False
+    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
     for d in input_dtypes:
-        if d in ivy.function_unsupported_dtypes(fn):
-            return
+        if d in unsupported_dtypes_fn:
+            test_unsupported = True
+            break
     if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
         "dtype"
     ] in ivy.function_unsupported_dtypes(fn):
-        return
-
+        test_unsupported = True
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
@@ -846,8 +847,20 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
+        if test_unsupported:
+            try:
+                instance.__getattribute__(fn_name)(*args, **kwargs)
+                assert False
+            except Exception:
+                return
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
+        if test_unsupported:
+            try:
+                ivy.__dict__[fn_name](*args, **kwargs)
+                assert False
+            except Exception:
+                return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
@@ -1233,6 +1246,48 @@ def dtype_and_values(
         dtype = dtype[0]
         values = values[0]
     return dtype, values
+
+
+@st.composite
+def dtype_values_axis(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+    shared_dtype=False,
+    min_axis=None,
+    max_axis=None,
+):
+    dtype, values = draw(
+        dtype_and_values(
+            available_dtypes,
+            min_value=min_value,
+            max_value=max_value,
+            allow_inf=allow_inf,
+            exclude_min=exclude_min,
+            exclude_max=exclude_max,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            shape=shape,
+            shared_dtype=shared_dtype,
+        )
+    )
+    if not isinstance(values, list):
+        return dtype, values, None
+    if shape is not None:
+        return dtype, values, draw(get_axis(shape))
+    axis = draw(integers(min_value=min_axis, max_value=max_axis))
+    return dtype, values, axis
 
 
 # taken from
