@@ -15,8 +15,8 @@ def add(
     subok=True,
 ):
     if dtype:
-        x1 = ivy.astype(x1, ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(x2, ivy.as_ivy_dtype(dtype))
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.add(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
@@ -38,7 +38,7 @@ def tan(
     subok=True,
 ):
     if dtype:
-        x = ivy.astype(x, ivy.as_ivy_dtype(dtype))
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.tan(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)

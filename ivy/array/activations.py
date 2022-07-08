@@ -2,11 +2,14 @@
 import abc
 from typing import Optional
 
+
 # local
 import ivy
 
 
+
 class ArrayWithActivations(abc.ABC):
+
     def relu(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.relu(self, out=out)
 
@@ -32,3 +35,15 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array, axis: Optional[int] = None, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.softmax(self, axis, out=out)
+
+    def softplus(
+        self: ivy.Array,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
+        function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
+        """
+        return ivy.softplus(self._data, out=out)
+
