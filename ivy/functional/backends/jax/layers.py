@@ -60,5 +60,15 @@ def conv3d(*_):
     raise Exception("Convolutions not yet implemented for jax library")
 
 
-def conv3d_transpose(*_):
-    raise Exception("Convolutions not yet implemented for jax library")
+def conv3d_transpose(
+    x: JaxArray,
+    filters: JaxArray,
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    padding: str,
+    data_format: str = "NDHWC",
+    dilations: int = 1,
+) -> JaxArray:
+    return JaxArray.nn.conv3d_transpose(
+        x, filters, strides, padding, data_format, dilations
+    )
+    
