@@ -5,8 +5,6 @@ abs
 
 .. autofunction:: ivy.array.array_methods.abs
 
-.. autofunction:: ivy.container.container_methods.static_abs
-
 .. autofunction:: ivy.container.container_methods.abs
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ abs
    abs/abs_functional.rst
    abs/abs_array.rst
    abs/abs_container.rst
-   abs/static_abs_container.rst
 

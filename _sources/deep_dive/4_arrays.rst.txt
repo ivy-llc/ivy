@@ -41,9 +41,9 @@ Ivy Array
 The :code:`ivy.Array` is a simple wrapper class, which wraps around the :code:`ivy.NativeArray`,
 storing it in `self._data`_.
 
-All functions in the Ivy functional API which accept *at least one array argument* in
+Most functions in the Ivy functional API which accept *at least one array argument* in
 the input are implemented as instance methods in the :code:`ivy.Array` class.
-The only exceptions to this are functions in the
+The exceptions to this are functions in the
 `nest <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py>`_
 module and the
 `meta <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/meta.py>`_

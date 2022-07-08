@@ -117,44 +117,12 @@
   <h1>Source code for ivy.array.gradients</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
 <div class="viewcode-block" id="ArrayWithGradients"><a class="viewcode-back" href="../../../classes/data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithGradients.adam_step"><a class="viewcode-back" href="../../../classes/data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.adam_step">[docs]</a>    <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-        <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-        <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
-        <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.adam_step. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.adam_step also applies to this method</span>
-<span class="sd">        with minimal changes.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Array` inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; dcdw = ivy.array([[[1.1], [3.2], [-6.3]]])</span>
-<span class="sd">        &gt;&gt;&gt; mw = ivy.array([[0.], [0.], [0.]])</span>
-<span class="sd">        &gt;&gt;&gt; vw = ivy.array([[0.], [0.], [0.]])</span>
-<span class="sd">        &gt;&gt;&gt; step = ivy.array(3)</span>
-<span class="sd">        &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step)</span>
-<span class="sd">        &gt;&gt;&gt; print(adam_step_delta)</span>
-<span class="sd">            (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),</span>
-<span class="sd">            ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
-<span class="sd">            ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div></div>
+    <span class="k">pass</span></div>
 </pre></div>
 
            </div>
