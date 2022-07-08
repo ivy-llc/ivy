@@ -5,6 +5,8 @@ all
 
 .. autofunction:: ivy.array.array_methods.all
 
+.. autofunction:: ivy.container.container_methods.static_all
+
 .. autofunction:: ivy.container.container_methods.all
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ all
    all/all_functional.rst
    all/all_array.rst
    all/all_container.rst
+   all/static_all_container.rst
 
