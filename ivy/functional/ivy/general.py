@@ -1060,7 +1060,7 @@ def clip_matrix_norm(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
     ret
@@ -1384,7 +1384,7 @@ def default(
     return x if exists(x) else default_val() if default_callable else default_val
 
 
-def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
+def shape_to_tuple(shape: Union[ivy.Shape, ivy.NativeShape]):
     """Returns a tuple representation of the input shape.
 
     Parameters
@@ -2071,7 +2071,7 @@ def cumprod(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
+
     Returns
     -------
     ret
@@ -2186,7 +2186,7 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
-    shape: Optional[Iterable[int]] = None,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
