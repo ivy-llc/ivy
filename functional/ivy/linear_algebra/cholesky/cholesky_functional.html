@@ -66,6 +66,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../cholesky.html">cholesky</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.cholesky</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cholesky_array.html">ivy.Array.cholesky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cholesky_container.html">ivy.Container.cholesky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_cholesky_container.html">ivy.Container.static_cholesky</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../cross.html">cross</a></li>
@@ -171,42 +173,94 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
+<dd class="field-odd"><p><ul class="simple">
 <li><p><em>ret</em> – an array containing the Cholesky factors for each square matrix. If upper is
 False, the returned array must contain lower-triangular matrices; otherwise, the
 returned array must contain upper-triangular matrices. The returned array must
 have a floating-point data type determined by Type Promotion Rules and must have
 the same shape as x.</p></li>
-<li><p><em>Functional Examples</em> – ——————-
-With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<p>1. Returns a lower-triangular Cholesky factor L
-&gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])
-&gt;&gt;&gt; l = ivy.cholesky(x)
-&gt;&gt;&gt; print(l)
-ivy.array([[ 1., 0.], [ 2., 1.]])</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
-<p>2. Returns an upper-triangular cholesky factor U
-&gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])
-&gt;&gt;&gt; u = ivy.cholesky(x, upper = True)
-&gt;&gt;&gt; print(u)
-ivy.array([[ 1., -2.], [ 0.,  1.]])</p>
-<p class="rubric">Instance Method Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<p>3. Returns a lower-triangular Cholesky factor
-&gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),                           b = ivy.array([[2., 1.], [1., 1.]]))
-&gt;&gt;&gt; y = x.cholesky()
-&gt;&gt;&gt; print(y)</p>
-</li>
-<li><dl class="simple">
-<dt><em>{</em> –     a: ivy.array([[1.73, 0.], [-0.577,  1.63]]),</dt><dd><p>b: ivy.array([[1.41, 0.], [0.707, 0.707]])</p>
-</dd>
-</dl>
-<p>}</p>
-</li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
 </ul>
 </p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="go">           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="go">           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="go">           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="go">ivy.array([[ 1., -2.],</span>
+<span class="go">           [ 0.,  1.]])</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]),</span>                           <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1.73, -0.577],</span>
+<span class="go">                    [0., 1.63]]),</span>
+<span class="go">    b: ivy.array([[1.41, 0.707],</span>
+<span class="go">                    [0., 0.707]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]),</span>                           <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1.73, -0.577],</span>
+<span class="go">                    [0., 1.63]]),</span>
+<span class="go">    b: ivy.array([[1.41, 0.707],</span>
+<span class="go">                    [0., 0.707]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[ 1., -2.],</span>
+<span class="go">           [ 0.,  1.]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

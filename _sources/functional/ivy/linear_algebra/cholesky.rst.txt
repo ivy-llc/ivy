@@ -4,6 +4,10 @@ cholesky
 .. autofunction:: ivy.functional.ivy.linear_algebra.cholesky
 
 .. autofunction:: ivy.array.array_methods.cholesky
+
+.. autofunction:: ivy.container.container_methods.cholesky
+
+.. autofunction:: ivy.container.container_methods.static_cholesky
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ cholesky
 
    cholesky/cholesky_functional.rst
    cholesky/cholesky_array.rst
+   cholesky/cholesky_container.rst
+   cholesky/static_cholesky_container.rst
 

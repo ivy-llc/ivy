@@ -5,7 +5,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.Array.cholesky &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.Container.cholesky &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.cholesky" href="cholesky_container.html" />
-    <link rel="prev" title="ivy.cholesky" href="cholesky_functional.html" /> 
+    <link rel="next" title="ivy.Container.static_cholesky" href="static_cholesky_container.html" />
+    <link rel="prev" title="ivy.Array.cholesky" href="cholesky_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,8 +65,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../cholesky.html">cholesky</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cholesky_functional.html">ivy.cholesky</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.cholesky</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cholesky_container.html">ivy.Container.cholesky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cholesky_array.html">ivy.Array.cholesky</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.cholesky</a></li>
 <li class="toctree-l3"><a class="reference internal" href="static_cholesky_container.html">ivy.Container.static_cholesky</a></li>
 </ul>
 </li>
@@ -141,9 +141,9 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../linear_algebra.html">Linear algebra</a> &raquo;</li>
           <li><a href="../cholesky.html">cholesky</a> &raquo;</li>
-      <li>ivy.Array.cholesky</li>
+      <li>ivy.Container.cholesky</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/functional/ivy/linear_algebra/cholesky/cholesky_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/linear_algebra/cholesky/cholesky_container.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -151,28 +151,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ivy-array-cholesky">
-<h1>ivy.Array.cholesky<a class="headerlink" href="#ivy-array-cholesky" title="Permalink to this heading"></a></h1>
+  <section id="ivy-container-cholesky">
+<h1>ivy.Container.cholesky<a class="headerlink" href="#ivy-container-cholesky" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.cholesky">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">cholesky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/array_methods.html#cholesky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.cholesky" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
-function, and so the docstring for ivy.cholesky also applies to this method
+<dt class="sig sig-object py" id="ivy.container.container_methods.cholesky">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">cholesky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/container_methods.html#cholesky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.cholesky" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.cholesky.
+This method simply wraps the function, and so the docstring
+for ivy.cholesky also applies to this method
 with minimal changes.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>                    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                    <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>                    <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]),</span>                           <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="s1">&#39;false&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
-<span class="go">           [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
-<span class="go">           [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1.73, -0.577],</span>
+<span class="go">                    [0., 1.63]]),</span>
+<span class="go">    b: ivy.array([[1.41, 0.707],</span>
+<span class="go">                    [0., 0.707]])</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../../classes/data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -188,8 +190,8 @@ with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cholesky_functional.html" class="btn btn-neutral float-left" title="ivy.cholesky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cholesky_container.html" class="btn btn-neutral float-right" title="ivy.Container.cholesky" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cholesky_array.html" class="btn btn-neutral float-left" title="ivy.Array.cholesky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="static_cholesky_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_cholesky" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
