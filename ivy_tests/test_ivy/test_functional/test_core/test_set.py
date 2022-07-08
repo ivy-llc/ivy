@@ -32,8 +32,8 @@ def test_unique_values(
     fw,
     device,
 ):
-    #uint16, uint32 not supported with torch
-    if fw == "torch" and (input_dtype == "uint16" or input_dtype == "uint32"):
+    #uint not supported with torch
+    if fw == "torch" and "uint" in input_dtype:
         return
 
     shape = tuple(array_shape)
@@ -121,7 +121,8 @@ def test_unique_counts(
     fw,
     device,
 ):
-    if fw == "tensorflow":
+    # uint not supported with torch
+    if fw == "torch" and "uint" in input_dtype:
         return
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
@@ -164,7 +165,8 @@ def test_unique_inverse(
     fw,
     device,
 ):
-    if fw == "tensorflow":
+    # uint not supported with torch
+    if fw == "torch" and "uint" in input_dtype:
         return
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
