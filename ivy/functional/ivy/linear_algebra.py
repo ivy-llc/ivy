@@ -132,7 +132,7 @@ def cholesky(
     }
 
     """
-    return current_backend(x).cholesky(x, upper)
+    return current_backend(x).cholesky(x, upper, out=out)
 
 
 @to_native_arrays_and_back
