@@ -33,7 +33,7 @@ def random_uniform(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype=None,
     out: Optional[ivy.Array] = None,
-) -> ivy.array:
+) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
     other words, any value within the given interval is equally likely to be drawn by
@@ -56,7 +56,8 @@ def random_uniform(
     dtype
         desired data type. (Default value = None).
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -130,7 +131,8 @@ def random_normal(
     device
         (Default value = ``None``)
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -210,7 +212,8 @@ def multinomial(
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None)
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -329,7 +332,10 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return current_backend().randint(low, high, shape, device=device, out=out)
+    res = current_backend().randint(low, high, shape, device=device, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @handle_nestable
@@ -366,7 +372,8 @@ def shuffle(
     x
         Input array. Should have a numeric data type.
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
