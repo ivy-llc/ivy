@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional
+from typing import Sequence, Union, Tuple, List, Optional
 
 # local
 import ivy
@@ -135,7 +135,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    batch_shape: Optional[Union[int, Tuple[int]]] = None,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -148,31 +148,34 @@ def eye(
     if batch_shape is None:
         batch_shape = []
     i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
     if k == 0:
-        return torch.reshape(i, batch_shape + [n_rows, n_cols])
+        return return_mat
     elif -n_rows < k < 0:
         return torch.concat(
             [
                 torch.zeros(
-                    batch_shape + [-k, n_cols], dtype=dtype, device=device, out=out
+                    batch_shape+[-k, n_cols], dtype=dtype, device=device, out=out
                 ),
-                i[: n_rows + k],
+                return_mat[:, :n_rows + k],
             ],
-            0,
+            1,
         )
     elif 0 < k < n_cols:
         return torch.concat(
             [
                 torch.zeros(
-                    batch_shape + [n_rows, k], dtype=dtype, device=device, out=out
+                    batch_shape+[n_rows, k], dtype=dtype, device=device, out=out
                 ),
-                i[:, : n_cols - k],
+                return_mat[:, :, :n_cols - k],
             ],
-            1,
+            -1,
         )
     else:
         return torch.zeros(
-            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+            reshape_dims, dtype=dtype, device=device, out=out
         )
 
 
