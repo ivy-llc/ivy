@@ -54,6 +54,7 @@ def test_relu(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     alpha=st.floats(),
     as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
@@ -63,6 +64,7 @@ def test_leaky_relu(
     dtype_and_x,
     alpha,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -75,7 +77,7 @@ def test_leaky_relu(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
@@ -92,6 +94,7 @@ def test_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, allow_inf=False),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
     approximate=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
@@ -101,6 +104,7 @@ def test_leaky_relu(
 def test_gelu(
     dtype_and_x,
     as_variable,
+    with_out,
     approximate,
     num_positional_args,
     container,
@@ -114,13 +118,14 @@ def test_gelu(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
         container,
         instance_method,
         "gelu",
+        test_atol=1e-4,
         test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
@@ -131,6 +136,7 @@ def test_gelu(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -139,6 +145,7 @@ def test_gelu(
 def test_tanh(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -151,7 +158,7 @@ def test_tanh(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
@@ -166,6 +173,7 @@ def test_tanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -174,6 +182,7 @@ def test_tanh(
 def test_sigmoid(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -186,7 +195,7 @@ def test_sigmoid(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
@@ -201,6 +210,7 @@ def test_sigmoid(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
     axis=st.integers(-1, 0),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
@@ -211,6 +221,7 @@ def test_softmax(
     dtype_and_x,
     as_variable,
     axis,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -223,7 +234,7 @@ def test_softmax(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
@@ -239,6 +250,7 @@ def test_softmax(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
+    with_out=st.booleans(),
     num_positional_args=st.integers(0, 2),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -247,6 +259,7 @@ def test_softmax(
 def test_softplus(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -259,7 +272,7 @@ def test_softplus(
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
