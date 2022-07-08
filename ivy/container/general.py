@@ -19,7 +19,8 @@ class ContainerWithGeneral(ContainerBase):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        out=None,
+        *,
+        out: Optional[ivy.Container] = None,
     ):
         max_norm_is_container = isinstance(max_norm, ivy.Container)
         p_is_container = isinstance(p, ivy.Container)
@@ -51,7 +52,7 @@ class ContainerWithGeneral(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -234,14 +235,14 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def gather_nd(
-            self: ivy.Container,
-            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gather_nd.

@@ -384,7 +384,9 @@ trunc.unsupported_dtypes = ("float16",)
 
 
 def abs(
-    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
+    x: Union[float, torch.Tensor], 
+    *, 
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.abs(x, out=out)
@@ -497,7 +499,7 @@ def erf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.erf(x, out=out)
 
 
-erf.unsupported_dtypes = ('float16',)
+erf.unsupported_dtypes = ("float16",)
 
 
 def minimum(x1, x2, *, out: Optional[torch.Tensor] = None):
