@@ -197,7 +197,11 @@ def isinf(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def asinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def asinh(
+        x: np.ndarray,
+        *,
+        out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.arcsinh(x, out=out)
 
 
