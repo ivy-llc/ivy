@@ -37,6 +37,9 @@ def concat(
         to axis (the first, by default).
     axis
         The axis along which the arrays will be joined. Default is -1.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -94,61 +97,54 @@ def expand_dims(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     >>> x = ivy.array([0, 1, 2])
     >>> print(x.shape)
     (3,)
+
     >>> y = ivy.expand_dims(x)
     >>> print(y.shape)
     (1, 3)
+
     >>> print(y)
     ivy.array([[0, 1, 2]])
-
 
     >>> x = ivy.array([[0.5, -0.7, 2.4], [1, 2, 3]])
     >>> print(x.shape)
     (2, 3)
+
     >>> y = ivy.zeros((2, 1, 3))
     >>> print(y)
     ivy.array([[[0., 0., 0.]],
+           [[0., 0., 0.]]])
 
-           [[0., 0., 0.]]], dtype=float32)
     >>> ivy.expand_dims(x, axis=1, out=y)
     >>> print(y)
-    ivy.array([[[ 0.5, -0.7,  2.4]],
-
-           [[ 1. ,  2. ,  3. ]]], dtype=float32)
-
+    ivy.array([[[0.5,-0.7,2.4]],[[1.,2.,3.]]])
 
     >>> x = ivy.array([[-1, -2], [3, 4]])
     >>> print(x)
     ivy.array([[-1, -2],
            [ 3,  4]])
+
     >>> ivy.expand_dims(x, out=x)
     >>> print(x)
-    ivy.array([[[-1],
-            [-2]],
-
-           [[ 3],
-            [ 4]]])
-
+    ivy.array([[[-1,-2],[3,4]]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, 1, 2])
-    >>> print(x.shape)
-    (3,)
+    >>> print(x)
+    tensor([0,1,2],dtype=torch.int32)
+
     >>> y = ivy.expand_dims(x)
-    >>> print(y.shape)
-    (1, 3)
+    >>> print(y)
+    ivy.array([[0,1,2]])
+
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.expand_dims(x, axis=-1)
     >>> print(y)
@@ -161,21 +157,18 @@ def expand_dims(
                       [5.]])
     }
 
-
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.expand_dims()
     >>> print(x.shape, y.shape)
     (3,) (1, 3)
+
     >>> print(y)
     ivy.array([[0., 1., 2.]])
 
     Using :code:`ivy.Container` instance method:
-
     >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \
                             b=ivy.array([[4., 5.], [6., 7.]]))
     >>> print(x)
@@ -185,6 +178,7 @@ def expand_dims(
         b: ivy.array([[4., 5.],
                       [6., 7.]])
     }
+
     >>> y = x.expand_dims(axis=1)
     >>> print(y)
     {
@@ -205,7 +199,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
     array must be preserved.
@@ -240,9 +234,7 @@ def flip(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
-
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.flip(x)
     >>> print(y)
@@ -251,8 +243,6 @@ def flip(
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.zeros((3, 3))
     >>> ivy.flip(x, out=y)
-    ivy.array([[6, 5, 4],
-               [3, 2, 1]])
     >>> print(y)
     ivy.array([[6, 5, 4],
                [3, 2, 1]])
@@ -260,52 +250,32 @@ def flip(
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.zeros((3, 3))
     >>> ivy.flip(x, axis=0, out=y)
-    ivy.array([[4, 5, 6],
-               [1, 2, 3]])
     >>> print(y)
     ivy.array([[4, 5, 6],
                [1, 2, 3]])
 
     >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
     >>> ivy.flip(x, axis=[0, 1], out=x)
-    ivy.array([[[10, 11, 12],
-                [ 7,  8,  9]],
-
-               [[ 4,  5,  6],
-                [ 1,  2,  3]]])
     >>> print(x)
-    ivy.array([[[10, 11, 12],
-                [ 7,  8,  9]],
-
-               [[ 4,  5,  6],
-                [ 1,  2,  3]]])
+    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
 
     >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
     >>> ivy.flip(x, axis=(2, 1), out=x)
-    ivy.array([[[ 6,  5,  4],
-                [ 3,  2,  1]],
-
-               [[12, 11, 10],
-                [ 9,  8,  7]]])
     >>> print(x)
     ivy.array([[[ 6,  5,  4],
                 [ 3,  2,  1]],
-
                [[12, 11, 10],
                 [ 9,  8,  7]]])
 
     With :code:`ivy.NativeArray` input:
-
     >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.flip(x)
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
-
     >>> y = ivy.flip(x)
     >>> print(y)
     {
@@ -315,16 +285,13 @@ def flip(
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.flip()
     >>> print(y)
     ivy.array([2., 1., 0.])
 
     Using :code:`ivy.Container` instance method:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.flip()
     >>> print(y)
@@ -344,7 +311,7 @@ def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Permutes the axes (dimensions) of an array x.
 
@@ -377,7 +344,7 @@ def reshape(
     shape: Tuple[int, ...],
     copy: Optional[bool] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
 
@@ -385,10 +352,13 @@ def reshape(
     ----------
     x
         Tensor to be reshaped.
-    newshape
+    shape
         The new shape should be compatible with the original shape. One shape dimension
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -519,7 +489,7 @@ def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Removes singleton dimensions (axes) from ``x``.
 
@@ -562,7 +532,7 @@ def stack(
     ],
     axis: int = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
 
@@ -747,6 +717,9 @@ def constant_pad(
         axes of x.
     value
         The constant value to pad the array with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -792,81 +765,69 @@ def repeat(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3, 4])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.flip(x)
     >>> print(y)
-    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+    ivy.array([5, 4, 3])
 
-    >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4]])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, out=y)
     >>> print(y)
-    ivy.array([1.1, 1.1, 2.2, 2.2, 3.3, 3.3, 4.4, 4.4])
+    ivy.array([[6, 5, 4],
+               [3, 2, 1]])
 
-    >>> x = ivy.array([[-1, -2], [-3, -4]])
-    >>> y = ivy.zeros((4, 2))
-    >>> ivy.repeat(x, repeats=2, axis=0, out=y)
-    ivy.array([[-1, -2],
-           [-1, -2],
-           [-3, -4],
-           [-3, -4]])
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.flip(x, axis=0, out=y)
     >>> print(y)
-    ivy.array([[-1, -2],
-           [-1, -2],
-           [-3, -4],
-           [-3, -4]])
+    ivy.array([[4, 5, 6],
+               [1, 2, 3]])
 
-    >>> x = ivy.array([[1.2, 2.5, 3.4], [4.6, 5.1, 6.4], \
-                        [-7, 0.8, 19], [10.5, 1.1, -12]])
-    >>> ivy.repeat(x, repeats=ivy.array([1,2,3]), axis=1, out=x)
-    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
-           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
-           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
-           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=[0, 1], out=x)
     >>> print(x)
-    ivy.array([[  1.2,   2.5,   2.5,   3.4,   3.4,   3.4],
-           [  4.6,   5.1,   5.1,   6.4,   6.4,   6.4],
-           [ -7. ,   0.8,   0.8,  19. ,  19. ,  19. ],
-           [ 10.5,   1.1,   1.1, -12. , -12. , -12. ]])
+    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
+
+    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
+    >>> ivy.flip(x, axis=(2, 1), out=x)
+    >>> print(x)
+    ivy.array([[[ 6,  5,  4],
+                [ 3,  2,  1]],
+               [[12, 11, 10],
+                [ 9,  8,  7]]])
 
     With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.NativeArray([1, 2, 3, 4])
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.flip(x)
     >>> print(y)
-    ivy.array([[1, 1, 2, 2, 3, 3, 4, 4]])
+    ivy.array([2., 1., 0.])
 
     With :code:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                       b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.repeat(x, repeats=2)
+    >>> y = ivy.flip(x)
     >>> print(y)
     {
-        a: ivy.array([0., 0., 1., 1., 2., 2.]),
-        b: ivy.array([3., 3., 4., 4., 5., 5.])
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
     }
 
     Instance Method Examples
     ------------------------
-
     Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[0., 1.],[ 2.,3.]])
-    >>> y = x.repeat(2,axis=1)
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.flip()
     >>> print(y)
-    ivy.array([[0., 0., 1., 1.],
-           [2., 2., 3., 3.]])
+    ivy.array([2., 1., 0.])
 
     Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([10., 11., 12.]), \
-                          b=ivy.array([13., 14., 15.]))
-    >>> y = x.repeat(2)
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.flip()
     >>> print(y)
     {
-    a: ivy.array([10., 10., 11., 11., 12., 12.]),
-    b: ivy.array([13., 13., 14., 14., 15., 15.])
+        a: ivy.array([2., 1., 0.]),
+        b: ivy.array([5., 4., 3.])
     }
 
     """
@@ -909,12 +870,12 @@ def split(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.split(x)
     >>> print(y)
-    ivy.array([[1], [2], [3]])
+    [ivy.array([1]),ivy.array([2]),ivy.array([3])]
 
     >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
     >>> y = ivy.split(x, 2, 1, False)
     >>> print(y)
-    ivy.array([[3, 4], [2, 5], [1, 6]])
+    [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]
 
     >>> x = ivy.array([4, 6, 5, 3])
     >>> y = ivy.split(x, [1, 2], 0, True)
@@ -926,23 +887,21 @@ def split(
     >>> x = ivy.native_array([7, 8, 9])
     >>> y = ivy.split(x)
     >>> print(y)
-    ivy.array([[7], [8], [9]])
+    [ivy.array([7]),ivy.array([8]),ivy.array([9])]
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a: ivy.array([[10], [45], [2]])
-    }
+    {a:(list[3],<classivy.array.Array>shape=[1])}
 
     Instance Method Examples
     ------------------------
     >>> x = ivy.array([4, 6, 5, 3])
     >>> y = x.split()
     >>> print(y)
-    ivy.array([[4], [6], [5], [3]])
+    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
 
     >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
     >>> y = x.split()
@@ -986,12 +945,14 @@ def swapaxes(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
     ivy.array([[0],
                [1],
                [2]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -999,6 +960,7 @@ def swapaxes(
                 [4, 5]],
                [[2, 3],
                 [6, 7]]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 0, 2)
     >>> print(y)
@@ -1006,6 +968,7 @@ def swapaxes(
                 [2, 6]],
                [[1, 5],
                 [3, 7]]])
+
     >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> y = ivy.swapaxes(x, 1, 2)
     >>> print(y)
@@ -1015,6 +978,7 @@ def swapaxes(
                 [5, 7]]])
 
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -1023,6 +987,7 @@ def swapaxes(
                [2]])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
@@ -1038,13 +1003,16 @@ def swapaxes(
     Instance Method Examples
     ------------------------
     Using :code:`ivy.Array` instance method:
+
     >>> x = ivy.array([[0., 1., 2.]])
     >>> y = x.swapaxes(0, 1)
     >>> print(y)
     ivy.array([[0.],
                [1.],
                [2.]])
+
     Using :code:`ivy.Container` instance method:
+
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = x.swapaxes(0, 1)
     >>> print(y)
@@ -1068,7 +1036,7 @@ def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Constructs an array by repeating x the number of times given by reps.
 
@@ -1078,6 +1046,9 @@ def tile(
         Input array.
     reps
         The number of repetitions of x along each axis.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1106,6 +1077,9 @@ def zero_pad(
     pad_width
         Number of values padded to the edges of each axis. Specified as
         ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple, Union, List, Any
 
 # local
 import ivy
@@ -20,9 +20,13 @@ from ivy.func_wrapper import (
 # Linear #
 
 
-@to_native_arrays_and_back
 @handle_nestable
-def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
+def linear(x: Union[ivy.Array, ivy.NativeArray],
+           weight: Union[ivy.Array, ivy.NativeArray],
+           bias: Union[ivy.Array, ivy.NativeArray] = None,
+           *,
+           out: Optional[ivy.Array] = None
+           ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -36,6 +40,9 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
     bias
         The bias vector, default is None. *[outer_batch_shape,out_features]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -84,7 +91,9 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
 
 
 @handle_nestable
-def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
+def dropout(
+    x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
 
@@ -96,6 +105,9 @@ def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
         The probability of zeroing out each array element.
     scale
         Whether to scale the output by 1/(1-prob), default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -126,6 +138,7 @@ def scaled_dot_product_attention(
     v: Union[ivy.Array, ivy.NativeArray],
     scale: float,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies scaled dot product attention to inputs x using optional mask.
@@ -150,6 +163,9 @@ def scaled_dot_product_attention(
     mask
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -172,11 +188,7 @@ def scaled_dot_product_attention(
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
-    ivy.array([[
-            [4.04, 5.03],
-            [4.3 , 5.3 ],
-            [4.3 , 5.3 ]
-            ]])
+    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -184,11 +196,7 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
-    ivy.array([[
-            [2.3, 3.23],
-            [2.3, 3.23],
-            [2.3, 3.23]
-            ]])
+    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -197,11 +205,7 @@ def scaled_dot_product_attention(
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
-    ivy.array([[
-            [4.04, 5.03],
-            [4.3 , 5.3 ],
-            [4.3 , 5.3 ]
-            ]])
+    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -209,39 +213,30 @@ def scaled_dot_product_attention(
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
-    ivy.array([[
-            [2.3, 3.23],
-            [2.3, 3.23],
-            [2.3, 3.23]
-            ]])
+    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
 
     With :code:`ivy.Container` input:
 
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),\
+    b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),\
+    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),\
+    b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
-    {
-        a: ivy.array([[[4.27, 5.4],
-                    [4.4, 5.6],
-                    [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54],
-                    [4.4, 5.6],
-                    [4.4, 5.6]]])
-    }
+    {a:ivy.array([[[4.27,5.4],[4.4,5.6],[4.4,5.6]]]),b:ivy.array([[[4.35,5.54],[4.4,5.6],[4.4,5.6]]])}
 
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]],
-    ...                      b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]])
+
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),\
+    b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),\
+    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),\
+    b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> mask = \
+    ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),\
+    b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     {
@@ -269,8 +264,8 @@ def scaled_dot_product_attention(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),\
+    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
     >>> print(result)
@@ -294,22 +289,19 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
-    ivy.array([[
-            [2.3, 3.23],
-            [2.3, 3.23],
-            [2.3, 3.23]
-            ]])
+    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
 
     With :code:`ivy.Container` input:
 
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
-    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]],
-    ...                      b=[[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]])
+    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),\
+    b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),\
+    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),\
+    b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
+    >>> mask = \
+    ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),\
+    b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     {
@@ -324,8 +316,8 @@ def scaled_dot_product_attention(
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
+    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),\
+    b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1)
@@ -373,6 +365,7 @@ def multi_head_attention(
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
+    *,
     out: Optional[ivy.Array] = None,
 ):
     """Applies multi-head attention to inputs x.
@@ -405,6 +398,9 @@ def multi_head_attention(
         The variables for function to_kv_fn. Default is None.
     to_out_v
         The variables for function to_out_fn. Default is None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -420,6 +416,7 @@ def multi_head_attention(
     context = ivy.default(context, x)
 
     # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
+
     if ivy.exists(to_kv_fn):
         kv = to_kv_fn(context, v=to_kv_v)
     else:
@@ -467,6 +464,7 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -486,6 +484,9 @@ def conv1d(
         NWC" or "NCW". Defaults to "NWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -517,8 +518,9 @@ def conv1d_transpose(
     output_shape=None,
     data_format="NWC",
     dilations=1,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-):
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
@@ -538,6 +540,9 @@ def conv1d_transpose(
         NWC" or "NCW". Defaults to "NWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -560,7 +565,8 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
 
@@ -579,17 +585,20 @@ def conv2d(
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         The result of the convolution operation.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    
+
     Functional Examples
     -------------------
 
@@ -617,7 +626,7 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, strides = [2, 1], padding = 'VALID') \
         #non-square filter with unequal stride and valid padding
     >>> print(result.shape)
-    [1, 15, 28, 5]
+    (1, 15, 28, 5)
 
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
@@ -630,21 +639,8 @@ def conv2d(
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
-        a: ivy.array([[[[4.],
-                        [0.]],
-                       [[1.],
-                        [5.]]]]),
-        b: ivy.array([[[[4.],
-                        [0.],
-                        [0.]],
-
-                       [[1.],
-                        [6.],
-                        [0.]],
-
-                       [[0.],
-                        [1.],
-                        [5.]]]])
+        a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+        b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
     }
 
     """
@@ -664,8 +660,9 @@ def conv2d_transpose(
     output_shape=None,
     data_format="NHWC",
     dilations=1,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-):
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
@@ -685,6 +682,9 @@ def conv2d_transpose(
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -707,7 +707,8 @@ def depthwise_conv2d(
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
@@ -727,6 +728,9 @@ def depthwise_conv2d(
         "NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -739,9 +743,9 @@ def depthwise_conv2d(
 
     >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
     >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
-    >>> y = ivy.depthwise_conv2d(x, filters, padding='VALID')
+    >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID')
     >>> print(y.shape)
-    (1, 13, 13, 3)
+    (1, 26, 26, 3)
 
     With :code:`ivy.NativeArray` input:
 
@@ -806,6 +810,7 @@ def conv3d(
     padding: str,
     data_format: str = "NDHWC",
     dilations: int = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -825,6 +830,9 @@ def conv3d(
         NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -865,6 +873,7 @@ def conv3d_transpose(
     output_shape: Union[ivy.Array, ivy.NativeArray] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -886,6 +895,9 @@ def conv3d_transpose(
         "NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -912,15 +924,15 @@ def conv3d_transpose(
 
     With :code: `ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
+    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),\
     b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
+    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),\
     d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
     >>> y = ivy.conv3d_transpose(x, filters, strides=2, padding='SAME')
-    >>> print(y['a'].shape)
+    >>> print(y.shape)
     (1, 5, 55, 55, 6)
-    >>> print(y['b'].shape)
-    (1, 5, 55, 55, 6)
+
+
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -929,10 +941,9 @@ def conv3d_transpose(
     >>> b =  ivy.random_normal(0, 1, [3, 3, 3, 1, 32])
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
-    >>> print(y['a'].shape)
+    >>> print(y.shape)
     (1, 10, 10, 10, 16)
-    >>> print(y['b'].shape)
-    (1, 10, 10, 10, 32)
+
 
     With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
@@ -942,9 +953,10 @@ def conv3d_transpose(
     >>> b =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 128]))
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, strides=1, padding='VALID', dilations=2)
-    >>> print(y['a'].shape)
+    >>> print(y.shape)
     (1, 10, 10, 10, 64)
-    >>> print(y['b'].shape)
+
+    >>> print(y.shape)
     (1, 10, 10, 10, 128)
 
     Instance Method Examples
@@ -960,14 +972,17 @@ def conv3d_transpose(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),
+    >>> x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])),
     b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),
+
+    >>> filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
     d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))
+
     >>> y = x.conv3d_transpose(filters, strides=2, padding='SAME')
-    >>> print(y['a'].shape)
+    >>> print(y.shape)
     (1, 5, 55, 55, 6)
-    >>> print(y['b'].shape)
+
+    >>> print(y.shape)
     (1, 5, 55, 55, 6)
 
     """
@@ -982,8 +997,14 @@ def conv3d_transpose(
 @to_native_arrays_and_back
 @handle_nestable
 def lstm_update(
-    x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
-):
+    x: Union[ivy.Array, ivy.NativeArray],
+    init_h: Union[ivy.Array, ivy.NativeArray],
+    init_c: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[ivy.Array, ivy.NativeArray],
+    recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters

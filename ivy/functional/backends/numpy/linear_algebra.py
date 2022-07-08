@@ -31,7 +31,11 @@ def det(x: np.ndarray) -> np.ndarray:
 
 
 def diagonal(
-    x: np.ndarray, offset: int = 0, axis1: int = -2, axis2: int = -1
+    x: np.ndarray,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
@@ -55,7 +59,10 @@ def inv(x: np.ndarray) -> np.ndarray:
 def matmul(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.matmul(x1, x2, out=out)
+    ret = np.matmul(x1, x2, out=out)
+    if len(x1.shape) == len(x2.shape) == 1:
+        ret = np.array(ret)
+    return ret
 
 
 def matrix_norm(
