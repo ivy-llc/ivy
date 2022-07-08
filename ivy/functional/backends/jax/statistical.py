@@ -15,6 +15,8 @@ def max(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
@@ -23,6 +25,8 @@ def mean(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         num_dims = len(x.shape)
@@ -36,6 +40,8 @@ def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
@@ -43,6 +49,7 @@ def min(
 def prod(
     x: JaxArray,
     *,
+    out: Optional[JaxArray] = None,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
     keepdims: bool = False,
@@ -73,6 +80,8 @@ def std(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
@@ -80,6 +89,7 @@ def std(
 def sum(
     x: JaxArray,
     *,
+    out: Optional[JaxArray] = None,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
     keepdims: bool = False,
@@ -110,6 +120,8 @@ def var(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
@@ -118,5 +130,6 @@ def var(
 # ------#
 
 
-def einsum(equation: str, *operands: JaxArray) -> JaxArray:
+def einsum(equation: str,
+           *operands: JaxArray) -> JaxArray:
     return jnp.einsum(equation, *operands)

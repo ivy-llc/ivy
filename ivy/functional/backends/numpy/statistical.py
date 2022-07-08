@@ -14,7 +14,8 @@ def max(
     x: np.ndarray,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
 
@@ -23,7 +24,8 @@ def mean(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
@@ -45,10 +47,10 @@ def min(
 def prod(
     x: np.ndarray,
     *,
+    out: Optional[np.ndarray] = None,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: np.dtype = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
@@ -76,7 +78,8 @@ def std(
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
 
@@ -84,10 +87,10 @@ def std(
 def sum(
     x: np.ndarray,
     *,
+    out: Optional[np.ndarray] = None,
     axis: Union[int, Tuple[int]] = None,
     dtype: np.dtype = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
@@ -115,14 +118,15 @@ def var(
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return np.asarray(np.var(x, axis=axis, keepdims=keepdims, out=out))
+    return np.asarray(np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
 
 
 # Extra #
