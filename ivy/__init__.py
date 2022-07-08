@@ -65,6 +65,8 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
+        if isinstance(shape_tup, int):
+            shape_tup = tuple([shape_tup])
         assert isinstance(shape_tup, tuple)
         for v in shape_tup:
             assert isinstance(v, int)
