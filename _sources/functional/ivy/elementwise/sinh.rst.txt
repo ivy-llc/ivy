@@ -25,3 +25,14 @@ sinh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: sinh
+
+   sinh/sinh_functional.rst
+   sinh/sinh_array.rst
+   sinh/sinh_container.rst
+
