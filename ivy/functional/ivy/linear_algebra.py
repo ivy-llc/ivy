@@ -50,6 +50,10 @@ def cholesky(
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`ivy.Array` input:
