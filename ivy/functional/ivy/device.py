@@ -94,14 +94,16 @@ class DefaultDevice:
         --------
         A "gpu" as device:
         >>> with ivy.DefaultDevice("gpu") as device:
-        >>>     # with block calls device.__exit__()
-        >>>     print(device._dev)
+        >>>     pass
+        >>> # after with block device.__exit__() is called
+        >>> print(device._dev)
         "cpu"
 
         A "tpu" as device:
         >>> with ivy.DefaultDevice("tpu") as device:
-        >>>     # with block calls device.__exit__()
-        >>>     print(device._dev)
+        >>>     pass
+        >>> # after with block device.__exit__() is called
+        >>> print(device._dev)
         "cpu"
 
         """
