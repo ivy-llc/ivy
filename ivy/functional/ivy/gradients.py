@@ -104,7 +104,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 @inputs_to_native_arrays
 @handle_nestable
-def is_variable(x, exclusive=False):
+def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -122,7 +122,85 @@ def is_variable(x, exclusive=False):
     ret
         Boolean, true if x is a trainable variable, false otherwise.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array(2.3)
+    >>> print(x)
+        ivy.array(2.3)
+    >>> print(ivy.is_variable(x, exclusive=True))
+        False
+    >>> v = 6
+    >>> print(ivy.is_variable(v))
+        False
+
+    >>> w = ivy.zeros((3, 2))
+    >>> print(w)
+        ivy.array([[0., 0.],
+           [0., 0.],
+           [0., 0.]])
+    >>> print(ivy.is_variable(w))
+        True
+
+    >>> y = ivy.array([2, 5, 8, 9, 12])
+    >>> print(y)
+        ivy.array([ 2,  5,  8,  9, 12])
+    >>> print(ivy.is_variable(y))
+        True
+
+    >>> z = ivy.array([[2], [3], [5]])
+    >>> print(z)
+        ivy.array([[2],
+           [3],
+           [5]])
+    >>> print(ivy.is_variable(z))
+        True
+
+    with :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([7])
+    >>> print(x)
+        [7]
+    >>> print(ivy.is_variable(x, True))
+        False
+
+    >>> w = ivy.native_array([2, 3, 4])
+    >>> print(w)
+        [2 3 4]
+    >>> print(ivy.is_variable(w))
+        True
+    >>> m = ivy.native_array([-1, 0., 0.8, 9])
+    >>> print(m)
+        [-1.   0.   0.8  9. ]
+    >>> print(ivy.is_variable(m))
+        True
+
+    with :code:`ivy.Container` inputs:
+    >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+    >>> print(x)
+    {
+        a: ivy.array(3.2),
+        b: ivy.array(2)
+    }
+    >>> print(ivy.is_variable(x, True))
+    {
+        a: false,
+        b: false
+    }
+    >>> n = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+    >>> print(n)
+    {
+        a: ivy.array([2, -1, 0]),
+        b: ivy.array([0., -0.4, 8.])
+    }
+    >>> print(ivy.is_variable(n))
+    {
+        a: true,
+        b: true
+    }
     """
+
     return current_backend(x).is_variable(x, exclusive)
 
 

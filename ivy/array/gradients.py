@@ -9,6 +9,24 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
+    def is_variable(self: ivy.Array, exclusive: bool = False) -> bool:
+        """
+        ivy.Array instance method variant of ivy.is_variable.
+        This method simply wraps the function, and so the docstring
+        for ivy.is_variable also applies to this method with minimal changes.
+
+        Examples
+        --------
+        with :code:`ivy.Array` inputs:
+
+        >>> x = ivy.array([-2, 0.4, 7])
+        >>> print(x)
+            ivy.array([-2. ,  0.4,  7. ])
+        >>> print(x.is_variable)
+            True
+        """
+        return ivy.is_variable(x=self, exclusive=exclusive)
+
     def adam_step(
         self: ivy.Array,
         mw: Union[ivy.Array, ivy.NativeArray],
