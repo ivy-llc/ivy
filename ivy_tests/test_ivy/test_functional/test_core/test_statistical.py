@@ -152,23 +152,15 @@ def test_mean(
 # var
 @given(
     dtype_and_x=statistical_dtype_values("var"),
-    array_shape=helpers.lists(
-        st.integers(1, 10), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
-    ),
-    data=st.data(),
-    axis=helpers.integers(min_value=0, max_value=1),
-    keepdims=st.booleans(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="max"),
+    num_positional_args=helpers.num_positional_args(fn_name="var"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_var(
-    data,
     dtype_and_x,
-    array_shape,
     as_variable,
     with_out,
     num_positional_args,
@@ -178,20 +170,6 @@ def test_var(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    x = data.draw(
-        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
-            lambda x: not np.any(np.isnan(x))
-        )
-    )
-
-    ndim = len(x.shape)
-    axis = data.draw(st.integers(-ndim, ndim - 1))
-    _axes = normalise_axis(axis, x.ndim)
-    N = sum(side for axis, side in enumerate(x.shape) if axis not in _axes)
-    correction = data.draw(
-        st.floats(0.0, N, allow_infinity=False, allow_nan=False) | st.integers(0, N),
-        label="correction",
-    )
     helpers.test_function(
         input_dtype,
         as_variable,
@@ -203,9 +181,6 @@ def test_var(
         fw,
         "var",
         x=np.asarray(x, dtype=input_dtype),
-        axis=axis,
-        keepdims=keepdims,
-        correction=correction,
     )
 
 
