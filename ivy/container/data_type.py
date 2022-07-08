@@ -126,6 +126,26 @@ class ContainerWithDataTypes(ContainerBase):
             self, shape, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    def dtype(
+        self: ivy.Container,
+        as_native: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.dtype(x_, as_native) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
     @staticmethod
     def static_can_cast(
         from_: ivy.Container,
