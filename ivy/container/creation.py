@@ -558,6 +558,59 @@ class ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
+    def static_native_array(
+        x: Union[
+            ivy.Array,
+            ivy.NativeArray,
+            List[Number],
+            Tuple[Number],
+            np.ndarray,
+            ivy.Container,
+        ],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "native_array",
+            x,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out,
+            dtype=dtype,
+            device=device,
+        )
+
+    def native_array(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return self.static_native_array(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+            dtype=dtype,
+            device=device,
+        )
+
+    @staticmethod
     def static_logspace(
         start: Union[ivy.Array, ivy.NativeArray, float],
         stop: Union[ivy.Array, ivy.NativeArray, float],
