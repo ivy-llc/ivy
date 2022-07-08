@@ -17,7 +17,7 @@ RUN git clone https://github.com/unifyai/models && \
 COPY requirements.txt /
 RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
 
-RUN python3 test_dependencies.py -fp requirements.txt && \
-    rm -rf requirements.txt
+#RUN python3 test_dependencies.py -fp requirements.txt && \
+#    rm -rf requirements.txt
 
 WORKDIR /models

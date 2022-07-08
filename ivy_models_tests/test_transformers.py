@@ -12,19 +12,19 @@ from ivy_models.transformers.perceiver_io import PerceiverIOSpec, PerceiverIO
 # Helpers #
 # --------#
 
-def test_feedforward(dev_str, f, call):
+def test_feedforward(device, f, call):
     ivy.seed(0)
-    feedforward = FeedForward(4, dev_str=dev_str)
-    x = ivy.random_uniform(shape=(1, 3, 4), dev_str=dev_str)
+    feedforward = FeedForward(4, device=device)
+    x = ivy.random_uniform(shape=(1, 3, 4), device=device)
     ret = feedforward(x)
     assert list(ret.shape) == [1, 3, 4]
 
 
-def test_prenorm(dev_str, f, call):
+def test_prenorm(device, f, call):
     ivy.seed(0)
-    att = ivy.MultiHeadAttention(4, dev_str=dev_str)
-    prenorm = PreNorm(4, att, dev_str=dev_str)
-    x = ivy.random_uniform(shape=(1, 3, 4), dev_str=dev_str)
+    att = ivy.MultiHeadAttention(4, device=device)
+    prenorm = PreNorm(4, att, device=device)
+    x = ivy.random_uniform(shape=(1, 3, 4), device=device)
     ret = prenorm(x)
     assert list(ret.shape) == [1, 3, 4]
 
@@ -42,7 +42,7 @@ def test_prenorm(dev_str, f, call):
     "learn_query", [True])
 @pytest.mark.parametrize(
     "load_weights", [True, False])
-def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
+def test_perceiver_io_img_classification(device, f, call, batch_shape, img_dims, queries_dim, learn_query,
                                          load_weights):
 
     # params
@@ -54,8 +54,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
     # inputs
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    img = ivy.array(np.load(os.path.join(this_dir, 'img.npy'))[None], dtype_str='float32', dev_str=dev_str)
-    queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], dev_str=dev_str)
+    img = ivy.array(np.load(os.path.join(this_dir, 'img.npy'))[None], dtype='float32', device=device)
+    queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], device=device)
 
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                         num_input_axes=num_input_axes,
@@ -66,7 +66,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                         query_shape=[1],
                                         num_fourier_freq_bands=64,
                                         num_lat_att_per_layer=num_lat_att_per_layer,
-                                        device=dev_str))
+                                        device=device))
 
     # maybe load weights
     if load_weights:
@@ -93,7 +93,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             max_fourier_freq=img_dims[0],
                                             num_fourier_freq_bands=64,
                                             num_lat_att_per_layer=num_lat_att_per_layer,
-                                            device=dev_str), v=v)
+                                            device=device), v=v)
 
     # output
     output = model(img, queries=queries)
@@ -127,15 +127,15 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     "queries_dim", [32])
 @pytest.mark.parametrize(
     "learn_query", [True, False])
-def test_perceiver_io_flow_prediction(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query):
+def test_perceiver_io_flow_prediction(device, f, call, batch_shape, img_dims, queries_dim, learn_query):
     # params
     input_dim = 3
     num_input_axes = 3
     output_dim = 2
 
     # inputs
-    img = ivy.random_uniform(shape=batch_shape + [2] + img_dims + [3], dev_str=dev_str)
-    queries = ivy.random_uniform(shape=batch_shape + img_dims + [32], dev_str=dev_str)
+    img = ivy.random_uniform(shape=batch_shape + [2] + img_dims + [3], device=device)
+    queries = ivy.random_uniform(shape=batch_shape + img_dims + [32], device=device)
 
     # model call
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
@@ -147,7 +147,7 @@ def test_perceiver_io_flow_prediction(dev_str, f, call, batch_shape, img_dims, q
                                         query_shape=img_dims,
                                         max_fourier_freq=img_dims[0],
                                         num_lat_att_per_layer=1,
-                                        device=dev_str))
+                                        device=device))
 
     # output
     output = model(img, queries=queries)
