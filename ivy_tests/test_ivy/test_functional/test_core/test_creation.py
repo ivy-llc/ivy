@@ -149,6 +149,49 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, device, ca
 # empty()
 # empty_like()
 # eye()
+
+@given(
+    n_rows=st.integers(min_value=0, max_value=5),
+    n_cols=st.none() | st.integers(min_value=0, max_value=5),
+    k=st.integers(min_value=-5, max_value=5),
+    batch_shape=helpers.lists(st.integers(1, 5), min_size=1, max_size=1),
+    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="eye"),
+)
+def test_eye(
+    n_rows,
+    n_cols,
+    k,
+    batch_shape,
+    dtype,
+    device,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+):
+
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        False,
+        False,
+        False,
+        fw,
+        "eye",
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+    )
+
+
 # from_dlpack()
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_int_dtypes),
