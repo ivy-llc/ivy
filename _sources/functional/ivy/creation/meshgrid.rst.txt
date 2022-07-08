@@ -4,6 +4,10 @@ meshgrid
 .. autofunction:: ivy.functional.ivy.creation.meshgrid
 
 .. autofunction:: ivy.array.array_methods.meshgrid
+
+.. autofunction:: ivy.container.container_methods.meshgrid
+
+.. autofunction:: ivy.container.container_methods.static_meshgrid
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ meshgrid
 
    meshgrid/meshgrid_functional.rst
    meshgrid/meshgrid_array.rst
+   meshgrid/meshgrid_container.rst
+   meshgrid/static_meshgrid_container.rst
 

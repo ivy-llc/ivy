@@ -4,6 +4,10 @@ zeros_like
 .. autofunction:: ivy.functional.ivy.creation.zeros_like
 
 .. autofunction:: ivy.array.array_methods.zeros_like
+
+.. autofunction:: ivy.container.container_methods.zeros_like
+
+.. autofunction:: ivy.container.container_methods.static_zeros_like
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ zeros_like
    :caption: zeros_like
 
    zeros_like/zeros_like_functional.rst
+   zeros_like/static_zeros_like_container.rst
    zeros_like/zeros_like_array.rst
+   zeros_like/zeros_like_container.rst
 

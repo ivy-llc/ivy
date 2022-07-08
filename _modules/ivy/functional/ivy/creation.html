@@ -137,7 +137,7 @@
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../functional/ivy/creation/arange.html#ivy.functional.ivy.creation.arange">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../functional/ivy/creation/arange/arange_functional.html#ivy.functional.ivy.creation.arange">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
@@ -248,7 +248,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../functional/ivy/creation/zeros.html#ivy.functional.ivy.creation.zeros">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../functional/ivy/creation/zeros/zeros_functional.html#ivy.functional.ivy.creation.zeros">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
@@ -302,7 +302,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../../../functional/ivy/creation/ones.html#ivy.functional.ivy.creation.ones">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../../../functional/ivy/creation/ones/ones_functional.html#ivy.functional.ivy.creation.ones">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
@@ -698,7 +698,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../../../functional/ivy/creation/eye.html#ivy.functional.ivy.creation.eye">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../../../functional/ivy/creation/eye/eye_functional.html#ivy.functional.ivy.creation.eye">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
@@ -751,7 +751,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/linspace.html#ivy.functional.ivy.creation.linspace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/linspace/linspace_functional.html#ivy.functional.ivy.creation.linspace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
@@ -1048,7 +1048,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/logspace.html#ivy.functional.ivy.creation.logspace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/logspace/logspace_functional.html#ivy.functional.ivy.creation.logspace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>

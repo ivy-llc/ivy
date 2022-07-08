@@ -2,6 +2,8 @@ linspace
 ========
 
 .. autofunction:: ivy.functional.ivy.creation.linspace
+
+.. autofunction:: ivy.container.container_methods.static_linspace
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ linspace
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: linspace
+
+   linspace/linspace_functional.rst
+   linspace/static_linspace_container.rst
+

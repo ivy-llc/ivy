@@ -4,6 +4,10 @@ triu
 .. autofunction:: ivy.functional.ivy.creation.triu
 
 .. autofunction:: ivy.array.array_methods.triu
+
+.. autofunction:: ivy.container.container_methods.triu
+
+.. autofunction:: ivy.container.container_methods.static_triu
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ triu
    :caption: triu
 
    triu/triu_functional.rst
+   triu/static_triu_container.rst
    triu/triu_array.rst
+   triu/triu_container.rst
 

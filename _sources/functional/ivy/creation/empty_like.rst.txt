@@ -4,6 +4,10 @@ empty_like
 .. autofunction:: ivy.functional.ivy.creation.empty_like
 
 .. autofunction:: ivy.array.array_methods.empty_like
+
+.. autofunction:: ivy.container.container_methods.static_empty_like
+
+.. autofunction:: ivy.container.container_methods.empty_like
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ empty_like
 
    empty_like/empty_like_functional.rst
    empty_like/empty_like_array.rst
+   empty_like/empty_like_container.rst
+   empty_like/static_empty_like_container.rst
 

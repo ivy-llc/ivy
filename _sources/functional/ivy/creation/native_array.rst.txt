@@ -4,6 +4,10 @@ native_array
 .. autofunction:: ivy.functional.ivy.creation.native_array
 
 .. autofunction:: ivy.array.array_methods.native_array
+
+.. autofunction:: ivy.container.container_methods.static_native_array
+
+.. autofunction:: ivy.container.container_methods.native_array
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ native_array
 
    native_array/native_array_functional.rst
    native_array/native_array_array.rst
+   native_array/native_array_container.rst
+   native_array/static_native_array_container.rst
 

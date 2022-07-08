@@ -4,6 +4,10 @@ asarray
 .. autofunction:: ivy.functional.ivy.creation.asarray
 
 .. autofunction:: ivy.array.array_methods.asarray
+
+.. autofunction:: ivy.container.container_methods.asarray
+
+.. autofunction:: ivy.container.container_methods.static_asarray
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ asarray
 
    asarray/asarray_functional.rst
    asarray/asarray_array.rst
+   asarray/asarray_container.rst
+   asarray/static_asarray_container.rst
 

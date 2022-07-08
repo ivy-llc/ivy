@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ivy.meshgrid" href="meshgrid/meshgrid_functional.html" />
-    <link rel="prev" title="linspace" href="linspace.html" /> 
+    <link rel="prev" title="ivy.Container.static_linspace" href="linspace/static_linspace_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -72,6 +72,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">meshgrid</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="meshgrid/meshgrid_functional.html">ivy.meshgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="meshgrid/meshgrid_array.html">ivy.Array.meshgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="meshgrid/meshgrid_container.html">ivy.Container.meshgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="meshgrid/static_meshgrid_container.html">ivy.Container.static_meshgrid</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="full.html">full</a></li>
@@ -246,6 +248,26 @@ instances in place of any of the arguments.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.meshgrid">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.meshgrid" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../classes/data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_meshgrid">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container_methods.html#static_meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_meshgrid" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../classes/data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -259,7 +281,7 @@ instances in place of any of the arguments.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="linspace.html" class="btn btn-neutral float-left" title="linspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="linspace/static_linspace_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_linspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="meshgrid/meshgrid_functional.html" class="btn btn-neutral float-right" title="ivy.meshgrid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
