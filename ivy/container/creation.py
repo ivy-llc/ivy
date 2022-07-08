@@ -15,11 +15,11 @@ class ContainerWithCreation(ContainerBase):
         start: Number,
         stop: Optional[Number] = None,
         step: Number = 1,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -42,11 +42,11 @@ class ContainerWithCreation(ContainerBase):
     def static_asarray(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
         copy: Optional[bool] = None,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -67,11 +67,11 @@ class ContainerWithCreation(ContainerBase):
     def asarray(
         self: ivy.Container,
         copy: Optional[bool] = None,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -92,11 +92,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_zeros(
         shape: Union[int, Tuple[int], List[int]],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -116,11 +116,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_ones(
         shape: Union[int, Tuple[int], List[int]],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -141,11 +141,11 @@ class ContainerWithCreation(ContainerBase):
     def static_full_like(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
         fill_value: Union[int, float],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -166,11 +166,11 @@ class ContainerWithCreation(ContainerBase):
     def full_like(
         self: ivy.Container,
         fill_value: Union[int, float],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -191,11 +191,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_ones_like(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -214,11 +214,11 @@ class ContainerWithCreation(ContainerBase):
 
     def ones_like(
         self: ivy.Container,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -239,11 +239,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_zeros_like(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -262,11 +262,11 @@ class ContainerWithCreation(ContainerBase):
 
     def zeros_like(
         self: ivy.Container,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -288,11 +288,11 @@ class ContainerWithCreation(ContainerBase):
     def static_tril(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
         k: int = 0,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -309,11 +309,11 @@ class ContainerWithCreation(ContainerBase):
     def tril(
         self: ivy.Container,
         k: int = 0,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -331,11 +331,11 @@ class ContainerWithCreation(ContainerBase):
     def static_triu(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
         k: int = 0,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -352,11 +352,11 @@ class ContainerWithCreation(ContainerBase):
     def triu(
         self: ivy.Container,
         k: int = 0,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -373,11 +373,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_empty_like(
         x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -396,11 +396,11 @@ class ContainerWithCreation(ContainerBase):
 
     def empty_like(
         self: ivy.Container,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -423,11 +423,11 @@ class ContainerWithCreation(ContainerBase):
         n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -453,11 +453,11 @@ class ContainerWithCreation(ContainerBase):
         num: int,
         axis: int = None,
         endpoint: bool = True,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -526,11 +526,11 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_from_dlpack(
         x: Union[ivy.Array, ivy.NativeArray],
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -549,6 +549,7 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -569,12 +570,12 @@ class ContainerWithCreation(ContainerBase):
         num: int,
         base: float = 10.0,
         axis: int = None,
-        *,
         endpoint: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
