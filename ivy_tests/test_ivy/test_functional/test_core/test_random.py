@@ -201,19 +201,19 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 # randint
 @given(
     data=st.data(),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    arr_shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    #num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    num_positional_args=st.integers(3, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="randint"),
+    #num_positional_args=st.integers(3, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_randint(
     data,
-    shape,
+    arr_shape,
     dtype,
     as_variable,
     with_out,
@@ -222,21 +222,20 @@ def test_randint(
     container,
     instance_method,
     device,
-    #call,
     fw,
 ):
     #NEXT: ret_from_np and ret: x and y
-    if type(shape) == tuple:
-        shape = list(shape)
-        #shape = shape[0]
-    #else:
-    #    shape = list(shape)
 
-    val = data.draw(
-        helpers.array_values(dtype, (2,), min_value=0)
-    )
+    #if type(shape) == tuple:
+        #shape = int(shape[0])
+        #else:
+        #    shape = list(shape)
 
-    #val2 = data.draw(helpers.array_values(dtype, arr_shape, min_value=0))
+    shape = data.draw(helpers.array_values(dtype, arr_shape, min_value=1))
+    shape = shape[0]
+
+    val = data.draw(helpers.array_values(dtype, (2,), min_value=0))
+
     if val[1] > val[0]:
         low = val[0]
         high = val[1]
@@ -244,8 +243,9 @@ def test_randint(
         low = val[1]
         high = val[0]
     elif val[1] == val[0]:
-        low = val[0]
-        high = val[1]+1
+        return
+        #low = val[0]
+        #high = val[1]+1
 
 
     # PyTorch and MXNet do not support non-float variables
