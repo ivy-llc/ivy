@@ -120,9 +120,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([[1.73, -0.577],
-                          [0., 1.63]]),
+                            [0., 1.63]]),
             b: ivy.array([[1.41, 0.707],
-                          [0., 0.707]])
+                            [0., 0.707]])
         }
         """
         return self.static_cholesky(

@@ -89,9 +89,9 @@ def cholesky(
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
+                        [0., 1.63]]),
         b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
+                        [0., 0.707]])
     }
 
     With multiple :code:`ivy.Container` inputs:
@@ -103,9 +103,9 @@ def cholesky(
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
+                        [0., 1.63]]),
         b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
+                        [0., 0.707]])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
@@ -117,19 +117,6 @@ def cholesky(
 
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \
-                          b=ivy.array([[2., 1.], [1., 1.]]))
-    >>> y = x.cholesky('false')
-    >>> print(y)
-    {
-        a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
-        b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
-    }
 
     """
     return current_backend(x).cholesky(x, upper, out=out)
