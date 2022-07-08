@@ -495,6 +495,11 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     -------
     ret
         The device utilization (%)
+    
+    Example
+    -------
+    >>>ivy.dev_util('cpu)
+    13.4
 
     """
     if device == "cpu":
