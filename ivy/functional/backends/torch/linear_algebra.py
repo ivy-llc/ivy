@@ -47,7 +47,11 @@ def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
 
 
 def diagonal(
-    x: torch.Tensor, offset: int = 0, axis1: int = -2, axis2: int = -1
+    x: torch.Tensor,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
@@ -178,11 +182,11 @@ def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
 
 
 def svd(
-    x: torch.Tensor, full_matrices: bool = True, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, full_matrices: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
-    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices, out=out)
+    U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
     ret = results(U, D, VT)
     return ret
 
