@@ -420,6 +420,25 @@ def used_mem_on_dev(
     -------
     ret
         The used memory on the device in GB.
+    Examples
+    --------
+    A "cpu" as device string:
+    >>> x = ivy.as_native_dev("cpu") as device
+    >>> ivy.used_mem_on_dev(x)
+    
+    A "gpu" as device string:
+    >>> y = ivy.as_native_dev("gpu:idx") as device
+    >>> ivy.used_mem_on_dev(y)
+    
+    >>> ivy.set_backend("torch")
+    >>> z = ivy.as_native_dev("cpu")
+    >>> ivy.used_mem_on_dev(z)
+    
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cpu")
+    >>> ivy.default_device(as_native=True)
+    >>> ivy.used_mem_on_dev(device)
 
     """
     ivy.clear_mem_on_dev(device)
