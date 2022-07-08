@@ -494,7 +494,9 @@ def asinh(
     >>> print(x)
     ivy.array([[ 0.199, 0.39, 0.569],
                [-0.733, -0.881, -1.44]])
+
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([-0, -2.6, 1, 3.6])
     >>> y = ivy.asinh(x)
     >>> print(y)
