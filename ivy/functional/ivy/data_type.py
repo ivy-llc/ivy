@@ -160,7 +160,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 @handle_nestable
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
