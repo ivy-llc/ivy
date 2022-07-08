@@ -32,7 +32,8 @@ def test_unique_values(
     fw,
     device,
 ):
-    if fw == "tensorflow":
+    #uint16, uint32 not supported with torch
+    if fw == "torch" and (input_dtype == "uint16" or input_dtype == "uint32"):
         return
 
     shape = tuple(array_shape)
@@ -75,6 +76,9 @@ def test_unique_all(
     fw,
     device,
 ):
+    if fw == "torch" and "uint" in input_dtype:
+        return
+
     shape = tuple(array_shape)
 
     x = np.random.uniform(size=shape).astype(input_dtype)
