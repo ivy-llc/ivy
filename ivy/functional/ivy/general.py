@@ -26,6 +26,8 @@ INF = float("inf")
 TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+shape_array_mode = False
+
 
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
@@ -2558,6 +2560,16 @@ def shape(
 
     """
     return current_backend(x).shape(x, as_array)
+
+
+def set_shape_array_mode() -> None:
+    global shape_array_mode
+    shape_array_mode = True
+
+
+def unset_shape_array_mode() -> None:
+    global shape_array_mode
+    shape_array_mode = False
 
 
 @to_native_arrays_and_back
