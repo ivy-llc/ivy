@@ -23,13 +23,3 @@ triu
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: triu
-
-   triu/triu_functional.rst
-   triu/triu_array.rst
-

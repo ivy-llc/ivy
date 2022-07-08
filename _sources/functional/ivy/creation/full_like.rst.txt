@@ -23,13 +23,3 @@ full_like
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: full_like
-
-   full_like/full_like_functional.rst
-   full_like/full_like_array.rst
-
