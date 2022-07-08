@@ -1248,6 +1248,48 @@ def dtype_and_values(
     return dtype, values
 
 
+@st.composite
+def dtype_values_axis(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+    shared_dtype=False,
+    min_axis=None,
+    max_axis=None,
+):
+    dtype, values = draw(
+        dtype_and_values(
+            available_dtypes,
+            min_value=min_value,
+            max_value=max_value,
+            allow_inf=allow_inf,
+            exclude_min=exclude_min,
+            exclude_max=exclude_max,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            shape=shape,
+            shared_dtype=shared_dtype,
+        )
+    )
+    if not isinstance(values, list):
+        return dtype, values, None
+    if shape is not None:
+        return dtype, values, draw(get_axis(shape))
+    axis = draw(integers(min_value=min_axis, max_value=max_axis))
+    return dtype, values, axis
+
+
 # taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
