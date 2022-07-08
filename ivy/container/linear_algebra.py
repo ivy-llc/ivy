@@ -74,7 +74,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \
-                                  b=ivy.array([[2., 1.], [1., 1.]]))
+                              b=ivy.array([[2., 1.], [1., 1.]]))
         >>> upper = ivy.Container(a=1, b=-1)
         >>> y = ivy.Container.static_roll(x, upper)
         >>> print(y)
