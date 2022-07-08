@@ -3,8 +3,6 @@ svdvals
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.svdvals
 
-.. autofunction:: ivy.array.array_methods.svd
-
 .. autofunction:: ivy.array.array_methods.svdvals
 |
 | **Supported Frameworks:**

@@ -1,0 +1,18 @@
+Data classes
+============
+
+.. automodule:: ivy.data_classes
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Data Classes
+
+   data_classes/container.rst
+   data_classes/array.rst
+

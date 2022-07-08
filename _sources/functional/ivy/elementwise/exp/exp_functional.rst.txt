@@ -1,8 +1,6 @@
 ivy.exp
 =======
-.. autofunction:: ivy.functional.ivy.elementwise.logaddexp
-
-.. autofunction:: ivy.container.container_methods.logaddexp
+.. autofunction:: ivy.functional.ivy.elementwise.exp
 |
 | **Supported Frameworks:**
 

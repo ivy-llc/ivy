@@ -1,6 +1,6 @@
 ivy.det
 =======
-.. autofunction:: ivy.functional.ivy.linear_algebra.slogdet
+.. autofunction:: ivy.functional.ivy.linear_algebra.det
 |
 | **Supported Frameworks:**
 

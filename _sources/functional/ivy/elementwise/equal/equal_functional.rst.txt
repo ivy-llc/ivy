@@ -1,10 +1,6 @@
 ivy.equal
 =========
-.. autofunction:: ivy.functional.ivy.elementwise.greater_equal
-
-.. autofunction:: ivy.container.container_methods.greater
-
-.. autofunction:: ivy.container.container_methods.greater_equal
+.. autofunction:: ivy.functional.ivy.elementwise.equal
 |
 | **Supported Frameworks:**
 

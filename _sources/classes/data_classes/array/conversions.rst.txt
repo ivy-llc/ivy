@@ -1,0 +1,20 @@
+Conversions
+===========
+
+.. automodule:: ivy.array.conversions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Conversions
+
+   conversions/to_ivy.rst
+   conversions/args_to_ivy.rst
+   conversions/to_native.rst
+   conversions/args_to_native.rst
+

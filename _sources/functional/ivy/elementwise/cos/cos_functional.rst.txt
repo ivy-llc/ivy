@@ -1,8 +1,6 @@
 ivy.cos
 =======
-.. autofunction:: ivy.functional.ivy.elementwise.acosh
-
-.. autofunction:: ivy.container.container_methods.acosh
+.. autofunction:: ivy.functional.ivy.elementwise.cos
 |
 | **Supported Frameworks:**
 

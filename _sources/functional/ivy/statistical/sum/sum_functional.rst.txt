@@ -1,8 +1,6 @@
 ivy.sum
 =======
-.. autofunction:: ivy.functional.ivy.statistical.einsum
-
-.. autofunction:: ivy.container.container_methods.einsum
+.. autofunction:: ivy.functional.ivy.statistical.sum
 |
 | **Supported Frameworks:**
 

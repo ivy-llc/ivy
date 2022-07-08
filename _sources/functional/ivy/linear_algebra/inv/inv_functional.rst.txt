@@ -1,8 +1,6 @@
 ivy.inv
 =======
-.. autofunction:: ivy.functional.ivy.linear_algebra.pinv
-
-.. autofunction:: ivy.array.array_methods.pinv
+.. autofunction:: ivy.functional.ivy.linear_algebra.inv
 |
 | **Supported Frameworks:**
 

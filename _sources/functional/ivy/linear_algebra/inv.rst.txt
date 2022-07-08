@@ -2,6 +2,8 @@ inv
 ===
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.inv
+
+.. autofunction:: ivy.array.array_methods.inv
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ inv
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: inv
+
+   inv/inv_functional.rst
+   inv/inv_array.rst
+

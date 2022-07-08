@@ -1,12 +1,6 @@
 ivy.acos
 ========
-.. autofunction:: ivy.functional.ivy.elementwise.acosh
-
-.. autofunction:: ivy.container.container_methods.cosh
-
-.. autofunction:: ivy.container.container_methods.cos
-
-.. autofunction:: ivy.container.container_methods.acosh
+.. autofunction:: ivy.functional.ivy.elementwise.acos
 |
 | **Supported Frameworks:**
 

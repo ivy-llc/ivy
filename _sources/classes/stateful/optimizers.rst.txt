@@ -1,0 +1,21 @@
+Optimizers
+==========
+
+.. automodule:: ivy.stateful.optimizers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Optimizers
+
+   optimizers/Optimizer.rst
+   optimizers/SGD.rst
+   optimizers/LARS.rst
+   optimizers/Adam.rst
+   optimizers/LAMB.rst
+

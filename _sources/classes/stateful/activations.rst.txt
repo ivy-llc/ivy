@@ -1,0 +1,18 @@
+Activations
+===========
+
+.. automodule:: ivy.stateful.activations
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Activations
+
+   activations/GELU.rst
+   activations/GEGLU.rst
+

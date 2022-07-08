@@ -1,0 +1,27 @@
+Initializers
+============
+
+.. automodule:: ivy.stateful.initializers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Initializers
+
+   initializers/Constant:
+    def __init__.rst
+   initializers/Zeros.rst
+   initializers/Ones.rst
+   initializers/Uniform:
+    def __init__.rst
+   initializers/GlorotUniform.rst
+   initializers/FirstLayerSiren.rst
+   initializers/Siren.rst
+   initializers/KaimingNormal:
+    def __init__.rst
+
