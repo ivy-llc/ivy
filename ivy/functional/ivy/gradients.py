@@ -167,6 +167,8 @@ def variable_data(x: Optional[ivy.Array]) -> Any:
 def stop_gradient(
         x: Union[ivy.Array, ivy.NativeArray],
         preserve_type: bool = True,
+        *,
+        out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Stops gradient computation.
 
@@ -186,7 +188,7 @@ def stop_gradient(
         The same array x, but with no gradient information.
 
     """
-    return current_backend(x).stop_gradient(x, preserve_type)
+    return current_backend(x).stop_gradient(x, preserve_type, out=out)
 
 
 # AutoGrad #
