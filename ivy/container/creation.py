@@ -40,7 +40,14 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_asarray(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[
+            ivy.Array,
+            ivy.NativeArray,
+            List[Number],
+            Tuple[Number],
+            np.ndarray,
+            ivy.Container,
+        ],
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -76,17 +83,16 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.asarray(x_, copy, dtype=dtype, device=device)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_asarray(
+            self,
+            copy,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
+            dtype=dtype,
+            device=device,
         )
 
     @staticmethod
@@ -139,7 +145,7 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_full_like(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         fill_value: Union[int, float],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -175,22 +181,21 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.full_like(x_, fill_value, dtype=dtype, device=device)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_full_like(
+            self,
+            fill_value,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
+            dtype=dtype,
+            device=device,
         )
 
     @staticmethod
     def static_ones_like(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -223,22 +228,20 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.ones_like(x_, dtype=dtype, device=device)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_ones_like(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
+            dtype=dtype,
+            device=device,
         )
 
     @staticmethod
     def static_zeros_like(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -271,22 +274,20 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.zeros_like(x_, dtype=dtype, device=device)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_zeros_like(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
+            dtype=dtype,
+            device=device,
         )
 
     @staticmethod
     def static_tril(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -316,20 +317,19 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.tril(x_, k) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.static_tril(
+            self,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
 
     @staticmethod
     def static_triu(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -359,20 +359,19 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.triu(x_, k) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_triu(
+            self,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
         )
 
     @staticmethod
     def static_empty_like(
-        x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -405,17 +404,15 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.empty_like(x_, dtype=dtype, device=device)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_empty_like(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
+            dtype=dtype,
+            device=device,
         )
 
     @staticmethod
@@ -448,8 +445,8 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_linspace(
-        start: Union[ivy.Array, ivy.NativeArray, int, float],
-        stop: Union[ivy.Array, ivy.NativeArray, int, float],
+        start: Union[ivy.Array, ivy.NativeArray, float],
+        stop: Union[ivy.Array, ivy.NativeArray, float],
         num: int,
         axis: int = None,
         endpoint: bool = True,
@@ -552,21 +549,19 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.from_dlpack(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_from_dlpack(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out,
         )
 
     @staticmethod
     def static_logspace(
-        start: Union[ivy.Array, ivy.NativeArray, int, float],
-        stop: Union[ivy.Array, ivy.NativeArray, int, float],
+        start: Union[ivy.Array, ivy.NativeArray, float],
+        stop: Union[ivy.Array, ivy.NativeArray, float],
         num: int,
         base: float = 10.0,
         axis: int = None,
