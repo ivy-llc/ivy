@@ -2529,7 +2529,7 @@ def one_hot(
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
-) -> Iterable[int]:
+) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
     Parameters
