@@ -41,17 +41,29 @@ Ivy Array
 The :code:`ivy.Array` is a simple wrapper class, which wraps around the :code:`ivy.NativeArray`,
 storing it in `self._data`_.
 
-All functions in the Ivy functional API which accept *at least one array argument* in the input are implemented
-as instance methods in the :code:`ivy.Array` class.
+All functions in the Ivy functional API which accept *at least one array argument* in
+the input are implemented as instance methods in the :code:`ivy.Array` class.
+The only exceptions to this are functions in the
+`nest <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py>`_
+module and the
+`meta <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/meta.py>`_
+module, which have no instance method implementations.
 
 The organization of these instance methods follows the same organizational structure as the
 files in the functional API.
-The :code:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_,
+The :code:`ivy.Array` class `inherits`_ from many category-specific array classes,
+such as `ArrayWithElementwise`_,
 each of which implement the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally,
-but passes in :code:`self._data` as the first array argument.
+but passes in :code:`self._data` as the first *array* argument.
 `ivy.Array.add`_ is a good example.
+However, it's important to bear in mind that this is
+*not necessarily the first argument*, although in most cases it will be.
+We also **do not** set the :code:`out` argument to :code:`self` for instance methods.
+If the only array argument is the :code:`out` argument, then we do not implement this
+instance method. For example, we do not implement an instance method for
+`ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found, then this instance method is added `programmatically`_.
@@ -61,7 +73,7 @@ The benefit of the source code implementations is that this makes the code much 
 with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
 
-Special methods are a little bit different. Most of these simply wrap a corresponding function in the functional API,
+Most special methods also simply wrap a corresponding function in the functional API,
 as `is the case`_ in the Array API Standard.
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
 :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide` respectively.

@@ -24,15 +24,15 @@ Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    git clone git@github.com:unifyai/ivy.git
+    git clone --recurse-submodules git@github.com:unifyai/ivy.git
 
 .. code-block:: none
 
-    git clone https://github.com/unifyai/ivy.git
+    git clone --recurse-submodules https://github.com/unifyai/ivy.git
 
 .. code-block:: none
 
-    gh repo clone unifyai/ivy your_folder
+    gh repo clone --recurse-submodules unifyai/ivy your_folder
 
 PyCharm
 -------
@@ -145,6 +145,14 @@ The path to python can be found by :code:`where python` on Windows and :code:`wh
 Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
 future projects.
 
+To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/test_array_api` in your
+cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+    .. code-block:: none
+
+        pip install -r requirements.txt
+
+This will install packages required for running the tests in Array API suite.
 
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_
 OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
@@ -269,6 +277,78 @@ Ubuntu
 
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
+
+GitHub Codespaces
+-----------------
+
+It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs. Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`. Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P). We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too. With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have visual studio code or a browser installed. How cool is that ?!
+
+**Pre-requisites**
+
+1. Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from `here <https://code.visualstudio.com/>`_). 
+
+2. Once Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), and search "Codespaces" and then install the extension locally.
+
+.. image:: content/extension_install.png
+   :width: 420
+
+Now we are ready to begin!
+
+**Setting up Codespaces**
+
+Just follow the steps outlined below:
+
+1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
+
+.. image:: content/fork_create_codespace.png
+   :width: 420
+
+2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop". Give the relevant permissions to the browser to open up Visual Studio Code.
+
+.. image:: content/open_vscode_desktop.png
+   :width: 420
+
+3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process. Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
+
+.. image:: content/building_codespace.png
+   :width: 420
+
+Log of container being built would look like below:
+
+.. image:: content/log_codespace.png
+   :width: 420
+
+4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
+
+.. image:: content/codespace_built.png
+   :width: 420
+
+5. That's it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.
+
+**Opening an existing Codespaces**
+
+If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
+
+There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.
+
+1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
+
+.. image:: content/existing_codespace_fork.png
+   :width: 420
+
+2. Other way to connect is to open up visual studio code application. There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects. If you click either of those, it will open up your codespace. 
+
+.. image:: content/recent_projects.png
+   :width: 420
+
+3. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown. Once you find your codespace, right click on it and then select "Connect to codespace in current window".
+
+.. image:: content/connect_existing.png
+   :width: 420
+
+**Troubleshooting**
+
+Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written "Select Python Interpreter". From there, select :code:`Python 3.8.10 64-bit usr/bin/python3`.
 
 Pre-Commit
 ----------

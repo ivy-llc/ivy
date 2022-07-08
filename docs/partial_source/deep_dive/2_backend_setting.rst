@@ -14,9 +14,9 @@ Backend Setting
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the \
 arguments. For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as :code:`numpy`\
 , and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` \
-function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then\
-this is always used, and the `implicit_backend`_ is overwritten with the framework inferred. :code:`numpy` will always be\
-the default backend unless it explicitly set or is inferred.\
+function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then \
+this is always used, and the `implicit_backend`_ is overwritten with the framework inferred. :code:`numpy` will always be \
+the default backend unless it is explicitly set or is inferred.\
 
 When calling `this function`_ for setting the backend, the following steps are performed:
 

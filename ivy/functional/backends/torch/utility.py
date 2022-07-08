@@ -1,13 +1,12 @@
 # global
 import ivy
 import torch
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Sequence
 
 
-# noinspection PyShadowingBuiltins
 def all(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[torch.Tensor] = None,
@@ -26,10 +25,9 @@ def all(
     return x
 
 
-# noinspection PyShadowingBuiltins
 def any(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[torch.Tensor] = None,
