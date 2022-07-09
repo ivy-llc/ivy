@@ -127,33 +127,21 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array(2.3)
-    >>> print(x)
-        ivy.array(2.3)
     >>> is_var = ivy.is_variable(x, exclusive=True)
     >>> print(is_var)
         False
 
     >>> w = ivy.zeros((3, 2))
-    >>> print(w)
-        ivy.array([[0., 0.],
-           [0., 0.],
-           [0., 0.]])
     >>> is_var = ivy.is_variable(w)
     >>> print(is_var)
         True
 
     >>> y = ivy.array([2, 5, 8, 9, 12])
-    >>> print(y)
-        ivy.array([ 2,  5,  8,  9, 12])
     >>> is_var = ivy.is_variable(y)
     >>> print(is_var)
         True
 
     >>> z = ivy.array([[2], [3], [5]])
-    >>> print(z)
-        ivy.array([[2],
-           [3],
-           [5]])
     >>> is_var = ivy.is_variable(z)
     >>> print(is_var)
         True
@@ -161,32 +149,22 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     with :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([7])
-    >>> print(x)
-        [7]
+
     >>> is_var = ivy.is_variable(x, True)
     >>> print(is_var)
         False
 
     >>> w = ivy.native_array([2, 3, 4])
-    >>> print(w)
-        [2 3 4]
     >>> is_var = ivy.is_variable(w)
     >>> print(is_var)
         True
     >>> m = ivy.native_array([-1, 0., 0.8, 9])
-    >>> print(m)
-        [-1.   0.   0.8  9. ]
     >>> is_var =  ivy.is_variable(m)
     >>> print(is_var)
         True
 
     with :code:`ivy.Container` inputs:
     >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
-    >>> print(x)
-    {
-        a: ivy.array(3.2),
-        b: ivy.array(2)
-    }
     >>> is_var = ivy.is_variable(x, True)
     >>> print(is_var)
     {
@@ -194,11 +172,6 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         b: false
     }
     >>> n = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
-    >>> print(n)
-    {
-        a: ivy.array([2, -1, 0]),
-        b: ivy.array([0., -0.4, 8.])
-    }
     >>> is_var = ivy.is_variable(n)
     >>> print(is_var)
     {
