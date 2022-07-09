@@ -61,7 +61,7 @@ class ContainerWithGradients(ContainerBase):
         with :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
-        >>> is_var = x.is_variable()
+        >>> is_var = x.is_variable(exclusive=True)
         >>> print(is_var)
         {
             a: false,
