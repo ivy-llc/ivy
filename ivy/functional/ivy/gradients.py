@@ -170,16 +170,16 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     >>> is_var = ivy.is_variable(x, True)
     >>> print(is_var)
     {
-        a: False,
-        b: False
+        a: false,
+        b: false
     }
 
     >>> n = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
     >>> is_var = ivy.is_variable(n)
     >>> print(is_var)
     {
-        a: False,
-        b: False
+        a: false,
+        b: false
     }
     """
 
