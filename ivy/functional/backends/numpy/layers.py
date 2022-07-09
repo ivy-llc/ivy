@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 
 def conv1d(
@@ -38,20 +38,30 @@ def conv2d(
     strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> np.ndarray:
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0])
+
+    if isinstance(dilations, int):
+        dilations = (dilations, dilations)
+    elif len(dilations) == 1:
+        dilations = (dilations[0], dilations[0])
 
     # adding dilations
-    if dilations > 1:
+    if dilations[1] > 1:
         filters = np.insert(
             filters,
-            [i for i in range(1, filters.shape[1])] * (dilations - 1),
+            [i for i in range(1, filters.shape[1])] * (dilations[1] - 1),
             values=0,
             axis=1
         )
+    if dilations[0] > 1:
         filters = np.insert(
             filters,
-            [i for i in range(1, filters.shape[0])] * (dilations - 1),
+            [i for i in range(1, filters.shape[0])] * (dilations[0] - 1),
             values=0,
             axis=0
         )
@@ -64,15 +74,15 @@ def conv2d(
 
     x_shape = list(x.shape[1:3])
     if padding == "SAME":
-        if x_shape[1] % strides == 0:
-            pad_w = max(filter_shape[1] - strides, 0)
+        if x_shape[1] % strides[1] == 0:
+            pad_w = max(filter_shape[1] - strides[1], 0)
         else:
-            pad_w = max(filter_shape[1] - (x_shape[1] % strides), 0)
+            pad_w = max(filter_shape[1] - (x_shape[1] % strides[1]), 0)
 
-        if x_shape[0] % strides == 0:
-            pad_h = max(filter_shape[0] - strides, 0)
+        if x_shape[0] % strides[0] == 0:
+            pad_h = max(filter_shape[0] - strides[0], 0)
         else:
-            pad_h = max(filter_shape[0] - (x_shape[0] % strides), 0)
+            pad_h = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
 
         x = np.pad(
             x,
@@ -86,13 +96,13 @@ def conv2d(
     x_shape = x.shape
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
-    new_h = (x_shape[1] - filter_shape[0]) // strides + 1
-    new_w = (x_shape[2] - filter_shape[1]) // strides + 1
+    new_h = (x_shape[1] - filter_shape[0]) // strides[0] + 1
+    new_w = (x_shape[2] - filter_shape[1]) // strides[1] + 1
     new_shape = [x_shape[0], new_h, new_w] + filter_shape + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides,
-        x.strides[2] * strides,
+        x.strides[1] * strides[1],
+        x.strides[2] * strides[0],
         x.strides[1],
         x.strides[2],
         x.strides[3]
