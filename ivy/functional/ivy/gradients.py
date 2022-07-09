@@ -184,7 +184,6 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         b: false
     }
     """
-
     return current_backend(x).is_variable(x, exclusive)
 
 
