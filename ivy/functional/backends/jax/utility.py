@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Optional, Sequence
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -8,17 +8,15 @@ from ivy.functional.backends.jax import JaxArray
 
 def all(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> JaxArray:
-    ret = jnp.all(x, axis, keepdims=keepdims)
-    return ret
+    return jnp.all(x, axis, keepdims=keepdims)
 
 
 def any(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> JaxArray:
-    ret = jnp.any(x, axis, keepdims=keepdims)
-    return ret
+    return jnp.any(x, axis, keepdims=keepdims)
