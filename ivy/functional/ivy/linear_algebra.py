@@ -1044,7 +1044,7 @@ def svdvals(
     Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
 
     >>> _, SS, _ = ivy.svd(x)
-    >>> pring(SS.shape)
+    >>> print(SS.shape)
     (6,)
 
     >>> error = (SS - S).abs()
