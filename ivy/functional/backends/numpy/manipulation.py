@@ -170,9 +170,6 @@ def swapaxes(
 def clip(
     x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
 ) -> np.ndarray:
-    if isinstance(x_min, Number) and isinstance(x_max, Number):
-        assert ivy.less(x_min, x_max)
-    else:
-        assert ivy.all([ivy.less(u, v) for u, v in zip(x_min, x_max)])
+    assert ivy.all(ivy.less(x_min, x_max))
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret

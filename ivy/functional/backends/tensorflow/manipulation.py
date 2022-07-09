@@ -222,10 +222,7 @@ def clip(
     x_min: Union[Number, tf.Tensor, tf.Variable],
     x_max: Union[Number, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x_min, Number) and isinstance(x_max, Number):
-        assert ivy.less(x_min, x_max)
-    else:
-        assert ivy.all([ivy.less(u, v) for u, v in zip(x_min, x_max)])
+    assert ivy.all(ivy.less(x_min, x_max))
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

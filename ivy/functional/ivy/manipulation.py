@@ -683,10 +683,7 @@ def clip(
     }
 
     """
-    if isinstance(x_min, Number) and isinstance(x_max, Number):
-        assert ivy.less(x_min, x_max)
-    else:
-        assert ivy.all([ivy.less(u, v) for u, v in zip(x_min, x_max)])
+    assert ivy.all(ivy.less(x_min, x_max))
     res = current_backend(x).clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)

@@ -3,7 +3,6 @@ import mxnet as mx
 import math
 import numpy as np
 from typing import Union, Tuple, Optional, List
-from numbers import Number
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
     _handle_flat_arrays_in_out,
@@ -206,10 +205,7 @@ def clip(
     x_max: float,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
-    if isinstance(x_min, Number) and isinstance(x_max, Number):
-        assert ivy.less(x_min, x_max)
-    else:
-        assert ivy.all([ivy.less(u, v) for u, v in zip(x_min, x_max)])
+    assert ivy.all(ivy.less(x_min, x_max))
     ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
