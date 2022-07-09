@@ -68,11 +68,24 @@ def conv2d(
     strides: Union[int, Tuple[int, int]],
     padding: str,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> torch.Tensor:
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0])
 
-    f_w_after_dilation = (filters.shape[1] + ((dilations - 1) * (filters.shape[1] - 1)))
-    f_h_after_dilation = (filters.shape[0] + ((dilations - 1) * (filters.shape[0] - 1)))
+    if isinstance(dilations, int):
+        dilations = (dilations, dilations)
+    elif len(dilations) == 1:
+        dilations = (dilations[0], dilations[0])
+
+    f_w_after_dilation = (
+        filters.shape[1] + ((dilations[1] - 1) * (filters.shape[1] - 1))
+    )
+    f_h_after_dilation = (
+        filters.shape[0] + ((dilations[0] - 1) * (filters.shape[0] - 1))
+    )
     filter_shape = [f_h_after_dilation, f_w_after_dilation]
     filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
@@ -80,15 +93,15 @@ def conv2d(
     x_shape = list(x.shape[2:])
 
     if padding == "SAME":
-        if x_shape[1] % strides == 0:
-            pad_w = max(filter_shape[1] - strides, 0)
+        if x_shape[1] % strides[1] == 0:
+            pad_w = max(filter_shape[1] - strides[1], 0)
         else:
-            pad_w = max(filter_shape[1] - (x_shape[1] % strides), 0)
+            pad_w = max(filter_shape[1] - (x_shape[1] % strides[1]), 0)
 
-        if x_shape[0] % strides == 0:
-            pad_h = max(filter_shape[0] - strides, 0)
+        if x_shape[0] % strides[0] == 0:
+            pad_h = max(filter_shape[0] - strides[0], 0)
         else:
-            pad_h = max(filter_shape[0] - (x_shape[0] % strides), 0)
+            pad_h = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
         x = torch.nn.functional.pad(
             x,
             [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
