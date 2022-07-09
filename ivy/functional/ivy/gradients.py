@@ -158,12 +158,14 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     >>> is_var = ivy.is_variable(w)
     >>> print(is_var)
         False
+
     >>> m = ivy.native_array([-1, 0., 0.8, 9])
     >>> is_var =  ivy.is_variable(m)
     >>> print(is_var)
         False
 
     with :code:`ivy.Container` inputs:
+
     >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
     >>> is_var = ivy.is_variable(x, True)
     >>> print(is_var)
@@ -171,6 +173,7 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         a: False,
         b: False
     }
+
     >>> n = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
     >>> is_var = ivy.is_variable(n)
     >>> print(is_var)
