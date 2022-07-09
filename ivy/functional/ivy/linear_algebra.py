@@ -1060,12 +1060,12 @@ def svdvals(
 
     >>> S = ivy.svdvals(x)
     >>> print(S)
-    ivy.array([10.3  ,  1.16 ,  0.615])
+    ivy.array([10.3, 1.16, 0.615])
 
     Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS)
-    ivy.array([10.3  ,  1.16 ,  0.615])
+    ivy.array([10.3, 1.16, 0.615])
 
     >>> error = (SS - S).abs()
     >>> print(error)
@@ -1096,7 +1096,7 @@ def svdvals(
                        [4.0, 1.0], [5.0, 6.0]])
     >>> y = x.svdvals()
     >>> print(y)
-    ivy.array([13.4 ,  3.88])
+    ivy.array([13.4, 3.88])
 
     Using :code:`ivy.NativeArray` instance method:
 
@@ -1106,7 +1106,7 @@ def svdvals(
                               [8.0, 9.0, 7.0, 4.0], [1.0, 9.0, 2.0, 3.0]])
     >>> y = x.svdvals()
     >>> print(y)
-    ivy.array([20.7  ,  7.97 ,  6.25 ,  0.913])
+    ivy.array([20.7, 7.97, 6.25, 0.913])
 
     Using :code:`ivy.Container` instance method:
 
