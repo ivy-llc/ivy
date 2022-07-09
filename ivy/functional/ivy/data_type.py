@@ -575,6 +575,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]) -> None:
     Returns
     -------
         Return None
+
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
