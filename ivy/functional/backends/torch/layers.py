@@ -70,20 +70,35 @@ def conv2d(
     data_format: str = "NHWC",
     dilations: int = 1,
 ) -> torch.Tensor:
-    filter_shape = list(filters.shape[0:2])
+
+    f_w_after_dilation = (filters.shape[1] + ((dilations - 1) * (filters.shape[1] - 1)))
+    f_h_after_dilation = (filters.shape[0] + ((dilations - 1) * (filters.shape[0] - 1)))
+    filter_shape = [f_h_after_dilation, f_w_after_dilation]
     filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [int(math.floor(item / 2)) for item in filter_shape]
-    else:
+    x_shape = list(x.shape[2:])
+
+    if padding == "SAME":
+        if x_shape[1] % strides == 0:
+            pad_w = max(filter_shape[1] - strides, 0)
+        else:
+            pad_w = max(filter_shape[1] - (x_shape[1] % strides), 0)
+
+        if x_shape[0] % strides == 0:
+            pad_h = max(filter_shape[0] - strides, 0)
+        else:
+            pad_h = max(filter_shape[0] - (x_shape[0] % strides), 0)
+        x = torch.nn.functional.pad(
+            x,
+            [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
+            value=0)
+    elif padding != "VALID":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
-    res = torch.nn.functional.conv2d(x, filters, None, strides, padding_list, dilations)
+    res = torch.nn.functional.conv2d(x, filters, None, strides, 'valid', dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
