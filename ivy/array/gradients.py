@@ -20,10 +20,9 @@ class ArrayWithGradients(abc.ABC):
         with :code:`ivy.Array` inputs:
 
         >>> x = ivy.array([-2, 0.4, 7])
-        >>> print(x)
-            ivy.array([-2. ,  0.4,  7. ])
-        >>> print(x.is_variable)
-            True
+        >>> is_var = x.is_variable
+        >>> print(is_var)
+            False
         """
         return ivy.is_variable(x=self, exclusive=exclusive)
 
