@@ -129,10 +129,8 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     >>> x = ivy.array(2.3)
     >>> print(x)
         ivy.array(2.3)
-    >>> print(ivy.is_variable(x, exclusive=True))
-        False
-    >>> v = 6
-    >>> print(ivy.is_variable(v))
+    >>> is_var = ivy.is_variable(x, exclusive=True)
+    >>> print(is_var)
         False
 
     >>> w = ivy.zeros((3, 2))
@@ -140,13 +138,15 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         ivy.array([[0., 0.],
            [0., 0.],
            [0., 0.]])
-    >>> print(ivy.is_variable(w))
+    >>> is_var = ivy.is_variable(w)
+    >>> print(is_var)
         True
 
     >>> y = ivy.array([2, 5, 8, 9, 12])
     >>> print(y)
         ivy.array([ 2,  5,  8,  9, 12])
-    >>> print(ivy.is_variable(y))
+    >>> is_var = ivy.is_variable(y)
+    >>> print(is_var)
         True
 
     >>> z = ivy.array([[2], [3], [5]])
@@ -154,7 +154,8 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         ivy.array([[2],
            [3],
            [5]])
-    >>> print(ivy.is_variable(z))
+    >>> is_var = ivy.is_variable(z)
+    >>> print(is_var)
         True
 
     with :code:`ivy.NativeArray` inputs:
@@ -162,18 +163,21 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     >>> x = ivy.native_array([7])
     >>> print(x)
         [7]
-    >>> print(ivy.is_variable(x, True))
+    >>> is_var = ivy.is_variable(x, True)
+    >>> print(is_var)
         False
 
     >>> w = ivy.native_array([2, 3, 4])
     >>> print(w)
         [2 3 4]
-    >>> print(ivy.is_variable(w))
+    >>> is_var = ivy.is_variable(w)
+    >>> print(is_var)
         True
     >>> m = ivy.native_array([-1, 0., 0.8, 9])
     >>> print(m)
         [-1.   0.   0.8  9. ]
-    >>> print(ivy.is_variable(m))
+    >>> is_var =  ivy.is_variable(m)
+    >>> print(is_var)
         True
 
     with :code:`ivy.Container` inputs:
@@ -183,7 +187,8 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         a: ivy.array(3.2),
         b: ivy.array(2)
     }
-    >>> print(ivy.is_variable(x, True))
+    >>> is_var = ivy.is_variable(x, True)
+    >>> print(is_var)
     {
         a: false,
         b: false
@@ -194,7 +199,8 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         a: ivy.array([2, -1, 0]),
         b: ivy.array([0., -0.4, 8.])
     }
-    >>> print(ivy.is_variable(n))
+    >>> is_var = ivy.is_variable(n)
+    >>> print(is_var)
     {
         a: true,
         b: true
