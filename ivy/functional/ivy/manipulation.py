@@ -333,7 +333,7 @@ def permute_dims(
         data type as x.
 
     Examples
-    ---------
+    --------
     With :code:`ivy.Array` input:
 
     >>> ivy.set_backend('torch')
