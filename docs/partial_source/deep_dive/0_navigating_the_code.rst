@@ -81,12 +81,13 @@ look something like the following, (explained in much more detail in the followi
 .. code-block:: python
 
 
-    def my_func(x: Union[ivy.Array, ivy.NativeArray],
-                axes: Union[int, Tuple[int], List[int]],
-                *,
-                dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-                device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-                out: Optional[ivy.Array] = None
+    def my_func(
+        x: Union[ivy.Array, ivy.NativeArray],
+        axes: Union[int, Tuple[int], List[int]],
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         My function does something cool.
@@ -141,12 +142,13 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 .. code-block:: python
 
 
-    def my_func(x: torch.Tensor,
-                axes: Union[int, Tuple[int], List[int]],
-                *,
-                dtype: torch.dtype,
-                device: torch.device,
-                out: Optional[torch.Tensor] = None
+    def my_func(
+        x: torch.Tensor,
+        axes: Union[int, Tuple[int], List[int]],
+        *,
+        dtype: torch.dtype,
+        device: torch.device,
+        out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         return torch.something_cool(x, axes, dtype, device, out)
 

@@ -287,13 +287,18 @@ def test_conv1d_transpose(
 
 # conv2d
 @given(
-    array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
-    filter_shape=st.integers(min_value=1, max_value=5),
-    stride=st.integers(min_value=1, max_value=3),
+    batch_size=st.integers(min_value=1, max_value=5),
+    x_h=st.integers(min_value=1, max_value=100),
+    x_w=st.integers(min_value=1, max_value=100),
+    d_in=st.integers(min_value=1, max_value=5),
+    d_out=st.integers(min_value=1, max_value=5),
+    f_w=st.integers(min_value=1, max_value=5),
+    f_h=st.integers(min_value=1, max_value=5),
+    stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
     data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    dilations=st.integers(min_value=1, max_value=3),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -301,8 +306,13 @@ def test_conv1d_transpose(
     instance_method=st.booleans(),
 )
 def test_conv2d(
-    array_shape,
-    filter_shape,
+    batch_size,
+    x_h,
+    x_w,
+    d_in,
+    d_out,
+    f_w,
+    f_h,
     stride,
     pad,
     data_format,
@@ -320,10 +330,24 @@ def test_conv2d(
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         return
 
-    x = np.random.uniform(size=array_shape).astype(dtype[0])
-    x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
-        dtype[1]
+    if fw == 'torch' and 'float16' in dtype:
+        # not implemented for Half
+        return
+
+    if f_w + (f_w - 1) * (dilations - 1) > x_w:
+        # kernel size can't be greater than input
+        x_w = f_w + (f_w - 1) * (dilations - 1)
+
+    if f_h + (f_h - 1) * (dilations - 1) > x_h:
+        # kernel size can't be greater than input
+        x_h = f_h + (f_h - 1) * (dilations - 1)
+
+    if data_format == "NHWC":
+        x = np.random.uniform(size=[batch_size, x_h, x_w, d_in]).astype(dtype)
+    else:
+        x = np.random.uniform(size=[batch_size, d_in, x_h, x_w]).astype(dtype)
+    filters = np.random.uniform(size=[f_h, f_w, d_in, d_out]).astype(
+        dtype
     )
     helpers.test_function(
         dtype,
