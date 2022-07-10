@@ -16,6 +16,7 @@ class ArrayWithNorms(abc.ABC):
         scale: float = None,
         offset: float = None,
         new_std: float = 1.0,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.layer_norm(

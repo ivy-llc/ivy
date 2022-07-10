@@ -21,7 +21,9 @@ def _cast_for_binary_op(x1, x2):
     return x1, x2
 
 
-def abs(x: Union[float, JaxArray]) -> JaxArray:
+def abs(
+    x: Union[float, JaxArray]
+) -> JaxArray:
     return jnp.absolute(x)
 
 
@@ -41,7 +43,9 @@ def asin(x: JaxArray) -> JaxArray:
     return jnp.arcsin(x)
 
 
-def asinh(x: JaxArray) -> JaxArray:
+def asinh(
+        x: JaxArray
+) -> JaxArray:
     return jnp.arcsinh(x)
 
 
@@ -255,7 +259,9 @@ def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray
     return jnp.subtract(x1, x2)
 
 
-def tan(x: JaxArray) -> JaxArray:
+def tan(
+    x: JaxArray,
+) -> JaxArray:
     return jnp.tan(x)
 
 
