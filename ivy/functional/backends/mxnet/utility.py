@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Union, Tuple, Optional, List
+from typing import Union, Optional, Sequence
 
 # local
 from ivy.functional.backends.mxnet.statistical import prod
@@ -13,7 +13,7 @@ from ivy.functional.backends.mxnet import (
 # noinspection PyShadowingBuiltins
 def all(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
     red_prod = prod(x, axis, keepdims)
@@ -29,7 +29,7 @@ def all(
 # noinspection PyShadowingBuiltins
 def any(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
     return mx.nd.array(mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims))
