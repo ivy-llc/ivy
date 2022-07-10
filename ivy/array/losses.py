@@ -1,3 +1,4 @@
+# for review
 # global
 import abc
 from typing import Optional, Union
@@ -13,7 +14,7 @@ class ArrayWithLosses(abc.ABC):
         axis: int = -1,
         epsilon: float = 1e-7,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
 
