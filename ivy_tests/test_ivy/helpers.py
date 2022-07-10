@@ -455,7 +455,14 @@ def check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np):
     return test_unsupported
 
 
-def create_args_kwargs(args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags=None, container_flags=None):
+def create_args_kwargs(
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    as_variable_flags,
+    native_array_flags=None,
+    container_flags=None,
+):
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
@@ -530,7 +537,7 @@ def test_method(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
-    ground_truth_backend: str = 'numpy',
+    ground_truth_backend: str = "numpy",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -578,9 +585,7 @@ def test_method(
         optional, return value from the Ground Truth function
     """
     # convert single values to length 1 lists
-    input_dtypes, as_variable_flags = as_lists(
-        input_dtypes, as_variable_flags
-    )
+    input_dtypes, as_variable_flags = as_lists(input_dtypes, as_variable_flags)
     # update variable flags to be compatible with float dtype
     as_variable_flags = [
         v if ivy.is_float_dtype(d) else False
@@ -593,11 +598,22 @@ def test_method(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    calling_args_np, calling_kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
-    calling_args, calling_kwargs, _, _, _ = create_args_kwargs(calling_args_np, calling_kwargs_np, input_dtypes, as_variable_flags)
+    calling_args_np, calling_kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args, all_as_kwargs_np
+    )
+    calling_args, calling_kwargs, _, _, _ = create_args_kwargs(
+        calling_args_np, calling_kwargs_np, input_dtypes, as_variable_flags
+    )
 
-    constructor_args_np, constructor_kwargs_np = kwargs_to_args_n_kwargs(num_positional_args_constructor, constructor_kwargs)
-    constructor_args, constructor_kwargs, _, _, _ = create_args_kwargs(constructor_args_np, constructor_kwargs_np, input_dtypes_constructor, as_variable_flags_constructor)
+    constructor_args_np, constructor_kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args_constructor, constructor_kwargs
+    )
+    constructor_args, constructor_kwargs, _, _, _ = create_args_kwargs(
+        constructor_args_np,
+        constructor_kwargs_np,
+        input_dtypes_constructor,
+        as_variable_flags_constructor,
+    )
 
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
@@ -605,13 +621,20 @@ def test_method(
 
     # assert idx of return if the idx of the out array provided
 
-    if "bfloat16" in input_dtypes and ground_truth_backend == 'numpy':
+    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
         return  # bfloat16 is not supported by numpy
 
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
-    calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(calling_args_np, calling_kwargs_np, input_dtypes, as_variable_flags)
-    constructor_args_gt, constructor_kwargs_gt, _, _, _ = create_args_kwargs(constructor_args_np, constructor_kwargs_np, input_dtypes_constructor, as_variable_flags_constructor)
+    calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(
+        calling_args_np, calling_kwargs_np, input_dtypes, as_variable_flags
+    )
+    constructor_args_gt, constructor_kwargs_gt, _, _, _ = create_args_kwargs(
+        constructor_args_np,
+        constructor_kwargs_np,
+        input_dtypes_constructor,
+        as_variable_flags_constructor,
+    )
 
     ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
     ret_from_gt = ivy.to_native(
@@ -641,7 +664,7 @@ def test_function(
     test_rtol: float = None,
     test_atol: float = 1e-06,
     test_values: bool = True,
-    ground_truth_backend: str = 'numpy',
+    ground_truth_backend: str = "numpy",
     **all_as_kwargs_np
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -760,8 +783,14 @@ def test_function(
 
     fn = getattr(ivy, fn_name)
     test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags,
-                                      container_flags)
+    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np,
+        kwargs_np,
+        input_dtypes,
+        as_variable_flags,
+        native_array_flags,
+        container_flags,
+    )
 
     # run either as an instance method or from the API directly
     instance = None
@@ -815,20 +844,25 @@ def test_function(
         if not max(container_flags) and fw not in ["tensorflow", "jax", "numpy"]:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-    if "bfloat16" in input_dtypes and ground_truth_backend == 'numpy':
+    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
         return
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     fn = getattr(ivy, fn_name)
     test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
     # create args
-    args, kwargs, _, _, _ = create_args_kwargs(args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags, container_flags)
+    args, kwargs, _, _, _ = create_args_kwargs(
+        args_np,
+        kwargs_np,
+        input_dtypes,
+        as_variable_flags,
+        native_array_flags,
+        container_flags,
+    )
     if test_unsupported:
         test_unsupported_function(ivy.__dict__[fn_name], args, kwargs)
         return
-    ret_from_gt = ivy.to_native(
-        ivy.__dict__[fn_name](*args, **kwargs), nested=True
-    )
+    ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -920,7 +954,9 @@ def test_frontend_function(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags)
+    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
+    )
 
     # create ivy array args
     args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
@@ -982,7 +1018,9 @@ def test_frontend_function(
     # compute the return via the frontend framework
     frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
     if test_unsupported:
-        test_unsupported_function(frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend)
+        test_unsupported_function(
+            frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend
+        )
         return
     frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
