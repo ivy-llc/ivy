@@ -1,5 +1,4 @@
 import ivy
-import inspect
 import functools
 from types import FunctionType
 from typing import Callable
