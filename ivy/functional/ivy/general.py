@@ -2525,7 +2525,6 @@ def one_hot(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
