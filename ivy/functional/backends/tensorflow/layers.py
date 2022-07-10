@@ -15,10 +15,10 @@ def conv1d(
     dilations: int = 1,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
-        x = tf.transpose(x, (0, 1, 2))
+        x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
     if data_format == "NCW":
-        res = tf.transpose(res, (0, 1, 2))
+        res = tf.transpose(res, (0, 2, 1))
     return res
 
 
