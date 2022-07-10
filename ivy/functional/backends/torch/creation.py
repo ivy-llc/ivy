@@ -81,6 +81,8 @@ def arange(
             return torch.arange(
                 start, stop, step=step, dtype=dtype, device=device, out=out
             )
+
+
 arange.support_native_out = True
 
 
@@ -129,6 +131,8 @@ def empty(
         device=as_native_dev(default_device(device)),
         out=out,
     )
+
+
 empty.support_native_out = True
 
 
@@ -179,6 +183,8 @@ def eye(
         )
     else:
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
+
+
 eye.support_native_out = True
 
 
@@ -205,6 +211,8 @@ def full(
         device=device,
         out=out,
     )
+
+
 full.support_native_out = True
 
 
@@ -257,6 +265,8 @@ def linspace(
     ):
         ans[0] = start
     return ans
+
+
 linspace.support_native_out = True
 
 
@@ -380,6 +390,8 @@ def ones(
     dtype_val: torch.dtype = as_native_dtype(dtype)
     device = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=as_native_dev(device))
+
+
 ones.support_native_out = True
 
 
@@ -403,6 +415,8 @@ def tril(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
+
+
 tril.support_native_out = True
 
 
@@ -413,6 +427,8 @@ def triu(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
+
+
 triu.support_native_out = True
 
 
@@ -424,6 +440,8 @@ def zeros(
     out: Optional[torch.Tensor] = None
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
+
+
 zeros.support_native_out = True
 
 
@@ -462,4 +480,6 @@ def logspace(
         start, stop, num, axis, dtype=None, device=default_device(device)
     )
     return base**power_seq
+
+
 logspace.support_native_out = True
