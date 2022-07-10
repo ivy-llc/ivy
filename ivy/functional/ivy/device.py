@@ -498,9 +498,15 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     
     Example
     -------
-    >>>ivy.dev_util('cpu)
+    >>> ivy.dev_util('cpu')
     13.4
-
+    >>> ivy.dev_util('gpu:0')
+    7.8
+    >>> ivy.dev_util('cpu')
+    93.4
+    >>> ivy.dev_util('gpu:2')
+    57.4
+    
     """
     if device == "cpu":
         return psutil.cpu_percent()
