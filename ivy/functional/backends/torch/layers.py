@@ -15,21 +15,35 @@ def conv1d(
     data_format: str = "NWC",
     dilations: int = 1,
 ) -> torch.Tensor:
-    filter_shape = list(filters.shape[0:1])
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(dilations, tuple):
+        dilations = dilations[0]
+    f_w_after_dilation = (
+        filters.shape[0] + ((dilations - 1) * (filters.shape[0] - 1))
+    )
     filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    if padding == "VALID":
-        padding_list: List[int] = [0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
+    x_shape = x.shape[2]
+    if padding == "SAME":
+        if x_shape % strides == 0:
+            pad_w = max(f_w_after_dilation - strides, 0)
+        else:
+            pad_w = max(f_w_after_dilation - (x_shape % strides), 0)
+        x = torch.nn.functional.pad(
+            x,
+            [pad_w // 2, pad_w - pad_w // 2],
+            value=0)
+    elif padding != 'VALID':
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
-    res = torch.nn.functional.conv1d(x, filters, None, strides, padding_list, dilations)
-    return res.permute(0, 2, 1)
+    res = torch.nn.functional.conv1d(x, filters, None, strides, 'valid', dilations)
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
 
 
 # noinspection PyUnresolvedReferences
