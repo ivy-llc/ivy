@@ -1,3 +1,4 @@
+# for review
 # global
 from typing import Union, Optional, Tuple, List
 
@@ -68,7 +69,7 @@ def all(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
