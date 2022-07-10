@@ -20,6 +20,9 @@ def relu(
     return np.maximum(x, 0, out=out)
 
 
+relu.support_native_out = True
+
+
 def leaky_relu(
     x: np.ndarray, 
     alpha: Optional[float] = 0.2,
@@ -52,6 +55,9 @@ def sigmoid(
     return 1 / (1 + np.exp(-x, out=out))
 
 
+sigmoid.support_native_out = True
+
+
 def tanh(
     x: np.ndarray, 
     *,
@@ -60,6 +66,9 @@ def tanh(
     return (np.exp(x, out=out) - np.exp(-x, out=out)) / (
         np.exp(x, out=out) + np.exp(-x, out=out)
     )
+
+
+tanh.support_native_out = True
 
 
 def softmax(
@@ -72,6 +81,9 @@ def softmax(
     return exp_x / np.sum(exp_x, axis, keepdims=True, out=out)
 
 
+softmax.support_native_out = True
+
+
 def softplus(
     x: np.ndarray, 
     *,
@@ -80,3 +92,6 @@ def softplus(
     return np.log1p(np.exp(-np.abs(x, out=out), out=out), out=out) + np.maximum(
         x, 0, out=out
     )
+
+
+softplus.support_native_out = True

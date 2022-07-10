@@ -25,6 +25,9 @@ def relu(
     return ret
 
 
+relu.support_native_out = True
+
+
 def leaky_relu(
     x: torch.Tensor, 
     alpha: Optional[float] = 0.2,
@@ -55,12 +58,18 @@ def tanh(
     return torch.tanh(x, out=out)
 
 
+tanh.support_native_out = True
+
+
 def sigmoid(
     x: torch.Tensor, 
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.sigmoid(x, out=out)
+
+
+sigmoid.support_native_out = True
 
 
 def softmax(
@@ -71,6 +80,9 @@ def softmax(
 ) -> torch.Tensor:
     exp_x = torch.exp(x, out=out)
     return exp_x / torch.sum(exp_x, axis, keepdims=True)
+
+
+softmax.support_native_out = True
 
 
 def softplus(
