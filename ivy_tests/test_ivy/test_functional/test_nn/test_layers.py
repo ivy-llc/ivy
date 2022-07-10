@@ -196,38 +196,73 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 # -------------#
 
 # conv1d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [[[0.0], [3.0], [0.0]]],
-            [[[0.0]], [[1.0]], [[0.0]]],
-            "SAME",
-            [[[0.0], [3.0], [0.0]]],
-        ),
-        (
-            [[[0.0], [3.0], [0.0]] for _ in range(5)],
-            [[[0.0]], [[1.0]], [[0.0]]],
-            "SAME",
-            [[[0.0], [3.0], [0.0]] for _ in range(5)],
-        ),
-        ([[[0.0], [3.0], [0.0]]], [[[0.0]], [[1.0]], [[0.0]]], "VALID", [[[3.0]]]),
-    ],
+@given(
+    batch_size=st.integers(min_value=1, max_value=5),
+    w=st.integers(min_value=1, max_value=100),
+    d_in=st.integers(min_value=1, max_value=5),
+    d_out=st.integers(min_value=1, max_value=5),
+    filter=st.integers(min_value=1, max_value=5),
+    stride=st.integers(min_value=1, max_value=3),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    data_format=st.sampled_from(["NWC", "NCW"]),
+    dilations=st.integers(min_value=1, max_value=3),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.conv1d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(call(ivy.conv1d, x, filters, 1, padding), ivy.to_numpy(true_res))
+def test_conv1d(batch_size,
+                w,
+                d_in,
+                d_out,
+                filter,
+                stride,
+                pad,
+                data_format,
+                dilations,
+                dtype,
+                as_variable,
+                num_positional_args,
+                native_array,
+                container,
+                instance_method,
+                fw,
+                device):
+    dtype = [dtype] * 2
+    if fw == 'torch' and 'float16' in dtype:
+        # not implemented for Half in torch
+        return
+
+    if filter + (filter - 1) * (dilations - 1) > w:
+        # kernel size can't be greater than input
+        w = filter + (filter - 1) * (dilations - 1)
+
+    if data_format == "NWC":
+        x = np.random.uniform(size=[batch_size] + [w] + [d_in]).astype(dtype[0])
+    else:
+        x = np.random.uniform(size=[batch_size, d_in, w]).astype(dtype[0])
+    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(
+        dtype[1]
+    )
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "conv1d",
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
 
 
 # conv1d_transpose
