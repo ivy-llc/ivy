@@ -12,7 +12,10 @@ import ivy
 # ------#
 
 
-def index_nest(nest, index):
+def index_nest(
+        nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+        index: Union[List[int], Tuple[int], Iterable[int]]
+) -> Any:
     """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     Parameters
@@ -22,6 +25,46 @@ def index_nest(nest, index):
     index
         A tuple of indices for indexing.
 
+    Returns
+    ----------
+    ret
+        The result element through indexing the nested object.
+
+    Examples
+    ----------
+    With :code:`List` inputs:
+
+    >>> x = ['a', 'b']
+    >>> y = [0]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    a
+
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2, (3, 4))
+    >>> y = (2, 1)
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    4
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = ('b', 1)
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    [2, 3]
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.Array([[1, 2, 3], \
+                       [4, 5, 6], \
+                       [7, [8, 9]]])
+    >>> y = iter([2, 1, 0])
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    8
     """
     ret = nest
     for i in index:
