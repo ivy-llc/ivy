@@ -35,6 +35,21 @@ def _handle_0_dim_output(function: Callable) -> Callable:
 
 
 @_handle_0_dim_output
+def abs(x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.absolute(x, out=out)
+
+
+@_handle_0_dim_output
+def acos(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arccos(x, out=out)
+
+
+@_handle_0_dim_output
+def acosh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arccosh(x, out=out)
+
+
+@_handle_0_dim_output
 def add(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -46,42 +61,31 @@ def add(
 
 
 @_handle_0_dim_output
-def pow(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
+def asin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arcsin(x, out=out)
+
+
+@_handle_0_dim_output
+def asinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arcsinh(x, out=out)
+
+
+@_handle_0_dim_output
+def atan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arctan(x, out=out)
+
+
+@_handle_0_dim_output
+def atan2(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.power(x1, x2, out=out)
+    return np.arctan2(x1, x2, out=out)
 
 
 @_handle_0_dim_output
-def bitwise_xor(
-    x1: Union[int, bool, np.ndarray],
-    x2: Union[int, bool, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.bitwise_xor(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def exp(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.exp(x, out=out)
-
-
-@_handle_0_dim_output
-def expm1(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.expm1(x, out=out)
-
-
-@_handle_0_dim_output
-def bitwise_invert(
-    x: Union[int, bool, np.ndarray], *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.invert(x, out=out)
+def atanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.arctanh(x, out=out)
 
 
 @_handle_0_dim_output
@@ -96,6 +100,89 @@ def bitwise_and(
 
 
 @_handle_0_dim_output
+def bitwise_invert(
+    x: Union[int, bool, np.ndarray], *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.invert(x, out=out)
+
+
+@_handle_0_dim_output
+def bitwise_left_shift(
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.left_shift(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def bitwise_or(
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.bitwise_or(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def bitwise_right_shift(
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.right_shift(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def bitwise_xor(
+    x1: Union[int, bool, np.ndarray],
+    x2: Union[int, bool, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.bitwise_xor(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def ceil(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if "int" in str(x.dtype):
+        ret = np.copy(x)
+    else:
+        return np.ceil(x, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@_handle_0_dim_output
+def cos(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.cos(x, out=out)
+
+
+@_handle_0_dim_output
+def cosh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.cosh(x, out=out)
+
+
+@_handle_0_dim_output
+def divide(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.divide(x1, x2, out=out)
+
+
+@_handle_0_dim_output
 def equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -103,6 +190,43 @@ def equal(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.equal(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def exp(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.exp(x, out=out)
+
+
+@_handle_0_dim_output
+def expm1(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.expm1(x, out=out)
+
+
+@_handle_0_dim_output
+def floor(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if "int" in str(x.dtype):
+        ret = np.copy(x)
+    else:
+        return np.floor(x, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@_handle_0_dim_output
+def floor_divide(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    ret = np.floor_divide(x1, x2, out=out)
+    if (isinf(x1).any() and isfinite(x2).any()) or (
+        isfinite(x1).any() and isinf(x2).any()
+    ):
+        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+    return ret
 
 
 @_handle_0_dim_output
@@ -126,104 +250,13 @@ def greater_equal(
 
 
 @_handle_0_dim_output
-def less_equal(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.less_equal(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def multiply(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.multiply(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def ceil(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    if "int" in str(x.dtype):
-        ret = np.copy(x)
-    else:
-        return np.ceil(x, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-ceil.unsupported_dtypes = ("float16",)
-
-
-@_handle_0_dim_output
-def floor(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    if "int" in str(x.dtype):
-        ret = np.copy(x)
-    else:
-        return np.floor(x, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-@_handle_0_dim_output
-def sign(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sign(x, out=out)
-
-
-@_handle_0_dim_output
-def sqrt(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sqrt(x, out=out)
-
-
-@_handle_0_dim_output
 def isfinite(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.isfinite(x, out=out)
 
 
 @_handle_0_dim_output
-def asin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arcsin(x, out=out)
-
-
-@_handle_0_dim_output
 def isinf(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.isinf(x, out=out)
-
-
-@_handle_0_dim_output
-def asinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arcsinh(x, out=out)
-
-
-@_handle_0_dim_output
-def cosh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.cosh(x, out=out)
-
-
-@_handle_0_dim_output
-def log10(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log10(x, out=out)
-
-
-@_handle_0_dim_output
-def log(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log(x, out=out)
-
-
-@_handle_0_dim_output
-def log2(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log2(x, out=out)
-
-
-@_handle_0_dim_output
-def log1p(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.log1p(x, out=out)
 
 
 @_handle_0_dim_output
@@ -242,43 +275,41 @@ def less(
 
 
 @_handle_0_dim_output
-def cos(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.cos(x, out=out)
-
-
-@_handle_0_dim_output
-def logical_not(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.logical_not(x, out=out)
-
-
-@_handle_0_dim_output
-def divide(
+def less_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    return np.less_equal(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def log(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.log(x, out=out)
+
+
+@_handle_0_dim_output
+def log10(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.log10(x, out=out)
+
+
+@_handle_0_dim_output
+def log1p(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.log1p(x, out=out)
+
+
+@_handle_0_dim_output
+def log2(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.log2(x, out=out)
+
+
+@_handle_0_dim_output
+def logaddexp(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.divide(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def acos(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arccos(x, out=out)
-
-
-@_handle_0_dim_output
-def logical_xor(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.logical_xor(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def logical_or(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.logical_or(x1, x2, out=out)
+    return np.logaddexp(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -289,13 +320,33 @@ def logical_and(
 
 
 @_handle_0_dim_output
-def acosh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arccosh(x, out=out)
+def logical_not(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.logical_not(x, out=out)
 
 
 @_handle_0_dim_output
-def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sin(x, out=out)
+def logical_or(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.logical_or(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def logical_xor(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.logical_xor(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def multiply(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.multiply(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -316,32 +367,6 @@ def not_equal(
 
 
 @_handle_0_dim_output
-def tanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.tanh(x, out=out)
-
-
-@_handle_0_dim_output
-def floor_divide(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = np.floor_divide(x1, x2, out=out)
-    if (isinf(x1).any() and isfinite(x2).any()) or (
-        isfinite(x1).any() and isinf(x2).any()
-    ):
-        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
-    return ret
-
-
-@_handle_0_dim_output
-def sinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinh(x, out=out)
-
-
-@_handle_0_dim_output
 def positive(
     x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -349,8 +374,14 @@ def positive(
 
 
 @_handle_0_dim_output
-def square(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.square(x, out=out)
+def pow(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return np.power(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -376,34 +407,28 @@ def round(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def bitwise_or(
-    x1: Union[int, bool, np.ndarray],
-    x2: Union[int, bool, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.bitwise_or(x1, x2, out=out)
+def sign(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sign(x, out=out)
 
 
 @_handle_0_dim_output
-def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    if "int" in str(x.dtype):
-        ret = np.copy(x)
-    else:
-        return np.trunc(x, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+def sin(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sin(x, out=out)
 
 
 @_handle_0_dim_output
-def abs(
-    x: Union[float, np.ndarray], 
-    *, 
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.absolute(x, out=out)
+def sinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sinh(x, out=out)
+
+
+@_handle_0_dim_output
+def sqrt(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sqrt(x, out=out)
+
+
+@_handle_0_dim_output
+def square(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.square(x, out=out)
 
 
 @_handle_0_dim_output
@@ -418,70 +443,28 @@ def subtract(
 
 
 @_handle_0_dim_output
-def logaddexp(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.logaddexp(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def bitwise_right_shift(
-    x1: Union[int, bool, np.ndarray],
-    x2: Union[int, bool, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.right_shift(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def bitwise_left_shift(
-    x1: Union[int, bool, np.ndarray],
-    x2: Union[int, bool, np.ndarray],
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.left_shift(x1, x2, out=out)
-
-
-@_handle_0_dim_output
 def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.tan(x, out=out)
 
 
 @_handle_0_dim_output
-def atan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arctan(x, out=out)
+def tanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.tanh(x, out=out)
 
 
 @_handle_0_dim_output
-def atanh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.arctanh(x, out=out)
-
-
-@_handle_0_dim_output
-def atan2(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.arctan2(x1, x2, out=out)
+def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if "int" in str(x.dtype):
+        ret = np.copy(x)
+    else:
+        return np.trunc(x, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # Extra #
 # ------#
-
-
-@_handle_0_dim_output
-def minimum(x1, x2, *, out: Optional[np.ndarray] = None):
-    return np.minimum(x1, x2, out=out)
-
-
-@_handle_0_dim_output
-def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
-    return np.maximum(x1, x2, out=out)
 
 
 @_handle_0_dim_output
@@ -491,3 +474,13 @@ def erf(x, *, out: Optional[np.ndarray] = None):
             "scipy must be installed in order to call ivy.erf with a numpy backend."
         )
     return _erf(x, out=out)
+
+
+@_handle_0_dim_output
+def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
+    return np.maximum(x1, x2, out=out)
+
+
+@_handle_0_dim_output
+def minimum(x1, x2, *, out: Optional[np.ndarray] = None):
+    return np.minimum(x1, x2, out=out)
