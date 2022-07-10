@@ -464,6 +464,55 @@ def asinh(
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-3.5, -0, +0, 1.3, float('nan')])
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    ivy.array([-1.97, 0., 0., 1.08, nan])
+
+    >>> x = ivy.array([-2, -0.75, 0.9, 1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.asinh(x, out=y)
+    >>> print(y)
+    ivy.array([-1.44, -0.693, 0.809, 0.881])
+
+    >>> x = ivy.array([[0.2, 0.4, 0.6], \
+                       [-0.8, -1, -2]])
+    >>> ivy.asinh(x, out=x)
+    >>> print(x)
+    ivy.array([[ 0.199, 0.39, 0.569],
+               [-0.733, -0.881, -1.44]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-0, -2.6, 1, 3.6])
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    ivy.array([ 0. , -1.68 , 0.881, 1.99 ])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1, 2]),\
+                            b=ivy.array([4.2, -5.3, -0, -2.3]))
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.881, 1.44]),
+        b: ivy.array([2.14, -2.37, 0., -1.57])
+    }
+
     """
     return current_backend(x).asinh(x, out=out)
 
