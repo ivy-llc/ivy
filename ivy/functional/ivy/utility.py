@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
@@ -68,7 +68,7 @@ def all(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -168,7 +168,7 @@ def all(
 @handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,

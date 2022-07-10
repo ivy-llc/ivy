@@ -197,7 +197,11 @@ def isinf(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def asinh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def asinh(
+        x: np.ndarray,
+        *,
+        out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.arcsinh(x, out=out)
 
 
@@ -398,7 +402,11 @@ def trunc(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 @_handle_0_dim_output
-def abs(x: Union[float, np.ndarray], *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def abs(
+    x: Union[float, np.ndarray], 
+    *, 
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.absolute(x, out=out)
 
 
