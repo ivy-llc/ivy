@@ -1,4 +1,5 @@
 # global
+from tkinter import NONE
 import numpy as np
 import torch
 from torch import Tensor
@@ -241,7 +242,7 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
-    linspace_method = torch.linspace
+    linspace_method = torch.linspace(start, stop, num, device, dtpye=none)
     device = default_device(device)
     sos_shape = []
     if start_is_array:
@@ -283,9 +284,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
         else:
             res = [
                 linspace_method(
-                    strt, stp, num, device=as_native_dev(device), dtype=dtype
+                    start, stop, num, device=as_native_dev(device), dtype=dtype
                 )
-                for strt, stp in zip(start, stop)
+                for start, stop in zip(start, stop)
             ]
         torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
@@ -301,9 +302,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
         else:
             res = [
                 linspace_method(
-                    strt, stop, num, device=as_native_dev(device), dtype=dtype
+                    start, stop, num, device=as_native_dev(device), dtype=dtype
                 )
-                for strt in start
+            
             ]
     elif not start_is_array and stop_is_array:
         if num < stop.shape[0]:
@@ -318,9 +319,9 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
         else:
             res = [
                 linspace_method(
-                    start, stp, num, device=as_native_dev(device), dtype=dtype
+                    start, stop, num, device=as_native_dev(device), dtype=dtype
                 )
-                for stp in stop
+                
             ]
     else:
         return linspace_method(
