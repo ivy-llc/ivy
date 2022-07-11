@@ -23,7 +23,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code:`ivy.container` inputs:
+        with :code:`ivy.container` input:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> is_var = ivy.Container.static_is_variable(x)

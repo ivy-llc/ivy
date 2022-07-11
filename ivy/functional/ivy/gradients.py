@@ -123,7 +123,7 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
         Boolean, true if x is a trainable variable, false otherwise.
 
     Examples
-    -------------------
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array(2.3)
