@@ -6,8 +6,6 @@ from typing import Optional, Union, Dict, Sequence
 import ivy
 from ivy.container.base import ContainerBase
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithUtility(ContainerBase):
