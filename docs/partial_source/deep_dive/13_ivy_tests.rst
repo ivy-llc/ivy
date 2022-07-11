@@ -599,7 +599,8 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/test_run.png
+   :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
 
