@@ -64,13 +64,50 @@ the `pre-commit guide`.
 The pre-commit hook runs the `flake8` lint checks before each commit. This is
 efficient and useful in preventing errors being pushed to the repository.
 
-In the case where errors are found, warnings will be raised and committing will be
-unsuccessful until the mistake is corrected. On the other hand, if the errors are
+In the case where errors are found, error messages will be raised and committing will
+be unsuccessful until the mistake is corrected. On the other hand, if the errors are
 related to arguments formatting, it will be reformatted automatically. More
 information can be found in the next section.
 
 Automatic Reformatting Before Committing
 ----------------------------------------
+
+If the arguments in a function are formatted incorrectly, for example, each argument
+is not formatted in its own line, which caused a line to exceed the length limit:
+
+.. code-block:: python
+
+    def indices_where(
+        x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+
+When a commit is attempted, `pre-commit` detects this through running the lint check,
+then reformat the arguments automatically.
+
+.. code-block:: none
+
+    black....................................................................Failed
+    - hook id: black
+    - files were modified by this hook
+
+    reformatted ivy/functional/ivy/general.py
+
+    All done! ✨ 🍰 ✨
+    1 file reformatted.
+
+    flake8...................................................................Passed
+
+The above message indicates that a file disobeying the formatting rules is detected
+and reformatting has taken place successfully. The correctly formatted code has been
+saved and the related file(s) can now be staged and committed accordingly.
+
+.. code-block:: python
+
+    def indices_where(
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+
 
 Examples
 --------
