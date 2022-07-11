@@ -32,7 +32,7 @@ def test_unique_values(
     fw,
     device,
 ):
-    #uint not supported with torch
+    # uint not supported with torch
     if fw == "torch" and "uint" in input_dtype:
         return
 

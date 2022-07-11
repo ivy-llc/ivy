@@ -2,13 +2,10 @@
 from typing import Dict, List, Optional, Union
 
 # local
-import ivy
 from ivy.container.base import ContainerBase
 import ivy
-from typing import Optional, List, Union, Dict
 
 # ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithSet(ContainerBase):
@@ -91,6 +88,7 @@ class ContainerWithSet(ContainerBase):
         ivy.Container instance method variant of ivy.unique_counts. This method
         simply wraps the function, and so the docstring for ivy.unique_counts
         also applies to this method with minimal changes.
+
         Examples
         --------
         With :code:`ivy.Container` instance method:
