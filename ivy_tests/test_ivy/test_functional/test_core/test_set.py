@@ -9,7 +9,13 @@ import ivy.functional.backends.numpy as ivy_np
 
 # unique_values
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
@@ -45,7 +51,13 @@ def test_unique_values(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=5),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
     native_array=st.booleans(),
@@ -79,7 +91,13 @@ def test_unique_all(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=5),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
     native_array=st.booleans(),
@@ -113,7 +131,13 @@ def test_unique_counts(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=5),
+    dtype_and_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
     native_array=st.booleans(),
