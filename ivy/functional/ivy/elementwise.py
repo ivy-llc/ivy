@@ -1530,6 +1530,31 @@ def expm1(
         an array containing the evaluated result for each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.array([1, 5, 9])
+    >>> ivy.expm1(x)
+    ivy.array([1.72e+00, 1.47e+02, 8.10e+03])
+    
+    With :code:`ivy.Container` inputs:
+    >>> x = ivy.Container(a=ivy.array([-1, 0,]), \
+                        b=ivy.array([10, 1]))
+    >>> ivy.expm1(x)
+    {
+        a: ivy.array([-0.632, 0.]),
+        b: ivy.array([2.20e+04, 1.72e+00])
+    }
     """
     return current_backend(x).expm1(x, out=out)
 
