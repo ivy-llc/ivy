@@ -713,27 +713,34 @@ def is_int_dtype(
     --------
      With :code:`ivy.Dtype` input:
 
-    >>> print(ivy.is_int_dtype(ivy.int8))
+    >>> x = ivy.is_int_dtype(ivy.int8)
+    >>> print(x)
     True
 
-    >>> print(ivy.is_int_dtype(ivy.int32))
+    >>> x = ivy.is_int_dtype(ivy.int32)
+    >>> print(x)
     True
 
-    >>> print(ivy.is_int_dtype(ivy.uint64))
+    >>> x = ivy.is_int_dtype(ivy.uint64)
+    >>> print(x)
     True
 
-    >>> print(ivy.is_int_dtype(ivy.float64))
+    >>> x = ivy.is_int_dtype(ivy.float64)
+    >>> print(x)
     True
 
-    >>> print(ivy.is_int_dtype(ivy.bool))
+    >>> x = ivy.is_int_dtype(ivy.bool)
+    >>> print(x)
     False
 
     With :code:`str` input:
 
-    >>> print(ivy.is_int_dtype("1"))
+    >>> x = "1"
+    >>> print(ivy.is_int_dtype(x))
     True
 
-    >>> print(ivy.is_int_dtype("int"))
+    >>> x = "int"
+    >>> print(ivy.is_int_dtype(x))
     False
 
     With :code:`ivy.Array` input:
@@ -757,7 +764,8 @@ def is_int_dtype(
 
     With :code:`Number` input:
 
-    >>> print(ivy.is_int_dtype(1))
+    >>> x = 1
+    >>> print(ivy.is_int_dtype(x))
     True
 
     With :code:`ivy.Container` input:
@@ -773,8 +781,10 @@ def is_int_dtype(
         b: True
     }
     """
+
     def check_type(x):
-            return isinstance(x, (int, np.integer)) and not type(x) == bool
+        return isinstance(x, (int, np.integer)) and not type(x) == bool
+
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
