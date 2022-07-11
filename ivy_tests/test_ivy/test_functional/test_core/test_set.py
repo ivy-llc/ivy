@@ -32,8 +32,8 @@ def test_unique_values(
     fw,
     device,
 ):
-    # uint not supported with torch
-    if fw == "torch" and "uint" in input_dtype:
+    # not supported with torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     shape = tuple(array_shape)
@@ -76,7 +76,8 @@ def test_unique_all(
     fw,
     device,
 ):
-    if fw == "torch" and "uint" in input_dtype:
+    # not supported with torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     shape = tuple(array_shape)
@@ -121,8 +122,8 @@ def test_unique_counts(
     fw,
     device,
 ):
-    # uint not supported with torch
-    if fw == "torch" and "uint" in input_dtype:
+    # not supported with torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
@@ -165,8 +166,8 @@ def test_unique_inverse(
     fw,
     device,
 ):
-    # uint not supported with torch
-    if fw == "torch" and "uint" in input_dtype:
+    # not supported with torch
+    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
         return
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
