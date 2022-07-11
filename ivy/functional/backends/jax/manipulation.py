@@ -137,6 +137,7 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 def clip(
     x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
+    assert ivy.all(ivy.less(x_min, x_max))
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
