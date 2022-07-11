@@ -1,0 +1,17 @@
+Wrapping
+========
+
+.. automodule:: ivy.container.wrapping
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Wrapping
+
+   wrapping/add_ivy_container_instance_methods.rst
+

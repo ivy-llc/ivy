@@ -329,10 +329,25 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Classes
+   :caption: Data Classes
 
-   classes/data_classes.rst
-   classes/stateful.rst
+   data_classes/container.rst
+   data_classes/array.rst
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Framework Classes
+
+   stateful/initializers.rst
+   stateful/layers.rst
+   stateful/sequential.rst
+   stateful/norms.rst
+   stateful/optimizers.rst
+   stateful/activations.rst
+   stateful/converters.rst
+   stateful/module.rst
 
 
 .. toctree::

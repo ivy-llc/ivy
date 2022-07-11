@@ -1,0 +1,17 @@
+Base
+====
+
+.. automodule:: ivy.container.base
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Base
+
+   base/ContainerBase.rst
+

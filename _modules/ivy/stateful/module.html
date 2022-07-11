@@ -72,10 +72,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../classes/data_classes.html">Data classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../classes/stateful.html">Framework classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -134,8 +145,8 @@
 <span class="c1"># -----#</span>
 
 
-<div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -268,7 +279,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="Module.track_submod_rets"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.track_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.track_submod_rets"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.track_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
@@ -285,7 +296,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">_track_submod_rets</span></div>
 
-<div class="viewcode-block" id="Module.check_submod_rets"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.check_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">check_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.check_submod_rets"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.check_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">check_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">expected_submod_rets</span><span class="p">):</span>
@@ -293,7 +304,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="Module.track_submod_call_order"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.track_submod_call_order">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_call_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.track_submod_call_order"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.track_submod_call_order">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_call_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
@@ -310,7 +321,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">_track_submod_call_order</span></div>
 
-<div class="viewcode-block" id="Module.mod_depth"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.mod_depth">[docs]</a>    <span class="k">def</span> <span class="nf">mod_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.mod_depth"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_depth">[docs]</a>    <span class="k">def</span> <span class="nf">mod_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">mod_above</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -321,7 +332,7 @@
             <span class="n">depth</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">depth</span></div>
 
-<div class="viewcode-block" id="Module.mod_height"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.mod_height">[docs]</a>    <span class="k">def</span> <span class="nf">mod_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.mod_height"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_height">[docs]</a>    <span class="k">def</span> <span class="nf">mod_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">()</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">-</span> <span class="mi">1</span></div>
 
     <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -507,7 +518,7 @@
     <span class="c1"># Public #</span>
     <span class="c1"># -------#</span>
 
-<div class="viewcode-block" id="Module.sub_mods"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.sub_mods">[docs]</a>    <span class="k">def</span> <span class="nf">sub_mods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.sub_mods"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.sub_mods">[docs]</a>    <span class="k">def</span> <span class="nf">sub_mods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_mods</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -532,7 +543,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="Module.show_v_in_top_v"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.show_v_in_top_v">[docs]</a>    <span class="k">def</span> <span class="nf">show_v_in_top_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.show_v_in_top_v"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_v_in_top_v">[docs]</a>    <span class="k">def</span> <span class="nf">show_v_in_top_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -542,7 +553,7 @@
                 <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.v_with_top_v_key_chains"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.v_with_top_v_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">v_with_top_v_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.v_with_top_v_key_chains"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.v_with_top_v_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">v_with_top_v_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="n">kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">kc</span><span class="p">:</span>
@@ -559,7 +570,7 @@
                 <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.mod_with_top_mod_key_chain"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.mod_with_top_mod_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">mod_with_top_mod_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.mod_with_top_mod_key_chain"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_with_top_mod_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">mod_with_top_mod_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">)</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="n">max_depth</span> <span class="o">=</span> <span class="n">depth</span>
@@ -578,7 +589,7 @@
             <span class="k">return</span> <span class="s2">&quot;__&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">mods</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">mod</span> <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">mods</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="Module.show_mod_in_top_mod"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.show_mod_in_top_mod">[docs]</a>    <span class="k">def</span> <span class="nf">show_mod_in_top_mod</span><span class="p">(</span>
+<div class="viewcode-block" id="Module.show_mod_in_top_mod"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_mod_in_top_mod">[docs]</a>    <span class="k">def</span> <span class="nf">show_mod_in_top_mod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">upper_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
@@ -622,7 +633,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_call_order</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expected_submod_rets</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Module.get_mod_key"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.get_mod_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_mod_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_mod</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.get_mod_key"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.get_mod_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_mod_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_mod</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">top_mod</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">submod_dict</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">submod_dict</span>
@@ -777,7 +788,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_unset_submod_flags</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-<div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save the weights on the Module.</span>
 
 <span class="sd">        Parameters</span>
@@ -788,7 +799,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Build the internal layers and variables for this module.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
         <span class="c1"># return False if not from_call but build_mode is on_call</span>
@@ -868,7 +879,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">v_ret</span> <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">v_ret</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">built</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">else</span> <span class="n">built</span></div>
 
-<div class="viewcode-block" id="Module.show_structure"><a class="viewcode-back" href="../../../classes/stateful/module/Module.html#ivy.stateful.module.Module.show_structure">[docs]</a>    <span class="k">def</span> <span class="nf">show_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.show_structure"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_structure">[docs]</a>    <span class="k">def</span> <span class="nf">show_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">this_repr</span> <span class="o">=</span> <span class="n">termcolor</span><span class="o">.</span><span class="n">colored</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span>
         <span class="n">sub_mod_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">sub_mod_repr</span> <span class="o">==</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">:</span>

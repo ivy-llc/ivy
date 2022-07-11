@@ -1,0 +1,17 @@
+Searching
+=========
+
+.. automodule:: ivy.container.searching
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Searching
+
+   searching/ContainerWithSearching.rst
+

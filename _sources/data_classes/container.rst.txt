@@ -1,0 +1,38 @@
+Container
+=========
+
+.. automodule:: ivy.Container
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Container
+
+   container/linear_algebra.rst
+   container/base.rst
+   container/losses.rst
+   container/statistical.rst
+   container/utility.rst
+   container/layers.rst
+   container/manipulation.rst
+   container/set.rst
+   container/sorting.rst
+   container/norms.rst
+   container/creation.rst
+   container/elementwise.rst
+   container/activations.rst
+   container/gradients.rst
+   container/device.rst
+   container/image.rst
+   container/container.rst
+   container/data_type.rst
+   container/random.rst
+   container/wrapping.rst
+   container/searching.rst
+   container/general.rst
+
