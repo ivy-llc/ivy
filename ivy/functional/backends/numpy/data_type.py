@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -99,7 +99,9 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
     return np.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: np.ndarray, shape: Tuple[int, ...]) -> np.ndarray:
+def broadcast_to(
+    x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
+) -> np.ndarray:
     return np.broadcast_to(x, shape)
 
 
