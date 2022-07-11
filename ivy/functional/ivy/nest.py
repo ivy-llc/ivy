@@ -26,12 +26,12 @@ def index_nest(
         A tuple of indices for indexing.
 
     Returns
-    ----------
+    -------
     ret
         The result element through indexing the nested object.
 
     Examples
-    ----------
+    --------
     With :code:`List` inputs:
 
     >>> x = ['a', 'b']
@@ -58,13 +58,13 @@ def index_nest(
 
     With :code:`ivy.Array` inputs:
 
-    >>> x = ivy.Array([[1, 2, 3], \
-                       [4, 5, 6], \
-                       [7, [8, 9]]])
+    >>> x = ivy.Array([[1., 2., 3.], \
+                       [4., 5., 6.], \
+                       [7., [8., 9.]]])
     >>> y = iter([2, 1, 0])
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    8
+    8.0
     """
     ret = nest
     for i in index:
