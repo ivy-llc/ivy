@@ -46,7 +46,7 @@ def unique_all(
     )
 
 
-unique_all.unsupported_dtypes = ("uint16", "uint32", "uint64")
+unique_all.unsupported_dtypes = ("uint16", "uint32", "uint64", "float16")
 
 
 def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
