@@ -25,6 +25,16 @@ class ContainerWithUtility(ContainerBase):
         ivy.Container static method variant of ivy.all. This method simply wraps the
         function, and so the docstring for ivy.all also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = ivy.Container.static_all(x)
+        >>> print(y)
+        {
+            a: ivy.array(False)
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "all",
@@ -53,6 +63,16 @@ class ContainerWithUtility(ContainerBase):
         ivy.Container instance method variant of ivy.all. This method simply wraps the
         function, and so the docstring for ivy.all also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = x.all()
+        >>> print(y)
+        {
+            a: ivy.array(False)
+        }
         """
         return self.static_all(
             self,
@@ -81,6 +101,16 @@ class ContainerWithUtility(ContainerBase):
         ivy.Container static method variant of ivy.any. This method simply wraps the
         function, and so the docstring for ivy.any also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = ivy.Container.static_any(x)
+        >>> print(y)
+        {
+            a: ivy.array(True)
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "any",
@@ -109,6 +139,16 @@ class ContainerWithUtility(ContainerBase):
         ivy.Container instance method variant of ivy.any. This method simply wraps the
         function, and so the docstring for ivy.any also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = x.any()
+        >>> print(y)
+        {
+            a: ivy.array(True)
+        }
         """
         return self.static_any(
             self,
