@@ -484,6 +484,7 @@ def test_full_like(
 
 # meshgrid
 
+
 # allows for arrays of all 1d and same dtype
 array_shape = st.shared(
     st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1)
@@ -496,14 +497,21 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes))
         hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=3
     ),
     dtype=dtype_shared,
-    num_positional_args=helpers.num_positional_args(fn_name="meshgrid"),
 )
 def test_meshgrid(
     arrays,
     dtype,
-    num_positional_args,
     fw,
 ):
+
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype)
+        i += 1
+
+    num_positional_args = len(arrays)
+
     helpers.test_function(
         dtype,
         False,
@@ -518,7 +526,7 @@ def test_meshgrid(
         1e-06,
         True,
         "numpy",
-        arrays=arrays,
+        **kw,
     )
 
 
