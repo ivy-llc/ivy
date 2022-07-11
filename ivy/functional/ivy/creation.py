@@ -398,11 +398,38 @@ def zeros_like(
 
     Examples
     --------
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
-    >>> y = ivy.zeros_like(x)
-    >>> print(y)
-    ivy.array([[0, 0, 0],
-               [0, 0, 0]])
+
+    With 'ivy.Array' input:
+
+        >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+        >>> y1 = ivy.zeros_like(x1)
+        >>> print(y1)
+        ivy.array([0, 0, 0, 0, 0, 0])
+
+
+        >>> x2 = ivy.array([[0, 1, 2],
+                            [3, 4, 5]])
+        >>> y2 = ivy.zeros_like(x2)
+        >>> print(y2)
+        ivy.array([[0, 0, 0],
+                   [0, 0, 0]])
+
+    With 'ivy.NativeArray' input:
+
+        >>> x1 = ivy.native_array([3, 8, 2, 0, 0, 2])
+        >>> y1 = ivy.zeros_like(x1)
+        >>> print(y1)
+        ivy.array([0, 0, 0, 0, 0, 0])
+
+
+        >>> x2 = ivy.native_array([[3, 8, 2],
+                                    [2, 8, 3]])
+        >>> y2 = ivy.zeros_like(x2)
+        >>> print(y2)
+        ivy.array([[0, 0, 0],
+                   [0, 0, 0]])
+
+
 
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
