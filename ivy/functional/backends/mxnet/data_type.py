@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import mxnet as mx
-from typing import Union
+from typing import Union, Sequence
 
 # local
 import ivy
@@ -86,7 +86,7 @@ def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
-def broadcast_to(x, new_shape):
+def broadcast_to(x, new_shape: Union[ivy.NativeShape, Sequence[int]]):
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
     num_shape_dims = len(new_shape)
