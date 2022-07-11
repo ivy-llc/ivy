@@ -22,7 +22,6 @@ class ArrayWithLosses(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.cross_entropy(y)
@@ -44,7 +43,6 @@ class ArrayWithLosses(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.binary_cross_entropy(y)
@@ -65,9 +63,9 @@ class ArrayWithLosses(abc.ABC):
         ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
         also applies to this method with minimal changes.
+
         Examples
         --------
-
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.sparse_cross_entropy(y)
