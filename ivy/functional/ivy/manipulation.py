@@ -626,29 +626,29 @@ def clip(
     ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.array([3., 3., 1., 0., 2., 3., 4., 0., 4., 4.])
     >>> x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
     >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
     >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With :code:`ivy.Container` input:
 
@@ -665,30 +665,31 @@ def clip(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
-    >>> x_min = ivy.Container(a=1, b=-1)
+    >>> x_min = ivy.Container(a=0, b=-3)
     >>> x_max = ivy.Container(a=1, b=-1)
     >>> y = ivy.clip(x, x_min,x_max)
     >>> print(y)
     {
-        a: ivy.array([1., 1., 1.]),
+        a: ivy.array([0., 1., 1.]),
         b: ivy.array([-1., -1., -1.])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.array([3., 4., 1])
+    >>> x_min = ivy.array([3., 0., 1])
     >>> x_max = ivy.array([5., 4., 3.])
     >>> y = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
     >>> z = ivy.clip(y, x_min, x_max)
     >>> print(z)
     {
-        a: ivy.array([3., 4., 2.]),
+        a: ivy.array([3., 1., 2.]),
         b: ivy.array([3., 4., 3.])
     }
 
     """
+    assert ivy.all(ivy.less(x_min, x_max))
     res = current_backend(x).clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)

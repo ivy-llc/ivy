@@ -37,17 +37,43 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-def with_grads(with_grads=None):
-    """Summary.
+def with_grads(with_grads: bool = None) -> bool:
+    """
+    Enter a nested code space where gradients are computed. This method
+    adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
-         (Default value = None)
+        Boolean value denoting whether the current code block has gradient
+        computation enabled or not.
+        'True' or 'False' or 'None' (Default value = None)
 
     Returns
     -------
     ret
+        If with_grads is boolean, it returns the boolean value representing
+        if gradient computation is enabled or not.
+        If with_grads is None, it returns the last element in the with_grads_stack
+        representing the parent of the current nested code block. If with_grads_stack
+        is empty, it returns True by default.
+        If with_grads is neither None nor boolean, it will raise an AssertionError
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> print(ivy.with_grads(with_grads=None))
+    True
+    
+    >>> ivy.set_with_grads(False)
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+    
+    >>> print(ivy.with_grads(with_grads=True))
+    True
+    
+    >>> print(ivy.with_grads(with_grads=False))
+    False
 
     """
     if ivy.exists(with_grads):
@@ -253,6 +279,7 @@ def adam_step(
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
+
     >>> dcdw = ivy.array([1, 2, 3])
     >>> mw = ivy.zeros(3)
     >>> vw = ivy.zeros(1)
@@ -326,7 +353,8 @@ def adam_step(
         ivy.array([0.1, 0.2, 0.3]),
         ivy.array([0.001, 0.004, 0.009]))
 
-    with :code: 'ivy.container' inputs:
+    with :code: `ivy.container` inputs:
+
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
                              b=ivy.array([3., 4., 5.]))
     >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\

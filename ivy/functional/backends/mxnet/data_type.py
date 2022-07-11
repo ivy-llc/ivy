@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import mxnet as mx
-from typing import Union
+from typing import Union, Tuple, Optional
 
 # local
 import ivy
@@ -86,7 +86,9 @@ def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
-def broadcast_to(x, new_shape):
+def broadcast_to(
+    x: mx.nd.NDArray, new_shape: Tuple[int, ...], out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
     num_shape_dims = len(new_shape)
@@ -94,7 +96,7 @@ def broadcast_to(x, new_shape):
     if diff == 0:
         return mx.nd.broadcast_to(x, new_shape)
     x = mx.nd.reshape(x, [1] * diff + x_shape)
-    return mx.nd.broadcast_to(x, new_shape)
+    return mx.nd.broadcast_to(x, new_shape, out=out)
 
 
 @_handle_flat_arrays_in_out

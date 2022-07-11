@@ -43,7 +43,9 @@ def asin(x: JaxArray) -> JaxArray:
     return jnp.arcsin(x)
 
 
-def asinh(x: JaxArray) -> JaxArray:
+def asinh(
+        x: JaxArray
+) -> JaxArray:
     return jnp.arcsinh(x)
 
 
