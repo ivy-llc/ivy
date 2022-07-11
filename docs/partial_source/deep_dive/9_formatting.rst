@@ -7,7 +7,7 @@ Formatting
 Lint Checks
 -----------
 
-To ensure that Ivy is always clean and correctly formatted, `flake8` is used to run
+To ensure that Ivy is always clean and correctly formatted, `flake8`_ is used to run
 lint checks on all Python files. Some examples are listed below for an idea of what
 is being checked for.
 
@@ -26,11 +26,11 @@ Module imports are being checked to detect:
 Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
 Some examples are:
 
-* `break` or `continue` statement outside a `for` or `while` loop
-* `continue` statement in the `finally` block of a loop
-* `yield` or `yield from` statement outside a function
-* `return` statement used with arguments in a generator, or outside a function or method
-* `except:` block not being the last exception handler
+* :code: `break` or :code: `continue` statement outside a :code: `for` or :code: `while` loop
+* :code: `continue` statement in the :code: `finally` block of a loop
+* :code: `yield` or :code: `yield from` statement outside a function
+* :code: `return` statement used with arguments in a generator, or outside a function or method
+* :code: `except:` block not being the last exception handler
 * syntax or length errors in docstrings, comments, or annotations
 
 **Literals**
@@ -38,28 +38,28 @@ Some examples are:
 Literals formatting are often used in a string statement, which some related common
 checks are:
 
-* invalid `%` format
-* `%` format with missing arguments or unsupported character
-* `.format(...)` with invalid format, missing or unused arguments
+* invalid :code: `%` format
+* :code: `%` format with missing arguments or unsupported character
+* :code: `.format(...)` with invalid format, missing or unused arguments
 * f-string without placeholders
 
 **Others**
 
-There are many more types of checking which `flake8` is able to carry out. They
+There are many more types of checking which :code: `flake8` is able to carry out. They
 include but are not limited to:
 
-* repeated `dict` key or variable assigned to different values
+* repeated :code: `dict` key or variable assigned to different values
 * star-unpacking assignment with too many expressions
-* assertion test is a `tuple`, which is always `true`
-* use of `==` or `!=` to compare `str`, `bytes` or `int` literals
-* `raise NotImplemented` should be `raise NotImplementedError`
+* assertion test is a :code: `tuple`, which is always :code: `true`
+* use of :code: `==` or :code: `!=` to compare :code: `str`, :code: `bytes` or :code: `int` literals
+* :code: `raise NotImplemented` should be :code: `raise NotImplementedError`
 
 Pre-Commit Hook
 ---------------
 
 In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
 we make use of the pre-commit package, where its installation is explained in
-the `pre-commit guide`.
+the `pre-commit guide`_.
 
 The pre-commit hook runs the `flake8` lint checks before each commit. This is
 efficient and useful in preventing errors being pushed to the repository.
@@ -116,7 +116,8 @@ To ensure a better understanding of the formatting rules, examples are shown bel
 for visualizing a better comparison.
 
 When a function has few arguments which will not exceed the length limit, arguments
-should be listed on the same line, together with the function `def(...)` syntax.
+should be listed on the same line, together with the function :code: `def(...)`
+syntax.
 
 .. code-block:: python
 
