@@ -346,7 +346,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([-94.2, 256.0, 0.0001, -0.0001, 36.6])
         >>> y = x.sign()
         >>> print(y)
-        ivy.array([ 1., -1.,  0.,  0.,  1.])
+        ivy.array([-1.,  1.,  1., -1.,  1.])
 
         >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
         >>> y = x.sign()
