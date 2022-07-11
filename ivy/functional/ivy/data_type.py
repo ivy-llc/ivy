@@ -1,6 +1,5 @@
 # global
 import math
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable
@@ -47,6 +46,56 @@ def can_cast(
         ``True`` if the cast can occur according to :ref:`type-promotion` rules;
         otherwise, ``False``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+     With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
+    True
+
+    >>> print(ivy.can_cast(ivy.float64, 'int64'))
+    False
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> print(x.dtype)
+    float32
+
+    >>> print(ivy.can_cast(x, ivy.float64))
+    True
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
+        dtype='int16')
+    >>> print(x.dtype)
+    <dtype:'int16'>
+
+    >>> print(ivy.can_cast(x, 'uint8'))
+    False
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+        b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
+
+    >>> print(ivy.can_cast(x, 'int64'))
+    {
+        a: false,
+        b: true
+    }
     """
     return current_backend(from_).can_cast(from_, to)
 
@@ -110,7 +159,10 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 @handle_out_argument
 @handle_nestable
 def broadcast_to(
-    x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Tuple[int, ...],
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Broadcasts an array to a specified shape.
 
@@ -122,6 +174,9 @@ def broadcast_to(
         array shape. Must be compatible with x (see Broadcasting). If
         the array is incompatible with the specified shape, the function should raise an
         exception.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -129,7 +184,7 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-    return current_backend(x).broadcast_to(x, shape)
+    return current_backend(x).broadcast_to(x, shape, out=out)
 
 
 @to_native_arrays_and_back
@@ -181,6 +236,7 @@ def astype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
     *,
     copy: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -209,6 +265,9 @@ def astype(
         be returned. If ``False`` and the specified ``dtype`` matches the data type of
         the input array, the input array must be returned; otherwise, a newly allocated
         must be returned. Default: ``True``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -224,7 +283,7 @@ def astype(
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return current_backend(x).astype(x, dtype, copy=copy)
+    return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
 
 # Extra #
@@ -776,33 +835,8 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
-    """Converts a data type from one backend framework representation to another.
-
-    Parameters
-    ----------
-    dtype_in
-        The data-type to convert, in the specified backend representation
-    backend
-        The backend framework the dtype_in is represented in.
-
-    Returns
-    -------
-    ret
-        The data-type in the current ivy backend format
-
-    """
-    valid_backends = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-    if backend not in valid_backends:
-        raise Exception(
-            "Invalid backend passed, must be one of {}".format(valid_backends)
-        )
-    ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
-    return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
-
-
 @handle_nestable
-def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
     """Returns the supported data types of the current backend's function.
 
     Parameters
@@ -818,20 +852,19 @@ def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8', 'int16', 'int32', 'int64', 'uint8',\
-     'bfloat16', 'float16', 'float32', 'float64', 'bool')
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    ['int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool']
     """
     valid = list(ivy.valid_dtypes)
-    for d in list(function_unsupported_dtypes(fn, backend)):
+    for d in list(function_unsupported_dtypes(fn)):
         if d in valid:
             valid.remove(d)
-    return ivy.as_native_dtype(tuple(valid))
+    return ivy.as_native_dtype(valid)
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
+def function_unsupported_dtypes(fn: Callable) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
@@ -847,21 +880,65 @@ def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
     Examples
     --------
     >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_unsupported_dtypes(acosh, 'torch'))
-    ('float16', 'uint16', 'uint32', 'uint64')
+    >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
+    ('float16','uint16','uint32','uint64')
+
     """
+    unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
-        return fn.unsupported_dtypes + ivy.invalid_dtypes
-    else:
-        return ivy.invalid_dtypes
-    return ivy.as_native_dtype(fn.unsupported_dtypes)
+        fn_unsupported_dtypes = fn.unsupported_dtypes
+        if isinstance(fn_unsupported_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+            if "all" in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes["all"]
+        else:
+            unsupported_dtypes += fn_unsupported_dtypes
+    return tuple(set(unsupported_dtypes))
 
 
-if __name__ == "__main__":
-    ivy.set_backend("tensorflow")
-    pow = getattr(ivy, "pow")
-    print(function_supported_dtypes(pow, "tensorflow"))
+def promote_types(
+    type1: Union[ivy.Dtype, ivy.NativeDtype],
+    type2: Union[ivy.Dtype, ivy.NativeDtype],
+):
+    """
+    Promotes the datatypes type1 and type2, returning the data type they promote to
 
-    pow = getattr(ivy, "pow")
-    print(function_unsupported_dtypes(pow, "tensorflow"))
+    Parameters
+    ----------
+    type1
+        the first of the two types to promote
+    type2
+        the second of the two types to promote
+
+    Returns
+    -------
+    ret
+        The type that both input types promote to
+    """
+    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+
+
+def type_promote_arrays(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Type promote the input arrays, returning new arrays with the shared correct
+    data type
+
+    Parameters
+    ----------
+    x1
+        the first of the two arrays to type promote
+    x2
+        the second of the two arrays to type promote
+
+    Returns
+    -------
+    ret1, ret2
+        The input arrays after type promotion
+    """
+    new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
+    return ivy.astype(x1, new_type), ivy.astype(x2, new_type)

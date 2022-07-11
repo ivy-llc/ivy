@@ -88,8 +88,9 @@ There are many more examples, check out the abstract `ContainerBase`_ class to s
 API Static Methods
 ------------------
 
-Unlike the :code:`ivy.Array` class, the :code:`ivy.Container` also implements all functions in the functional API as
-*static* methods. The main reason for this is to support the *nestable* property of all functions in the API,
+Unlike the :code:`ivy.Array` class, the :code:`ivy.Container` also implements
+**all nestable functions** in the functional API as *static* methods.
+The main reason for this is to support the *nestable* property of all functions in the API,
 which is explained in detail in the :ref:`Function Types` section.
 
 To recap, what this means is that every function can arbitrarily accept :code:`ivy.Container` instances for **any**
@@ -124,6 +125,20 @@ The *API* instance methods serve a similar purpose to the instance methods of th
 They enable functions in Ivy's functional API to be called as instance methods on the :code:`ivy.Container` class.
 The difference is that with the :code:`ivy.Container`,
 the API function is applied recursively to all the leaves of the container.
+The :code:`ivy.Container` instance methods should **exactly match** the instance methods
+of the :code:`ivy.Array`, both in terms of the methods implemented and the argument
+which :code:`self` replaces in the function being called. This means :code:`self` should
+always replace the first array argument in the function.
+`ivy.Container.add <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/container/elementwise.py#L158>`_
+is a good example.
+
+However, as with the :code:`ivy.Array` class,
+it's important to bear in mind that this is *not necessarily the first argument*,
+although in most cases it will be.
+We also **do not** set the :code:`out` argument to :code:`self` for instance methods.
+If the only array argument is the :code:`out` argument, then we do not implement this
+instance method. For example, we do not implement an instance method for
+`ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 Under the hood, every *instance* method calls the corresponding *static* method.
 For example, `ivy.Container.add`_ calls :code:`ivy.Container.static_add`,

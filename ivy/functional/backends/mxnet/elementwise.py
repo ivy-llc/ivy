@@ -1,6 +1,7 @@
 # global
 import mxnet as mx
 import math
+from typing import Union
 
 # local
 from ivy.functional.backends.mxnet import (
@@ -11,19 +12,18 @@ from ivy.functional.backends.mxnet import (
 
 @_handle_flat_arrays_in_out
 def add(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
     return mx.nd.add(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def bitwise_and(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[int, mx.nd.NDArray],
+    x2: Union[int, mx.nd.NDArray],
 ) -> mx.nd.ndarray.NDArray:
-    ret = mx.numpy.bitwise_and(x1, x2)
-    return ret
+    return mx.numpy.bitwise_and(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -40,29 +40,26 @@ def floor(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def divide(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.divide(x1, x2)
-    return ret
+    return mx.nd.divide(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def greater(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.greater(x1, x2)
-    return ret
+    return mx.nd.greater(x1, x2)
 
 
 @_handle_flat_arrays_in_out
 def greater_equal(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.greater_equal(x1, x2)
-    return ret
+    return mx.nd.greater_equal(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -94,9 +91,11 @@ def isnan(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def less(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.lesser(x1, x2).astype("bool")
-    return ret
+def less(
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
+) -> mx.nd.NDArray:
+    return mx.nd.lesser(x1, x2).astype("bool")
 
 
 @_handle_flat_arrays_in_out
@@ -133,9 +132,11 @@ def logical_or(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.N
 
 
 @_handle_flat_arrays_in_out
-def multiply(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.multiply(x1, x2)
-    return ret
+def multiply(
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
+) -> mx.nd.NDArray:
+    return mx.nd.multiply(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -157,13 +158,14 @@ def sin(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def negative(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.np.negative(x)
-    return ret
+def negative(x: Union[float, mx.nd.NDArray]) -> mx.nd.NDArray:
+    return mx.np.negative(x)
 
 
 @_handle_flat_arrays_in_out
-def tanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def tanh(
+    x: mx.nd.NDArray,
+) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.tanh(x)
     else:
@@ -173,11 +175,10 @@ def tanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def bitwise_or(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[int, mx.nd.NDArray],
+    x2: Union[int, mx.nd.NDArray],
 ) -> mx.nd.ndarray.NDArray:
-    ret = mx.numpy.bitwise_or(x1, x2)
-    return ret
+    return mx.numpy.bitwise_or(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -209,17 +210,17 @@ def trunc(x: mx.nd.NDArray) -> mx.nd.ndarray.NDArray:
 
 @_handle_flat_arrays_in_out
 def subtract(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
+    x1: Union[float, mx.nd.NDArray],
+    x2: Union[float, mx.nd.NDArray],
 ) -> mx.nd.NDArray:
-    ret = mx.nd.subtract(x1, x2)
-    return ret
+    return mx.nd.subtract(x1, x2)
 
 
 @_handle_flat_arrays_in_out
-def abs(x: mx.nd.NDArray) -> mx.nd.ndarray.NDArray:
-    ret = mx.nd.abs(x)
-    return ret
+def abs(
+    x: Union[float, mx.nd.NDArray]
+) -> mx.nd.ndarray.NDArray:
+    return mx.nd.abs(x)
 
 
 def cos(x: mx.nd.NDArray) -> mx.nd.NDArray:
