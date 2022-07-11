@@ -14,7 +14,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import dev, as_native_dev
+from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -144,13 +144,11 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = dev(updates)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -185,8 +183,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    with tf.device(as_native_dev(device)):
-        return res
+    return res
 
 
 def _parse_ellipsis(so, ndims):
@@ -208,7 +205,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -264,8 +261,6 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -295,29 +290,20 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    with tf.device(as_native_dev(device)):
-        return res
+    return res
 
 
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
-    *,
-    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    if device is None:
-        device = dev(params)
-    with tf.device(as_native_dev(device)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
-    with tf.device(as_native_dev(device)):
-        return tf.gather_nd(params, indices)
+def gather_nd(params, indices):
+    return tf.gather_nd(params, indices)
 
 
 def one_hot(indices, depth, *, device):
@@ -344,9 +330,9 @@ def indices_where(x):
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],
-    as_tensor: bool = False,
+    as_array: bool = False,
 ) -> Union[tf.Tensor, tf.Variable, List[int]]:
-    if as_tensor:
+    if as_array:
         return tf.shape(x)
     else:
         return tuple(x.shape)

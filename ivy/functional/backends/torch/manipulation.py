@@ -1,4 +1,5 @@
 # global
+import ivy
 import torch
 import math
 from numbers import Number
@@ -30,7 +31,8 @@ def expand_dims(x: torch.Tensor, axis: int = 0) -> torch.Tensor:
 
 
 def flip(
-    x: torch.Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None
+    x: torch.Tensor,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
     if not num_dims:
@@ -122,6 +124,7 @@ def split(
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -142,7 +145,7 @@ def split(
             remainder = num_chunks - num_chunks_int
             if remainder == 0:
                 num_or_size_splits = torch.round(
-                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
+                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
                 )
             else:
                 num_or_size_splits = tuple(
@@ -151,7 +154,7 @@ def split(
                 )
         else:
             num_or_size_splits = torch.round(
-                torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
+                torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
@@ -207,6 +210,7 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    assert ivy.all(ivy.less(x_min, x_max))
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)

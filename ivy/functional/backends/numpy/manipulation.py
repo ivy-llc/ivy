@@ -1,4 +1,5 @@
 # global
+import ivy
 import numpy as np
 import math
 from typing import Union, Tuple, Optional, List
@@ -13,7 +14,9 @@ def _flat_array_to_1_dim_array(x):
 # -------------------#
 
 
-def concat(xs: List[np.ndarray], axis: int = 0) -> np.ndarray:
+def concat(
+    xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
         if is_tuple:
@@ -23,7 +26,7 @@ def concat(xs: List[np.ndarray], axis: int = 0) -> np.ndarray:
                 xs[i] = np.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    ret = np.concatenate(xs, axis)
+    ret = np.concatenate(xs, axis, out=out)
     highest_dtype = xs[0].dtype
     for i in xs:
         highest_dtype = np.promote_types(highest_dtype, i.dtype)
@@ -101,7 +104,13 @@ def stack(
 # ------#
 
 
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
+def split(
+    x,
+    num_or_size_splits=None,
+    axis=0,
+    with_remainder=False,
+    out: Optional[np.ndarray] = None,
+):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception(
@@ -121,7 +130,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
+        num_or_size_splits = np.cumsum(num_or_size_splits[:-1], out=out)
     return np.split(x, num_or_size_splits, axis)
 
 
@@ -161,5 +170,6 @@ def swapaxes(
 def clip(
     x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
 ) -> np.ndarray:
+    assert ivy.all(ivy.less(x_min, x_max))
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret
