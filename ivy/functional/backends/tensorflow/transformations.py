@@ -3,13 +3,15 @@ import functools
 import tensorflow as tf
 
 #local
+
 import ivy
 
 
 def vmap(fun, in_axes=0, out_axes=0):
     @ivy.to_native_arrays_and_back
     def _vmap(*args):
-
+        # if ivy.functional.backends.jax.vmap(fun, in_axes=in_axes, out_axes=out_axes)(*args) is None:
+        #     return None
         # convert args tuple to list to allow mutability in the arg container.
         args = list(args)
 
@@ -29,7 +31,7 @@ def vmap(fun, in_axes=0, out_axes=0):
         elif isinstance(in_axes, int):
             args[0] = tf.experimental.numpy.moveaxis(args[0], in_axes, 0)
 
-        # vecotrisation - applying map_fn if only one arg provided as reduce requires
+        # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         if len(args) == 1:
             ret = tf.map_fn(fun, args[0])
