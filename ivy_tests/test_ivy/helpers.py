@@ -519,7 +519,7 @@ def test_unsupported_function(fn, args, kwargs):
     try:
         fn(*args, **kwargs)
         assert False
-    except:
+    except:  # noqa
         return
 
 
@@ -592,7 +592,7 @@ def test_method(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    # tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
@@ -938,7 +938,6 @@ def test_frontend_function(
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
     # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
     *frontend_submods, fn_name = fn_name.split(".")
