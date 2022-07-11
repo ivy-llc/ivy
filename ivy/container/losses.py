@@ -35,8 +35,8 @@ class ContainerWithLosses(ContainerBase):
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-            a: ivy.array(0.51082557),
-            b: ivy.array(1.60943794)
+            a:ivy.array(0.5108256),
+            b:ivy.array(1.609438)
         }
 
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
@@ -46,7 +46,7 @@ class ContainerWithLosses(ContainerBase):
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-           a: ivy.array(0.5798185)
+           a: ivy.array(0.57981847)
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -86,8 +86,8 @@ class ContainerWithLosses(ContainerBase):
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array(0.51082557),
-            b: ivy.array(1.60943794)
+            a:ivy.array(0.5108256),
+            b:ivy.array(1.609438)
         }
         """
         return self.static_cross_entropy(
