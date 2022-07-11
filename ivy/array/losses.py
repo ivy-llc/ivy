@@ -22,11 +22,11 @@ class ArrayWithLosses(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 1, 0])
-        >>> y = ivy.array([0.7, 0.8, 0.2])
+        >>> x = ivy.array([0, 0, 1, 0])
+        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
         >>> z = x.cross_entropy(y)
         >>> print(z)
-        ivy.array(0.57981847)
+        ivy.array(1.3862944)
         """
         return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
 
