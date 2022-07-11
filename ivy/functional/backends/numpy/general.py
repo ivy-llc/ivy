@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Sequence
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -163,7 +163,13 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
