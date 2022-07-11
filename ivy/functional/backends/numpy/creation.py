@@ -1,13 +1,12 @@
 # global
 import numpy
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Optional, List, Sequence
 
 # local
+import ivy
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
-
-# noinspection PyProtectedMember
 from ivy.functional.backends.numpy.device import _to_device
 
 
@@ -52,7 +51,7 @@ def asarray(object_in, *, copy=None, dtype: np.dtype = None, device: str):
 
 
 def empty(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_device(
         np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -87,7 +86,7 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: np.dtype = None,
@@ -132,7 +131,7 @@ def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:
 
 
 def ones(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_device(np.ones(shape, dtype), device=device)
@@ -157,7 +156,7 @@ def triu(x: np.ndarray, k: int = 0) -> np.ndarray:
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]], *, dtype: np.dtype, device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
 
