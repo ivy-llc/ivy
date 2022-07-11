@@ -2,7 +2,10 @@
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
+
+# local
+import ivy
 
 
 # Array API Standard #
@@ -73,7 +76,7 @@ def permute_dims(
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
     return ret
