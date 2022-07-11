@@ -129,9 +129,9 @@ You can also specify:
 
 * Math.inf and math.nan, respectively, should be included in the data description.
 * Bounds(either inclusive or exclusive) on the floats being generated.
-* The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always\
-64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is mostly
-useful for Numpy arrays).
+* The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always
+  64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is
+  mostly useful for Numpy arrays).
 
 6. **none** - returns a strategy which only generates None.
 
@@ -620,11 +620,11 @@ Like the output above, Hypothesis will print all the examples for which the test
 
 3. Some performance related settings which might be helpful to know are-:
 
-* **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it ip or down
-will have an impact on the speed as well as the rigorousness of the tests.
+* **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down
+		     will have an impact on the speed as well as the rigorousness of the tests.
 
 * **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird
-performance issues.
+		 performance issues.
 
 Self-Consistent and Explicit Testing
 ------------------------------------
