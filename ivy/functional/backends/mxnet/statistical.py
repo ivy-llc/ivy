@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, Sequence
 import mxnet as mx
 
 # Local
@@ -17,8 +17,8 @@ from ivy.functional.backends.mxnet import (
 
 def max(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     *,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:

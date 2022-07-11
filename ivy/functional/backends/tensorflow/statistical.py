@@ -1,7 +1,7 @@
 # global
 _round = round
 import tensorflow as tf
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -13,8 +13,8 @@ import ivy
 
 def max(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 

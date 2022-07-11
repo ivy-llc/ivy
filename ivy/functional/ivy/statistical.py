@@ -21,7 +21,7 @@ from ivy.func_wrapper import (
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
