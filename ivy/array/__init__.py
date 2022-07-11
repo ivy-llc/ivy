@@ -10,7 +10,7 @@ from . import conversions
 from .conversions import *
 from .activations import ArrayWithActivations
 from .creation import ArrayWithCreation
-from .data_types import ArrayWithDataTypes
+from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
 from .general import ArrayWithGeneral
@@ -101,8 +101,8 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-
         self.framework_str = ivy.current_backend_str()
+        self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
     # -----------#
@@ -167,6 +167,17 @@ class Array(
 
         """
         return self._size
+
+    @property
+    def is_variable(self):
+        """Determines whether the array is a variable or not.
+
+        Returns
+        -------
+        ret
+            Boolean, true if the array is a trainable variable, false otherwise.
+        """
+        return self._is_variable
 
     # Setters #
     # --------#
@@ -292,12 +303,64 @@ class Array(
         return self._data.__rpow__(power)
 
     @_native_wrapper
+    def __ipow__(self, power):
+        return ivy.pow(self._data, power)
+
+    @_native_wrapper
     def __add__(self, other):
+        """
+        ivy.Array special method variant of ivy.add. This method simply wraps the
+        function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x + y
+        >>> print(z)
+        ivy.array([5, 7, 9])
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: ivy.array([[5.1, 6.3, 0.4],
+                          [6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4]]),
+            b: ivy.array([[6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4],
+                          [8.1, 9.3, 3.4]])
+        }
+        """
         return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.add. This method simply wraps
+        the function, and so the docstring for ivy.add also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = 1
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x + y
+        >>> print(z)
+        ivy.array([5, 6, 7])
+        """
         return ivy.add(other, self._data)
+
+    @_native_wrapper
+    def __iadd__(self, other):
+        return ivy.add(self._data, other)
 
     @_native_wrapper
     def __sub__(self, other):
@@ -316,7 +379,15 @@ class Array(
         return ivy.multiply(other, self._data)
 
     @_native_wrapper
+    def __imul__(self, other):
+        return ivy.multiply(self._data, other)
+
+    @_native_wrapper
     def __mod__(self, other):
+        return ivy.remainder(self._data, other)
+
+    @_native_wrapper
+    def __imod__(self, other):
         return ivy.remainder(self._data, other)
 
     @_native_wrapper
@@ -328,12 +399,20 @@ class Array(
         return ivy.divide(other, self._data)
 
     @_native_wrapper
+    def __itruediv__(self, other):
+        return ivy.divide(self._data, other)
+
+    @_native_wrapper
     def __floordiv__(self, other):
         return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __rfloordiv__(self, other):
         return ivy.floor_divide(other, self._data)
+
+    @_native_wrapper
+    def __ifloordiv__(self, other):
+        return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __abs__(self):
@@ -366,7 +445,55 @@ class Array(
         return ivy.less(self._data, other)
 
     @_native_wrapper
-    def __le__(self, other):
+    def __le__(self, other):   
+        """
+        Less than or equal to
+
+        Returns
+        -------
+        an array containing the element-wise results. The returned array must have a
+        data type of bool.
+
+        Operator Examples
+        -----------------
+
+        With :code:`ivy.Array` instances:
+
+        >>> x = ivy.array([6, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x <= y
+        >>> print(z)
+        ivy.array([ False, True, True])
+
+        With :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                      b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([5, 6, 7]))
+        >>> z = x <= y
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> x = ivy.array([[5.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = x <= y
+        >>> print(z)
+        {
+            a: ivy.array([[False, True, True],
+                          [False, True, True],
+                          [True, True, True]]),
+            b: ivy.array([[False, True, True],
+                          [True, True, True],
+                          [True, True, True]])
+        }
+        """
         return ivy.less_equal(self._data, other)
 
     @_native_wrapper

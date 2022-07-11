@@ -31,7 +31,7 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
-        out=None,
+        out: Optional[ivy.Container] = None,
         **kwargs
     ):
         function = ivy.__dict__[function_name]

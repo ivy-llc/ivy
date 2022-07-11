@@ -3045,7 +3045,7 @@ def test_container_multi_map(device, call):
     container_mapped = ivy.Container.multi_map(
         lambda x, _: x[0] + x[1],
         [container0, container1],
-        map_sequences=True,
+        map_nests=True,
         assert_identical=True,
     )
 
