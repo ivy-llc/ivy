@@ -21,6 +21,11 @@ class ContainerWithUtility(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.all. This method simply wraps the
+        function, and so the docstring for ivy.all also applies to this method
+        with minimal changes.
+        """
         return ContainerBase.multi_map_in_static_method(
             "all",
             x,
@@ -44,6 +49,11 @@ class ContainerWithUtility(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.all. This method simply wraps the
+        function, and so the docstring for ivy.all also applies to this method
+        with minimal changes.
+        """
         return self.static_all(
             self,
             axis,
@@ -67,6 +77,11 @@ class ContainerWithUtility(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.any. This method simply wraps the
+        function, and so the docstring for ivy.any also applies to this method
+        with minimal changes.
+        """
         return ContainerBase.multi_map_in_static_method(
             "any",
             x,
@@ -90,6 +105,11 @@ class ContainerWithUtility(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.any. This method simply wraps the
+        function, and so the docstring for ivy.any also applies to this method
+        with minimal changes.
+        """
         return self.static_any(
             self,
             axis,
