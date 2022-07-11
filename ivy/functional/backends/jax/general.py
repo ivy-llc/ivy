@@ -1,7 +1,6 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from optparse import Option
 import jax
 import numpy as np
 import jax.numpy as jnp
@@ -13,7 +12,6 @@ from jaxlib.xla_extension import Buffer
 from typing import List, Iterable, Optional, Union
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
-from pyparsing import Opt
 
 # local
 import ivy
