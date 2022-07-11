@@ -406,7 +406,6 @@ def zeros_like(
         >>> print(y1)
         ivy.array([0, 0, 0, 0, 0, 0])
 
-
         >>> x2 = ivy.array([[0, 1, 2],
                             [3, 4, 5]])
         >>> y2 = ivy.zeros_like(x2)
@@ -420,7 +419,6 @@ def zeros_like(
         >>> y1 = ivy.zeros_like(x1)
         >>> print(y1)
         ivy.array([0, 0, 0, 0, 0, 0])
-
 
         >>> x2 = ivy.native_array([[3, 8, 2],
                                     [2, 8, 3]])
