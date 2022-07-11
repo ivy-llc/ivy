@@ -73,14 +73,9 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        if dtype in [torch.int8, torch.uint8, torch.int16]:
-            return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device, out=out
-            ).to(dtype)
-        else:
-            return torch.arange(
-                start, stop, step=step, dtype=dtype, device=device, out=out
-            )
+        return torch.arange(
+            start, stop, step=step, dtype=dtype, device=device, out=out
+        )
 
 
 arange.support_native_out = True
