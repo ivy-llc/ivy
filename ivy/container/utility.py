@@ -28,7 +28,6 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_all(x)
         >>> print(y)
@@ -66,7 +65,6 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = x.all()
         >>> print(y)

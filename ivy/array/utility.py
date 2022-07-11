@@ -22,7 +22,6 @@ class ArrayWithUtility(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.all()
         >>> print(y)
@@ -44,7 +43,6 @@ class ArrayWithUtility(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.any()
         >>> print(y)
