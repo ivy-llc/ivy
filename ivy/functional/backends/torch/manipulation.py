@@ -2,7 +2,10 @@
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
+
+# local
+import ivy
 
 
 # Array API Standard #
@@ -55,7 +58,9 @@ def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
 
 
 def reshape(
-    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: torch.Tensor,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     ret = torch.reshape(x, shape)
     return ret
