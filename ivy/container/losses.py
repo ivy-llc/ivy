@@ -28,7 +28,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         With :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
@@ -82,7 +81,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.cross_entropy(y)
@@ -123,7 +121,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         With :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
@@ -175,7 +172,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.binary_cross_entropy(y)
@@ -216,7 +212,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         With :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
@@ -270,7 +265,6 @@ class ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.sparse_cross_entropy(y)
