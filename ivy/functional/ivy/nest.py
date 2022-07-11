@@ -58,7 +58,7 @@ def index_nest(
 
     With :code:`ivy.Array` inputs:
 
-    >>> x = ivy.Array([[1., 2., 3.], \
+    >>> x = ivy.array([[1., 2., 3.], \
                        [4., 5., 6.], \
                        [7., [8., 9.]]])
     >>> y = iter([2, 1, 0])
