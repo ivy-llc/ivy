@@ -13,8 +13,8 @@ import ivy
 
 def max(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
