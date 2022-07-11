@@ -464,6 +464,55 @@ def asinh(
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-3.5, -0, +0, 1.3, float('nan')])
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    ivy.array([-1.97, 0., 0., 1.08, nan])
+
+    >>> x = ivy.array([-2, -0.75, 0.9, 1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.asinh(x, out=y)
+    >>> print(y)
+    ivy.array([-1.44, -0.693, 0.809, 0.881])
+
+    >>> x = ivy.array([[0.2, 0.4, 0.6], \
+                       [-0.8, -1, -2]])
+    >>> ivy.asinh(x, out=x)
+    >>> print(x)
+    ivy.array([[ 0.199, 0.39, 0.569],
+               [-0.733, -0.881, -1.44]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-0, -2.6, 1, 3.6])
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    ivy.array([ 0. , -1.68 , 0.881, 1.99 ])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1, 2]),\
+                            b=ivy.array([4.2, -5.3, -0, -2.3]))
+    >>> y = ivy.asinh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.881, 1.44]),
+        b: ivy.array([2.14, -2.37, 0., -1.57])
+    }
+
     """
     return current_backend(x).asinh(x, out=out)
 
@@ -1801,6 +1850,203 @@ def greater_equal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def less_equal(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
+    x1 with the respective element x2_i of the input array x2.
+
+    Parameters
+    ----------
+    x1
+        first input array. May have any data type.
+    x2
+        second input array. Must be compatible with x1 (with Broadcasting). May have any
+        data type.
+
+    Returns
+    -------
+     ret
+        an array containing the element-wise results. The returned array must have a
+        data type of bool.
+    
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+    
+     Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    ivy.array([True, True,  False])
+
+    >>> x = ivy.array([[10.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> shape = (3,3)
+    >>> fill_value = False
+    >>> z = ivy.full(shape, fill_value)
+    >>> ivy.less_equal(x, y, out=z)
+    >>> print(z)
+    ivy.array([[False, True, True],
+       [ False, True, True],
+       [ False, True, True]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.less_equal(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[1.],[0.],[1.]]])
+    
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([4, 5])
+    >>> z = ivy.less_equal(x, y)
+    >>> print(z)
+    ivy.array([True, True])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 0])
+    >>> z = ivy.less_equal(x, y)
+    >>> print(z)
+    ivy.array([True, True,  False])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                           b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.less_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[False, True, True],
+                      [False, True, True],
+                      [True, True, True]]),
+        b: ivy.array([[False, True, True],
+                      [True, True, True],
+                      [True, True, True]])
+    }
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = ivy.less_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = z = x.less_equal(y)
+    >>> print(z)
+    ivy.array([True, True, True])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                  b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([5, 6, 7]))
+    >>> z = x.less_equal(y)
+    >>> print(z)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
+    """
+    return current_backend(x1, x2).less_equal(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def multiply(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
+    the respective element ``x2_i`` of the input array ``x2``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+0``
+      or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+infinity`` or
+      ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign, the result has a
+      positive mathematical sign, unless the result is ``NaN``. If the result is
+      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs, the result has a
+      negative mathematical sign, unless the result is ``NaN``. If the result is
+      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either
+      ``+infinity`` or ``-infinity``, the result is a signed infinity with the
+      mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is a nonzero
+      finite number, the result is a signed infinity with the mathematical sign
+      determined by the rule already stated above.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+infinity`` or
+      ``-infinity``, the result is a signed infinity with the mathematical sign
+      determined by the rule already stated above.
+
+    In the remaining cases, where neither ``infinity`` nor ``NaN`` is involved, the
+    product must be computed and rounded to the nearest representable value according to
+    IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to
+    represent, the result is an ``infinity`` of appropriate mathematical sign. If the
+    magnitude is too small to represent, the result is a zero of appropriate
+    mathematical sign.
+
+    .. note::
+        Floating-point multiplication is not always associative due to finite precision.
+
+    Parameters
+    ----------
+    x1
+        first input array. Should have a numeric data type.
+    x2
+        second input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
+        Should have a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise products. The returned array must have a
+        data type determined by :ref:`Type Promotion Rules`.
+
+    """
+    return current_backend(x1, x2).multiply(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1925,39 +2171,6 @@ def less(
 
     """
     return current_backend(x1).less(x1, x2, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def less_equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
-
-    Parameters
-    ----------
-    x1
-        first input array. May have any data type.
-    x2
-        second input array. Must be compatible with x1 (with Broadcasting). May have any
-        data type.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-     ret
-        an array containing the element-wise results. The returned array must have a
-        data type of bool.
-
-    """
-    return current_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -2298,74 +2511,6 @@ def logical_xor(
 
     """
     return current_backend(x1, x2).logical_xor(x1, x2, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def multiply(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
-    the respective element ``x2_i`` of the input array ``x2``.
-
-    **Special cases**
-
-    For floating-point operands,
-
-    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+0``
-      or ``-0``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+infinity`` or
-      ``-infinity``, the result is ``NaN``.
-    - If ``x1_i`` and ``x2_i`` have the same mathematical sign, the result has a
-      positive mathematical sign, unless the result is ``NaN``. If the result is
-      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
-    - If ``x1_i`` and ``x2_i`` have different mathematical signs, the result has a
-      negative mathematical sign, unless the result is ``NaN``. If the result is
-      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either
-      ``+infinity`` or ``-infinity``, the result is a signed infinity with the
-      mathematical sign determined by the rule already stated above.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is a nonzero
-      finite number, the result is a signed infinity with the mathematical sign
-      determined by the rule already stated above.
-    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+infinity`` or
-      ``-infinity``, the result is a signed infinity with the mathematical sign
-      determined by the rule already stated above.
-
-    In the remaining cases, where neither ``infinity`` nor ``NaN`` is involved, the
-    product must be computed and rounded to the nearest representable value according to
-    IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to
-    represent, the result is an ``infinity`` of appropriate mathematical sign. If the
-    magnitude is too small to represent, the result is a zero of appropriate
-    mathematical sign.
-
-    .. note::
-        Floating-point multiplication is not always associative due to finite precision.
-
-    Parameters
-    ----------
-    x1
-        first input array. Should have a numeric data type.
-    x2
-        second input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
-        Should have a numeric data type.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the element-wise products. The returned array must have a
-        data type determined by :ref:`Type Promotion Rules`.
-
-    """
-    return current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -3664,9 +3809,17 @@ def maximum(
         An array with the elements of x1, but clipped to not be lower than the x2
         values.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
     With :code:`ivy.Array` inputs:
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
@@ -3674,61 +3827,49 @@ def maximum(
     >>> print(z)
     ivy.array([9, 9, 5])
 
-    With :code:`ivy.NativeArray` inputs:
-    >>> x = ivy.native_array([1, 5, 9, 8, 3])
-    >>> y = ivy.native_array([9, 3, 2, 0, 7])
-    >>> z= ivy.maximum(x, y)
+    >>> x = ivy.array([1, 5, 9, 8, 3, 7])
+    >>> y = ivy.array([[9], [3], [2]])
+    >>> z = ivy.zeros((3, 6))
+    >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    ivy.array([9, 5, 9, 8, 7])
+    ivy.array([[9.,9.,9.,9.,9.,9.],
+               [3.,5.,9.,8.,3.,7.],
+               [2.,5.,9.,8.,3.,7.]])
 
-    With :code:`Number` inputs:
-    >>> z = ivy.zeros(1)
-    >>> ivy.maximum(1, 5, out=z)
-    >>> print(z)
-    ivy.array(5.)
+    >>> x = ivy.array([[7, 3]])
+    >>> y = ivy.array([0, 7])
+    >>> ivy.maximum(x, y, out=x)
+    >>> print(x)
+    ivy.array([[7, 7]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-    >>> x = ivy.array([7, 3])
-    >>> y = ivy.native_array([0, 7])
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+    >>> y = ivy.Container(a=ivy.array([1, 0,]), \
+                          b=ivy.array([-5, 9]))
     >>> z = ivy.maximum(x, y)
     >>> print(z)
-    ivy.array([7, 7])
+    {
+        a: ivy.array([[1, 3],
+                      [2, 4],
+                      [3, 7]]),
+        b: ivy.array([[1, 9],
+                      [2, 9],
+                      [3, 9]])
+    }
 
-    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
-    >>> x = ivy.array([1, 7, 3])
-    >>> z = ivy.maximum(x, 5)
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1, 3, 1]),\
+                        b=ivy.array([2, 8, 5]))
+    >>> y = ivy.Container(a=ivy.array([1, 5, 6]),\
+                        b=ivy.array([5, 9, 7]))
+    >>> z = ivy.maximum(x, y)
     >>> print(z)
-    ivy.array([5, 7, 5])
-
-    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
-    >>> x = ivy.native_array([1, 3])
-    >>> z = ivy.maximum(x, 5)
-    >>> print(z)
-    ivy.array([5, 5])
-
-    Instance Method Examples
-    ------------------------
-    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
-    >>> x = ivy.array([4, 8, 3])
-    >>> y = ivy.array([9, 3, 2])
-    >>> x.maximum(y, out=y)
-    >>> print(y)
-    ivy.array([9, 8, 3])
-
-    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
-    >>> x = ivy.array([4, 1, 8, 3])
-    >>> y = ivy.native_array([9, 3, 2, 6])
-    >>> z = x.maximum(y)
-    >>> print(z)
-    ivy.array([9, 3, 8, 6])
-
-    With :code:`ivy.Array` instance method using :code:`Number` input:
-    >>> x = ivy.array([1, 7, 8])
-    >>> z = ivy.zeros(3)
-    >>> x.maximum(3, out=z)
-    >>> print(z)
-    ivy.array([3., 7., 8.])
-
+    {
+        a: ivy.array([1, 5, 6]),
+        b: ivy.array([5, 9, 7])
+    }
     """
     return current_backend(x1).maximum(x1, x2, out=out)
 
