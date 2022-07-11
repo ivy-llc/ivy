@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
@@ -67,7 +67,8 @@ def all(
         results. The returned array must have a data type of ``bool``.
 
     Functional Examples
-    -------
+    -------------------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -75,17 +76,22 @@ def all(
     >>> print(y)
     ivy.array(True)
 
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.zeros(1,dtype='bool')
-    >>> a = ivy.all(x,out = y,keepdims=True)
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.zeros((1,1), dtype='bool')
+    >>> a = ivy.all(x, axis=0, out = y, keepdims=True)
     >>> print(a)
-    ivy.array([ True])
-
+    ivy.array([[False]])
 
     >>> x=ivy.array(False)
-    >>> y=ivy.all([-1, 4, 5], out=x)
+    >>> y=ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
     >>> print(y)
-    ivy.array(True)
+    ivy.array(False)
+
+    >>> x=ivy.array(False)
+    >>> y=ivy.all(ivy.array([[[0],[1]],[[1],[1]]]), \
+    axis=(0,1,2), out=x, keepdims=False)
+    >>> print(y)
+    ivy.array(False)
 
     With :code:`ivy.NativeArray` input:
 
@@ -96,7 +102,17 @@ def all(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = ivy.all(x)
+    >>> print(y)
+    {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
+
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
     >>> y = ivy.all(x)
     >>> print(y)
     {
@@ -116,14 +132,33 @@ def all(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
     >>> y = x.all()
     >>> print(y)
-     {
+    {
         a: ivy.array(False),
         b: ivy.array(True)
     }
 
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = x.all()
+    >>> print(y)
+    {
+        a: ivy.array(False),
+        b: ivy.array(True)
+    }
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/sig
+    natures.utility_functions.all.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicit
+    y,but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
     """
     return current_backend(x).all(x, axis, keepdims, out=out)
 
@@ -133,7 +168,7 @@ def all(
 @handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,

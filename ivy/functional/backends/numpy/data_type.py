@@ -116,10 +116,14 @@ def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
 
 
 def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
 def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype
     return np.iinfo(ivy.as_native_dtype(type))
 
 
