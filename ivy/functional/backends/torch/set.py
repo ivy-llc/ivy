@@ -45,7 +45,7 @@ def unique_all(
         counts,
     )
 
-unique_all.unsupported_dtypes = ("uint16","uint32","uint32")
+unique_all.unsupported_dtypes = ("uint16", "uint32", "uint64")
 
 def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
@@ -54,7 +54,7 @@ def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     uc = namedtuple("uc", ["values", "counts"])
     return uc(v, c)
 
-unique_counts.unsupported_dtypes = ("uint16","uint32","uint32")
+unique_counts.unsupported_dtypes = ("uint16", "uint32", "uint64")
 
 def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
@@ -65,10 +65,10 @@ def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     inverse_indices = inverse_indices.reshape(x.shape)
     return out(values, inverse_indices)
 
-unique_inverse.unsupported_dtypes = ("uint16","uint32","uint32")
+unique_inverse.unsupported_dtypes = ("uint16", "uint32", "uint64", "float16")
 
 def unique_values(x: torch.Tensor) -> torch.Tensor:
     ret = torch.unique(x)
     return ret
 
-unique_values.unsupported_dtypes = ("uint16","uint32","uint32")
+unique_values.unsupported_dtypes = ("uint16", "uint32", "uint64", "float16")
