@@ -61,10 +61,10 @@ class ArrayWithLosses(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
+        """
+        ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
         also applies to this method with minimal changes.
-
         Examples
         --------
 
