@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Sequence
 
 _round = round
 import numpy as np
@@ -205,7 +205,13 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
