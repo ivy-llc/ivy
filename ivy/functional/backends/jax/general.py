@@ -172,7 +172,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 def scatter_nd(
     indices,
     updates,
-    shape: Union[ivy.NativeShape, Sequence[int]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     tensor=None,
     reduction="sum",
 ):
