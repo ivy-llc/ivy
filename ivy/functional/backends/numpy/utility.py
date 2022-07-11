@@ -1,11 +1,11 @@
 # global
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Optional, Sequence
 
 
 def all(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[np.ndarray] = None,
@@ -15,7 +15,7 @@ def all(
 
 def any(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[np.ndarray] = None,
