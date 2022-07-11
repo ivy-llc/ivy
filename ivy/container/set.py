@@ -7,9 +7,9 @@ import ivy
 
 # ToDo: implement all methods here as public instance methods
 
+
 # noinspection PyMissingConstructor
 class ContainerWithSet(ContainerBase):
-
     @staticmethod
     def static_unique_all(
             x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
