@@ -1,5 +1,5 @@
 # global
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Sequence
 import ivy
 
 _round = round
@@ -170,7 +170,14 @@ def scatter_flat(
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+    device=None,
+):
     if ivy.exists(tensor):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
