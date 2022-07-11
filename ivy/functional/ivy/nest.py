@@ -32,13 +32,13 @@ def index_nest(
 
     Examples
     --------
-    With :code:`List` inputs:
+    With :code:`ivy.Array` inputs:
 
-    >>> x = ['a', 'b']
+    >>> x = ivy.array([1., 2.])
     >>> y = [0]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    a
+    1.0
 
     With :code:`Tuple` inputs:
 
@@ -56,15 +56,15 @@ def index_nest(
     >>> print(z)
     [2, 3]
 
-    With :code:`ivy.Array` inputs:
+    With :code:`List` inputs:
 
-    >>> x = ivy.array([[1., 2., 3.], \
-                       [4., 5., 6.], \
-                       [7., [8., 9.]]])
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', ['h', 'i']]]
     >>> y = iter([2, 1, 0])
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    8.0
+    h
     """
     ret = nest
     for i in index:
