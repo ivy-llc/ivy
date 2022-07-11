@@ -38,7 +38,7 @@ def _wrap_function(function_name: str) -> Callable:
         function = ivy.__dict__[function_name]
         # gives us the position and name of the array argument
         data_idx = function.array_spec[0]
-        if len(args) > data_idx[0][0]:
+        if len(args) >= data_idx[0][0]:
             args = ivy.copy_nest(args, to_mutable=True)
             data_idx = [data_idx[0][0]] + [
                 0 if idx is int else idx for idx in data_idx[1:]

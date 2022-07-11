@@ -42,7 +42,7 @@ def test_layer_norm(
             helpers.array_values(input_dtype, shape=(2,), min_value=0, exclude_min=True)
         )
     )
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,

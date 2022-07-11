@@ -196,7 +196,12 @@ class ContainerBase(dict, abc.ABC):
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
         ret = ivy.Container.multi_map(
-            map_fn, conts, key_chains, to_apply, prune_unapplied
+            map_fn,
+            conts,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_nests=map_sequences,
         )
         if ivy.exists(out):
             out.inplace_update(ret)
@@ -593,7 +598,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
-        map_sequences=False,
+        map_nests=False,
         assert_identical=False,
     ):
         """Apply function to all array values from a collection of identically
@@ -627,12 +632,23 @@ class ContainerBase(dict, abc.ABC):
             Container
 
         """
-        container0 = containers[0]
+        container0 = None
+        for cont in containers:
+            if isinstance(cont, ivy.Container):
+                container0 = cont
+                break
+        if container0 is None:
+            raise Exception(
+                "No containers found in the inputs to " "ivy.Container.multi_map"
+            )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
         for key in container0.keys():
-            values = [cont[key] for cont in containers]
+            values = [
+                cont[key] if isinstance(cont, ivy.Container) and key in cont else cont
+                for cont in containers
+            ]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
@@ -656,12 +672,12 @@ class ContainerBase(dict, abc.ABC):
                         prune_unapplied,
                         this_key_chain,
                         config,
-                        map_sequences,
+                        map_nests,
                         assert_identical,
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_sequences:
+                elif isinstance(value0, (list, tuple)) and map_nests:
                     ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
                     if prune_unapplied and not ret:
                         continue
@@ -4761,6 +4777,7 @@ class ContainerBase(dict, abc.ABC):
                     .replace(")dtype=", "), dtype=")
                     .replace(", ),", ",),")
                 )
+                json_dumped_str = re.sub("}, $", "}", json_dumped_str)
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
