@@ -233,10 +233,10 @@ You can also specify:</p>
 <ul class="simple">
 <li><p>Math.inf and math.nan, respectively, should be included in the data description.</p></li>
 <li><p>Bounds(either inclusive or exclusive) on the floats being generated.</p></li>
-<li><p>The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always</p></li>
+<li><p>The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always
+64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is
+mostly useful for Numpy arrays).</p></li>
 </ul>
-<p>64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is mostly
-useful for Numpy arrays).</p>
 <ol class="arabic simple" start="6">
 <li><p><strong>none</strong> - returns a strategy which only generates None.</p></li>
 </ol>
@@ -654,13 +654,17 @@ the newer output, for the same example -:</p>
 <li><p>Some performance related settings which might be helpful to know are-:</p></li>
 </ol>
 <ul class="simple">
-<li><p><strong>max_examples</strong> - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it ip or down</p></li>
+<li><dl class="simple">
+<dt><strong>max_examples</strong> - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down</dt><dd><p>will have an impact on the speed as well as the rigorousness of the tests.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>deadline</strong> - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird</dt><dd><p>performance issues.</p>
+</dd>
+</dl>
+</li>
 </ul>
-<p>will have an impact on the speed as well as the rigorousness of the tests.</p>
-<ul class="simple">
-<li><p><strong>deadline</strong> - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird</p></li>
-</ul>
-<p>performance issues.</p>
 </section>
 </section>
 <section id="self-consistent-and-explicit-testing">
