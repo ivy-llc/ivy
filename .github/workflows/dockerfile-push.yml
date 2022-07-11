@@ -2,8 +2,8 @@ name: Dockerfile Push
 
 on:
   schedule:
-    # run at every 15 days
-    - cron:  '0 0 4,19 * *'
+    # run at everyday at 00:00 UTC
+    - cron:  '0 0 * * *'
 
 jobs:
 

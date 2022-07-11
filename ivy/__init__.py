@@ -1,3 +1,8 @@
+# global
+import warnings
+
+warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
 # class placeholders
 
 
@@ -74,6 +79,7 @@ class Node(str):
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
+warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
 # global constants
@@ -124,7 +130,6 @@ from ivy.functional.ivy import (
     elementwise,
     general,
     gradients,
-    image,
     layers,
     linear_algebra,
     losses,
@@ -148,7 +153,6 @@ add_ivy_array_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -173,7 +177,6 @@ add_ivy_container_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -199,7 +202,6 @@ add_ivy_container_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -542,3 +544,9 @@ def unset_warning_level():
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
+
+
+def warn(warning_message, stacklevel=0):
+    warn_level = warning_level()
+    warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
+    warnings.warn(warning_message, stacklevel=stacklevel)
