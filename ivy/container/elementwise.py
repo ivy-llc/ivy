@@ -383,7 +383,6 @@ class ContainerWithElementwise(ContainerBase):
             out=out
         )
 
-
     def atan(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
