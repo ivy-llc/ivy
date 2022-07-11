@@ -132,7 +132,11 @@ def asin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
 asin.unsupported_dtypes = ("float16",)
 
 
-def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def asinh(
+        x: torch.Tensor,
+        *,
+        out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.asinh(x, out=out)
 
 
