@@ -122,62 +122,59 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     ret
         Boolean, true if x is a trainable variable, false otherwise.
 
-    Functional Examples
+    Examples
     -------------------
-    With :code:`ivy.Array` inputs:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array(2.3)
     >>> is_var = ivy.is_variable(x)
     >>> print(is_var)
         False
 
-    >>> w = ivy.zeros((3, 2))
-    >>> is_var = ivy.is_variable(w)
-    >>> print(is_var)
-        False
-
-    >>> y = ivy.array(ivy.array([[ 2.0,  0.7,  0.71,  0.97],\
-                                 [-1, -0.3, -0.6,  6],\
-                                 [ 0.12,  0.56, -3, -0.78],\
-                                 [-0.3,  3.34,  4, -0.4]]))
-    >>> is_var = ivy.is_variable(y)
+    >>> W = ivy.zeros((3, 2))
+    >>> is_var = ivy.is_variable(W)
     >>> print(is_var)
         False
 
     >>> z = ivy.array([[2], [3], [5]])
-    >>> is_var = ivy.is_variable(z)
+    >>> is_var = ivy.is_variable(z, True)
     >>> print(is_var)
         False
 
-    with :code:`ivy.NativeArray` inputs:
+    with :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([7])
     >>> is_var = ivy.is_variable(x)
     >>> print(is_var)
         False
 
-    >>> w = ivy.native_array([2, 3, 4])
-    >>> is_var = ivy.is_variable(w)
+    >>> W = ivy.native_array([2, 3, 4])
+    >>> is_var = ivy.is_variable(W)
     >>> print(is_var)
         False
 
     >>> m = ivy.native_array([-1, 0., 0.8, 9])
-    >>> is_var =  ivy.is_variable(m)
+    >>> is_var =  ivy.is_variable(m, True)
     >>> print(is_var)
         False
 
-    with :code:`ivy.Container` inputs:
+    with :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
-    >>> is_var = ivy.is_variable(x)
+    >>> exclusive = True
+    >>> is_var = ivy.is_variable(x, exclusive=exclusive)
     >>> print(is_var)
     {
         a: false,
         b: false
     }
 
+
+    with multiple :code:`ivy.Container` inputs:
+
     >>> n = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
-    >>> is_var = ivy.is_variable(n)
+    >>> exclusive = ivy.Container(a=False, b=True)
+    >>> is_var = ivy.is_variable(n, exclusive=exclusive)
     >>> print(is_var)
     {
         a: false,

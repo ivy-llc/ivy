@@ -32,6 +32,17 @@ class ContainerWithGradients(ContainerBase):
             a: false,
             b: false
         }
+
+        with multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=False, b=True)
+        >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "is_variable",
@@ -58,10 +69,21 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code:`ivy.Container` inputs:
+        with :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> is_var = x.is_variable(exclusive=True)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+
+        with multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=True, b=True)
+        >>> is_var = x.is_variable(exclusive=exclusive)
         >>> print(is_var)
         {
             a: false,
