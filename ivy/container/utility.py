@@ -102,7 +102,6 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_any(x)
         >>> print(y)
@@ -140,7 +139,6 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = x.any()
         >>> print(y)
