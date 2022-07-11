@@ -762,7 +762,7 @@ def depthwise_conv2d(
     >>> filters = ivy.random_normal(0, 1, [4, 4, 32]) #HWI (I == d_in)
     >>> ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID', out=x)
     >>> print(x.shape)
-    (1, 31, 31, 32)
+    (1, 61, 61, 32)
 
     With :code:`ivy.NativeArray` input:
 
