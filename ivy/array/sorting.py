@@ -1,14 +1,25 @@
 # global
-import abc
 from typing import Optional, Union
 
 # local
+
 import ivy
 
 # ToDo: implement all methods here as public instance methods
 
 
 class ArrayWithSorting(abc.ABC):
+def argsort(
+        self: ivy.Array,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+    
+        return ivy.argsort(self._data, axis, descending, stable, out=out)
+        
     def sort(
             self,
             axis: int = -1,
@@ -58,4 +69,5 @@ class ArrayWithSorting(abc.ABC):
 
         """
         return ivy.sort(self._data)
+
 

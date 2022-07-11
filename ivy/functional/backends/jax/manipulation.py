@@ -47,7 +47,7 @@ def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> J
 def flip(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
     return ret
@@ -137,6 +137,7 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 def clip(
     x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
+    assert ivy.all(ivy.less(x_min, x_max))
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")

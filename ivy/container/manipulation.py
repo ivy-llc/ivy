@@ -22,6 +22,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -45,7 +46,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def expand_dims(
@@ -55,6 +56,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -67,7 +69,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def permute_dims(
@@ -77,6 +79,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -89,7 +92,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def flip(
@@ -99,6 +102,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -109,7 +113,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def reshape(
@@ -119,6 +123,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -129,7 +134,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -144,6 +149,36 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_roll(x, 1)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([5., 3., 4.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> shift = ivy.Container(a=1, b=-1)
+        >>> y = ivy.Container.static_roll(x, shift)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([4., 5., 3.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "roll",
             x,
@@ -167,6 +202,21 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.roll(1)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., 1.]),
+            b: ivy.array([5., 3., 4.])
+        }
+        """
         return self.static_roll(
             self,
             shift,
@@ -185,6 +235,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -195,7 +246,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def stack(
@@ -209,6 +260,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -232,7 +284,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def repeat(
@@ -243,6 +295,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -255,7 +308,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def tile(
@@ -265,6 +318,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -275,7 +329,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def constant_pad(
@@ -286,6 +340,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -298,7 +353,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def zero_pad(
@@ -309,6 +364,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -321,7 +377,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def swapaxes(
@@ -332,6 +388,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -344,5 +401,97 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
+        )
+
+    @staticmethod
+    def static_clip(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.clip. This method simply wraps the
+        function, and so the docstring for ivy.clip also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_clip(x, 1., 5.)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> x_min = ivy.Container(a=1, b=-1)
+        >>> x_max = ivy.Container(a=1, b=-1)
+        >>> y = ivy.Container.static_roll(x, x_min, x_max)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 1.]),
+            b: ivy.array([-1., -1., -1.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "clip",
+            x,
+            x_min,
+            x_max,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def clip(
+        self: ivy.Container,
+        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip. This method simply wraps the
+        function, and so the docstring for ivy.clip also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.clip(1,2)
+        >>> print(y)
+        {
+            a: ivy.array([1., 1., 2.]),
+            b: ivy.array([2., 2., 2.])
+        }
+        """
+        return self.static_clip(
+            self,
+            x_min,
+            x_max,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
