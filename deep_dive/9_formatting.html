@@ -173,71 +173,31 @@ is being checked for.</p>
 <p>Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
 Some examples are:</p>
 <ul class="simple">
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>break</cite> or :code: <cite>continue</cite> statement outside a :code: <cite>for</cite> or :code: <cite>while</cite> loop</p>
-</dd>
-</dl>
-</li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>continue</cite> statement in the :code: <cite>finally</cite> block of a loop</p>
-</dd>
-</dl>
-</li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>yield</cite> or :code: <cite>yield from</cite> statement outside a function</p>
-</dd>
-</dl>
-</li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>return</cite> statement used with arguments in a generator, or outside a function or method</p>
-</dd>
-</dl>
-</li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>except:</cite> block not being the last exception handler</p>
-</dd>
-</dl>
-</li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">break</span></code> or <code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement outside a <code class="code docutils literal notranslate"><span class="pre">for</span></code> or <code class="code docutils literal notranslate"><span class="pre">while</span></code> loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement in the <code class="code docutils literal notranslate"><span class="pre">finally</span></code> block of a loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">yield</span></code> or <code class="code docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code> statement outside a function</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">return</span></code> statement used with arguments in a generator, or outside a function or method</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">except:</span></code> block not being the last exception handler</p></li>
 <li><p>syntax or length errors in docstrings, comments, or annotations</p></li>
 </ul>
 <p><strong>Literals</strong></p>
 <p>Literals formatting are often used in a string statement, which some related common
 checks are:</p>
 <ul class="simple">
-<li><p>invalid :code: <cite>%</cite> format</p></li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>%</cite> format with missing arguments or unsupported character</p>
-</dd>
-</dl>
-</li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>.format(…)</cite> with invalid format, missing or unused arguments</p>
-</dd>
-</dl>
-</li>
+<li><p>invalid <code class="code docutils literal notranslate"><span class="pre">%</span></code> format</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">%</span></code> format with missing arguments or unsupported character</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">.format(...)</span></code> with invalid format, missing or unused arguments</p></li>
 <li><p>f-string without placeholders</p></li>
 </ul>
 <p><strong>Others</strong></p>
-<p>There are many more types of checking which :code: <cite>flake8</cite> is able to carry out. They
+<p>There are many more types of checking which <cite>flake8</cite> is able to carry out. They
 include but are not limited to:</p>
 <ul class="simple">
-<li><p>repeated :code: <cite>dict</cite> key or variable assigned to different values</p></li>
+<li><p>repeated <code class="code docutils literal notranslate"><span class="pre">dict</span></code> key or variable assigned to different values</p></li>
 <li><p>star-unpacking assignment with too many expressions</p></li>
-<li><p>assertion test is a :code: <cite>tuple</cite>, which is always :code: <cite>true</cite></p></li>
-<li><p>use of :code: <cite>==</cite> or :code: <cite>!=</cite> to compare :code: <cite>str</cite>, :code: <cite>bytes</cite> or :code: <cite>int</cite> literals</p></li>
-<li><dl class="field-list simple">
-<dt class="field-odd">code</dt>
-<dd class="field-odd"><p><cite>raise NotImplemented</cite> should be :code: <cite>raise NotImplementedError</cite></p>
-</dd>
-</dl>
-</li>
+<li><p>assertion test is a <code class="code docutils literal notranslate"><span class="pre">tuple</span></code>, which is always <code class="code docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p>use of <code class="code docutils literal notranslate"><span class="pre">==</span></code> or <code class="code docutils literal notranslate"><span class="pre">!=</span></code> to compare <code class="code docutils literal notranslate"><span class="pre">str</span></code>, <code class="code docutils literal notranslate"><span class="pre">bytes</span></code> or <code class="code docutils literal notranslate"><span class="pre">int</span></code> literals</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplemented</span></code> should be <code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplementedError</span></code></p></li>
 </ul>
 </section>
 <section id="pre-commit-hook">
@@ -290,7 +250,7 @@ saved and the related file(s) can now be staged and committed accordingly.</p>
 <p>To ensure a better understanding of the formatting rules, examples are shown below
 for visualizing a better comparison.</p>
 <p>When a function has few arguments which will not exceed the length limit, arguments
-should be listed on the same line, together with the function :code: <cite>def(…)</cite>
+should be listed on the same line, together with the function <code class="code docutils literal notranslate"><span class="pre">def(...)</span></code>
 syntax.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
 </pre></div>
