@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 def max(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
 ) -> JaxArray:
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
