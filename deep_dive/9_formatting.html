@@ -157,7 +157,7 @@
 <h1>Formatting<a class="headerlink" href="#formatting" title="Permalink to this heading"></a></h1>
 <section id="lint-checks">
 <h2>Lint Checks<a class="headerlink" href="#lint-checks" title="Permalink to this heading"></a></h2>
-<p>To ensure that Ivy is always clean and correctly formatted, <cite>flake8</cite> is used to run
+<p>To ensure that Ivy is always clean and correctly formatted, <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> is used to run
 lint checks on all Python files. Some examples are listed below for an idea of what
 is being checked for.</p>
 <p><strong>Imports</strong></p>
@@ -173,38 +173,78 @@ is being checked for.</p>
 <p>Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
 Some examples are:</p>
 <ul class="simple">
-<li><p><cite>break</cite> or <cite>continue</cite> statement outside a <cite>for</cite> or <cite>while</cite> loop</p></li>
-<li><p><cite>continue</cite> statement in the <cite>finally</cite> block of a loop</p></li>
-<li><p><cite>yield</cite> or <cite>yield from</cite> statement outside a function</p></li>
-<li><p><cite>return</cite> statement used with arguments in a generator, or outside a function or method</p></li>
-<li><p><cite>except:</cite> block not being the last exception handler</p></li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>break</cite> or :code: <cite>continue</cite> statement outside a :code: <cite>for</cite> or :code: <cite>while</cite> loop</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>continue</cite> statement in the :code: <cite>finally</cite> block of a loop</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>yield</cite> or :code: <cite>yield from</cite> statement outside a function</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>return</cite> statement used with arguments in a generator, or outside a function or method</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>except:</cite> block not being the last exception handler</p>
+</dd>
+</dl>
+</li>
 <li><p>syntax or length errors in docstrings, comments, or annotations</p></li>
 </ul>
 <p><strong>Literals</strong></p>
 <p>Literals formatting are often used in a string statement, which some related common
 checks are:</p>
 <ul class="simple">
-<li><p>invalid <cite>%</cite> format</p></li>
-<li><p><cite>%</cite> format with missing arguments or unsupported character</p></li>
-<li><p><cite>.format(…)</cite> with invalid format, missing or unused arguments</p></li>
+<li><p>invalid :code: <cite>%</cite> format</p></li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>%</cite> format with missing arguments or unsupported character</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>.format(…)</cite> with invalid format, missing or unused arguments</p>
+</dd>
+</dl>
+</li>
 <li><p>f-string without placeholders</p></li>
 </ul>
 <p><strong>Others</strong></p>
-<p>There are many more types of checking which <cite>flake8</cite> is able to carry out. They
+<p>There are many more types of checking which :code: <cite>flake8</cite> is able to carry out. They
 include but are not limited to:</p>
 <ul class="simple">
-<li><p>repeated <cite>dict</cite> key or variable assigned to different values</p></li>
+<li><p>repeated :code: <cite>dict</cite> key or variable assigned to different values</p></li>
 <li><p>star-unpacking assignment with too many expressions</p></li>
-<li><p>assertion test is a <cite>tuple</cite>, which is always <cite>true</cite></p></li>
-<li><p>use of <cite>==</cite> or <cite>!=</cite> to compare <cite>str</cite>, <cite>bytes</cite> or <cite>int</cite> literals</p></li>
-<li><p><cite>raise NotImplemented</cite> should be <cite>raise NotImplementedError</cite></p></li>
+<li><p>assertion test is a :code: <cite>tuple</cite>, which is always :code: <cite>true</cite></p></li>
+<li><p>use of :code: <cite>==</cite> or :code: <cite>!=</cite> to compare :code: <cite>str</cite>, :code: <cite>bytes</cite> or :code: <cite>int</cite> literals</p></li>
+<li><dl class="field-list simple">
+<dt class="field-odd">code</dt>
+<dd class="field-odd"><p><cite>raise NotImplemented</cite> should be :code: <cite>raise NotImplementedError</cite></p>
+</dd>
+</dl>
+</li>
 </ul>
 </section>
 <section id="pre-commit-hook">
 <h2>Pre-Commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permalink to this heading"></a></h2>
 <p>In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
 we make use of the pre-commit package, where its installation is explained in
-the <cite>pre-commit guide</cite>.</p>
+the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit">pre-commit guide</a>.</p>
 <p>The pre-commit hook runs the <cite>flake8</cite> lint checks before each commit. This is
 efficient and useful in preventing errors being pushed to the repository.</p>
 <p>In the case where errors are found, error messages will be raised and committing will
@@ -250,7 +290,8 @@ saved and the related file(s) can now be staged and committed accordingly.</p>
 <p>To ensure a better understanding of the formatting rules, examples are shown below
 for visualizing a better comparison.</p>
 <p>When a function has few arguments which will not exceed the length limit, arguments
-should be listed on the same line, together with the function <cite>def(…)</cite> syntax.</p>
+should be listed on the same line, together with the function :code: <cite>def(…)</cite>
+syntax.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
 </pre></div>
 </div>
