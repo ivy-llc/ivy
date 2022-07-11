@@ -38,7 +38,7 @@ def index_nest(
     >>> y = [0]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    1.0
+    1.
 
     With :code:`Tuple` inputs:
 
