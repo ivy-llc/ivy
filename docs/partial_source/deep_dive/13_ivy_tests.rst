@@ -587,16 +587,20 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/Jax.png
+   :width: 600
 
 * **Numpy**
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/numpy.png
+   :width: 600
 
 * **Tensorflow**
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/tensorflow.png
+   :width: 600
 
 * **Torch**
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/torch.png
+   :width: 600
 
 
 It can be seen that the function doesn’t fail for **Jax**, **Numpy** and **Torch**, which is clearly not the case with
@@ -608,7 +612,8 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: path/filename.png
+.. image:: https://github.com/unifyai/ivy/blob/master/.idea/test_run.png
+   :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
 
