@@ -143,7 +143,7 @@ def sort(
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
     >>> print(y)
-    ivy.array([6, 7, 8])
+    ivy.array([8, 7, 6])
 
     >>> x = ivy.array([[[8.9,0], [19,5]],\
                             [[6,0.3], [19,0.5]]])
@@ -155,25 +155,35 @@ def sort(
     With：code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
-    >>> y = ivy.sort(x, 0, True, False)
+    >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
     ivy.array([3.2, 2.5, 1.5, 0.7])
 
     >>> x = ivy.native_array([[[8.9, 0], [19, 5]],\
                                 [[6, 0.3], [19, 0.5]]])
-    >>> y = ivy.sort(x, 0, True, False)
+    >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
-    ivy.array([[[ 8.9,  0.3],[19. ,  5. ]],[[ 6. ,  0. ],[19. ,  0.5]]])
+    ivy.array([[[ 8.9,  0.3],[19. ,  5. ]],\
+    [[ 6. ,  0. ],[19. ,  0.5]]])
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                             b=ivy.array([[9, 0.7], [0.4, 0]]))
-    >>> y = ivy.sort(x, 0, True, False)
+    >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
     {
         a: ivy.array([8., 6., 0.5]),
         b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),\
+                            b=ivy.array([[4, 0.9], [0.6, 0.2]]))
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+    {
+        a: ivy.array([3., 1., 0.7]),
+        b: ivy.array([[4., 0.9], [0.6, 0.2]])
     }
 
     With a mix of :code:`ivy.Container` and :code:`ivy.native_array` input:
@@ -188,6 +198,15 @@ def sort(
         b: ivy.array([[9., 0.7], [0.4, 0.]])
     }
 
+    >>> x = ivy.Container(a=ivy.native_array([7, 0.8, 5]),\
+                        b=ivy.native_array([[8, 0.2], [0.8, 5]]))
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+    {
+        a: ivy.array([7., 5., 0.8]),
+        b: ivy.array([[8., 0.2], [5., 0.8]])
+    }
+
     With a mix of :code:`ivy.Container`and :code:`ivy.Array`
                             and :code:`ivy.NativeArray` input:
 
@@ -198,6 +217,52 @@ def sort(
     {
         a: ivy.array([8., 6., 0.5]),
         b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([3, 0.9, 5]),\
+                b=ivy.native_array([[4, 0.1], [0.4, 0.8]]))
+    >>> y = ivy.sort(x, -1, True, False)
+    >>> print(y)
+    {
+        a: ivy.array([5., 3., 0.9]),
+        b: ivy.array([[4., 0.1], [0.8, 0.4]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With：code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1.5, 3.2, 0.7, 2.5])
+    >>> y = x.sort()
+    >>> print(y)
+    ivy.array([0.7, 1.5, 2.5, 3.2])
+
+    >>> x = ivy.array([[[8.9, 0], [19, 5]],\
+                        [[6, 0.3], [19, 0.5]]])
+    >>> y = x.sort()
+    >>> print(y)
+    ivy.array([[[ 0. , 8.9],[ 5. , 19. ]],\
+    [[ 0.3,  6. ],[ 0.5, 19. ]]])
+
+    With a:code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
+                      b=ivy.array([[9, 0.7], [0.4, 0]]))
+    >>> y = x.sort()
+    >>> print(y)
+    {
+        a: ivy.array([0.5, 6., 8.]),
+        b: ivy.array([[0.7, 9.], [0., 0.4]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
+                      b=ivy.array([[8, 1], [5, 0.8]]))
+    >>> y = x.sort()
+    >>> print(y)
+    {
+        a: ivy.array([0.2, 5., 9.]),
+        b: ivy.array([[1., 8.], [0.8, 5.]])
     }
 
     """
